@@ -59,7 +59,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  A status message for a failure in the WMSCapabilities loading.
      */
-	capabilitiesFailureMsg: " The layer cannot be added to the map", 
+	capabilitiesFailureMsg: " The WMS Capabilities cannot be added due to problems service side", 
 	
     /** api: property[useEvents]
      *  ``Boolean``
@@ -67,11 +67,48 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
      */
 	useEvents: false,
 	
+	/** api: property[directAddLayer]
+     *  ``Boolean``
+     *  
+     */
+	directAddLayer: false,
+	
+    /** api: property[showReport]
+     *  ``Boolean``
+     *  
+     */
+	showReport: false,
+	
 	/** api: property[showCapabilitiesGrid]
      *  ``Boolean``
      *  
      */
 	showCapabilitiesGrid: false,
+	
+	/** api: property[showCapabilitiesGrid]
+     *  ``Boolean``
+     *  
+     */
+	disableAllNotifications: false,
+	
+    /** api: property[directAddLayerProps]
+     *  ``Boolean``
+     *  
+     */
+	directAddLayerProps:{
+		params:{
+			styles: "",
+			format: "image/png8",
+			transparent: true
+		},
+		options:{
+			displayInLayerSwitcher: true,
+			singleTile: false,
+			ratio: 1,
+			opacity: 1,
+			buffer: 1
+		}
+	},
     
     /** private: method[constructor]
      */
@@ -100,26 +137,130 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
     init: function(target) {
 		gxp.plugins.AddLayer.superclass.init.apply(this, arguments);
         this.target = target;
+		
+		//
+		// Manage the report of the added resources (layers on WMS services)
+		//
+		var exceptionReport = [];
+		var reportWin;
+		
+		this.on({
+			scope: this,
+			'ready' : function(records){
+				if((this.showReport == "always" || this.showReport == "errors") && 
+					this.directAddLayer === false && this.disableAllNotifications === false){
+					
+					for(var h=0; h<records.length; h++){
+						var record = records[h];
+						
+						if(record.report){
+							if(this.showReport == "errors"){
+								if(record.report.msg){
+									exceptionReport.push(record.report);
+								}								
+							}else{
+								exceptionReport.push(record.report);
+							}
+						}
+						
+						if(reportWin){
+							reportWin.hide();
+							reportWin.destroy();
+						}
+
+						var html = "<html>" +
+							"<body>" +
+								"<table style=\"border-collapse: collapse;\">" + 
+									"<thead>" +
+										"<tr>" +
+											"<th style=\"padding: 3px 7px 2px; background-color: #555555; color: #FFFFFF;\">Resource Name</th>" + 
+											"<th style=\"padding: 3px 7px 2px; background-color: #555555; color: #FFFFFF;\">Resource Type</th>" + 
+											"<th style=\"padding: 3px 7px 2px; background-color: #555555; color: #FFFFFF;\">Note</th>" + 
+											//"<th>URL</th>" +
+										"</tr>" +
+									"</thead>" +
+									"<tbody>";
+															
+						var urls = [];
+						for(var i=0; i<exceptionReport.length; i++){
+							var exists = false;
+							for(var j=0; j<urls.length; j++){
+								if(exceptionReport[i].url == urls[j].url && 
+									exceptionReport[i].name == urls[j].name && 
+										!exceptionReport[i].msg){
+									exists = true;
+									break;
+								}
+							}
+					
+							if(!exists){
+								urls.push({url: exceptionReport[i].url, name: exceptionReport[i].name});
+								var row = "<tr>" +
+										"<th style=\"padding: 3px 7px 2px; background-color: #D0D6D9; color: #000000; border: 1px solid #555555;\">" + exceptionReport[i].name + "</th>" +
+										"<th style=\"padding: 3px 7px 2px; background-color: #D0D6D9; color: #000000; border: 1px solid #555555;\">" + (exceptionReport[i].type == "layer" ? "WMS Layer" : "WMS Service" + (exceptionReport[i].title ? " :" + exceptionReport[i].title : "")) + "</th>" +
+										"<th style=\"padding: 3px 7px 2px; background-color: #D0D6D9; color: #000000; border: 1px solid #555555;\">" + (!exceptionReport[i].msg ? "" : "Error in remote service. <a style=\"cursor: pointer; font-weight: bold; color: #1030E3;\" onClick=\"javascript:app.tools['addlayer'].showMessages('GetCapabilities', '" + escape(exceptionReport[i].msg) + "', Ext.MessageBox.ERROR)\">Show more</a>") + "</th>" +
+										//"<th>" + exceptionReport[i].url + "</th>" +
+									"</tr>"
+										  
+								html += row;
+							}
+						}	
+
+						html +=               "</tbody>" +
+										"</table>" +
+									"</body>" + 
+								"</html>";
+						
+						if(exceptionReport.length > 0){
+							reportWin = new Ext.Window({
+								title: "List of requested resources",
+								html: html,
+								frame: true,
+								modal: true,
+								autoHeigth: true,
+								autoWidth: true,
+								maxHeigth: 500,
+								maxWidth: 600																						
+							});	
+						
+							reportWin.show();
+						}						
+					}
+				}
+			}
+		});	
     },
+	
+	showMessages: function(title, report, type){
+		if(this.disableAllNotifications === false){
+			Ext.Msg.show({
+				 title: title,
+				 msg: unescape(report),
+				 width: 300,
+				 icon: type
+			});  
+		}
+	},
 	
 	/**  
 	 * api: method[addLayerRecord]
      */
-	addLayerRecord: function(options, source){
-		
+	addLayerRecord: function(options, source){		
 		var msLayerTitle = options.msLayerTitle;
 		var msLayerName = options.msLayerName;
-		//var wmsURL = options.wmsURL;
 		var gnUrl = options.gnUrl;
 		var enableViewTab = options.enableViewTab;
 		var msLayerUUID = options.msLayerUUID;
 		var gnLangStr = options.gnLangStr;
 		var customParams = options.customParams;
+		var msGroupName = options.msGroupName;
 		
 		var props = {
 			name: msLayerName,
 			title: msLayerTitle,
 			source: source.id
+			// Currently the group setting is not supported for dynamic layer additions
+			/*,group: msGroupName*/
 		};
 		
 		if(customParams){
@@ -136,7 +277,8 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			props.gnURL = gnUrl + "srv/" + gnLangStr + "/";
 		  
 		var record = source.createLayerRecord(props);   
-				  
+			
+		//var report;
 		if (record) {
 			var layerStore = this.target.mapPanel.layers;  
 			layerStore.add([record]);
@@ -175,21 +317,47 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			}
 
 			map.zoomToExtent(extent, true);
+			
+			var report = {
+				name: msLayerName,
+				title: msLayerTitle,
+				group: options.msGroupName,
+				type: "layer",
+				url: source.url,
+				id: source.id
+			};
+			
+			this.records.push({record: record, report: report});			
 		}else{
+			var report = {
+				name: msLayerName,
+				title: source.title,
+				group: options.msGroupName,
+				type: "service",
+				url: source.url,
+				id: source.id
+			};
+				
+			this.records.push({record: undefined, report: report});
+			
 			//
 			// Show the capabilities grid if any layers was not found
 			//
 			this.showCapGrid(source.id);
 		}
+		
+		if(this.useEvents && this.records.length == this.resourcesSize){
+			this.fireEvent('ready', this.records);
+		}
 	},
 	
 	showCapGrid: function(sourceId){
-		var addLayerAction = this.target.tools["addlayers"];
-		
 		// 
 		// Show the capabilities grid
 		//
-		if(this.showCapabilitiesGrid === true){
+		if(this.showCapabilitiesGrid === true && this.disableAllNotifications === false){
+			var addLayerAction = this.target.tools["addlayers"];
+			
 			addLayerAction.showCapabilitiesGrid();
 			
 			//
@@ -230,64 +398,166 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	/**  
 	 * api: method[addLayer]
      */
-	addLayer: function(options){		
-		var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
-		
-		var msLayerTitle = options.msLayerTitle;
-		var msLayerName = options.msLayerName;
-		var wmsURL = options.wmsURL;
-		var gnUrl = options.gnUrl;
-		var enableViewTab = options.enableViewTab;
-		var msLayerUUID = options.msLayerUUID;
-		var gnLangStr = options.gnLangStr;
-		var customParams = options.customParams;
+	addLayer: function(resources){
+		//
+		// We check the type of the argument for retrocompatibility
+		//
+		if(resources instanceof Array){
+			this.resourcesSize = resources.length;
+			this.records = [];
+			
+			for(var i=0; i<resources.length; i++){
+				var resource = resources[i];
 				
-		var source = this.checkLayerSource(wmsURL);
-
-		if(source){
-		
-			if(!source.loaded){
-				source.on('ready', function(){
-					mask.hide();
-					this.target.layerSources[source.id].loaded = true; 
-					this.addLayerRecord(options, source);
-					
-					if(this.useEvents)
-						this.fireEvent('ready');
-				}, this);
-			}
-			
-		    var index = source.store.findExact("name", msLayerName);
-			
-			if (index < 0) {
-				// ///////////////////////////////////////////////////////////////
-				// In this case is necessary reload the local store to refresh 
-				// the getCapabilities records 
-				// ///////////////////////////////////////////////////////////////
-				source.store.reload();
-			}else{
-				this.addLayerRecord(options, source);
+				if(resource){
+					this._addLayer(resource);
+				}			
 			}
 		}else{
-			mask.show();
-			this.addSource(wmsURL, true, options);
+			this._addLayer(resources);
 		}
 	},
+	
+	_addLayer: function(resource){
+		var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
+		
+		if(this.directAddLayer === true){
+			//
+			// Direct add layer to the map without WMS GetCapabilities
+			// 
+			this.addToMap(resource);
+		}else{
+			//
+			// Adding layer to the map with WMS GetCapabilities (the standard moded)
+			// 			
+			/*var msLayerTitle = options.msLayerTitle;
+			var msLayerName = options.msLayerName;
+			var msGroupName = options.msGroupName;
+			var wmsURL = options.wmsURL;
+			var gnUrl = options.gnUrl;
+			var enableViewTab = options.enableViewTab;
+			var msLayerUUID = options.msLayerUUID;
+			var gnLangStr = options.gnLangStr;
+			var customParams = options.customParams;*/
+					
+			var source = this.checkLayerSource(resource.wmsURL);
 
+			if(source){
+			
+				if(!source.loaded){
+					source.on('ready', function(s){
+						mask.hide();
+						this.target.layerSources[s.id].loaded = true; 
+						this.addLayerRecord(resource, s);
+					}, this);
+					// add listener if layer source fail to append the layer source error information
+					if(this.useEvents){
+						source.on('failure', function(s){
+							mask.hide();
+							var report = {
+								name: resource.msLayerName,
+								group: resource.msGroupName,
+								url: s.url,
+								type: "service",
+								msg: this.capabilitiesFailureMsg,
+								id: s.id
+							};
+							
+							this.records.push({record: undefined, report: report});
+							
+							if(this.records.length == this.resourcesSize){
+								this.fireEvent('ready', this.records);
+							}
+						}, this);
+					}
+				}
+				
+				var index = source.store.findExact("name", resource.msLayerName);
+				
+				if (index < 0) {
+					// ///////////////////////////////////////////////////////////////
+					// In this case is necessary reload the local store to refresh 
+					// the getCapabilities records 
+					// ///////////////////////////////////////////////////////////////
+					source.store.reload();
+				}else{
+					this.addLayerRecord(resource, source);
+				}
+			}else{
+				mask.show();
+				this.addSource(resource.wmsURL, true, resource);
+			}
+		}
+	},
+	
+	addToMap: function(options){
+		var msLayerTitle = options.msLayerTitle;
+		var msLayerName = options.msLayerName;
+		var msGroupName = options.msGroupName;
+		var wmsURL = options.wmsURL;
+		
+		//
+		// Clean the WMS URL
+		//
+	    if (wmsURL.indexOf("?") !== -1){
+			var parts = wmsURL.split("?");
+			wmsURL = parts[0];
+		}
+		
+		var params = {
+			STYLES: this.directAddLayerProps.params.styles,
+			FORMAT: this.directAddLayerProps.params.format,
+			TRANSPARENT: this.directAddLayerProps.params.transparent,
+			LAYERS: msLayerName
+		};
+			
+		var layer = new OpenLayers.Layer.WMS(
+			msLayerTitle, 
+			wmsURL, 
+			params, {
+				displayInLayerSwitcher: this.directAddLayerProps.options.displayInLayerSwitcher,
+				singleTile: this.directAddLayerProps.options.singleTile,
+				ratio: this.directAddLayerProps.options.ratio,
+				opacity: this.directAddLayerProps.options.opacity,
+				buffer: this.directAddLayerProps.options.buffer
+			}
+		);
+		
+		this.target.mapPanel.map.addLayer(layer); 
+		
+		var report = {
+			name: msLayerName,
+			group: msGroupName,
+			url: wmsURL,
+			type: "layer",
+			msg: "",
+			id: layer.id
+		};
+									
+		this.records.push({record: layer, report: report});
+		
+		if(this.useEvents && this.records.length == this.resourcesSize){
+			this.fireEvent('ready', this.records);
+		}
+	},
+	
 	/**  
 	 * api: method[addSource]
      */
 	addSource: function(wmsURL, showLayer, options){			
-		//this.wmsURL = wmsURL;
-		
 		var source = this.checkLayerSource(wmsURL);
 
 		if(!source){
 			var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
 			mask.show();
-		  
+			
+			var sourceOptions = {
+				url: wmsURL,
+				ptype: options.format == "wmts" ? "gxp_wmtssource" : "gxp_wmssource"
+			};
+			
 			source = this.target.addLayerSource({
-				config: {url: wmsURL}, // assumes default of gx_wmssource
+				config: sourceOptions, // assumes default of gx_wmssource
 				//
 				// Waiting GetCapabilities response from the server.
 				//	
@@ -306,7 +576,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					// 
 					// For all the following steps the CapGrid is already 
 					// initialized so:
-					// - the new layerSource is loaded but we have to put manually.
+					// - the new layerSource is loaded but we have to put manually
 					//   the new record inside the combo store.
 					// /////////////////////////////////////////////////////////////
 					if(combo){
@@ -315,19 +585,30 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 						//
 						// Add to combo and select
 						//
-						var record = new store.recordType({
-							id: id,
-							title: this.target.layerSources[id].title || this.untitledText
-						});
+						var index = store.find('id', id);
 						
-						store.insert(0, [record]);
+						var record;
+						if(index > -1){
+							record = store.getAt(index);						
+							record.set("title", this.target.layerSources[id].title || this.untitledText);
+						}else{
+							record = new store.recordType({
+								id: id,
+								title: this.target.layerSources[id].title || this.untitledText
+							});
+							
+							store.insert(0, [record]);
+						}
+						
 						combo.onSelect(record, 0);
 					}
 					
 					// 
 					// Show the capabilities grid
 					//
-					if(this.showCapabilitiesGrid === true && !showLayer){
+					if(this.showCapabilitiesGrid === true && !showLayer 
+						&& this.disableAllNotifications === false){
+						
 						addLayerAction.showCapabilitiesGrid();
 						
 						//
@@ -348,28 +629,49 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					this.target.layerSources[source.id].loaded = true;
 					if(showLayer && options){						
 						this.addLayerRecord(options, source);
-					}
-					
-					if(this.useEvents)
-						this.fireEvent('ready');
-					
+					}else{
+						//
+						// Here only if we add only the WMS source.
+						//
+						var report = {
+							name: options.msLayerName,
+							group: options.msGroupName,
+							url: source.url,
+							type: "service",
+							id: source.id
+						};
+						
+						this.records.push({record: source, report: report});
+						
+						if(this.useEvents && this.records.length == this.resourcesSize){
+							this.fireEvent('ready', this.records);
+						}
+					}					
 				},
-				//
+				// /////////////////////////////////////////////////////////////////////////
 				// To manage failure in GetCapabilities request (invalid request url in 
 				// GeoNetwork configuration or server error).
-				//
+				// /////////////////////////////////////////////////////////////////////////
 				fallback: function(source, msg) {
 					mask.hide();
-			  
-					if(!this.useEvents){
-						Ext.Msg.show({
-							 title: 'GetCapabilities',
-							 msg: msg + this.capabilitiesFailureMsg,
-							 width: 300,
-							 icon: Ext.MessageBox.ERROR
-						});  
-					}else{
-						this.fireEvent('failure', msg);
+					
+					if(!this.showReport){ 						
+						this.showMessages("GetCapabilities", this.capabilitiesFailureMsg + " - " + msg, Ext.MessageBox.ERROR);
+					}
+					
+					var report = {
+						name: options.msLayerName,
+						group: options.msGroupName,
+						url: source.url,
+						type: "service",
+						msg: this.capabilitiesFailureMsg + " - " + msg,
+						id: source.id
+					};
+					
+					this.records.push({record: source, report: report});
+					
+					if(this.useEvents && this.records.length == this.resourcesSize){
+						this.fireEvent('ready', this.records);
 					}
 				},
 				scope: this
@@ -378,7 +680,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			// 
 			// Show the capabilities grid
 			//
-			if(this.showCapabilitiesGrid === true){
+			if(this.showCapabilitiesGrid === true && this.disableAllNotifications === false){
 				var addLayerAction = this.target.tools["addlayers"];
 				addLayerAction.showCapabilitiesGrid();
 				

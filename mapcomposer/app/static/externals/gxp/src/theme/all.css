@@ -1,9 +1,48 @@
+/* this is a hack! In order to show always the Message box on top (to use it define a cls: 'msg_floating' to the 'Ext.Msg.show' statement)*/
+.msg_floating {
+    position: absolute !important;
+    z-index: 1000000 !important;
+}
+
 .x-tree-node-leaf  .gx-tree-layer-icon {
     background-image: url(img/geosilk/vector.png);
 }
 
 .x-tree-node-leaf  .gxp-tree-rasterlayer-icon {
     background-image: url(img/silk/map.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-icon {
+    background-image: url(img/accept.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-icon-error {
+    background-image: url(img/decline.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-icon-layer-disabled {
+    background-image: url(img/silk/exclamation.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-icon-add {
+    background-image: url(img/silk/add.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-folder-icon{
+	background-image: url(img/silk/folder.png);
+}
+
+.x-tree-node .service_error a span{
+	color: #ABAAA7;
+	font-style: italic;
+}
+
+.tree-icon-collapse-all {
+	background-image:url(img/collapse-all.gif) !important;
+}
+
+.tree-icon-expand-all {
+	background-image:url(img/expand-all.gif) !important;
 }
 
 /*gxp_advancedsnappingagent*/
@@ -243,6 +282,10 @@
     background-image: url(img/silk/find.png);
 }
 
+.x-btn .gxp-icon-map-filter, .x-menu-item .gxp-map-filter { 
+    background-image: url(img/silk/map_filter.png);
+}
+
 /* gxp_selectfeature */
 .x-btn .gxp-icon-selectfeature, .x-menu-item .gxp-icon-selectfeature { 
     background-image: url(img/silk/cursor.png);
@@ -453,7 +496,6 @@ div.olMap div.gx-overlay-playback {
     background-position:0;
     width: 14px;
     height: 14px;
-	padding-left: 50px;
     top: 4px;
     left:-14px;
 }

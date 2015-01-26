@@ -15,19 +15,28 @@ Ext.namespace("gxp.data");
 /** api: constructor
  *  .. class:: WPSUniqueValuesStore(conn)
  *   
- *      A data store targeted to be used for the Geoserver WPS UniqueValues process.
+ *      A data store targeted to be used for the Geoserver WPS PagedUnique process.
  *      No config parameters are required on the constructor, the proxy can be
- *      fully configured on the doRequest method
+ *      fully configured on the doRequest method. Optionally a processName
+ *      can be specified to override the default gs:PagedUnique process name.
  */
 gxp.data.WPSUniqueValuesStore = Ext.extend(Ext.data.Store, {
+
+    /** api: config[processName]
+     * ``String``
+     * Name of the WPS process
+     */
+    processName: 'gs:PagedUnique',
+
     constructor: function(config) {
         config.baseParams = Ext.apply(config.baseParams || {}, {
                 output: [{
                     identifier:'result',
                     mimeType: 'application/json'
                 }],
-                process: 'gs:UniqueValues'
-			});
+                process: config.processName || this.processName
+        });
+
         gxp.data.WPSUniqueValuesStore.superclass.constructor.call(this,
             Ext.applyIf(config, {
                 reader: new gxp.data.WPSUniqueValuesReader(config),
@@ -39,39 +48,7 @@ gxp.data.WPSUniqueValuesStore = Ext.extend(Ext.data.Store, {
             })
         );
     },
-	 /**
-     * Gets the total number of records in the dataset as returned by the server.
-     * <p>If using paging, for this to be accurate, the data object used by the {@link #reader Reader}
-     * must contain the dataset size. For remote data sources, the value for this property
-     * (<tt>totalProperty</tt> for {@link Ext.data.JsonReader JsonReader},
-     * <tt>totalRecords</tt> for {@link Ext.data.XmlReader XmlReader}) shall be returned by a query on the server.
-     * <b>Note</b>: see the Important note in {@link #load}.</p>
-     * @return {Number} The number of Records as specified in the data object passed to the Reader
-     * by the Proxy.
-     * <p><b>Note</b>: this value is not updated when changing the contents of the Store locally.</p>
-     
-    getTotalCount : function(){
-		// as unique values process does not provide totalRecords, we
-		// need to perform this trick in order to flag potential extra pages
-		var length = this.superclass().getTotalCount.call(this);
-        if (this.baseParams && this.baseParams.start!=null && this.baseParams.limit!=null) {
-            if (length>0) {
-                if (this.baseParams.limit>this.getCount()) {
-                    length = this.baseParams.start + this.getCount()-1;
-                }
-                else {
-                    length = this.baseParams.start + this.baseParams.limit + 1;
-                }
-            }
-            else {
-                length = this.baseParams.start;
-                // we've got out of the limits of the store
-                this.baseParams.start = Math.max((this.baseParams.start - this.baseParams.limit), 0);
-                this.load();
-            }
-        }
-		return length;
-    },*/
+
     /** api: method[setWPSParams]
      *  Sets the WPS params to be passed to the proxy for data loading.
      *  See WPSUniqueValuesProxy.doRequest method for accepted parameters.

@@ -62,7 +62,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``Array`` With the extra formats to download.
      *  For example: "CSV","shape-zip","excel", "excel2007"
      */
-    exportFormats: [],
+    exportFormats: null,
 
     /** api: config[exportFormatsConfig]
      *  ``Object`` With specific configuration by export format.
@@ -250,7 +250,19 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``String``
      */
 	zoomToFeature: "Zoom To Feature",
-	
+    
+    /** api: config[exportDoubleCheck]
+     *  ``Boolean``
+     *  Do check on feature grid export (one to show a possible error and another one to download the file)
+     */
+     exportDoubleCheck: true,
+     
+	/** api: config[exportCheckLimit]
+     *  ``integer``
+     *  if present, limit the number of feature to query for the first check
+     */
+     exportCheckLimit: null,
+     
 	/** api: config[pageLabel]
      *  ``String``
      */
@@ -265,6 +277,8 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``String``
      */
 	totalRecordsLabel: "Total Records",
+	
+    filterPropertyNames: true,
 
     /** private: method[displayTotalResults]
      */
@@ -507,7 +521,6 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             listeners: {
                 "added": function(cmp, ownerCt) {
                     var onClear = OpenLayers.Function.bind(function() {
-                        this.showExportCSV ? this.output[0].exportCSVButton.disable() : {};
                         if(this.exportFormats){
                             if(this.exportAction == 'window'){
                                 this.output[0]["exportButton"].disable();
@@ -517,6 +530,8 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                                     this.output[0]["export" + format + "Button"].disable();
                                 }
                             }
+                        }else if(this.showExportCSV){
+                            this.output[0].exportCSVButton.disable();
                         }
                         this.displayTotalResults();
                         this.selectOnMap && this.selectControl.deactivate();
@@ -524,7 +539,6 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                             ownerCt.collapse();
                     }, this);
                     var onPopulate = OpenLayers.Function.bind(function() {
-                        this.showExportCSV ? this.output[0].exportCSVButton.enable() : {};
                         if(this.exportFormats){
                             if(this.exportAction == 'window'){
                                 this.output[0]["exportButton"].enable();
@@ -534,6 +548,8 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                                     this.output[0]["export" + format + "Button"].enable();
                                 }
                             }
+                        }else if(this.showExportCSV){
+                            this.output[0].exportCSVButton.enable();
                         }
                         this.displayTotalResults();
                         this.selectOnMap && this.selectControl.activate();
@@ -595,8 +611,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
 	   // /////////////////////////////////////
 	    var me = this;
         featureManager.paging && featureManager.on("setpage", function(mgr, condition, callback, scope, pageIndex, numPages) {
-            //var paging = (mgr.page.numFeatures > 0);
-			var paging = (mgr.page && (mgr.page.numFeatures > 0)) || numPages > 1;
+            var paging = (mgr.page && (mgr.page.numFeatures > 0)) || numPages > 1;
             featureGrid.zoomToPageButton.setDisabled(!paging);
             var prev = (paging && (pageIndex !== 0));
             featureGrid.firstPageButton.setDisabled(!prev);
@@ -837,91 +852,183 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         this.xml = new OpenLayers.Format.XML().write(node);
         
         var colModel = grid.getColumnModel();
-        
-        var numColumns = colModel.getColumnCount(true);
+        //get all columns and see if they are visible
+        var numColumns = colModel.getColumnCount(false);
         var propertyName = [];
         
-        for (var i=0; i<numColumns; i++){        
-            propertyName.push(colModel.getColumnHeader(i));
+        for (var i=0; i<numColumns; i++){
+            var header = colModel.getColumnHeader(i) ;
+            if( header && header != "" && !colModel.isHidden(i)){
+                propertyName.push(header);
+            }
         }   
-
         var failedExport = String.format(this.failedExport, outputFormat);
         
         // Url generation
         var url =  protocol.url;
+        var propertyNamesString = "";
         if(this.exportFormatsConfig[outputFormat]){
             // Read specific xonfiguration for the output format
             if(this.exportFormatsConfig[outputFormat].addGeometry){
                 propertyName.push(featureManager.featureStore.geometryName);
             }
             if(!this.exportFormatsConfig[outputFormat].exportAll){
-                url += "propertyName=" + propertyName.join(',') + "&";
+                propertyNamesString += "propertyName=" + propertyName.join(',') + "&";
             }
         }else{
-            url += "propertyName=" + propertyName.join(',') + "&";
+            propertyNamesString += "propertyName=" + propertyName.join(',') + "&";
         }
+        //get the name space
+        var prefix = featureManager.layerRecord.get("prefix");
+        var namespace = (prefix && prefix !="")  ?  featureManager.layerRecord.get("prefix") + ":" : "";
         url += "service=WFS" +
+                (this.filterPropertyNames ? "&" + propertyNamesString : "") +
                 "&version=" + protocol.version +
                 "&request=GetFeature" +
-                "&typeName=" + protocol.featureType +
+                "&typeName=" + namespace + protocol.featureType +
                 "&exceptions=application/json" +
                 "&outputFormat="+ outputFormat;
         this.url =  url;
 
-        OpenLayers.Request.POST({
-            url: this.url,
-            data: this.xml,
-            callback: function(request) {
+        if(this.exportDoubleCheck){
+            //show mask
+            var myMask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
+            myMask.show();
+            OpenLayers.Request.POST({
+                //add the maxFeatures attribute if present to the test request
+                url: this.url + (this.exportCheckLimit ? "&maxFeatures=" + this.exportCheckLimit :"") ,
+                data: this.xml,
+                callback: function(request) {
+                    myMask.hide();
+                    if(request.status == 200){
+                    
+                        try
+                          {
+                                var serverError = Ext.util.JSON.decode(request.responseText);
+                                Ext.Msg.show({
+                                    title: "Error",
+                                    msg: "outputFormat: " + outputFormat + "</br></br>" +
+                                         failedExport + "</br></br>" +
+                                         "Error: " + serverError.exceptions[0].text,
+                                    buttons: Ext.Msg.OK,
+                                    icon: Ext.MessageBox.ERROR
+                                });                        
+                          }
+                        catch(err)
+                          {
+                            // submit filter in a standard form (before check)
+                            this.doDownloadPost(this.url, this.xml,outputFormat);
+                          }
+                          
+                    }else{
+                        Ext.Msg.show({
+                            title: failedExport,
+                            msg: request.statusText,
+                            buttons: Ext.Msg.OK,
+                            icon: Ext.MessageBox.ERROR
+                        });
+                    }
+                },
+                scope: this
+            });   
+        }else{
+            // submit filter in a standard form to skip double check
+            this.doDownloadPost(this.url, this.xml,outputFormat);
+        }     
 
-                if(request.status == 200){
-                
-                    try
-                      {
-                            var serverError = Ext.util.JSON.decode(request.responseText);
-                            Ext.Msg.show({
-                                title: this.invalidParameterValueErrorText,
-                                msg: "outputFormat: " + outputFormat + "</br></br>" +
-                                     failedExport + "</br></br>" +
-                                     "Error: " + serverError.exceptions[0].text,
-                                buttons: Ext.Msg.OK,
-                                icon: Ext.MessageBox.ERROR
-                            });                        
-                      }
-                    catch(err)
-                      {
-                            //        
-                            //delete other iframes appended
-                            //
-                            if(document.getElementById("downloadIFrame")) {
-                                document.body.removeChild( document.getElementById("downloadIFrame") ); 
-                            }
-                            
-                            //
-                            //Create an hidden iframe for forced download
-                            //
-                            var elemIF = document.createElement("iframe"); 
-                            elemIF.setAttribute("id","downloadIFrame");
+    },
 
-                            var mUrl = this.url + "&filter=" + this.xml;
-                            elemIF.src = mUrl; 
-                            elemIF.style.display = "none"; 
-                            document.body.appendChild(elemIF); 
-                      }
-                      
-                }else{
-                    Ext.Msg.show({
-                        title: failedExport,
-                        msg: request.statusText,
-                        buttons: Ext.Msg.OK,
-                        icon: Ext.MessageBox.ERROR
-                    });
-                }
-            },
-            scope: this
-        });        
-
+    /** api: method[doDownloadPost]
+     * create a dummy iframe and a form. Submit the form 
+     */    
+     
+    doDownloadPost: function(url, data,outputFormat){
+        //        
+        //delete other iframes appended
+        //
+        if(document.getElementById(this.downloadFormId)) {
+            document.body.removeChild(document.getElementById(this.downloadFormId)); 
+        }
+        if(document.getElementById(this.downloadIframeId)) {
+            document.body.removeChild(document.getElementById(this.downloadIframeId));
+        }
+        // create iframe
+        var iframe = document.createElement("iframe");
+        iframe.setAttribute("style","visiblity:hidden;width:0px;height:0px;");
+        this.downloadIframeId = Ext.id();
+        iframe.setAttribute("id",this.downloadIframeId);
+        iframe.setAttribute("name",this.downloadIframeId);
+        document.body.appendChild(iframe);
+        iframe.onload = function(){
+            if(!iframe.contentWindow) return;
+            
+            var error ="";
+            var body = iframe.contentWindow.document.getElementsByTagName('body')[0];
+            var content ="";
+            if (body.textContent){
+              content = body.textContent;
+            }else{
+              content = body.innerText;
+            }
+            try{
+                var serverError = Ext.util.JSON.decode(content);
+                error = serverError.exceptions[0].text
+            }catch(err){
+                error = body.innerHTML || content;
+            }
+             Ext.Msg.show({
+                title: me.invalidParameterValueErrorText,
+                msg: "outputFormat: " + outputFormat + "</br></br>" +
+                      "</br></br>" +
+                     "Error: " + error,
+                buttons: Ext.Msg.OK,
+                icon: Ext.MessageBox.ERROR
+            });   
+        }
+        var me = this;
+        
+        // submit form with enctype = application/xml
+        var form = document.createElement("form");
+        this.downloadFormId = Ext.id();
+        form.setAttribute("id", this.downloadFormId);
+        form.setAttribute("method", "POST");
+        //this is to skip cross domain exception notifying the response body
+        var urlregex =/^https?:\/\//i;
+        //if absoulte url and do not contain the local host
+        var iframeURL = (!urlregex.test(url) || url.indexOf(location.host)>0) ? url :  proxy + encodeURIComponent(url);
+        form.setAttribute("action", iframeURL );
+        form.setAttribute("target",this.downloadIframeId);
+        
+        var hiddenField = document.createElement("input");      
+        hiddenField.setAttribute("name", "filter");
+        hiddenField.value= data;
+        form.appendChild(hiddenField);
+        document.body.appendChild(form);
+        form.submit(); 
+    } 
+    /** api: method[doDownloadPost]
+     */   
+/*     
+    doDownloadPost: function(url, data){
+        //        
+        //delete other iframes appended
+        //
+        if(document.getElementById(this.downloadFormId)) {
+            document.body.removeChild(document.getElementById(this.downloadFormId)); 
+        }
+        // submit form with filter
+        var form = document.createElement("form");
+        form.setAttribute("id", this.downloadFormId);
+        form.setAttribute("method", "POST");
+        form.setAttribute("action", url);
+        var hiddenField = document.createElement("input");      
+        hiddenField.setAttribute("name", "filter");
+        hiddenField.setAttribute("value", data);
+        form.appendChild(hiddenField);
+        document.body.appendChild(form);
+        form.submit(); 
     }
-    
+    */
 });
 
 Ext.preg(gxp.plugins.FeatureGrid.prototype.ptype, gxp.plugins.FeatureGrid);

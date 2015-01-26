@@ -7,6 +7,11 @@
             "ptype": "gxp_googlesource"
         }
     },
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
+	},
     "map":{
         "projection": "EPSG:900913",
         "units": "m",
@@ -70,18 +75,27 @@
 		  ]
 	   }
    ],
-   "customTools":[{
-		  "ptype":"gxp_print",
-		  "customParams":{
-			 "outputFilename":"mapstore-print"
-		  },
-		  "printService":"http://84.33.2.75/geoserver/pdf/",
-		  "legendPanelId":"legendPanel",
-		  "ignoreLayers":["WFSSearch","Marker"],
-		  "appendLegendOptions":true,
-		  "actionTarget":{
-			 "target":"paneltbar",
-			 "index":4
-		  }
-	   }]
+   "customTools":[
+		{
+		    "ptype":"gxp_print",
+		    "customParams":{
+				"outputFilename":"mapstore-print"
+		    },
+		    "printService":"http://84.33.2.75/geoserver/pdf/",
+		    "legendPanelId":"legendPanel",
+		    "ignoreLayers":["WFSSearch","Marker"],
+		    "appendLegendOptions":true,
+		    "actionTarget":{
+				"target":"paneltbar",
+				"index":4
+		    }
+	    }, {
+			"ptype": "gxp_about",
+			"poweredbyURL": "http://www.geo-solutions.it/about/contacts/",
+			"actionTarget": {"target": "panelbbar", "index": 1}
+		}, {
+			"ptype": "gxp_languageselector",
+			"actionTarget": {"target": "panelbbar", "index": 3}
+		}
+	]
 }

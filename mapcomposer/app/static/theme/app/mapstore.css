@@ -220,6 +220,21 @@ div#homelogos ul li a:hover {
     width:13px;
 }
 
+/* gxp_categoryinitializer */
+.initCategoriesMessage{
+    padding: 20px;
+}
+
+/* LayerNodeUI */
+.x-tree-node-error .x-tree-node-icon{
+	background-image:url(img/silk/cancel.png) !important;
+}
+/* when OL encounters a 404, don't display the pink image 
+.olImageLoadError { 
+    
+    display: none !important;
+} */
+
 /*FIX FOLLSCREEN BEHAVIOUR */
 .x-layout-collapsed{
     position:absolute;
@@ -276,4 +291,4 @@ div#homelogos ul li a:hover {
     height:5px !important;
     padding:0;
     background-color:transparent;
-} 
+}

@@ -131,6 +131,13 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     mapPanel: null,
     
+    /** api: config[stateWhiteList]
+     *  ``Array`` with list of elements to be saved on this.getState. 
+     *   If this property is null, old method is used (blackList) to get the state.
+     *   Default is `["sources", "map", "CSWCatalogues"]`.
+     */
+    stateWhiteList: ["sources", "map", "CSWCatalogues"], 
+    
     toggleGroup: "toolGroup",
     
     mapId: -1,
@@ -138,17 +145,47 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     auth: false,
     
     fScreen: false,
-    
+
+    templateId: null,   
    
-    constructor: function(config, mapId, auth, fScreen) {
+    constructor: function(config, mapId, authV, fScreen, templateId) {
 	
 		if(mapId)
             this.mapId = mapId;
-        if(auth)
-            this.auth = auth;
+        if(authV)
+            this.auth = authV;
         if(fScreen){
             this.fScreen = fScreen;
             this.auth = false;
+        }
+
+		// /////////////////////////////////////////////////////////////////////
+		// Get from the session storage the user's 
+		// details (only provided by the MapManager and the login template 
+		// currently)
+		//  
+		// TODO: The advice is to provide some missing refactor:
+		//
+		//	1- The MapManager should have only one Login class in 
+		//     order to avoid fragmentation of the code.
+		//	2- Using the code fragment below the GeoExplorer.setAuthHeaders 
+		//     in this class is unnecessary.
+		//	3- Each Viewer plugins should use the app.userDetails in order 
+		//     to perform operations that require auth.
+		//	4- The GeoStoreLogin tool should be improved in order to check 
+		//     if the sessionStorage["userDetails"] is 
+		//     present and create the app.userDetails if needed. 
+		//	5- The Login procedure provided inside the Login Template should 
+		//     be ported on a new plugin.
+		// ////////////////////////////////////////////////////////////////////////
+        //if used in an iframe from mapmanager, get auth from the parent
+        
+        //see Tool.js
+		this.authToken= this.getAuth();
+			
+        // Save template key
+        if(templateId){
+            this.templateId = templateId;
         }
 		
 		this.mapItems = [];
@@ -352,7 +389,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                method: 'GET',
                scope: this,
                headers:{
-                  'Accept': "application/json"
+                  'Accept': "application/json",
+                  'Authorization': this.authToken
                },
                success: function(response, opts){  
                     var addConfig;
@@ -441,10 +479,18 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             collapseMode: "mini",
             header: false,
             items: [
-                { autoScroll: true, tbar: [], border: false, id: 'tree', title: this.layersText}, 
-                {
-                    xtype: "panel", layout: "fit", 
-                    border: false, id: 'legend', title: this.legendText
+                { 
+					autoScroll: true, 
+					tbar: [], 
+					border: false, 
+					id: 'tree', 
+					title: this.layersText
+				}, {
+                    xtype: "panel", 
+					layout: "fit", 
+                    border: false, 
+					id: 'legend', 
+					title: this.legendText
                 }
             ]
         });
@@ -457,8 +503,13 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         });
         
         this.on("ready", function() {
-            // enable only those items that were not specifically disabled
-            var disabled = this.toolbar.items.filterBy(function(item) {
+			// /////////////////////////////////////
+            // Enable only those items that were not 
+			// specifically disabled
+            // /////////////////////////////////////
+			
+			// Top Toolbar
+			var disabled = this.toolbar.items.filterBy(function(item) {
                 return item.initialConfig && item.initialConfig.disabled;
             });
             
@@ -467,6 +518,17 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             disabled.each(function(item) {
                 item.disable();
             });
+			
+			// Bottom Toolbar
+			disabled = this.toolbar.items.filterBy(function(item) {
+                return item.initialConfig && item.initialConfig.disabled;
+            });
+            
+            this.bottom_toolbar.enable();
+            
+            disabled.each(function(item) {
+                item.disable();
+            });		
 			
 			this.appMask.hide();
 		});
@@ -492,12 +554,22 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
  
         googleEarthPanel.on("show", function() {
             preGoogleDisabled.length = 0;
+			
+			// Top Toolbar
             this.toolbar.items.each(function(item) {
                 if (item.disabled) {
                     preGoogleDisabled.push(item);
                 }
             });
             this.toolbar.disable();
+			
+			// Bottom Toolbar
+			this.bottom_toolbar.items.each(function(item) {
+                if (item.disabled) {
+                    preGoogleDisabled.push(item);
+                }
+            });
+            this.bottom_toolbar.disable();
 			
 			// ////////////////////////////////////////////////////
             // Loop over all the tools and remove their output
@@ -522,8 +594,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
  
         googleEarthPanel.on("hide", function() {
             // re-enable all tools
-            this.toolbar.enable();
-           
+            this.toolbar.enable();           
+		    this.bottom_toolbar.enable();
+		   
             var layersContainer = Ext.getCmp("tree");
             var layersToolbar = layersContainer && layersContainer.getTopToolbar();
             if (layersToolbar) {
@@ -569,9 +642,16 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             var portalPanels = portalPanels.concat(toPortal);
         }
 		
+		this.bottom_toolbar = new Ext.Toolbar({
+            disabled: true,
+            id: 'panelbbar',
+			enableOverflow: true
+        });
+		
         this.portalItems = [{
             region: "center",
-            layout: "border",            
+            layout: "border",  
+			bbar: this.bottom_toolbar,
             items: portalPanels
         }];
         
@@ -1288,37 +1368,73 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     },
     
     /** private: method[getState]
-     *  :returns: ``Òbject`` the state of the viewer
+     *  :returns: ``Object`` the state of the viewer
      */
     getState: function() {
+
+        // use white list to save current state
+        var currentState = {};
         var state = GeoExplorer.superclass.getState.apply(this, arguments);
-        
-		// ///////////////////////////////////////////
-		// Don't persist unnecessary components. 
-		// Only the map details are mandatory, other
-        // elements are merged from the default 
-		// configuration.
-		// ///////////////////////////////////////////
+        if(this.stateWhiteList){
+            for (var i = 0; i < this.stateWhiteList.length; i++){
+                var key = this.stateWhiteList[i];
+                currentState[key] = state[key];
+            }
+        }else{
+            // use black list
+            var state = GeoExplorer.superclass.getState.apply(this, arguments);
+
+            // ///////////////////////////////////////////
+            // Don't persist unnecessary components. 
+            // Only the map details are mandatory, other
+            // elements are merged from the default 
+            // configuration.
+            // ///////////////////////////////////////////
+            
+            delete state.tools;
+            delete state.customTools;
+            delete state.viewerTools;
+            delete state.georeferences;
+            delete state.customPanels;
+            delete state.portalConfig;
+            delete state.disableLayerChooser;
+            
+            delete state.modified;
+            delete state.proxy;
+            delete state.geoStoreBaseURL;
+            delete state.renderToTab;
+            delete state.advancedScaleOverlay;
+            delete state.about;
+            delete state.defaultLanguage;
+            delete state.scaleOverlayUnits;
+            delete state.actionToolScale;
+
+            Ext.apply(currentState, state);
+        }
 		
-        delete state.tools;
-		delete state.customTools;
-		delete state.viewerTools;
-		delete state.georeferences;
-		delete state.customPanels;
-		delete state.portalConfig;
-		delete state.disableLayerChooser;
-		
-		delete state.modified;
-		delete state.proxy;
-		delete state.geoStoreBaseURL;
-		delete state.renderToTab;
-		delete state.advancedScaleOverlay;
-		delete state.about;
-		delete state.defaultLanguage;
-		delete state.scaleOverlayUnits;
-		delete state.actionToolScale;
-		
-        return state;
+        return currentState;
+    },
+    /**
+     * Retrieves auth from (in this order)
+     * * the parent window (For usage in manager)
+     * * the session storage (if enabled userDetails, see ManagerViewPort.js class of mapmanager)
+     * We should imagine to get the auth from other contexts.
+     */
+    getAuth: function(){
+        var auth;
+        //get from the parent
+        if(window.parent && window.parent.window && window.parent.window.manager && window.parent.window.manager.auth){
+          auth = window.parent.window.manager.auth;
+          return auth;
+        }
+        //if not present
+        //get from the session storage
+        var existingUserDetails = sessionStorage["userDetails"];
+        if(existingUserDetails){
+            this.userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
+            auth = this.userDetails.token;
+        }
+        return auth;
     }
 });
 

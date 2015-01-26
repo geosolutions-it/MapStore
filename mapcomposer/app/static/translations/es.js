@@ -5,6 +5,7 @@
 	NOTE: configuration customization could override
 	these strings
 */
+
 GeoExt.Lang.add("es", {
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Nivel de zoom: {zoom}</div><div>Escala: 1:{scale}</div>",
@@ -55,7 +56,7 @@ GeoExt.Lang.add("es", {
     "gxp.plugins.AddLayers.prototype": {
         addActionMenuText: "Añadir capas",
         addActionTip: "Añadir capas",
-        addServerText: "Añadir un nuevo servidor",
+        addServerText: "Añadir Servidor",
         addButtonText: "Añadir capas",
         untitledText: "Sin nombre",
         addLayerSourceErrorText: "Error obteniento capabilities del WMS ({msg}).\nPor favor, compruebe la url y vuelva a intentarlo.",
@@ -221,11 +222,37 @@ GeoExt.Lang.add("es", {
     },
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Añadir un nuevo servidor...",
+        title: "Añadir un servidor",
         cancelText: "Cancelar",
         addServerText: "Añadir Server",
         invalidURLText: "Introducir una URL válida de un servicio WMS (por ejemplo: http://example.com/geoserver/wms)",
-        contactingServerText: "Contactando con el servidor..."
+        contactingServerText: "Contactando con el servidor...",
+		sourceTypeLabel: "Type",
+		advancedOptionsTitle: "Advanced Options",
+		generalTabTitle: "General",
+		titleLabel: "Title",
+		versionLabel: "Version (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Params",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Add",
+		propNameLabel: "Name",
+		propValueLabel: "Value",
+		paramsWinTitle: "Params Options",
+		okButtonText: "Ok",
+		addPropDialogTitle: "Add Property",
+		addPropDialogMsg: "Property name or his value are not valid",
+		cancelButtonText: "Cancel",
+		removeButtonText: "Remove",
+		removePropDialogTitle: "Remove Property",
+		removePropDialogMsg: "This property cannot be removed: ",
+		newSourceDialogTitle: "New Source",
+		newSourceDialogMsg: "Some source selected properties are invalid.",
+		mandatoryLabelText: "All fields marked with (*) are mandatory."
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -609,9 +636,53 @@ GeoExt.Lang.add("es", {
 		previewText: "Vista previa",				
 		embedCodeTitle: "Código embebido",
 		embedURL: "URL directa",		
-		urlLabel: "URL",
-		showMapTooltip: "Mostar en una nueva ventana"
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
+		showMapTooltip: "Mostar en una nueva ventana",
+        loadMapText: "Cargar el mapa", 
+        downloadAppText: "Cargar este mapa (instalar la aplicación primero)", 
+        loadInMapStoreMobileText: "Mobile",
+        openImageInANewTab: "Abrir imagen en una nueva pestaña"
 	},
+
+    "gxp.widgets.form.SpatialSelectorField.prototype" :{
+        title : "Región de Interés",
+        selectionMethodLabel : "Método de selección",
+        comboEmptyText : "Seleccione un método..",
+        comboSelectionMethodLabel : "Selección",
+        northLabel : "Norte",
+        westLabel : "Oeste",
+        eastLabel : "Este",
+        southLabel : "Sur",
+        setAoiTitle : "Bounding Box",
+        setAoiText : "Dibuja",
+        setAoiTooltip : "Permita al control de SetBox dibujar un ROI (Saltando la Caja) sobre el mapa",
+        areaLabel : "Área",
+        perimeterLabel : "Perímetro",
+        radiusLabel : "Rayo",
+        centroidLabel : "Centroide",
+        latitudeEmptyText : 'Y',
+        longitudeEmptyText : 'X',
+        geocodingFieldSetTitle : "GeoCoder",
+        geocodingPanelTitle : "Elegir una Localidad",
+        geocodingPanelBtnRefreshTxt : "Enseña Geometrías",
+        geocodingPanelBtnDestroyTxt : "Escondes Geometrías",
+        geocodingPanelBtnDeleteTxt : "Remueves Localidad",
+        geocodingPanelLocationHeader: "Localidad",
+        geocodingPanelCustomHeader: "Pariente",
+        geocodingPanelGeometryHeader: "WKT de la Geometría",
+        geocodingPanelBtnSelectAllTxt : "Selecciona Todo", 
+        geocodingPanelBtnDeSelectAllTxt : "Deseleziona Todo", 
+        geocodingPanelMsgRemRunningTitle : "Remueves Localidad",
+        geocodingPanelMsgRemRunningMsg : "¿Quieres remover las Localidades seleccionadas por la lista?",
+        geocodingFieldLabel : "Busca una Localidad",
+        geocodingFieldEmptyText : "Insertas Localidad...",
+        geocodingFieldBtnAddTooltip : "Añades una Localidad a la lista",
+        geocodingFieldBtnDelTooltip : "Limpias...",
+        selectionSummary : "Sumario de las Selecciones",
+        geocoderSelectorsLabels: ['Unión de las geometrías', 'Lista de los Área Administrativa', 'Área Administrativa y sottoaree'],
+        selectionReturnTypeLabel: "Tipo de selección"
+    },
     
     "gxp.plugins.WFSGrid.prototype":{
         displayMsgPaging: "Elementos {0} - {1} of {2}",
@@ -634,7 +705,7 @@ GeoExt.Lang.add("es", {
         comboSelectionMethodLabel : "Seleccione"
     },
     
-    "gxp.plugins.spatialselector.SpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.SpatialSelectorMethod.prototype" :{
         areaLabel: "Área",  
         perimeterLabel: "Perímetro", 
         lengthLabel: "Longitud",   
@@ -650,7 +721,7 @@ GeoExt.Lang.add("es", {
         noCompleteMsgText: "Por favor, complete el formulario para realizar la consulta"
     },
     
-    "gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
         name  : 'BBOX',
         label : 'Extensión',
         northLabel : "Norte",
@@ -662,19 +733,19 @@ GeoExt.Lang.add("es", {
         setAoiTooltip : "Habilita el control que permite dibujar una ROI (Extensión) en el mapa"
     },
     
-    "gxp.plugins.spatialselector.BufferSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.prototype" :{
         name  : 'Buffer',
         label : 'Buffer',
         latitudeEmptyText : 'Y',
         longitudeEmptyText : 'X'
     },
     
-    "gxp.plugins.spatialselector.CircleSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.prototype" :{
         name  : 'Círculo',
         label : 'Círculo'
     },
     
-    "gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
         name  : 'Geocoding',
         label : 'Geocoding',
         geocodingFieldSetTitle : "GeoCoder",
@@ -696,7 +767,7 @@ GeoExt.Lang.add("es", {
         selectionSummary : "Sumario de la selección"
     },
     
-    "gxp.plugins.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
         name  : 'Polígono',
         label : 'Polígono'
     },
@@ -717,8 +788,10 @@ GeoExt.Lang.add("es", {
 		rootNodeText: "Recursos Import",
 		serviceErrorTitle: "Error de Servicio",
 		tabTitle: "Importado",
-		layerNodeName: "Niveles",
-		serviceNodeName: "Servicio"
+		layerNodeName: "Recursos",
+		waitMsg: "Cargar Recursos ...",
+		expandAllText: "Expandir Todos Los Nodos",
+		collapseAllText: "Contraer Todos Los Nodos"
     },
 	
 	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
@@ -802,5 +875,39 @@ GeoExt.Lang.add("es", {
         workingIntervalText : 'Intervalo de trabajo:',
         workingIntervalToText : 'a'
 
-    }              
+    },            
+	
+	"gxp.plugins.FeatureManager.prototype":{
+        noValidWmsVersionMsgTitle: 'WMS versión no válida',    
+        noValidWmsVersionMsgText: "El plugin QueryForm no funciona con una versión origen WMS: "
+    },
+
+    "gxp.plugins.CategoriesInitializer.prototype":{
+        geostoreInitializationTitleText: "Error en la inicialización",
+        geostoreInitializationText: "La respuesta de GeoStore no es la esperada",
+        notInitializedCategories: "Faltan gategorías: '{0}'. ¿Quiere crearlas?",
+        userFieldText: "Usuario",
+        passwordFieldText: "Contraseña",
+        acceptText: "Crear",
+        cancelText: "Cancelar",
+        notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>Si es administrador introduzca sus credenciales para crear las categorías: '{0}'</div>"
+    },
+	
+    "gxp.data.WMTSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "No layer in the current map projection is available on this server",
+        warningTitle: "advertencia"
+    },
+	
+    "gxp.data.TMSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "No layer in the current map projection is available on this server",
+        warningTitle: "advertencia"
+    },
+	
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Activar/Desactivar Snapping"
+    },
+	
+	"gxp.plugins.StaticPage.prototype": {
+        tabTitle: "Página estática"
+    }  
 });

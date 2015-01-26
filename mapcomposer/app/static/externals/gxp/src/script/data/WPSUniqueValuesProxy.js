@@ -85,16 +85,35 @@ gxp.data.WPSUniqueValuesProxy = Ext.extend(Ext.data.DataProxy, {
                 cb.call(scope, records, arg);
             }
         };
-        if (!(params.inputs.fieldFilter instanceof OpenLayers.WPSProcess.LiteralData)) {
+        
+        var filter;
+        if(params.query) {
             var queryValue = params.query;
             if(queryValue.indexOf('*') === -1) {
                 queryValue = '*'+queryValue+'*';
             }
-			execOptions.inputs.fieldFilter = new OpenLayers.WPSProcess.LiteralData({value: queryValue});
-		}
-        if (!(params.inputs.layerName instanceof OpenLayers.WPSProcess.LiteralData)) {
-			execOptions.inputs.layerName = new OpenLayers.WPSProcess.LiteralData({value: params.inputs.layerName});
-		}
+
+            filter = new OpenLayers.Filter.Comparison({ 
+                type: OpenLayers.Filter.Comparison.LIKE, 
+                property: params.inputs.fieldName, 
+                value: queryValue,
+                matchCase:false                
+            });
+        }
+        
+        execOptions.inputs.features = new OpenLayers.WPSProcess.ReferenceData({
+            href:'http://geoserver/wfs', 
+            method:'POST', mimeType: 'text/xml', 
+            body: {
+                wfs: {
+                    featureType: params.inputs.featureTypeName, 
+                    version: '1.0.0',
+                    filter: filter,
+                    sortBy: params.inputs.fieldName
+                }
+            }
+        });
+
         if (!(params.inputs.fieldName instanceof OpenLayers.WPSProcess.LiteralData)) {
 			execOptions.inputs.fieldName = new OpenLayers.WPSProcess.LiteralData({value: params.inputs.fieldName});
 		}

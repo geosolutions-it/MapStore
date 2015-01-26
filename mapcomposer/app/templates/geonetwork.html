@@ -414,6 +414,7 @@
                 removeTools: serverConfig.removeTools,
                 geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),
                 portalConfig:serverConfig.portalConfig,
+				loadingPanel: serverConfig.loadingPanel || {},
                 defaultSourceType: "gxp_wmssource",
                 renderToTab : 'appTabs',
                 about: {
@@ -493,15 +494,16 @@
                     if(layName && wmsurl && gnBaseUrl && uuid){
 					    var title = layTitle ? layTitle : layName;
 						
-						addMSLayer(
-							title,
-							layName,
-							wmsurl,
-							gnBaseUrl,
-							false,
-							uuid,
-							code
-						);
+						addMSLayer([{
+							msLayerTitle: title,
+							msLayerName: layName,
+							msGroupName: undefined, // TODO: not supported yet
+							wmsURL: wmsurl,
+							gnUrl: gnBaseUrl,
+							enableViewTab: false,
+							msLayerUUID: uuid,
+							gnLangStr: code,
+						}]);
 					}
  							
 					if(/*layName &&*/ gnBaseUrl && uuid){
@@ -517,21 +519,11 @@
 			*
 			* TODO: Check the API using a MapServer URL as wmsURL.
 			*/
-			addMSLayer = function(msLayerTitle, msLayerName, wmsURL, gnUrl, enableViewTab, msLayerUUID, gnLangStr){
+			addMSLayer = function(resources){
 				var addLayer = app.tools["addlayer"];
 				
-				var options = {
-					msLayerTitle: msLayerTitle,
-					msLayerName: msLayerName,
-					wmsURL: wmsURL,
-					gnUrl: gnUrl,
-					enableViewTab: enableViewTab,
-					msLayerUUID: msLayerUUID,
-					gnLangStr: gnLangStr
-				};
-				
 				addLayer.addLayer(
-					options
+					resources
 				);
 			};
 			

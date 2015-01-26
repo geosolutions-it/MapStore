@@ -98,16 +98,16 @@
 };*/
 
 var config = {
-  
-  geoStoreBase: "http://mapstore.geo-solutions.it/geostore/rest/",
+    
+    geoStoreBase: "http://mapstore.geo-solutions.it/geostore/rest/",
    
     proxy: "/http_proxy/proxy/?url=",
-   
+    proxyUrl: "/http_proxy/proxy/?url=",
     defaultLanguage: "en",
    
     composerUrl: "/mapcomposer/",
-   
-    socialUrl: "",
+    //this is needed as absolute for comatibility with twitter
+    socialUrl: "http://mapstore.geo-solutions.it/mapcomposer/",
    
     start: 0,
    
@@ -150,7 +150,10 @@ var config = {
    
     embedLink: {
     "embeddedTemplateName": "/mapcomposer/viewer",
-    "showDirectURL": true
+    "showDirectURL": true,
+    "showQRCode":true,
+    "qrCodeSize":128,
+    "appDownloadUrl":"http://demo.geo-solutions.it/share/mapstoremobile/MapStoreMobile.apk"
   }
 };
 

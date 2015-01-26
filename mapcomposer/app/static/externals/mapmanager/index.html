@@ -11,10 +11,10 @@
 
 		<link rel="shortcut icon" href="theme/images/favicon.ico" type="image/x-icon">
 
-        <!-- All css -->
+        <!-- All css 
         <link rel="stylesheet" type="text/css" href="lib/ext/resources/css/ext-all.css" />
         <link rel="stylesheet" type="text/css" href="lib/ext/resources/css/xtheme-gray.css" />
-        <link rel="stylesheet" type="text/css" href="theme/css/mapstoremanager.css" />
+        <link rel="stylesheet" type="text/css" href="theme/css/mapstoremanager.css" />-->
         <link rel="stylesheet" type="text/css" href="theme/css/dropdown.css" />
 
         <link href="theme/css/style.css" rel="stylesheet" type="text/css" />
@@ -22,27 +22,27 @@
 		<!-- gallery buttons -->
 		<link href="theme/css/scrollable-buttons.css" rel="stylesheet" type="text/css" />
 
-        <!-- ExtJS scripts -->
+        <!-- ExtJS scripts 
         <script type="text/javascript" src="lib/ext/adapter/ext/ext-base.js"></script>
-        <script type="text/javascript" src="lib/ext/ext-all.js"></script>
+        <script type="text/javascript" src="lib/ext/ext-all.js"></script>-->
         <!--script type="text/javascript" src="lib/ext/ux/jsonp.js"></script-->
 
-        <!-- GeoExt scripts -->
-        <script type="text/javascript" src="lib/Lang.js"></script>
+        <!-- GeoExt scripts 
+        <script type="text/javascript" src="lib/Lang.js"></script>-->
         
-        <!-- Ext ux scripts -->
-		<script type="text/javascript" src="src/ux.js"></script>
+        <!-- Ext ux scripts 
+		<script type="text/javascript" src="src/ux.js"></script>-->
 
-        <!-- auth base64 scripts -->
-        <script type="text/javascript" src="lib/auth/base64.js"></script>
+        <!-- auth base64 scripts 
+        <script type="text/javascript" src="lib/auth/base64.js"></script>-->
 		
         <!-- gapi client -->
         <!--script type="text/javascript" src="https://apis.google.com/js/client.js"></script-->
 
-        <!-- MapStoreManager scripts -->
+        <!-- MapStoreManager scripts 
 		<script type="text/javascript" src="src/config.js"></script>
 
-		<script type="text/javascript" src="src/mapmanager.js"></script>
+		<script type="text/javascript" src="src/mapmanager.js"></script>-->
         
         <!--script type="text/javascript" src="src/MSMLogin.js"></script>
 		<script type="text/javascript" src="src/MSMGridPanel.js"></script>
@@ -52,18 +52,20 @@
 		<script type="text/javascript" src="src/MSMUserManager.js"></script>
 		<script type="text/javascript" src="src/MSMUtil.js"></script>
 		-->
-        <script type="text/javascript" src="src/init.js"></script>
-
-        <!-- translation data -->
+        <!--script type="text/javascript" src="src/init.js"></script-->
+        <!-- Other scripts 
+        <script type="text/javascript" src="src/qrcodejs.js"></script>-->
+        <!-- translation data 
         <script type="text/javascript" src="translations/it.js"></script>
         <script type="text/javascript" src="translations/en.js"></script>
 		<script type="text/javascript" src="translations/de.js"></script>
-		<script type="text/javascript" src="translations/fr.js"></script>
-        <!-- Other scripts -->
+		<script type="text/javascript" src="translations/fr.js"></script>-->
+        
         
         <!-- GeoSolutions SLIDE -->
         <script src="theme/js/jquery.js" type="text/javascript"></script>
         <script src="theme/js/lightbox.js" type="text/javascript"></script>
+
         <!-- CSS lightbox -->
         <link href="theme/css/lightbox.css" rel="stylesheet" />
         <style type="text/css">
@@ -109,7 +111,7 @@
 					</div>
 				
 					<ul id="language">
-						<li><a href="mapstore.html" id="langita">ITA</a></li>
+						<li><a href="mapstore.html?locale=it" id="langita">ITA</a></li>
 						<li><div id="langeng" style="margin-top:-5px;background:url(theme/images/sprite.png) -55px -60px;">ENG</div></li>
 					</ul>
 					<ul id="social">
@@ -172,14 +174,16 @@
 				<br /><br /><br /><br />
 				<div id="libslink">
 					<b>
-						<a href="https://github.com/geosolutions-it/MapStore/tree/v1.4">Current stable release is v1.4</a>
+						<a href="https://github.com/geosolutions-it/MapStore/tree/v1.5.1">Current stable release is v1.5.1</a>
 					</b>
 				</div>
-				<div id="vedisotto">
-					<b>
-						<a href="#pianisupporto">jump to the demo &darr;</a>
-					</b>
+				
+				<br/><br/>
+				<div id="demolink">
+					<a href="/mapcomposer/manager">Put MapStore to the tests! Try the demo</a>					
 				</div>
+				<br/>
+
 				<div id="slide">
 					<div style="width:920px;/*635px*/ /*height:380px;*/ overflow:hidden; float:left;">
 					
@@ -500,18 +504,18 @@
 				
 				<br/><br/>
 			</div>
-			<div id="plans" class="plans">
+			<!--div id="plans" class="plans">
 				<a name="pianisupporto">&nbsp;</a>
 	  
-				<!-- SOCIAL -->
+				<!-\- SOCIAL -\->
 				<div style="float:right; margin:25px 0;">
 					<a href="http://opensdi.geo-solutions.it/" class="twitter-share-button" data-count="horizontal" data-via="geosolutions_it" data-lang="it">Tweet</a>
 					<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 				
-					<!-- Inserisci questo tag nel punto in cui desideri eseguire il rendering del pulsante +1 -->
+					<!-\- Inserisci questo tag nel punto in cui desideri eseguire il rendering del pulsante +1 -\->
 					<g:plusone></g:plusone>
 					
-					<!-- Inserisci questa chiamata di rendering dove ritieni appropriato -->
+					<!-\- Inserisci questa chiamata di rendering dove ritieni appropriato -\->
 					<script type="text/javascript">
 					  window.___gcfg = {lang: 'it'};
 					
@@ -523,11 +527,11 @@
 					</script>
 				</div>
 				<h2>Put MapStore to the tests!</h2>
-			</div>
+			</div
 	  
 			<div id="topic-grid" align="center"></div>
 			<div style="/*clear:both;*/min-height:50px;" class="plans">&nbsp;</div>
-			<div id="closecontent"></div>
+			<div id="closecontent"></div>-->
 		</div>
 
 		<div id="footer">
@@ -575,7 +579,7 @@
 		var api = scrollable.navigator({api: true});
 
 		// use the autoscroll plugin
-		var autoscroll = scrollable.autoscroll({autoplay: true, loop: true, interval:8000});
+		var autoscroll = scrollable.autoscroll({autoplay: false, loop: true, interval:8000});
 
 		var gallery = $("#gallery").scrollable({
 			items: '#samples',
@@ -588,7 +592,7 @@
 		var api = gallery.navigator({api: true});
 
 		// use the autoscroll plugin
-		var autoscroll = gallery.autoscroll({autoplay: true, loop: true, interval:8000});
+		var autoscroll = gallery.autoscroll({autoplay: false, loop: true, interval:8000});
 	</script>
 	<!-- / GeoSolutions SLIDE -->
 

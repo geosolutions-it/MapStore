@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright (c) 2009-2010 The Open Planning Project
  */
 
@@ -13,8 +13,8 @@ GeoExt.Lang.add("it", {
         gridName: "Nome",
         gridOwner: "Proprietario",
         gridDescription: "Descrizione",
-        gridDateCreation: "Data di creazione",
-        gridLastUpdate: "Ultimo aggiornamento",
+        gridDateCreation: "Data Di Creazione",
+        gridLastUpdate: "Ultimo Aggiornamento",
         errorTitle: "Richiesta fallita",
         errorMsg_500: "Il server restituisce HTTP status code 500! </br></br>Controllare il log!",
         errorMsg_501: "Il server restituisce HTTP status code 501! </br></br>Il server non può completare la richiesta!",
@@ -23,6 +23,8 @@ GeoExt.Lang.add("it", {
         textUserManager: 'Gestione utenti',
         textViewMap: '', // "Visualizza mappa",
         tooltipViewMap: "Mostra Mappa",
+        textEmbedMap: '', //"Embed Map",
+        tooltipEmbedMap: "Incorpora Mappa",
 		textCopyMap: '', //"Clone Map",
         tooltipCopyMap: "Clona Mappa",
         textEditMap: '', //"Modifica mappa",
@@ -47,15 +49,24 @@ GeoExt.Lang.add("it", {
         msgSuccessDeleteMapTitle: "Success",
         msgSuccessDeleteMapBody: "La mappa è stata eliminata",
         msgFailureDeleteMapTitle: "Failed",
-        msgFailureDeleteMapBody: "Qualcosa di sbagliato è accaduto",
+        msgFailureDeleteMapBody: "Qualcosa è andato storto",
         IframeViewerTitle: "Visore Mappa - ",
         IframeComposerTitle: "Editor Mappa - ",
         IframeWaitMsg :"Caricamento della mappa ...",
 		showMapTooltip: "Mostra in una nuova finestra",
-		embedCodeTitle: "Codice da Incorporare",
+		embedCodeTitle: "Codice Da Incorporare",
 		embedURL: "URL diretto",		
-		urlLabel: "URL",
-		exportMapText: "Collega Mappa"		
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
+		exportMapText: "Collega Mappa",
+        mobileText: "Mobile", 
+        installApplicationText: "Installazione applicazione Android", 
+        loadThisSourceText: "Aggiungi questa sorgente di MapStore Mobile", 
+        scanThisApplicationText: "Scansiona questo codice QR installare MapStore per Android", 
+        scanThisSourceText: "Scansiona questo codice QR per aggiungere questa sorgente a MapStore Mobile. È necessario prima installare MapStore per Android.",
+        mapPermissionText: "Permessi",
+        tooltipMapPermissionText: "Aggiorna i permessi della mappa in base al gruppo",
+        mapPermissionTitleText: "Permessi Mappa"
     },
     "MSMPagingToolbar.prototype": {
         desc: "Nuova Mappa",
@@ -87,9 +98,13 @@ GeoExt.Lang.add("it", {
         loginErrorTitle: "Autenticazione fallita",
         userFieldText: "Utente",
         passwordFieldText: "Password",
-        loginFormTitle: "Effettua l'autenticazione"
+        loginFormTitle: "Effettua l'autenticazione",
+        loginWaitMessage: "Accesso in corso. Attendere..."
     },
     "UserManagerView.prototype":{
+        textGeneral:"Generale",
+        textAttributes:"Attributi",
+        textGroups:"Gruppi",
 		textName: 'Nome',
 		textPassword: 'Password',
 		textPasswordEdit: 'Nuova Password',
@@ -119,9 +134,27 @@ GeoExt.Lang.add("it", {
 		textSelectRole: 'Seleziona un ruolo...',
 		userAlreadyTaken: 'Nome utente presente',
 		titleConfirmDeleteMsg: "Confirma cancellazione utente",
-		textConfirmDeleteMsg: "Sei sicuro di voler eliminare questo utente?"
+		textConfirmDeleteMsg: "Sei sicuro di voler eliminare questo utente?",
+        textManageGroups: "Gestisci Gruppi"
 	},
-	
+	"MSMUserGroupManager.prototype":{
+        textGroupName: "Nome del Gruppo",
+        textId: "Id",
+        textDescription: "Descrizione",
+        textAddGroupButton: "Crea un nuovo gruppo",
+        groupNameAlreadyTaken: "Il nome del gruppo e già utilizzato",
+        titleConfirmDeleteMsg: "Conferma la cancellazione del gruppo",
+        textConfirmDeleteMsg: "Sei sicuro di voler cancellare questo gruppo?",
+        textName: "Nome",
+        textRole: "Ruolo",
+        textGroup: "Gruppo",
+        textUsers: "Utenti",
+        textSave: "Salva",
+        textClose: "Chiudi",
+        textDetails: "Dettagli",
+        tooltipGroupInfo: "Informazioni su questo gruppo",
+        tooltipDelete: "Cancella questo gruppo"
+    },
 	"EmbedMapDialog.prototype": {
         publishMessage: "La mappa è pronta per essere pubblicata sul web! Basta copiare il seguente codice HTML per visualizzare la mappa nel proprio sito web:",
         heightLabel: "Altezza",
@@ -130,6 +163,178 @@ GeoExt.Lang.add("it", {
         miniSizeLabel: "Mini",
         smallSizeLabel: "Piccola",
         premiumSizeLabel: "Premium",
-        largeSizeLabel: "Grande"
+        largeSizeLabel: "Grande",
+        loadMapText: "Carica Mappa",
+        downloadAppText: "Installa Applicazione Android",
+        loadInMapStoreMobileText:"Mobile",
+        openImageInANewTab: "Apri immagine in una nuova tab"
+    },
+    "mxp.plugins.CategoriesInitializer.prototype":{
+        geostoreInitializationTitleText: "Inizializzazione fallita",
+        geostoreInitializationText: "Geostore ha risposto in modo inatteso",
+        notInitializedCategories: "Categorie mancanti: '{0}'. Vuoi procedere alla creazione?",
+        userFieldText: "Utente",
+        passwordFieldText: "Password",
+        acceptText: "Crea",
+        cancelText: "Cancella",
+        notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>Inserire le credenziali di amministrazione per la creazione delle categorie: '{0}'</div>"
+    },
+    "mxp.form.UserGroupComboBox.prototype":{
+        fieldLabel: "Gruppo Utente"
+    },
+    "mxp.widgets.ResourceGroupPermissionGrid.prototype":{
+        refreshText: "Aggiorna Griglia",
+        addText: "Aggiungi una nuova regola di sicurezza basata sui gruppi utente",
+        addNewSecurityRuleTitleText: "Crea Una Nuova Regola Di Sicurezza",
+        editSecurityRuleTitleText: "Aggiorna la regola di sicurezza per il gruppo '{0}'",
+        groupNameTitleText: "Errore", 
+        groupNameExistsText: "Una regola di sicurezza per questo gruppo esiste già, si prega di selezionarne un'altra o di modificare questa",
+        groupNameIncompleteText: "Nessun gruppo selezionato. Si prega di selezionare prima di procedere.",
+        textSave:'Salva',
+        textClose:'Chiudi',
+        textGroupName: 'Gruppo',
+        textUserName: 'Utente',
+        textCanRead: 'Può leggere',
+        textCanWrite: 'Può scrivere',
+        editText: "Aggiorna la regola di sicurezza selezionata",
+        deleteText: "Delete selected security rule",
+        trueBooleanText: "Si",
+        falseBooleanText: "No",
+        confirmDeleteTitleText: "Cancella Regola Di Sicurezza",
+        confirmDeleteText: "Vuoi veramente cancellare la regola del gruppo '{0}'?"
+    },
+    "mxp.widgets.ResourceGroupPermissionWindow.prototype":{
+        title:"Autorizzazioni Risorse"
+    },
+    "MSMTemplatePanel.prototype":{
+        title: "Editor Modello",
+        headerTitleText: "Testata",
+        footerTitleText: "Piè Di Pagina",
+        sectionContentTitleText: "Contenuto {0}",
+        sectionCSSTitleText: "Stile CSS",
+        sectionLayoutConfigTitleText: "Configurazione Layout",
+        borderText: "Bordo",
+        animeCollapseText: "Anima Collasso",
+        hideCollapseText: "Nascondi Al Collasso",
+        splitText: "Dividi",
+        collapsibleText: "Collassa",
+        collapseModeText: "Modalità Collassamento",
+        widthText: "Larghezza",
+        heightText: "Altezza",
+        minWidthText: "Larghezza Minima",
+        maxHeightText: "Altezza Massima",
+        failSuccessTitle: "Errore",
+        mapMetadataTitle: "Salva un Template",
+        mapMedatataSetTitle: "",
+        mapNameLabel: "Nome",
+        mapDescriptionLabel: "Descrizione", 
+        addResourceButtonText: "Salva",
+        templateSuccessMsgText: "Salvato Correttamente",
+        templateSuccessTitleText: "OK",
+	    newTemplateText: "Nuovo",
+	    saveTemplateText: "Salva"
+    },
+	"MSMTemplateGridPanel.prototype":{
+		textId: "Id",
+		textName: "Nome",
+		textOwner: "Proprietario",
+		textCreation: "Data Creatione",
+		textLastUpdate: "Ultimo Aggiornamento", 
+	    tooltipSearch: "Scrivi un nome da cercare",
+	    textReset: "Cancella",
+	    tooltipReset: "Pulisci ricerca",
+	    failSuccessTitle: "Errore",
+	    resizerText: "Modelli per pagina",
+	    tooltipDelete: "Cancella modello",
+		deleteTemplateTitleText: "Attenzione",
+		deleteTemplateBodyText: "Vuoi cancellare questo modello?"
+	},
+    "mxp.plugins.MapManager.prototype":{
+        buttonText: "Gestore Mappe",
+        tooltipText: "Apri Gestore Mappe"
+    },
+    "mxp.plugins.TemplateManager.prototype":{
+        buttonText: "Modelli",
+        tooltipText: "Apri Gestore Modelli"
+    },
+	"MSMTemplateManager.prototype":{
+		title: "Gestore Modelli"
+	},
+    "mxp.widgets.GeoStoreResourceForm.prototype":{
+        dataFieldLabel: "Risorsa",
+        nameLabel: "Nome",
+        textAttribute: "Attributi",
+        textGeneral: "Generale",
+        descriptionLabel: "Descrizione",
+        visibilityLabel: "Visibilità",
+        textSave: "Salva",
+        savingMessage:"Salvataggio...",
+        loadingMessage: "Caricamento...",
+        saveSuccessTitle:"Salvato",
+        saveSuccessMessage:"Risorsa salvata",
+        failSaveTitle: "Salvataggio della risorsa fallita",
+        resourceNotValid: "La risorsa non è valida",
+        deleteSuccessMessage: "Risorsa cancellata",
+        permissionTitleText: "Permessi"
+    },
+    "mxp.widgets.GeoStoreCategoryManager.prototype":{
+        resourceListTitle: "Risorse",
+        emptyMessage: "Nessuna risorsa da mostrare",
+        displayMessage: "{0} - {1} risorse di {2}",
+		titleConfirmDeleteMsg: "Conferma eliminazione risorsa",
+		textConfirmDeleteMsg: "La risorsa verrà eliminata. Continuare?"
+    },
+    "mxp.plugins.GeoBatchFlows.prototype": {
+        buttonText: "Workflows",
+        flowsListTitle:'Flussi',
+        runButtonText: "Esecuzione",
+        consumersGridTitle: 'Attivi',
+        archivedGridTitle: 'Archiviati'
+    },
+    "mxp.widgets.GeoBatchFlowsGrid.prototype": {
+        nameText: 'Titolo',
+        descriptionText:'Descrizione',
+        loadingMessage: 'Caricamento...',
+        runButtonTooltip:'Esegui',
+        errorContactingGeobatch: 'Errore nel caricamento dei flussi da GeoBatch'
+    },
+    "mxp.widgets.GeoBatchConsumerGrid.prototype": {
+        statusText: 'Stato',
+        startDateText: 'Data Inizio',
+        fileText:'File',
+        actionText:'Azione',
+        taskText:'Task',
+        progressText:'Progresso',
+        refreshText:'Ricarica',
+        autoRefreshText:'Auto Ricarica',
+        descriptionText:'Descrizione',
+        tooltipDelete: 'Pulizia',
+        tooltipLog: 'Verifica Log',
+        clearFinishedText: 'Rimuovi Terminati',
+        archiveText: 'Archivia Selezionati',
+        loadingMessage: 'Caricamento...',
+        cleanMaskMessage:'Pulizia esecuzioni...',
+        textConfirmDeleteMsg: 'Confermi di voler cancellare questa esecuzione?',
+        errorDeleteConsumerText:'Errore durante la cancellazione dell\'esecuzione',
+        errorArchiveConsumerText:'Errore durante l\'archiviazione dell\'esecuzione',
+        confirmClearText: 'Vuoi rimuovere le esecuzioni con stato SUCCESS o FAIL?',
+        titleConfirmClearMsg: 'Conferma',
+        confirmArchiveText: 'Vuoi archiviare le esecuzioni selezionate?',
+        titleConfirmArchiveMsg: 'Conferma',
+        GWCButtonLabel: 'Tile Cache',
+        errorContactingGeobatch: 'Errore di caricamento esecuzioni da GeoBatch',
+        errorContactingGeostore: 'Errore di caricamento esecuzioni archiviate da GeoStore'
+    },
+    "mxp.widgets.GeoBatchRunLocal.prototype": {
+        successText: "Successo",
+        errorText:"Errore",
+        runSuccessText: "Il flusso è stato avviato correttamente<br/>"
+    },
+    "mxp.widgets.GeoBatchRunLocalForm.prototype": {
+        runButtonText: "Esecuzione",
+        uploadButtonText: "Upload",
+        successText: "Successo",
+        errorText:"Errore",
+        runSuccessText: "Il flusso è stato avviato correttamente<br/>"
     }
 });

@@ -4,6 +4,7 @@ var Request = require("ringo/webapp/request").Request;
 var urls = [
     [(/^\/(index(.html)?)?/), require("./root/index").app],
     //[(/^\/(login)/), require("./root/login").app],
+    [(/^\/(loginpage)/), require("./root/loginpage").app],
     //[(/^\/(maps(\/\d+)?)/), require("./root/maps").app],
 	//[(/^\/(geonetwork)/), require("./root/geonetwork").app],  // Enable this only for the GeoNetwork integration
     [(/^\/(composer)/), require("./root/composer").app],
@@ -12,6 +13,7 @@ var urls = [
 	[(/^\/(wps)/), require("./root/wps").app],                // to test WPS plugin
 	[(/^\/(test)/), require("./root/test").app],              // to test the MapStore Viewport
     [(/^\/(viewer(.html)?)/), require("./root/viewer").app],
+	[(/^\/(embedded(.html)?)/), require("./root/embedded").app],
     [(/^\/(debug(.js)?)/), require("./root/debug").app]
 ];
 
@@ -20,13 +22,19 @@ if (debug_proxy) {
 	urls.push([(/^\/(proxy)/), require("./root/proxy").app]);
 }
 
+var FS = require("fs");
 // debug mode loads unminified scripts
 if (java.lang.System.getProperty("app.debug")) {
-    var FS = require("fs");
+    
     var config = FS.normal(FS.join(module.directory, "..", "buildjs.cfg"));
+	var configs = [config];
+	if(environment.applicationPath) {
+		configs.push(FS.normal(FS.join(module.directory, environment.applicationPath.toString(), "buildjs.cfg")));
+	}
     urls.push(
-        [(/^\/script(\/.*)/), require("./autoloader").App(config)]
+        [(/^\/script(\/.*)/), require("./autoloader").App(configs)]
     );
+	
 
     // proxy a remote geoserver on /geoserver by setting proxy.geoserver to remote URL
     // only recommended for debug mode
@@ -104,3 +112,30 @@ exports.app = require("ringo/webapp").handleRequest;
 
 exports.charset = "UTF-8";
 exports.contentType = "text/html";
+
+// handle application configuration
+if(environment.applicationPath) {
+	// for debug
+	var applicationConfig = require(environment.applicationPath.toString() + '/config');
+	applicationConfig.config(urls, exports.middleware);
+} else if(!java.lang.System.getProperty("app.debug")) {
+	// for deploy
+	var applicationsFolder = getRepository(module.resolve('./applications'));
+	
+	if(applicationsFolder && applicationsFolder.exists()) {
+		var application = null;
+		var files = applicationsFolder.getResources(true);
+		
+		for(var i = 0, l = files.length; i < l && i < 1; i++) {
+			var file = files[i].path;
+			file = file.substring(applicationsFolder.path.length);
+			application = file.split('/')[0];
+		}
+		
+		if(application) {
+			var applicationConfig = require('applications/' + application + '/config');
+			applicationConfig.config(urls, exports.middleware);
+		}
+	}
+}
+

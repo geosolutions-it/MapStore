@@ -58,12 +58,36 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
 
 	embedURL: "Direct URL",
 	
-	urlLabel: "URL",
+	embedUrlLabel: "EMBED",
+	
+	composerUrlLabel: "FULL",
 	
 	showMapTooltip: "Show in a new Window",
 	
 	showDirectURL: true,
 	
+    /**QR Code add-ons
+    */
+    loadMapText: 'Load this Map (install application first)',
+    downloadAppText: 'Install Application',
+    loadInMapStoreMobileText:'Mobile',
+    openImageInANewTab: "Open Image in a New Tab",
+    showQRCode: true,
+    
+    qrCodeSize:128,
+    
+    appDownloadUrl:"http://demo.geo-solutions.it/share/mapstoremobile/MapStoreMobile.apk",
+    
+    links: [{
+       "label": "FULL",
+        "base" : ""
+        
+    },{
+        "label": "SMALL",
+        "base":  "viewer"
+    
+    }],
+    
     /** 
      * api: method[addActions]
      */
@@ -147,9 +171,21 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
                }
            };*/
            
-           var curLang = OpenLayers.Util.getParameters()["locale"] || 'en';       		   
-           var url = this.embeddedTemplateName + "?locale=" + curLang + "&bbox=" + target.mapPanel.map.getExtent() + "&mapId=" + target.mapId;
+           var curLang = OpenLayers.Util.getParameters()["locale"] || 'en';
+           var qstring = "?locale=" + curLang + "&bbox=" + target.mapPanel.map.getExtent() + "&mapId=" + target.mapId;
+           var url = this.embeddedTemplateName + qstring;
+           var linkFiels = [];
+		   for(var i = 0; i < this.links.length ; i++ ){
+                 linkFiels.push(this.createLinkField(this.links[i],qstring));
+           }
+          
 		   
+		   var directURL = new Ext.form.FieldSet({
+				title: this.embedURL,
+				labelWidth: 50,
+				items:linkFiels,
+				bodyStyle: 'padding: 15px'
+		   });
            var embedMap = new gxp.EmbedMapDialog({
                id: 'geobuilder-1',
                url: url
@@ -161,49 +197,20 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
 					embedMap
 				]
 		   });
-		   
-		   var urlField = new Ext.form.TextField({
-				fieldLabel: this.urlLabel,
-				labelStyle: 'font-weight:bold;',
-				width: 350,
-				value: gxp.util.getAbsoluteUrl(url),
-				selectOnFocus: true,
-				readOnly: true
-		   }); 
-		   
-		   var urlCompositeField = new Ext.form.CompositeField({
-				items:[
-					urlField,
-					{
-						xtype: 'button',
-						tooltip: this.showMapTooltip,
-						iconCls: "gx-map-go",
-						width: 20,
-						handler: function(){
-							var u = urlField.getValue();
-							window.open(u);
-						}
-					}
-				]
-		   });
-		   
-		   var directURL = new Ext.form.FieldSet({
-				title: this.embedURL,
-				labelWidth: 50,
-				items:[
-					urlCompositeField
-				],
-				bodyStyle: 'padding: 15px'
-		   });
-		   
-		   wizardItems = [snippetFieldSet];
+		   var wizardItems = [snippetFieldSet];
 		   
 		   if(this.showDirectURL === true){
 				wizardItems.push(directURL);
 		   }
-		   
+           var showQR = this.showQRCode ==true && !Ext.isIE7 && !Ext.isIE8 && !Ext.isIE6;
+		   if(showQR){
+            var qrCodePanel = this.createQrCodePanel(this.target.geoStoreBaseURL + "data/" + target.mapId );
+            wizardItems.push(qrCodePanel);
+           }
+           
            var wizard = {
                id: 'geobuilder-wizard-panel',
+               layout:'form',
                /*border: false,
                layout: 'card',
                activeItem: 0,
@@ -236,12 +243,121 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
            new Ext.Window({
                 layout: 'fit',
                 width: 500, 
-				height: this.showDirectURL === true ? 345 : 245,
+                
+				height: 245 +  (this.showDirectURL == true? 100 + ( (this.links.length-1) * 50) : 0) + (showQR  ? this.qrCodeSize + 60 :0),
                 title: this.exportMapText,
                 items: [wizard]
            }).show();
+           
         }
-    }        
+        
+    },
+    
+    /**
+     * create the QR Code panel.
+     * This functionality is available only for IE9+,Google Chrome,Mozilla Firefox
+     */
+    createQrCodePanel: function(url){
+         url = url.replace("http://","mapstore://");
+         var size = this.qrCodeSize;
+         var qrCodePanel = new Ext.Panel({
+            ref:'qrcode',
+            columnWidth: '.35',
+            height:this.qrCodeSize,
+            width:this.qrCodeSize,
+            border:false,
+            listeners:{
+                afterrender:function(qrCodePanel){
+                    var code = new QRCode(qrCodePanel.body, 
+                        {text:url,
+                        width: size,
+                        height: size
+                    });
+                    qrCodePanel.code = code;
+                }
+            }
+         });
+            
+         var choose = new Ext.form.RadioGroup({
+            ref:'radio',
+            autoHeight: true,
+            columns: 1,
+            columnWidth: '.65',
+            defaultType: 'radio', // each item will be a radio button
+            items:[
+            {
+                checked: true,
+                boxLabel: this.loadMapText,
+                name: 'qr_code',
+                inputValue: url
+            },{
+                labelSeparator: '',
+                boxLabel: this.downloadAppText,
+                name: 'qr_code',
+                inputValue: this.appDownloadUrl
+            },{
+                xtype:'button',
+                text:this.openImageInANewTab,
+                ref: '../open',
+                handler: function(btn){
+                            var data = qrCodePanel.body.dom.lastChild.getAttribute("src");
+                            data.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+                            window.open(data,'_blank');
+                        }
+            }],
+            listeners:{
+                change: function(radio,checked){
+                    var qr = qrCodePanel.code;
+                    qr.clear();
+                    qr.makeCode(checked.inputValue);
+                }
+            }
+        });
+        
+         var fieldset = new Ext.form.FieldSet({
+                layout: 'column',
+                height: this.qrCodeSize + 60,
+				title: this.loadInMapStoreMobileText,
+				items:[
+                    qrCodePanel,
+					choose
+				],
+				bodyStyle: 'padding: 15px'
+		   });
+        return fieldset;
+    
+    },
+    createLinkField: function(config, qstring){
+           var url = config.base + qstring;
+           for(var param in config.params){
+            url+= "&" + param + "=" + encodeURIComponent(config.params[param]);
+           }
+		   var fields = [];
+		   var urlField = new Ext.form.TextField({
+				width: 350,
+				value: gxp.util.getAbsoluteUrl(url),
+				selectOnFocus: true,
+				readOnly: true
+		   }); 
+		   
+		   var urlCompositeField = new Ext.form.CompositeField({
+                fieldLabel: config.label || this.composerUrlLabel,
+				items:[
+					urlField,
+					{
+						xtype: 'button',
+						tooltip: config.showMapTooltip,
+						iconCls: "gx-map-go",
+						width: 20,
+						handler: function(){
+							var u = urlField.getValue();
+							window.open(u);
+						}
+					}
+				]
+		   });
+           return urlCompositeField;
+    }
 });
 
 Ext.preg(gxp.plugins.EmbedMapDialog.prototype.ptype, gxp.plugins.EmbedMapDialog);

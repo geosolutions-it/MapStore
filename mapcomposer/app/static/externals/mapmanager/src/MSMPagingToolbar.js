@@ -174,6 +174,43 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
     * 
     */
 	resizerText: "Maps per page",
+
+    
+    /**
+    * Property: templatesCategoriesUrl
+    * {string} URL for the templates combo
+    * 
+    */
+    templatesCategoriesUrl: null,
+    
+    /**
+    * Property: addMapControls
+    * {boolean} add create map and paging for maps grid.
+    * Default it's true
+    * 
+    */
+    addMapControls: true,
+
+    /** i18n **/
+    createMapText: "Create",
+    createMapTitleText: "Create a new map",
+    templateSeleccionErrorText: "Please select a template before create the map",
+    templateText: "Template",
+    
+    /**
+    * Property: checkTemplateId
+    * {boolean} Check if you must select a template id. Default it's false.
+    * 
+    */
+    checkTemplateId: false,
+    
+    /**
+    * Property: addExpandCollapseControls
+    * {boolean} add expand and collapse buttons for maps grid.
+    * Default it's true
+    * 
+    */
+    addExpandCollapseControls: true,
 	
     /**
      * Method: initComponent
@@ -193,47 +230,116 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
         
         MSMPagingToolbar.superclass.initComponent.call(this, arguments);
 
-        //add openMapComposer button
-        this.openMapComposer = this.addButton({
-            id: 'id_openMapComposer_button',
-            text: this.textNewMap,
-            scope: this,
-            disabled: true,
-            iconCls: 'map_add',
-            tooltip: this.tooltipNewMap,
-            handler: function(){
-                this.grid.plugins.openMapComposer(this.grid.murl,userProfile,idMap,this.desc);
-            }
-        });
-        
-        //add expandAll buttons    
-        this.expandAll = this.addButton({
-            id: 'id_expandAll_button',
-            text: this.textExpandAll,
-            scope: this,
-            iconCls: 'row_expand',
-            tooltip: this.tooltipExpandAll,
-            handler: function(){
-                this.grid.plugins.expandAll();
-            }
-        });
-        
-        //add collapseAll buttons    
-        this.collapseAll = this.addButton({
-            id: 'id_collapseAll_button',
-            text: this.textCollapseAll,
-            scope: this,
-            iconCls: 'row_collapse',
-            tooltip: this.tooltipCollapseAll,
-            handler: function(){
-                 this.grid.plugins.collapseAll();
-            }
-        });
+        // only for maps grid
+        if(this.addMapControls){
+            //add openMapComposer button
+            this.openMapComposer = this.addButton({
+                id: 'id_openMapComposer_button',
+                text: this.textNewMap,
+                scope: this,
+                disabled: true,
+                iconCls: 'map_add',
+                tooltip: this.tooltipNewMap,
+                handler: this.onAddMap
+            });   
+        }
+
+        if(this.addExpandCollapseControls){
+            //add expandAll buttons    
+            this.expandAll = this.addButton({
+                id: 'id_expandAll_button',
+                text: this.textExpandAll,
+                scope: this,
+                iconCls: 'row_expand',
+                tooltip: this.tooltipExpandAll,
+                handler: function(){
+                    this.grid.plugins.expandAll();
+                }
+            });
+            
+            //add collapseAll buttons    
+            this.collapseAll = this.addButton({
+                id: 'id_collapseAll_button',
+                text: this.textCollapseAll,
+                scope: this,
+                iconCls: 'row_collapse',
+                tooltip: this.tooltipCollapseAll,
+                handler: function(){
+                     this.grid.plugins.collapseAll();
+                }
+            });
+        }
 		
 		this.plugins = (this.plugins || []);
-		this.plugins.push(new Ext.ux.plugin.PagingToolbarResizer( {
-			options : [ 10, 20, 50, 100 ],
-			displayText: this.resizerText
-		}));
+
+        // only for maps grid
+        if(this.addMapControls){
+    		this.plugins.push(new Ext.ux.plugin.PagingToolbarResizer( {
+    			options : [ 10, 20, 50, 100 ],
+    			displayText: this.resizerText
+    		}));
+        }
+    },
+
+    onAddMap: function(){
+        var userProfile = '&auth=' + (this.grid.auth ? encodeURI(this.grid.auth) : "false");
+        var idMap = -1;
+        var me = this;
+        
+        var win = new Ext.Window({
+            title: this.createMapTitleText,
+            width: 325,
+            height: 100,
+            resizable: true,
+            plain: true,
+            layout: "fit",
+            items: [{
+                xtype: "form",
+                layout: "fit",
+                ref: "formPanel",
+                items: [{
+                    layout: "form",
+                    items: [{
+                        xtype: "msm_templatecombobox",
+                        ref: "../templateCombo",
+                        name: "templateId",
+                        templatesCategoriesUrl: this.templatesCategoriesUrl,
+                        auth: this.auth
+                    }]
+                }]
+            }],
+            bbar: new Ext.Toolbar({
+                items:[
+                    '->',
+                    {
+                        text: this.createMapText,
+                        iconCls: "map_add",
+                        scope: this,
+                        handler: function(){      
+                            var templateId = win.formPanel.templateCombo.getValue();
+
+                            if(!this.checkTemplateId || (this.checkTemplateId && templateId)){
+                                win.hide(); 
+        
+                                this.grid.plugins.openMapComposer(this.grid.murl, userProfile, idMap, this.desc, templateId);
+                                
+                                win.destroy(); 
+                            }else{
+                                Ext.Msg.show({
+                                       title: "Error",
+                                       msg: me.templateSeleccionErrorText,
+                                       buttons: Ext.Msg.OK,
+                                       icon: Ext.MessageBox.ERROR
+                                    });   
+                            }
+                        }
+                    }
+                ]
+            })
+        });
+        
+        win.show();
+        
+        // this.grid.plugins.openMapComposer(this.grid.murl,userProfile,idMap,this.desc);
     }
 });

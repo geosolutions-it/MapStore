@@ -7,6 +7,11 @@
             "ptype": "gxp_googlesource"
         }
     },
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
+	},
     "map":{
         "projection": "EPSG:900913",
         "units": "m",
@@ -67,6 +72,13 @@
 			"useTabPanel": true,
 			"toggleGroup": "toolGroup",
 			"actionTarget": {"target": "paneltbar", "index": 24}
+		}, {
+			"ptype": "gxp_about",
+			"poweredbyURL": "http://www.geo-solutions.it/about/contacts/",
+			"actionTarget": {"target": "panelbbar", "index": 1}
+		}, {
+			"ptype": "gxp_languageselector",
+			"actionTarget": {"target": "panelbbar", "index": 3}
 		}
 	]
 }

@@ -1,6 +1,10 @@
 /**
  * Copyright (c) 2009-2010 The Open Planning Project
  */
+/*
+	NOTE: configuration customization could override
+	these strings
+*/
 
 GeoExt.Lang.add("it", {
     "GeoExplorer.prototype": {
@@ -49,7 +53,7 @@ GeoExt.Lang.add("it", {
     "gxp.plugins.AddLayers.prototype": {
         addActionMenuText: "Aggiungi livello",
         addActionTip: "Aggiungi livello",
-        addServerText: "Aggiungi un nuovo Server",
+        addServerText: "Aggiungi Server",
         addButtonText: "Aggiungi livelli",
         untitledText: "Senza Titolo",
         addLayerSourceErrorText: "Errore nel recuperare le WMS capabilities ({msg}).\nSi prega di controllare l'URL e di riprovare ancora.",
@@ -241,11 +245,37 @@ GeoExt.Lang.add("it", {
     },
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Aggiungi nuovo Server...",
+        title: "Aggiungi Server",
         cancelText: "Cancella",
         addServerText: "Aggiungi Server",
         invalidURLText: "Inserisci un URL valido come WMS endpoint (e.g. http://example.com/geoserver/wms)",
-        contactingServerText: "Si cerca di contattare il Server..."
+        contactingServerText: "Si cerca di contattare il Server...",
+		sourceTypeLabel: "Tipo",
+		advancedOptionsTitle: "Opzioni Avanzate",
+		generalTabTitle: "Generale",
+		titleLabel: "Titolo",
+		versionLabel: "Versione (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Parametri",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Aggiungi",
+		propNameLabel: "Nome",
+		propValueLabel: "Valore",
+		paramsWinTitle: "Opzioni Parametri",
+		okButtonText: "Conferma",
+		addPropDialogTitle: "Aggiungi Proprietà",
+		addPropDialogMsg: "Il nome della proprietà o il suo valore non sono validi",
+		cancelButtonText: "Cancella",
+		removeButtonText: "Rimuovi",
+		removePropDialogTitle: "Rimuovi Proprietà",
+		removePropDialogMsg: "questa proprietà non può essere rimossa: ",
+		newSourceDialogTitle: "Nuova Sorgente",
+		newSourceDialogMsg: "Alcune proprietà della sorgente selezionatasono invalide.",
+		mandatoryLabelText: "Tutti i campi contrassegnati con (*) sono obbligatori.",
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -630,8 +660,13 @@ GeoExt.Lang.add("it", {
 		previewText: "Anteprima",				
 		embedCodeTitle: "Codice da Incorporare",
 		embedURL: "URL diretto",		
-		urlLabel: "URL",
-		showMapTooltip: "Mostra in una nuova finestra"
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
+		showMapTooltip: "Mostra in una nuova finestra",
+        loadMapText: "Carica Mappa",
+        downloadAppText: "Installa Applicazione Android",
+        loadInMapStoreMobileText:'Mobile',
+        openImageInANewTab: "Apri immagine in una nuova tab"
 	},
 
     "gxp.widgets.form.SpatialSelectorField.prototype" :{
@@ -645,7 +680,7 @@ GeoExt.Lang.add("it", {
         southLabel : "Sud",
         setAoiTitle : "Bounding Box",
         setAoiText : "Disegna",
-        setAoiTooltip : "Enable the SetBox control to draw a ROI (Bounding Box) on the map",
+        setAoiTooltip : "Abilita il controllo SetBox per disegnare l'area d'interesse (Bounding Box) sulla mappa",
         areaLabel : "Area",
         perimeterLabel : "Perimetro",
         radiusLabel : "Raggio",
@@ -695,16 +730,23 @@ GeoExt.Lang.add("it", {
         comboSelectionMethodLabel : "Selezione"
     },
     
-    "gxp.plugins.spatialselector.SpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.SpatialSelectorMethod.prototype" :{
         areaLabel : "Area",
         perimeterLabel : "Perimetro",
         lengthLabel: "Lunghezza",
         radiusLabel : "Raggio",
         centroidLabel : "Centroide",
-        selectionSummary: "Sommario delle Selezioni"
+        selectionSummary: "Sommario delle Selezioni",
+        geometryOperationText: "Operazione geometrica",
+        geometryOperationEmptyText: "Seleziona una operazione",
+        distanceTitleText: "Distanza",
+        distanceUnitsTitleText: "Unità di misura",
+        noOperationTitleText: "Operazione non valida",
+        noOperationMsgText: "Prego, selezionare una operazione prima di eseguire la query",
+        noCompleteMsgText: "Prego, completare il riempimento della form prima di eseguire la query"
     },
     
-    "gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
         name  : 'BBOX',
         label : 'Bounding Box',
         northLabel : "Nord",
@@ -713,22 +755,22 @@ GeoExt.Lang.add("it", {
         southLabel : "Sud",
         setAoiTitle : "Bounding Box",
         setAoiText : "Disegna",
-        setAoiTooltip : "Enable the SetBox control to draw a ROI (Bounding Box) on the map"
+        setAoiTooltip : "Abilita il controllo SetBox per disegnare l'area d'interesse (Bounding Box) sulla mappa"
     },
     
-    "gxp.plugins.spatialselector.BufferSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.prototype" :{
         name  : 'Buffer',
         label : 'Buffer',
         latitudeEmptyText : 'Y',
         longitudeEmptyText : 'X'
     },
     
-    "gxp.plugins.spatialselector.CircleSpatialSelectorMethod.prototype" :{
-        name  : 'Circle',
-        label : 'Circle'
+    "gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.prototype" :{
+        name  : 'Cerchio',
+        label : 'Cerchio'
     },
     
-    "gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
         name  : 'Geocoding',
         label : 'Geocoding',
         geocodingFieldSetTitle : "GeoCoder",
@@ -750,17 +792,31 @@ GeoExt.Lang.add("it", {
         selectionSummary : "Sommario delle Selezioni"
     },
     
-    "gxp.plugins.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
-        name  : 'Polygon',
-        label : 'Polygon'
+    "gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
+        name  : 'Poligono',
+        label : 'Poligono'
+    },
+
+    "gxp.plugins.spatialselector.Geocoder.prototype" :{
+        titleText: "Geocoder",
+        searchText: "Ricerca",
+        searchTpText: "Ricerca la zona selezionata ed esegui lo zoom sulla mappa",
+        resetText: "Azzeramento",
+        resetTpText: "Azzeramento ricerca zona",
+        translatedKeys: {
+            "name": "Strada",
+            "number": "Numero"
+        }
     },
 	
 	"gxp.plugins.ResourceStatus.prototype":{
 		rootNodeText: "Risorse Importate",
 		serviceErrorTitle: "Errore Servizio",
 		tabTitle: "Importati",
-		layerNodeName: "Livelli",
-		serviceNodeName: "Servizi"
+		layerNodeName: "Risorse",
+		waitMsg: "Caricamento Risorse ...",
+		expandAllText: "Espandi Tutti i Nodi",
+		collapseAllText: "Collassa Tutti i Nodi"
     },
 	
 	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
@@ -768,6 +824,21 @@ GeoExt.Lang.add("it", {
         noFilterSelectedMsgText: "Devi selezionare almeno un filtro",    
         invalidRegexFieldMsgTitle: "Campo non valido",    
         invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!"
+    },
+	
+	"gxp.plugins.FeatureManager.prototype":{
+        noValidWmsVersionMsgTitle: 'Versione WMS non valida',    
+        noValidWmsVersionMsgText: "Il plugin queryForm non funziona con una sorgente WMS versione: "
+    },
+	
+    "gxp.data.WMTSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "Nessun layer disponibile su questo server nel sistema di coordinate della mappa",
+        warningTitle: "Attenzione"
+    },
+	
+    "gxp.data.TMSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "Nessun layer disponibile su questo server nel sistema di coordinate della mappa",
+        warningTitle: "Attenzione"
     },
 
 	"gxp.plugins.AdvancedSnappingAgent.prototype":{
@@ -818,7 +889,7 @@ GeoExt.Lang.add("it", {
         monthsText: 'Mesi', 
         yearsText: 'Anni'
     },
-	
+
     "gxp.plugins.SynchLayerEnable.prototype": {
         synchEnableText: "Abilita il layer per il Refresh",
         synchDisableText: "Disabilita il layer per il Refresh"
@@ -843,5 +914,9 @@ GeoExt.Lang.add("it", {
         waitText : 'Aspetta',
         workingIntervalText : 'Intervallo di refresh:',
         workingIntervalToText : 'a'
-    }      
+    },      
+
+	"gxp.plugins.StaticPage.prototype": {
+        tabTitle: "Pagina Statica"
+    }
 });

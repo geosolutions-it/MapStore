@@ -64,7 +64,7 @@ gxp.plugins.spatialselector.Geocoder = Ext.extend(gxp.plugins.Tool, {
 	 *  
 	 */    
     zoomLevel: null,
-
+	
     /** api: config[searchBtnCls]
      * ``String``
      * Icon cls for the search button.
@@ -153,10 +153,12 @@ gxp.plugins.spatialselector.Geocoder = Ext.extend(gxp.plugins.Tool, {
 					spConfig["name"] = this.translatedKeys[key];
 				}
 				var plugin = Ext.create(spConfig);
+
 				if(this.target 
 					&& this.target.tools){
 					this.target.tools[spConfig.id] = plugin;
 				}
+
 				this.spatialSelectors[key] = plugin;
 				var selectorItem = plugin.getSelectionMethodItem();
 				selectorItem.value = key;
@@ -239,8 +241,10 @@ gxp.plugins.spatialselector.Geocoder = Ext.extend(gxp.plugins.Tool, {
 		    		if(!comboBox.vendorParams){
 		    			comboBox.vendorParams = {};
 		    		}
+
                     var crossParamsValue = me.crossParameters[type][parameter][targetCombo];
 		    		var cql_filter = typeof(value) == "number" ? crossParamsValue + " = " + value : crossParamsValue + " = " + "'"+value+"'";
+
 		    		Ext.apply(comboBox.vendorParams,{
 		    			cql_filter: cql_filter
 		    		});
@@ -256,6 +260,7 @@ gxp.plugins.spatialselector.Geocoder = Ext.extend(gxp.plugins.Tool, {
     search: function(){
 
     	var geometry = this.geometry;
+
         var zoomLevel = this.zoomLevel;
 
 		if (geometry && geometry.getBounds) {

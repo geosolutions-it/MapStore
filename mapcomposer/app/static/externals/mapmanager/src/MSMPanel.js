@@ -90,6 +90,14 @@ MSMPanel = Ext.extend(Ext.Panel, {
      * 
      */ 
     renderMapToTab: null,
+     
+     
+     /**
+     * Property: adminPanelsTargetTab
+     * {string} the id of the Ext.TabPanel to use to render the administration panels
+     * 
+     */ 
+    adminPanelsTargetTab : null,
     
     initComponent : function() {
 
@@ -100,7 +108,8 @@ MSMPanel = Ext.extend(Ext.Panel, {
             lang: this.lang,
             config: this.config,
             renderMapToTab: this.renderMapToTab,
-            langSelector: this.langSelector
+            langSelector: this.langSelector,
+            adminPanelsTargetTab: this.adminPanelsTargetTab
         });
         
         MSMPanel.superclass.initComponent.call(this, arguments);

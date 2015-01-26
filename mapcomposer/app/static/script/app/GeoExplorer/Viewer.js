@@ -109,6 +109,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         
         this.on("ready", function() {
         	this.toolbar.enable();
+			this.bottom_toolbar.enable();
         }, this);
 
         this.mapPanelContainer = new Ext.Panel({
@@ -136,10 +137,18 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         if(this.customPanels){
             portalItems=portalItems.concat(this.customPanels);
         }
+		
+		this.bottom_toolbar = new Ext.Toolbar({
+            disabled: true,
+            id: 'panelbbar',
+			enableOverflow: true
+        });
+		
         this.portalItems = [{
             region: "center",
             layout: "border",
             tbar: this.toolbar,
+			bbar: this.bottom_toolbar,
             items: portalItems
         }];
         

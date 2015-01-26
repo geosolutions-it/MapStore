@@ -5,6 +5,7 @@
 	NOTE: configuration customization could override
 	these strings
 */
+
 GeoExt.Lang.add("en", {
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Zoom Level: {zoom}</div><div>Scale: 1:{scale}</div>",
@@ -221,11 +222,37 @@ GeoExt.Lang.add("en", {
     },
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Add New Server...",
+        title: "Add Server",
         cancelText: "Cancel",
         addServerText: "Add Server",
         invalidURLText: "Enter a valid URL to a WMS endpoint (e.g. http://example.com/geoserver/wms)",
-        contactingServerText: "Contacting Server..."
+        contactingServerText: "Contacting Server...",
+		sourceTypeLabel: "Type",
+		advancedOptionsTitle: "Advanced Options",
+		generalTabTitle: "General",
+		titleLabel: "Title",
+		versionLabel: "Version (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Params",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Add",
+		propNameLabel: "Name",
+		propValueLabel: "Value",
+		paramsWinTitle: "Params Options",
+		okButtonText: "Ok",
+		addPropDialogTitle: "Add Property",
+		addPropDialogMsg: "Property name or his value are not valid",
+		cancelButtonText: "Cancel",
+		removeButtonText: "Remove",
+		removePropDialogTitle: "Remove Property",
+		removePropDialogMsg: "This property cannot be removed: ",
+		newSourceDialogTitle: "New Source",
+		newSourceDialogMsg: "Some source properties are invalid.",
+		mandatoryLabelText: "All fields marked with (*) are mandatory."
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -495,7 +522,7 @@ GeoExt.Lang.add("en", {
 	
 	"gxp.plugins.AddLayer.prototype":{
 		waitMsg: "Please Wait ...",
-		capabilitiesFailureMsg: " The layer cannot be added to the map"
+		capabilitiesFailureMsg: " The WMS Capabilities cannot be added due to problems service side"
     },
     
     "gxp.plugins.Geolocate.prototype":{
@@ -608,8 +635,13 @@ GeoExt.Lang.add("en", {
 		previewText: "Preview",				
 		embedCodeTitle: "Embed Code",
 		embedURL: "Direct URL",		
-		urlLabel: "URL",
-		showMapTooltip: "Show in a new Window"
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
+		showMapTooltip: "Show in a new Window",
+        loadMapText: "Load this Map (install application first)",
+        downloadAppText: "Install Application",
+        loadInMapStoreMobileText: "Mobile",
+        openImageInANewTab: "Open Image in a New Tab"
 	},
     
     "gxp.widgets.form.SpatialSelectorField.prototype" :{
@@ -672,7 +704,7 @@ GeoExt.Lang.add("en", {
         comboSelectionMethodLabel : "Selection"
     },
     
-    "gxp.plugins.spatialselector.SpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.SpatialSelectorMethod.prototype" :{
         areaLabel : "Area",
         perimeterLabel : "Perimeter",
         lengthLabel: "Length",
@@ -688,7 +720,7 @@ GeoExt.Lang.add("en", {
         noCompleteMsgText: "Please, complete form before query"
     },
     
-    "gxp.plugins.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
         name  : 'BBOX',
         label : 'Bounding Box',
         northLabel : "North",
@@ -700,19 +732,19 @@ GeoExt.Lang.add("en", {
         setAoiTooltip : "Enable the SetBox control to draw a ROI (Bounding Box) on the map"
     },
     
-    "gxp.plugins.spatialselector.BufferSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.prototype" :{
         name  : 'Buffer',
         label : 'Buffer',
         latitudeEmptyText : 'Y',
         longitudeEmptyText : 'X'
     },
     
-    "gxp.plugins.spatialselector.CircleSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.prototype" :{
         name  : 'Circle',
         label : 'Circle'
     },
     
-    "gxp.plugins.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
         name  : 'Geocoding',
         label : 'Geocoding',
         geocodingFieldSetTitle : "GeoCoder",
@@ -734,7 +766,7 @@ GeoExt.Lang.add("en", {
         selectionSummary : "Selection Summary"
     },
     
-    "gxp.plugins.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
+    "gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
         name  : 'Polygon',
         label : 'Polygon'
     },
@@ -749,15 +781,16 @@ GeoExt.Lang.add("en", {
             "name": "Street",
             "number": "Number"
         }
-
     },
 	
 	"gxp.plugins.ResourceStatus.prototype":{
 		rootNodeText: "Imported Resources",
 		serviceErrorTitle: "Service Error",
 		tabTitle: "Imported",
-		layerNodeName: "Layers",
-		serviceNodeName: "Services"
+		layerNodeName: "Resources",
+		waitMsg: "Loading Resources ...",
+		expandAllText: "Expand All Nodes",
+		collapseAllText: "Collapse All Nodes"
     },
 	
 	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
@@ -767,6 +800,32 @@ GeoExt.Lang.add("en", {
         invalidRegexFieldMsgText: "One or more fields are incorrect!"
     },
 
+	"gxp.plugins.FeatureManager.prototype":{
+        noValidWmsVersionMsgTitle: 'No valid WMS version',    
+        noValidWmsVersionMsgText: "The queryForm plugin doesn't work with WMS Source version: "
+    },
+    
+    "gxp.plugins.CategoriesInitializer.prototype":{
+        geostoreInitializationTitleText: "Initializing Fail",
+        geostoreInitializationText: "Geostore response is not the expected",
+        notInitializedCategories: "Missing categories: '{0}'. Do you want to create it?",
+        userFieldText: "User",
+        passwordFieldText: "Password",
+        acceptText: "Create",
+        cancelText: "Cancel",
+        notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>If you are an administrator please insert your credentials to create these categories: '{0}'</div>"
+    },
+	
+    "gxp.data.WMTSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "No layer in the current map projection is available on this server",
+        warningTitle: "Warning"
+    },
+	
+    "gxp.data.TMSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "No layer in the current map projection is available on this server",
+        warningTitle: "Warning"
+    },
+	
 	"gxp.plugins.AdvancedSnappingAgent.prototype":{
         tooltipText: "Enable/Disable Snapping"
     },
@@ -841,5 +900,9 @@ GeoExt.Lang.add("en", {
         workingIntervalText : 'Working interval:',
         workingIntervalToText : 'to'
 
-    }         
+    },
+	
+	"gxp.plugins.StaticPage.prototype": {
+        tabTitle: "Static Page"
+    }
 });

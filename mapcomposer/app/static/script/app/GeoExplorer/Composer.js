@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright (c) 2009-2010 The Open Planning Project
  *
  * @requires GeoExplorer.js
@@ -148,14 +148,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     id: "measure_plugin",
                     toggleGroup: this.toggleGroup,
 		            actionTarget: {target: "paneltbar", index: 21}
-		        }, {
-                    id: "googleearth_separator",
-		            actions: ["-"], 
-                    actionTarget: "paneltbar"
-		        }, {
-		            ptype: "gxp_googleearth",
-                    id: "googleearth_plugin",
-		            actionTarget: {target: "paneltbar", index: 25}
 		        }
 		    ];
 
@@ -252,6 +244,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 id: "full-screen-button",
                 iconCls: "icon-fullscreen",
                 enableToggle: true,
+				state:{},
+				tools:{},
 				scale: this.actionToolScale,
                 handler: function(button, evt){
                     if(button.pressed){
@@ -299,7 +293,27 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 						}
                         
                     }
-                }
+                },
+				//restore the previous state of the button
+				restoreState: function(panel){
+					if(!this.state) return;
+					var id = panel.getId();
+					var wasVisible = this.state[id];
+					if(panel && wasVisible){
+						panel.expand(true);
+					}
+				},
+				//save the state of the button
+				saveState: function(panel){
+					if(!this.state) return;
+					var id =panel.getId();
+					if(id){
+						this.state[id] = panel.isVisible();
+					}
+					if(!this.tools[id]){
+						this.tools[id] = panel;
+					}
+				}
             });
 
             tools.unshift(fullScreen);

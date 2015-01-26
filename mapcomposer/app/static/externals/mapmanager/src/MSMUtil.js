@@ -126,11 +126,13 @@
 	 * {String}
 	 */
 	Uri.prototype.toString = function(){
-		this.uri_ += '?';
-		for (key in this.params_){
-			this.uri_ += key + '=' + this.params_[key] + '&';
-		}
-		return this.uri_;
+        //check parameters
+        var uri = this.uri_;
+            uri += '?';
+            for (var key in this.params_){
+                uri += key + '=' + this.params_[key] + '&';
+            }
+		return uri;
 	};
 
 	/**
@@ -265,7 +267,9 @@
 		// Build the uri to invoke
 		// ///////////////////////////////////////////////////////
 		var uri = new Uri({'url': this.baseUrl_ });
+        
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
+        //add param options
 		if (params_opt){
 			for( name in params_opt ){
 				uri.addParam( name, params_opt[name] );
@@ -338,12 +342,19 @@
 	 * Return:
 	 * 
 	 */
-	ContentProvider.prototype.update = function(pk, item, callback){
+	ContentProvider.prototype.update = function(pk, item, callback, failureCallback){
 		var data = this.beforeSave(item);
 		var uri = new Uri({'url':this.baseUrl_});
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
+
+		// remove appended "?" without parameters
+		var url = uri.toString();
+		if(url.indexOf("?") == url.length - 1){
+			url = url.replace("?", "");
+		}
+
 		var Request = Ext.Ajax.request({
-	       url: uri.toString(),
+	       url: url,
 	       method: 'PUT',
 	       headers: {
 	          'Content-Type' : 'text/xml',
@@ -356,9 +367,13 @@
 				callback( response );
 	       },
 	       failure:  function(response, opts){
-				this.onFailure_(response);
+                if(failureCallback){
+                    failureCallback(response);
+                }else{
+                    this.onFailure_(response);
+                }
 	       }
-	    });		
+	    });
 	};	
 	
 	/** 
@@ -374,8 +389,15 @@
 	ContentProvider.prototype.deleteByPk = function(pk, callback){
 		var uri = new Uri({'url':this.baseUrl_});
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
+
+		// remove appended "?" without parameters
+		var url = uri.toString();
+		if(url.indexOf("?") == url.length - 1){
+			url = url.replace("?", "");
+		}
+
 		var Request = Ext.Ajax.request({
-	       url: uri.toString(),
+	       url: url,
 	       method: 'DELETE',
 	       headers:{
 	          'Content-Type' : 'application/json',
@@ -404,15 +426,21 @@
 	 * Return:
 	 * 
 	 */
-	ContentProvider.prototype.create = function(item, callback, failureCallback){
+	ContentProvider.prototype.create = function(item, callback, failureCallback, scope){
 		var uri = new Uri({'url':this.baseUrl_});
 		var data = this.beforeSave( item );
+
+		// remove appended "?" without parameters
+		var url = uri.toString();
+		if(url.indexOf("?") == url.length - 1){
+			url = url.replace("?", "");
+		}
 		
 		// ///////////////////////////////
 		// Build the Ajax request
 		// ///////////////////////////////
 		var Request = Ext.Ajax.request({
-	       url: uri.toString(),
+	       url: url,
 	       method: 'POST',
 	       headers:{
 	          'Content-Type' : 'text/xml',
@@ -422,12 +450,11 @@
 	       params: data,
 	       scope: this,
 	       success: function(response, opts){
-				callback(response.responseText);
+				callback.call(scope, response.responseText);
 	       },
 	       failure:  function(response, opts){
-	       		console.log(response);
 				if(typeof(failureCallback) === 'function') {
-                    failureCallback(response);
+                    failureCallback.call(scope, response);
                 } else {
 				// ////////////////////////////////////////////////// //
 				// TODO: Refactor this code externalize the           // 
@@ -490,6 +517,138 @@
 	// /////////////////////////////////////////////////// //
 
 	/**
+	 * Class: GeoStore.Resource
+	 *
+	 * CRUD methods for Resources in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	GeoStore.Resource = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'resource';
+		},
+		beforeDeleteByFilter: function(data){
+			var xmlFilter = "<AND>" +
+								"<ATTRIBUTE>" + 
+									"<name>" + 
+										data.name + 
+									"</name>" +
+									"<operator>" + data.operator + "</operator>" + 
+									"<type>" + data.type + "</type>" +
+									"<value>" + 
+										data.value + 
+									"</value>" + 
+								"</ATTRIBUTE>" + 
+							"</AND>";
+			return xmlFilter;
+		},
+		deleteByFilter: function(filterData, callback){
+			var data = this.beforeDeleteByFilter(filterData);
+			var uri = this.baseUrl_;
+			
+			Ext.Ajax.request({
+			   url: uri,
+			   method: 'DELETE',
+			   headers:{
+				  'Content-Type' : 'text/xml',
+				  'Authorization' : this.authorization_
+			   },
+			   params: data,
+			   scope: this,
+			   success: function(response, opts){
+					callback(response);
+			   },
+			   failure:  function(response, opts) {
+			   }
+			});		
+		},
+		beforeSave: function(data){
+			// ///////////////////////////////////////
+			// Wrap new map within an xml envelop
+			// ///////////////////////////////////////
+			var addedAttributes = false;
+			var xml = '<Resource>';
+			xml += '<name>' + data.name + '</name>';
+			xml += '<description>' + data.description + '</description>';
+			if(data.metadata){
+				xml += '<metadata>'+data.metadata+'</metadata>';
+			}
+				
+			/** This can remove all the attributes if present !!! do it in a better way as soon as possible **/
+			if (data.attributes){
+				xml += '<Attributes>';
+					
+				for(var att in data.attributes){
+					xml +=
+					'<attribute>' +
+						'<name>'+ att +'</name>' +
+						'<type>'+ (att["@type"] || 'STRING') + '</type>' +
+						'<value>' + data.attributes[att].value + '</value>' +
+					'</attribute>';
+				}
+				addedAttributes = true;
+					// close attributes
+				if(addedAttributes){
+					xml += '</Attributes>';
+				}
+			}
+
+			if(data.category){
+				 xml+= '<category>' +
+					'<name>' + data.category + '</name>' +
+				'</category>';
+			}
+			if (data.blob){
+				xml+='<store>' +
+					'<data><![CDATA[ ' + data.blob + ' ]]></data>' +
+				'</store>';
+			}
+			xml += '</Resource>';
+			return xml;
+		},
+		afterFind: function(json){
+			
+			if ( json.Resource ){
+                var resource = json.Resource;
+				var data = new Object;
+				data.description = resource.description;
+                data.id = resource.id;
+				data.name = resource.name;
+				data.creation = resource.creation;	
+                if(resource.category){
+                    data.category = resource.category.name
+                }
+                
+                
+                if(resource.data){
+                    data.blob = resource.data.data;
+                }
+				if(resource.Attributes && resource.Attributes.attribute && (resource.Attributes.attribute instanceof Array)){
+                    var attrarray = resource.Attributes.attribute;
+					for(var i = 0; i < attrarray.length;i++){
+                        if(!data.attributes){
+                            data.attributes ={};
+                        }
+						data.attributes[attrarray[i].name] = attrarray[i];
+					}
+				}else if(resource.Attributes && resource.Attributes.attribute){
+                    if(!data.attributes){
+                        data.attributes ={};
+                    }
+					data.attributes[resource.Attributes.attribute.name] = resource.Attributes.attribute;
+				}
+				return data;			
+			} else {
+				this.onFailure_('cannot parse response');
+			}
+		}
+    });
+	// /////////////////////////////////////////////////// //
+	// Init some content providers used in the application //
+	// /////////////////////////////////////////////////// //
+
+	/**
 	 * Class: GeoStore.Maps
 	 *
 	 * CRUD methods for maps in GeoStore
@@ -498,6 +657,413 @@
 	 *
 	 */
 	var Maps = GeoStore.Maps = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'resource';
+		},
+		beforeDeleteByFilter: function(data){
+			var xmlFilter = "<AND>" +
+								"<ATTRIBUTE>" + 
+									"<name>" + 
+										data.name + 
+									"</name>" +
+									"<operator>" + data.operator + "</operator>" + 
+									"<type>" + data.type + "</type>" +
+									"<value>" + 
+										data.value + 
+									"</value>" + 
+								"</ATTRIBUTE>" + 
+							"</AND>";
+			return xmlFilter;
+		},
+		deleteByFilter: function(filterData, callback){
+			var data = this.beforeDeleteByFilter(filterData);
+			var uri = this.baseUrl_;
+			
+			Ext.Ajax.request({
+			   url: uri,
+			   method: 'DELETE',
+			   headers:{
+				  'Content-Type' : 'text/xml',
+				  'Authorization' : this.authorization_
+			   },
+			   params: data,
+			   scope: this,
+			   success: function(response, opts){
+					callback(response);
+			   },
+			   failure:  function(response, opts) {
+			   }
+			});		
+		},
+		beforeSave: function(data){
+			// ///////////////////////////////////////
+			// Wrap new map within an xml envelop
+			// ///////////////////////////////////////
+			//var addedAttributes = false;
+			var xml = '<Resource>';
+			
+			if(data.owner || data.attributes){
+				xml += 	'<Attributes>';
+				
+				if(data.owner){
+					xml += 
+						'<attribute>' +
+							'<name>owner</name>' +
+							'<type>STRING</type>' +
+							'<value>' + data.owner + '</value>' +
+						'</attribute>';
+				}
+				
+				if(data.attributes){
+					for(var i=0; i<data.attributes.length; i++){
+						xml += 
+							'<attribute>' +
+								'<name>' + data.attributes[i].name + '</name>' +
+								'<type>' + data.attributes[i]["@type"] + '</type>' +
+								'<value>' + data.attributes[i].value + '</value>' +
+							'</attribute>';
+					}
+				}
+				
+				xml += '</Attributes>';
+			}
+			
+			/** This can remove all the attributes if present !!! do it in a better way as soon as possible **/
+			/*if (data.owner){
+				xml += 
+				'<Attributes>' +
+					'<attribute>' +
+						'<name>owner</name>' +
+						'<type>STRING</type>' +
+						'<value>' + data.owner + '</value>' +
+					'</attribute>';
+				addedAttributes = true;
+			}			
+
+			// close attributes
+			if(addedAttributes){
+				xml += '</Attributes>';
+			}*/
+				
+			xml +=
+				'<description>' + data.description + '</description>' +
+				'<metadata></metadata>' +
+				'<name>' + data.name + '</name>';
+			if (data.blob)
+			  xml+=
+				'<category>' +
+					'<name>MAP</name>' +
+				'</category>' +
+				'<store>' +
+					'<data><![CDATA[ ' + data.blob + ' ]]></data>' +
+				'</store>';
+				
+			xml += '</Resource>';
+			return xml;
+		},
+		afterFind: function(json){
+			
+			if ( json.Resource ){
+				var data = new Object;
+				
+				data.attributes = [];
+				if(json.Resource.Attributes.attribute instanceof Array){
+					var array = json.Resource.Attributes.attribute;
+					for(var i=0; i<array.length; i++){
+						data.attributes.push(array[i]);
+					}
+				}else{
+					data.attributes.push(json.Resource.Attributes.attribute);
+				}
+				
+				//data.owner = json.Resource.Attributes.attribute.value;
+				data.description = json.Resource.description;
+				data.name = json.Resource.name;
+				data.blob = json.Resource.data.data;
+				data.id = json.Resource.id;
+				data.creation = json.Resource.creation;		
+				return data;			
+			} else {
+				this.onFailure_('cannot parse response');
+			}
+		}
+    });
+
+	/**
+	 * Class: GeoStore.Users
+	 *
+	 * CRUD methods for users in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var Users = GeoStore.Users = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'user';
+		},
+        
+		beforeSave: function(data){
+            var newPassword = data.password ? '<newPassword>'+ data.password + '</newPassword>' :'';
+            var attribute = '';
+            //generate attributes from the key:'value' object data.attribute
+            if(data.attribute){
+                for (var i in data.attribute ){
+                    attribute += '<attribute><name>'+i+'</name><value>'+data.attribute[i]+'</value></attribute>'
+                }
+            }
+            var groups = '';
+            groups = '<groups>';
+            if(data.groups){
+                groups = '<groups>';
+                for(var i = 0;i< data.groups.length;i++){
+                    groups += '<group><groupName>' + data.groups[i].groupName + '</groupName></group>';
+                }
+                
+            }else{
+               
+            }
+            groups +=  '</groups>';
+            var enabled = '';
+            if(data.enabled!=undefined){
+                enabled = '<enabled>' + (data.enabled ? 'true' : 'false')  + '</enabled>'
+            }
+			// wrap new user within an xml envelop
+			var xml = '<User><name>' + data.name +'</name>'
+                      + enabled 
+					  + newPassword 
+                      + attribute 
+                      +groups
+					  +'<role>' + data.role + '</role></User>';
+			return xml;
+		},
+        
+		//TODO beforeUpdate
+	
+		afterFind: function(json){
+			 if ( json.UserList ){
+				var data = new Array;
+				if ( json.UserList.User.length === undefined){
+					data.push(json.UserList.User);
+					return data;
+				}
+				for (var i=0; i< json.UserList.User.length; i++){
+					var user = json.UserList.User[i];
+					var obj = new Object;
+					obj.id = user.id;
+					obj.name = user.name;
+					obj.password = '';
+					obj.role = user.role;
+                    obj.attribute = user.attribute;
+                    obj.enabled = user.enabled;
+					data.push( obj ); 
+				}
+				return data;
+			} else if(json.User){
+                var user = json.User;
+					var obj = new Object;
+					obj.id = user.id;
+					obj.name = user.name;
+					obj.password = '';
+					obj.role = user.role;
+                    obj.enabled = user.enabled;
+                    if(user.attribute){
+                        obj.attribute = {};
+                        if( user.attribute instanceof Array){
+                            for(var i = 0; i < user.attribute.length;i++){
+                                obj.attribute[user.attribute[i].name] = user.attribute[i].value;
+                            }
+                        }else{
+                            obj.attribute[user.attribute.name=user.attribute.value];
+                        }
+                    } 
+                    if (user.groups && user.groups.group){
+                        if(user.groups.group instanceof Array){
+                            obj.groups = user.groups.group;
+                        }else{
+                            obj.groups = [user.groups.group];
+                        }
+                    } 
+                    return obj;
+                
+            }else{
+				this.onFailure_('cannot parse response');
+			}
+		}
+	});
+    /**
+	 * Class: GeoStore.UserGroups
+	 *
+	 * CRUD methods for UserGroups in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var UserGroups = GeoStore.UserGroups = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'group';
+		},
+        
+		beforeSave: function(data){
+            var description
+           if(data.description){
+            description='<description>' + data.description + '</description>'
+           }
+			// wrap new user within an xml envelop
+			var xml = '<UserGroup><groupName>' + data.groupName +'</groupName>'
+					  + description 
+					  + '</UserGroup>';
+			return xml;
+		},
+        
+		//TODO beforeUpdate
+	
+		afterFind: function(json){
+			 if ( json.UserGroupList ){
+				var data = [];
+				if ( json.UserGroupList.UserGroup.length === undefined){
+					data.push(json.UserGroupList.UserGroup);
+					return data;
+				}
+				for (var i=0; i< json.UserGroupList.UserGroup.length; i++){
+					var group = json.UserGroupList.UserGroup[i];
+					var obj = {};
+					obj.id = obj.id;
+					obj.groupName = group.groupName;
+                    obj.description = group.description;
+                    if(group.restUsers){
+                        if(group.restUsers.User instanceof Array){
+                            obj.restUsers = group.restUsers.User;
+                        }else if (group.restUsers.User){
+                            obj.restUsers = [group.restUsers.User];
+                        }
+                    }
+					data.push( obj ); 
+				}
+				return data;
+			} else if(json.UserGroup){
+                var group = json.UserGroup;
+					var obj = {};
+					obj.id = group.id;
+					obj.groupName = group.groupName;
+					obj.description = group.description;
+                    obj.restUsers = group.restUsers;
+                    if(group.restUsers){
+                        if(group.restUsers.User instanceof Array){
+                            obj.restUsers = group.restUsers.User;
+                        }else if (group.restUsers.User){
+                            obj.restUsers = [group.restUsers.User];
+                        }
+                    }
+                    return obj;
+                
+            }else{
+				this.onFailure_('cannot parse response');
+			}
+		}
+	});
+
+    /**
+	 * Class: GeoStore.ResourcePermission
+	 *
+	 * CRUD methods for Security rules for a resource in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var ResourcePermission = GeoStore.ResourcePermission = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'securityrule';
+		},
+        
+		beforeSave: function(data){
+			// wrap security rule list
+			var xml = '<SecurityRuleList>';
+			if(data && data.length > 0){
+				for(var i = 0; i < data.length; i++){
+					var rule = data[i];
+					// valid rule
+					if(rule && (rule.user || rule.group)){
+						xml += 
+						'<SecurityRule>' +
+							'<canRead>' + rule.canRead + '</canRead>' +
+							'<canWrite>' + rule.canWrite + '</canWrite>';
+						if(rule.user){
+							xml += 
+								'<user>' + 
+									'<id>' + rule.user.id + '</id>' +
+									'<name>' + rule.user.name + '</name>' +
+								'</user>';
+						} else if(rule.group){
+							xml += 
+								'<group>' + 
+									'<id>' + rule.group.id + '</id>' +
+									'<groupName>' + rule.group.groupName + '</groupName>' +
+								'</group>';
+						}
+
+						xml += 
+							'</SecurityRule>';
+					}
+				}
+			}
+
+			xml += '</SecurityRuleList>';
+
+
+			return xml;
+		},
+	
+		afterFind: function(json){
+			 if ( json.SecurityRuleList ){
+				var data = [];
+				for (var i=0; i< json.SecurityRuleList.length; i++){
+					data.push(this.afterFind(json.SecurityRuleList[i])); 
+				}
+				return data;
+			} else if(json.SecurityRule){
+                var rule = json.SecurityRule;
+					var obj = {};
+					obj.canRead = rule.canRead;
+					obj.canWrite = rule.canWrite;
+					if(rule.user && rule.user.id){
+						obj.user = {
+							id: rule.user.id,
+							name: rule.user.name
+						};
+					}else if(rule.group && rule.group.id){
+						obj.group = {
+							id: rule.group.id,
+							groupName: rule.group.groupName
+						};
+					}
+                    return obj;
+                
+            }else{
+				this.onFailure_('cannot parse response');
+			}
+		}
+	});
+	
+	/**
+	 * Class: Google.Shortener
+	 *
+	 * Access Google service to shorten urls
+	 *
+	 */	
+	var Shortener = Google.Shortener = function(options) {
+		this.config = options.config;
+		this.onFailure_ = Ext.emptyFn;
+	};
+
+	/**
+	 * Class: GeoStore.Templates
+	 *
+	 * CRUD methods for templates in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var Templates = GeoStore.Templates = ContentProvider.extend({
 		initialize: function(){
 			this.resourceNamePrefix_ = 'resource';
 		},
@@ -557,7 +1123,7 @@
 			if (data.blob)
 			  xml+=
 				'<category>' +
-					'<name>MAP</name>' +
+					'<name>TEMPLATE</name>' +
 				'</category>' +
 				'<store>' +
 					'<data><![CDATA[ ' + data.blob + ' ]]></data>' +
@@ -576,6 +1142,7 @@
 				data.blob = json.Resource.data.data;
 				data.id = json.Resource.id;
 				data.creation = json.Resource.creation;		
+				data.lastUpdate = json.Resource.lastUpdate;	
 				return data;			
 			} else {
 				this.onFailure_('cannot parse response');
@@ -584,60 +1151,89 @@
     });
 
 	/**
-	 * Class: GeoStore.Users
+	 * Class: GeoStore.Categories
 	 *
-	 * CRUD methods for users in GeoStore
+	 * CRUD methods for categories in GeoStore
 	 * Inherits from:
 	 *  - <GeoStore.ContentProvider>
 	 *
 	 */
-	var Users = GeoStore.Users = ContentProvider.extend({
+	var Categories = GeoStore.Categories = ContentProvider.extend({
 		initialize: function(){
-			this.resourceNamePrefix_ = 'user';
+			this.resourceNamePrefix_ = 'category';
+		},
+		deleteByFilter: function(filterData, callback){
+			var uri = this.baseUrl_;
+			
+			Ext.Ajax.request({
+			   url: uri,
+			   method: 'DELETE',
+			   headers:{
+				  'Content-Type' : 'text/xml',
+				  'Authorization' : this.authorization_
+			   },
+			   scope: this,
+			   success: function(response, opts){
+					callback(response);
+			   },
+			   failure:  function(response, opts) {
+			   }
+			});		
 		},
 		beforeSave: function(data){
-			// wrap new user within an xml envelop
-			var xml = '<User><name>' + data.name +'</name>'
-					  +'<newPassword>'+ data.password + '</newPassword>'
-					  +'<role>' + data.role + '</role></User>';
+			// ///////////////////////////////////////
+			// Wrap new map within an xml envelop
+			// ///////////////////////////////////////
+			var xml = "<Category><name>" + data.name + "</name></Category>";
 			return xml;
 		},
-        
-		//TODO beforeUpdate
-	
 		afterFind: function(json){
-			 if ( json.UserList ){
-				var data = new Array;
-				if ( json.UserList.User.length === undefined){
-					data.push(json.UserList.User);
-					return data;
-				}
-				for (var i=0; i< json.UserList.User.length; i++){
-					var user = json.UserList.User[i];
-					var obj = new Object;
-					obj.id = user.id;
-					obj.name = user.name;
-					obj.password = '';
-					obj.role = user.role;
-					data.push( obj ); 
-				}
-				return data;
+			
+			if ( json.Category ){
+				var data = new Object;
+				data.name = json.Resource.name;
+				return data;			
+			} else if (json.CategoryList && json.CategoryList.Category){
+				return json.CategoryList.Category;			
 			} else {
 				this.onFailure_('cannot parse response');
 			}
+		},
+		/** 
+		 * Function: find
+		 * find all elements in async mode
+		 *
+		 * Parameters:
+		 * callback - {Function}
+		 * Return:
+		 * 
+		 */
+		findByName: function(name, callback){
+			var uri = new Uri({'url':this.baseUrl_ + "/" + name});
+			
+			// ////////////////////
+			// Build a request
+			// ////////////////////
+			var self = this;
+			var Request = Ext.Ajax.request({
+		       url: uri.toString(),
+		       method: 'GET',
+		       headers:{
+		          'Content-Type' : 'application/json',
+		          'Accept' : this.acceptTypes_,
+		          'Authorization' : this.authorization_
+		       },
+		       scope: this,
+		       success: function(response, opts){
+					var data = self.afterFind( Ext.util.JSON.decode(response.responseText) );
+					callback(data);
+		       },
+		       failure:  function(response, opts){
+		       		var json = Ext.util.JSON.decode(response.responseText);
+		       }
+		    });		
 		}
-	});
-	
-	/**
-	 * Class: Google.Shortener
-	 *
-	 * Access Google service to shorten urls
-	 *
-	 */	
-	var Shortener = Google.Shortener = function(options) {
-		this.config = options.config;
-		this.onFailure_ = Ext.emptyFn;
-	};
+    });
 
 	/** 
 	 * Function: shorten

@@ -57,6 +57,9 @@ gxp.plugins.ZoomToLayerExtent = Ext.extend(gxp.plugins.ZoomToExtent, {
      */
     extent: function() {
         var layer = this.selectedRecord.get('layer');
+		if(layer && layer instanceof OpenLayers.Layer.Vector){
+			return  layer.getDataExtent();
+		}
         return layer.restrictedExtent || layer.maxExtent || map.maxExtent;
     },
 

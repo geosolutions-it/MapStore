@@ -5,6 +5,7 @@ var urls = [
     [(/^\/(index(.html)?)?/), require("./root/index").app],
     //[(/^\/(login)/), require("./root/login").app],
     //[(/^\/(maps(\/\d+)?)/), require("./root/maps").app],
+    [(/^\/(manager)/), require("./root/manager").app],
 	[(/^\/(geonetwork)/), require("./root/geonetwork").app],  // Enable this only for the GeoNetwork integration
     [(/^\/(composer)/), require("./root/composer").app],
     [(/^\/(viewer(.html)?)/), require("./root/viewer").app],

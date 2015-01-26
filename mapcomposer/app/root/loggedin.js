@@ -14,6 +14,6 @@ exports.app = function(req) {
 		sessionId = session.data['mapstore_session_id'];
 		userName = result.content;
 	}
-    var response = Response.skin(module.resolve("../templates/loggedin.html"), {status: details.status || 404, sessionId: sessionId, userName: userName});
+    var response = Response.skin(module.resolve("../templates/loggedin.html"), {status: details.status || 404, sessionId: sessionId, userName: userName, content: "{}"});
     return response;
 };
