@@ -413,7 +413,8 @@ gxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
      * We should imagine to get the auth from other contexts.
      */
     getAuth: function(){
-        var auth;
+        return this.target.getAuth();
+        /*var auth;
         //get from the parent
         if(window.parent && window.parent.window && window.parent.window.manager && window.parent.window.manager.auth){
           auth = window.parent.window.manager.auth;
@@ -426,7 +427,7 @@ gxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
             this.userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
             auth = this.userDetails.token;
         }
-        return auth;
+        return auth;*/
     }
     
 });
