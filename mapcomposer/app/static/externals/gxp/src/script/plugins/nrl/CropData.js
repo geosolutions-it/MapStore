@@ -805,13 +805,13 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			var colorHEX = button.randomColorsHEX(numRegion.length);
 			
 			for (var i = 0;i<numRegion.length;i++){
-				
-				series[numRegion[i]] = {
+				var dataIndex = numRegion[i].split(',')[0]
+				series[dataIndex] = {
 					name: numRegion[i],
 					color: colorHEX[i],
 					lcolor: 'rgb(' + colorRGB[i] + ')',
 					type: 'line',
-					dataIndex: numRegion[i],
+					dataIndex: dataIndex,
 					unit:'(000 tons)'
 				};
 				
