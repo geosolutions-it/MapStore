@@ -224,6 +224,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 		*/
 		
 		this.mode = data.mode;
+		
 		this.variableCompare = data.variable_compare;
 		this.groupCompare = data.compare_group;
 		
@@ -305,7 +306,24 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         this.chartOpt.series.prod.name  = 'Production ('+prodRec.get('name')+')';
         this.chartOpt.series.area.name = 'Area ('+areaRec.get('name')+')';
         this.chartOpt.series.yield.name = 'Yield ('+yieldRec.get('name')+')';
-
+		
+		for (var compareRegion in this.chartOptCompare.series){
+			switch (this.variableCompare) {
+				case ('prod'):
+					this.chartOptCompare.unit = '('+prodRec.get('shortname')+')';
+					this.chartOptCompare.name = 'Production ('+prodRec.get('name')+')';
+					break;
+				case ('area'):
+					this.chartOptCompare.unit = '('+areaRec.get('shortname')+')';
+					this.chartOptCompare.name = 'Area ('+areaRec.get('name')+')';
+					break;
+				case ('yield'):
+					this.chartOptCompare.unit = '('+yieldRec.get('shortname')+')';
+					this.chartOptCompare.name = 'Yield ('+yieldRec.get('name')+')';
+					break;
+			}
+		}	
+		
         var chartTitle = "";
         var splitRegion;
         
@@ -763,12 +781,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 		
 		ret.yAxis = [{ // AREA
 			title: {
-				text: listVar.variableCompare,
-				rotation: 270,
-				style: {
-					color: "#666666",
-					backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
-				}
+				text: ""
 			},                    
 			labels: {
 				formatter: function () {
@@ -998,41 +1011,10 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 			});
 
 			var chart;
-			
+			var text = listVar.commodity.toUpperCase() + ' - ' + opt.name;
 			//
 			// Making Chart Title
 			//
-			var text = "";
-			var dataTitle = data[r].title.toUpperCase();
-			var commodity = listVar.commodity.toUpperCase();
-            
-			var chartTitle = listVar.variableCompare.split(',')[r];
-			
-			if(dataTitle){				
-				if(dataTitle == "AGGREGATED DATA"){
-					if(aggregatedDataOnly){
-						text += dataTitle + " (Pakistan) - " + commodity;
-					}else{
-						text += dataTitle + " - " + commodity;
-					}					
-				}else{
-					text += commodity + " - " + chartTitle;
-				}
-			}
-			
-			//
-			// AOI Subtitle customization
-			//
-			var aoiSubtitle = "";
-			if(dataTitle == "AGGREGATED DATA"){
-				if(aggregatedDataOnly){
-					aoiSubtitle += "Pakistan";
-				}else{
-					aoiSubtitle += listVar.chartTitle;
-				}	
-			}else{
-				aoiSubtitle += chartTitle;
-			}
 			
 			chart = new Ext.ux.HighChart({
 				series: chartConfig.series,				

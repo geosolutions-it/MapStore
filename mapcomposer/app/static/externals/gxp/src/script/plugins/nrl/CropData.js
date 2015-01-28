@@ -811,8 +811,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					color: colorHEX[i],
 					lcolor: 'rgb(' + colorRGB[i] + ')',
 					type: 'line',
-					dataIndex: dataIndex,
-					unit:'(000 tons)'
+					dataIndex: dataIndex
 				};
 				
 			}
