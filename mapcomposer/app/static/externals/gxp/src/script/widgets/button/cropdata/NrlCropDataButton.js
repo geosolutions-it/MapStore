@@ -37,6 +37,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
     targetTab: 'cropData_tab',
     form: null,
     url: null,
+    typeName:"nrl:CropData2",
     /**
      * config [windowManagerOptions]
      * Options for the window manager
@@ -96,13 +97,33 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         items:[{
             ref:'../chartoptions',
             iconCls:'ic_wrench',
-            text: 'Options', handler: function(option){
+            text: 'Options',
+			handler:function(option){
+				
                 //Main Button
                 var mainButton = this.refOwner;
-                var options = mainButton.chartOpt;
-                var prodOpt =  mainButton.createOptionsFildset("Production",options.series['prod'],'prod');
-                var areaOpt =  mainButton.createOptionsFildset("Area",options.series['area'],'area');
-                var yieldOpt =  mainButton.createOptionsFildset("Yield",options.series['yield'],'yield');
+				var options = mainButton.chartOpt;				
+				var optionsCompare = mainButton.chartOptCompare;				
+				var fieldSetList = [];
+				
+				var form = mainButton.form.output.getForm();
+				var data = form.getValues();
+				var mode = data.mode;	
+				
+				if (mode === 'composite'){
+					
+					var prodOpt =  mainButton.createOptionsFildset("Production",options.series['prod'],'prod');
+					var areaOpt =  mainButton.createOptionsFildset("Area",options.series['area'],'area');
+					var yieldOpt =  mainButton.createOptionsFildset("Yield",options.series['yield'],'yield');
+					
+					fieldSetList = [prodOpt,areaOpt,yieldOpt];
+					
+				}else{
+					for (var compareRegion in optionsCompare.series){
+						fieldSetList.push(mainButton.createOptionsFildset(compareRegion,optionsCompare.series[compareRegion],compareRegion));						
+					}				
+				}
+				
                 var win = new Ext.Window({
                     iconCls:'ic_wrench',
                     title:   mainButton.optionsTitle,
@@ -111,7 +132,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                     minWidth:250,
                     minHeight:200,
                     layout:'fit',
-                    autoScroll:false,
+                    autoScroll:true,
                     maximizable: true, 
                     modal:true,
                     resizable:true,
@@ -120,17 +141,22 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                     items:  {
                         ref:'form',
                         xtype:'form',
+						autoScroll:true,
                         frame:'true',
                         layout:'form',
-                        items: [prodOpt,areaOpt,yieldOpt]
+                        items: fieldSetList
                     }
                     
                     
                 });
                 win.show();
+				
             }
         }]
     },
+	
+	chartOptCompare:{},	
+	
     chartOpt:{
 		series:{
 			prod:{
@@ -185,10 +211,55 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
             var region = attrs.district ? attrs.district + "," + attrs.province : attrs.province;
             numRegion.push(region.toLowerCase());
         }
+		
         var form = this.form.output.getForm();
         var data = form.getValues();
         var data2 = form.getFieldValues();
         var units = this.form.output.units;
+		
+		/* START
+		#########################
+		## new var for compare ##
+		#########################
+		*/
+		
+		this.mode = data.mode;
+		this.variableCompare = data.variable_compare;
+		this.groupCompare = data.compare_group;
+		
+		var commoditiesStore  = this.form.output.commodities.getSelectionModel().getSelections();
+		var factorValues = [];
+		var factorList = "";
+		
+		if (this.mode === 'compare'){
+			if (commoditiesStore.length === 0){
+				Ext.Msg.alert("Grid Commodities","Must be selected one Commodity!");
+				return;
+			}else if(commoditiesStore.length > 1){
+				Ext.Msg.alert("Grid Commodities","Must be selected only one Commodity!");
+				return;			
+			}else{
+				var commodities = commoditiesStore[0].data;
+				/*
+				for (var i=0;i<commoditiesStore.length;i++){
+					var crop = commoditiesStore[i].data;
+					var factorValue = crop.crop;
+					factorValues.push(factorValue);
+					if( i == commoditiesStore.length - 1){
+						factorList += "'" + factorValue + "'";
+					}else{
+						factorList += "'" + factorValue.concat("'\\,");                    
+					}
+				}
+				*/
+			}
+		}
+
+		/* END
+		#########################
+		## new var for compare ##
+		#########################
+		*/
         
         var regionList = data.region_list.toLowerCase();
         var commodity = data2.crop; // fixes #66 issue;
@@ -225,15 +296,15 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         var areaCoeffUnits = areaRec && areaRec.get('coefficient');
         var yieldCoeffUnits = yieldRec && yieldRec.get('coefficient');
         
+		
         //set labels for chart opts
-        this.chartOpt.series.prod.unit  = '('+prodRec.get('shortname')+')'
-        this.chartOpt.series.area.unit = '('+areaRec.get('shortname')+')'
-        this.chartOpt.series.yield.unit = '('+yieldRec.get('shortname')+')'
+        this.chartOpt.series.prod.unit  = '('+prodRec.get('shortname')+')';
+        this.chartOpt.series.area.unit = '('+areaRec.get('shortname')+')';
+        this.chartOpt.series.yield.unit = '('+yieldRec.get('shortname')+')';
         
-        //set labels for chart opts
-        this.chartOpt.series.prod.name  = 'Production ('+prodRec.get('name')+')'
-        this.chartOpt.series.area.name = 'Area ('+areaRec.get('name')+')'
-        this.chartOpt.series.yield.name = 'Yield ('+yieldRec.get('name')+')'
+        this.chartOpt.series.prod.name  = 'Production ('+prodRec.get('name')+')';
+        this.chartOpt.series.area.name = 'Area ('+areaRec.get('name')+')';
+        this.chartOpt.series.yield.name = 'Yield ('+yieldRec.get('name')+')';
 
         var chartTitle = "";
         var splitRegion;
@@ -255,6 +326,9 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
             }            
         }
         
+		// check if composite or compare
+		var viewParamsCrop = commodities ? commodities.crop : commodity;
+		
         var listVar = {
             today: today,
             chartTitle: chartTitle,
@@ -262,20 +336,21 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
             season: season,
             fromYear: fromYear,
             toYear: toYear,
-            commodity: commodity
+            commodity: viewParamsCrop,
+			variableCompare: this.variableCompare
         };       
         
         var tabPanel = Ext.getCmp('id_mapTab');
 
         var tabs = Ext.getCmp('cropData_tab');
 		
-		var viewparams = (commodity      ? "crop:" + commodity + ";" : "") +
-                         (granType       ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "") +
-                         (fromYear       ? "start_year:" + fromYear + ";" : "") +
-                         (toYear         ? "end_year:" + toYear + ";" : "") +
-                         (regionList     ? "region_list:" + regionList + ";" : "") +
-                         (prodCoeffUnits ? "prod_factor:" + prodCoeffUnits + ";" : "") +
-                         (areaCoeffUnits ? "area_factor:" + areaCoeffUnits + ";" : "") +
+		var viewparams = (viewParamsCrop     ? "crops:'" + viewParamsCrop + "';" : "") +
+                         (granType        ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "") +
+                         (fromYear        ? "start_year:" + fromYear + ";" : "") +
+                         (toYear          ? "end_year:" + toYear + ";" : "") +
+                         (regionList      ? "region_list:" + regionList + ";" : "") +
+                         (prodCoeffUnits  ? "prod_factor:" + prodCoeffUnits + ";" : "") +
+                         (areaCoeffUnits  ? "area_factor:" + areaCoeffUnits + ";" : "") +
                          (yieldCoeffUnits ? "yield_factor:" + yieldCoeffUnits + ";" : "");
 			
         Ext.Ajax.request({
@@ -286,7 +361,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                 service: "WFS",
                 version: "1.0.0",
                 request: "GetFeature",
-                typeName: "nrl:CropData",
+                typeName: this.typeName,
                 outputFormat: "json",
                 propertyName: "region,crop,year,production,area,yield",
                 viewparams: viewparams 
@@ -304,9 +379,15 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                 }
 				
 				var aggregatedDataOnly = (granType == "pakistan");
-                var data = this.getData(jsonData, aggregatedDataOnly);
-                
-                var charts  = this.makeChart(data, this.chartOpt, listVar, aggregatedDataOnly);
+				
+				
+				if (this.mode === 'composite'){
+					var data = this.getData(jsonData, aggregatedDataOnly);
+					var charts  = this.makeChart(data, this.chartOpt, listVar, aggregatedDataOnly);
+				}else{
+					var data = this.getDataCompare(jsonData, aggregatedDataOnly);
+					var charts  = this.makeChartCompare(data, this.chartOptCompare, listVar, aggregatedDataOnly);
+				}
 
                 var wins = gxp.WindowManagerPanel.Util.createChartWindows(charts,listVar);
                 gxp.WindowManagerPanel.Util.showInWindowManager(wins,this.tabPanel,this.targetTab, this.windowManagerOptions);
@@ -317,6 +398,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         });       
         
     },
+	
 	getData: function (json, aggregatedDataOnly){
 		var chartData = [];
 		
@@ -440,6 +522,111 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         
 		return chartData;
 	},
+	
+	getDataCompare: function (json, aggregatedDataOnly){
+		var chartData = [];
+		
+		for (var i=0 ; i<json.features.length; i++) {
+			var feature = json.features[i];
+			var obj = null;
+			
+			//search already existing entries
+			for (var j=0; j<chartData.length; j++){
+				if(chartData[j].region == feature.properties.region){
+					obj = chartData[j];
+				}
+			}
+			
+			//create entry if doesn't exists yet
+			if(!obj){
+				obj = {
+					region:feature.properties.region,
+					crop: feature.properties.crop,
+					title:feature.properties.region,
+					subtitle:feature.properties.crop,
+					rows: []
+				};
+				chartData.push(obj);
+			}
+			
+			//create a row entry
+			var yr = feature.properties.year;
+			var a = feature.properties.area;
+			var p = feature.properties.production;
+			var yi = feature.properties.yield;
+			
+			var row = {
+				time: yr,
+				area: parseFloat(a.toFixed(2)),
+				prod: parseFloat(p.toFixed(2)),
+				yield: parseFloat(yi.toFixed(2))
+			};
+			
+			obj.rows.push(row);
+
+		}
+		
+		var newChartData = [];
+
+		var newObj = {
+			title: this.variableCompare,
+			rows: []
+		};	
+		
+		var count = 0;
+		
+		chartData.reverse();
+		
+		for (var i = 0; i<chartData.length;i++){
+
+			for (var x = 0; x<chartData[i].rows.length;x++){
+				var variable = chartData[i].rows[x][this.variableCompare];
+				var time = chartData[i].rows[x]['time'];
+				var newRegion = chartData[i].region.toLowerCase();
+				
+				var newRows = {};
+				
+				newRows[newRegion] = variable;
+				newRows['time'] = time;
+
+				if  (count===0){
+					newObj.rows.push(newRows);
+				}
+				
+				if(typeof newObj.rows[x] != 'undefined'){
+					if (newObj.rows[x].time === newRows['time']){
+						newObj.rows[x][newRegion] = variable;						
+					}				
+				}
+			}
+			
+			count++;			
+		}
+		
+		newChartData.push(newObj);
+		
+		if(aggregatedDataOnly && mean){
+			chartData = [mean];
+		}else{		
+			// Sorts array elements in ascending order numerically.
+			function CompareForSort(first, second){
+				if (first.time == second.time)
+					return 0;
+				if (first.time < second.time)
+					return -1;
+				else
+					return 1; 
+			}
+			
+			//sort all year ascending
+			for (var i=0; i<newChartData.length; i++){
+				//chartData[i].rows.sort(function(a,b){return a.time > b.time});
+				newChartData[i].rows.sort(CompareForSort);        
+			}
+		}
+        
+		return newChartData;
+	},
 
     /**
      * private method[generateyAxisConfig]
@@ -475,6 +662,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         }
     
     },
+	
     /**
      * private method[getOrderedChartConfigs]
      * get chart configurations properly sorted 
@@ -538,6 +726,64 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 
     
     },
+
+    /**
+     * private method[getOrderedChartConfigs]
+     * get chart configurations properly sorted 
+     * to place charts with line style on top and 
+     * area styles behind. The fields of the ExtJs store 
+     * needs and yAxis configuration needs to be sorted in the same way.
+     * ``Object`` opt chartOpts object
+     * data. data to use for the chart
+     * 
+     */
+	getOrderedChartConfigsCompare:function(opt,listVar){
+        var ret = {};
+		
+		ret.series = [];
+		
+		for (var listFields in opt.series){
+			ret.series.push(opt.series[listFields]);
+		};
+		
+		// TODO
+        /*ret.series.sort(function(a,b){
+            //area,bar,line,spline are aphabetically ordered as we want
+            return a.type < b.type ? -1 : 1;
+        });*/
+		
+		
+        //ret.avgs = [];
+        //first element must be time, the other element 
+        // must have the same order of the opt and yAxis
+        ret.fields=  [{
+            name: 'time',
+            type: 'string'
+        }];
+		
+		ret.yAxis = [{ // AREA
+			title: {
+				text: listVar.variableCompare,
+				rotation: 270,
+				style: {
+					color: "#666666",
+					backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
+				}
+			},                    
+			labels: {
+				formatter: function () {
+					return this.value;
+				},
+				style: {
+					color: "#666666"
+				}
+			}
+
+		}]; 
+		
+        return ret;    
+    },
+	
 	makeChart: function(data, opt, listVar, aggregatedDataOnly){
 		
 		var charts = [];
@@ -563,21 +809,26 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
             var chartConfig = this.getOrderedChartConfigs(opt,avgs);
             //console.log(chartConfig);
 			// Store for random data
+			var fields = [{
+					name: 'time',
+					type: 'string'
+				} , {
+					name: 'area',
+					type: 'float'
+				}, {
+					name: 'prod',
+					type: 'float'
+				}, {
+					name: 'yield',
+					type: 'float'
+				},{
+					name:'crop',
+					type:'string'
+			}];
+			
 			var store = new Ext.data.JsonStore({
 				data: data[r],
-				fields:  [{
-                        name: 'time',
-                        type: 'string'
-                    } , {
-                        name: 'area',
-                        type: 'float'
-                    }, {
-                        name: 'prod',
-                        type: 'float'
-                    }, {
-                        name: 'yield',
-                        type: 'float'
-                }],
+				fields:  fields,
 				root: 'rows'
 			});
 
@@ -589,6 +840,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 			var text = "";
 			var dataTitle = data[r].title.toUpperCase();
 			var commodity = listVar.commodity.toUpperCase();
+            
 			var chartTitle = listVar.chartTitle.split(',')[r];
 			
 			if(dataTitle){				
@@ -692,7 +944,206 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 		}
 		
 		return charts; 
-	}
+	},
+	
+	makeChartCompare: function(data, opt, listVar, aggregatedDataOnly){
+		
+		var charts = [];
+		var getAvg = function(arr,type) {
+			var sum = 0,len = arr.length;
+			for (var i=0;i<len;i++){
+				sum += arr[i][type];
+			}
+			return sum/len;
+		};
+		
+		for (var r=0; r<data.length; r++){
+            //calculate avg
+            /*var prodavg = getAvg(data[r].rows,'prod');
+			var yieldavg = getAvg(data[r].rows,'yield');
+			var areaavg = getAvg(data[r].rows,'area');
+			var avgs = {
+                prod :prodavg,
+                yield:yieldavg,
+                area:areaavg
+            }*/
+            //get chart configs (sorting them properly)
+            var chartConfig = this.getOrderedChartConfigsCompare(opt,listVar);
+			
+			var fields = [{
+					name: 'time',
+					type: 'string'
+				},{
+					name:'crop',
+					type:'string'
+			}];
+			
+			for (var listFields in opt.series){
+				fields.push(
+					{
+						name: listFields,
+						type: 'float'
+						
+					}
+				);
+			}			
+			
+            //console.log(chartConfig);
+			// Store for random data
+			
+			var store = new Ext.data.JsonStore({
+				data: data[r],
+				fields:  fields,
+				root: 'rows'
+			});
+
+			var chart;
+			
+			//
+			// Making Chart Title
+			//
+			var text = "";
+			var dataTitle = data[r].title.toUpperCase();
+			var commodity = listVar.commodity.toUpperCase();
+            
+			var chartTitle = listVar.variableCompare.split(',')[r];
+			
+			if(dataTitle){				
+				if(dataTitle == "AGGREGATED DATA"){
+					if(aggregatedDataOnly){
+						text += dataTitle + " (Pakistan) - " + commodity;
+					}else{
+						text += dataTitle + " - " + commodity;
+					}					
+				}else{
+					text += commodity + " - " + chartTitle;
+				}
+			}
+			
+			//
+			// AOI Subtitle customization
+			//
+			var aoiSubtitle = "";
+			if(dataTitle == "AGGREGATED DATA"){
+				if(aggregatedDataOnly){
+					aoiSubtitle += "Pakistan";
+				}else{
+					aoiSubtitle += listVar.chartTitle;
+				}	
+			}else{
+				aoiSubtitle += chartTitle;
+			}
+			
+			chart = new Ext.ux.HighChart({
+				series: chartConfig.series,				
+				
+				height: opt.height,
+				//width: 900,
+				store: store,
+				animShift: true,
+				xField: 'time',
+				chartConfig: {
+					chart: {
+						zoomType: 'x',
+                        spacingBottom: 45                       
+					},
+                    exporting: {
+                        enabled: true,
+                        width: 1200,
+                        url: this.target.highChartExportUrl
+                    },
+					title: {
+						//text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase() +" - "+listVar.chartTitle.split(',')[r]) // + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : listVar.chartTitle.split(',')[r])
+						text: text
+					},
+					/*subtitle: {
+                        text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
+                              '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
+                              '<span style="font-size:10px;">AOI: '+ aoiSubtitle  + '</span><br />' +
+                              '<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
+                              '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
+                              '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />'+ 
+                              '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
+                              '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+opt.series.prod.unit+'</span><br />'+
+                              '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+opt.series.yield.unit+'</span>',
+                        align: 'left',
+                        verticalAlign: 'bottom',
+                        useHTML: true,
+                        x: 30,
+                        y: -10
+					},*/
+					xAxis: [{
+						type: 'datetime',
+						categories: 'time',
+						tickWidth: 0,
+						gridLineWidth: 1
+					}],
+					yAxis: chartConfig.yAxis,
+					tooltip: {
+                        formatter: function() {
+                            var s = '<b>'+ this.x +'</b>';
+                            
+                            Ext.each(this.points, function(i, point) {
+                                s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
+                                    '<span style="font-size:12px;">'+ i.y+'</span>';
+                            });
+                            
+                            return s;
+                        },
+                        shared: true,
+						crosshairs: true
+					},
+                    legend: {
+						layout: 'vertical',
+						align: 'right',
+						verticalAlign: 'middle',
+						borderWidth: 0,						
+                        labelFormatter: function() {
+                            if (this.name == 'Area (000 hectares)'){
+                                return 'Area (000 ha)';
+                            }else{
+                                return this.name;
+                            }
+                            
+                        }
+                    }            
+				}
+			});
+			charts.push(chart);
+		}
+		
+		return charts; 
+	},
+    randomColorsRGB: function(total){
+        var i = 360 / (total - 1); // distribute the colors evenly on the hue range
+        //var i = total / 360; // distribute the colors evenly on the hue range
+        var r = []; // hold the generated colors
+        var hsvToRgb = function(h,s,v,i){
+            var rgb= Ext.ux.ColorPicker.prototype.hsvToRgb(h,s,v);
+            return rgb;
+            //return "#" +  Ext.ux.ColorPicker.prototype.rgbToHex( rgb );
+        }
+        for (var x=0; x<total; x++)
+        {
+            r.push(hsvToRgb(i * x, 1, 1,x)); // you can also alternate the saturation and value for even more contrast between the colors
+        }
+        return r;
+    },
+    randomColorsHEX: function(total){
+        var i = 360 / (total - 1); // distribute the colors evenly on the hue range
+        //var i = total / 360; // distribute the colors evenly on the hue range
+        var r = []; // hold the generated colors
+        var hsvToRgb = function(h,s,v,i){
+            var rgb= Ext.ux.ColorPicker.prototype.hsvToRgb(h,s,v);
+            //return rgb;
+            return "#" +  Ext.ux.ColorPicker.prototype.rgbToHex( rgb );
+        }
+        for (var x=0; x<total; x++)
+        {
+            r.push(hsvToRgb(i * x, 1, 1,x)); // you can also alternate the saturation and value for even more contrast between the colors
+        }
+        return r;
+    }	
 });
 
 

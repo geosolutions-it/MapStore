@@ -46,7 +46,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
     outputTypeText:'Output Type',
     areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
     seasonText:'Season',
-	
+	typeNameData:"nrl:CropData2",
     /** layer Name **/
     hilightLayerName:"CropData_Selection_Layer", //TODO doesn't seems to run
     radioQtipTooltip: "You have to be logged in to use this method",
@@ -214,9 +214,11 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             var aoiFieldSet = this.output.aoiFieldSet;
                             var areaSelector = aoiFieldSet.AreaSelector;
                             var gran_type = aoiFieldSet.gran_type.getValue().inputValue;
-							
+							this.output.changeMode('composite');
+                            this.output.mode.setValue('composite',true);
                             if(outputValue == 'data'){
-                                variable.disable();
+                                this.output.mode.setVisible(false);
+                                variable.setVisible(false);
                                 areaSelector.enable();
                                 submitButton.destroy();
                                 delete submitButton;
@@ -241,7 +243,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 this.output.syncSize();
 
                             }else if(outputValue == 'map'){
-                                variable.enable();
+                                this.output.mode.setVisible(false);
+                                variable.setVisible(true);
                                 //set area selector constraints and status
                                 aoiFieldSet.disableWidth= ['district','pakistan'];
                                 if('province'== gran_type){
@@ -270,8 +273,9 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 this.output.syncSize();
                                 
                             }else{
+                                this.output.mode.setVisible(true);
                                 this.output.units.setDisabled(false);
-                                variable.disable();
+                                variable.setVisible(false);
                                 
                                 //set area selector constraints and status
                                 aoiFieldSet.disableWidth = ['pakistan'];
@@ -364,10 +368,108 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     areaFilter:this.areaFilter, 
                     hilightLayerName:this.hilightLayerName,
                     layers:this.layers
+                },{ 
+                    fieldLabel: 'Mode',
+                    xtype: 'radiogroup',
+                    anchor:'100%',
+                    autoHeight:true,
+                    ref: 'mode',
+                    title: this.outputTypeText,
+                    defaultType: 'radio',
+                    columns: 2,
+                    disabled:false,
+                    items:[
+                        {boxLabel: 'Composite' , name: 'mode', inputValue: 'composite',checked:true},                        
+                        {boxLabel: 'Compare' , name: 'mode', inputValue: 'compare'},
+                    ],
+                    listeners: {
+                        change: function(c,checked){
+                            this.ownerCt.changeMode(checked.inputValue);
+                        }
+                    }
+                //
+                // UNIT OF MEASURE
+                //
                 },
                 
-                //COMMODITY
-                {
+                //COMMODITY GRID
+                 new Ext.ux.grid.CheckboxSelectionGrid({
+                    title: 'Commodities',
+                    enableHdMenu:false,
+                    hideHeaders:true,
+                    hidden:true,
+                    //autoHeight:true,
+                    ref: 'commodities',
+                    height:160,
+                    //viewConfig: {forceFit: true},
+                    store: new Ext.data.JsonStore({
+                        fields: this.commodityFields,
+                        autoLoad: true,
+                        url: this.rangesUrl,
+                        root: 'features',
+                        idProperty:'crop',
+                        listeners:{
+                            scope:this,
+                            load:loadStoreTrigger
+                        }
+                    }),
+                    columns: {
+                        id:'commodity_label',
+                        header:'Commodity',
+                        dataIndex: 'label'
+                    },
+                    allowBlank:false,
+                    name:'crop',
+                    anchor:'100%',
+                    
+                    listeners: {
+                        selectionchange:function(records){
+                            /*var yearRangeSelector =this.refOwner.yearRangeSelector;
+                            if(records.length<=0){
+                               yearRangeSelector.setDisabled(true); 
+                            }else{
+                                var max=-99999,min=99999;
+                                for(var i=0;i<records.length ;i++){
+                                    var rec = records[i];
+                                    var curmax = rec.get('max');
+                                    var curmin = rec.get('min');
+                                    if(curmax > max){
+                                        max = curmax;
+                                    }
+                                    if(curmin < min){
+                                        min = curmin;
+                                    }  
+                                }
+                                if(max==99999|| min == -99999){
+                                     yearRangeSelector.setDisabled(true);
+                                }else{
+                                    yearRangeSelector.setDisabled(false);
+                                    yearRangeSelector.setMaxValue(max);
+                                    yearRangeSelector.setMinValue(min);
+                                }
+                            }*/
+                        }/*,
+                        select: function(cb,record,index){
+                            //set year range for the selected crop
+                            var selectedCommodity = record;
+                            var yrs= cb.ownerCt.yearRangeSelector;
+                            yrs.setMaxValue(selectedCommodity.get('max'));
+                            yrs.setMinValue(selectedCommodity.get('min'));
+                            cb.ownerCt.referenceYear.setText(yrs.endValue.getValue());
+                            var comValue = cb.getValue();
+                            //filter and set unit of measures
+                            var units = this.refOwner.units;
+                            filterUnitByCrop(units,comValue);
+                            resetUnitComboboxes(this.refOwner.units,selectedCommodity);
+                            
+                            
+                        }*/
+                    } 
+                    
+                //
+                //REFERENCE YEAR
+                //
+                }),{
                     xtype: 'nrl_commoditycombobox',
                     forceSelection:true,
                     selectOnFocus:true,
@@ -446,15 +548,36 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     title: this.outputTypeText,
                     defaultType: 'radio',
                     columns: 2,
-                    disabled:true,
+                    disabled:false,
+                    hidden:true,
                     items:[
                         {boxLabel: 'Area' , name: 'variable', inputValue: 'Area'},
                         {boxLabel: 'Reference Year', name: 'type', inputValue: 'total', checked: true},
                         {boxLabel: 'Production', name: 'variable', inputValue: 'Production', checked: true},
                         {boxLabel: 'Difference' , name: 'type', inputValue: 'difference'},
                         {boxLabel: 'Yield' , name: 'variable', inputValue: 'Yield'},
-                        
                         {boxLabel: 'Average' , name: 'type', inputValue: 'average'}
+                        
+                    ]
+                },{ 
+                    fieldLabel: 'Variable',
+                    xtype: 'radiogroup',
+                    anchor:'100%',
+                    autoHeight:true,
+                    ref: 'variable_compare',
+                    //checkboxToggle:true,
+                    title: this.outputTypeText,
+                    defaultType: 'radio',
+                    columns: 2,
+                    disabled:false,
+                    hidden:true,
+                    items:[
+                        {boxLabel: 'Area' , name: 'variable_compare', inputValue: 'area'},
+                        {boxLabel: 'By Region', name: 'compare_group', inputValue: 'region', checked: true},
+                        {boxLabel: 'Production', name: 'variable_compare', inputValue: 'prod', checked: true},
+                        {boxLabel: 'By Commodity' , name: 'compare_group', inputValue: 'crop'},
+                        {boxLabel: 'Yield' , name: 'variable_compare', inputValue: 'yield'}
+                        
                         
                     ]
                 //
@@ -619,10 +742,22 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                             }
                     }]
                 }            
-            ],	
+            ],
+            changeMode: function(mode){
+                this.mode.setValue(mode);
+                var commodityCB = this.Commodity;
+                commodityCB.setVisible(mode == 'composite');
+                var commoditygrid = this.commodities;
+                commoditygrid.setVisible(mode == 'compare');
+                var season = this.season;
+                season.setVisible(mode == 'composite');
+                this.variable_compare.setVisible(mode == 'compare');
+                this.doLayout();
+            },
             buttons:[{
                 url: this.dataUrl,
                 xtype: 'gxp_nrlCropDataButton',
+                typeName: this.typeNameData,
                 ref: '../submitButton',
                 target:this,
                 form: this,
@@ -636,19 +771,58 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         
 		
 		
-        //Enable Disable button when regions are selected
+        //Enable Disable xTypeButton when regions are selected
         this.output.on('update',function(store){
-            var button = this.output.submitButton.getXType();
+			
+			var button = this.output.submitButton;
+            var xTypeButton = button.getXType();
 			
 			var values = this.output.getForm().getValues();
 			var gran_type = values.areatype;
-				
-            if (button == "gxp_nrlCropDataButton" || button == 'gxp_nrlCropDataTabButton'){
-                this.output.submitButton.setDisabled(store.getCount()<=0 && gran_type != "pakistan");
+			
+            if (xTypeButton == "gxp_nrlCropDataButton" || xTypeButton == 'gxp_nrlCropDataTabButton'){
+                button.setDisabled(store.getCount()<=0 && gran_type != "pakistan");
             }else{
-                //map button
-                this.output.submitButton.setDisabled(store.getCount()<=0 && gran_type == "province");
-            }
+                //map xTypeButton
+                button.setDisabled(store.getCount()<=0 && gran_type == "province");
+            }			
+			
+			// Set chartOptCompare object
+			var numRegion = [];
+			var regStore = this.output.aoiFieldSet.AreaSelector.store;
+			var records = regStore.getRange();
+			
+			for (var i=0;i<records.length;i++){
+				var attrs = records[i].get("attributes");
+				var region = attrs.district ? attrs.district + "," + attrs.province : attrs.province;
+				numRegion.push(region.toLowerCase());
+			}			
+			
+			var chartOptCompare = {};
+			var series = {};
+			
+			var colorRGB = button.randomColorsRGB(numRegion.length);
+			var colorHEX = button.randomColorsHEX(numRegion.length);
+			
+			for (var i = 0;i<numRegion.length;i++){
+				
+				series[numRegion[i]] = {
+					name: numRegion[i],
+					color: colorHEX[i],
+					lcolor: 'rgb(' + colorRGB[i] + ')',
+					type: 'line',
+					dataIndex: numRegion[i],
+					unit:'(000 tons)'
+				};
+				
+			}
+			
+			chartOptCompare = {
+				series:series,
+				height:500
+			};
+			
+			button.chartOptCompare = chartOptCompare;
             
         },this);
 		
