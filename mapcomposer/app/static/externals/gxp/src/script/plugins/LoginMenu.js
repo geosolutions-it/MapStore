@@ -73,8 +73,7 @@ gxp.plugins.LoginMenu = Ext.extend(gxp.plugins.Tool, {
         default_login: {
             ptype : 'gxp_geostore_login',
 			actionTarget: "login_menu.menu",
-			loginText: "MapStore Login",
-			loginService: "http://localhost:8080/geostore/rest/users/user/details?includeattributes=true"
+			loginText: "MapStore Login"
         }
     },
 	
