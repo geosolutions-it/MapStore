@@ -758,7 +758,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                   items: [
                                       {
                                             xtype: 'textfield',
-                                            width: 120,
+                                            width: 200,
                                             id: 'diag-text-field',
                                             fieldLabel: grid.gridName,
                                             value: name
@@ -769,22 +769,36 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                                             id: 'diag-text-description',
                                             fieldLabel: grid.gridDescription,
                                             value: desc                
-                                      },
-                                      {
-                                        xtype: "msm_templatecombobox",
-                                        ref: "../templateCombo",
-                                        allowBlank: true,
-                                        templatesCategoriesUrl: grid.geoSearchCategoriesUrl + "/TEMPLATE",
-                                        auth: grid.auth,
-                                        listeners: {
-                                            storeload: function(store, combo){
-                                                if(templateId){
-                                                    combo.setValue(templateId);
-                                                }
-                                            },
-                                            scope: this
-                                        }
-                                      }
+                                      },{
+										    xtype: 'compositefield',
+										    labelWidth: 120,
+										    items: [
+												  {
+													xtype: "msm_templatecombobox",
+													ref: "../../templateCombo",
+													width: 175,
+													allowBlank: true,
+													templatesCategoriesUrl: grid.geoSearchCategoriesUrl + "/TEMPLATE",
+													auth: grid.auth,
+													listeners: {
+														storeload: function(store, combo){
+															if(templateId){
+																combo.setValue(templateId);
+															}
+														},
+														scope: this
+													}
+												  },{
+													xtype: "button",
+													width: 20,
+													iconCls: "delete",
+													scope: this,
+													handler: function(){
+														formMetadata.templateCombo.reset();
+													}
+												  }
+     										]
+									  }
                                   ]
                                 }
                             ]
@@ -887,8 +901,12 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 													expander.collapseAll();
 											  };
 											  //save the template Id updating the attribute
+											  if(templateId == ""){
+													templateId = "null";
+											  }
+											  
 										      if(templateId){
-												var updateAttributeUrl  = geoStoreBase + "resources/resource/"+mapId+"/attributes/templateId/"+ templateId;
+												var updateAttributeUrl  = geoStoreBase + "resources/resource/" + mapId + "/attributes/templateId/" + templateId;
 												Ext.Ajax.request({
 												   url: updateAttributeUrl,
 												   method: 'PUT',
@@ -978,7 +996,28 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					copy.name = prefixName + data.name;
 					copy.description = data.description;
 					copy.blob = data.blob;
-					copy.owner = grid.login.getCurrentUser();
+					if(data.attributes){
+						copy.attributes = data.attributes;
+						
+						var ownerIndexElement;
+						for(var i=0; i<copy.attributes.length; i++){
+							if(copy.attributes[i].name == "owner"){
+								// ////////////////////////////////////////////////
+								// Due to backward compatibility we manage 
+								// temporarily the owner attribute separately.
+								// ////////////////////////////////////////////////
+								copy.owner = grid.login.getCurrentUser();
+								ownerIndexElement = i;
+							}
+						}
+						
+						if(ownerIndexElement != undefined){
+							copy.attributes.splice(ownerIndexElement, 1);
+						}
+					}else{
+						copy.owner = grid.login.getCurrentUser();
+					}					
+					
 					geostore.create(copy, function(data) {
 						reload();
 					});

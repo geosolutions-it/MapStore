@@ -83,7 +83,8 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 	 *  ``Object``
 	 *  The metric unit to display summary
 	 */
-  metricUnit :"km",
+    metricUnit :"km",
+	
 	/** api: config[hideWhenDeactivate]
 	 *  ``Boolean``
 	 *  Flag to hide output when the selection method is deactivated. Default is true
@@ -384,7 +385,13 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 	 */
 	deactivate: function(){
 		this.reset();
-		this.hide();
+		if(this.distanceFieldset){
+         		this.distanceFieldset.hide();
+		}
+		if(this.geometryOperationFieldset){
+	        	this.geometryOperationFieldset.collapse();
+		}
+		this.hide();		
 	},
 
     /** api: method[addOutput]

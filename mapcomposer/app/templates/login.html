@@ -496,7 +496,7 @@
 				draggable:false,
 				closable: false,
 				actionTarget: {target: "paneltbar",index: 40},
-				loginService:  proxy + encodeURIComponent(serverConfig.geoStoreBase + "users/user/details?includeattributes=true"),
+				loginService:  loginService,
 				loginSync: function(){
 					this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
 					Ext.getCmp('paneltbar').items.each(function(tool) {

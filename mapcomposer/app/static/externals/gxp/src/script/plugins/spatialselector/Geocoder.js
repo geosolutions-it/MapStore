@@ -228,7 +228,10 @@ gxp.plugins.spatialselector.Geocoder = Ext.extend(gxp.plugins.Tool, {
 		    		if(!comboBox.vendorParams){
 		    			comboBox.vendorParams = {};
 		    		}
-		    		var cql_filter = me.crossParameters[type][parameter][targetCombo] + " = " + value;
+					
+                    var crossParamsValue = me.crossParameters[type][parameter][targetCombo];
+		    		var cql_filter = typeof(value) == "number" ? crossParamsValue + " = " + value : crossParamsValue + " = " + "'"+value+"'";
+
 		    		Ext.apply(comboBox.vendorParams,{
 		    			cql_filter: cql_filter
 		    		});

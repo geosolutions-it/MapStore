@@ -81,6 +81,8 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
     initComponent : function() {
     	var me = this;
 
+		this.addEvents('delete_template');
+		
     	// search box
     	var searchField = new Ext.form.TextField({
 			name: "templateSearch"
@@ -207,6 +209,7 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									
 									geostore.deleteByPk(id, function(response){
 										me.searchTemplate();
+										me.fireEvent("delete_template", response);
 									});
 									
                                     return true;

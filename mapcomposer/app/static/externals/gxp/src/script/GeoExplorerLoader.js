@@ -124,16 +124,16 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         var config = this.config;
         var me = this;
         var url = this.geoStoreBaseURL + 'extjs/search/category/MAPSTORECONFIG';
-        if(url.indexOf("http") == 0){
+        /*if(url.indexOf("http") == 0){
             url = this.proxy + url;
-        }
+        }*/
         var h = {
             'Accept': 'application/json'
         };
         if(this.auth){
             h['Authorization'] = this.auth;
         }
-        url = OpenLayers.Request.makeSameOrigin(url,proxy);
+        url = OpenLayers.Request.makeSameOrigin(url, this.proxy);
         this.adminConfigStore = new Ext.data.JsonStore({
             root: 'results',
             autoLoad: false,
@@ -202,9 +202,9 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
      *  Load a configuration from an url
      */
     loadData: function (url, dataId, eventListener){
-        var url = (url ? url: this.geoStoreBaseURL + "data/" + dataId);
-        url = OpenLayers.Request.makeSameOrigin(url,proxy);
-         var h = {
+        var url = (url ? url : this.geoStoreBaseURL + "data/" + dataId);
+        url = OpenLayers.Request.makeSameOrigin(url, this.proxy);
+        var h = {
             'Accept': 'application/json'
         };
         if(this.auth){
@@ -218,6 +218,14 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
             success: function(response, opts){
                 try{
                     var loadedConfig = Ext.util.JSON.decode(response.responseText);
+					// ////////////////////////////////////////////////////////////////////////////
+					// TODO: Fix this in GeoStore also for maps configuration. At the first time 
+					// GeoStore incapsulates the JSON in a "data" object. This is a temporary fix 
+					// useful for template configurations.
+					// ////////////////////////////////////////////////////////////////////////////
+					if(loadedConfig.data){
+						loadedConfig = Ext.util.JSON.decode(loadedConfig.data); 
+					}
                     this.fireEvent(eventListener, loadedConfig);
                 }catch(e){
                     console.error("Error getting config");
@@ -281,24 +289,24 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
     },
      /**
      * Retrieves auth from (in this order)
-     * * the parent window (For usage in manager)
      * * the session storage (if enabled userDetails, see ManagerViewPort.js class of mapmanager)
+     * * the parent window (For usage in manager)
      * We should imagine to get the auth from other contexts.
      */
     getAuth: function(){
         var auth;
-        //get from the parent
-        if(window.parent && window.parent.window && window.parent.window.manager && window.parent.window.manager.auth){
-          auth = window.parent.window.manager.auth;
-          return auth;
-        }
-        //if not present
+        
         //get from the session storage
         var existingUserDetails = sessionStorage["userDetails"];
         if(existingUserDetails){
             this.userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
             auth = this.userDetails.token;
+        } else if(window.parent && window.parent.window && window.parent.window.manager && window.parent.window.manager.auth){
+          //get from the parent
+          auth = window.parent.window.manager.auth;
+          return auth;
         }
+        
         return auth;
     }
 

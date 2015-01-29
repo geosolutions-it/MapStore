@@ -226,7 +226,9 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                                 var node =selmodel.getSelectedNode();
                                 node.setIconCls('gx-tree-filterlayer-icon');
                             }
-                        
+                            if(!this.featureManagerTool.layerRecord.getLayer().vendorParams){
+                                this.featureManagerTool.layerRecord.getLayer().vendorParams = {};
+                            }
                             this.featureManagerTool.layerRecord.getLayer().mergeNewParams({cql_filter:filter.toString()}); 
                             this.featureManagerTool.layerRecord.getLayer().vendorParams.cql_filter = filter.toString();
                     }else{
@@ -259,7 +261,9 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 var attributeFieldset = me.output[0].attributeFieldset;
                 if(this.attributeFieldsetCheckboxToggle)
                     attributeFieldset.collapse();
-                
+
+				this.spatialSelector.selectionMethodCombo.reset();
+
                 var methodSelection = this.output[0].outputType;
 
                 if (me.draw) {me.draw.deactivate();};
