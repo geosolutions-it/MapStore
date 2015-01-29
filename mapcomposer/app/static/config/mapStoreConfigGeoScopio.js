@@ -361,19 +361,13 @@
 			"showReport": false,
 			"directAddLayer": false,
 			"id": "addlayer"
-		},{
-            "ptype":"gxp_nominatimgeocoder",
-            "outputConfig":{
-                "emptyText":"Nominatim GeoCoder",
-                 "vendorOptions":{
-                    "bounded":1,
-                    "countrycodes":"it",
-                    "addressdetails":0
-                },
-                "boundOption":"max"
-            },
-            "outputTarget":"paneltbar",
-            "index":26
-        }
+		}, {
+			"actions": ["-"], 
+			"actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_geolocationmenu",
+			"actionTarget": {"target": "paneltbar", "index": 23},
+			"toggleGroup": "toolGroup"
+		}
 	]
 }
