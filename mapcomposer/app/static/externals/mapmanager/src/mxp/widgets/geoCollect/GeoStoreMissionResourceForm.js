@@ -109,7 +109,22 @@ mxp.widgets.GeoStoreMissionResourceForm = Ext.extend(Ext.Panel, {
 			  id: 'attributes-field-set',
 			  title:this.dataFieldLabel,//i18n
 			  border: false,
-			  autoScroll:true,
+			  autoScroll:true,listeners: {
+                afterrender: function(me, eOpts){
+                    me.header.on('mousedown',function(e){
+                    if(!me.collapsed)  me.stopCollapse=true;
+                });
+                },
+                beforecollapse: function(me, dir, an, opt){
+                
+                    if(me.stopCollapse){
+                        me.stopCollapse=false;
+                        return false;
+                    }
+                } 
+                
+                    
+                },
               getResourceEditor:function(){
               	return this.items.items[0];
               }
@@ -229,7 +244,23 @@ mxp.widgets.GeoStoreMissionResourceForm = Ext.extend(Ext.Panel, {
                     columnWidth:.5,
                     layout:'form',
                     items:this.attributeFields
-              }]
+              }],
+              listeners: {
+                afterrender: function(me, eOpts){
+                    me.header.on('mousedown',function(e){
+                    if(!me.collapsed)  me.stopCollapse=true;
+                });
+                },
+                beforecollapse: function(me, dir, an, opt){
+                
+                    if(me.stopCollapse){
+                        me.stopCollapse=false;
+                        return false;
+                    }
+                } 
+                
+                    
+                },
 			}
 ,/*{
 	xtype:'mxp_gc_resource_editor',
@@ -302,7 +333,7 @@ mxp.widgets.GeoStoreMissionResourceForm = Ext.extend(Ext.Panel, {
                     var value =values[name];
                     attribute[arr[1]] = {
                         name: name
-                    }
+                    };
                     if(value instanceof Date){
                       //TODO insert correct format
                       var field = form.findField(name);
@@ -382,7 +413,7 @@ mxp.widgets.GeoStoreMissionResourceForm = Ext.extend(Ext.Panel, {
             me.saveSuccess();
             me.fireEvent("save",response);
             
-        }
+        };
         var finishError = function(response){
             me.setLoading(false);
             me.fireEvent("save",null);
@@ -436,8 +467,7 @@ mxp.widgets.GeoStoreMissionResourceForm = Ext.extend(Ext.Panel, {
     //DEvo parsaral e ricostruire gli oggetti della resource!!
     loadResource: function(record){
         //load record
-
-        var resourceId
+        var resourceId;
         if(record){
             resourceId = record.get('id');
             this.general.getForm().loadRecord(record);

@@ -868,23 +868,28 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
     //If row is selected, check row positions and enble the arrow
     enableUpDown : function() {
         var sm = this.widList.getSelectionModel();
+        
+        if(this.widList.getStore().getCount()>1){
+            if (sm) {
+                if (sm.isSelected(0)) {// è selezionato il primo
+                    this.moveDown.enable();
+                    this.moveUp.disable();
 
-        if (sm) {
-            if (sm.isSelected(0)) {// è selezionato il primo
-                this.moveDown.enable();
-                this.moveUp.disable();
+                } else if (sm.isSelected(this.widList.getStore().getCount() - 1)) {//selezionato ultimo
+    
+                    this.moveDown.disable();
+                    this.moveUp.enable();
 
-            } else if (sm.isSelected(this.widList.getStore().getCount() - 1)) {//selezionato ultimo
+                } else {
 
-                this.moveDown.disable();
-                this.moveUp.enable();
+                    this.moveDown.enable();
+                    this.moveUp.enable();
+             }
 
-            } else {
-
-                this.moveDown.enable();
-                this.moveUp.enable();
             }
-
+        }else{
+             this.moveDown.disable();
+                    this.moveUp.disable();
         }
 
     },

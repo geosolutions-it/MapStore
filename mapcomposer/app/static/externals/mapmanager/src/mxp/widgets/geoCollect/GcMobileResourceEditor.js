@@ -65,7 +65,7 @@ this.items=[{
 	            
 	        }
 	        else if(currentTab.isXType( 'mxp_gc_pview_resourcce_editor') ){
-	           if(!currentTab.xpanlForm.disabled &&  currentTab.xpanlForm.isDirty()){
+	           if(currentTab.xpanelForm && !currentTab.xpanlForm.disabled &&  currentTab.xpanlForm.isDirty()){
 	                currentTab.saveMe();
                         return false;
 	               

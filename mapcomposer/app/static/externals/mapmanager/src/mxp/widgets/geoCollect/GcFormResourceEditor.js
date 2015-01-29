@@ -81,7 +81,7 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 			}, '-', {
 				ref : '//addP',
 				text : 'New Page',
-				iconCls : "addgc	",
+				iconCls : "addgc",
 				tooltip : 'Create a new Page',
 				handler : function(btn) {
 
@@ -435,21 +435,26 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 	enableUpDown : function() {
 		var sm = this.pageList.getSelectionModel();
 
-		if (sm) {
-			if (sm.isSelected(0)) {// è selezionato il primo
-				this.moveDown.enable();
-				this.moveUp.disable();
-
-			} else if (sm.isSelected(this.pageList.getStore().getCount() - 1)) {//selezionato ultimo
-				this.moveDown.disable();
-				this.moveUp.enable();
-
-			} else {
-
-				this.moveDown.enable();
-				this.moveUp.enable();
-			}
-
+		if(this.pageList.getStore().getCount()>1){
+            if (sm) {
+    			if (sm.isSelected(0)) {// è selezionato il primo
+    				this.moveDown.enable();
+    				this.moveUp.disable();
+    
+    			} else if (sm.isSelected(this.pageList.getStore().getCount() - 1)) {//selezionato ultimo
+    				this.moveDown.disable();
+    				this.moveUp.enable();
+    
+    			} else {
+    
+    				this.moveDown.enable();
+    				this.moveUp.enable();
+    			}
+    
+    		}
+		}else{
+		    this.moveDown.disable();
+                    this.moveUp.disable();
 		}
 
 	},
