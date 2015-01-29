@@ -96,6 +96,7 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
     opacityText: "Opacity",
     formatText: "Format",
     transparentText: "Transparent",
+    singleTileText: "Use a Single Tile",
     cacheText: "Cache",
     cacheFieldText: "Use cached version",
     stylesText: "Styles",
@@ -307,6 +308,9 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
         var transparent = layer.params["TRANSPARENT"];
         transparent = (transparent === "true" || transparent === true);
         
+        var singleTile = layer.singleTile;
+        singleTile = (singleTile === "true" || singleTile === true);        
+        
         return {
             title: this.displayText,
             style: {"padding": "10px"},
@@ -357,6 +361,20 @@ gxp.WMSLayerPanel = Ext.extend(Ext.TabPanel, {
                     check: function(checkbox, checked) {
                         layer.mergeNewParams({
                             transparent: checked ? "true" : "false"
+                        });
+                        this.fireEvent("change");
+                    },
+                    scope: this
+                }
+            }, {
+                xtype: "checkbox",
+                id: 'singletile',
+                fieldLabel: this.singleTileText,
+                checked: singleTile,
+                listeners: {
+                    check: function(checkbox, checked) {
+                        layer.addOptions({
+                            singleTile: checked ? true : false
                         });
                         this.fireEvent("change");
                     },

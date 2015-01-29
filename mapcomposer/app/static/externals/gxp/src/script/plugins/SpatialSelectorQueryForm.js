@@ -93,6 +93,22 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
      */    
     autoComplete: null,
     
+    /** api: config[attributeFieldsetCollapsedFirst]
+     * ``Boolean``
+     * Config to set default collapsed spatial query form on startup
+     */    
+    spatialSelectorFieldsetCollapsedFirst: false,
+    
+    spatialSelectorFieldsetHidden: false,
+    
+    spatialSelectorFieldsetCheckboxToggle: true,    
+    
+    attributeFieldsetCollapsedFirst: true,    
+    
+    attributeFieldsetHidden: false,  
+    
+    attributeFieldsetCheckboxToggle: true,        
+    
     init: function(target) {
         
         var me = this;
@@ -210,7 +226,9 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                                 var node =selmodel.getSelectedNode();
                                 node.setIconCls('gx-tree-filterlayer-icon');
                             }
-                        
+                            if(!this.featureManagerTool.layerRecord.getLayer().vendorParams){
+                                this.featureManagerTool.layerRecord.getLayer().vendorParams = {};
+                            }
                             this.featureManagerTool.layerRecord.getLayer().mergeNewParams({cql_filter:filter.toString()}); 
                             this.featureManagerTool.layerRecord.getLayer().vendorParams.cql_filter = filter.toString();
                     }else{
@@ -232,6 +250,19 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             handler: function() {                
                 this.resetFeatureManager();
                 this.spatialSelector.reset();
+                
+                var selectionMethodCombo = this.spatialSelector.selectionMethodCombo;
+                selectionMethodCombo.reset();
+
+                var spatialSelectorFieldset = me.output[0].spatialSelectorFieldset;
+                if(this.spatialSelectorFieldsetCheckboxToggle)
+                    spatialSelectorFieldset.collapse();
+
+                var attributeFieldset = me.output[0].attributeFieldset;
+                if(this.attributeFieldsetCheckboxToggle)
+                    attributeFieldset.collapse();
+
+				this.spatialSelector.selectionMethodCombo.reset();
 
                 var methodSelection = this.output[0].outputType;
 
@@ -412,10 +443,32 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             items: [
             {
                 xtype: "fieldset",
+                id: "selectedLayerToQueryId",
+                ref: "selectedLayerToQuery",
+                title: "Layer Selezionato",
+                checkboxToggle: false,
+                collapsed : false,
+                hidden: false,
+                forceLayout : true,
+                cls: 'selected-query-layer',
+                listeners: {
+                    scope: this,
+                    expand: function(panel){
+                        panel.doLayout();
+                    },
+                    collapse: function(panel) {
+                        this.spatialSelector.reset();
+                    }
+                }
+            },            
+            {
+                xtype: "fieldset",
                 ref: "spatialSelectorFieldset",
                 title: spatialSelectorOutput.title,
-                checkboxToggle: true,
-                collapsed : false,
+                checkboxToggle: me.spatialSelectorFieldsetCheckboxToggle,
+                collapsed : me.spatialSelectorFieldsetCollapsedFirst,
+                hidden: me.spatialSelectorFieldsetHidden,
+                forceLayout : true,
                 items: [spatialSelectorOutput],
                 listeners: {
                     scope: this,
@@ -431,8 +484,9 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 xtype: "fieldset",
                 ref: "attributeFieldset",
                 title: this.queryByAttributesText,
-                checkboxToggle: true,
-                collapsed : true,
+                checkboxToggle: me.attributeFieldsetCheckboxToggle,
+                collapsed : me.attributeFieldsetCollapsedFirst,
+                hidden: me.attributeFieldsetHidden,
 				listeners: {
 					scope: this,
 					expand: function(panel){

@@ -281,12 +281,14 @@ GeoExt.Lang.add("en", {
     "mxp.widgets.GeoStoreCategoryManager.prototype":{
         resourceListTitle: "Resources",
         emptyMessage: "No resource to display",
-        displayMessage: "Displaying {0} - {1} of {2}"
+        displayMessage: "Displaying {0} - {1} of {2}",
+		titleConfirmDeleteMsg: "Confirm delete resource",
+		textConfirmDeleteMsg: "Are you sure you want to delete this resource?"
     },
     "mxp.plugins.GeoBatchFlows.prototype": {
         buttonText: "Workflows",
         flowsListTitle:'Flows',
-        runButtonText:'Run',
+        runButtonText: "Run",
         consumersGridTitle: 'Active',
         archivedGridTitle: 'Archived'
     },
@@ -294,6 +296,7 @@ GeoExt.Lang.add("en", {
         nameText: 'Title',
         descriptionText:'Description',
         loadingMessage: 'Loading...',
+        runButtonTooltip:'Run',
         errorContactingGeobatch: 'Error loading flows from GeoBatch'
     },
     "mxp.widgets.GeoBatchConsumerGrid.prototype": {
