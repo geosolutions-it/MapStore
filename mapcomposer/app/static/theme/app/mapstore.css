@@ -160,6 +160,10 @@ div#homelogos ul li a:hover {
     background-image: url(img/geosilk/server_table.png);
 }
 
+.grid-columns {
+    background-image: url(img/silk/grid_columns.png);
+}
+
 /* gxp_wmsgetfeatureinfo */
 .getfeatureinfo-icon{
    background-image: url(img/silk/information.png) !important;

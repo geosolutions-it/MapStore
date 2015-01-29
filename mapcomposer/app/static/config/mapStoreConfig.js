@@ -101,6 +101,7 @@
 					"xtype": "container",
 					"title": "Griglia Risultati",
 					"border": false,
+					"iconCls": "grid-columns",
 					"layout": "fit",
 					"id": "featuregrid"
 				},{
@@ -254,7 +255,18 @@
 			"showOnStartup": false,
 			"fileDocURL": "MapStore-Help.pdf"
         },{
-			"ptype": "gxp_sirac_login",
+			"ptype": "gxp_login_menu",
+			"loginConfig":{
+				"default_login": {
+					"ptype" : "gxp_geostore_login",
+					"actionTarget": "login_menu.menu",
+					"loginText": "MapStore Login"
+				},
+				"sirac_login": {
+					"ptype" : "gxp_sirac_login",
+					"actionTarget": "login_menu.menu"
+				}
+			}
 			"actionTarget": "paneltbar",
 			"index": 26
 		},{

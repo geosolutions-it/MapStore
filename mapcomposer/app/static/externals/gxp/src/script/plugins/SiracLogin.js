@@ -33,19 +33,19 @@ gxp.plugins.SiracLogin = Ext.extend(gxp.plugins.Tool, {
     /** private: property[logged]
      *  toggle when user login
      */
-    logged:false,
+    logged: false,
 	
     /** api: config[loginText]
      *  ``String``
      *  Text for the tool text in login (i18n).
      */
-    loginText: "Login",
+    loginText: "SiRAC Login",
 	
     /** api: config[logoutTitle]
      *  ``String``
      *  Text for the tool text in logout (i18n).
      */
-    logoutTitle: "Logout",
+    logoutTitle: "Logout from SiRAC",
 	
     scale: 'small',
 	
@@ -59,17 +59,33 @@ gxp.plugins.SiracLogin = Ext.extend(gxp.plugins.Tool, {
     addActions: function() {
 		var apptarget = this.target;
 	
+		var userInfo = apptarget.userDetails;
+		if(userInfo && userInfo.user.attribute){
+			if(userInfo.user.attribute instanceof Array){
+				for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
+					if( userInfo.user.attribute[i].name == "UUID"){
+						this.logged = true;
+					}
+				}
+			}else if(userInfo.user.attribute && 
+					userInfo.user.attribute.name == "UUID"){
+			   this.logged = true;
+			}
+		}
+		
 		var actions = gxp.plugins.SiracLogin.superclass.addActions.apply(this, [
 			[{
 				menuText: this.loginText,
 				iconCls: "login",
 				text: this.loginText,
 				disabled: false,
-				hidden: apptarget.userDetails && apptarget.userDetails.user.attribute[1].value,
+				//hidden: apptarget.userDetails && apptarget.userDetails.user.attribute[1].value,
+				hidden: this.logged && (userInfo && userInfo.provider == "sirac"),
 				scale: this.scale || 'small',
 				tooltip: this.loginText,
 				handler: function() {
-					document.location.href='login';
+					document.location.href = 'login';
+					this.fireEvent("login", this.user, this.ptype);
 				},
 				scope: this
 			},{
@@ -77,28 +93,36 @@ gxp.plugins.SiracLogin = Ext.extend(gxp.plugins.Tool, {
 				iconCls: "logout",
 				scale: this.scale || 'small',
 				text: this.logoutTitle,
-				hidden: !apptarget.userDetails || !apptarget.userDetails.user.attribute[1].value,
-				
+				//hidden: !apptarget.userDetails || !apptarget.userDetails.user.attribute[1].value,
+				hidden: !(this.logged || (userInfo && userInfo.provider == "sirac")),
 				disabled: false,
 				tooltip: this.logoutTitle,
 				handler: function() {
-					document.location.href='cleanSession';
+					document.location.href = 'cleanSession';
+					this.fireEvent("logout", this.ptype);
 				},
 				scope: this
 			},{
 				xtype: 'tbtext',
 				text: apptarget.userDetails ? apptarget.userDetails.user.attribute[0].value : '',
-				hidden: !apptarget.userDetails || !apptarget.userDetails.user.attribute[1].value
+				hidden: !(this.logged || (userInfo && userInfo.provider == "sirac"))
 			}]
 		]);
 		
 		this.loginAction = actions[0];
-		this.logoutAction= actions[1];
+		this.logoutAction = actions[1];
 		
 		return actions;
-    }
-    
-        
+    }, 
+	
+	hideLogin: function(){
+		this.loginAction.hide();
+	},
+	
+    showLogin: function(){
+		this.loginAction.show();
+	}
+	
 });
 
 Ext.preg(gxp.plugins.SiracLogin.prototype.ptype, gxp.plugins.SiracLogin);

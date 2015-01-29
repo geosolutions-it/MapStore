@@ -426,8 +426,10 @@
 						},{
 							name: 'UUID',
 							value: '<% sessionId %>'
-						}]
-					}
+						}],
+						authParam: "sirac-authkey"
+					},
+				    provider: "sirac"
 				}
             }, mapIdentifier, authorization && authorization == "false" ? null: authorization, fullScreen, templateId);   
             
