@@ -67,29 +67,73 @@ this.items=[{
 			
 			//Va ritardato
 			task= new Ext.util.DelayedTask(function(){
-    			 this.mobEdit.loadResourceData(this.resource)
+    			 this.mobEdit.loadResourceData(this.resource);
 			 },this);
 			task.delay(500);
 		},
+	 afterrender: function(me, eOpts){
+                    me.header.on('mousedown',function(e){
+                    if(!me.collapsed)  me.stopCollapse=true;
+                });
+                },
+                beforecollapse: function(me, dir, an, opt){
+                
+                    if(me.stopCollapse){
+                        me.stopCollapse=false;
+                        return false;
+                    }
+                },	
 	scope:this	
 	}
 },{
 	xtype:'mxp_gc_mobile_resourcce_editor',
-	ref:'mobEdit'
+	ref:'mobEdit',
+	listeners: {
+                afterrender: function(me, eOpts){
+                    me.header.on('mousedown',function(e){
+                    if(!me.collapsed)  me.stopCollapse=true;
+                });
+                },
+                beforecollapse: function(me, dir, an, opt){
+                
+                    if(me.stopCollapse){
+                        me.stopCollapse=false;
+                        return false;
+                    }
+                } 
+                
+                    
+                }
 	
-},//pannello con json midificabile a mano non so se 
+},//pannello con json modificabile a mano non so se 
  new Ext.form.FormPanel({
                 frame:true,
                 layout:'fit',
                 xtype:'form',
-                title:'Json',
+                title:'Advanced configuration',
                 border:false,
                 ref:'jsonP',
+                listeners: {
+                afterrender: function(me, eOpts){
+                    me.header.on('mousedown',function(e){
+                    if(!me.collapsed)  me.stopCollapse=true;
+                });
+                },
+                beforecollapse: function(me, dir, an, opt){
+                
+                    if(me.stopCollapse){
+                        me.stopCollapse=false;
+                        return false;
+                    }
+                } 
+                
+                    
+                },
                 tbar:[	{xtype:'toolbar',
 			 				items:[{
-		       					text:'Get',
-			                    tooltip: 'Load from Interface',
-			                    iconCls: "add",
+		       					text:'GUI -> JSON',
+			                    tooltip: 'Generate from Interface',
+			                    iconCls: "accept",
 			                    style:{'text indent':0},
 			                    handler: function(btn){ 
 			                    //Se sono in editing il bottone è disabilitato|| 
@@ -99,9 +143,9 @@ this.items=[{
                                 scope:this
 			                    
 			                  		},'-',{
-		       					text:'Load',
+		       					text:'JSON -> GUI',
 			                    tooltip: 'Load to Interface',
-			                    iconCls: "add",
+			                    iconCls: "addgc",
 			                    handler: function(btn){ 
 			                    //Se sono in editing il bottone è disabilitato|| 
 			             	
@@ -141,7 +185,8 @@ this.items=[{
 
 ];	
 	
-	
+
+
 
 mxp.widgets.GcResourceEditor.superclass.initComponent.call(this, arguments);	
 },
@@ -168,22 +213,21 @@ getResourceData: function(){
   	
                    
                 },
-                loadResourceData: function(resource){
+loadResourceData: function(resource){
                    		var pr=new  OpenLayers.Format.JSON();
     					res= pr.read(resource);
                    		this.resource=res;
                    		this.jsonP.loadResourceData(resource);		
-                   		this.dbEdit.loadResourceData(this.resource.schema_seg)
+                   		this.dbEdit.loadResourceData(this.resource.schema_seg);
                    //Carichi solo il db panle le altre vanno caricate dopo di lui
                 },
-                canCommit :function(){
+canCommit :function(){
+    //Se vogliamo che sia salvabile dobbiamo ritornare true anche se non valido, altrimenti il resource editor non salva
                    dbV=this.dbEdit.canCommit();
-                   moV=this.mobEdit.canCommit()
-                    if(dbV===true && moV ===true)return true;
+                   moV=this.mobEdit.canCommit();
+                    if(dbV===true || moV ===true)return true;
                     return false;
                 }
-
-
 
 });
 

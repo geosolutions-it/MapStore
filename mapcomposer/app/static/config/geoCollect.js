@@ -87,6 +87,14 @@
              "target": "north.tbar",
              "index": 3
             },
+            "attributeFields":[{
+  "xtype":"textfield",
+  "id":"attribute.owner",
+  "anchor":'95%',
+  "fieldLabel": "Owner",
+  "name":"attribute.owner"
+ }],
+
            "resourceEditor":{
 			"xtype":"mxp_gc_resource_editor",
 			"ref":"/missionResEdit",
