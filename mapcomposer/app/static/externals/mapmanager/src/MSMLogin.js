@@ -244,7 +244,8 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
 					// //////////////////////////////////////////////////////////
 					var userDetails = {
 						token: this.token,
-						user: user.User
+						user: user.User,
+						provider: "geostore"
 					};
 					
 					sessionStorage.removeItem("userDetails");

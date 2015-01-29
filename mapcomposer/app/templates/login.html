@@ -520,7 +520,8 @@
 					if(login.user){		
 						var uDetails = {
 							token: login.token,
-							user: login.user
+							user: login.user,
+							provider: "geostore"
 						};
 						
 						sessionStorage["userDetails"] = Ext.util.JSON.encode(uDetails);							
@@ -576,7 +577,7 @@
 					login.target = Ext.getCmp('paneltbar');
 					login.addActions();
 					login.loginSync();
-					 var myAccount = new gxp.plugins.GeoStoreAccount({
+					var myAccount = new gxp.plugins.GeoStoreAccount({
 						outputTarget:'appTabs',
 						user: app.userDetails.user,
 						auth: app.userDetails.token,

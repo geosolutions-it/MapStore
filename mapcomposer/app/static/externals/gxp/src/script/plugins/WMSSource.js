@@ -170,6 +170,11 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 			}
 		}
 
+		if(authkey){
+			var authParam = userInfo.user.authParam;
+			this.authParam = authParam ? authParam : this.authParam;
+		}
+		
 		return authkey;
 	},
 	
