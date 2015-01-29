@@ -423,6 +423,8 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
                         wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/ows",
                         format: "image/png8",
                         customParams: {
+                            style: [lyr.params.STYLES],
+                            styles: [lyr.params.STYLES],                                                
                             toUpdate: lyr.toUpdate,
                             stationPrefix: lyr.stationPrefix,
                             tiled: false,

@@ -89,7 +89,7 @@ gxp.plugins.areeallerta.AreeallertaData = Ext.extend(gxp.plugins.Tool, {
             items: [{
                     xtype: 'fieldset',
                     id: 'timeVisualizationID',
-                    title: 'Calcolo Aree di Allerta',
+                    title: 'Time',
                     cls: 'selected-query-layer'
                 }, {
                     xtype: 'fieldset',
@@ -156,7 +156,9 @@ gxp.plugins.areeallerta.AreeallertaData = Ext.extend(gxp.plugins.Tool, {
                 }
                 /*,
                 					this.areaDamage*/
-            ],
+            ]
+            /*
+            ,
             bbar: [{
                     url: this.dataUrl,
                     chartID: "notAdded_boxPlot",
@@ -183,8 +185,7 @@ gxp.plugins.areeallerta.AreeallertaData = Ext.extend(gxp.plugins.Tool, {
                     disabled: false,
                     filter: this.areaDamage,
                     addedLayer: false
-                }
-                /*,{
+                },{
                     url: this.dataUrl,
                     chartID: "notAdded_curvaCum",
                     pagePosition: [10000,800],
@@ -197,8 +198,8 @@ gxp.plugins.areeallerta.AreeallertaData = Ext.extend(gxp.plugins.Tool, {
                     disabled:false,
                     filter: this.areaDamage,
                     addedLayer: false
-                }*/
-            ]
+                }
+            ]*/
         };
 
 	    var realTimePanel = new Ext.Panel({

@@ -1,146 +1,21 @@
 {
-	"scaleOverlayMode": "advanced",
-	"actionToolScale": "medium",
-	"tab": true,
-	"gsSources": {
-		"GEBCO_WMS": {
-			"ptype": "gxp_wmssource",
-			"url": "http://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv?",
-			"title": "GEBCO WMS",
-			"SRS": "EPSG:4326",
-			"version": "1.1.1",
-			"loadingProgress": true,
-			"layersCachedExtent": [-180,
-			-90,
-			180,
-			90],
-			"layerBaseParams": {
-				"FORMAT": "image/jpeg",
-				"TILED": true
-			}
+   
+   "scaleOverlayMode": "basic",
+   "gsSources":{ 
+		"mapquest": {
+			"ptype": "gxp_mapquestsource"
+		}, 
+		"osm": { 
+			"ptype": "gxp_osmsource"
 		},
-		"LaMMA_confini": {
-			"ptype": "gxp_wmssource",
-			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/confini/ows",
-			"title": "LaMMA",
-			"SRS": "EPSG:4326",
-			"version": "1.1.1",
-			"loadingProgress": true,
-			"layersCachedExtent": [-180,
-			-90,
-			180,
-			90],
-			"layerBaseParams": {
-				"FORMAT": "image/png",
-				"TILED": true
-			}
+		"google": {
+			"ptype": "gxp_googlesource" 
 		},
-		"lamma_msg": {
-			"ptype": "gxp_wmssource",
-			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/MSG/ows",
-			"title": "LaMMA MSG",
-			"SRS": "EPSG:4326",
-			"version": "1.1.1",
-			"loadingProgress": true,
-			"layerBaseParams": {
-				"FORMAT": "image/png",
-				"TILED": false
-			}
-		},
-		"lamma_msg_rgb": {
-			"ptype": "gxp_wmssource",
-			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/MSG_RGB/ows",
-			"title": "LaMMA MSG RGB",
-			"SRS": "EPSG:4326",
-			"version": "1.1.1",
-			"loadingProgress": true,
-			"layerBaseParams": {
-				"FORMAT": "image/png",
-				"TILED": false
-			}
-		},
-		"lamma_msg_rss": {
-			"ptype": "gxp_wmssource",
-			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/MSG_RSS/ows",
-			"title": "LaMMA MSG RSS",
-			"SRS": "EPSG:4326",
-			"version": "1.1.1",
-			"loadingProgress": true,
-			"layerBaseParams": {
-				"FORMAT": "image/png",
-				"TILED": false
-			}
-		},
-		"lamma_msg_rss_rgb": {
-			"ptype": "gxp_wmssource",
-			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/MSG_RSS_RGB/ows",
-			"title": "LaMMA MSG RSS RGB",
-			"SRS": "EPSG:4326",
-			"version": "1.1.1",
-			"loadingProgress": true,
-			"layerBaseParams": {
-				"FORMAT": "image/png",
-				"TILED": false
-			}
-		},
-		"lamma_radar": {
-			"ptype": "gxp_wmssource",
-			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/RADAR/ows",
-			"title": "LaMMA Radar",
-			"SRS": "EPSG:4326",
-			"version": "1.1.1",
-			"loadingProgress": true,
-			"layerBaseParams": {
-				"FORMAT": "image/png8",
-				"TILED": false
-			}
-		},
-		"aree_allerta": {
-			"ptype": "gxp_wmssource",
-			"url": "http://159.213.57.108/geoserver/ALLERTA/ows",
-			"title": "Aree Allerta",
-			"SRS": "EPSG:4326",
-			"version": "1.1.1",
-			"loadingProgress": true,
-			"layerBaseParams": {
-				"FORMAT": "image/png8",
-				"TILED": false
-			}
-		},
-		"geoscopio_ortofoto": {
-			"ptype": "gxp_wmssource",
-			"url": "http://web.regione.toscana.it/wmsraster/com.rt.wms.RTmap/wms?map=wmsofc",
-			"title": "Geoscopio ortofoto",
-			"SRS": "EPSG:4326",
-			"version": "1.3.0",
-			"loadingProgress": true,
-			"layersCachedExtent": [-180,
-			-90,
-			180,
-			90],
-			"layerBaseParams": {
-				"FORMAT": "image/png",
-				"TILED": false
-			}
-		},
-		"geoscopio_amb_ammin": {
-			"ptype": "gxp_wmssource",
-			"url": "http://www502.regione.toscana.it/wmsraster/com.rt.wms.RTmap/wms?map=wmsambamm&",
-			"title": "Geoscopio ambiti amministrativi",
-			"SRS": "EPSG:4326",
-			"version": "1.3.0",
-			"loadingProgress": true,
-			"layersCachedExtent": [-180,
-			-90,
-			180,
-			90],
-			"layerBaseParams": {
-				"FORMAT": "image/png",
-				"TILED": false
-			}
-		},
-		"ol": {
-			"ptype": "gxp_olsource"
+		"bing": {
+			"ptype": "gxp_bingsource" 
+		}, 
+		"ol": { 
+			"ptype": "gxp_olsource" 
 		}
 	},
 	"loadingPanel": {
@@ -149,918 +24,155 @@
 		"center": true
 	},
 	"map": {
-		"projection": "EPSG:4326",
-		"displayProjection": "EPSG:4326",
+		"projection": "EPSG:900913",
 		"units": "m",
-		"center": [11,
-		43.5],
-		"numZoomLevels": 17,
-		"animatedZooming": {
-			"transitionEffect": "resize"
-		},
-		"maxResolution": 2,
-		"zoom": 7,
-		"maxExtent": [-180,
-		-90,
-		180,
-		90],
-		"restrictedExtent": [-180,
-		-90,
-		180,
-		90],
-		"layers": [{
-			"source": "ol",
-			"group": "background",
-			"fixed": true,
-			"type": "OpenLayers.Layer",
-			"visibility": false,
-			"args": ["None",
+		"center": [1250000.000000, 5370000.000000],
+		"zoom":5,
+		"maxExtent": [
+			-20037508.34, -20037508.34,
+			20037508.34, 20037508.34
+		],
+		"layers": [
 			{
-				"visibility": false
-			}]
-		},
-		{
-			"source": "GEBCO_WMS",
-			"group": "background",
-			"title": "Basi di sfondo",
-			"name": "GEBCO_LATEST",
-			"displayInLayerSwitcher": true,
-			"visibility": true,
-			"tiled": true,
-			"attribution": false,
-			"queryable": false,
-			"displayOutsideMaxExtent": true
-		},
-		{
-			"source": "geoscopio_ortofoto",
-			"group": "<b>Ortofotocarte 1:10.000</b>",
-			"title": "Anno 2013 col - AGEA",
-			"name": "rt_ofc.10k13",
-			"styles": "default",
-			"displayInLayerSwitcher": true,
-			"visibility": false,
-			"tiled": false,
-			"attribution": false,
-			"queryable": false
-		},
-		{
-			"format": "image/png8",
-			"group": "<b>Aree di allerta</b>",
-			"name": "AREE_ALLERTA",
-			"opacity": 0.8,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": [],
-			"style": [],
-			"title": "Aree di allerta",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"queryable": true
-		},
-		{
-			"format": "image/png",
-			"expanded": false,
-			"checked": false,
-			"group": "<b>MSG - every 15 Minutes</b>",
-			"name": "MSG_Channel_05",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg",
-			"styles": ["raster"],
-			"title": "WATER VAPOR",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png",
-			"expanded": false,
-			"checked": false,
-			"group": "<b>MSG - every 15 Minutes</b>",
-			"name": "MSG_Channel_09",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg",
-			"styles": ["raster"],
-			"title": "IR",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png",
-			"expanded": false,
-			"checked": false,
-			"group": "<b>MSG - every 15 Minutes</b>",
-			"name": "msg_ams",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg_rgb",
-			"styles": ["raster"],
-			"title": "AIRMASS",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png",
-			"expanded": false,
-			"checked": false,
-			"group": "<b>MSG - every 15 Minutes</b>",
-			"name": "msg_cvs",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg_rgb",
-			"styles": ["raster"],
-			"title": "CONVECTION",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png",
-			"expanded": false,
-			"checked": false,
-			"group": "<b>MSG - every 15 Minutes</b>",
-			"name": "msg_hrv",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg_rgb",
-			"styles": ["raster"],
-			"title": "HRV",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png",
-			"expanded": false,
-			"checked": false,
-			"group": "<b>MSG - every 15 Minutes</b>",
-			"name": "msg_micro",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg_rgb",
-			"styles": ["raster"],
-			"title": "MICROPHYSICS",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png",
-			"expanded": false,
-			"checked": false,
-			"group": "<b>MSG - every 15 Minutes</b>",
-			"name": "msg_vis",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg_rgb",
-			"styles": ["raster"],
-			"title": "NATURAL COLOR",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>MSG RSS - every 5 Minutes</b>",
-			"name": "MSG_RSS_Channel_05",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg_rss",
-			"styles": ["raster"],
-			"title": "WATER VAPOR",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>MSG RSS - every 5 Minutes</b>",
-			"name": "MSG_RSS_Channel_09",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg_rss",
-			"styles": ["raster"],
-			"title": "IR",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>MSG RSS - every 5 Minutes</b>",
-			"name": "msg_rss_ams",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg_rss_rgb",
-			"styles": ["raster"],
-			"title": "AIRMASS",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>MSG RSS - every 5 Minutes</b>",
-			"name": "msg_rss_cvs",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg_rss_rgb",
-			"styles": ["raster"],
-			"title": "CONVECTION",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>MSG RSS - every 5 Minutes</b>",
-			"name": "msg_rss_hrv",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg_rss_rgb",
-			"styles": ["raster"],
-			"title": "HRV",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>MSG RSS - every 5 Minutes</b>",
-			"name": "msg_rss_micro",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg_rss_rgb",
-			"styles": ["raster"],
-			"title": "MICROPHYSICS",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>MSG RSS - every 5 Minutes</b>",
-			"name": "msg_rss_vis",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_msg_rss_rgb",
-			"styles": ["raster"],
-			"title": "NATURAL COLOR",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"queryable": false
-		},
-		{
-			"format": "image/png8",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>RADAR</b>",
-			"name": "SRI",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_radar",
-			"styles": ["SRI"],
-			"title": "SRI - every 30 Minutes",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0"
-		},
-		{
-			"format": "image/png8",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>RADAR</b>",
-			"name": "CAPPI",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_radar",
-			"styles": ["CAPPI_2000.0"],
-			"title": "CAPPI - 2000 - every 30 Minutes",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "2000.0"
-		},
-		{
-			"format": "image/png8",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>RADAR</b>",
-			"name": "CAPPI",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_radar",
-			"styles": ["CAPPI_3000.0"],
-			"title": "CAPPI - 3000 - every 30 Minutes",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "3000.0"
-		},
-		{
-			"format": "image/png8",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>RADAR</b>",
-			"name": "CAPPI",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_radar",
-			"styles": ["CAPPI_5000.0"],
-			"title": "CAPPI - 5000 - every 30 Minutes",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "5000.0"
-		},
-		{
-			"format": "image/png8",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>RADAR</b>",
-			"name": "SRT1",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_radar",
-			"styles": ["SRT"],
-			"title": "SRT1 - every Hour",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0"
-		},
-		{
-			"format": "image/png8",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>RADAR</b>",
-			"name": "SRT3",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_radar",
-			"styles": ["SRT"],
-			"title": "SRT3 - every Hour",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0"
-		},
-		{
-			"format": "image/png8",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>RADAR</b>",
-			"name": "SRT6",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_radar",
-			"styles": ["SRT"],
-			"title": "SRT6 - every Hour",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0"
-		},
-		{
-			"format": "image/png8",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>RADAR</b>",
-			"name": "SRT12",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_radar",
-			"styles": ["SRT"],
-			"title": "SRT12 - every Hour",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0"
-		},
-		{
-			"format": "image/png8",
-			"expanded": true,
-			"checked": false,
-			"group": "<b>RADAR</b>",
-			"name": "SRT24",
-			"selected": false,
-			"tiled": false,
-			"source": "lamma_radar",
-			"styles": ["SRT"],
-			"title": "SRT24 - every Hour",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0"
-		},
-		{
-			"format": "image/png",
-			"group": "<b>Limiti amministrativi</b>",
-			"name": "confini_mondiali_regioni",
-			"selected": false,
-			"source": "LaMMA_confini",
-			"styles": ["confini"],
-			"style": ["confini"],
-			"title": "Regioni",
-			"transparent": true,
-			"visibility": true,
-			"ratio": 1,
-			"srs": "EPSG:4326",
-			"queryable": false,
-			"displayInLayerSwitcher": true
-		},
-		{
-			"source": "geoscopio_amb_ammin",
-			"group": "<b>Limiti amministrativi</b>",
-			"title": "Province",
-			"name": "rt_ambamm.idprovince.rt.poly",
-			"displayInLayerSwitcher": true,
-			"visibility": true,
-			"tiled": false
-		},
-		{
-			"source": "geoscopio_amb_ammin",
-			"group": "<b>Limiti amministrativi</b>",
-			"title": "Comuni",
-			"name": "rt_ambamm.idcomuni.rt.poly",
-			"displayInLayerSwitcher": true,
-			"visibility": false,
-			"tiled": false
-		},
-		{
-			"toUpdate": false,
-            "isAreaAllerta": true,
-            "stationPrefix": "prec",            
-			"format": "image/png8",
-			"group": "<b>Elaborazioni Aree di Allerta</b>",
-			"name": "prec15_web_allerta",
-			"opacity": 1.0,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": ["pavg_mm_allerta"],
-			"style": ["pavg_mm_allerta"],            
-			"title": "Pioggia AVG (mm)",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"getGraph": false,
-			"graphTable": "temp15_web",
-			"graphAttribute": ["temp_c"],
-			"cumulative": true,
-			"tabCode": "id",
-			"elevation": "0.0",
-			"displayOutsideMaxExtent": true
-		},
-		{
-			"toUpdate": false,
-            "isAreaAllerta": true,
-            "stationPrefix": "prec",               
-			"format": "image/png8",
-			"group": "<b>Elaborazioni Aree di Allerta</b>",
-			"name": "prec15_web_allerta",
-			"opacity": 1.0,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": ["pmax_mm_allerta"],
-			"style": ["pmax_mm_allerta"],             
-			"title": "Pioggia MAX (mm)",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"getGraph": false,
-			"graphTable": "temp15_web",
-			"graphAttribute": ["temp_c"],
-			"cumulative": true,
-			"tabCode": "id",
-			"elevation": "0.0",
-			"displayOutsideMaxExtent": true
-		},
-		{
-			"toUpdate": false,        
-			"format": "image/png8",
-			"group": "<b>Stazioni Meteorologiche</b>",
-			"name": "temp15_web",
-			"opacity": 1.0,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": ["temperatura"],
-			"style": ["temperatura"],
-			"title": "Temperatura (°C)",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"getGraph": true,
-			"graphTable": "temp15_web",
-			"graphAttribute": ["temp_c"],
-			"cumulative": false,
-			"tabCode": "id",
-			"elevation": "0.0",
-			"displayOutsideMaxExtent": true
-		},
-		{
-            "toUpdate": false, 
-			"format": "image/png8",
-			"group": "<b>Stazioni Meteorologiche</b>",
-			"name": "pres15_web",
-			"opacity": 1.0,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": ["pressione"],
-			"style": ["pressione"],
-			"title": "Pressione s.l.m. (hPa)",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"getGraph": true,
-			"graphTable": "pres15_web",
-			"graphAttribute": ["pres_hpa"],
-			"cumulative": false,
-			"tabCode": "id",
-			"elevation": "0.0",
-			"displayOutsideMaxExtent": true
-		},
-		{
-            "toUpdate": false, 
-			"format": "image/png8",
-			"group": "<b>Stazioni Meteorologiche</b>",
-			"name": "ven15_web",
-			"opacity": 1.0,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": ["vento"],
-			"style": ["vento"],
-			"title": "Vento - velocità (m/s) e direzione (°)",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"getGraph": true,
-			"graphTable": "ven15_web",
-			"graphAttribute": ["vven_ms",
-			"dven_gr"],
-			"cumulative": false,
-			"tabCode": "id",
-			"elevation": "0.0",
-			"displayOutsideMaxExtent": true
-		},
-		{
-            "toUpdate": false, 
-			"format": "image/png8",
-			"group": "<b>Stazioni Meteorologiche</b>",
-			"name": "trug15_web",
-			"opacity": 1.0,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": ["temperatura_rug"],
-			"style": ["temperatura_rug"],
-			"title": "Temperatura di rugiada (°C)",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"getGraph": true,
-			"graphTable": "trug15_web",
-			"graphAttribute": ["trug_c"],
-			"cumulative": false,
-			"tabCode": "id",
-			"elevation": "0.0",
-			"displayOutsideMaxExtent": true
-		},
-		{
-            "toUpdate": false, 
-			"format": "image/png8",
-			"group": "<b>Stazioni Meteorologiche</b>",
-			"name": "umid15_web",
-			"opacity": 1.0,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": ["umidita"],
-			"style": ["umidita"],
-			"title": "Umidita relativa (%)",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"getGraph": true,
-			"graphTable": "umid15_web",
-			"graphAttribute": ["umid_per"],
-			"cumulative": false,
-			"tabCode": "id",
-			"elevation": "0.0",
-			"displayOutsideMaxExtent": true
-		},
-		{
-			"toUpdate": true,
-            "stationPrefix": "raf",
-			"format": "image/png8",
-			"group": "<b>Stazioni Meteorologiche</b>",
-			"name": "raf15_web",
-			"opacity": 1.0,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": ["raffica"],
-			"style": ["raffica"],
-			"title": "Raffica - velocità (m/s) e direzione (°)",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"getGraph": true,
-			"graphTable": "raf15_web",
-			"graphAttribute": ["vraf_ms",
-			"draf_gr"],
-			"cumulative": false,
-			"tabCode": "id",
-			"elevation": "0.0",
-			"displayOutsideMaxExtent": true
-		},
-		{
-			"toUpdate": true,
-            "stationPrefix": "prec",
-			"format": "image/png8",
-			"group": "<b>Stazioni Meteorologiche</b>",
-			"name": "prec60_web",
-			"opacity": 1.0,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": ["pioggia"],
-			"style": ["pioggia"],
-			"title": "Pioggia cum.(mm)",
-			"transparent": true,
-			"visibility": true,
-			"ratio": 1,
-			"getGraph": true,
-			"graphTable": "prec60_web",
-			"graphAttribute": ["prec_mm"],
-			"cumulative": true,
-			"tabCode": "id",
-			"elevation": "0.0",
-			"displayOutsideMaxExtent": true
-		},
-		{
-			"toUpdate": false,
-            "allowRange": true,
-			"format": "image/png8",
-			"group": "<b>Fulmini</b>",
-			"name": "fulmini_cesi_web",
-			"opacity": 1.0,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": [],
-			"style": [],
-			"title": "Fulmini Cesi",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"displayOutsideMaxExtent": true
-		},
-		{
-			"toUpdate": false,
-            "allowRange": true,
-			"format": "image/png8",
-			"group": "<b>Fulmini</b>",
-			"name": "fulmini_lampinet_nn_web",
-			"opacity": 1.0,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": [],
-			"style": [],
-			"title": "Fulmini Lampinet Nube Nube",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"displayOutsideMaxExtent": true
-		},
-		{
-			"toUpdate": false,
-            "allowRange": true,
-			"format": "image/png8",
-			"group": "<b>Fulmini</b>",
-			"name": "fulmini_lampinet_tn_web",
-			"opacity": 1.0,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": [],
-			"style": [],
-			"title": "Fulmini Lampinet Terra Nube",
-			"transparent": true,
-			"visibility": false,
-			"ratio": 1,
-			"elevation": "0.0",
-			"displayOutsideMaxExtent": true
-		},
-		{
-			"toUpdate": false,
-            "allowRange": true,
-			"format": "image/png8",
-			"group": "<b>Fulmini</b>",
-			"name": "fulmini_blitz_web",
-			"opacity": 1.0,
-			"selected": false,
-			"tiled": false,
-			"source": "aree_allerta",
-			"styles": [],
-			"style": [],
-			"title": "Fulmini Blitz",
-			"transparent": true,
-			"visibility": true,
-			"ratio": 1,
-			"elevation": "0.0",
-			"displayOutsideMaxExtent": true
-		}]
-	},
-	"scaleOverlayUnits": {
-		"bottomOutUnits": "nmi",
-		"bottomInUnits": "nmi",
-		"topInUnits": "m",
-		"topOutUnits": "km"
-	},
-	"removeTools": ["wmsgetfeatureinfo_menu_plugin"],
-	"customPanels": [{
-		"xtype": "tabpanel",
-		"border": false,
-		"activeTab": 0,
-		"id": "east",
-		"region": "east",
-		"width": 350,
-		"split": true,
-		"collapsible": true,
-		"header": false,
-		"items": [{
-			"id": "aree_allerta_id",
-			"xtype": "panel",
-			"border": false,
-			"layout": "form",
-			"title": "Gestione dati real-time",
-			"autoScroll": true,
-			"closable": false,
-			"labelWidth": "10px"
-		}]
-	}],
-	"customTools": [{
-		"ptype": "gxp_wmsgetfeatureinfo",
-		"id": "wmsgetfeatureinfo_plugin",
-		"toggleGroup": "toolGroup",
-		"closePrevious": true,
-		"useTabPanel": true,
-		"infoPanelId": "",
-		"disableAfterClick": false,
-		"loadingMask": true,
-		"maxFeatures": 100,
-		"actionTarget": {
-			"target": "paneltbar",
-			"index": 13
-		}
-	},
-	{
-		"actions": ["-"],
-		"actionTarget": "paneltbar"
-	},
-	{
-		"ptype": "gxp_wfsgetgraphs",
-		"toggleGroup": "toolGroup",
-		"url": "http://159.213.57.108/geoserver/ALLERTA/ows?",
-		"actionTarget": {
-			"target": "paneltbar",
-			"index": 22
-		}
-	},
-	{
-		"ptype": "gxp_graticule",
-        "pressedOnStart": true,
-		"actionTarget": {
-			"target": "paneltbar",
-			"index": 24
-		}
-	},
-	{
-		"ptype": "gxp_mouseposition",
-		"displayProjectionCode": "EPSG:4326",
-		"customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505"
-	},
-	{
-		"ptype": "gxp_addlayer",
-		"showCapabilitiesGrid": true,
-		"useEvents": false,
-		"showReport": false,
-		"directAddLayer": false,
-		"id": "addlayer"
-	},
-	{
-		"ptype": "gxp_nominatimgeocoder",
-		"outputConfig": {
-			"emptyText": "Nominatim GeoCoder",
-			"vendorOptions": {
-				"bounded": 1,
-				"countrycodes": "",
-				"addressdetails": 0
-			},
-			"boundOption": "max"
-		},
-		"outputTarget": "paneltbar",
-		"index": 26
-	},
-	{
-		"ptype": "gxp_about",
-		"poweredbyURL": "http://www.geo-solutions.it/about/contacts/",
-		"actionTarget": {
-			"target": "panelbbar",
-			"index": 1
-		}
-	},
-	{
-		"ptype": "gxp_areeallertadata",
-		"id": "areeallertadataToolId",
-		"dataUrl": "http://159.213.57.108/geoserver/ows",
-		"highChartExportUrl": "http://84.33.2.75/highcharts-export/",
-		"outputConfig": {
-			"itemId": "areeallertadata",
-			"outputSRS": "EPSG:4326",
-			"geodesic": false,
-			"bufferOptions": {
-				"minValue": 0,
-				"maxValue": 100000,
-				"decimalPrecision": 2
+				"source": "google",
+				"title": "Google Roadmap",
+				"name": "ROADMAP",
+				"group": "background"
+			},{
+				"source": "google",
+				"title": "Google Terrain",
+				"name": "TERRAIN",
+				"group": "background"
+			},{
+				"source": "google",
+				"title": "Google Hybrid",
+				"name": "HYBRID",
+				"group": "background"
+			},{
+				"source": "mapquest",
+				"title": "MapQuest OpenStreetMap",
+				"name": "osm",
+				"group": "background"
+			},{
+				"source": "osm",
+				"title": "Open Street Map",
+				"name": "mapnik",
+				"group": "background"
+			},{
+				"source": "bing",
+				"title": "Bing Aerial",
+				"name": "Aerial",
+				"group": "background"
+			},{
+				"source": "bing",
+				"title": "Bing Aerial With Labels",
+				"name": "AerialWithLabels",
+				"group": "background"
+			},{
+				"source": "ol",
+				"group": "background",
+				"fixed": true,
+				"type": "OpenLayers.Layer",
+				"visibility": false,
+				"args": [
+					"None", {"visibility": false}
+				]
 			}
-		},
-		"outputTarget": "aree_allerta_id"
+		]
 	},
-	{
-		"ptype": "gxp_playback",
-		"id": "areeallerta_playback",
-		"outputTarget": "map",
-		"playbackMode": "range",
-		"showIntervals": false,
-		"labelButtons": false,
-		"settingsButton": false,
-		"rateAdjuster": false,
-		"dynamicRange": false,
-		"timeFormat": "l, F d, Y g:i:s A",
-		"outputConfig": {
-			"controlConfig": {
-				"step": 60,
-				"startEnd": true,
-				"units": "Minutes",
-				"frameRate": 1
-			}
+    "customPanels":[
+        {
+            "xtype": "panel",
+            "title": "Metadata Explorer",
+            "iconCls": "csw-viewer",             
+            "border": false,
+            "id": "south",
+            "region": "south",
+            "layout": "fit",
+            "split":true,
+            "height": 330,
+            "collapsed": true,
+            "collapsible": true,
+            "ctCls": "south-panel",
+            "header": true
+        }
+    ],	
+	"scaleOverlayUnits":{
+        "bottomOutUnits":"nmi",    
+        "bottomInUnits":"nmi",    
+        "topInUnits":"m",    
+        "topOutUnits":"km"
+    },
+	"customTools":[
+		{
+			"ptype": "gxp_embedmapdialog",
+			"actionTarget": {"target": "paneltbar", "index": 2},
+			"embeddedTemplateName": "viewer",
+			"showDirectURL": true
+		}, {
+			"ptype": "gxp_categoryinitializer",
+            "silentErrors": true
+		}, {
+		   "ptype": "gxp_mouseposition",
+		   "displayProjectionCode":"EPSG:4326",
+		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
+		}, {
+			"ptype": "gxp_metadataexplorer",
+			"id": "metadataexplorer",
+            "outputTarget": "south",
+            "saveState":true,
+            "cswconfig": {
+                "catalogs": [
+                        {"name": "CSI Piemonte", "url": "http://www.ruparpiemonte.it/geocatalogorp/geonetworkrp/srv/it/csw", "description": "GeoPortale della Regione Piemonte"},
+                        {"name": "Comune di Firenze", "url": "http://datigis.comune.fi.it/geonetwork/srv/it/csw", "description": "GeoPortale del Comune di Firenze"},
+                        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
+                        {"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
+                        {"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
+                        {"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
+                        {"name": "EauFrance", "url": "http://sandre.eaufrance.fr/geonetwork/srv/fr/csw", "description" : "EauFrance"},
+                        {"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
+                        {"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
+                        {"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
+                    ],
+                "dcProperty": "title",
+                "cswVersion": "2.0.2",
+                "filterVersion": "1.1.0",
+                "start": 1,
+                "limit": 10,
+                "timeout": 60000
+            }            
+		}, {
+			"ptype": "gxp_addlayer",
+			"showCapabilitiesGrid": true,
+			"useEvents": false,
+			"showReport": "never",
+			"directAddLayer": false,
+			"id": "addlayer"
+		}, {
+			"actions": ["-"], 
+			"actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_geolocationmenu",
+			"actionTarget": {"target": "paneltbar", "index": 23},
+			"toggleGroup": "toolGroup"
+		}, {
+			"actions": ["->"], 
+			"actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_help",
+			"actionTarget": "paneltbar",
+			"text": "Help",
+			"tooltip":"MapStore Guide",
+			"index": 24,
+			"showOnStartup": false,
+			"fileDocURL": "MapStore-Help.pdf"
+        }, {
+			"ptype": "gxp_about",
+			"poweredbyURL": "http://www.geo-solutions.it/about/contacts/",
+			"actionTarget": {"target": "panelbbar", "index": 1}
+		}, {
+			"ptype": "gxp_languageselector",
+			"actionTarget": {"target": "panelbbar", "index": 3}
 		}
-	}]
+	]
 }
