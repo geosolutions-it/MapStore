@@ -121,64 +121,70 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
      * api: method[addActions]
      */
     addActions: function() {
-        if (this.loginService !== null) {
-            var apptarget = this.target;
-        
-            var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [
-                [{
-                    menuText: this.loginText,
-                    iconCls: "login",
-                    text: this.loginText,
-                    disabled: false,
-                    hidden: false,
-                    scale: this.scale || 'small',
-                    tooltip: this.loginText,
-                    handler: function() {
-                        if(!this.logged){
-                            this.showLoginDialog();                            
-                        }	
-                    },
-                    scope: this
-                }, {
-                    menuText: this.logoutTitle,
-                    iconCls: "logout",
-                    scale: this.scale || 'small',
-                    text: this.logoutTitle,
-                    hidden: true,                    
-                    disabled: true,
-                    tooltip: this.logoutTitle,
-                    handler: function() {
-                        if(this.logged){
-                            this.showLogout();
-                        }
-                    },
-                    scope: this
-                }]
-            ]);
-            
-            this.loginAction = actions[0];
-            this.logoutAction = actions[1];
-            
-			this.target.on('ready',function(){
-				var auth = this.target.getAuth();
-				if(auth){
-				    var userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
-					
-					// save auth info					
-					if (userDetails) {
-						this.token = userDetails.token;
-						this.user = userDetails.user;
-						this.userid = userDetails.user.id;//TODO geostore don't return user id! in details request
-						this.username = userDetails.user.name;
-						this.role = userDetails.user.role;       
+		var apptarget = this.target;
+	
+        if (!this.loginService) {
+			var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
+			var mHost = pattern.exec(apptarget.geoStoreBaseURL);
+			var mUrl = apptarget.geoStoreBaseURL + "users/user/details?includeattributes=true";
+
+			this.loginService = (mHost[2] == location.host ? mUrl : apptarget.proxy + mUrl);
+		}
+
+		var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [
+			[{
+				menuText: this.loginText,
+				iconCls: "login",
+				text: this.loginText,
+				disabled: false,
+				hidden: false,
+				scale: this.scale || 'small',
+				tooltip: this.loginText,
+				handler: function() {
+					if(!this.logged){
+						this.showLoginDialog();                            
+					}	
+				},
+				scope: this
+			}, {
+				menuText: this.logoutTitle,
+				iconCls: "logout",
+				scale: this.scale || 'small',
+				text: this.logoutTitle,
+				hidden: true,                    
+				disabled: true,
+				tooltip: this.logoutTitle,
+				handler: function() {
+					if(this.logged){
+						this.showLogout();
 					}
+				},
+				scope: this
+			}]
+		]);
+		
+		this.loginAction = actions[0];
+		this.logoutAction = actions[1];
+		
+		this.target.on('ready',function(){
+			var auth = this.target.getAuth();
+			if(auth){
+				var userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
 				
-					this.loginSuccess();
-				}     
-			}, this);
+				// save auth info					
+				if (userDetails) {
+					this.token = userDetails.token;
+					this.user = userDetails.user;
+					this.userid = userDetails.user.id;//TODO geostore don't return user id! in details request
+					this.username = userDetails.user.name;
+					this.role = userDetails.user.role;       
+				}
 			
-			return actions;
-        }
+				this.loginSuccess();
+			}     
+		}, this);
+		
+		return actions;
     },
 	
     /** api: method[showLoginDialog]
