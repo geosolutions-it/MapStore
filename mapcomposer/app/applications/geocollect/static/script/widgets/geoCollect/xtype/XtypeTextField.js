@@ -19,7 +19,7 @@
  */
  
  /**
- * @include src/mxp/widgets/geoCollect/OptionsCreator.js
+ * @include widgets/geoCollect/OptionsCreator.js
  **/
 Ext.ns("mxp.widgets");
 
@@ -27,10 +27,10 @@ Ext.ns("mxp.widgets");
  * GoeMobileWidgetPanel
  * Allow to create mobile widget
  * */
-mxp.widgets.XtypeSpinner= Ext.extend(Ext.FormPanel,{
+mxp.widgets.XtypeTextField = Ext.extend(Ext.FormPanel,{
 
-    /** api: xtype = mxp_gc_xtype_spinner */
-	xtype:'mxp_gc_xtype_spinner',
+    /** api: xtype = mxp_gc_xtype_textfield */
+	xtype:'mxp_gc_xtype_textfield',
 	
 	//Utilizzat per ripulire i campi valori
    clV:new RegExp("^(\\${origin.)(.*)(})$"),
@@ -51,7 +51,19 @@ this.items=[{
 				fieldLabel:'Label',
 				ref:'labField',
 				allowBlank:false,
-		    },{
+		    },
+
+			{
+   				xtype:'textfield', 
+				fieldLabel:'Value',
+				ref:'valueField',
+				allowBlank:true	
+		     },{
+   				xtype:'checkbox', 
+				fieldLabel:'Mandatory',
+				ref:'mandCk'
+				
+		     },{
    				xtype:'mxp_gc_options', 
 				fieldLabel:'Options',
 				ref:'optField'
@@ -60,9 +72,9 @@ this.items=[{
     
     
 this.on('render',this.setidField,this)
-
+this.on('render',this.setMandatory,this)
     
-             mxp.widgets.XtypeSpinner.superclass.initComponent.call(this, arguments);
+             mxp.widgets.XtypeTextField.superclass.initComponent.call(this, arguments);
 	
 	
 	
@@ -72,61 +84,65 @@ this.on('render',this.setidField,this)
  * api: method[loadXtype]
  * Laad xtype mobile widget in form panel
  * Parameters:
- * xtype spinner - obj
- *{
- *	"fieldId": "PRESA_IN_CARICO",
- *	"type":"text",
- *	"xtype":"spinner",
- *	"label":"Presa in Carico",
- *	"options":["Rilevatore ","Ufficio afferente"]
- *				}
+ * xtype textfield - obj
+ * {
+ *	"fieldId": "NOME_RILEVATORE",
+ *	"type":"person",
+ *	"xtype":"textfield",
+ *	"value":"${local.user_name}",
+ *	"label":"Nome Rilevatore",
+ * 	"mandatory":"true"
+ *				 }
  * 
  * */
 loadXtype:function(o){
 	this.jObj=o;
 	if(o.label)this.labField.setValue(o.label);
 	this.setidField();
-	if(o.options)this.optField.loadOptions(o.options);
+	if(o.value)this.valueField.setValue(o.value);
+	if(!this.getMandatory())this.setMandatory();
+	else if(o.mandatory) this.mandCk.setValue(o.mandatory);
+	 if(o.options)this.optField.loadOptions(o.options);
 },
 
 /**
  * api: method[getXtype]
  * Create xtype mobile widget from form panel
  * Return:
- * xtype spinner - obj
- *{
- *	"fieldId": "PRESA_IN_CARICO",
- *	"type":"text",
- *	"xtype":"spinner",
- *	"label":"Presa in Carico",
- *	"options":["Rilevatore ","Ufficio afferente"]
- *				}
- * e"
+ * xtype textfield - obj
+ * {
+ *	"fieldId": "NOME_RILEVATORE",
+ *	"type":"person",
+ *	"xtype":"textfield",
+ *	"value":"${local.user_name}",
+ *	"label":"Nome Rilevatore",
+ * 	"mandatory":"true"
  *				 }
  * */
 getXtype:function(){
-  o={
+   o={
    		"fieldId":this.idField.getValue(),
-    	"type":null,
+    	"type":this.getType(),
     	"label":this.labField.getValue(),
-    	"xtype":"spinner",
-    	
+    	"xtype":"textfield",
+    	"mandatory":this.mandCk.getValue()
    };
    var opt=this.optField.getOptions();
   if(opt.length)o.options=opt;
    else if(this.valueField.getValue())o.value=this.valueField.getValue();
 
-	return o
+	
+	return o;
 },
 /**
  * api: method[isValid]
- * Validate xtype spinneer obj
+ * Validate xtype label obj
  * Return:
  * true or msg
  * */
 isValid:function(){
 	
-	if(this.labField.isValid()&&this.idField.isValid()&&this.optField.isValid())return true;
+	if(this.labField.isValid())return true;
 		return false;
 },
 
@@ -148,7 +164,7 @@ segUpdated:function(){
 sopUpdated:function(){
 	
 	this.setidField();
-
+	this.setMandatory();
 	
 },
 //Recupera il valore dal widget fields e lo setta!!
@@ -156,7 +172,37 @@ setidField:function(){
 	 var	parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 	    val = parent.sopSelector.getValue();
 	    this.idField.setValue(val);
-},/**
+},
+//Recupera il valore dal widget fields e lo setta!!
+setMandatory:function(){
+	 	//Recupero il mandatory se il fild se è mandatory lo chekko e lo bolocco altrimenti la scelta è libera
+	    if(!this.getMandatory()){
+	    	this.mandCk.setValue(true);
+	    	this.mandCk.disable();
+	    }else this.mandCk.enable();
+	   
+},
+//Recupera il valore dal widget fields e lo setta!!
+setField:function(){
+	 var	parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+	    val = parent.fieldSelector.getValue();
+	    this.valueField.setValue('${origin.'+val+'}');
+},
+getMandatory:function(){
+	
+		var parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+	    rec= parent.fieldSelector.getStore().query('name',parent.fieldSelector.getValue());
+	    nillable =rec.get(0).get('nillable');
+	    return nillable;
+	
+},
+getType:function(){
+	
+	var	parent= this.findParentByType('mxp_gc_mobile_widget_panel');
+	    return parent.xdatatypeSelector.getValue();
+	 
+},
+/**
  * api method[isDirty]
  * Check if the form has been modified
  * Return boolean
@@ -170,6 +216,6 @@ isDirty:function(){
 }
 });
 
-Ext.reg(mxp.widgets.XtypeSpinner.prototype.xtype, mxp.widgets.XtypeSpinner);
+Ext.reg(mxp.widgets.XtypeTextField.prototype.xtype, mxp.widgets.XtypeTextField);
 
 

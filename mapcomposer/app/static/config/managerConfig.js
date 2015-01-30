@@ -120,7 +120,7 @@
 		"xtype":"mxp_gc_resource_editor",
 		"ref":"/missionResEdit",
 		"authParam":"authkey"
-		},
+		}
     },{ 
         "ptype": "mxp_servicemanager",
         "notDuplicateOutputs":true,

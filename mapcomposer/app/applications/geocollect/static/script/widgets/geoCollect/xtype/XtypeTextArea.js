@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  /**
- * @include src/mxp/widgets/geoCollect/xtype/XtypeTextField.js
+ * @include widgets/geoCollect/xtype/XtypeTextField.js
  * */
 Ext.ns("mxp.widgets");
 

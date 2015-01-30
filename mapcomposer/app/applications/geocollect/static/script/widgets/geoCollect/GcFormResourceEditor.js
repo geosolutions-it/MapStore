@@ -19,7 +19,7 @@
 */
 
 /**
- * @include src/mxp/widgets/geoCollect/GcMobileWidgetPanel.js
+ * @include widgets/geoCollect/GcMobileWidgetPanel.js
  * */
 
 Ext.ns("mxp.widgets");

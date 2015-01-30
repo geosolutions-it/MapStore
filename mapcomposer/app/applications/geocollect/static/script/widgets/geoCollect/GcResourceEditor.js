@@ -21,8 +21,8 @@
 Ext.ns("mxp.widgets");
 
  /**
- *  @include src/mxp/widgets/geoCollect/GcMobileResourceEditor.js
- *  @include src/mxp/widgets/geoCollect/GcDbResourceEditor.js
+ *  @include widgets/geoCollect/GcMobileResourceEditor.js
+ *  @include widgets/geoCollect/GcDbResourceEditor.js
  * 
  */
 

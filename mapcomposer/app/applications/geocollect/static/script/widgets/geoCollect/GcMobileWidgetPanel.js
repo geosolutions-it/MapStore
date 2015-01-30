@@ -19,19 +19,19 @@
 */
 
 /**
- * @include src/mxp/widgets/geoCollect/xtype/XtypeTextField.js
- * @include src/mxp/widgets/geoCollect/xtype/XtypeTextArea.js
- * @include src/mxp/widgets/geoCollect/xtype/XtypeLabel.js
- * @include src/mxp/widgets/geoCollect/xtype/XtypeMap.js
- * @include src/mxp/widgets/geoCollect/xtype/XtypeSepIc.js
- * @include src/mxp/widgets/geoCollect/xtype/XtypeCheckBox.js
- * @include src/mxp/widgets/geoCollect/xtype/XtypeDateField.js
- * @include src/mxp/widgets/geoCollect/xtype/XtypeSeparator.js
- * @include src/mxp/widgets/geoCollect/xtype/XtypePhoto.js
- * @include src/mxp/widgets/geoCollect/xtype/XtypeActionSend.js
- * @include src/mxp/widgets/geoCollect/xtype/XtypeSpinner.js
- * @include src/mxp/widgets/geoCollect/MobileXtypeComboBox.js
- * @include src/mxp/widgets/geoCollect/MobileXDataTypeComboBox.js
+ * @include widgets/geoCollect/xtype/XtypeTextField.js
+ * @include widgets/geoCollect/xtype/XtypeTextArea.js
+ * @include widgets/geoCollect/xtype/XtypeLabel.js
+ * @include widgets/geoCollect/xtype/XtypeMap.js
+ * @include widgets/geoCollect/xtype/XtypeSepIc.js
+ * @include widgets/geoCollect/xtype/XtypeCheckBox.js
+ * @include widgets/geoCollect/xtype/XtypeDateField.js
+ * @include widgets/geoCollect/xtype/XtypeSeparator.js
+ * @include widgets/geoCollect/xtype/XtypePhoto.js
+ * @include widgets/geoCollect/xtype/XtypeActionSend.js
+ * @include widgets/geoCollect/xtype/XtypeSpinner.js
+ * @include widgets/geoCollect/MobileXtypeComboBox.js
+ * @include widgets/geoCollect/MobileXDataTypeComboBox.js
  * **/
 
 Ext.ns("mxp.widgets");

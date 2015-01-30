@@ -1,0 +1,38 @@
+.addgc {
+    background: url(../img/add.png) no-repeat 10px 8px;
+    display: block;
+}
+.deletegc {
+    background: url(../img/delete.png) no-repeat 10px 8px;
+    display: block;
+}
+.m_up {
+    background-image: url(../../../ext/ux/images/up2.gif) !important;
+}
+.m_down {
+    background-image: url(../../../ext/ux/images/down2.gif) !important;
+}
+/*GetFeatureInfo with Photos styles*/
+.thumb {
+    background: #dddddd;
+    padding: 3px;
+}
+.thumb img {
+    border: 1px solid white;
+    height: 60px;
+    width: 80px;
+}
+.thumb-wrap {
+    float: left;
+    margin: 4px;
+    margin-right: 0;
+    padding: 5px;
+}
+.thumb-wrap span {
+    display: block;
+    overflow: hidden;
+    text-align: center;
+}
+.x-view-selected .thumb {
+    background: #8db2e3;
+}
