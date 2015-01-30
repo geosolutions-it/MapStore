@@ -18,9 +18,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @include src/mxp/widgets/geoCollect/GcMListResourceEditor.js
- * @include src/mxp/widgets/geoCollect/GcPViewResourceEditor.js
- * @include src/mxp/widgets/geoCollect/GcFormResourceEditor.js
+ * @include widgets/geoCollect/GcMListResourceEditor.js
+ * @include widgets/geoCollect/GcPViewResourceEditor.js
+ * @include widgets/geoCollect/GcFormResourceEditor.js
  */
 
 
