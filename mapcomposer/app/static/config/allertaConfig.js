@@ -192,6 +192,22 @@
 			"displayOutsideMaxExtent": true
 		},
 		{
+			"format": "image/png",
+			"group": "<b>DTM</b>",
+			"name": "dtm_italia75_4326_rec",
+			"selected": false,
+			"source": "LaMMA_confini",
+			"styles": ["dem"],
+			"style": ["dem"],
+			"title": "DTM",
+			"transparent": true,
+			"visibility": true,
+			"ratio": 1,
+			"srs": "EPSG:4326",
+			"queryable": true,
+			"displayInLayerSwitcher": true
+		},
+		{
 			"source": "geoscopio_ortofoto",
 			"group": "<b>Ortofotocarte 1:10.000</b>",
 			"title": "Anno 2013 col - AGEA",
