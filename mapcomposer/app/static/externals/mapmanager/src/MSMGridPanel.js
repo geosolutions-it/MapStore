@@ -1016,7 +1016,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						}
 					}else{
 						copy.owner = grid.login.getCurrentUser();
-					}					
+					}
 					
 					geostore.create(copy, function(data) {
 						reload();
