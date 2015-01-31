@@ -128,6 +128,12 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
     */
 	mapDescriptionLabel: "Description",
 	
+	/**
+	 * Property: conflictErrMsg
+	 * {string}
+	 */
+	conflictErrMsg: "A map with the same name already exists",
+	
     /** api: method[addActions]
      */
     addActions: function() {
@@ -297,9 +303,11 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
               mask.hide();
 			  this.auth = null;
 			  
+			  var defaultErrMsg = response.statusText + "(status " + response.status + "):  " + response.responseText;
+			  
               Ext.Msg.show({
                  title: this.contextSaveFailString,
-                 msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+                 msg: (response.status === 409) ? this.conflictErrMsg : defaultErrMsg,
                  buttons: Ext.Msg.OK,
                  icon: Ext.MessageBox.ERROR
               });
