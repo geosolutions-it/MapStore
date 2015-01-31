@@ -816,10 +816,31 @@
 				}
 			};
 			
-			// allow caller to override default error handling
+			// allow caller to override default error handling behavior
 			failureCallback = failureCallback || retryingFailureCallback;
 			
 			ContentProvider.prototype.create.call(this, item, callback, failureCallback, scope);
+		},
+		update: function(pk, item, callback, failureCallback) {
+			var defaultFailureCallback = function(response) {
+				var defaultErrMsg = response.statusText + "(status " + response.status + "):  " + response.responseText;
+				var conflictErrMsg = "A map with the same name already exists";
+				
+				// ////////////////////////////////////////////////// //
+				// TODO: Refactor this code externalize the           // 
+			    //	     Msg definition for the i18n                  //
+			    // ////////////////////////////////////////////////// //
+				Ext.Msg.show({
+					msg: (response.status === 409) ? conflictErrMsg : defaultErrMsg,
+					buttons: Ext.Msg.OK,
+					icon: Ext.MessageBox.ERROR
+				});
+			}
+			
+			// allow caller to override default error handling behavior
+			failureCallback = failureCallback || defaultFailureCallback;
+			
+			ContentProvider.prototype.update.call(this, pk, item, callback, failureCallback);
 		}
     });
 
