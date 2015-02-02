@@ -36,3 +36,9 @@
 .x-view-selected .thumb {
     background: #8db2e3;
 }
+
+.x-action-col-cell .gc_go_action {
+    background-image: url("/images/table_go.png") !important;
+    height: 16px;
+    width: 16px;
+}
