@@ -155,11 +155,11 @@
 	     {	
 		 	"ptype": "gxp_featureeditor",
     		"featureManager": "featuremanager",
-    		"autoLoadFeatures": "true"
+    		"autoLoadFeatures": "true",
+    		"actionTarget": {"target": "paneltbar", "index": 50}
 	    },{
 		  "ptype": "gxp_featuregrid",
 		  "featureManager": "featuremanager",
-		
 		  "outputConfig": {
 			  "id": "featuregrid",
 			  "title": "Features"
