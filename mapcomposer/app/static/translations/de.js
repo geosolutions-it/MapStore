@@ -4,7 +4,7 @@
 
 GeoExt.Lang.add("de", {
     "gxp.plugins.HelpButton.prototype": {
-        tooltip:"SIIG - Bedienungsanleitung"
+        tooltip:"GIIS - Bedienungsanleitung"
     },
 	"gxp.plugins.SyntheticView.prototype": {
         title: "Übersicht",
@@ -16,8 +16,8 @@ GeoExt.Lang.add("de", {
         substanceLabel: "Substanz/Stoff",
         accidentLabel: "Unfall",
         seriousnessLabel: "Entität",
-        severenessLabel: "Gravità",
-        buffersLabel: "Rays Schadensbereich",
+        severenessLabel: "Schwere",
+        buffersLabel: "Schadensbereich",
         fieldSetTitle: "Bearbeitung",
         cancelButton: "Abbrechen",
         processButton: "Neue Bearbeitung",
@@ -25,87 +25,87 @@ GeoExt.Lang.add("de", {
         weatherLabel: "Wetter",  
         temporalLabel: "Zeitliche Bedingungen",
         elabStandardLabel: "Standardbearbeitung",
-        totalRiskLabel: "Total Risiko",
-        humanTitle:'Soziales', 
+        totalRiskLabel: "Gesamtrisiko",
+        humanTitle:'Anthropologisches', 
         resultsLabel: "Verarbeitungsergebnis",        
         notHumanTitle:'Umwelt', 
         defaultExtentLabel: "Regione Piemonte",
         targetsTextBotton: "Treffer",
         areaDamageTextBotton: "Schadensbereich",
         roadGraphTextBotton: "Straßennetz",  
-        wpsTitle: "Errore",
-        wpsError: "Errore nella richiesta al servizio WPS",
+        wpsTitle: "Fehler",
+        wpsError: "Fehler in der Anfrage des WPS-Dienstes",
         loadMsg: "Bitte warten ...",
         notVisibleOnArcsMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
         notVisibleOnGridMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
-        refreshGridButton: "Aktualisieren Sie die Grid",
-        simMsg: 'Diese Funktion ist nicht in dieser Größenordnung zur Verfügung',
-        saveButton: "Speichern Verarbeitung",
-        saveProcessingTitle: "Zeitsparende Verarbeitung",
+        refreshGridButton: "Grid-Aktualisierung",
+        simMsg: 'Diese Funktion ist in diesem Maßstab nicht verfügbar',
+        saveButton: "Verarbeitung speichern",
+        saveProcessingTitle: "Verarbeitung speichern",
         saveProcessingMsg: "Verarbeitung bereits mit diesem Namen gespeichert wurde, ersetzen?",
-        saveProcessingErrorTitle: "Zeitsparende Verarbeitung",
-        saveProcessingErrorMsg: "Kann Verarbeitung sparen",
-        saveProcessingSuccessTitle: "zeitsparende Verarbeitung",
+        saveProcessingErrorTitle: "Verarbeitung speichern",
+        saveProcessingErrorMsg: "Speichern der Verarbeitung nicht möglich",
+        saveProcessingSuccessTitle: "Verarbeitung speichern",
         saveProcessingSuccessMsg: "Verarbeitung erfolgreich gespeichert",
         saveProcessingNameFieldsetTitle: "Verarbeitung",
         saveProcessingNameLabel: "Name",
         saveProcessingDescriptionLabel: "Beschreibung",
-        saveProcessingButtonText: "Speichern Verarbeitung",
-        saveProcessingWinTitle: "New Verarbeitung",
-        saveProcessingAggregationLabel: "Anhäufung",
-        loadButton: "Hochladen Verarbeitung",
+        saveProcessingButtonText: "Verarbeitung speichern",
+        saveProcessingWinTitle: "Neue Verarbeitung",
+        saveProcessingAggregationLabel: "Aggregierung",
+        loadButton: "Verarbeitung hochladen",
         loadProcessingNameHeader: 'Name',
         loadProcessingDescriptionHeader: 'Beschreibung',
-        removeProcessingTooltip: 'Entfernen Verarbeitung',
-        removeProcessingMsgTitle: "Entfernen Verarbeitung",
-        removeProcessingMsg: "Möchten Sie die Bearbeitung zu beseitigen? Die Aktion kann nicht rückgängig gemacht!",
-        loadProcessingButtonText: "Hochladen Verarbeitung",
-        selectProcessingMsgTitle: "Wählen Verarbeitung",
-        selectProcessingMsg: "Sie müssen eine Verarbeitung",
-        loadProcessingWinTitle: "Hochladen Verarbeitung",
+        removeProcessingTooltip: 'Verarbeitung Entfernen',
+        removeProcessingMsgTitle: "Verarbeitung verwerfen",
+        removeProcessingMsg: "Verarbeitung verwerfen? Die Aktion kann nicht rückgängig gemacht werden!",
+        loadProcessingButtonText: "Verarbeitung hochladen",
+        selectProcessingMsgTitle: "Verarbeitung auswählen",
+        selectProcessingMsg: "Sie müssen eine Verarbeitung auswählen",
+        loadProcessingWinTitle: "Verarbeitung hochladen",
         
-		saveDownloadMenuButton: "Entlastung",    
+		saveDownloadMenuButton: "Download",    
 		saveDownloadTitle: "Export",
 		saveDownloadNameFieldsetTitle: "Export",
-		saveDownloadErrorTitle: "Export Processing",
+		saveDownloadErrorTitle: "Export der Verarbeitung",
 		saveDownloadWinTitle: "neue Export",
-		saveDownloadErrorMsg: "Unfähig, Verarbeitung exportieren",
+		saveDownloadErrorMsg: "Export fehlgeschlagen",
 		saveDownloadSuccessTitle: "Export Processing",
 		saveDownloadSuccessMsg: "Verarbeitung erfolgreich exportiert",
 		
 		saveDownloadLoadingMsg: "Exportieren ... Bitte warten",
 		
-        loadDownloadButton: "Geschichtlich",
-        loadDownloadProcessingWinTitle: "Herunterladen Verarbeitung",
-        loadDownloadProcessingButtonText: "Herunterladen Verarbeitung",
+        loadDownloadButton: "Chronik",
+        loadDownloadProcessingWinTitle: "Verarbeitung herunterladen",
+        loadDownloadProcessingButtonText: "Verarbeitung herunterladen",
         failureAchieveResourceTitle: "Fehler",
-        failureAchieveResourceMsg: "Es gibt keine Verarbeitung für diesen Benutzer gespeichert",
-        loadProcessingValidHeader: 'Regenerierbaren',
+        failureAchieveResourceMsg: "Es ist keine Verarbeitung für diesen Benutzer gespeichert",
+        loadProcessingValidHeader: 'Wiederherstellbar',
         loadProcessingCreationHeader: 'Erstellt',
-        downloadFileLabel: 'Entlastung',
-        deleteDownloadError: 'Der Download kann nicht gelöscht werden. Entfernen Sie das überhaupt?',
-        meter100Text: '100 metern',
-        meter500Text: '500 metern',
-        GrigliaText: 'Gitter',
+        downloadFileLabel: 'Export',
+        deleteDownloadError: 'Der Download kann nicht gelöscht werden. Trotzdem entfernen?',
+        meter100Text: '100 Meter',
+        meter500Text: '500 Meter',
+        GrigliaText: 'Grid',
 		exportDisclaimerTitle: 'Disclaimer',
-		agreeDisclaimerText: 'ich nehme an',
-		notAgreeDisclaimerText: 'ich stimme nicht zu'
+		agreeDisclaimerText: 'akzeptieren',
+		notAgreeDisclaimerText: 'ablehnen'
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Bearbeitung",
         elaborazioneLabel: "Art der Bearbeitung",
         formulaLabel: "Formel",                
-        northLabel:"Nord",
+        northLabel:"Norden",
         westLabel:"Westen",
-        eastLabel:"Ost",
-        southLabel:"Süd",
+        eastLabel:"Osten",
+        southLabel:"Süden",
         aoiFieldSetTitle: "Bearbeitungsgebiet",
-        setAoiText: "Auswahl Bereich",        
+        setAoiText: "Bearbeitungsgebiet auswählen",        
         setAoiTooltip: "Hier können Sie die Region von Interesse auf der Karte wählen",
         notAvailableProcessing: "Art der Verarbeitung noch nicht verfügbar",
-        targetLabel: "Ziel",
+        targetLabel: "vulnerables Element",
         macroTargetLabel: "Kategorie",
-        targetSetLabel: "Typ Ziel",
+        targetSetLabel: "Typ des vulnerablen Elements",
         accidentSetLabel : "Unfallart",
         adrLabel: "ADR Klasse",
         sostanzeLabel: "Stoffe",
@@ -128,72 +128,72 @@ GeoExt.Lang.add("de", {
         conditionsFielSetLabel: "Zeitliche Bedingungen",   
         allClassOption: "Alle Klassen",
         allSostOption: "Alle Substanzen/Stoffe",
-        allScenOption: "alle Unfälle",
+        allScenOption: "Alle Unfälle",
         allEntOption: "Alle Entitäten",
         allTargetOption: "Alle Ziele",
-        allHumanTargetOption: "Alle menschlichen Ziele",
+        allHumanTargetOption: "Alle anthropologischen Ziele",
         allNotHumanTargetOption: "Alle Umweltziele",
         entLieve: "mäßig",
         entGrave: "schwer",
-        humanRiskLabel: "Social Risk",
-        notHumanRiskLabel: "Umweltrisk",
+        humanRiskLabel: "Anthropologisches Risiko",
+        notHumanRiskLabel: "Umweltrisiko",
         lowRiskLabel: "Geringes Risiko",
-        mediumRiskLabel: "Durchschnittliche Risiko",
-        highRiskLabel: "hohes Risiko",
+        mediumRiskLabel: "Durchschnittliches Risiko",
+        highRiskLabel: "Hohes Risiko",
         notVisibleOnArcsMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
         notVisibleOnGridMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
-        selectionAreaLabel: "Gewählter Bereich",
-        alertSimGridReloadTitle: "Update Ziele",
-        alertSimGridReloadMsg: "Möchten Sie die Simulationsdaten aktualisieren? - Alle Bearbeitungs verloren!"   
+        selectionAreaLabel: "Gewählter Bearbeitungsbereich",
+        alertSimGridReloadTitle: "Update vulnerable Elemente",
+        alertSimGridReloadMsg: "Möchten Sie die Simulationsdaten aktualisieren? - Alle bisherigen Bearbeitungsschritte gehen dabei verloren!"   
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Bestandteil {0} - {1} von {2}",
-        emptyMsg: "No Bestandteil gefunden",
+        emptyMsg: "Kein Bestandteil gefunden",
         noRecordFoundLabel: "Kein Bestandteil gefunden",
-        loadMsg: "Bitte warten..."
+        loadMsg: "Daten werden geladen. Bitte warten..."
     },
     "gxp.plugins.WFSGrid.prototype": {
-        displayMsgPaging: "Bestandteil {0} - {1} of {2}",
+        displayMsgPaging: "Bestandteil {0} - {1} von {2}",
         emptyMsg: "Kein Bestandteil gefunden",
-        loadMsg: "Bitte warten...",
+        loadMsg: "Daten werden geladen. Bitte warten...",
         addTooltip: "Neues Element hinzufügen",
-        addLayerTooltip: "Layer hinzufügen zu Karte",
+        addLayerTooltip: "Layer zur Karte hinzufügen",
         detailsTooltip: "Details anzeigen",
-        deleteTooltip: "Löschfunktion",
-        deleteConfirmMsg: "Sind Sie sicher, dass Sie dieses Element löschen?",
-        detailsHeaderName: "Name der Unterkunft",
-        detailsHeaderValue: "Property Value",
-        detailsWinTitle: "Einzelheiten",
-        zoomToTooltip: "Zoom auf das Ziel",
-        startEditToTooltip: "Starten Sie bearbeiten Row",
-        startEditGeomToTooltip: "Starten Sie bearbeiten Feature",
-        stopEditGeomToTooltip: "Stoppen bearbeiten Feature",
-        resetEditGeomToTooltip: "Zurücksetzen bearbeiten Feature",
+        deleteTooltip: "Element löschen",
+        deleteConfirmMsg: "Sind Sie sicher, dass Sie dieses Element löschen möchten?",
+        detailsHeaderName: "Name Eigenschaften",
+        detailsHeaderValue: "Wert Eigenschaften",
+        detailsWinTitle: "Details",
+        zoomToTooltip: "Zoom auf das vulnerable Element",
+        startEditToTooltip: "Starten der Zeilenbearbeitung",
+        startEditGeomToTooltip: "Starten der Elementbearbeitung",
+        stopEditGeomToTooltip: "Stopp der Elementbearbeitung",
+        resetEditGeomToTooltip: "Elementbearbeitung zurücksetzen",
         removeMessage: "Entfernen",
-        removeTitle:"Sind Sie sicher, dass Sie dieses Element löschen?",
+        removeTitle:"Sind Sie sicher, dass Sie dieses Element löschen möchten?",
         noEditElementSelectionTitle: "Wählen Sie ein Element",
         noEditElementSelectionMsg: "Sie müssen ein Element auswählen!!!",
-        activeEditSessionMsgTitle: "Starten Sitzung bearbeiten",
-        activeEditSessionMsgText: "Sie sind im Modus, Hinzufügen / Bearbeiten von Geometrie. Sie können die Geometrie nicht löschen!"
+        activeEditSessionMsgTitle: "Bearbeitungsmodus aktiv",
+        activeEditSessionMsgText: "Sie sind im Bearbeitungsmodus der Element. Sie können das Element nicht löschen!"
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Zoomlevel: {zoom}</div><div>Maßstab: 1:{scale}</div>",
-        loadConfigErrorText: "Die gespeicherte Gestaltung kann nicht gelesen werden : <br />",
+        loadConfigErrorText: "Die gespeicherte Konfiguration kann nicht gelesen werden : <br />",
         loadConfigErrorDefaultText: "Serverfehler.",
         xhrTroubleText: "Verbindungsfehler: Status ",
-        layersText: "Stufen",
+        layersText: "Layer",
 		legendText: "Legende",
         titleText: "Überschrift",
         zoomLevelText: "Zoomlevel",
         saveErrorText: "Speicherungsprobleme: ",
         bookmarkText: "URL des Lesezeichens",
         permakinkText: "Permalink",
-        appInfoText: "Kredite",
-        aboutText: "About GeoExplorer",
-        mapInfoText: "Planinfo",
+        appInfoText: "Impressum",
+        aboutText: "Über den GeoExplorer",
+        mapInfoText: "Informationen zur Karte",
         descriptionText: "Beschreibung",
-        contactText: "Kontakte",
-        aboutThisMapText: "Apropos dieser Karte",
+        contactText: "Kontakt",
+        aboutThisMapText: "Über diese Karte",
         searchTabTitle : "Portal",
         viewTabTitle : "Ansicht",
 		markerPopupTitle: "Details",
@@ -201,29 +201,29 @@ GeoExt.Lang.add("de", {
     },
     
     "GeoExplorer.Composer.prototype": {
-        loadMapText: "Kartenimportierung",
-        saveMapText: "Kartenexportierung",
+        loadMapText: "Karten-Import",
+        saveMapText: "Karten-Export",
         exportMapText: "Kartenveröffentlichung",
 	    loadMapEmptyText: "Kontext-Datei auswählen",
 		loadMapUploadText: "Wird geladen",
 		uploadText: "Upload",
-		loadMapWindowTitle: 'Form für das Upload der Datei',
-		loadMapErrorText:'Fehler beim Upload der Datei',
-        toolsTitle: "Werkzeuge auswählen die der Leiste hinzu zufügen sind:",
+		loadMapWindowTitle: 'Formular Datei-Upload',
+		loadMapErrorText:'Fehler beim Datei-Upload',
+        toolsTitle: "Werkzeuge auswählen die der Leiste hinzuzufügen sind:",
         previewText: "Vorschau",
         backText: "Zurück",
         nextText: "Nächste",
         loginText: "Login",
-        loginErrorText: "Username oder password ungültig.",
+        loginErrorText: "Username oder Passwort ungültig.",
         userFieldText: "User",
         passwordFieldText: "Password",
         fullScreenText: "Vollbild",
-        cswMsg: 'Loading...',
+        cswMsg: 'Wird geladen...',
 	    uploadWaitMsg: 'Kontext-Datei wird geladen...',
 		uploadErrorTitle: 'Uploadfehler',
-		uploadEmptyText: 'Kontext-Datei asuwählen',
+		uploadEmptyText: 'Kontext-Datei auswählen',
 		uploadWinTitle: 'Upload-Formular',
-		cswFailureAddLayer: 'Die Schicht kann der Karte nicht hinzugefügt werden',
+		cswFailureAddLayer: 'Der Layer kann der Karte nicht hinzugefügt werden',
 		uploadButtonText: 'Upload',
         alertEmbedTitle: 'Achtung',
         alertEmbedText: "Zuerst di Karte speichern und dann erst das Werkzeug 'Kartenveröffentlichung' benützen",
@@ -240,13 +240,13 @@ GeoExt.Lang.add("de", {
     },
 
     "gxp.plugins.AddLayers.prototype": {
-        addActionMenuText: "Schicht hinzufügen",
-        addActionTip: "Schicht hinzufügen",
+        addActionMenuText: "Layer hinzufügen",
+        addActionTip: "Layer hinzufügen",
         addServerText: "Neuen Server hinzufügen",
-        addButtonText: "Schichten hinzufügen",
+        addButtonText: "Layer hinzufügen",
         untitledText: "Ohne Überschrift",
         addLayerSourceErrorText: "Fehler beim finden der WMS capabilities ({msg}).\nBitte die Url kontrollieren und nochmals versuchen.",
-        availableLayersText: "Vorhandene Schichten",
+        availableLayersText: "Vorhandene Layer",
         expanderTemplateText: "<p><b>Zusammenfassung:</b> {abstract}</p>",
         panelTitleText: "Überschrift",
         layerSelectionText: "Daten anzeigen die hier vorhanden sind:",
@@ -257,16 +257,16 @@ GeoExt.Lang.add("de", {
     },
 
     "gxp.plugins.RemoveOverlays.prototype": {
-	    removeOverlaysMenuText: "Daraufgelegene Schichten entfernen",
-	    removeOverlaysActionTip: "Alle auf der Karte gelegenen Schichten entfernen",
-	    removeOverlaysConfirmationText: "Sind Sie sicher alle auf der Karte geladenen Schichten entfernen zu wollen?"
+	    removeOverlaysMenuText: "Oberhalb liegende Layer entfernen",
+	    removeOverlaysActionTip: "Alle Layer aus der Kartenansicht entfernen",
+	    removeOverlaysConfirmationText: "Sind Sie sicher alle in der Kartenansicht geladenen Layer entfernen zu wollen?"
     },
     
     "gxp.plugins.BingSource.prototype": {
-        title: "Bing Schichten",
+        title: "Bing-Layer",
         roadTitle: "Bing Straßen",
         aerialTitle: "Bing Aerial",
-        labeledAerialTitle: "Bing Aerial mit Etikett"
+        labeledAerialTitle: "Bing Aerial mit Labels"
     },
 
     "gxp.plugins.GoogleEarth.prototype": {
@@ -276,21 +276,21 @@ GeoExt.Lang.add("de", {
     },
     
     "gxp.plugins.GoogleSource.prototype": {
-        title: "Google Schichten",
+        title: "Google-Layer",
         roadmapAbstract: "Straßenkarte anzeigen",
         satelliteAbstract: "Satellitenbilder anzeigen",
         hybridAbstract: "Bilder mit Straßennamen anzeigen",
-        terrainAbstract: "Straßenkarte mit Boden anzeigen"
+        terrainAbstract: "Straßenkarte mit DOM anzeigen"
     },
 
     "gxp.plugins.LayerProperties.prototype": {
-        menuText: "Schichteneigenschaften",
-        toolTip: "Schichteneigenschaften"
+        menuText: "Layereigenschaften",
+        toolTip: "Layereigenschaften"
     },
     
     "gxp.plugins.LayerTree.prototype": {
-        rootNodeText: "Schichten",
-        overlayNodeText: "SIIG",
+        rootNodeText: "Layer",
+        overlayNodeText: "GIIS",
         baseNodeText: "Hintergrund"
     },
 
@@ -322,7 +322,7 @@ GeoExt.Lang.add("de", {
     },
 
     "gxp.plugins.OSMSource.prototype": {
-        title: "OpenStreetMap-Schichten",
+        title: "OpenStreetMap-Layer",
         mapnikAttribution: "Data CC-By-SA by <a href='http://openstreetmap.org/'>OpenStreetMap</a>",
         osmarenderAttribution: "Data CC-By-SA by <a href='http://openstreetmap.org/'>OpenStreetMap</a>"
     },
@@ -331,22 +331,22 @@ GeoExt.Lang.add("de", {
         menuText: "Karte drucken",
         tooltip: "Karte drucken",
         previewText: "Druckvorschau",
-        notAllNotPrintableText: "Nicht alle Schickten können gedruckt werden",
-        nonePrintableText: "Keine der aktuellen Schichten dieser Karte kann gedruckt werden",
-		notPrintableLayersText: "Diese Schichten und alle Marker vor dem Drucken entfernen. Danach die nicht druckbaren Schichten:"
+        notAllNotPrintableText: "Nicht alle Layer können gedruckt werden",
+        nonePrintableText: "Keiner der aktuell auf dieser Karte dargestellten Layer kann gedruckt werden",
+		notPrintableLayersText: "Diese Layer und alle Marker vor dem Drucken entfernen. Danach folgende nicht druckbare Layer:"
     },
 
     "gxp.plugins.MapQuestSource.prototype": {
-        title: "MapQuest Schichten",
-        osmAttribution: "Tiles gewährt von <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
+        title: "MapQuest Layer",
+        osmAttribution: "Blattschnitte gewährt von <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
         osmTitle: "MapQuest OpenStreetMap",
-        naipAttribution: "Tiles gewährt von <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
+        naipAttribution: "Blattschnitte gewährt von <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
         naipTitle: "MapQuest Bilder"
     },
 
     "gxp.plugins.RemoveLayer.prototype": {
-        removeMenuText: "Schicht entfernen",
-        removeActionTip: "Schicht entfernen"
+        removeMenuText: "Layer entfernen",
+        removeActionTip: "Layer entfernen"
     },
 
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
@@ -368,36 +368,36 @@ GeoExt.Lang.add("de", {
     },
     
     "gxp.plugins.ZoomToDataExtent.prototype": {
-        menuText: "Zoom zur Schicht",
-        tooltip: "Zoom zur Schicht"
+        menuText: "Zoom zu Layer",
+        tooltip: "Zoom zu Layer"
     },
 
     "gxp.plugins.ZoomToLayerExtent.prototype": {
-        menuText: "Zoom zur Schicht",
-        tooltip: "Zoom zur Schicht"
+        menuText: "Zoom zu Layer",
+        tooltip: "Zoom zu Layer"
     },
     
     "gxp.WMSLayerPanel.prototype": {
-        aboutText: "Infos",
+        aboutText: "Informationen",
         titleText: "Überschrift",
         nameText: "Name",
         descriptionText: "Beschreibung",
-        displayText: "Display",
+        displayText: "Ansicht",
         opacityText: "Opazität ",
         formatText: "Format",
         transparentText: "Transparenz",
         cacheText: "Cache",
         cacheFieldText: " Benutze die Cache-Version",
         stylesText: "Stil",
-        sliderRischioText: "Risk",
-        sliderRischioSocialeText: "Social",
-        sliderRischioAmbientaleText: "Umweltrisk",
+        sliderRischioText: "Risiko",
+        sliderRischioSocialeText: "Anthropologisches Risiko",
+        sliderRischioAmbientaleText: "Umweltrisiko",
         minRangeSliderText: "Geringes",
-        medRangeSliderText: "Durchschnittliche",
+        medRangeSliderText: "Durchschnittliches",
         maxRangeSliderText: "Hohes",
         riskTabTitle: "Themenbereich",
         riskTabSubmitText: "Anwenden",
-        riskTabResetText: "Defaults"
+        riskTabResetText: "Voreingestellte Werte"
     },
 
     "gxp.WMSStylesDialog.prototype": {
@@ -409,7 +409,7 @@ GeoExt.Lang.add("de", {
          editStyleText: "Bearbeiten",
          editStyleTip: "Ausgewählten Stil bearbeiten",
          duplicateStyleText: "Duplikat",
-         duplicateStyleTip: "Duplikat des ausgeählten Stils",
+         duplicateStyleTip: "Duplikat des ausgewählten Stils",
          addRuleText: "Hinzufügen",
          addRuleTip: "Neue Regel hinzufügen",
          newRuleText: "Neue Regel",
@@ -421,8 +421,8 @@ GeoExt.Lang.add("de", {
          duplicateRuleTip: "Duplikat der ausgwählten Regel",
          cancelText: "Löschen",
          saveText: "Speichern",
-         styleWindowTitle: "User Style: {0}",
-         ruleWindowTitle: "Style Rule: {0}",
+         styleWindowTitle: "Benutzerstil: {0}",
+         ruleWindowTitle: "Stil Regel: {0}",
          stylesFieldsetTitle: "Stile",
          rulesFieldsetTitle: "Regeln"
     },
@@ -441,7 +441,7 @@ GeoExt.Lang.add("de", {
 
     "gxp.plugins.AddGroup.prototype": { 
 	    addGroupMenuText: "Gruppe hinzufügen",
-	    addGroupActionTip: "Neue Gruppe dem Baum der Schichten hinzufügen",   
+	    addGroupActionTip: "Neue Gruppe zur Layerübersicht hinzufügen",   
 	    addGroupDialogTitle: "Neue Gruppe", 
 	    addGroupFieldSetText: "Gruppenname",
 	    addGroupFieldLabel: "Neue Gruppe",
@@ -451,9 +451,9 @@ GeoExt.Lang.add("de", {
     
     "gxp.plugins.RemoveGroup.prototype": { 
 	    removeGroupMenuText: "Gruppe entfernen",
-	    removeGroupActionTip: "Entferne die Gruppe vom Baum der Schichten",
-	    removeGroupActionTip: "Entferne von der Karte di ausgewählte Gruppe und deren Schichten",
-	    removeGroupConfirmationText: "Sind Sie sicher die ausgewählte Gruppe entfernen zu wollen? Alle beinhalteten Schichten werden von der Karte entfernt."
+	    removeGroupActionTip: "Entferne die Gruppe aus der Layerübersicht",
+	    removeGroupActionTip: "Entferne von der Karte die ausgewählte Gruppe und die darin enthaltenen Layer",
+	    removeGroupConfirmationText: "Sind Sie sicher die ausgewählte Gruppe entfernen zu wollen? Alle beinhalteten Layer werden von der Karte entfernt."
     },
     
     "gxp.plugins.SaveDefaultContext.prototype": { 
@@ -461,13 +461,13 @@ GeoExt.Lang.add("de", {
 	    saveDefaultContextActionTip: "Karten-Kontext speichern",
 	    contextSaveSuccessString: "Kontext richtig gespeichert",
 	    contextSaveFailString: "Kontext nicht richtig gespeichert",
-	    contextMsg: "Loading..."
+	    contextMsg: "Wird geladen..."
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Fläche auswählen",
-        menuText: "Geo Referenzen",
-        tooltip: "Geo Referenzen"
+        menuText: "Koordinaten",
+        tooltip: "Koordinaten"
     },
 
     "gxp.plugins.ZoomBox.prototype":{
@@ -482,26 +482,26 @@ GeoExt.Lang.add("de", {
 	    resolutionText: "Auflösung:",
 	    printText: "Drucken",
 	    emptyTitleText: "Überschrift der Karte hier eingeben.",
-	    includeLegendText: "Legende einbeziehen?",
+	    includeLegendText: "Legende in die Kartenansicht einbeziehen?",
 	    legendOnSeparatePageText: "Legende auf eigener Seite?",
 	    compactLegendText: "Kompakte Legende?",	
 	    emptyCommentText: "Kommentare hier einfügen.",
 	    creatingPdfText: "Erstellung der PDF-Datei...",
-        printOsmText: "OpenStreetMap Background?"
+        printOsmText: "OpenStreetMap-Hintergrund?"
     },
 
     "gxp.plugins.GeonetworkSearch.prototype":{
-        geonetworkSearchText: "Metadaten Anzeigen",
-        geonetworkSearchActionTip: "Metadaten Anzeigen"
+        geonetworkSearchText: "Metadaten anzeigen",
+        geonetworkSearchActionTip: "Metadaten anzeigen"
     },
 
     "gxp.plugins.GroupProperties.prototype":{
-        groupPropertiesMenuText:  "Gruppeneigenschaften ProprietÃ  del gruppo",
+        groupPropertiesMenuText:  "Gruppeneigenschaften",
         groupPropertiesActionTip:  "Gruppeneigenschaften ",
         groupPropertiesDialogTitle: "Gruppeneigenschaften - ",
         groupPropertiesFieldSetText: "Gruppenname",
         groupPropertiesFieldLabel: "Neuer Gruppenname",
-        groupPropertiesButtonText: "Erledigt",
+        groupPropertiesButtonText: "Fertig",
         groupPropertiesMsg: "Bitte den Gruppennamen eingeben."
     },
 
@@ -516,7 +516,7 @@ GeoExt.Lang.add("de", {
         displayFeatureText: "Auf Karte anzeigen",
         firstPageTip: "Erste Seite",
         previousPageTip: "Vorherige Seite",
-        zoomPageExtentTip: "Zoom zur Erweterung der Seite",
+        zoomPageExtentTip: "Zoom zur Erweiterung der Seite",
         nextPageTip: "Nächste Seite",
         nextPageTip: "Letzte Seite",
         totalMsg: "Insgesamt: {0} Zeilen"
@@ -524,13 +524,13 @@ GeoExt.Lang.add("de", {
 	
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Abfrage",
-        queryMenuText: "Schichtenabfrage",
-        queryActionTip: "Ausgewählte Schichte abfragen",
-        queryByLocationText: "Interessierte Lage",
-        currentTextText: "Aktuelle Stufe",
-        queryByAttributesText: "Abfrage nach Attribute",
+        queryMenuText: "Layerabfrage",
+        queryActionTip: "Ausgewählte Layer abfragen",
+        queryByLocationText: "Region von Interesse",
+        currentTextText: "Aktuelle Ausdehnung",
+        queryByAttributesText: "Attribut-Abfrage",
         queryMsg: "Abfrage läuft...",
-        cancelButtonText: "Cancel",
+        cancelButtonText: "Abbrechen",
         noFeaturesTitle: "Kein Ergebnis",
         noFeaturesMessage: "Die Suche hat keine Ergebnisse ergeben.",
         title: "Suche",
@@ -541,7 +541,7 @@ GeoExt.Lang.add("de", {
         setAoiText: "ROI eingeben",
         setAoiTooltip: "SetBox-Kontrolle aktivieren um eine ROI (BBOX) auf der Karte zu zeichnen",
         attributeEnablement: "Abfrage nach Attribute",
-        attributeEnablementMsg: "Abfrage ungültig! Zuerst 'Feature' und die vektorielle Schicht auswählen.",
+        attributeEnablementMsg: "Abfrage ungültig! Zuerst Element und den Vektor-Layer auswählen.",
         searchType: "Grundeinstellungen",
         typeLabel: "Typ",
         featureLabel: "Max Features"
@@ -593,72 +593,72 @@ GeoExt.Lang.add("de", {
         title: "Bearbeitungsbereich",
         setAoiText: "Bereich wählen",        
         setAoiTooltip: "Ermöglichen die Auswahl des Bereichs von Interesse auf der Karte",
-        waitEPSGMsg: "Warten ... Laden"
+        waitEPSGMsg: "Wird geladen. Bitte warten..."
     },
     "gxp.form.SelDamageArea.prototype":{
         selAreaDamageTitle: "Bereichsauswahl",
-        selAreaDamageLabel: "Selection Verfahren",
-        selAreaDamageEmptyText: "--- Typ wählen ---",
+        selAreaDamageLabel: "Selektionsverfahren",
+        selAreaDamageEmptyText: "--- Typ auswählen ---",
         comboPolygonSelection: 'Polygon',
-        comboCircleSelection: 'Rund',
+        comboCircleSelection: 'Kreis',
         comboBufferSelection: "Buffer"
     },
 
 	"gxp.widgets.form.BufferFieldset.prototype": {
-		bufferFieldLabel: "Reichweite von Buffer",
+		bufferFieldLabel: "Reichweite des Buffers",
 		bufferFieldSetTitle: "Buffer",
 		coordinatePickerLabel: "Koordinaten",
-		draweBufferTooltip: "Zeichnen Sie die Buffer"
+		draweBufferTooltip: "Zeichnen Sie den Buffer"
 	},
 
 	"gxp.widgets.form.CoordinatePicker.prototype":{
 	    fieldLabel: 'Koordinaten',
-		pointSelectionButtionTip: 'Klicken Sie auf den Punkt Auswahl zu aktivieren',
-		latitudeEmptyText: 'Latitude',
-		longitudeEmptyText: 'Longitude'
+		pointSelectionButtionTip: 'Klicken Sie auf den Punkt, um die Auswahl zu aktivieren',
+		latitudeEmptyText: 'geogr. Breite',
+		longitudeEmptyText: 'geogr. Länge'
 	},
 
 	"gxp.plugins.SelectVulnElem.prototype":{
-        menuText: "Anzeige Gefährdete Elements",
-        tooltip: "Anzeige Gefährdete Elements",
-        allHumanTargetTitle: "Alle menschlichen Ziele",
-        allNotHumanTargetTitle: "Alle Umweltziele",
-        selectAllTitle: "ALLE WÄHLEN",
-        addToMapButtonText: "In den Karte"
+        menuText: "vulnerable Elemente anzeigen",
+        tooltip: "vulnerable Elemente anzeigen",
+        allHumanTargetTitle: "Alle anthrophologischen Elemente",
+        allNotHumanTargetTitle: "Alle Umweltelemente",
+        selectAllTitle: "Alles auswählen",
+        addToMapButtonText: "Zur Karte hinzufügen"
 	},
 
 	"gxp.plugins.GateTimeSliderTab.prototype":{
         gateLabel: 'Gate',
-        gateSelection: 'Gate Auswahl',
-        gatePanelTitle: "Echtzeitdaten - Gate",
+        gateSelection: 'Gate-Auswahl',
+        gatePanelTitle: "Echtzeitdaten der Gates",
         gateStatGridStart: "Startdatum Statistik",
         gateStatGridEnd: "Enddatum Statistik",
         gateStatGridRoute: "Spur",
         gateStatGridDirection: "Richtung",
-        gateStatGridKemler: "Kemler Cod",
-        gateStatGridOnu: "Onu Cod",
+        gateStatGridKemler: "Kemler Code",
+        gateStatGridOnu: "Onu Code",
         gateStatGridAmount: "Menge",
         gateElementText: "Element",
         gateElementsText: "Elemente",
-        gateTotalRenderer: "gesamt",
-        gateStatFieldsetTitle: "Precomputed statistischen Daten",
+        gateTotalRenderer: "Insgesamt",
+        gateStatFieldsetTitle: "Vorberechnete statistische Daten",
         gateStartDateText: 'Startdatum',
         gateEndDateText: 'Enddatum',
-        gateViewTimeGateButtonText: 'Sehen Gate Daten',
-        gateInfoTimeTitle: "Sehen Gate Daten",
+        gateViewTimeGateButtonText: 'Gate-Daten darstellen',
+        gateInfoTimeTitle: "Gate-Daten darstellen",
         gateInfoTimeMsg: "Wählen Sie ein Zeitintervall!",    
         gateTimeSelectorTitle: "Wählen Sie ein Zeitintervall",    
-        gateSliderFieldsetTitle: "Freie Auswahl Daten",
-        gateTimeGridDetectionDate: "Erkennung Datum",
+        gateSliderFieldsetTitle: "Freie Datumsauswahl",
+        gateTimeGridDetectionDate: "Erhebungsdatum",
         gateAggregationAveragePerHour: 'Durchschnitt pro Stunde',
-        gateAggregationTotal: "Gesamt",        
+        gateAggregationTotal: "Insgesamt",        
         gateTimeGridHourTimeZone: "Zeit",
         gateTimeGridMinuteTimeZone: "Minute",
         gateTimeGridReceptionDate: "Tag des Eingangs",
         gateTimeGridRoute: "Spur",
         gateTimeGridDirection: "Richtung",
-        gateTimeGridKemler: "Kemler Cod",
-        gateTimeGridOnu: "Onu Cod",
+        gateTimeGridKemler: "Kemler Code",
+        gateTimeGridOnu: "Onu Code",
         gateViewAllDataText: 'Alle Statistiken',
         aggregationSelectorLabel: "Statistiken",
         intervalSelectorLabel: "Intervall",
@@ -667,13 +667,13 @@ GeoExt.Lang.add("de", {
 	},
 
 	"gxp.widgets.button.SelectFeatureButton.prototype":{
-        tooltip: "Wählen Sie das Gate durch einen Klick auf die Karte"
+        tooltip: "Wählen Sie das abzufragende Gate durch einen Klick auf die Karte"
 	},
     
     "Ext.grid.GroupingView.prototype":{
-        columnsText : 'Kolumne',
+        columnsText : 'Spalte',
         emptyGroupText : '(keiner)',
-        groupByText : 'Gruppe durch dieses Feld',
+        groupByText : 'Gruppiere gemäß diesem Feld',
         showGroupsText : 'In Gruppen anzeigen',       
         sortAscText : "Aufsteigend sortieren",
         sortDescText : "Sortieren"
@@ -689,25 +689,25 @@ GeoExt.Lang.add("de", {
     "gxp.FeatureEditPopup.prototype":{
         title: 'Gate',
         closeMsgTitle: 'Möchten Sie die Änderungen speichern?',
-        closeMsg: 'Sie haben noch nicht gespeicherte Änderungen. Wollen Sie sparen?',
+        closeMsg: 'Änderungen speichern?',
         deleteMsgTitle: 'Entfernen Sie das Gate?',
-        deleteMsg: 'Sind Sie sicher, dass Sie das Gate löschen?',
-        editButtonText: 'Änderung',
+        deleteMsg: 'Sind Sie sicher, dass Sie das Gate löschen möchten?',
+        editButtonText: 'Editieren',
         editButtonTooltip: 'Machen Sie das Gate editierbar',
-        deleteButtonText: 'löschen',
-        deleteButtonTooltip: 'Entfernen Sie das Gate',
-        cancelButtonText: 'Stornieren',
-        cancelButtonTooltip: 'Bearbeitung beenden, Änderungen rückgängig zu machen',
-        saveButtonText: 'Sparen',
-        saveButtonTooltip: 'Speichern Sie die Änderungen'
+        deleteButtonText: 'Löschen',
+        deleteButtonTooltip: 'Gate löschen',
+        cancelButtonText: 'Abbrechen',
+        cancelButtonTooltip: 'Bearbeitung beenden, Änderungen nicht speichern',
+        saveButtonText: 'Speichern',
+        saveButtonTooltip: 'Änderungen speichern'
     },
     
     "gxp.plugins.ObuForm.prototype":{
-        title: "Echtzeitdaten-Obu",
-        filterTitle: "Fahrzeug",
-        fieldIDLabel: "Suche nach Fahrzeug",
+        title: "Echtzeitdaten-OBU",
+        filterTitle: "Filter",
+        fieldIDLabel: "Sattelschlepper",
         fieldTypeLabel: "Ereignistyp",
-        idEmptyText: "Suche nach Fahrzeug",
+        idEmptyText: "Suche nach Sattelschlepper",
         typeEmptyText: "Suche nach Ereignistyp",
         velocityRange: "Geschwindigkeitsintervall",
         velocityMin: "Min",
@@ -726,36 +726,36 @@ GeoExt.Lang.add("de", {
         stopLabel: "Stopp",
         stopTooltip: "Stopp",
         fastforwardLabel: "FFWD",
-        fastforwardTooltip: "Double Speed​​-Wiedergabe",
+        fastforwardTooltip: "Animation in doppelter Geschwindigkeit",
         backLabel:'Zurück',
-        backTooltip:'Zeichnen Sie ein Bild zurück',            
+        backTooltip:'Schritt zurück',            
         nextLabel: "Nächste",
-        nextTooltip: "Ein Bild vor",
+        nextTooltip: "Schritt vor",
         loopLabel: "Schleife",
-        loopTooltip: "Stufenlos Schleife die Animation",
+        loopTooltip: "Stufenlose Animationsschleife",
         normalTooltip: "Rückkehr zur normalen Wiedergabe",
         pauseLabel: "Pause",
         pauseTooltip: "Pause"
     },
     "gxp.PlaybackOptionsPanel.prototype": {
-        optionTitleText: "Datum & Zeit",
-        rangeFieldsetText: "Zeitbereich",
+        optionTitleText: "Datums- und Zeitoptionen",
+        rangeFieldsetText: "Zeitintervall",
         animationFieldsetText: "Animationsoptionen",
-        startText: "Starten",
+        startText: "Start",
         endText: "Ende",
-        saveText: 'Sparen',
-        cancelText: 'Stornieren',         
-        listOnlyText: "Verwenden Sie Genaue Werte-Liste nur",
-        stepText: "Zeichentrick Schritt",
-        unitsText: "Zeichentrick-Einheiten",
-        frameRateText:'Zeichentrick-Verzögerung (s)',        
-        noUnitsText: "Snap To Zeitliste",
-        loopText: "Loop-Animation",
-        reverseText: "Reverse-Zeichentrick",
-        rangeChoiceText: "Wählen Sie den Bereich für die Zeitsteuerung",
-        rangedPlayChoiceText: "Wiedergabemodus",
+        saveText: 'Speichern',
+        cancelText: 'Abbrechen',         
+        listOnlyText: "Verwenden Sie nur die Werte aus der Drop-down-Liste",
+        stepText: "Animationsschritt",
+        unitsText: "Animationseinheiten",
+        frameRateText:'Animationsverzögerung (s)',        
+        noUnitsText: "Wechsle zum Zeitintervall",
+        loopText: "Animationsschleife",
+        reverseText: "Rückwärtsanimation",
+        rangeChoiceText: "Wählen Sie das Zeitintervall",
+        rangedPlayChoiceText: "Wiedergabe",
         secondsText: 'Sekunden', 
-        minutesText: 'Protokoll', 
+        minutesText: 'Minuten', 
         hoursText: 'Stunden', 
         daysText: 'Tage', 
         monthsText: 'Monate', 
