@@ -4,7 +4,7 @@
    		"comunege": {
 			"ptype": "gxp_wmssource",
 			"title": "Comune Genova",
-			"url": "http://vm-sitgeofe1.comune.genova.it/geoserver/ows",
+			"url": "http://mappe.comune.genova.it/geoserver/ows",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1",
 			"layerBaseParams":{
@@ -140,6 +140,14 @@
     },
 	"customTools":[
 		{
+			"ptype": "gxp_addlayer",
+			"showCapabilitiesGrid": true,
+			"useEvents": false,
+			"showReport": "never",
+			"directAddLayer": false,
+			"id": "addlayer"
+		},
+		{
 			"ptype": "gxp_wmsgetfeatureinfo_menu", 
 			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
 			"useTabPanel": true,
@@ -218,7 +226,7 @@
 			"saveState": true,
             "cswconfig": {
                 "catalogs": [
-                        {"name": "Comune di Genova", "url": "http://vm-sitgeofe1.comune.genova.it/geonetwork/srv/ita/csw", "description": "GeoPortale del Comune di Genova"}
+                        {"name": "Comune di Genova", "url": "http://mappe.comune.genova.it/geonetwork/srv/ita/csw", "description": "GeoPortale del Comune di Genova"}
                     ],
                 "dcProperty": "title",
                 "initialBBox": {
@@ -260,13 +268,14 @@
 				"default_login": {
 					"ptype" : "gxp_geostore_login",
 					"actionTarget": "login_menu.menu",
-					"loginText": "MapStore Login"
+					"loginText": "MapStore Login",
+					"reloadOnLogin": true
 				},
 				"sirac_login": {
 					"ptype" : "gxp_sirac_login",
 					"actionTarget": "login_menu.menu"
 				}
-			}
+			},
 			"actionTarget": "paneltbar",
 			"index": 26
 		},{
@@ -280,7 +289,7 @@
           "collapsedFirst" : true,
           "autoComplete": {
             "sources": ["comunege"],
-            "url": "http://vm-sitgeofe1.comune.genova.it/geoserver/wps",
+            "url": "http://mappe.comune.genova.it/geoserver/wps",
             "pageSize": 10
           },          
 		  "outputConfig":{
@@ -324,7 +333,7 @@
 		            "name": "Municipi",
 		            "label": "Municipi",
 					"searchComboOutputFormat": "json",
-		            "wfsBaseURL": "http://vm-sitgeofe1.comune.genova.it/geoserver/wfs",
+		            "wfsBaseURL": "http://mappe.comune.genova.it/geoserver/wfs",
 		            "geocoderTypeName": "SITGEO:V_MUNICIPI",
 		            "geocoderTypeRecordModel":[
 		                {
@@ -354,7 +363,7 @@
 		            "name": "Unita Urbanistiche",
 		            "label": "Unita Urbanistiche",
 					"searchComboOutputFormat": "json",
-		            "wfsBaseURL": "http://vm-sitgeofe1.comune.genova.it/geoserver/wfs",
+		            "wfsBaseURL": "http://mappe.comune.genova.it/geoserver/wfs",
 		            "geocoderTypeName": "SITGEO:V_UNITA_URBANISTICHE",
 		            "geocoderTypeRecordModel":[
 		                {
@@ -385,7 +394,7 @@
             "outputFilename":"mapstore-print"
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
-        "printService":"http://vm-sitgeofe1.comune.genova.it/geoserver/pdf/",
+        "printService":"http://mappe.comune.genova.it/geoserver/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
@@ -420,7 +429,7 @@
 	                    "showSelectionSummary": false,
 	                    "multipleSelection": false,
 	                    "searchComboOutputFormat": "json",
-	                    "wfsBaseURL": "http://vm-sitgeofe1.comune.genova.it/geoserver/wfs",
+	                    "wfsBaseURL": "http://mappe.comune.genova.it/geoserver/wfs",
 	                    "geocoderTypeName": "SITGEO:V_ASTE_STRADALI_TOPONIMO_SUB",
 	                    "geocoderTypeRecordModel":[
 	                        {
@@ -449,7 +458,7 @@
 	                    "showSelectionSummary": false,
 	                    "multipleSelection": false,
 	                    "searchComboOutputFormat": "json",
-	                    "wfsBaseURL": "http://vm-sitgeofe1.comune.genova.it/geoserver/wfs",
+	                    "wfsBaseURL": "http://mappe.comune.genova.it/geoserver/wfs",
 	                    "geocoderTypeName": "SITGEO:CIVICI_COD_TOPON",
 	                    "geocoderTypeRecordModel":[
 	                        {
@@ -476,7 +485,7 @@
 	            }
 	    	}, "reverse": {
 	            "ptype": "gxp_spatial_selector_reverse_geocoder",
-	            "url": "http://vm-sitgeofe1.comune.genova.it/geoserver/wfs",
+	            "url": "http://mappe.comune.genova.it/geoserver/wfs",
 			    "maxFeatures": 10,
 			    "streetfeatureNS": "SITGEO",
 			    "typeName": "CIVICI_CON_STRADE",

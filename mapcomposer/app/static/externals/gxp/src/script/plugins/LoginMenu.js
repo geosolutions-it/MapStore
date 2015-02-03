@@ -100,17 +100,18 @@ gxp.plugins.LoginMenu = Ext.extend(gxp.plugins.Tool, {
 			}	
 		}
 		
+		// //////////////////////////////////////////////
+		// If we open the map from the manager the login 
+		// button should not be visible.
+		// //////////////////////////////////////////////
+		var isEmbed = window != window.parent;
 		this.button = new Ext.SplitButton({
             iconCls: "login",
 			id: "login_menu",
 			text: this.loginText,
             tooltip: this.loginText,
             allowDepress: true,
-			// //////////////////////////////////////////////
-			// If we open the map from the manager the login 
-			// button should not be visible
-			// //////////////////////////////////////////////
-			hidden: apptarget.auth, 
+			hidden: isEmbed, 
             handler: function(button, event) {
 				this.button.showMenu();
             },

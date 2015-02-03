@@ -112,10 +112,14 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
     loginService: null,
 	
 	loginLoadingMask: "Login ...",
+
+	logoutLoadingMask: "Logout ...",
     
     scale: 'small',
 	
 	authParam: "authkey",
+	
+	reloadOnLogin: true,
 
     /** 
      * api: method[addActions]
@@ -344,7 +348,13 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
 					sessionStorage["userDetails"] = Ext.util.JSON.encode(uDetails);							
 				}
 				
-                this.loginSuccess();
+				if(this.reloadOnLogin){
+					this.mask = new Ext.LoadMask(Ext.getBody(), {msg: this.loginLoadingMask});
+					this.mask.show();
+					location.reload();
+				}else{	
+					this.loginSuccess();
+				}
             },
             failure: function(response, form, action) {
 			    this.mask.hide(); 
@@ -387,7 +397,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
 		if(this.win){
 			this.win.close();
 		}    
-
+	
 		this.fireEvent("login", this.user, this.ptype);
     },
 
@@ -424,6 +434,8 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
 				// /////////////////////////////
 				// Restore the initial status 
 				// /////////////////////////////
+				this.mask = new Ext.LoadMask(Ext.getBody(), {msg: this.logoutLoadingMask});
+				this.mask.show();
 				location.reload();
             }
         }
