@@ -104,7 +104,7 @@ gxp.plugins.SiracLogin = Ext.extend(gxp.plugins.Tool, {
 				scope: this
 			},{
 				xtype: 'tbtext',
-				text: apptarget.userDetails ? apptarget.userDetails.user.attribute[0].value : '',
+				text: userInfo && userInfo.provider == "sirac" && userInfo.user.attribute[0] ? userInfo.user.attribute[0].value : '',
 				hidden: !(this.logged || (userInfo && userInfo.provider == "sirac"))
 			}]
 		]);
