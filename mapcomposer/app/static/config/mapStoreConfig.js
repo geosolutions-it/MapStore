@@ -1,5 +1,4 @@
 {
-   
    "scaleOverlayMode": "basic",
    "gsSources":{ 
 		"mapquest": {
@@ -133,7 +132,7 @@
                         {"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
                         {"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
                         {"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
-                    ],
+                ],
                 "dcProperty": "title",
                 "cswVersion": "2.0.2",
                 "filterVersion": "1.1.0",
