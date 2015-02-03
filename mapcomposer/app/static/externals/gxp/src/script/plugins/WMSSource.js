@@ -138,6 +138,10 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      */
 	useCapabilities: true,
 	
+	noCompatibleProjectionError: "Layer is not available in the map projection",
+	
+	errorTitle: "Error",
+	
     /** api: method[createStore]
      *
      *  Creates a store of layer records.  Fires "ready" when store is loaded.
@@ -314,6 +318,16 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		var layerProjection = this.getProjection(original);
 		if (layerProjection) {
 			layer.addOptions({projection: layerProjection});
+		} else {
+			Ext.Msg.show({
+                title: this.errorTitle,
+                msg: this.noCompatibleProjectionError,
+                buttons: Ext.Msg.OK,
+                width: 300,
+                icon: Ext.MessageBox.ERROR
+          });
+			
+		  return null;
 		}
 		
 		var projCode = projection.getCode();
