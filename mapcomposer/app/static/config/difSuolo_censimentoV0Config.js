@@ -1,7 +1,7 @@
 {
    "scaleOverlayMode": "advanced",
    "actionToolScale": "medium",      
-   "tab": false,
+   "tab": true,
    "gsSources":{
    		"geoserver_ret": {
 			"ptype": "gxp_wmssource",
@@ -553,6 +553,9 @@
 			"actionTarget": {"target": "paneltbar", "index": 2},
 			"embeddedTemplateName": "viewer",
 			"showDirectURL": true
+		}, {
+			"ptype": "gxp_categoryinitializer",
+            "silentErrors": true
 		},{
             "ptype":"gxp_wmsgetfeatureinfo",
             "id": "wmsgetfeatureinfo_plugin",
