@@ -460,10 +460,10 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                         //Fix the temporal layer enablement.
                         //Layer is not showed in the map if we select time interval and then check the layer from the layer tree.
                         if(checked){
-                            var timeManagers = this.target.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');
-                            var layer = node.layer;
-                            if ( layer instanceof OpenLayers.Layer.WMS && timeManagers[0]){
-                                timeManagers[0].timeAgents[0].applyTime(layer,timeManagers[0].currentTime);
+                            var timeManager = this.target.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');
+                            var lyr = node.layer;
+                            if ((lyr.dimensions && lyr.dimensions.time) || (lyr.metadata.timeInterval && lyr.metadata.timeInterval.length)){
+                                timeManager[0].timeAgents[0].applyTime(lyr,timeManager[0].currentTime);
                             }
                         }
                         
