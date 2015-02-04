@@ -43,11 +43,17 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
      */
     loginText: "Login",
 	
+	/** api: config[loginText]
+     *  ``String``
+     *  Text for the tool text in login (i18n).
+     */
+    loginButtonText: "Login",
+	
     /** api: config[logoutTitle]
      *  ``String``
      *  Text for the tool text in logout (i18n).
      */
-    logoutTitle: "Logout",
+    logoutTitle: "Logout from MapStore",
 	
     /** api: config[logoutText]
      *  ``String``
@@ -79,16 +85,21 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
      */
     passwordFieldText: "Password", 
     
+    /** api: config[forgotPasswordText]
+     *  ``String``
+     */
     forgotPasswordText: "forgot password?",
+	
     /** api: config[closable]
      *  ``boolean`` The Login window can be closed or not .
      */
-    closable:true,
+    closable: true,
+	
     /** api: config[draggable]
      *  ``boolean``
      *   The Login window can be dragged or not.
      */
-    draggable:true,
+    draggable: true,
 
     loginAction: null,
 	
@@ -101,55 +112,85 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
     loginService: null,
 	
 	loginLoadingMask: "Login ...",
+
+	logoutLoadingMask: "Logout ...",
     
     scale: 'small',
+	
+	authParam: "authkey",
+	
+	reloadOnLogin: true,
 
     /** 
      * api: method[addActions]
      */
     addActions: function() {
-        if (this.loginService !== null) {
-            var apptarget = this.target;
-        
-            var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [
-                [{
-                    menuText: this.loginText,
-                    iconCls: "login",
-                    text: this.loginText,
-                    disabled: false,
-                    hidden: false,
-                    scale: this.scale || 'small',
-                    tooltip: this.loginText,
-                    handler: function() {
-                        if(!this.logged){
-                            this.showLoginDialog();                            
-                        }	
-                    },
-                    scope: this
-                },{
-                    menuText: this.logoutTitle,
-                    iconCls: "logout",
-                    scale: this.scale || 'small',
-                    text: this.logoutTitle,
-                    hidden: true,
-                    
-                    disabled: true,
-                    tooltip: this.logoutTitle,
-                    handler: function() {
-                        if(this.logged){
-                            this.showLogout();
-                        }
-                    },
-                    scope: this
-                }]
-            ]);
-            
-            this.loginAction = actions[0];
-            this.logoutAction= actions[1];
-            
-            return actions;
-        }
+		var apptarget = this.target;
+	
+        if (!this.loginService) {
+			var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
+			var mHost = pattern.exec(apptarget.geoStoreBaseURL);
+			var mUrl = apptarget.geoStoreBaseURL + "users/user/details?includeattributes=true";
+
+			this.loginService = (mHost[2] == location.host ? mUrl : apptarget.proxy + mUrl);
+		}
+
+		var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [
+			[{
+				menuText: this.loginText,
+				iconCls: "login",
+				text: this.loginText,
+				disabled: false,
+				hidden: false,
+				scale: this.scale || 'small',
+				tooltip: this.loginText,
+				handler: function() {
+					if(!this.logged){
+						this.showLoginDialog();                            
+					}	
+				},
+				scope: this
+			}, {
+				menuText: this.logoutTitle,
+				iconCls: "logout",
+				scale: this.scale || 'small',
+				text: this.logoutTitle,
+				hidden: true,                    
+				disabled: true,
+				tooltip: this.logoutTitle,
+				handler: function() {
+					if(this.logged){
+						this.showLogout();
+					}
+				},
+				scope: this
+			}]
+		]);
+		
+		this.loginAction = actions[0];
+		this.logoutAction = actions[1];
+		
+		this.target.on('ready',function(){
+			var auth = this.target.getAuth();
+			if(auth){
+				var userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
+				
+				// save auth info					
+				if (userDetails) {
+					this.token = userDetails.token;
+					this.user = userDetails.user;
+					this.userid = userDetails.user.id;//TODO geostore don't return user id! in details request
+					this.username = userDetails.user.name;
+					this.role = userDetails.user.role;       
+				}
+			
+				this.loginSuccess();
+			}     
+		}, this);
+		
+		return actions;
     },
+	
     /** api: method[showLoginDialog]
      * Shows the window for login.
      */    
@@ -193,7 +234,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                 allowBlank: false
             }],
             buttons: [{
-                text: this.loginText,
+                text: this.loginButtonText,
                 iconCls:'login',
                 formBind: true,
                 handler: this.submitLogin,
@@ -293,11 +334,27 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                     this.user= user.User;
                     this.userid = user.User.id;//TODO geostore don't return user id! in details request
                     this.username = user.User.name;
-                    this.role = user.User.role;
-                    
-                    
+                    this.role = user.User.role;       
                 }
-                this.loginSuccess();
+				
+				if(this.user){	
+					this.user.authParam = this.authParam;
+					var uDetails = {
+						token: this.token,
+						user: this.user,
+						provider: "geostore"
+					};
+					
+					sessionStorage["userDetails"] = Ext.util.JSON.encode(uDetails);							
+				}
+				
+				if(this.reloadOnLogin){
+					this.mask = new Ext.LoadMask(Ext.getBody(), {msg: this.loginLoadingMask});
+					this.mask.show();
+					location.reload();
+				}else{	
+					this.loginSuccess();
+				}
             },
             failure: function(response, form, action) {
 			    this.mask.hide(); 
@@ -326,14 +383,22 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
             if (tool.needsAuthorization === true) {
                 tool.enable();	
             }           
-        },this);
+        }, this);
         
         this.loginAction.disable();
+		
+		this.loginAction.hide();
+		
         this.logoutAction.show();
         this.logoutAction.enable();
-        this.target.setIconClass("logout");
-        this.logged=true;
-        this.win.close();
+
+        this.logged = true;
+		
+		if(this.win){
+			this.win.close();
+		}    
+	
+		this.fireEvent("login", this.user, this.ptype);
     },
 
     loginFailure: function(request) {
@@ -343,6 +408,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
             "password": this.loginErrorText
         });
     },
+	
     /** api: method[showLogout]
      * Shows the window for logout confirmation.
      */ 
@@ -361,7 +427,16 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
                 this.loginAction.enable();
                 this.logoutAction.hide();
                 this.logoutAction.disable();
-                this.logged=false;
+                this.logged = false;
+				
+				this.fireEvent("logout", this.ptype);
+				
+				// /////////////////////////////
+				// Restore the initial status 
+				// /////////////////////////////
+				this.mask = new Ext.LoadMask(Ext.getBody(), {msg: this.logoutLoadingMask});
+				this.mask.show();
+				location.reload();
             }
         }
         
@@ -373,7 +448,16 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
            icon: Ext.MessageBox.QUESTION,
            scope: this
         });        
-    },
+    }, 
+	
+	hideLogin: function(){
+		this.loginAction.hide();
+	},
+	
+	showLogin: function(){
+		this.loginAction.show();
+	},
+	
     /** private: property[_keyStr]
      *  avaible chars for Base64 conversion.
      */
@@ -507,14 +591,14 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
 
         return string;
     },
+	
     dummyLogin: function(user,pass){
         if (user == "admin" && pass == "admin"){
             this.loginSuccess();
         }else{
             this.loginFailure();
         }
-    }
-        
+    }        
 });
 
 Ext.preg(gxp.plugins.GeoStoreLogin.prototype.ptype, gxp.plugins.GeoStoreLogin);
