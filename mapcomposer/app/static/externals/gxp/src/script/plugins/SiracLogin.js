@@ -47,6 +47,12 @@ gxp.plugins.SiracLogin = Ext.extend(gxp.plugins.Tool, {
      */
     logoutTitle: "Logout from SiRAC",
 	
+	/** api: config[logoutText]
+     *  ``String``
+     *  Text for confirmation window (i18n).
+     */
+    logoutText: "Are you sure to logout?",
+	
     scale: 'small',
 	
 	loginAction: null,
@@ -60,7 +66,7 @@ gxp.plugins.SiracLogin = Ext.extend(gxp.plugins.Tool, {
 		var apptarget = this.target;
 	
 		var userInfo = apptarget.userDetails;
-		if(userInfo && userInfo.user.attribute){
+		if(userInfo && userInfo.provider == "sirac" && userInfo.user.attribute){
 			if(userInfo.user.attribute instanceof Array){
 				for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
 					if( userInfo.user.attribute[i].name == "UUID"){
@@ -98,15 +104,30 @@ gxp.plugins.SiracLogin = Ext.extend(gxp.plugins.Tool, {
 				disabled: false,
 				tooltip: this.logoutTitle,
 				handler: function() {
-					document.location.href = 'cleanSession';
-					this.fireEvent("logout", this.ptype);
+				    var logoutFunction = function(buttonId, text, opt){        
+						if(buttonId === 'ok'){ 			
+							document.location.href = 'cleanSession';
+							this.logged = false;
+							this.fireEvent("logout", this.ptype);
+						}
+					}
+					
+					Ext.Msg.show({
+					   title: this.logoutTitle,
+					   msg: this.logoutText,
+					   buttons: Ext.Msg.OKCANCEL,
+					   fn: logoutFunction,
+					   icon: Ext.MessageBox.QUESTION,
+					   scope: this
+					});  
+
 				},
 				scope: this
-			},{
+			}/*,{
 				xtype: 'tbtext',
 				text: userInfo && userInfo.provider == "sirac" && userInfo.user.attribute[0] ? userInfo.user.attribute[0].value : '',
 				hidden: !(this.logged || (userInfo && userInfo.provider == "sirac"))
-			}]
+			}*/]
 		]);
 		
 		this.loginAction = actions[0];

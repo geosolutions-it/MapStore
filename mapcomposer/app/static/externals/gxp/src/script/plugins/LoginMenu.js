@@ -145,7 +145,30 @@ gxp.plugins.LoginMenu = Ext.extend(gxp.plugins.Tool, {
 					}
 				}
 			}, this);
-		}		
+		}
+
+		this.target.on('ready',function(){
+			var auth = this.target.getAuth();
+			
+			var userDetails;
+			if(auth){
+				userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
+			}else{
+				userDetails = this.target.userDetails;
+			}    
+			
+			if(userDetails){
+				this.button.setText(this.logoutTitle + " - " + (userDetails.user.name || userDetails.user.attribute[0].value));
+				this.button.setIconClass("logout");
+				
+				for(var j=0; j<items.length; j++){
+					var plugin = items[j];
+					if(!plugin.logged){
+						plugin.hideLogin();
+					}
+				}
+			}
+		}, this);		
 		
 		var actions = gxp.plugins.LoginMenu.superclass.addActions.call(this, [this.button]);
     }   

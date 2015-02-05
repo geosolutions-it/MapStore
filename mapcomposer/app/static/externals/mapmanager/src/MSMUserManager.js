@@ -461,7 +461,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                         {
                             id       :'name',
                             header   : userManager.textName, 
-                            maxLength:20,
+                            maxLength:255,
                             sortable : true, 
                             dataIndex: 'name'
                         },
@@ -711,7 +711,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                         xtype: 'textfield',
                         anchor:'90%',
                         id: 'user-textfield',
-                        maxLength:20,
+                        maxLength:255,
                         allowBlank: false,
                         blankText: this.textBlankUserName,
                         fieldLabel: this.textName,
@@ -1051,7 +1051,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                             anchor:'90%',
                             id: 'user-textfield',
                             disabled: true,
-                            maxLength:20,
+                            maxLength: 255,
                             allowBlank: false,
                             blankText: userManager.textBlankUserName,
                             fieldLabel: userManager.textName,

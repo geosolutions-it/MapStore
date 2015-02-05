@@ -918,5 +918,15 @@ GeoExt.Lang.add("it", {
 
 	"gxp.plugins.StaticPage.prototype": {
         tabTitle: "Pagina Statica"
+    },      
+
+	"gxp.plugins.SiracLogin.prototype": {
+       logoutTitle: "Logout da SiRAC",
+	   logoutText: "Si è sicuri di voler uscire?"
+    },      
+
+	"gxp.plugins.GeoStoreLogin.prototype": {
+		logoutTitle: "Logout da MapStore",
+		logoutText: "Si è sicuri di voler uscire?"
     }
 });
