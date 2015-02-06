@@ -253,6 +253,8 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             info.controls = [];
             var started = false;
             var atLeastOneResponse = false;
+            // click position, in lat/lon coordinates (issue #422)
+            var startLatLon = null;
 			this.masking = false;
 			
             queryableLayers.each(function(x){                
@@ -279,6 +281,8 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 							//first getFeatureInfo in chain
 							if(!started){
 								started= true;
+								// Issue #422
+								startLatLon = this.target.mapPanel.map.getLonLatFromPixel(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
 								atLeastOneResponse=false;
 								layersToQuery=queryableLayers.length;
 							}
@@ -298,6 +302,14 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                                 if(this.disableAfterClick)
                                     this.button.toggle();                                
 								
+                                // pan to bring popup into view (issue #422)
+                                if (startLatLon) {
+                                	var popup = this.popupCache[startLatLon.toString()];
+                                    if (popup) {
+                                    	// not too pretty, I'm calling a private method... any better idea?
+                                    	popup.panIntoView();
+                                    }
+                                }                                
 							}
 
                             var title = x.get("title") || x.get("name");
@@ -416,7 +428,6 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
         var pixel = new OpenLayers.Pixel(evt.xy.x, evt.xy.y);
         var latLon = this.target.mapPanel.map.getLonLatFromPixel(pixel);
         var popupKey = latLon.toString();
-
         
         var item = this.getPopupItem(text, title, features);
 						
@@ -515,6 +526,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             unpinnable : true,*/
             items: items,
             draggable: true,
+            panIn: false, // Issue #422
             listeners: {
                 close: (function(key) {
                     return function(panel){
