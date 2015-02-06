@@ -507,6 +507,8 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                             		groupNames.push(group.groupName);
                             	});
                             	
+                            	groupNames.sort();
+                            	
                             	return groupNames.join(', ');
                             }
                         },
