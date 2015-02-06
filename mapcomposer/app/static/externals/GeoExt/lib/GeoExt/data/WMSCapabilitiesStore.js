@@ -49,7 +49,7 @@ GeoExt.data.WMSCapabilitiesStore = function(c) {
         this,
         Ext.apply(c, {
             proxy: c.proxy || (!c.data ?
-                new Ext.data.HttpProxy({url: c.url, disableCaching: false, method: "GET"}) :
+                new Ext.data.HttpProxy({url: c.url, disableCaching: true, method: "GET"}) :
                 undefined
             ),
             reader: new GeoExt.data.WMSCapabilitiesReader(
