@@ -20,6 +20,11 @@
  */
 package it.geosolutions.opensdi.sirac;
 
+import it.geosolutions.geostore.core.model.User;
+import it.geosolutions.geostore.core.model.UserAttribute;
+import it.geosolutions.geostore.core.model.enums.Role;
+import it.geosolutions.geostore.services.rest.AdministratorGeoStoreClient;
+import it.geosolutions.geostore.services.rest.GeoStoreClient;
 import it.geosolutions.opensdi2.session.UserSessionService;
 import it.geosolutions.opensdi2.session.impl.UserSessionImpl;
 import it.people.sirac.authentication.beans.PplUserDataExtended;
@@ -27,6 +32,7 @@ import it.people.sirac.filters.SiracSSOAuthenticationFilter;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -40,6 +46,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.sun.jersey.api.client.UniformInterfaceException;
 
 /**
  * Sira AuthenticationFilter extended.
@@ -64,6 +72,8 @@ public class AuthenticationFilter extends SiracSSOAuthenticationFilter {
     
     // default MapStore session expire time in minutes
     private int expireMinutes = 10;
+    
+    private AdministratorGeoStoreClient geostoreClient = null;
     
     @Override
     public void destroy() {
@@ -120,9 +130,39 @@ public class AuthenticationFilter extends SiracSSOAuthenticationFilter {
         // register the session with the service and store the related id in request session
         String sessionId = sessionService.registerNewSession(new UserSessionImpl(mapStoreUserData, expire));
         session.setAttribute(MAPSTORE_SESSION_ID_KEY, sessionId);
+        
+        try {
+            synchronizeUser(userName, userData);
+        } catch (IOException e) {
+            LOGGER.error("Cannot synchronize user with GeoStore", e);
+        }
     }
 
-    @Override
+    private void synchronizeUser(String userName, PplUserDataExtended userData) throws IOException {
+        if (geostoreClient != null) {
+            User user = null;
+            try {
+                user = geostoreClient.getUser(userName);
+            } catch(UniformInterfaceException e) {
+                // we intercept 404 errors (user not found): this means we should create a new one
+                if(!e.getMessage().contains("404")) {
+                    throw new IOException("Cannot connect to GeoStore to get user existance");
+                }
+            }
+            if (user == null) {
+                User geostoreUser = new User();
+                geostoreUser.setName(userName);
+                geostoreUser.setRole(Role.USER);
+                UserAttribute attribute = new UserAttribute();
+                attribute.setName("provider");
+                attribute.setValue("sirac");
+                geostoreUser.setAttribute(Collections.singletonList(attribute));
+                geostoreClient.insert(geostoreUser);
+            }
+        }
+    }
+
+	@Override
     public void init(FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
         String expire = filterConfig.getInitParameter("expire");
@@ -133,11 +173,28 @@ public class AuthenticationFilter extends SiracSSOAuthenticationFilter {
                 LOGGER.error("The expire init-param is wrong: " + expire, e);
             }
         }
+        
+        ServletContext context = filterConfig.getServletContext();
+        WebApplicationContext wac = WebApplicationContextUtils.
+                        getRequiredWebApplicationContext(context);
+        
+        String geostoreBaseUrl = filterConfig.getInitParameter("geostoreBaseUrl");
+        String geostoreUsername = filterConfig.getInitParameter("geostoreUsername");
+        String geostorePassword = filterConfig.getInitParameter("geostorePassword");
+
+        if (geostoreBaseUrl == null || geostoreUsername == null || geostorePassword == null) {
+            geostoreClient = (AdministratorGeoStoreClient)wac.getBean("administratorGeoStoreClient");
+            if(geostoreClient == null) {
+                LOGGER.warn("GeoStore connection is invalid: users won't be synchronized. Please specify geostoreBaseUrl, geostoreUsername and geostorePassword init parameters");
+            }
+        } else {
+            geostoreClient = new AdministratorGeoStoreClient();
+            geostoreClient.setGeostoreRestUrl(geostoreBaseUrl);
+            geostoreClient.setUsername(geostoreUsername);
+            geostoreClient.setPassword(geostorePassword);
+        }
         // Initializes UserSessionService from Spring context
         if(this.sessionService == null) {
-            ServletContext context = filterConfig.getServletContext();
-            WebApplicationContext wac = WebApplicationContextUtils.
-                            getRequiredWebApplicationContext(context);
             sessionService = (UserSessionService)wac.getBean("userSessionService");
         }
     }

@@ -90,6 +90,17 @@
 	  		<param-name>postAuthRequestPage</param-name>
       		<param-value>/LoginServlet</param-value>
 		</init-param>
+        <init-param>
+	  		<param-name>geostoreBaseUrl</param-name>
+      		<param-value>http://localhost:8080/geostore/rest</param-value>
+		</init-param>
+        <init-param>
+	  		<param-name>geostoreUsername</param-name>
+      		<param-value>admin</param-value>
+		</init-param><init-param>
+	  		<param-name>geostorePassword</param-name>
+      		<param-value>admin</param-value>
+		</init-param>
 	</filter>
 
   	<filter-mapping>
