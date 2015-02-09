@@ -303,16 +303,32 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
               mask.hide();
 			  this.auth = null;
 			  
-			  var defaultErrMsg = response.statusText + "(status " + response.status + "):  " + response.responseText;
+			  
 			  
               Ext.Msg.show({
                  title: this.contextSaveFailString,
-                 msg: (response.status === 409) ? this.conflictErrMsg : defaultErrMsg,
+                 msg: this.getSaveFailedErrMsg(response),
                  buttons: Ext.Msg.OK,
                  icon: Ext.MessageBox.ERROR
               });
            }
         }); 
+    },
+    
+    getSaveFailedErrMsg: function(response) {
+    	var errMsg = null;
+    	var defaultErrMsg = response.statusText + "(status " + response.status + "):  " + response.responseText;
+    	
+    	switch (response.status) {
+    		case 409:
+    			errMsg = this.conflictErrMsg;
+    			break;
+    		default:
+    			errMsg = defaultErrMsg;
+    			break;
+    	}
+    	
+    	return errMsg;
     },
 
     metadataDialog: function(configStr){

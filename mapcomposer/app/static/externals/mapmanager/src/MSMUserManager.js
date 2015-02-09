@@ -496,14 +496,13 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                             dataIndex: 'groups',
                             renderer: function(value, metaData, record, rowIndex, colIndex, store) {                            	
                             	var groupsArray =  [], groupNames = [];
-                            	var isGroupArray = value['group'] && typeof value['group'] === 'object' && value['group'].constructor === Array;
-                            	if (isGroupArray) {
+                            	if (Ext.isArray(value['group'])) {
                             		groupsArray =  value['group'];
                             	} else if (value['group']) {
                             		groupsArray.push(value['group']); 
                             	}
                             	
-                            	groupsArray.forEach(function(group) {
+                            	Ext.each(groupsArray, function(group) {
                             		groupNames.push(group.groupName);
                             	});
                             	
