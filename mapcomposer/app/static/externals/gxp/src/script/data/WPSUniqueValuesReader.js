@@ -25,10 +25,38 @@ gxp.data.WPSUniqueValuesReader = Ext.extend(Ext.data.JsonReader, {
             root: 'values',
             totalProperty: 'size',
             idProperty: 'value',
-            fields: [{name:'value', mapping: '', convert: function (a,b) {
-                    return b;
-                }}]
+            fields: [{
+                name:'value',
+                mapping: function( o ) {
+                    var mapping = o ? o : null;
+                    return mapping; 
+                },
+                convert: function (a,b) {
+                    var value = b ? b : "no data";
+                    return value;
+                }
+            }]
         });
+        this.createAccessor = function(){
+            var re = /[\[\.]/;
+            return function(expr) {
+                if(Ext.isEmpty(expr)){
+                    return Ext.emptyFn;
+                }
+                if(Ext.isFunction(expr)){
+                    return expr;
+                }
+                var i = String(expr).search(re);
+                if(i >= 0){
+                    return new Function('obj', 'return obj' + (i > 0 ? '.' : '') + expr);
+                }
+                return function(obj){
+                    var obj = obj ? obj : "no data";
+                    return obj[expr];
+                };
+
+            };
+        }();
         gxp.data.WPSUniqueValuesReader.superclass.constructor.call(this, config);
     },
 	//parser: new OpenLayers.Format.GML(),
