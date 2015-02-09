@@ -3,9 +3,9 @@
    "actionToolScale": "medium",      
    "tab": true,
    "gsSources":{
-   		"geoserver_ret": {
+   		"geoserver_ds": {
 			"ptype": "gxp_wmssource",
-			"url": "http://geoportale.lamma.rete.toscana.it/geoserver_ret/ows?",
+			"url": "http://geoportale.lamma.rete.toscana.it/geoserver_ds/CENS_OP_IDRO_V0/ows?",
 			"title": "Geoscopio Reticolo",
 			"SRS": "EPSG:3003",
 			"version":"1.1.1",
@@ -319,203 +319,214 @@
 				"visibility": true,
 				"tiled": false
 			},{
-				"source": "geoserver_ret",
-				"group": "Reticolo",
-				"title": "RD 523/1904",
-				"name": "CENS_OP_IDRO_V1:ret_opere_v1",
-				"displayInLayerSwitcher": true,
-				"visibility": false,
-				"tiled": true
-			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (AREALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Invaso",
-				"name": "CENS_OP_IDRO:a_invaso",
+				"name": "a_invaso",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (AREALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Casse espansione",
-				"name": "CENS_OP_IDRO:a_cas_esp",
+				"name": "a_cas_esp",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (LINEARI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Argine",
-				"name": "CENS_OP_IDRO:l_argine",
+				"name": "l_argine",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (LINEARI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Attraversamento",
-				"name": "CENS_OP_IDRO:l_attraver",
+				"name": "l_attraver",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (LINEARI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Canale artificiale",
-				"name": "CENS_OP_IDRO:l_can_art",
+				"name": "l_can_art",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (LINEARI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Difesa si sponda",
-				"name": "CENS_OP_IDRO:l_sponda",
+				"name": "l_sponda",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (PUNTUALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Briglie",
-				"name": "CENS_OP_IDRO:p_briglia",
+				"name": "p_briglia",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (PUNTUALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Casello idraulico",
-				"name": "CENS_OP_IDRO:p_casello",
+				"name": "p_casello",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (PUNTUALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Cateratta",
-				"name": "CENS_OP_IDRO:p_caterat",
+				"name": "p_caterat",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (PUNTUALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Cunettone",
-				"name": "CENS_OP_IDRO:p_cunet",
+				"name": "p_cunet",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (PUNTUALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Difesa di sponda",
-				"name": "CENS_OP_IDRO:p_sponda",
+				"name": "p_sponda",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (PUNTUALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Idrovoro",
-				"name": "CENS_OP_IDRO:p_idrovoro",
+				"name": "p_idrovoro",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (PUNTUALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Opere di presa",
-				"name": "CENS_OP_IDRO:p_presa",
+				"name": "p_presa",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (PUNTUALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Pennello",
-				"name": "CENS_OP_IDRO:p_pennello",
+				"name": "p_pennello",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (PUNTUALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Rampa",
-				"name": "CENS_OP_IDRO:p_rampa",
+				"name": "p_rampa",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (PUNTUALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Sfioratore",
-				"name": "CENS_OP_IDRO:p_sfiorat",
+				"name": "p_sfiorat",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (PUNTUALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Sifone",
-				"name": "CENS_OP_IDRO:p_sifone",
+				"name": "p_sifone",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (PUNTUALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Soglia",
-				"name": "CENS_OP_IDRO:p_soglia",
+				"name": "p_soglia",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
-				"source": "geoserver_ret",
+				"source": "geoserver_ds",
 				"group": "Censimento Opere V0 (PUNTUALI)",
                 "expanded": true,
                 "checked": true,
 				"title": "Traversa",
-				"name": "CENS_OP_IDRO:p_traversa",
+				"name": "p_traversa",
 				"displayInLayerSwitcher": true,
 				"visibility": false,
-				"tiled": false
+				"tiled": false,
+                "queryPanel": true
 			},{
 				"source": "geoscopio_amb_ammin",
 				"group": "Ambiti amministrativi",
@@ -546,7 +557,35 @@
     ], 	    
 	"proj4jsDefs": {
 		"EPSG:3003": "+proj=tmerc +lat_0=0 +lon_0=9 +k=0.9996 +x_0=1500000 +y_0=0 +ellps=intl +units=m +no_defs +towgs84 = -104.1,-49.1,-9.9,0.971,-2.917,0.714,-11.68"
-	},	
+	},
+    "customPanels":[
+	      {
+	          "xtype": "panel",
+	          "title": "Risultati Ricerche",      
+	          "border": false,
+              "collapsedonfull": true,
+	          "id": "south",
+	          "region": "south",
+	          "layout": "fit",
+	          "height": 330,
+	          "collapsed": true,
+	          "collapsible": true,
+	          "header": true
+	      },{
+	          "xtype": "panel",
+	          "title": "Pannello Ricerche",         
+	          "border": false,
+	          "id": "east",
+	          "width": 400,
+	          "height": 500,
+	          "region": "east",
+	          "layout": "fit",
+	          "collapsed": true,
+	          "collapsible": true,
+	          "header": true,
+              "collapsedonfull": true
+	      }
+    ],	
 	"customTools": [
 		{
 			"ptype": "gxp_embedmapdialog",
@@ -595,6 +634,71 @@
                 "target": "panelbbar",
                 "index": 1
             }
-        }
+        }, {
+		  "ptype": "gxp_featuremanager",
+		  "id": "featuremanager",
+          "paging": true,
+          "pagingType": 1,
+          "autoLoadFeatures": false,
+          "maxFeatures": 10
+	    }, {
+		  "ptype": "gxp_featuregrid",
+		  "featureManager": "featuremanager",
+          "layout": "form",
+		  "outputConfig": {
+			  "id": "featuregrid",
+			  "title": "Features",
+              "height": 240,
+              "loadMask": true
+		  },
+		  "outputTarget": "south",
+		  "showNumberOfRecords": true
+	    }, {
+		  "ptype": "gxp_spatialqueryform",
+		  "featureManager": "featuremanager",
+		  "featureGridContainer": "south",
+		  "outputTarget": "east",
+		  "showSelectionSummary": true,
+		  "actions": null,
+		  "id": "bboxquery",
+          "spatialSelectorFieldsetCollapsedFirst": true,    
+          "spatialSelectorFieldsetHidden": true,    
+          "spatialSelectorFieldsetCheckboxToggle": false,        
+          "attributeFieldsetCollapsedFirst": false,        
+          "attributeFieldsetHidden": false,      
+          "attributeFieldsetCheckboxToggle": false,    
+          "filterLayer": true,
+          "autoComplete": {
+            "sources": ["geoserver_ds"],
+            "url": "http://geoportale.lamma.rete.toscana.it/geoserver_ds/wps",
+            "pageSize": 10
+          },
+		  "outputConfig":{
+			  "outputSRS": "EPSG:900913",
+			  "selectStyle":{
+				  "strokeColor": "#ee9900",
+				  "fillColor": "#ee9900",
+				  "fillOpacity": 0.4,
+				  "strokeWidth": 1
+			  },
+			  "spatialFilterOptions": {	
+				  "lonMax": 20037508.34,   
+				  "lonMin": -20037508.34,
+				  "latMax": 20037508.34,   
+				  "latMin": -20037508.34  
+			  },
+			  "bufferOptions": {
+				"minValue": 1,
+				"maxValue": 1000,
+				"decimalPrecision": 2,
+				"distanceUnits": "m"
+			  }
+		  },          
+		  "spatialSelectorsConfig":{
+		        "bbox":{
+		            "xtype": "gxp_spatial_bbox_selector"
+		        }
+	      }
+    	}
 	]
 }
