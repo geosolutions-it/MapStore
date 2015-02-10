@@ -311,7 +311,8 @@ GeoExt.Lang.add("it", {
 		mapMedatataSetTitle: "Metadati della Mappa",	
 		mapNameLabel: "Nome",	
 		mapDescriptionLabel: "Descrizione",
-		addResourceButtonText: "Salva Mappa"
+		addResourceButtonText: "Salva Mappa",
+		conflictErrMsg: "Una mappa con lo stesso nome esiste già"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
@@ -326,6 +327,11 @@ GeoExt.Lang.add("it", {
         zoomInTooltip: "Zoom Box Avanti",
         zoomOutTooltip: "Zoom Box Indietro"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Il layer non è disponibile nella proiezione della mappa",
+		errorTitle: "Errore"
+	},
 
     "GeoExt.ux.PrintPreview.prototype":{
 	    paperSizeText: "Dimensioni del foglio:",

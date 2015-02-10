@@ -288,19 +288,28 @@ GeoExt.Lang.add("es", {
 		mapMedatataSetTitle: "Metadatos del Mapa",	
 		mapNombreLabel: "Nombre",	
 		mapDescripciónLabel: "Descripción",
-		addResourceButtonText: "Añadir Mapa"
+		addResourceButtonText: "Añadir Mapa",
+		conflictErrMsg: "Un mapa con el mismo nombre ya existe"
     },
+	
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Seleccionar un área",
         menuText: "GeoReferencias",
         tooltip: "GeoReferencias"
     },
+	
     "gxp.plugins.ZoomBox.prototype":{
         zoomInMenuText: "Zoom Box Siguiente",
         zoomOutMenuText: "Zoom Box Anterior",
         zoomInTooltip: "Zoom Box Siguiente",
         zoomOutTooltip: "Zoom Box Anterior"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Capa no está disponible en la proyección cartográfica",
+		errorTitle: "Error"
+	},
+	
     "GeoExt.ux.PrintPreview.prototype":{
         paperSizeText: "Tamaño del folio:",
         resolutionText: "Resolución:",

@@ -447,10 +447,14 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
             }
             return section;
         }
+        
+        var parseHeader = function(section) {
+			return (section && section.header !== undefined && section.header !== null) ? section.header : false;
+		}
 
         if(header){
             var north = {
-                header: false,
+                header: parseHeader(header.container),
                 region: 'north',
                 id: 'msheader'
             };
@@ -467,7 +471,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
 
         if(footer){
              var south = {
-                header: false,
+                header: parseHeader(footer.container),
                 region: 'south',
                 id: 'msfooter'
             };
