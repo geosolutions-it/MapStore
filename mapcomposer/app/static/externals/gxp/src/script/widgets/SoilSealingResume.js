@@ -753,8 +753,6 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
                     			source: this.target.layerSources.jrc.id,
                                 name: layerName,
                                 url: this.url,
-								styles: ["raster"],
-								style: ["raster"],
                                 title: layerTitle,
                                 tiled:true,
                                 group: group,

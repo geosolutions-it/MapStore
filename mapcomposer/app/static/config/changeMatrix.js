@@ -511,7 +511,8 @@
             		"defaultProcessStyle": "raster",
             		"styleSelection": {
             			"3": "sprawl",
-            			"4": "sprawl"
+            			"4": "sprawl",
+						"8": "frag"
             		},
             		"imperviousnessProccessName": "gs:SoilSealingImperviousness",
             		"imperviousnessLayer": "imperviousness",
