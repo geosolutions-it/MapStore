@@ -309,7 +309,8 @@ GeoExt.Lang.add("de", {
 		mapMedatataSetTitle: "Karte Metadaten",	
 		mapNameLabel: "Name",	
 		mapDescriptionLabel: "Beschreibung",
-		addResourceButtonText: "In Map"
+		addResourceButtonText: "In Map",
+		conflictErrMsg: "Eine Karte mit dem gleichen Namen ist bereits vorhanden"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
@@ -324,6 +325,11 @@ GeoExt.Lang.add("de", {
         zoomInTooltip: "Zoom Box Vorwärts",
         zoomOutTooltip: "Zoom Box Zurück"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Schicht ist nicht in der Kartenprojektion",
+		errorTitle: "Fehler"
+	},
 
     "GeoExt.ux.PrintPreview.prototype":{
 	    paperSizeText: "Papierformat:",

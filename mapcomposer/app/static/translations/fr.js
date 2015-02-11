@@ -286,7 +286,8 @@ GeoExt.Lang.add("fr", {
 		mapMedatataSetTitle: "Métadonnées de la carte",	
 		mapNameLabel: "Nom",	
 		mapDescriptionLabel: "Description",
-		addResourceButtonText: "Ajouter la carte"
+		addResourceButtonText: "Ajouter la carte",
+		conflictErrMsg: "Une carte avec le même nom existe déjà"
     },
     "gxp.plugins.GeoReferences.prototype":{
         initialText: "Sélectionner une zone",
@@ -300,6 +301,12 @@ GeoExt.Lang.add("fr", {
         zoomInTooltip: "Outil de Zoom Avant",
         zoomOutTooltip: "Outil de Zoom Arrière"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Couche ne est pas disponible dans la projection cartographique",
+		errorTitle: "Erreur"
+	},
+	
     "GeoExt.ux.PrintPreview.prototype":{
         paperSizeText: "Taille de papier:",
         resolutionText: "Résolution:",
