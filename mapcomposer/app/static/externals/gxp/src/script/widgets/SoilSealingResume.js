@@ -342,16 +342,25 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					yAxis)
 			);
 		}else{
-			barChartTitle += " - " + referenceTimeTitle;
+			if (data.index.id === 8){
+				barChartTitle = referenceTimeTitle;
+			}else{
+				barChartTitle += " - " + referenceTimeTitle;
+			}
 		}
-
+		
+		
 		// bar charts
 		var barChartTab = new Ext.Panel({
 			tbar: addLayersBar,
 			title : barChartTitle,
-			items: barChartItems
+			items: []
 		});
-
+		
+		if(data.index.id !== 8){
+			barChartTab.add(barChartItems);
+		};
+		
 		// Generated items
 		var items = [];
 		if(adminUnitsTabs && adminUnitsTabs.length > 0){
@@ -414,15 +423,23 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			&& yearData.admUnits.length == yearData.values.length){
 			var clcLevels = this.getLevels(indexId, subIndex, yearData.referenceName, yearData.clcLevels);
 			for(var i = 0; i < yearData.admUnits.length; i++){
+									
+				//var colorRGB = this.randomColorsRGB(yearData.values[i].length);
+				var colorHEX = this.randomColorsHEX(yearData.values[i].length);	
+				
 				if(yearData.clcLevels.length == yearData.values[i].length){
 					var pieChartData = [];
+					var pieChartDataColor = [];
 					// for(var j = 0; j < yearData.clcLevels.length; j++){
 					for(var j = 0; j < clcLevels.length; j++){
 						//pieChartData.push([yearData.clcLevels[j], yearData.values[i][j]]);
-						if( yearData.values[i][j] > 0 )
+						if( yearData.values[i][j] > 0 ){
+							pieChartDataColor.push(colorHEX[j]);
 							pieChartData.push([clcLevels[j], yearData.values[i][j]]);
+						}
+							
 					}
-					chartsData.push(pieChartData);
+					chartsData.push([pieChartData,pieChartDataColor]);
 				}
 			}
 		}
@@ -522,7 +539,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			series : [{
 				type : 'pie',
 				name: subTitle,
-				data : data
+				data : data[0]
 			}],
 			chartConfig : {
 				chart : {
@@ -549,6 +566,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					pie : {
 						allowPointSelect : true,
 						cursor : 'pointer',
+						colors: data[1],
 						dataLabels : {
 							enabled : true,
 							color : '#000000',
@@ -735,6 +753,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
                     			source: this.target.layerSources.jrc.id,
                                 name: layerName,
                                 url: this.url,
+								styles: ["raster"],
+								style: ["raster"],
                                 title: layerTitle,
                                 tiled:true,
                                 group: group,
@@ -864,8 +884,116 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 
 			map.zoomToExtent(extent, true);
 		}
-	}
+	},
+	/**  
+	 * api: method[addLayer]
+     */    
+    /*addLayer: function(layerName, title, featureType){
+        var layerTitle = title && layerName ? title + " - " + layerName: layerName;
+        var src;				                            
+        for (var id in this.target.layerSources) {
+              var s = this.target.layerSources[id];    
+              
+              // //////////////////////////////////////////
+              // Checking if source URL aldready exists
+              // //////////////////////////////////////////
+              if(s != undefined && s.id == this.geocoderConfig.source){
+                  src = s;
+                  break;
+              }
+        }
+        var group = "Weather Prog";
+        var props ={
+                    source: this.target.layerSources.jrc.id,
+                    name: this.geocoderConfig.nsPrefix + ":" + layerName,
+                    url: this.url,
+                    title: layerTitle,
+                    tiled:true,
+                    group: group,
+                    layers: layerName
+            };
+                                    
+        var index = src.store.findExact("name", this.geocoderConfig.nsPrefix + ":" + layerName);
+        
+        var tree = Ext.getCmp("layertree");
+        var groupExists = false;
+        for (var node=0; node<tree.root.childNodes.length; node++)
+            if (group == tree.root.childNodes[node].text)
+                groupExists = true;
+        
+        if (!groupExists) {
+            var node = new GeoExt.tree.LayerContainer({
+                text: group,
+                iconCls: "gxp-folder",
+                expanded: true,
+                checked: false,
+                group: group == "default" ? undefined : group,
+                loader: new GeoExt.tree.LayerLoader({
+                    baseAttrs: undefined,
+                    store: this.target.mapPanel.layers,
+                    filter: (function(group) {
+                        return function(record) {
+                            return (record.get("group") || "default") == group &&
+                                record.getLayer().displayInLayerSwitcher == true;
+                        };
+                    })(group)
+                }),
+                singleClickExpand: true,
+                allowDrag: true,
+                listeners: {
+                    append: function(tree, node) {
+                        node.expand();
+                    }
+                }
+            });
+            
+            tree.root.insertBefore(node, tree.root.firstChild.nextSibling);
 
+        }
+        
+        if (index < 0) {
+            src.on('ready', function(){
+                this.addLayerRecord(src, props);
+            }, this);
+            // ///////////////////////////////////////////////////////////////
+            // In this case is necessary reload the local store to refresh 
+            // the getCapabilities records 
+            // ///////////////////////////////////////////////////////////////
+            src.store.reload();
+        }else{
+            this.addLayerRecord(src, props);
+        }    
+    
+    },*/
+	
+    randomColorsRGB: function(total){
+        var i = 360 / (total - 1); // distribute the colors evenly on the hue range
+        var r = []; // hold the generated colors
+        var hsvToRgb = function(h,s,v){
+            var rgb= Ext.ux.ColorPicker.prototype.hsvToRgb(h,s,v);
+            return rgb;
+        }
+        for (var x=0; x<total; x++)
+        {
+            r.push(hsvToRgb(i * x, 0.57, 0.63)); // you can also alternate the saturation and value for even more contrast between the colors
+        }
+        return r;
+    },
+	
+    randomColorsHEX: function(total){
+        var i = 360 / (total - 1); // distribute the colors evenly on the hue range
+        var r = []; // hold the generated colors
+        var hsvToRgb = function(h,s,v){
+            var rgb= Ext.ux.ColorPicker.prototype.hsvToRgb(h,s,v);
+            return "#" +  Ext.ux.ColorPicker.prototype.rgbToHex( rgb );
+        }
+        for (var x=0; x<total; x++)
+        {
+            r.push(hsvToRgb(i * x, 0.57, 0.63)); // you can also alternate the saturation and value for even more contrast between the colors
+        }
+        return r;
+    }
+	
 });
 
 Ext.preg(gxp.widgets.SoilSealingResume.prototype.ptype, gxp.widgets.SoilSealingResume);

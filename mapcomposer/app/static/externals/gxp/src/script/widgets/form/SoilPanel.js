@@ -97,8 +97,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				1: false,
 				2: false,
 				3: false,
-				4: false,
-				5: false,
+				4: true,
+				5: true,
 				6: true,
 				7: true
 			},
@@ -243,7 +243,12 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
     		layout : 'form',
 			//height: 400,
 			autoScroll: true,
-	        items: this.getRoiItems(config)
+	        items: this.getRoiItems(config),
+			listeners: {
+				expand: function(panel){
+					panel.doLayout();
+				}
+			}
 	    }];
 	},
 
