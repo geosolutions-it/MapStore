@@ -703,6 +703,8 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         maxFeatures: this.maxFeatures,
                         layer: this.featureLayer,
                         ogcFilter: filter,
+                        sortBy: this.sortBy,
+                        remoteSort:this.remoteSort,
                         autoLoad: autoLoad,
                         autoSave: false,
                         listeners: {

@@ -272,6 +272,11 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``String``
      */
 	pageOfLabel: "of",	
+    /**
+     * api: config[ignoreFields]
+      ``Array`` do not display these records in grid
+     */
+    ignoreFields:["feature", "state", "fid"],
 	
     /** api: config[totalRecordsLabel]
      *  ``String``
@@ -642,7 +647,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
 			}
 			
             //TODO use schema instead of store to configure the fields
-            var ignoreFields = ["feature", "state", "fid"];
+            var ignoreFields = this.ignoreFields;
             schema && schema.each(function(r) {
                 r.get("type").indexOf("gml:") == 0 && ignoreFields.push(r.get("name"));
             });
