@@ -55,7 +55,8 @@ gxp.data.WFSFeatureStore = Ext.extend(GeoExt.data.FeatureStore, {
                 schema: config.schema,
                 filter: config.ogcFilter,
                 maxFeatures: config.maxFeatures,
-				viewparams: config.viewparams
+				viewparams: config.viewparams,
+                sortBy: config.sortBy
             }, config.proxy));
         }
         if(!config.writer) {
