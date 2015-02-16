@@ -1048,7 +1048,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 					subtitle: {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
                               '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
-                              '<span style="font-size:10px;">AOI: '+ listVar.chartTitle  + '</span><br />' +
+                              //'<span style="font-size:10px;">AOI: '+ listVar.chartTitle  + '</span><br />' +
                               '<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />', //+ 
