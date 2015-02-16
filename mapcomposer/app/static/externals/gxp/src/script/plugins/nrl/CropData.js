@@ -747,8 +747,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 commodityCB.setVisible(mode == 'composite' || mode == 'compareRegion');
                 var commoditygrid = this.commodities;
                 commoditygrid.setVisible(mode == 'compareCommodity');
-                var season = this.season;
-                season.setVisible(mode == 'composite');
+                /*var season = this.season;
+                season.setVisible(mode == 'composite');*/
                 this.compare_variable.setVisible(mode == 'compareRegion' || mode == 'compareCommodity');
 				
 				var gran_type = this.aoiFieldSet.gran_type;		
