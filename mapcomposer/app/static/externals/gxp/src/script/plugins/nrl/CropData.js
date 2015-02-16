@@ -798,57 +798,60 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			var values = this.output.getForm().getValues();
 			var gran_type = values.areatype;
 			
-            if (xTypeButton == "gxp_nrlCropDataButton" || xTypeButton == 'gxp_nrlCropDataTabButton'){
+            if (xTypeButton == "gxp_nrlCropDataButton"){
                 button.setDisabled(store.getCount()<=0 && gran_type != "pakistan");
-            }else{
+				
+				// Set chartOptCompare object
+				var numRegion = [];
+				var regStore = this.output.aoiFieldSet.AreaSelector.store;
+				var records = regStore.getRange();
+				
+				for (var i=0;i<records.length;i++){
+					var attrs = records[i].get("attributes");
+					var region = attrs.district ? attrs.district + "," + attrs.province : attrs.province;
+					numRegion.push(region.toLowerCase());
+				}			
+				
+				var chartOptCompare = {};
+				var series = {};
+				
+				var colorRGB = button.randomColorsRGB(numRegion.length);
+				var colorHEX = button.randomColorsHEX(numRegion.length);
+				
+				for (var i = 0;i<numRegion.length;i++){				
+					
+					var dataIndex = numRegion[i].split(',')[0];
+					
+					if (gran_type == "province"){
+						var newNumRegion = numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1);               
+					}else{
+						var splitRegion = numRegion[i].split(',');
+						var newNumRegion = splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + ")";           
+					}
+					
+					series[dataIndex] = {
+						name: newNumRegion,
+						color: colorHEX[i],
+						lcolor: 'rgb(' + colorRGB[i] + ')',
+						type: 'column',
+						dataIndex: dataIndex
+					};
+					
+				}
+				
+				chartOptCompare = {
+					series:series,
+					height:500
+				};
+				
+				button.chartOptCompare = chartOptCompare;	
+				
+            }else if(xTypeButton == 'gxp_nrlCropDataTabButton'){
+				button.setDisabled(store.getCount()<=0 && gran_type != "pakistan");
+			}else{
                 //map xTypeButton
                 button.setDisabled(store.getCount()<=0 && gran_type == "province");
             }			
-			
-			// Set chartOptCompare object
-			var numRegion = [];
-			var regStore = this.output.aoiFieldSet.AreaSelector.store;
-			var records = regStore.getRange();
-			
-			for (var i=0;i<records.length;i++){
-				var attrs = records[i].get("attributes");
-				var region = attrs.district ? attrs.district + "," + attrs.province : attrs.province;
-				numRegion.push(region.toLowerCase());
-			}			
-			
-			var chartOptCompare = {};
-			var series = {};
-			
-			var colorRGB = button.randomColorsRGB(numRegion.length);
-			var colorHEX = button.randomColorsHEX(numRegion.length);
-			
-			for (var i = 0;i<numRegion.length;i++){				
-				
-				var dataIndex = numRegion[i].split(',')[0];
-				
-				if (gran_type == "province"){
-					var newNumRegion = numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1);               
-				}else{
-					var splitRegion = numRegion[i].split(',');
-					var newNumRegion = splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + ")";           
-				}
-				
-				series[dataIndex] = {
-					name: newNumRegion,
-					color: colorHEX[i],
-					lcolor: 'rgb(' + colorRGB[i] + ')',
-					type: 'column',
-					dataIndex: dataIndex
-				};
-				
-			}
-			
-			chartOptCompare = {
-				series:series,
-				height:500
-			};
-			
-			button.chartOptCompare = chartOptCompare;
             
         },this);
 		
