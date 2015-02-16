@@ -216,32 +216,30 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         var data = form.getValues();
         var data2 = form.getFieldValues();
         var units = this.form.output.units;
+        
+        var regionList = data.region_list.toLowerCase();
+        var commodity = data2.crop; // fixes #66 issue;
+        var season = data.season.toLowerCase();
+        var granType = data.areatype;
+        var fromYear = data.startYear;
+        var toYear = data.endYear;
+
+		/* START COMPARE SECTION*/
 		
-		/* START
-		#########################
-		## new var for compare ##
-		#########################
-		*/
-		
-		this.mode = data.mode;
-		
-		this.variableCompare = data.variable_compare;
-		this.groupCompare = data.compare_group;
+		this.mode = data.mode;		
+		this.variableCompare = data.compare_variable;
 		
 		var commoditiesStore  = this.form.output.commodities.getSelectionModel().getSelections();
 		var factorValues = [];
 		var factorList = "";
-		
-		if (this.mode === 'compare'){
+
+		if (this.mode === 'compareCommodity'){
 			if (commoditiesStore.length === 0){
-				Ext.Msg.alert("Grid Commodities","Must be selected one Commodity!");
+				Ext.Msg.alert("Grid Commodities","Must be selected at least one Commodity!");
 				return;
-			}else if(commoditiesStore.length > 1){
-				Ext.Msg.alert("Grid Commodities","Must be selected only one Commodity!");
-				return;			
 			}else{
 				var commodities = commoditiesStore[0].data;
-				/*
+				
 				for (var i=0;i<commoditiesStore.length;i++){
 					var crop = commoditiesStore[i].data;
 					var factorValue = crop.crop;
@@ -252,22 +250,16 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 						factorList += "'" + factorValue.concat("'\\,");                    
 					}
 				}
-				*/
+				Ext.Msg.alert("Grid Commodities","Comparison by Commodity not yet implemented!!!");
+				return;
 			}
 		}
 
 		/* END
-		#########################
-		## new var for compare ##
-		#########################
+		###############################
+		## new var for compareRegion ##
+		###############################
 		*/
-        
-        var regionList = data.region_list.toLowerCase();
-        var commodity = data2.crop; // fixes #66 issue;
-        var season = data.season.toLowerCase();
-        var granType = data.areatype;
-        var fromYear = data.startYear;
-        var toYear = data.endYear;
         
         //get unit of measure id
         var prodUnits = data2.production_unit;
@@ -344,8 +336,9 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
             }            
         }
         
-		// check if composite or compare
-		var viewParamsCrop = commodities ? commodities.crop : commodity;
+		// check if composite or compareRegion
+		var viewParamsCrop = commodities ? commodities : commodity;
+		//var viewParamsCrop = commodities ? commodities.crop : commodity;
 		
         var listVar = {
             today: today,
@@ -765,10 +758,10 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 		};
 		
 		// TODO
-        /*ret.series.sort(function(a,b){
+        ret.series.sort(function(a,b){
             //area,bar,line,spline are aphabetically ordered as we want
             return a.type < b.type ? -1 : 1;
-        });*/
+        });
 		
 		
         //ret.avgs = [];
@@ -1012,10 +1005,24 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 
 			var chart;
 			var text = listVar.commodity.toUpperCase() + ' - ' + opt.name;
+			
+			//
+			// AOI Subtitle customization
+			//
+			/*var aoiSubtitle = "";
+			if(dataTitle == "AGGREGATED DATA"){
+				if(aggregatedDataOnly){
+					aoiSubtitle += "Pakistan";
+				}else{
+					aoiSubtitle += listVar.chartTitle;
+				}	
+			}else{
+				aoiSubtitle += chartTitle;
+			}*/
+			
 			//
 			// Making Chart Title
-			//
-			
+			//			
 			chart = new Ext.ux.HighChart({
 				series: chartConfig.series,				
 				
@@ -1027,7 +1034,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
-                        spacingBottom: 45                       
+                        spacingBottom: 145                       
 					},
                     exporting: {
                         enabled: true,
@@ -1038,22 +1045,22 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 						//text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase() +" - "+listVar.chartTitle.split(',')[r]) // + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : listVar.chartTitle.split(',')[r])
 						text: text
 					},
-					/*subtitle: {
+					subtitle: {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
                               '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
-                              '<span style="font-size:10px;">AOI: '+ aoiSubtitle  + '</span><br />' +
+                              '<span style="font-size:10px;">AOI: '+ listVar.chartTitle  + '</span><br />' +
                               '<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
-                              '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />'+ 
-                              '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
-                              '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+opt.series.prod.unit+'</span><br />'+
-                              '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+opt.series.yield.unit+'</span>',
+                              '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />', //+ 
+                              //'<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
+                              //'<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+opt.series.prod.unit+'</span><br />'+
+                              //'<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+opt.series.yield.unit+'</span>',
                         align: 'left',
                         verticalAlign: 'bottom',
                         useHTML: true,
                         x: 30,
-                        y: -10
-					},*/
+                        y: 30
+					},
 					xAxis: [{
 						type: 'datetime',
 						categories: 'time',
@@ -1098,31 +1105,27 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 	},
     randomColorsRGB: function(total){
         var i = 360 / (total - 1); // distribute the colors evenly on the hue range
-        //var i = total / 360; // distribute the colors evenly on the hue range
         var r = []; // hold the generated colors
-        var hsvToRgb = function(h,s,v,i){
+        var hsvToRgb = function(h,s,v){
             var rgb= Ext.ux.ColorPicker.prototype.hsvToRgb(h,s,v);
             return rgb;
-            //return "#" +  Ext.ux.ColorPicker.prototype.rgbToHex( rgb );
         }
         for (var x=0; x<total; x++)
         {
-            r.push(hsvToRgb(i * x, 1, 1,x)); // you can also alternate the saturation and value for even more contrast between the colors
+            r.push(hsvToRgb(i * x, 0.57, 0.63)); // you can also alternate the saturation and value for even more contrast between the colors
         }
         return r;
     },
     randomColorsHEX: function(total){
         var i = 360 / (total - 1); // distribute the colors evenly on the hue range
-        //var i = total / 360; // distribute the colors evenly on the hue range
         var r = []; // hold the generated colors
-        var hsvToRgb = function(h,s,v,i){
+        var hsvToRgb = function(h,s,v){
             var rgb= Ext.ux.ColorPicker.prototype.hsvToRgb(h,s,v);
-            //return rgb;
             return "#" +  Ext.ux.ColorPicker.prototype.rgbToHex( rgb );
         }
         for (var x=0; x<total; x++)
         {
-            r.push(hsvToRgb(i * x, 1, 1,x)); // you can also alternate the saturation and value for even more contrast between the colors
+            r.push(hsvToRgb(i * x, 0.57, 0.63)); // you can also alternate the saturation and value for even more contrast between the colors
         }
         return r;
     }	

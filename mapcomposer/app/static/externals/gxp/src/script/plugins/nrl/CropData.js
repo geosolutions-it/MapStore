@@ -170,12 +170,9 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
         };
         //reset unit combobox to defaults for the selected crop
         var resetUnitComboboxes = function(unitFieldset,selectedCommodity){
-                    
-                    unitFieldset.production.selectUnit(selectedCommodity.get('prod_default_unit'));
-                    unitFieldset.area.selectUnit(selectedCommodity.get('area_default_unit'));
-                    unitFieldset.yield.selectUnit(selectedCommodity.get('yield_default_unit'));
-            
-            
+			unitFieldset.production.selectUnit(selectedCommodity.get('prod_default_unit'));
+			unitFieldset.area.selectUnit(selectedCommodity.get('area_default_unit'));
+			unitFieldset.yield.selectUnit(selectedCommodity.get('yield_default_unit'));
         };
         var loadStoreTrigger =  function(){
             this.pendingStores--;
@@ -376,11 +373,12 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     ref: 'mode',
                     title: this.outputTypeText,
                     defaultType: 'radio',
-                    columns: 2,
+                    columns: 1,
                     disabled:false,
                     items:[
                         {boxLabel: 'Composite' , name: 'mode', inputValue: 'composite',checked:true},                        
-                        {boxLabel: 'Compare' , name: 'mode', inputValue: 'compare'},
+                        {boxLabel: 'Comparison by Region' , name: 'mode', inputValue: 'compareRegion'},
+						{boxLabel: 'Comparison by Commodity' , name: 'mode', inputValue: 'compareCommodity'},
                     ],
                     listeners: {
                         change: function(c,checked){
@@ -492,10 +490,14 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                         expand: function( combo ){
                             var season = this.ownerCt.season;
                             var radio = season.getValue();
+							
+							var mode = this.ownerCt.mode.getValue().inputValue;
                             
-                            if (radio && radio.getValue()){
+                            if (radio && radio.getValue() && mode === 'composite'){
                                this.seasonFilter(radio.inputValue);
-                            }
+                            }else{
+							   this.reset();
+							}
                         },
                         select: function(cb,record,index){
                             //set year range for the selected crop
@@ -564,21 +566,17 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     xtype: 'radiogroup',
                     anchor:'100%',
                     autoHeight:true,
-                    ref: 'variable_compare',
+                    ref: 'compare_variable',
                     //checkboxToggle:true,
                     title: this.outputTypeText,
                     defaultType: 'radio',
-                    columns: 2,
+                    columns: 1,
                     disabled:false,
                     hidden:true,
                     items:[
-                        {boxLabel: 'Area' , name: 'variable_compare', inputValue: 'area'},
-                        {boxLabel: 'By Region', name: 'compare_group', inputValue: 'region', checked: true},
-                        {boxLabel: 'Production', name: 'variable_compare', inputValue: 'prod', checked: true},
-                        {boxLabel: 'By Commodity' , name: 'compare_group', inputValue: 'crop'},
-                        {boxLabel: 'Yield' , name: 'variable_compare', inputValue: 'yield'}
-                        
-                        
+                        {boxLabel: 'Area' , name: 'compare_variable', inputValue: 'area'},
+                        {boxLabel: 'Production', name: 'compare_variable', inputValue: 'prod', checked: true},
+                        {boxLabel: 'Yield' , name: 'compare_variable', inputValue: 'yield'}
                     ]
                 //
                 // UNIT OF MEASURE
@@ -743,15 +741,26 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     }]
                 }            
             ],
-            changeMode: function(mode){
+            changeMode: function(mode){	
                 this.mode.setValue(mode);
                 var commodityCB = this.Commodity;
-                commodityCB.setVisible(mode == 'composite');
+                commodityCB.setVisible(mode == 'composite' || mode == 'compareRegion');
                 var commoditygrid = this.commodities;
-                commoditygrid.setVisible(mode == 'compare');
+                commoditygrid.setVisible(mode == 'compareCommodity');
                 var season = this.season;
                 season.setVisible(mode == 'composite');
-                this.variable_compare.setVisible(mode == 'compare');
+                this.compare_variable.setVisible(mode == 'compareRegion' || mode == 'compareCommodity');
+				
+				var gran_type = this.aoiFieldSet.gran_type;		
+				
+				gran_type.eachItem(function(item){
+					if(item.inputValue === 'pakistan'){
+						item.setDisabled(mode !== 'composite');
+						if(item.checked === true)
+							item.setValue('province');
+					}
+				},this);
+				
                 this.doLayout();
             },
             buttons:[{
@@ -762,7 +771,16 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 target:this,
                 form: this,
                 disabled:true
-            }]
+            }/*, {
+                url: this.dataUrl,
+				iconCls: 'process',
+                //xtype: 'gxp_nrlCropDataButton',
+                typeName: this.typeNameData,
+                ref: '../submitButton',
+                target:this,
+                form: this,
+                disabled:true
+            }*/]
         };
         
         config = Ext.apply(cropData,config || {});
@@ -804,13 +822,22 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 			var colorRGB = button.randomColorsRGB(numRegion.length);
 			var colorHEX = button.randomColorsHEX(numRegion.length);
 			
-			for (var i = 0;i<numRegion.length;i++){
-				var dataIndex = numRegion[i].split(',')[0]
+			for (var i = 0;i<numRegion.length;i++){				
+				
+				var dataIndex = numRegion[i].split(',')[0];
+				
+				if (gran_type == "province"){
+					var newNumRegion = numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1);               
+				}else{
+					var splitRegion = numRegion[i].split(',');
+					var newNumRegion = splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + ")";           
+				}
+				
 				series[dataIndex] = {
-					name: numRegion[i],
+					name: newNumRegion,
 					color: colorHEX[i],
 					lcolor: 'rgb(' + colorRGB[i] + ')',
-					type: 'line',
+					type: 'column',
 					dataIndex: dataIndex
 				};
 				
