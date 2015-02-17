@@ -38,6 +38,11 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
     form: null,
     url: null,
     typeName:"nrl:CropData2",
+	stackedCharts: {
+		series: {
+			stacking:'normal'
+		}
+	},
     /**
      * config [windowManagerOptions]
      * Options for the window manager
@@ -92,6 +97,39 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         }
         return fieldSet;
     },
+    createStackChartsOptions: function(stackedCharts){
+		
+		var fieldSet = {
+			xtype: 'fieldset',
+			title: 'Stack charts of the same type',
+			scope: this,
+			items: [{
+				xtype: 'radiogroup',
+				columns:1,			
+				fieldLabel: "Stack charts",
+				items:[{
+					checked: stackedCharts.series.stacking == "normal",
+					boxLabel: 'Normal',
+					name: 'stackcharts',
+					inputValue: 'normal'
+				}, {
+					checked: stackedCharts.series.stacking == "percent",
+					boxLabel: 'Percent',
+					labelSeparator: '',
+					name: 'stackcharts',
+					inputValue: 'percent'
+				}],
+				listeners: {
+					change: function(c,checked){
+						stackedCharts.series.stacking = checked.inputValue;
+					}
+				},
+				scope: this
+			}]
+		};
+		return fieldSet;
+		
+	},	
     menu : {
         
         items:[{
@@ -103,7 +141,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                 //Main Button
                 var mainButton = this.refOwner;
 				var options = mainButton.chartOpt;				
-				var optionsCompare = mainButton.chartOptCompare;				
+				var optionsCompare = mainButton.chartOptCompare;			
+				var stackedCharts = mainButton.stackedCharts;
 				var fieldSetList = [];
 				
 				var form = mainButton.form.output.getForm();
@@ -121,7 +160,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 				}else{
 					for (var compareRegion in optionsCompare.series){
 						fieldSetList.push(mainButton.createOptionsFildset(compareRegion,optionsCompare.series[compareRegion],compareRegion));						
-					}				
+					}
+					fieldSetList.push(mainButton.createStackChartsOptions(stackedCharts));					
 				}
 				
                 var win = new Ext.Window({
@@ -397,7 +437,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 					var charts  = this.makeChart(data, this.chartOpt, listVar, aggregatedDataOnly);
 				}else{
 					var data = this.getDataCompare(jsonData, aggregatedDataOnly);
-					var charts  = this.makeChartCompare(data, this.chartOptCompare, listVar, aggregatedDataOnly);
+					var charts  = this.makeChartCompare(data, this.chartOptCompare, listVar, aggregatedDataOnly, this.stackedCharts);
 				}
 
                 var wins = gxp.WindowManagerPanel.Util.createChartWindows(charts,listVar);
@@ -748,7 +788,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
      * data. data to use for the chart
      * 
      */
-	getOrderedChartConfigsCompare:function(opt,listVar){
+	getOrderedChartConfigsCompare:function(opt,listVar,stackedCharts){
         var ret = {};
 		
 		ret.series = [];
@@ -785,7 +825,9 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 				}
 			}
 
-		}]; 
+		}];
+		
+		ret.plotOptions = stackedCharts;
 		
         return ret;    
     },
@@ -952,7 +994,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 		return charts; 
 	},
 	
-	makeChartCompare: function(data, opt, listVar, aggregatedDataOnly){
+	makeChartCompare: function(data, opt, listVar, aggregatedDataOnly, stackedCharts){
 		
 		var charts = [];
 		var getAvg = function(arr,type) {
@@ -974,7 +1016,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                 area:areaavg
             }*/
             //get chart configs (sorting them properly)
-            var chartConfig = this.getOrderedChartConfigsCompare(opt,listVar);
+            var chartConfig = this.getOrderedChartConfigsCompare(opt,listVar,stackedCharts);
 			
 			var fields = [{
 					name: 'time',
@@ -1068,6 +1110,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 						gridLineWidth: 1
 					}],
 					yAxis: chartConfig.yAxis,
+					plotOptions: chartConfig.plotOptions,
 					tooltip: {
                         formatter: function() {
                             var s = '<b>'+ this.x +'</b>';
