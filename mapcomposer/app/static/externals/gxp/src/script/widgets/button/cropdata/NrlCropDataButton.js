@@ -40,7 +40,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
     typeName:"nrl:CropData2",
 	stackedCharts: {
 		series: {
-			stacking:'normal'
+			stacking:null
 		}
 	},
     /**
@@ -107,14 +107,20 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 				xtype: 'radiogroup',
 				columns:1,			
 				fieldLabel: "Stack charts",
+				hideLabel: true,
 				items:[{
+					checked: stackedCharts.series.stacking == null,
+					boxLabel: 'Do not stack',
+					name: 'stackcharts',
+					inputValue: null
+				}, {
 					checked: stackedCharts.series.stacking == "normal",
-					boxLabel: 'Normal',
+					boxLabel: 'Stack',
 					name: 'stackcharts',
 					inputValue: 'normal'
 				}, {
 					checked: stackedCharts.series.stacking == "percent",
-					boxLabel: 'Percent',
+					boxLabel: 'Stack as percent of the total',
 					labelSeparator: '',
 					name: 'stackcharts',
 					inputValue: 'percent'
