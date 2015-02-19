@@ -469,7 +469,7 @@
 				if(tabs && tabs.length > 0){
 					tabPanel.setActiveTab(tabs[0]); 
 				}else{
-					var metaURL = url.indexOf("uuid") != -1 ? url : url + 'main.home?uuid=' + uuid;
+					var metaURL = url.indexOf("uuid") != -1 ? url : url + 'metadata.show?uuid=' + uuid;
 					
 					var meta = Ext.getCmp("geonetworkPanel");
 					var gnIframe = document.getElementById('iframe-gn-panel');
