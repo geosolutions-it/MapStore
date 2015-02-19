@@ -36,6 +36,8 @@ Ext.namespace("gxp.plugins");
  *  .. class:: Graticule(config)
  *
  *    Provides graticule on the map.
+ *
+ *  Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
  */
 gxp.plugins.Graticule = Ext.extend(gxp.plugins.Tool, {
     

@@ -60,6 +60,8 @@ gxp.grid.FeatureGrid = Ext.extend(Ext.grid.GridPanel, {
      *  store
      */
     layer: null,
+	
+	actionTooltip: "Zoom To Feature",
     
     /** api: method[initComponent]
      *  Initializes the FeatureGrid.
@@ -159,7 +161,39 @@ gxp.grid.FeatureGrid = Ext.extend(Ext.grid.GridPanel, {
                 return date ? date.format(format) : value;
             };
         }
-        var columns = [], name, type, xtype, format, renderer;
+		
+        var columns = [{
+			xtype: 'actioncolumn',
+			header: "", 
+			width: 30,
+			hidden: false,
+			scope: this,
+			items: [{
+				iconCls: 'zoomaction',
+				tooltip: this.actionTooltip,
+				scope: this,
+				handler: function(grid, rowIndex, colIndex){
+					var store = grid.getStore();
+					var row = store.getAt(rowIndex);
+					var feature = row.data.feature;
+					if(feature){
+						var bounds = feature.geometry.getBounds();
+						if(bounds){
+							this.map.zoomToExtent(bounds);
+							
+							var showButton = Ext.getCmp("showButton");
+							if(!showButton.pressed){
+								showButton.toggle(true);								
+							}
+							
+							grid.getSelectionModel().selectRow(rowIndex);					
+						}
+					}
+				}
+			}]
+		}];
+				
+		var name, type, xtype, format, renderer;
         (this.schema || store.fields).each(function(f) {
             if (this.schema) {
                 name = f.get("name");

@@ -1,0 +1,105 @@
+/* Pan- and Zoom- Panel Styles*/
+
+.olControlPanPanel div {
+    background-image:url(../../externals/ext/resources/images/gray/panel/tool-sprites.gif);
+    height:15px;
+    width:15px;
+    /* workaround for button height in IE */
+    font-size:0px;
+}
+
+.olControlPanPanel .olControlPanNorthItemInactive {
+    background-position:15px -60px;
+    left:16px
+}
+.olControlPanPanel .olControlPanEastItemInactive {
+    background-position:15px -120px;
+    left: 30px;
+    top: 16px;
+}
+.olControlPanPanel .olControlPanSouthItemInactive {
+    background-position:15px -75px;
+    left: 16px;
+    top: 32px;
+}
+.olControlPanPanel .olControlPanWestItemInactive {
+    background-position:15px -105px;
+    left: 2px;
+    top: 16px;
+}
+
+.olControlZoomPanel { 
+    left:21px;
+}
+
+.olControlZoomPanel div {
+    background-image:url(../../externals/ext/resources/images/gray/panel/tool-sprites.gif);
+    height:15px;
+    width:15px;
+    /* workaround for button height in IE */
+    font-size:0px;
+}
+
+.olControlZoomPanel .olControlZoomInItemInactive {
+    background-position:15px -240px;
+}
+
+.olControlZoomPanel .olControlZoomToMaxExtentItemInactive {
+    display: none;
+}
+
+.olControlZoomPanel .olControlZoomOutItemInactive {
+    background-position:15px -255px;
+    top: 123px;
+}
+
+/* Override Extjs css */
+.x-slider-vert .x-slider-thumb {
+    cursor: pointer;
+}
+
+
+.olControlScaleLine {
+    font-family: tahoma,arial,helvetica,sans-serif;
+}
+
+.olControlAttribution {
+    bottom: 5px;
+    font-size: 10px;
+    left: 10px;
+    right: inherit;
+}
+
+.olControlMousePosition {
+	top: 5px !important;
+	right: 5px !important;
+	font-size: 3em;
+	color: #00FFEE;
+	height: 20px;
+}
+
+.olControlLoadingPanel {
+     background-image: url(img/ajax-loader.gif);
+     background-position: center;
+     background-repeat: no-repeat;
+}
+
+/* Turn off GPU Support only for browsers that use WebKit (like Google Chrome) 
+becose this may interfere with UI widgets visibility */
+img.olTileImage {
+    -webkit-transform: inherit;
+    -webkit-backface-visibility: inherit;
+    -webkit-perspective: inherit;
+}
+
+.olControlOverviewMapElement {
+	padding: 10px 18px 10px 10px;
+	background-image: -moz-linear-gradient(center top , #E2E2E2, #CCCCCC);
+	-moz-border-radius: 1em 0 0 0;
+}
+
+.olControlOverviewMapContainer {
+	position: absolute;
+	bottom: 60px;
+	right: 0;
+}

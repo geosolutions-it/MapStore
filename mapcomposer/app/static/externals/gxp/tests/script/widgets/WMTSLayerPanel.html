@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html debug="true">
+  <head>
+    <script src="http://extjs.cachefly.net/ext-3.3.0/adapter/ext/ext-base.js"></script>
+    <script src="http://extjs.cachefly.net/ext-3.3.0/ext-all-debug.js"></script>
+    <script type="text/javascript" src="../../../../openlayers/lib/OpenLayers.js"></script>
+    <script type="text/javascript" src="../../../../GeoExt/lib/GeoExt.js"></script>
+    <script type="text/javascript" src="../../../src/script/loader.js"></script>
+
+    <script type="text/javascript">
+       
+        var layerRecord;
+        
+        function createWMTSLayerPanel() {
+            layerRecord = new GeoExt.data.LayerRecord({
+                layer: new OpenLayers.Layer.WMTS({
+                    url: "http://www.example.com",
+                    layer: "testLayer",
+                    style: "default",
+                    matrixSet: "0"
+                }),
+                styles: ["default"]
+            });
+            return new gxp.WMTSLayerPanel({layerRecord: layerRecord});
+        }
+        
+        function destroy() {
+            layerRecord.getLayer().destroy();
+        }
+        
+        function test_WMTSLayerPanel(t) {
+            t.plan(1);
+            
+            var instance = createWMTSLayerPanel();
+            
+            t.ok(instance instanceof gxp.WMTSLayerPanel, "Instance created successfully");
+            
+            instance.destroy();
+            destroy();
+        }
+
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

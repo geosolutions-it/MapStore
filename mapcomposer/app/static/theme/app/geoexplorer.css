@@ -10,12 +10,12 @@ body {
 }
 
 .x-tip .x-tip-body table tbody {
-    font-style: normal;
-font-variant: normal;
-font-weight: normal;
-font-size: 11px;
-line-height: normal;
-font-family: tahoma, arial, helvetica, sans-serif;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	font-size: 11px;
+	line-height: normal;
+	font-family: tahoma, arial, helvetica, sans-serif;
 }
 /* get images on buttons with text to line up with those with no text */
 .x-btn-text-icon .x-btn-center .x-btn-text {
@@ -40,13 +40,23 @@ font-family: tahoma, arial, helvetica, sans-serif;
 .x-tree-node-expanded img.gx-folder {
     background: url(../../externals/ext/resources/images/default/tree/folder-open.gif);
 }
-
+.x-tree-node-leaf .gx-tree-filterlayer-icon{
+    background-image: url(img/geosilk/vector_filter.png);
+}
 .x-btn .login {
     background-image: url(img/silk/door_in.png);
 }
 
+.login {
+    background-image: url(img/silk/user_green.png);
+}
+
 .x-btn .logout {
     background-image: url(img/silk/door_out.png);
+}
+
+.logout {
+    background-image: url(img/silk/user_red.png);
 }
 
 .x-btn .icon-geoexplorer {
@@ -93,6 +103,10 @@ font-family: tahoma, arial, helvetica, sans-serif;
     background-image: url(img/silk/application_view_gallery.png);
 }
 
+.x-btn .icon-changematrix {
+    background-image: url(img/silk/application_side_expand.png);
+}
+
 .x-btn .icon-save {
     background-image: url(img/geosilk/map_save.png);
 }
@@ -111,6 +125,14 @@ font-family: tahoma, arial, helvetica, sans-serif;
 
 .x-btn .icon-measure {
     background-image: url(img/geosilk/measure.png);
+}
+
+.icon-piechart {
+    background-image: url(img/silk/pie-chart-icon.png);
+}
+
+.data-table {
+    background-image: url(img/silk/data_table.png);
 }
 
 .icon-measure-length {
@@ -166,73 +188,6 @@ font-family: tahoma, arial, helvetica, sans-serif;
      background-image: url(img/silk/image_add.png);
 }
 
-
-/* Pan- and Zoom- Panel Styles*/
-
-.olControlPanPanel div {
-    background-image:url(../../externals/ext/resources/images/gray/panel/tool-sprites.gif);
-    height:15px;
-    width:15px;
-    /* workaround for button height in IE */
-    font-size:0px;
-}
-
-.olControlPanPanel .olControlPanNorthItemInactive {
-    background-position:15px -60px;
-    left:16px
-}
-.olControlPanPanel .olControlPanEastItemInactive {
-    background-position:15px -120px;
-    left: 30px;
-    top: 16px;
-}
-.olControlPanPanel .olControlPanSouthItemInactive {
-    background-position:15px -75px;
-    left: 16px;
-    top: 32px;
-}
-.olControlPanPanel .olControlPanWestItemInactive {
-    background-position:15px -105px;
-    left: 2px;
-    top: 16px;
-}
-
-.olControlZoomPanel { 
-    left:21px;
-}
-
-.olControlZoomPanel div {
-    background-image:url(../../externals/ext/resources/images/gray/panel/tool-sprites.gif);
-    height:15px;
-    width:15px;
-    /* workaround for button height in IE */
-    font-size:0px;
-}
-
-.olControlZoomPanel .olControlZoomInItemInactive {
-    background-position:15px -240px;
-}
-
-.olControlZoomPanel .olControlZoomToMaxExtentItemInactive {
-    display: none;
-}
-
-.olControlZoomPanel .olControlZoomOutItemInactive {
-    background-position:15px -255px;
-    top: 123px;
-}
-
-.olControlScaleLine {
-    font-family: tahoma,arial,helvetica,sans-serif;
-}
-
-.olControlAttribution {
-    bottom: 5px;
-    font-size: 10px;
-    left: 10px;
-    right: inherit;
-}
-
 /* position the zoom slider within map panel */
 .gx-zoomslider {
     top: 90px;
@@ -242,6 +197,11 @@ font-family: tahoma, arial, helvetica, sans-serif;
 .gx-layer-visibility {
     background-image: url(img/silk/eye.png);
 }
+
+.gx-buffer{
+    background-image: url(img/silk/map_add.png);
+}
+
 .gx-cursor{
     background-image: url(img/silk/cursor.png);
 }
@@ -325,12 +285,6 @@ table.featureInfo caption{
     padding: .2em .2em;
 }
 
-.olControlLoadingPanel {
-     background-image: url(img/ajax-loader.gif);
-     background-position: center;
-     background-repeat: no-repeat;
-}
-
 .loading-iframe {
 	width: 100%;
 	height: 100%;
@@ -338,4 +292,46 @@ table.featureInfo caption{
 	position: absolute;
 	top: 0;
 	left: 0;
+}
+
+/* Feature grid Export */
+.gxp-icon-featuregrid-export {
+    background-position-x: 2px !important;
+    background-position-y: 4px !important;
+    padding-left: 20px;
+    padding-top: 5px;
+    height: 20px;
+}
+
+/* csv_export */
+.gxp-icon-csvexport{
+    background: transparent url(img/silk/page_white_text.png) no-repeat;
+}
+
+/* excel_export */
+.x-btn .gxp-icon-excelexport, .x-menu-item .gxp-icon-excelexport{
+    background-image: url(img/silk/page_excel.png) !important;
+}
+.gxp-icon-excelexport {
+    background: transparent url(img/silk/page_excel.png) no-repeat;
+}
+
+/* excel2007_export */
+.x-btn .gxp-icon-excel2007export, .x-menu-item .gxp-icon-excel2007export{
+    background-image: url(img/silk/page_white_office.png) !important;
+}
+.gxp-icon-excel2007export {
+    background: transparent url(img/silk/page_white_office.png) no-repeat;
+}
+
+/* shp_export */
+.x-btn .gxp-icon-shape-zipexport, .x-menu-item .gxp-icon-shape-zipexport{
+    background-image: url(img/silk/page_white_zip.png) !important;
+}
+.gxp-icon-shape-zipexport {
+    background: transparent url(img/silk/page_white_zip.png) no-repeat;
+}
+
+.user-icon{
+    background-image: url(img/silk/user.png);
 }

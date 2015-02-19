@@ -38,8 +38,9 @@ Ext.namespace("gxp.plugins");
  *    Plugin for adding a custom help button to MapStore. This will show an help window
  *    The HelpButton tool can be configured by setting this tool's 
  *    ``outputConfig`` property.
- */
- 
+ *
+ *  Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
+ */ 
 gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
     ptype:'gxp_help',
      
@@ -49,6 +50,9 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
     title:'Help Window',
     iconCls:'gx-help',
     tooltip:'Open the Help Window',
+	
+	fileDocURL: null,
+	
     /** end of i18n */
     /** api: config[description]
      *  ``String`` Html to show in the window
@@ -81,23 +85,28 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
             scope: this
         }];
         if(this.showOnStartup){
-            this.target.on('ready',this.showHelp,this);
+            this.target.on('ready', this.showHelp,this);
         
         }
         return gxp.plugins.HelpButton.superclass.addActions.apply(this, [actions]);
     },
+	
     showHelp:function(){
-        
-        new Ext.Window(Ext.apply({
-           layout:'fit',
-           title: this.title,
-           border:false,
-           autoScroll:false,
-           items:{html: this.description, autoScroll:true,bodyStyle:'padding:10px'},
-           modal:true,
-           height:200
-        },this.windowOptions)).show();
-    }
-    
+		if (!this.fileDocURL) {
+			new Ext.Window(Ext.apply({
+			   layout:'fit',
+			   title: this.title,
+			   border:false,
+			   autoScroll:false,
+			   items:{html: this.description, autoScroll:true, bodyStyle:'padding:10px'},
+			   modal:true,
+			   height:200
+			},this.windowOptions)).show();
+		} else{
+			//var url = 'http://' + window.location.host + '/' + this.fileDocURL;
+			window.open(this.fileDocURL);
+		}
+    }    
 });
+
 Ext.preg(gxp.plugins.HelpButton.prototype.ptype, gxp.plugins.HelpButton);

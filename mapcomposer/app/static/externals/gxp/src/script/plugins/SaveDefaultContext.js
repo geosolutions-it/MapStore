@@ -71,19 +71,76 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      */
     auth: null,
+	
     /**
     * Property: contextMsg
     * {string} string to add in loading message
     * 
     */
     contextMsg: 'Loading...',
+	
+	/**
+    * Property: userLabel
+    * {string} 
+    * 
+    */
+	userLabel: "User",
+	
+	/**
+    * Property: passwordLabel
+    * {string} 
+    * 
+    */
+	passwordLabel: "Password", 
+	
+	/**
+    * Property: loginLabel
+    * {string} 
+    * 
+    */
+	loginLabel: "Login",
+	
+	/**
+    * Property: mapMetadataTitle
+    * {string} 
+    * 
+    */
+	mapMetadataTitle: "Insert Map Metadata",
+	
+	/**
+    * Property: mapMedatataSetTitle
+    * {string} 
+    * 
+    */
+	mapMedatataSetTitle: "Map Metadata",
+	
+	/**
+    * Property: mapNameLabel
+    * {string} 
+    * 
+    */
+	mapNameLabel: "Name",
+	
+	/**
+    * Property: mapDescriptionLabel
+    * {string} 
+    * 
+    */
+	mapDescriptionLabel: "Description",
+	
+	/**
+	 * Property: conflictErrMsg
+	 * {string}
+	 */
+	conflictErrMsg: "A map with the same name already exists",
+	
     /** api: method[addActions]
      */
     addActions: function() {
         
         //var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
         //var mHost=pattern.exec(geoStoreBaseURL);
-        
+        var plugin =this;
 		var saveContext = new Ext.Button({
 		    id: "save-context-button",
             menuText: this.saveDefaultContextMenuText,
@@ -91,7 +148,9 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
             disabled: false,
             tooltip: this.saveDefaultContextActionTip,
             handler: function() {	
-				  if(this.auth){
+                    
+				  if(this.target.auth){
+                      
 					  var configStr = Ext.util.JSON.encode(this.target.getState()); 
 					  
 					  if(this.target.mapId == -1){
@@ -107,7 +166,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
 						  var url = /*mHost[2] == location.host ? mUrl : this.target.proxy + */mUrl;
 						  var method = 'PUT';
 						  var contentType = 'application/json';
-						  var auth = this.auth;
+                          var auth = plugin.getAuth();
 						  this.save(url, method, contentType, configStr, auth);
 					  }
 				  }else{
@@ -150,17 +209,17 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
 						  labelWidth: 80,
 						  defaultType: "textfield",
 						  items: [{
-							  fieldLabel: "Utente",
+							  fieldLabel: this.userLabel,
 							  name: "username",
 							  allowBlank: false
 						  }, {
-							  fieldLabel: "Password",
+							  fieldLabel: this.passwordLabel,
 							  name: "password",
 							  inputType: "password",
 							  allowBlank: false
 						  }],
 						  buttons: [{
-							  text: "Login",
+							  text: this.loginLabel,
 							  formBind: true,
 							  handler: submitLogin
 						  }],
@@ -187,7 +246,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
             scope: this
         });
 		
-        var actions = ['-',saveContext]; 
+        var actions = [saveContext]; 
         
         return gxp.plugins.SaveDefaultContext.superclass.addActions.apply(this, [actions]);        
     },
@@ -233,7 +292,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
     
               Ext.Msg.show({
                    title: this.contextSaveSuccessString,
-                   msg: response.statusText + " Map successfully saved",
+                   msg: response.statusText + " " + this.contextSaveSuccessString,
                    buttons: Ext.Msg.OK,
                    fn: reload,
                    icon: Ext.MessageBox.OK,
@@ -244,14 +303,32 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
               mask.hide();
 			  this.auth = null;
 			  
+			  
+			  
               Ext.Msg.show({
                  title: this.contextSaveFailString,
-                 msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+                 msg: this.getSaveFailedErrMsg(response),
                  buttons: Ext.Msg.OK,
                  icon: Ext.MessageBox.ERROR
               });
            }
         }); 
+    },
+    
+    getSaveFailedErrMsg: function(response) {
+    	var errMsg = null;
+    	var defaultErrMsg = response.statusText + "(status " + response.status + "):  " + response.responseText;
+    	
+    	switch (response.status) {
+    		case 409:
+    			errMsg = this.conflictErrMsg;
+    			break;
+    		default:
+    			errMsg = defaultErrMsg;
+    			break;
+    	}
+    	
+    	return errMsg;
     },
 
     metadataDialog: function(configStr){
@@ -261,8 +338,11 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
             else
                 Ext.getCmp("resource-addbutton").disable();
         };
-        
+
+        var templateId = this.target.templateId;
+		var plugin = this;
         var win = new Ext.Window({
+		    title: this.mapMetadataTitle,
             width: 415,
             height: 200,
             resizable: false,
@@ -275,13 +355,13 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
                         {
                           xtype: 'fieldset',
                           id: 'name-field-set',
-                          title: "Map Metadata",
+                          title: this.mapMedatataSetTitle,
                           items: [
                               {
                                     xtype: 'textfield',
                                     width: 120,
                                     id: 'diag-text-field',
-                                    fieldLabel: "Name",
+                                    fieldLabel: this.mapNameLabel,
                                     listeners: {
                                         render: function(f){
                                             f.el.on('keydown', enableBtnFunction, f, {buffer: 350});
@@ -292,7 +372,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
                                     xtype: 'textarea',
                                     width: 200,
                                     id: 'diag-text-description',
-                                    fieldLabel: "Description",
+                                    fieldLabel: this.mapDescriptionLabel,
                                     readOnly: false,
                                     hideLabel : false                    
                               }
@@ -315,19 +395,22 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
                             
                             var mapName = Ext.getCmp("diag-text-field").getValue();        
                             var mapDescription = Ext.getCmp("diag-text-description").getValue(); 
-                            
-							var auth = this.auth;
-							
+                            var auth = plugin.getAuth();
 							var owner = Base64.decode(auth.split(' ')[1]);
 							owner = owner.split(':')[0];
                             var resourceXML = 
 								'<Resource>' +
 									'<Attributes>' +
-										'<attribute>' +
-											'<name>owner</name>' +
-											'<type>STRING</type>' +
-											'<value>' + owner + '</value>' +
-										'</attribute>' +
+                    '<attribute>' +
+                      '<name>owner</name>' +
+                      '<type>STRING</type>' +
+                      '<value>' + owner + '</value>' +
+                    '</attribute>' +
+                    '<attribute>' +
+                      '<name>templateId</name>' +
+                      '<type>STRING</type>' +
+                      '<value>' + templateId + '</value>' +
+                    '</attribute>' +
 									'</Attributes>' +
 									'<description>' + mapDescription + '</description>' +
 									'<metadata></metadata>' +

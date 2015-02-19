@@ -1,11 +1,15 @@
 /**
  * Copyright (c) 2009-2010 The Open Planning Project
  */
+/*
+	NOTE: configuration customization could override
+	these strings
+*/
 
 GeoExt.Lang.add("it", {
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Livello di Zoom: {zoom}</div><div>Scala: 1:{scale}</div>",
-        loadConfigErrorText: "Impossibile leggerre la configurazione salvata : <br />",
+        loadConfigErrorText: "Impossibile leggere la configurazione salvata : <br />",
         loadConfigErrorDefaultText: "Errore del Server.",
         xhrTroubleText: "Problemi di comunicazione: Stato ",
         layersText: "Livelli",
@@ -20,7 +24,7 @@ GeoExt.Lang.add("it", {
         mapInfoText: "Informazioni Mappa",
         descriptionText: "Descrizione",
         contactText: "Contatto",
-        aboutThisMapText: "Approposito di questa Mappa",
+        aboutThisMapText: "Informazioni",
         searchTabTitle : "Portale",
         viewTabTitle : "Vista",
 		markerPopupTitle: "Dettagli",
@@ -28,21 +32,16 @@ GeoExt.Lang.add("it", {
     },
     
     "GeoExplorer.Composer.prototype": {
-        exportMapText: "Pubblicazione Mappa",
 		uploadText: "Caricamento",
-        toolsTitle: "Scegliere gli strumenti da includere nella barra:",
-        previewText: "Anteprima",
         backText: "Precedente",
         nextText: "Prossimo",
         loginText: "Login",
-        loginErrorText: "Username o password invalidi.",
+        loginErrorText: "Username o password non validi.",
         userFieldText: "Utente",
         passwordFieldText: "Password",
         fullScreenText: "Schermo Intero",
         cswMsg: 'Caricamento...',
-		cswFailureAddLayer: ' Il layer n on può essere aggiunto alla mappa',
-        alertEmbedTitle: 'Attenzione',
-        alertEmbedText: "Salvare la mappa prima di utilizzare il tool 'Pubblicazione Mappa'",
+		cswFailureAddLayer: ' Il layer non può essere aggiunto alla mappa',
 	    cswZoomToExtentMsg: "BBOX non disponibile",
 		cswZoomToExtent: "CSW Zoom all'estensione"
     },
@@ -54,7 +53,7 @@ GeoExt.Lang.add("it", {
     "gxp.plugins.AddLayers.prototype": {
         addActionMenuText: "Aggiungi livello",
         addActionTip: "Aggiungi livello",
-        addServerText: "Aggiungi un nuovo Server",
+        addServerText: "Aggiungi Server",
         addButtonText: "Aggiungi livelli",
         untitledText: "Senza Titolo",
         addLayerSourceErrorText: "Errore nel recuperare le WMS capabilities ({msg}).\nSi prega di controllare l'URL e di riprovare ancora.",
@@ -127,10 +126,10 @@ GeoExt.Lang.add("it", {
     },
 
     "gxp.plugins.NavigationHistory.prototype": {
-        previousMenuText: "Zoom alla precedente estenzione",
-        nextMenuText: "Zoom alla prossima estenzione",
-        previousTooltip: "Zoom alla precedente estenzione",
-        nextTooltip: "Zoom alla prossima estenzione"
+        previousMenuText: "Zoom alla precedente estensione",
+        nextMenuText: "Zoom alla prossima estensione",
+        previousTooltip: "Zoom alla precedente estensione",
+        nextTooltip: "Zoom alla prossima estensione"
     },
 
     "gxp.plugins.OSMSource.prototype": {
@@ -184,8 +183,8 @@ GeoExt.Lang.add("it", {
     },
     
     "gxp.plugins.ZoomToExtent.prototype": {
-        menuText: "Zoom massima estenzione",
-        tooltip: "Zoom massima estenzione"
+        menuText: "Zoom massima estensione",
+        tooltip: "Zoom massima estensione"
     },
     
     "gxp.plugins.ZoomToDataExtent.prototype": {
@@ -206,10 +205,15 @@ GeoExt.Lang.add("it", {
         displayText: "Display",
         opacityText: "Opacità",
         formatText: "Formato",
-        transparentText: "Transparenza",
+        transparentText: "Trasparenza",
         cacheText: "Cache",
         cacheFieldText: "Usa versione in cache",
-        stylesText: "Stile"
+        stylesText: "Stile",
+        summaryText: "Statistiche",
+        summaryInfoText: "Statistiche Raster nella Viewport corrente",
+        loadMaskMsg: "Caricamento ...",
+        noDataMsg: "Nessun dato disponibile per la vista corrente",
+        refreshText: "Aggiorna"
     },
 
     "gxp.WMSStylesDialog.prototype": {
@@ -240,11 +244,37 @@ GeoExt.Lang.add("it", {
     },
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Aggiungi nuovo Server...",
+        title: "Aggiungi Server",
         cancelText: "Cancella",
         addServerText: "Aggiungi Server",
         invalidURLText: "Inserisci un URL valido come WMS endpoint (e.g. http://example.com/geoserver/wms)",
-        contactingServerText: "Si cerca di contattare il Server..."
+        contactingServerText: "Si cerca di contattare il Server...",
+		sourceTypeLabel: "Tipo",
+		advancedOptionsTitle: "Opzioni Avanzate",
+		generalTabTitle: "Generale",
+		titleLabel: "Titolo",
+		versionLabel: "Versione (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Parametri",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Aggiungi",
+		propNameLabel: "Nome",
+		propValueLabel: "Valore",
+		paramsWinTitle: "Opzioni Parametri",
+		okButtonText: "Conferma",
+		addPropDialogTitle: "Aggiungi Proprietà",
+		addPropDialogMsg: "Il nome della proprietà o il suo valore non sono validi",
+		cancelButtonText: "Cancella",
+		removeButtonText: "Rimuovi",
+		removePropDialogTitle: "Rimuovi Proprietà",
+		removePropDialogMsg: "questa proprietà non può essere rimossa: ",
+		newSourceDialogTitle: "Nuova Sorgente",
+		newSourceDialogMsg: "Alcune proprietà della sorgente selezionatasono invalide.",
+		mandatoryLabelText: "Tutti i campi contrassegnati con (*) sono obbligatori.",
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -273,13 +303,22 @@ GeoExt.Lang.add("it", {
 	    saveDefaultContextActionTip: "Salva il contesto della Mappa",
 	    contextSaveSuccessString: "Contesto salvato con successo",
 	    contextSaveFailString: "Contesto non salvato con successo",
-	    contextMsg: "Caricamento..."
+	    contextMsg: "Caricamento...",
+		userLabel: "Utente",	
+		passwordLabel: "Password", 	
+		loginLabel: "Accesso",	
+		mapMetadataTitle: "Inserimento dei metadati",	
+		mapMedatataSetTitle: "Metadati della Mappa",	
+		mapNameLabel: "Nome",	
+		mapDescriptionLabel: "Descrizione",
+		addResourceButtonText: "Salva Mappa",
+		conflictErrMsg: "Una mappa con lo stesso nome esiste già"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Seleziona un'area",
-        menuText: "Geo Referimenti",
-        tooltip: "Geo Referimenti"
+        menuText: "Geo Riferimenti",
+        tooltip: "Geo Riferimenti"
     },
 
     "gxp.plugins.ZoomBox.prototype":{
@@ -288,9 +327,14 @@ GeoExt.Lang.add("it", {
         zoomInTooltip: "Zoom Box Avanti",
         zoomOutTooltip: "Zoom Box Indietro"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Il layer non è disponibile nella proiezione della mappa",
+		errorTitle: "Errore"
+	},
 
     "GeoExt.ux.PrintPreview.prototype":{
-	    paperSizeText: "Dimesioni del foglio:",
+	    paperSizeText: "Dimensioni del foglio:",
 	    resolutionText: "Risoluzione:",
 	    printText: "Stampa",
 	    emptyTitleText: "Inserisci qui il titolo della mappa.",
@@ -298,7 +342,30 @@ GeoExt.Lang.add("it", {
 	    legendOnSeparatePageText: "Legenda in una pagina separata?",
 	    compactLegendText: "Legenda compatta?",	
 	    emptyCommentText: "Inserisci qui i commenti.",
-	    creatingPdfText: "Creazione del file PDF..."
+	    creatingPdfText: "Creazione del file PDF...",
+		graticuleFieldLabelText: 'Attiva griglia',
+		defaultTabText: "Predefinito",
+		legendTabText: "Legenda"
+    },
+	
+	"GeoExt.ux.LegendStylePanel.prototype":{
+		iconsSizeText: "Dimensione Icone",
+		fontSizeText: "Dimensione Font",
+		fontFamilyText: "Famiglia Font",
+		forceLabelsText: "Forza etichette",
+		dpiText: "Dpi",
+		fontStyleText: "Stile Font",
+		fontEditorText: "Config. Etichette",
+		sizeText: "Dimensione"
+    },
+    
+    "GeoExt.ux.GraticuleStylePanel.prototype":{
+        graticuleFieldLabelText: 'Attiva griglia',
+        sizeText: "Dimensione",
+        colorText: "Colore",
+        fontFamilyText: "Famiglia Font",
+        fontStyleText: "Stile Font",
+        fontEditorText: "Config. Etichette"
     },
 
     "gxp.plugins.GeonetworkSearch.prototype":{
@@ -310,26 +377,19 @@ GeoExt.Lang.add("it", {
         groupPropertiesMenuText:  "Proprietà del gruppo",
         groupPropertiesActionTip:  "Proprietà del gruppo",
         groupPropertiesDialogTitle: "Proprietà del gruppo - ",
-        groupPropertiesFieldSetText: "Nome del Gruppo",
-        groupPropertiesFieldLabel: "Nuovo nome del Gruppo",
+        groupPropertiesFieldSetText: "Nome del gruppo",
+        groupPropertiesFieldLabel: "Nuovo nome del gruppo",
         groupPropertiesButtonText: "Fatto",
         groupPropertiesMsg: "Si prega di inserire il nome del gruppo."
     },
 
     "gxp.plugins.Login.prototype":{
         loginText: "Login",
-        loginErrorText: "Username o password invalidi.",
+        loginErrorText: "Username o password non validi.",
         userFieldText: "Utente",
         passwordFieldText: "Password"
     },
 
-    "gxp.plugins.Login.prototype":{
-      loginText: "Se connecter",
-          loginErrorText: "Nom d`utilisateur ou mot de passe incorrect",
-          userFieldText: "Utilisateur",
-          passwordFieldText: "Mot de passe"
-    },
-	
     "gxp.plugins.FeatureGrid.prototype": {
         displayFeatureText: "Visualizza in mappa",
         firstPageTip: "Prima pagina",
@@ -338,19 +398,29 @@ GeoExt.Lang.add("it", {
         nextPageTip: "Prossima pagina",
         lastPageTip: "Ultima pagina",
         title: "Entità",
-        totalMsg: "Totale: {0} entità"
+        totalMsg: "Totale: {0} entità",
+        displayExportCSVText: "Esporta nel formato CSV",
+        exportCSVSingleText: "Singola pagina",
+        exportCSVMultipleText: "Tutte le pagine",
+        failedExportCSV: "Impossibile esportare nel formato CSV",
+        invalidParameterValueErrorText: "Valore parametro non valido",
+		zoomToFeature: "Zoom alla Feature",
+		exportTitleText: "Esporta",
+		pageLabel: "Pagina",
+		pageOfLabel: "di",
+		totalRecordsLabel: "Elementi Totali"		
     },
 	
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Interrogazione",
         queryMenuText: "Interrogazione livello",
-        queryActionTip: "Interrogazione il livello selezionato",
+        queryActionTip: "Interrogazione del livello selezionato",
         queryByLocationText: "Regione di Interesse",
         currentTextText: "Estensione corrente",
         queryByAttributesText: "Interrogazione per attributo",
         queryMsg: "Interrogazione in corso...",
         cancelButtonText: "Reimposta",
-        noFeaturesTitle: "Nessun Risultato",
+        noFeaturesTitle: "Nessun risultato",
         noFeaturesMessage: "La tua ricerca non ha prodotto risultati.",
         title: "Ricerca",
         attributeEnablement: "Interrogazione per Attributo",
@@ -360,16 +430,42 @@ GeoExt.Lang.add("it", {
         featureLabel: "Max Features"
     },
     
-    
-     "gxp.form.BBOXFieldset.prototype":{
+    "gxp.plugins.BBOXQueryForm.prototype": {
+        selectionMethodFieldSetComboTitle: "Metodo di Selezione",
+        comboEmptyText: "Seleziona un metodo..",
+        comboSelectionMethodLabel: "Selezione",
+        comboPolygonSelection: 'Poligono',
+        comboCircleSelection: 'Cerchio',
+        comboBBOXSelection: 'Bounding Box',
+		errorBBOXText: "Il BBox selezionato è invalido!",
+        errorDrawPolygonText: "Si deve disegnare il Poligono",
+        errorDrawCircleText: "Si deve disegnare il Cerchio",     
+        errorDrawTitle: "Errore nella richiesta",
+		errorBufferTitle: "Il Buffer è errato",
+		errorBufferText: "Il buffer selezionato è invalido!",
+		areaLabel: "Area",	
+		perimeterLabel: "Perimetro",	
+		radiusLabel: "Raggio",	
+		centroidLabel: "Centroide",	
+		selectionSummary: "Sommario Selezione"
+    },
+	
+	"gxp.widgets.form.BufferFieldset.prototype": {
+		bufferFieldLabel: "Raggio",
+		bufferFieldSetTitle: "Buffer",
+		coordinatePickerLabel: "Coordinate",
+		draweBufferTooltip: "Disegna il Buffer"
+	},
+	
+    "gxp.form.BBOXFieldset.prototype":{
         northLabel:"Nord",
         westLabel:"Ovest",
         eastLabel:"Est",
         southLabel:"Sud",
         setAoiText: "ImpostaROI",
         waitEPSGMsg: "Caricamento in corso... Attendere",
-        setAoiTooltip: "Abilita il controllo SetBox per disegnare una ROI (BBOX) sulla mappa",
-        title: "Regione di Interesse"
+        setAoiTooltip: "Abilita il controllo SetBox per disegnare una ROI (BBox) sulla mappa",
+        title: "Bounding Box"
     },
     
     "gxp.FilterBuilder.prototype":{
@@ -472,8 +568,8 @@ GeoExt.Lang.add("it", {
 	
 	"gxp.plugins.GeoLocationMenu.prototype": {
         initialText: "Seleziona un'area",
-        menuText: "Geo Referimenti",
-        tooltip: "Geo Referimenti",
+        menuText: "Geo Riferimenti",
+        tooltip: "Geo Riferimenti",
         addMarkerTooltip: "Resetta Marker",
         emptyText: "Geocoder...",
         buttonText: "Indirizzo",
@@ -498,8 +594,8 @@ GeoExt.Lang.add("it", {
 			"map": {
 				"saveText" : "Esportazione Mappa",
 				"loadText" : "Importazione Mappa",
-				"uploadWindowTitle" : "Importa file di contesta di mappa",
-				"downloadWindowTitle" : "Esporta file di contesta di mappa"
+				"uploadWindowTitle" : "Importa file di contesto di mappa",
+				"downloadWindowTitle" : "Esporta file di contesto di mappa"
 			},
 			"kml/kmz": {
 				"saveText" : "Esportazione KML",
@@ -528,7 +624,7 @@ GeoExt.Lang.add("it", {
 		filenameLabel: "Nome del file di mappa",
 		waitMsgText: "In corso la generazione del file di mappa ...",
 		resetText: "Reset",
-		failedUploadingTitle: "Impossibile generara il file di mappa",
+		failedUploadingTitle: "Impossibile generare il file di mappa",
 		saveErrorText: "Errori riscontrati: "
 	},
    
@@ -550,6 +646,256 @@ GeoExt.Lang.add("it", {
 		resetText: "Reset",
 		failedUploadingTitle: "Impossibile completare l'upload del file",
 		layerNameLabel: "Nome del Layer"
-	}
+	},
+
+	"gxp.plugins.PrintSnapshot.prototype" :{
+		noSupportedLayersErrorMsg: "Si è verificato un errore durante la generazione della mappa Snapshot: Nessun layer è supportato !",
+		generatingErrorMsg: "Si è verificato un errore durante la generazione della mappa Snapshot",
+		printStapshotTitle: "Stampa Snapshot",
+		serverErrorMsg: "Verificato un errore durante la generazione della mappa Snapshot: Errore del server",
+		menuText: "Snapshot",
+		tooltip: "Snapshot"
+	},
 	
+	"gxp.plugins.EmbedMapDialog.prototype" :{
+		exportMapText: "Collega Mappa",		
+		toolsTitle: "Scegliere gli strumenti da includere nella barra:",		
+		alertEmbedTitle: "Attenzione",		
+		alertEmbedText: "Salvare la mappa prima di utilizzare il tool 'Pubblicazione Mappa'",			
+		previewText: "Anteprima",				
+		embedCodeTitle: "Codice da Incorporare",
+		embedURL: "URL diretto",		
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
+		showMapTooltip: "Mostra in una nuova finestra",
+        loadMapText: "Carica Mappa",
+        downloadAppText: "Installa Applicazione Android",
+        loadInMapStoreMobileText:'Mobile',
+        openImageInANewTab: "Apri immagine in una nuova tab"
+	},
+
+    "gxp.widgets.form.SpatialSelectorField.prototype" :{
+        title : "Regione di Interesse",
+        selectionMethodLabel : "Metodo di Selezione",
+        comboEmptyText : "Selezionate un Metodo..",
+        comboSelectionMethodLabel : "Selezione",
+        northLabel : "Nord",
+        westLabel : "Ovest",
+        eastLabel : "Est",
+        southLabel : "Sud",
+        setAoiTitle : "Bounding Box",
+        setAoiText : "Disegna",
+        setAoiTooltip : "Abilita il controllo SetBox per disegnare l'area d'interesse (Bounding Box) sulla mappa",
+        areaLabel : "Area",
+        perimeterLabel : "Perimetro",
+        radiusLabel : "Raggio",
+        centroidLabel : "Centroide",
+        latitudeEmptyText : 'Y',
+        longitudeEmptyText : 'X',
+        geocodingFieldSetTitle : "GeoCoder",
+        geocodingPanelTitle : "Scegliere una Località",
+        geocodingPanelBtnRefreshTxt : "Mostra Geometrie",
+        geocodingPanelBtnDestroyTxt : "Nascondi Geometrie",
+        geocodingPanelBtnDeleteTxt : "Rimuovi Località",
+        geocodingPanelLocationHeader: "Località",
+        geocodingPanelCustomHeader: "Parente",
+        geocodingPanelGeometryHeader: "WKT della Geometria",
+        geocodingPanelBtnSelectAllTxt : "Seleziona Tutto", 
+        geocodingPanelBtnDeSelectAllTxt : "Deseleziona Tutto", 
+        geocodingPanelMsgRemRunningTitle : "Rimuovi Località",
+        geocodingPanelMsgRemRunningMsg : "Vuoi rimuovere le Località selezionate dalla lista?",
+        geocodingFieldLabel : "Cerca una Località",
+        geocodingFieldEmptyText : "Inserisci Località...",
+        geocodingFieldBtnAddTooltip : "Aggiungi una Località alla lista",
+        geocodingFieldBtnDelTooltip : "Pulisci...",
+        selectionSummary : "Sommario delle Selezioni",
+        geocoderSelectorsLabels: ['Unione delle geometrie', 'Lista delle Area Amministrative', 'Area Amministrativa e sottoaree'],
+        selectionReturnTypeLabel: "Tipo di selezione"
+    },
+    
+    "gxp.plugins.WFSGrid.prototype":{
+        displayMsgPaging: "Visualizzazione elementi {0} - {1} of {2}",
+        emptyMsg: "Nessun elemento da visualizzare",
+        loadMsg: "Attendere prego...",
+        zoomToTooltip: 'Zoom all\'elemento'        
+    },
+    
+    "gxp.plugins.TabPanelWFSGrids.prototype":{
+        zoomToTooltip: 'Zoom all\'elemento',
+        displayMsgPaging: "Visualizzazione elementi {0} - {1} of {2}",
+        emptyMsg: "Nessun elemento da visualizzare",
+        loadMsg: "Attendere prego...",
+        noRecordFoundLabel: "Nessun elemento trovato"
+    },
+    
+    "gxp.plugins.spatialselector.SpatialSelector.prototype" :{
+        titleText : "Regione di Interesse",
+        selectionMethodLabel : "Metodo di Selezione",
+        comboEmptyText : "Selezionate un Metodo..",
+        comboSelectionMethodLabel : "Selezione"
+    },
+    
+    "gxp.widgets.form.spatialselector.SpatialSelectorMethod.prototype" :{
+        areaLabel : "Area",
+        perimeterLabel : "Perimetro",
+        lengthLabel: "Lunghezza",
+        radiusLabel : "Raggio",
+        centroidLabel : "Centroide",
+        selectionSummary: "Sommario delle Selezioni",
+        geometryOperationText: "Operazione geometrica",
+        geometryOperationEmptyText: "Seleziona una operazione",
+        distanceTitleText: "Distanza",
+        distanceUnitsTitleText: "Unità di misura",
+        noOperationTitleText: "Operazione non valida",
+        noOperationMsgText: "Prego, selezionare una operazione prima di eseguire la query",
+        noCompleteMsgText: "Prego, completare il riempimento della form prima di eseguire la query"
+    },
+    
+    "gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
+        name  : 'BBOX',
+        label : 'Bounding Box',
+        northLabel : "Nord",
+        westLabel : "Ovest",
+        eastLabel : "Est",
+        southLabel : "Sud",
+        setAoiTitle : "Bounding Box",
+        setAoiText : "Disegna",
+        setAoiTooltip : "Abilita il controllo SetBox per disegnare l'area d'interesse (Bounding Box) sulla mappa"
+    },
+    
+    "gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.prototype" :{
+        name  : 'Buffer',
+        label : 'Buffer',
+        latitudeEmptyText : 'Y',
+        longitudeEmptyText : 'X'
+    },
+    
+    "gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.prototype" :{
+        name  : 'Cerchio',
+        label : 'Cerchio'
+    },
+    
+    "gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
+        name  : 'Geocoding',
+        label : 'Geocoding',
+        geocodingFieldSetTitle : "GeoCoder",
+        geocodingPanelTitle : "Scegliere una Località",
+        geocodingPanelBtnRefreshTxt : "Mostra Geometrie",
+        geocodingPanelBtnDestroyTxt : "Nascondi Geometrie",
+        geocodingPanelBtnDeleteTxt : "Rimuovi Località",
+        geocodingPanelLocationHeader: "Località",
+        geocodingPanelCustomHeader: "Parente",
+        geocodingPanelGeometryHeader: "WKT della Geometria",
+        geocodingPanelBtnSelectAllTxt : "Seleziona Tutto", 
+        geocodingPanelBtnDeSelectAllTxt : "Deseleziona Tutto", 
+        geocodingPanelMsgRemRunningTitle : "Rimuovi Località",
+        geocodingPanelMsgRemRunningMsg : "Vuoi rimuovere le Località selezionate dalla lista?",
+        geocodingFieldLabel : "Cerca una Località",
+        geocodingFieldEmptyText : "Inserisci Località...",
+        geocodingFieldBtnAddTooltip : "Aggiungi una Località alla lista",
+        geocodingFieldBtnDelTooltip : "Pulisci...",
+        selectionSummary : "Sommario delle Selezioni"
+    },
+    
+    "gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
+        name  : 'Poligono',
+        label : 'Poligono'
+    },
+
+    "gxp.plugins.spatialselector.Geocoder.prototype" :{
+        titleText: "Geocoder",
+        searchText: "Ricerca",
+        searchTpText: "Ricerca la zona selezionata ed esegui lo zoom sulla mappa",
+        resetText: "Azzeramento",
+        resetTpText: "Azzeramento ricerca zona",
+        translatedKeys: {
+            "name": "Strada",
+            "number": "Numero"
+        }
+    },
+	
+	"gxp.plugins.ResourceStatus.prototype":{
+		rootNodeText: "Risorse Importate",
+		serviceErrorTitle: "Errore Servizio",
+		tabTitle: "Importati",
+		layerNodeName: "Risorse",
+		waitMsg: "Caricamento Risorse ...",
+		expandAllText: "Espandi Tutti i Nodi",
+		collapseAllText: "Collassa Tutti i Nodi"
+    },
+	
+	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
+        noFilterSelectedMsgTitle: "Nessun filtro selezionato",    
+        noFilterSelectedMsgText: "Devi selezionare almeno un filtro",    
+        invalidRegexFieldMsgTitle: "Campo non valido",    
+        invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!"
+    },
+	
+	"gxp.plugins.FeatureManager.prototype":{
+        noValidWmsVersionMsgTitle: 'Versione WMS non valida',    
+        noValidWmsVersionMsgText: "Il plugin queryForm non funziona con una sorgente WMS versione: "
+    },
+	
+    "gxp.data.WMTSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "Nessun layer disponibile su questo server nel sistema di coordinate della mappa",
+        warningTitle: "Attenzione"
+    },
+	
+    "gxp.data.TMSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "Nessun layer disponibile su questo server nel sistema di coordinate della mappa",
+        warningTitle: "Attenzione"
+    },
+
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Abilita/Disabilita Aggancio"
+    },
+	
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Play",
+        playTooltip: "Play",
+        stopLabel: "Stop",
+        stopTooltip: "Stop",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Doppia velocità di animazione",
+        backLabel:'Indietro',
+        backTooltip:'Diminuisci di uno step',            
+        nextLabel: "Avanti",
+        nextTooltip: "Avanza di uno step",
+        resetLabel: "Reset",
+        resetTooltip: "Tutto l'intervallo",
+        loopLabel: "Loop",
+        loopTooltip: "Animazione continua",
+        normalTooltip: "Ritorno alla riproduzione normale",
+        pauseLabel: "Pausa",
+        pauseTooltip: "Pausa"
+    },
+	
+    "gxp.PlaybackOptionsPanel.prototype": {
+        optionTitleText: "Opzioni Data e Tempo",
+        rangeFieldsetText: "Intervallo di tempo",
+        animationFieldsetText: "Opzioni di animazione",
+        startText: "Inizio",
+        endText: "Fine",
+        saveText: 'Salva',
+        cancelText: 'Cancella',        
+        listOnlyText: "Utilizzare solamente l'elenco dei valori esatti",
+        stepText: "Step animazione",
+        unitsText: "Unità animazione",
+        frameRateText:'Velocità animazione (s)',
+        noUnitsText: "Snap To Time List",
+        loopText: "Animazione continua",
+        reverseText: "Inverti animazione",
+        rangeChoiceText: "Choose the range for the time control",
+        rangedPlayChoiceText: "Playback Mode",
+        secondsText: 'Secondi', 
+        minutesText: 'Minuti', 
+        hoursText: 'Ore', 
+        daysText: 'Giorni', 
+        monthsText: 'Mesi', 
+        yearsText: 'Anni'
+    },
+	
+	"gxp.plugins.StaticPage.prototype": {
+        tabTitle: "Pagina Statica"
+    }
 });

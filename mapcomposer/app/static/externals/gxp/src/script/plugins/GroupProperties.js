@@ -1,11 +1,22 @@
 /**
-* Copyright (c) 2008-2011 The Open Planning Project
-*
-* Published under the GPL license.
-* See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
-* of the license.
-*/
-
+ *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  http://www.geo-solutions.it
+ *
+ *  GPLv3 + Classpath exception
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 /**
  * @requires plugins/Tool.js
  */
@@ -24,6 +35,8 @@ Ext.namespace("gxp.plugins");
  *  .. class:: GroupProperties(config)
  *
  *    Plugin for Modify group properties on layer tree.
+ 
+ *  Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
  */
 gxp.plugins.GroupProperties = Ext.extend(gxp.plugins.Tool, {
     

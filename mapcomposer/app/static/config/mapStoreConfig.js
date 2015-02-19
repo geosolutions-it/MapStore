@@ -1,7 +1,5 @@
 {
-   "geoStoreBase": "",
-   "proxy":"/http_proxy/proxy/?url=",
-   "defaultLanguage": "en",
+   "scaleOverlayMode": "basic",
    "gsSources":{ 
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
@@ -19,6 +17,11 @@
 			"ptype": "gxp_olsource" 
 		}
 	},
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
+	},
 	"map": {
 		"projection": "EPSG:900913",
 		"units": "m",
@@ -30,21 +33,6 @@
 		],
 		"layers": [
 			{
-				"source": "bing",
-				"title": "Bing Aerial",
-				"name": "Aerial",
-				"group": "background"
-			}, {
-				"source": "osm",
-				"title": "Open Street Map",
-				"name": "mapnik",
-				"group": "background"
-			},{
-				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
-				"group": "background"
-			},{
 				"source": "google",
 				"title": "Google Roadmap",
 				"name": "ROADMAP",
@@ -59,6 +47,35 @@
 				"title": "Google Hybrid",
 				"name": "HYBRID",
 				"group": "background"
+			},{
+				"source": "mapquest",
+				"title": "MapQuest OpenStreetMap",
+				"name": "osm",
+				"group": "background"
+			},{
+				"source": "osm",
+				"title": "Open Street Map",
+				"name": "mapnik",
+				"group": "background"
+			},{
+				"source": "bing",
+				"title": "Bing Aerial",
+				"name": "Aerial",
+				"group": "background"
+			},{
+				"source": "bing",
+				"title": "Bing Aerial With Labels",
+				"name": "AerialWithLabels",
+				"group": "background"
+			},{
+				"source": "ol",
+				"group": "background",
+				"fixed": true,
+				"type": "OpenLayers.Layer",
+				"visibility": false,
+				"args": [
+					"None", {"visibility": false}
+				]
 			}
 		]
 	},
@@ -87,8 +104,17 @@
     },
 	"customTools":[
 		{
-			"actions": ["-"], 
-			"actionTarget": "paneltbar"
+			"ptype": "gxp_embedmapdialog",
+			"actionTarget": {"target": "paneltbar", "index": 2},
+			"embeddedTemplateName": "viewer",
+			"showDirectURL": true
+		}, {
+			"ptype": "gxp_categoryinitializer",
+            "silentErrors": true
+		}, {
+		   "ptype": "gxp_mouseposition",
+		   "displayProjectionCode":"EPSG:4326",
+		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
 		}, {
 			"ptype": "gxp_metadataexplorer",
 			"id": "metadataexplorer",
@@ -106,14 +132,8 @@
                         {"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
                         {"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
                         {"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
-                    ],
+                ],
                 "dcProperty": "title",
-                "initialBBox": {
-                    "minx": 11.145,
-                    "miny": 43.718,
-                    "maxx": 11.348,
-                    "maxy": 43.84
-                },
                 "cswVersion": "2.0.2",
                 "filterVersion": "1.1.0",
                 "start": 1,
@@ -123,11 +143,35 @@
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
+			"useEvents": false,
+			"showReport": "never",
+			"directAddLayer": false,
 			"id": "addlayer"
 		}, {
+			"actions": ["-"], 
+			"actionTarget": "paneltbar"
+		}, {
 			"ptype": "gxp_geolocationmenu",
-			"outputTarget": "paneltbar",
-			"index": 23
+			"actionTarget": {"target": "paneltbar", "index": 23},
+			"toggleGroup": "toolGroup"
+		}, {
+			"actions": ["->"], 
+			"actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_help",
+			"actionTarget": "paneltbar",
+			"text": "Help",
+			"tooltip":"MapStore Guide",
+			"index": 24,
+			"showOnStartup": false,
+			"fileDocURL": "MapStore-Help.pdf"
+        }, {
+			"ptype": "gxp_about",
+			"poweredbyURL": "http://www.geo-solutions.it/about/contacts/",
+			"actionTarget": {"target": "panelbbar", "index": 1}
+		}, {
+			"ptype": "gxp_languageselector",
+			"actionTarget": {"target": "panelbbar", "index": 3}
 		}
 	]
 }

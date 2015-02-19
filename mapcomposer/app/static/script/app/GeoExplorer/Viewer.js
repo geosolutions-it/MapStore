@@ -50,21 +50,33 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
 		
         config.tools = tools;
         
+        if(config.removeTools) {
+            for(var r=0; r < config.removeTools.length; r++) {
+                config.tools = this.removeTool(config.tools, config.removeTools[r]);
+            }
+        }
+        
 		if(config.customTools)
 		{
 			for(var c=0; c < config.customTools.length; c++)
 			{
 				var toolIsDefined = false;
-				for(var t=0; t < config.tools.length; t++)
-				{
-					if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {	//plugin already defined
-						toolIsDefined = true;
-						break;
-					}
-				}
-			
-				if(!toolIsDefined)
-					config.tools.push(config.customTools[c]);
+				for(t=0; t < config.tools.length; t++){
+                    //plugin already defined
+                    if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {
+                        toolIsDefined = true;
+                        if(config.customTools[c].forceMultiple){
+                            config.tools.push(config.customTools[c])
+                        }else{
+                            config.tools[t]=config.customTools[c];
+                        }
+                        break;
+                    }
+                }
+            
+                if(!toolIsDefined){
+                    config.tools.push(config.customTools[c])
+                }
 			}
 		}
 		
@@ -97,6 +109,7 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         
         this.on("ready", function() {
         	this.toolbar.enable();
+			this.bottom_toolbar.enable();
         }, this);
 
         this.mapPanelContainer = new Ext.Panel({
@@ -124,10 +137,18 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         if(this.customPanels){
             portalItems=portalItems.concat(this.customPanels);
         }
+		
+		this.bottom_toolbar = new Ext.Toolbar({
+            disabled: true,
+            id: 'panelbbar',
+			enableOverflow: true
+        });
+		
         this.portalItems = [{
             region: "center",
             layout: "border",
             tbar: this.toolbar,
+			bbar: this.bottom_toolbar,
             items: portalItems
         }];
         
@@ -140,17 +161,20 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
      * Create the various parts that compose the layout.
      */
     createTools: function() {
+		if(!this.disableLayerChooser){
         var tools = GeoExplorer.Viewer.superclass.createTools.apply(this, arguments);
+		
+			var layerChooser = new Ext.Button({
+				//tooltip: 'Layer Switcher',	//TODO uncomment in ExtJS >= 4.1, http://goo.gl/x1c5X
+				iconCls: 'icon-layer-switcher',
+				menu: new gxp.menu.LayerMenu({
+					layers: this.mapPanel.layers
+				})
+			});
+			tools.unshift(layerChooser);
+		}
 
-        var layerChooser = new Ext.Button({
-			//tooltip: 'Layer Switcher',	//TODO uncomment in ExtJS >= 4.1, http://goo.gl/x1c5X
-            iconCls: 'icon-layer-switcher',
-            menu: new gxp.menu.LayerMenu({
-                layers: this.mapPanel.layers
-            })
-        });
-
-        tools.unshift(layerChooser);
+        
 
         return tools;
     }

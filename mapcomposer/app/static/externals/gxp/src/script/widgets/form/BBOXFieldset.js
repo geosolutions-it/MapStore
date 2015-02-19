@@ -32,32 +32,26 @@ Ext.namespace("gxp.form");
  */
 gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
 
-
-
     /** api: ptype = gxp_bboxfieldset */
     ptype: "gxp_bboxfieldset",
-    
-    
+ 
     /** api: config[id]
      *  ``String``
      *  
      */
     id: "bboxFieldSet",
-    
-    
+  
     /** api: property[map]
      *  ``Object``
      *  
      */
     map: "BBOX",
-    
 
     /** api: property[layerName]
      *  ``String``
      *  
      */
     layerName: "BBOX",
-    
 
     /**
      * Property: decimalPrecision
@@ -71,8 +65,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
      *     
      */
     outputSRS: 'EPSG:4326',
-    
-    
+
     /** api: property[infoEPSG]
      *  ``Boolean``
      *  
@@ -90,15 +83,13 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
      *  
      */
     epsgWinWidth: null,
-    
-    
+
     /** api: property[epsgWinHeight]
      *  ``String``
      *  
      */
     epsgWinHeight: null,
-    
-    
+
     /** api: config[spatialFilterOptions]
      *  ``Object``
      *  
@@ -109,29 +100,44 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         latMax: null,   
         latMin: null  
     },
-    
-    
+
     /** api: config[displayBBOXInLayerSwitcher]
      *  ``Boolean``
      *  
      */
     displayBBOXInLayerSwitcher: false,
-    
- 
-    /**
-     * Property: selectStyle
-     * {Object} Configuration of OpenLayer.Style. 
-     *    used to highlight the BBOX
-     *     
-     */
-    selectStyle:{
-        fillColor: "#0000FF",
-        strokeColor: "#0000FF",
-        fillOpacity:0.5,
-        strokeWidth:2
-    },
-    
-    
+
+    /** api: config[defaultStyle]
+	 *  ``Object``
+	 */
+	defaultStyle : {
+		"strokeColor" : "#ee9900",
+		"fillColor" : "#ee9900",
+		"fillOpacity" : 0.4,
+		"strokeWidth" : 1
+	},
+
+	/** api: config[selectStyle]
+	 *  ``Object``
+	 */
+	selectStyle : {
+		"strokeColor" : "#ee9900",
+		"fillColor" : "#ee9900",
+		"fillOpacity" : 0.4,
+		"strokeWidth" : 1
+	},
+
+	/** api: config[temporaryStyle]
+	 *  ``Object``
+	 */
+	temporaryStyle : {
+		"pointRadius" : 6,
+		"fillColor" : "#FF00FF",
+		"strokeColor" : "#FF00FF",
+		"label" : "Select",
+		"graphicZIndex" : 2
+	},
+
     // start i18n
     northLabel:"North",
     westLabel:"West",
@@ -142,46 +148,40 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
     setAoiTooltip: "Enable the SetBox control to draw a ROI (BBOX) on the map",
     title: "Region of Interest",
     // end i18n
-    
-
-    
 
     /** private: method[initComponent]
      *  Override
      */
-    initComponent: function() {
-       
-       
-        
-        this.autoHeight= true;
-        this.layout='table';
-        this.layoutConfig= {
+    initComponent: function() {       
+        this.autoHeight = true;
+        this.layout ='table';
+        this.layoutConfig = {
             columns: 3
         };
-        this.defaults= {
+		
+        this.defaults = {
             // applied to each contained panel
             bodyStyle:'padding:5px;'
         };
-        this.bodyCssClass= 'aoi-fields';
+		
+        this.bodyCssClass = 'aoi-fields';
         
         // Define handlar box style
         Ext.util.CSS.createStyleSheet(".olHandlerBoxZoomBox_"+this.id+" {\n"
-            +" border-width:"+this.selectStyle.strokeWidth+"px; \n"
+            +" border-width:" + 5 + "px; \n"
             +" border-style:solid; \n"
-            +" border-color: "+this.selectStyle.strokeColor+";"
+            +" border-color: " + "#66cccc" + ";"
             +" position: absolute; \n"
-            +" background-color: "+this.selectStyle.handlerFillColor+"; \n"
+            +" background-color: " + "#66cccc" + "; \n"
             +" opacity: "+0.5+"; \n"
             +" font-size: 1px; \n"
             +" filter: alpha(opacity="+0.5 * 100+"); \n"
             +"}",
-            "olHandlerBoxZoomBox_"+this.id);
-   
+            "olHandlerBoxZoomBox_"+this.id);   
         
-        var me= this;
+        var me = this;
 
         this.bboxProjection = this.outputSRS ? new OpenLayers.Projection(this.outputSRS) : null;
-
        
         this.northField = new Ext.form.NumberField({
             fieldLabel: me.northLabel,
@@ -196,7 +196,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         this.westField = new Ext.form.NumberField({
             fieldLabel: this.westLabel,
             id: me.id+"_WestBBOX",
-            width: 100,
+            width: 70,
             allowBlank: false,
           /*  minValue: this.spatialFilterOptions.latMin,
             maxValue: this.spatialFilterOptions.latMax,*/
@@ -208,7 +208,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         this.eastField = new Ext.form.NumberField({
             fieldLabel: this.eastLabel,
             id: me.id+"_EastBBOX",
-            width: 100,
+            width: 70,
             allowBlank: false,
           /*  minValue: this.spatialFilterOptions.latMin,
             maxValue: this.spatialFilterOptions.latMax,*/
@@ -247,6 +247,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             text: this.setAoiText,
             tooltip: this.setAoiTooltip,
             enableToggle: true,
+            toggleGroup: this.toggleGroup,
             iconCls: 'aoi-button',
             height: 50,
             width: 50,
@@ -257,12 +258,11 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
                         //
                         // Reset the previous control
                         //
-                        this.reset();
+                        //this.reset();
 
                         //
                         // Activating the new control
                         //   
-                        
                         this.selectBBOX.activate();
                     }else{
                         this.selectBBOX.deactivate();
@@ -314,26 +314,38 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             ]
         }];
             
-        if(this.infoSRS)   
-            this.title+=" <a href='#' id='"+me.id+"_bboxAOI-set-EPSG'>["+this.bboxProjection.getCode()+"]</a>";
+        if(this.infoSRS){
+			var url = this.getCRSURLFromCode();
+			this.title += " <a href='#' onclick=\"window.open('" + url + "');\" id='"+me.id+"_bboxAOI-set-EPSG'>["+this.bboxProjection.getCode()+"]</a>";
+		}
         
-        this.listeners= {
-            "afterlayout": function(){
-                Ext.get(me.id+"_bboxAOI-set-EPSG").addListener("click", me.openEPSGWin, me);  
+        this.listeners = {
+           "afterlayout": function(){
+                /*var link = Ext.get(me.id+"_bboxAOI-set-EPSG");
+                if(link){
+                  link.addListener("click", me.openEPSGWin, me);  
+                }*/
+                
 				var baseProj = me.map.getProjection();
 				var projection = baseProj ? baseProj : me.map.projection; 				
                 me.mapProjection = new OpenLayers.Projection(projection);
-                    
                 me.selectBBOX = new OpenLayers.Control.SetBox({      
                     map: me.map,       
                     layerName: me.layerName,
                     displayInLayerSwitcher: me.displayBBOXInLayerSwitcher,
                     boxDivClassName: "olHandlerBoxZoomBox_"+me.id,
-                    aoiStyle: new OpenLayers.StyleMap(me.selectStyle),
-                    onChangeAOI: function(){  
-                        me.setBBOX(new OpenLayers.Bounds.fromString(this.currentAOI)); 
+                    aoiStyle: new OpenLayers.StyleMap({
+						"default" : me.defaultStyle,
+						"select": me.selectStyle,
+						"temporary": me.temporaryStyle
+					}),
+                    onChangeAOI: function(){
+                    	var bounds = new OpenLayers.Bounds.fromString(this.currentAOI);  
+                        me.setBBOX(bounds); 
                         this.deactivate();
                         me.bboxButton.toggle();
+                        
+                        me.fireEvent('onChangeAOI', bounds);
                     } 
                 }); 
         
@@ -345,8 +357,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             }
           
         };
-        
-       
+
         gxp.form.BBOXFieldset.superclass.initComponent.call(this);
     },
     
@@ -358,8 +369,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
      *  W3C suggested algorithm for calculating brightness of screen colors.
      *  http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
      */
-    
-    
+
     /** public: method[removeBBOXLayer]	 
      *     remove the BBOX selection layer from the map
      */
@@ -369,8 +379,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         if(bboxLayer)
             this.map.removeLayer(bboxLayer);    
     },
-    
-    
+
     /** public: method[reset]	 
      *    reset BBOX Panel
      */
@@ -379,7 +388,9 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         this.northField.reset();
         this.southField.reset();
         this.eastField.reset();
-        this.westField.reset();  
+        this.westField.reset(); 
+
+		this.fireEvent('unselect', this);
     },
     
     /** public: method[setBBOX]
@@ -392,7 +403,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         if(this.map.getProjection() != this.bboxProjection.getCode()){
             bboxBounds = bounds.transform(this.map.getProjectionObject(),this.bboxProjection);
         }else
-            bboxBounds= bounds;  
+            bboxBounds = bounds;  
       
         this.northField.setValue(bboxBounds.top);
         this.southField.setValue(bboxBounds.bottom);
@@ -402,8 +413,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         this.fireEvent('select', this, bboxBounds);
 
     },
-    
-    
+
     /** public: method[isValid]
      *  
      *     
@@ -414,7 +424,6 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             this.eastField.isValid() && 
             this.northField.isValid());
     },
-    
     
     /** public: method[isDirty]
      *  
@@ -427,9 +436,6 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             this.northField.isDirty());
     },
 
-
-    
-    
     /** public: method[getBBOXMapBounds]
      *  
      *   return the selected BBOX bounds defined with the Map Projection  
@@ -441,7 +447,6 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             return this.getBBOXBounds();
     },
     
-    
     /** public: method[getBBOXBounds]
      *  
      *  return the selected BBOX bounds defined with the Panel Projection   
@@ -452,27 +457,27 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             this.southField.getValue(), 
             this.eastField.getValue(), 
             this.northField.getValue()
-            )
+        );
     },
     
     /** private: method[openEpsgWin]
      *    Opens a popup with current BBOX CRS description 
      */
-    openEPSGWin: function() {
-      
-        this.epsgWinHeight= this.epsgWinHeight ? this.epsgWinHeight : Ext.getBody().getHeight()*.7;
-        this.epsgWinWidth=  this.epsgWinWidth ? this.epsgWinWidth : Ext.getBody().getWidth()*.8;
+    openEPSGWin: function() {      
+        this.epsgWinHeight = this.epsgWinHeight ? this.epsgWinHeight : Ext.getBody().getHeight()*.7;
+        this.epsgWinWidth =  this.epsgWinWidth ? this.epsgWinWidth : Ext.getBody().getWidth()*.8;
      
-        var me= this;
-        var win= new Ext.Window({
-            layout:'fit', 
-            id: me.id+'_epsg_info_win',
-            width:me.epsgWinWidth,
-            closeAction:'destroy',
-            html: '<div id="'+me.id+'_loaderIframe"><iframe id="'+me.id+'_epsgIframe" src="'+ me.getCRSURLFromCode() +'" width="99%" height="'+me.epsgWinHeight+'"></iframe></div>',
+        var me = this;
+		
+        var win = new Ext.Window({
+            layout: 'fit', 
+            id: me.id + '_epsg_info_win',
+            width: me.epsgWinWidth,
+            closeAction: 'destroy',
+            html: '<div id="' + me.id + '_loaderIframe"><iframe id="' + me.id + '_epsgIframe" src="' + me.getCRSURLFromCode() + '" width="99%" height="' + me.epsgWinHeight + '"></iframe></div>',
             listeners: {
                 afterrender: function(el, eOpts) {
-                    var ml=new Ext.LoadMask(document.getElementById(me.id+'_loaderIframe'), 
+                    var ml=new Ext.LoadMask(document.getElementById(me.id + '_loaderIframe'), 
                     {
                         msg: me.waitEPSGMsg,
                         removeMask: true
@@ -481,7 +486,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
                     function rml(){
                         ml.hide();
                     }
-                    var iframe = document.getElementById(me.id+'_epsgIframe');
+                    var iframe = document.getElementById(me.id + '_epsgIframe');
                     if (iframe.attachEvent) {
                         iframe.attachEvent("onload", rml);
                     } else if (iframe.addEventListener) {
@@ -492,8 +497,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
         }); 
         win.show();
     },
-    
-    
+     
     /** private: method[getCRSURLFromCode]
      *    Get CRS HTML page URL description
      */
@@ -507,14 +511,13 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
                 break;
                 
             default:
-               srsURL+= "/epsg/"+( +this.bboxProjection.getCode().split(":")[1]+"/"); 
+               srsURL+= "epsg/"+( +this.bboxProjection.getCode().split(":")[1]+"/"); 
             }
         }else
          srsURL=this.infoEPSGURL;
          
        return srsURL;
-    }
-    
+    }  
 });
 
 Ext.reg("gxp_bboxfieldset", gxp.form.BBOXFieldset);

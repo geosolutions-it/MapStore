@@ -1,13 +1,11 @@
 {
-   "geoStoreBase":"http://datigis.comune.fi.it/geostore_test/",
-   "gnBaseUrl": "http://datigis.comune.fi.it/geonetwork_test/",
-   "proxy":"/http_proxy_test/proxy/?url=",
-   "defaultLanguage": "it",
+   "gnBaseUrl": "",
+   "scaleOverlayMode": "advanced",
    "tab": true,
    "gsSources":{ 
-		"comunefi-test":{
+		"comunefi":{
 				"ptype": "gxp_wmssource",
-				"url": "http://datigis.comune.fi.it/geowebcache_test/service/wms/",
+				"url": "http://tms.comune.fi.it/tiles/service/wms",
 				"title": "Comune FI WMS Server"
 		},
 		"mapquest": {
@@ -26,12 +24,17 @@
 			"ptype": "gxp_olsource" 
 		}
 	},
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
+	},
 	"map": {
 		"projection": "EPSG:900913",
 		"units": "m",
 		"center": [1251650, 5430300],
 		"zoom": 12,
-		"maxExtent": [
+		"extent": [
 				1233700, 5418400,
 				1269600, 5442200
 		],
@@ -53,11 +56,6 @@
 				"group": "background"
 			},{
 				"source": "google",
-				"title": "Google Roadmap",
-				"name": "ROADMAP",
-				"group": "background"
-			},{
-				"source": "google",
 				"title": "Google Terrain",
 				"name": "TERRAIN",
 				"group": "background"
@@ -65,6 +63,11 @@
 				"source": "google",
 				"title": "Google Hybrid",
 				"name": "HYBRID",
+				"group": "background"
+			},{
+				"source": "google",
+				"title": "Google Roadmap",
+				"name": "ROADMAP",
 				"group": "background"
 			}
 		]
@@ -92,93 +95,12 @@
             "header": true
         }
     ],
-	"tools":[
+	"customTools":[
 		{
-			"ptype": "gxp_layertree",
-			"outputConfig": {
-				"id": "layertree"
-			},
-			"outputTarget": "tree"
-		}, {
-			"ptype": "gxp_legend",
-			"outputTarget": "legend",
-			"outputConfig": {
-				"autoScroll": true
-			},
-			"legendConfig": {
-				"legendPanelId": "legendPanel",
-				"defaults": {
-					"style": "padding:5px",                  
-					"baseParams": {
-						"LEGEND_OPTIONS": "forceLabels:on;fontSize:10",
-						"WIDTH": 12, 
-						"HEIGHT": 12
-					}
-				}
-			}
-		}, {
-			"ptype": "gxp_addlayers",
-			"actionTarget": "tree.tbar",
-			"id": "addlayers",
-			"upload": true
-		}, {
-			"ptype": "gxp_removelayer",
-			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
-		}, {
-			"ptype": "gxp_removeoverlays",
-			"actionTarget": "tree.tbar"
-		}, {
-			"ptype": "gxp_addgroup",
-			"actionTarget": "tree.tbar"
-		}, {
-			"ptype": "gxp_removegroup",
-			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
-		}, {
-			"ptype": "gxp_groupproperties",
-			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
-		}, {
-			"ptype": "gxp_layerproperties",
-			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
-		}, {
-			"ptype": "gxp_zoomtolayerextent",
-			"actionTarget": {"target": "layertree.contextMenu", "index": 0}
+		   "ptype": "gxp_mouseposition",
+		   "displayProjectionCode":"EPSG:4326",
+		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
 		},{
-			"ptype":"gxp_geonetworksearch",
-			"actionTarget": ["layertree.contextMenu"]
-		}, {
-			"ptype": "gxp_zoomtoextent",
-			"actionTarget": {"target": "paneltbar", "index": 15}
-		}, {
-			"ptype": "gxp_navigation", "toggleGroup": "toolGroup",
-			"actionTarget": {"target": "paneltbar", "index": 16}
-		}, {
-			"actions": ["-"], "actionTarget": "paneltbar"
-		}, {
-			"ptype": "gxp_zoombox", "toggleGroup": "toolGroup",
-			"actionTarget": {"target": "paneltbar", "index": 17}
-		}, {
-			"ptype": "gxp_zoom",
-			"actionTarget": {"target": "paneltbar", "index": 18}
-		}, {
-			"actions": ["-"], "actionTarget": "paneltbar"
-		}, {
-			"ptype": "gxp_navigationhistory",
-			"actionTarget": {"target": "paneltbar", "index": 19}
-		}, {
-			"actions": ["-"], "actionTarget": "paneltbar"
-		}, {
-			"ptype": "gxp_wmsgetfeatureinfo_menu", 
-			"toggleGroup": "toolGroup",
-			"useTabPanel": true,
-			"actionTarget": {"target": "paneltbar", "index": 20}
-		}, {
-			"actions": ["-"], "actionTarget": "paneltbar"
-		}, {
-			"ptype": "gxp_measure", "toggleGroup": "toolGroup",
-			"actionTarget": {"target": "paneltbar", "index": 21}
-		}, {
-			"actions": ["-"], "actionTarget": "paneltbar"
-		}, {
 			"ptype": "gxp_metadataexplorer",
 			"id": "metadataexplorer",
             "outputTarget": "south",
@@ -201,13 +123,23 @@
                 "timeout": 60000
             }            
 		}, {
+			"actions": ["-"], 
+			"actionTarget": "paneltbar"
+		}, {
 			"ptype": "gxp_geolocationmenu",
-			"outputTarget": "paneltbar",
-			"index": 23
+			"actionTarget": {"target": "paneltbar", "index": 23},
+			"toggleGroup": "toolGroup"
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"id": "addlayer"
+		}, {
+			"ptype": "gxp_about",
+			"poweredbyURL": "http://www.geo-solutions.it/about/contacts/",
+			"actionTarget": {"target": "panelbbar", "index": 1}
+		}, {
+			"ptype": "gxp_languageselector",
+			"actionTarget": {"target": "panelbbar", "index": 3}
 		}
 	]
 }

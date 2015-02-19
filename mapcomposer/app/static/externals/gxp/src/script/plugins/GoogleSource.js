@@ -1,13 +1,14 @@
 /**
-* Copyright (c) 2008-2011 The Open Planning Project
-*
-* Published under the GPL license.
-* See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
-* of the license.
-*/
+ * Copyright (c) 2008-2011 The Open Planning Project
+ * 
+ * Published under the GPL license.
+ * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
+ * of the license.
+ */
 
 /**
  * @requires plugins/LayerSource.js
+ * 
  */
 
 /** api: (define)
@@ -99,6 +100,21 @@ gxp.plugins.GoogleSource = Ext.extend(gxp.plugins.LayerSource, {
      */
     terrainAbstract: "Show street map with terrain",
 
+    /** api: config[otherParams]
+     *  ``String``
+     *  Additional parameters to be sent to Google,
+     *  default is "sensor=false"
+     */
+    otherParams: "sensor=false",
+    
+    /** api: config[localized]
+     *  ``Boolean``
+     *  Enables localization of Google Maps messages,
+     *  through the API "language=<lang>" parameter. The locale is taken from GeoExt.Lang.locale.
+     *  default is false.
+     */
+    localized: false,
+
     constructor: function(config) {
         this.config = config;
         gxp.plugins.GoogleSource.superclass.constructor.apply(this, arguments);
@@ -110,6 +126,8 @@ gxp.plugins.GoogleSource = Ext.extend(gxp.plugins.LayerSource, {
      */
     createStore: function() {
         gxp.plugins.GoogleSource.loader.onLoad({
+            otherParams: this.otherParams,
+            localized: this.localized,
             timeout: this.timeout,
             callback: this.syncCreateStore,
             errback: function() {
@@ -156,6 +174,7 @@ gxp.plugins.GoogleSource = Ext.extend(gxp.plugins.LayerSource, {
                     MAX_ZOOM_LEVEL: mapTypes[name].MAX_ZOOM_LEVEL,
                     maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
                     restrictedExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
+                    enableTilt:this.enableTilt,
                     projection: this.projection
                 }
             ));
@@ -299,7 +318,10 @@ gxp.plugins.GoogleSource.loader = new (Ext.extend(Ext.util.Observable, {
      *  Called when all resources required by this plugin type have loaded.
      */
     loadScript: function(options) {
-
+        var otherParams = options.otherParams;
+        if(options.localized) {
+            otherParams += '&language=' + GeoExt.Lang.locale
+        }
         var params = {
             autoload: Ext.encode({
                 modules: [{
@@ -307,7 +329,7 @@ gxp.plugins.GoogleSource.loader = new (Ext.extend(Ext.util.Observable, {
                     version: 3.3,
                     nocss: "true",
                     callback: "gxp.plugins.GoogleSource.loader.onScriptLoad",
-                    other_params: "sensor=false"
+                    other_params: otherParams
                 }]
             })
         };
@@ -336,7 +358,17 @@ gxp.plugins.GoogleSource.loader = new (Ext.extend(Ext.util.Observable, {
         });
 
         this.loading = true;
-        document.getElementsByTagName("head")[0].appendChild(script);
+
+        // The google loader accesses document.body, so we don't add the loader
+        // script before the document is ready.
+        function append() {
+            document.getElementsByTagName("head")[0].appendChild(script);
+        }
+        if (document.body) {
+            append();
+        } else {
+            Ext.onReady(append);
+        }
 
     }
 

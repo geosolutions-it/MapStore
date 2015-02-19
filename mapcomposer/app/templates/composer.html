@@ -6,8 +6,13 @@
 	<!-- Basic OpenLayers libs -->
     <script type="text/javascript" src="script/OpenLayers.js"></script>		
 	
-	<!-- Externatls OpenLayers libraries to manage WPS processes and other extensions
-	<script type="text/javascript" src="script/OpenLayersExt.js"></script>-->
+	<!-- Externatls OpenLayers libraries to manage other extensions -->
+	<script type="text/javascript" src="script/OpenLayersExt.js"></script> 
+    
+    <!-- Ask RingoJS for debug status -->
+    <script type="text/javascript" src="debug.js"></script> 
+	
+	<link rel="stylesheet" type="text/css" href="theme/app/openlayers.css" />
 	
 	<!-- colorpicker resources 
     <link rel="stylesheet" type="text/css" href="externals/colorpicker/css/colorpicker.css">
@@ -16,24 +21,34 @@
     <!-- GeoExt resources -->
     <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/popup.css">
     <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/layerlegend.css">
-    <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
-    <script type="text/javascript" src="script/GeoExt.js"></script> 
-
-	<!-- PrintPreview resources 
+    <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">	
+    <script type="text/javascript" src="script/GeoExt.js"></script> 	
+	
+	<script type="text/javascript" src="script/GeoExtExt.js"></script>
+	
+	<!-- PrintPreview resources  	
     <link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css">
-    <script type="text/javascript" src="script/PrintPreview.js"></script> -->
+    <script type="text/javascript" src="script/PrintPreview.js"></script>-->
+	
+    <!-- canvg-1.2 resources -->
+	<script type="text/javascript" src="script/canvg-1.2.js"></script> 
 	
     <!-- gxp resources -->
     <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
 
     <script type="text/javascript" src="script/gxp.js"></script> 
 
-    <!--script type="text/javascript" src="script/proj4js.js"></script-->	
+    <!--script type="text/javascript" src="script/proj4js.js"></script-->
 	<!--script type="text/javascript" src="script/projCodes.js"></script-->
 
     <!-- GeoExplorer resources -->
     <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
     <link rel="stylesheet" type="text/css" href="theme/app/mapstore.css" />
+	
+	<!-- Advanced Scalebar CSS -->
+	<!--link rel="stylesheet" type="text/css" href="theme/app/scalebar-fat.css" /-->
+    <link rel="stylesheet" type="text/css" href="theme/app/scalebar-thin.css" />
+	
     <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->        
 
     <script type="text/javascript" src="script/GeoExplorer.js"></script>
@@ -46,12 +61,17 @@
     
     <!-- geocoding data  -->
     <script type="text/javascript" src="data/georeferences.js"></script>
+     <!-- QR Code -->
+    <script type="text/javascript" src="script/qrcodejs.js"></script>
+    <!-- common data  -->
+    <script type="text/javascript" src="config/common/localConfig.js"></script>
     
 	<!-- translation data  -->
     <script type="text/javascript" src="translations/en.js"></script>
     <script type="text/javascript" src="translations/fr.js"></script>
     <script type="text/javascript" src="translations/it.js"></script>
     <script type="text/javascript" src="translations/de.js"></script>
+    <script type="text/javascript" src="translations/es.js"></script>
 	
 	<!-- uncomment to have  welcome screen
 	<script type="text/javascript">
@@ -70,11 +90,25 @@
       <div class="loading-indicator">
       </div>
     </div>
-	-->	
+	-->
+	
     <script>
-        
-        var app;        
-        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false;
+		// ///////////////////////////////////////////////
+		// This fragment allow to retrieve a content body 
+		// of a POST request from Ringo.
+		// ///////////////////////////////////////////////
+        var content = <% content %>;
+		/*if(content && content.data){
+			console.log(content);
+		}*/   
+		
+		var app;        
+        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox; var useCookies; var templateId;
+		
+		// /////////////////////////////////////////////////////
+		// Extra parameters to add layers at startup
+		// /////////////////////////////////////////////////////
+		var layName; var layTitle; var wmsurl; var gsturl; var urlformat;
 		
         // ///////////////////////////////////////////////////////////////
         // Custom variables from the mapStoreConfig user configuration file 
@@ -100,10 +134,12 @@
 									} 
 									break;
 					case "auth" : 
-									if(param[1] == 'true') 
-										authorization = true; 
-									else 
-										authorization = false; 
+									authorization = param[1]; 
+									if(param.length > 2){
+										for(var i = 2; i < param.length; i++){
+											authorization += "=";
+										}
+									}
 									break;
 					case "fullScreen" : 
 									if(param[1] == 'true') 
@@ -111,8 +147,42 @@
 									else 
 										fullScreen = false; 
 									break;
+					case "layName" : 
+									layName = param[1]; 
+									break;
+					case "layTitle" : 
+									layTitle = param[1]; 
+									break;
+					case "wmsurl" : 
+									wmsurl = param[1]; 
+									wmsurl = decodeURIComponent(wmsurl);
+									break;
+					case "gsturl" : 
+									gsturl = param[1]; 
+									gsturl = decodeURIComponent(gsturl);
+									break;
+					case "useCookies" : 
+									useCookies = param[1]; 
+									break;
 					case "config":	
 									customConfigName = param[1];
+									break;
+					case "bbox": 
+									try{
+										bbox = new OpenLayers.Bounds.fromString(param[1]);
+									}catch(e){
+										bbox = undefined;
+									} 
+									break;
+					case "configId": 
+									try{
+										templateId = parseInt(param[1]);
+									}catch(e){
+										templateId = -1;
+									} 
+									break;
+					case "format":
+									urlformat = param[1];
 									break;
 					default :       
 									//mapIdentifier = -1;
@@ -162,8 +232,8 @@
                       });
                  }
             });
-            
-			// //////////////////////////////////////////////////////            
+			
+		    // //////////////////////////////////////////////////////            
             // Setting the locale based on query string parameter
             // //////////////////////////////////////////////////////
 			var query = location.search;        
@@ -181,20 +251,12 @@
                 GeoExt.Lang.set(code);
             }
 			
-			// ////////////////////////////////////////////////////
-			// Setting the language selector
-			// ////////////////////////////////////////////////////
-			var languageSelector = new gxp.form.LanguageSwitcher({
-				currentContext:code,
-				saveMessage:authorization
-			});
-			
             var appTabsOpts = {
-                        region: 'center',
-                        border : false,
-                        id : 'appTabs',
-                        enableTabScroll: true
-                    };
+				region: 'center',
+				border : false,
+				id : 'appTabs',
+				enableTabScroll: true
+            };
             
             //check if MetadataExplorer plugin is defined in customTools configuration
             var customToolsME = [];
@@ -222,56 +284,80 @@
             }else{
                 appTabs = new Ext.TabPanel(appTabsOpts); 
             }
-
-			var iframe = "<iframe style='border: none; height: 100%; width: 100%' src='about.html' frameborder='0' border='0'>" + 
-						 "<a target='_blank' href='about.html'>" + GeoExplorer.prototype.aboutText + "</a> </iframe>";
-						 
-            var aboutButton = new Ext.Button({
-                text: GeoExplorer.prototype.appInfoText,
-                iconCls: "icon-geoexplorer",
-                handler: function(){
-                    var appInfo = new Ext.Panel({
-                        header: false,
-                        html: iframe
-                    });
-
-                    var win = new Ext.Window({
-                        title:  GeoExplorer.prototype.aboutThisMapText,
-                        modal: true,
-                        layout: "fit",
-                        width: 360,
-                        height: 360,
-                        items: [appInfo]
-                    });
-                    
-                    win.show();
-                }
-            });
-            
-            var poweredByGeoSol = new Ext.Button({
-                tooltip: 'Powered by GeoSolutions',
-                iconCls: "icon-geosol",
-                width : 150,
-                handler: function(btn){
-                    window.open('http://geo-solutions.it/contact/', '_blank');
-                }
-            });    
 			
-            var appViewport = new Ext.Viewport({
-                id: 'appVieport',
-                layout:'fit',
-                border:false,
-                items: [{
-                    region : 'center',
-                    layout : 'border',
-                    border : false,
-                    header : false,                    
-                    items : [appTabs],                            
-                    bbar : [
-                      poweredByGeoSol, ' ', aboutButton, '->',languageSelector
-                    ]
-                }]
-            });
+			var header = serverConfig.header;
+			var footer = serverConfig.footer;
+			
+			var viewport = {
+					id: 'appVieport',
+					layout: 'fit',
+					border: false
+			};
+
+			// in header and footer, we need numbers, not strings
+			var parseKnowIntegers = function(section){
+				var knownInteger = {'height':true, 'maxHeight': true, 'minWidth':true};
+				for(var key in knownInteger){
+					if(section[key]){
+						try{
+							section[key] = parseInt(section[key]);	
+						}catch (e){
+							// unknown parameter value
+						}
+					}	
+				}
+				return section;
+			}
+
+			var parseHeader = function(section) {
+				return (section && section.header !== undefined && section.header !== null) ? section.header : false;
+			}
+			
+			if(header || footer){
+				var north = {
+					header: parseHeader(header.container),
+					region: 'north',
+					id: 'msheader'
+				};
+			
+				if(header){
+					north = Ext.applyIf(north, (header.container ? parseKnowIntegers(header.container) : {}));
+					north.html = (header.css || '') + (header.html || '');
+				}
+				
+			    var south = {
+					header: parseHeader(footer.container),
+					region: 'south',
+					id: 'msfooter'
+				};
+				
+				if(footer){
+					south = Ext.applyIf(south, (footer.container ? parseKnowIntegers(footer.container) : {}));
+                    var html = footer.html;
+                    if(footer.html instanceof Array){
+                        html = footer.html.join("");
+                    }
+					south.html = (footer.css || '') + (html || '');
+				}
+				
+				viewport.items = [{
+					region: 'center',
+					layout: 'border',
+					border: false,
+					header: false, 
+					items: [north, appTabs, south]
+				}];
+			}else{
+				viewport.items = [{
+					region: 'center',
+					layout: 'border',
+					border: false,
+					header: false,                    
+					items: [appTabs]
+				}]
+			}			
+			
+			var appViewport = new Ext.Viewport(viewport);
             
             // /////////////////////////////////////////////////////////////
             // Parsing WMS servers Sources for getCapabilities operation
@@ -310,14 +396,22 @@
                 'Authorization' : auth
             };*/
 
+			if(gsturl){
+				serverConfig.geoStoreBase = gsturl;
+			}
+			
             app = new GeoExplorer.Composer({
+                scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
 				defaultLanguage: serverConfig.defaultLanguage,	
+				actionToolScale: serverConfig.actionToolScale || "small",
                 customPanels: serverConfig.customPanels,
                 modified: false,
                 proxy: proxy,
 				tools: serverConfig.tools,
+				removeTools: serverConfig.removeTools,
 				geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),
                 portalConfig: serverConfig.portalConfig,
+				loadingPanel: serverConfig.loadingPanel || {},
                 defaultSourceType: "gxp_wmssource",
                 renderToTab : 'appTabs',
                 about: {
@@ -327,11 +421,10 @@
                 },
                 sources: sources,
 				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
-				//showGraticule: false,  //Set showGraticule property to true only if the map projection is EPSG:4326 
                 georeferences: georeferences_data,
                 map: serverConfig.map,
 				customTools: serverConfig.customTools
-            }, mapIdentifier, authorization, fullScreen);   
+            }, mapIdentifier, authorization && authorization == "false" ? null: authorization, fullScreen, templateId);   
             
             app.on({
                 'portalready' : function() {              	
@@ -343,42 +436,119 @@
                 }, 
                 'ready' : function(){
                     app.modified = false;
+					
+					// ///////////////////////////////////////////////////
+					// Visualizing metadata tab and layers at startup 
+					// ///////////////////////////////////////////////////
+					var addLayer = app.tools["addlayer"];
+					
+					if(addLayer){							
+						if(useCookies || content.data){
+							var layersList;
+							
+							if(content.data){
+								layersList = content.data;
+							}else if(useCookies){
+								var opener = window.opener;
+								var cookie = opener.document.cookie;
+								
+								var cookies = cookie.split(";");
+								var layersList;
+								for(var i=0; i<cookies.length; i++){
+									if(cookies[i].indexOf(useCookies) != -1){
+										layersList = cookies[i].split("=")[1];
+									}
+								}
+							}
+								
+							if(layersList){
+								var layers = layersList.split("#");
+								var resources = [];
+								
+								for(var i=0; i<layers.length; i++){
+									var keys = layers[i];
+									
+									keys = unescape(keys);
+									keys = Ext.util.JSON.decode(keys);
+									
+									var lname = keys.layer;
+									var lwms = decodeURIComponent(keys.wms);
+									var pname = keys.pname;
+									var format = keys.format;
+									
+									resources.push({
+										msLayerTitle: lname,
+										msLayerName: lname,
+										msGroupName: pname,
+										wmsURL: lwms,
+										format: format
+									});
+								}
+								
+								addMSLayer(resources);
+							}
+						}else if(layName && wmsurl){
+							var title = layTitle ? layTitle : layName;
+
+							addMSLayer([{
+								msLayerTitle: unescape(title),
+								msLayerName: unescape(layName),
+								msGroupName: undefined, // TODO: not supported yet
+								wmsURL: wmsurl,
+								format: urlformat
+							}]);
+						}
+					}else{
+						Ext.Msg.show({
+							 title: "Add Layer",
+							 msg: "AddLayer plugin missing in configuration!",
+							 width: 300,
+							 icon: Ext.MessageBox.ALERT
+						});  
+					}
+						
+				    if(bbox){
+						app.mapPanel.map.zoomToExtent(bbox, true);
+					}
                 }
             });
+			
+		   /**
+			* Add a WMS layer from GeoNetwork 
+			*
+			* TODO: Check the API using a MapServer URL as wmsURL.
+			*/
+			addMSLayer = function(resources){
+				var addLayer = app.tools["addlayer"];
+				
+				addLayer.addLayer(
+					resources
+				);
+			};
 	    };
 
-	    Ext.Ajax.request({
-			  url: customConfigName ? "config/" + customConfigName + ".js"  : "config/mapStoreConfig.js",
-			  method: 'GET',
-			  success: function(response, opts){          
-				  
-				  try{
-					  serverConfig = Ext.util.JSON.decode(response.responseText);
-				  }catch(e){
-					  Ext.Msg.show({
-							title: "Startup",
-							msg: "An error occurred while parsing the external configuration: " + response.status,
-							buttons: Ext.Msg.OK,
-							icon: Ext.MessageBox.ERROR
-					  });
-				  }
-				  
-				  if(serverConfig){
-					  proxy = location.host.indexOf('localhost:8081') != -1 ? "/proxy/?url=" : serverConfig.proxy; 
+	    // geostore base
+	    if(!serverConfig){
+	    	serverConfig = {};
+	    }
+		
+        serverConfig = Ext.applyIf(serverConfig, localConfig);
+		serverConfig.geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');
 
-					  // ///////////////////////////////////////////////  
-					  // Run the application when browser is ready
-					  // ///////////////////////////////////////////////
-					  Ext.onReady(onReady);
-				  }
-			  },
-			  failure:  function(response, opts){
-				  Ext.Msg.show({
-						title: "Startup",
-						msg: "An error occurred while getting the external configuration: " + response.status,
-						buttons: Ext.Msg.OK,
-						icon: Ext.MessageBox.ERROR
-				  });
-		      }
-	    });        
+		var configuration = customConfigName ? customConfigName : "mapStoreConfig";
+		
+		// use GeoExplorerLoader to load configuration files
+		var loader = new GeoExplorerLoader(serverConfig, configuration, mapStoreDebug, mapIdentifier, 
+			authorization, fullScreen, templateId);
+		
+		loader.on("configfinished", function (config){
+              //apply the loaded configuration.
+              serverConfig = Ext.applyIf(serverConfig, config);
+              proxy = mapStoreDebug === true ? "/proxy/?url=" : serverConfig.proxy;
+			  
+              //ready to create GeoExplorer
+              Ext.onReady(onReady);
+		});
     </script>
+
+	<div style="visibility:hidden"><canvas id="printcanvas" /></div>

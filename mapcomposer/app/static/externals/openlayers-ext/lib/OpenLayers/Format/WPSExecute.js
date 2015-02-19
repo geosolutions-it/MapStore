@@ -5,9 +5,9 @@
 
 /**
  * requires OpenLayers/Format/XML.js
- * requires OpenLayers/Format/OWSCommon/v1_1_0_ext.js
+ * requires OpenLayers/Format/OWSCommon/v1_1_0.js
  * requires OpenLayers/Format/WCSGetCoverage.js
- * requires OpenLayers/Format/WFST/v1_1_0_ext.js
+ * requires OpenLayers/Format/WFST/v1_1_0.js
  */
 
 /**
@@ -99,7 +99,12 @@ OpenLayers.Format.WPSExecute = OpenLayers.Class(OpenLayers.Format.XML,
                                 node, this.namespaces.xsi,
                                 "xsi:schemaLocation", this.schemaLocation
                                 );
-                            return OpenLayers.Format.XML.prototype.write.apply(this, [node]);
+                            var xml = OpenLayers.Format.XML.prototype.write.apply(this, [node]);
+							// workaround for Chrome bug
+							if(xml.indexOf('xmlns:xlink') === -1) {
+								xml = xml.substring(0,13) + 'xmlns:xlink="http://www.w3.org/1999/xlink" '+ xml.substring(13);
+							}
+							return xml;
                         }, 
                         
                         
@@ -334,9 +339,9 @@ OpenLayers.Format.WPSExecute = OpenLayers.Class(OpenLayers.Format.XML,
                                 }
                             },
                             "wcs": OpenLayers.Format.WCSGetCoverage.prototype.writers.wcs,
-                            "wfs": OpenLayers.Format.WFST.v1_1_0_ext.prototype.writers.wfs,
+                            "wfs": OpenLayers.Format.WFST.v1_1_0.prototype.writers.wfs,
                             "ogc": OpenLayers.Format.Filter.v1_1_0.prototype.writers.ogc,
-                            "ows": OpenLayers.Format.OWSCommon.v1_1_0_ext.prototype.writers.ows
+                            "ows": OpenLayers.Format.OWSCommon.v1_1_0.prototype.writers.ows
                         },
 
                         /**
@@ -422,7 +427,6 @@ OpenLayers.Format.WPSExecute = OpenLayers.Class(OpenLayers.Format.XML,
                                         encoding: node.getAttribute("encoding"),
                                         value: ""
                                     };
-                service
                                     // try to get *some* value, ignore the empty text values
                                     if (this.isSimpleContent(node)) {
                                         var child;
@@ -453,7 +457,7 @@ OpenLayers.Format.WPSExecute = OpenLayers.Class(OpenLayers.Format.XML,
                             },
 
                             // TODO: we should add Exception parsing here
-                            "ows": OpenLayers.Format.OWSCommon.v1_1_0_ext.prototype.readers["ows"]
+                            "ows": OpenLayers.Format.OWSCommon.v1_1_0.prototype.readers["ows"]
                         },
     
                         CLASS_NAME: "OpenLayers.Format.WPSExecute" 

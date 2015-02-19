@@ -101,12 +101,53 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 	useTabPanel: false,
     
     noDataMsg: "No data returned from the server",
+    /** api: config[regex]
+     *  ``regex``
+     *  Use a regex to filter if some result is returned in html response.
+     */
+    regex:"\\s*$",
+
+    /** api: config[format]
+     *  ``String``
+     *  Format to show feature info ('grid' | 'html'). Default it's 'html'.
+     */
+    format: "html",
+     /** api: config[maxFeatures]
+     *  ``Integer``
+     *  The max number of results to show. It is used as attribute 'feature_count' of the WMS GetFeatureInfo Request
+     *  By default is 10.
+     */
+    maxFeatures: 10,
+
+    /** api: config[defaultGroupTitleText]
+     *  ``String``
+     *  Default feature title in 'grid' showing. Layer name replaces '{0}' and index in tue request replaces '{1}'.
+     */
+    defaultGroupTitleText: "{0} [{1}]",
     
+    /** private: config[lastMapSize]
+     *  ``OpenLayers.Size``
+     *  Last known map size. See this.handlePopupPosition
+     */
+    lastMapSize: null,
+
     /** api: config[vendorParams]
      *  ``Object``
      *  Optional object with properties to be serialized as vendor specific
      *  parameters in the requests (e.g. {buffer: 10}).
      */
+     
+    /** api: config[infoPanelId]
+     *  ``string``
+     *  Optional id of panel to show the getFeatureInfo instead of popup
+     */
+     infoPanelId: null,
+     
+    /** api: config[disableAfterClick]
+     *  ``Boolean``
+     *  
+     */
+     disableAfterClick: false,
      
     /** api: method[addActions]
      */
@@ -212,20 +253,36 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             info.controls = [];
             var started = false;
             var atLeastOneResponse = false;
+            // click position, in lat/lon coordinates (issue #422)
+            var startLatLon = null;
 			this.masking = false;
 			
             queryableLayers.each(function(x){                
                 var l = x.getLayer();
+				
+				var vendorParams = {};
+		    	Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
+				if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
+					vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
+				}
+
+				// Obtain info format
+            	var infoFormat = this.getInfoFormat(x);
+				
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
                     url: l.url,
                     queryVisible: true,
                     layers: [x.getLayer()],
-                    vendorParams: x.getLayer().vendorParams || this.vendorParams,
+                    infoFormat: infoFormat,
+                    maxFeatures:this.maxFeatures,
+                    vendorParams: vendorParams,
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
 							//first getFeatureInfo in chain
 							if(!started){
 								started= true;
+								// Issue #422
+								startLatLon = this.target.mapPanel.map.getLonLatFromPixel(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
 								atLeastOneResponse=false;
 								layersToQuery=queryableLayers.length;
 							}
@@ -241,24 +298,36 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 							if(layersToQuery === 0) {
 								this.unmask();
 								started=false;
+                                
+                                if(this.disableAfterClick)
+                                    this.button.toggle();                                
 								
+                                // pan to bring popup into view (issue #422)
+                                if (startLatLon) {
+                                	var popup = this.popupCache[startLatLon.toString()];
+                                    if (popup) {
+                                    	// not too pretty, I'm calling a private method... any better idea?
+                                    	popup.panIntoView();
+                                    }
+                                }                                
 							}
-							
-							// ////////////////////////////////////////////////////
-							// This function assume that teh body is empty in order 
-							// to return noDataMsg (no features)
-							// ////////////////////////////////////////////////////
-                            var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
-                            if (match && !match[1].match(/^\s*$/)) {
+
+                            var title = x.get("title") || x.get("name");
+                            if (infoFormat == "text/html") {
+                                var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
+                                if (match && match[1].match(this.regex)) {
+                                    !this.infoPanelId ? this.displayPopup(evt, title, match[1]) : this.displayInfoInPanel(evt, title, match[1], this.infoPanelId);
+                                    atLeastOneResponse = true;
+                                }
+                            } else if (infoFormat == "text/plain") {
+                                !this.infoPanelId ? this.displayPopup(evt, title, '<pre>' + evt.text + '</pre>') : this.displayInfoInPanel(evt, title, '<pre>' + evt.text + '</pre>', this.infoPanelId);
                                 atLeastOneResponse = true;
-                                this.displayPopup(
-                                    evt, x.get("title") || x.get("name"), match[1], function() {
-										/*layersToQuery=0;
-										this.unmask();*/
-									}, this
-                                );
+                            } else if (evt.features && evt.features.length > 0) {
+                                !this.infoPanelId ? this.displayPopup(evt, title, null, null, null, evt.features) : this.displayInfoInPanel(evt, title, null, this.infoPanelId, evt.features);
+                                atLeastOneResponse = true;
                             // no response at all
                             } else if(layersToQuery === 0 && !atLeastOneResponse) {
+                                this.closePopups();
                                 Ext.Msg.show({
                                     title: this.popupTitle,
                                     msg: this.noDataMsg,
@@ -292,6 +361,19 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
         this.target.mapPanel.layers.on("update", updateInfoEvent, this);
         this.target.mapPanel.layers.on("add", updateInfoEvent, this);
         this.target.mapPanel.layers.on("remove", updateInfoEvent, this);
+
+        // Issue #178: add click callback for each item
+        this.button.on({
+            click: this.closePopups,
+            scope:this
+        });
+        Ext.each(this.button.menu.items.keys, function(key){
+            var item = this.button.menu.items.get(key);
+            item.on({
+                click: this.closePopups,
+                scope:this
+            });
+        }, this);
         
         return actions;
     },
@@ -302,16 +384,34 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 			this.masking = false;
 		}
 	},
+    
+    /** private: method[closePopups]
+     *  Clear all popups openned. Fixes issue #178.
+     */
+    closePopups: function(){
+        if(!this.infoPanelId){
+            if(this.closePrevious){
+                for(var key in this.popupCache) {
+                    if(this.popupCache.hasOwnProperty(key)) {
+                        this.popupCache[key].close();
+                        delete this.popupCache[key];
+                    }
+                }
+            }
+        }
+    },
 	
 	/** private: method[removeAllPopups] removes all open popups
      */
     removeAllPopups: function(evt, title, text) {
-		for(var key in this.popupCache) {
-			if(this.popupCache.hasOwnProperty(key)) {
-				this.popupCache[key].close();
-				delete this.popupCache[key];
-			}
-		}
+        if(!this.infoPanelId){
+            for(var key in this.popupCache) {
+                if(this.popupCache.hasOwnProperty(key)) {
+                    this.popupCache[key].close();
+                    delete this.popupCache[key];
+                }
+            }
+        }
 	},
 	
     /** private: method[displayPopup]
@@ -320,23 +420,16 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      * :arg title: a String to use for the title of the results section 
      *     reporting the info to the user
      * :arg text: ``String`` Body text.
+     * :arg features: ``Array`` With features.
      */
-    displayPopup: function(evt, title, text, onClose, scope) {
+    displayPopup: function(evt, title, text, onClose, scope, features) {
         var popup;
-        var popupKey = evt.xy.x + "." + evt.xy.y;
-						
-		var item = this.useTabPanel ? {
-			title: title,										
-			html: text,
-			autoScroll: true
-		} : {
-            title: title,			
-            layout: "fit",			
-            html: text,
-            autoScroll: true,
-            autoWidth: true,
-            collapsible: true
-        };
+        // Issue #91: Change pupupKey to lat/lon
+        var pixel = new OpenLayers.Pixel(evt.xy.x, evt.xy.y);
+        var latLon = this.target.mapPanel.map.getLonLatFromPixel(pixel);
+        var popupKey = latLon.toString();
+        
+        var item = this.getPopupItem(text, title, features);
 						
         if (!(popupKey in this.popupCache)) {
 			if(this.closePrevious) {
@@ -344,35 +437,13 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 			}
 			var items = this.useTabPanel ? [{
 				xtype: 'tabpanel',
+                enableTabScroll:true,
 				activeTab: 0,
 				items: [item]
 			}] : [item];
+
+            popup = this.cachePopup(latLon, items, popupKey, onClose);
 			
-            popup = this.addOutput({
-                xtype: "gx_popup",
-                title: this.popupTitle,
-                layout: this.useTabPanel ? "fit" : "accordion",
-                location: evt.xy,
-                map: this.target.mapPanel,
-                width: 490,
-                height: 320,
-                /*anchored: true,
-                unpinnable : true,*/
-				items: items,
-                draggable: true,
-                listeners: {
-                    close: (function(key) {
-                        return function(panel){
-							if(onClose) {
-								onClose.call(scope);
-							}
-                            delete this.popupCache[key];
-                        };
-                    })(popupKey),
-                    scope: this
-                }
-            });
-            this.popupCache[popupKey] = popup;
         } else {
             popup = this.popupCache[popupKey];
 			
@@ -381,6 +452,186 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
         }
 		        
         popup.doLayout();
+    },
+    
+    /** private: method[displayInfoInPanel]
+     * :arg evt: the event object from a 
+     *     :class:`OpenLayers.Control.GetFeatureInfo` control
+     * :arg title: a String to use for the title of the results section 
+     *     reporting the info to the user
+     * :arg text: ``String`` Body text.
+     * :arg infoPanel: ``String`` id of panel where show the getFeatureInfo.
+     */
+    displayInfoInPanel: function(evt, title, text, infoPanel, features) {
+    
+        var infoPanel = Ext.getCmp(infoPanel);
+        var infoPanelItems;
+        var popupKey = evt.xy.x + "." + evt.xy.y;
+
+        var item = this.getPopupItem(text, title, features);
+
+        if (!(popupKey in this.popupCache)) {
+            var items = this.useTabPanel ? [{
+                xtype: 'tabpanel',
+                enableTabScroll: true,
+                activeTab: 0,
+                items: [item]
+            }] : [item];
+
+            infoPanelItems = this.addOutput({
+                xtype: "panel",
+                border: false,
+                id: "infoPanelItemsId",
+                region: "north",
+                layout: this.useTabPanel ? "fit" : "accordion",
+                items: items,
+                split:true,
+                header: false
+            });
+
+            infoPanel.add(infoPanelItems);
+            this.popupCache[popupKey] = infoPanelItems;
+
+        }else{
+
+            infoPanelItems = this.popupCache[popupKey];
+            var container = this.useTabPanel ? infoPanelItems.items.first() : infoPanelItems;
+            container.add(item);
+
+        }
+
+        infoPanel.expand(true);
+        infoPanel.doLayout(false, true);
+
+    },
+
+    /** private: method[cachePopup]
+     *  Create and return a popup with depault parameters
+     * :arg latLon: position of the popup in
+     *     :class:`OpenLayers.LonLat` format
+     * :arg items: ``Array`` Of items to be shown in the popup.
+     * :arg popupKey: ``String`` Key to save the popup on popup cache.
+     * :arg onClose: ``Function`` Callback to be called on popup close.
+     */
+    cachePopup: function(latLon, items, popupKey, onClose){
+        var popup = this.addOutput({
+            xtype: "gx_popup",
+            title: this.popupTitle,
+            layout: this.useTabPanel ? "fit" : "accordion",
+            location: latLon,
+            map: this.target.mapPanel,
+            width: 490,
+            height: 320,
+            /*anchored: true,
+            unpinnable : true,*/
+            items: items,
+            draggable: true,
+            panIn: false, // Issue #422
+            listeners: {
+                close: (function(key) {
+                    return function(panel){
+                        if(onClose) {
+                            onClose.call(scope);
+                        }
+                        delete this.popupCache[key];
+                    };
+                })(popupKey),
+                scope: this
+            }
+        });
+
+        this.handlePopupPosition(popup, latLon, items, onClose, this);
+
+        this.popupCache[popupKey] = popup;
+        return popup;
+    },
+
+    /** private: method[handlePopupPosition]
+     * :arg popup: the popup to be handled
+     *     :class:`GeoExt.Popup`
+     * :arg latLon: position of the popup in
+     *     :class:`OpenLayers.LonLat` format
+     * :arg items: ``Array`` Of items to be shown in the popup.
+     * :arg onClose: ``Function`` Callback to be called on popup close.
+     * :arg scope: ``Object`` with all parameters needed to call this method on 'aftermapmove' OpenLayers callback.
+     */
+    handlePopupPosition: function(popup, latLon, items, onClose, scope){
+        // Issue #91: Set popup location on map resize
+        if(scope){ 
+            // First execution, add 'aftermapmove' listener
+            scope.target.mapPanel.on({
+                aftermapmove : scope.handlePopupPosition,   
+                scope: {
+                    popup: popup,
+                    latLon: latLon,
+                    items: items,
+                    onClose: onClose,
+                    scope: scope
+                }
+            });
+            // and save last position
+            scope.lastMapSize = scope.target.mapPanel.map.size;
+        }else{
+            // Map is moved and this function is a callback 'aftermapmove'
+            var scope = {
+                popup: this.popup,
+                latLon: this.latLon,
+                items: this.items,
+                onClose: this.onClose,
+                scope: this.scope
+            };
+            var mapHasBeenResized = (scope.scope.lastMapSize.w != scope.scope.target.mapPanel.map.size.w) 
+                || (scope.scope.lastMapSize.h != scope.scope.target.mapPanel.map.size.h);
+            if(scope.popup.isVisible() && mapHasBeenResized){
+                // The location of the popup is corrupt. Whe need destroy it and sava a new one
+                var popupKey = scope.latLon.toString();
+                var popup = scope.scope.cachePopup(scope.latLon, scope.items, popupKey, scope.onClose);
+                scope.popup.destroy();
+                scope.scope.popupCache[popupKey] = popup;
+                scope.scope.handlePopupPosition(popup, scope.latLon, scope.items, scope.onClose, scope.scope);
+                // and save last position
+                scope.scope.lastMapSize = scope.scope.target.mapPanel.map.size;
+            }
+        }
+    },
+	
+    /** private: method[getPopupItem]
+     * :arg text: ``String`` Body text.
+     * :arg title: a String to use for the title of the results section 
+     *     reporting the info to the user
+     * :arg features: ``Array`` With features.
+     */
+    getPopupItem:function(text, title, features){
+    	var item;
+    	if(features){
+	    	 item = this.useTabPanel ? {
+	            title: title,     
+	            layout: "accordion",
+	            items: this.obtainFeatureInfoFromData(text, features, title),
+	            autoScroll: true
+	        } : {
+	            title: title,           
+	            layout: "accordion",  
+	            items: this.obtainFeatureInfoFromData(text, features, title),
+	            autoScroll: true,
+	            autoWidth: true,
+	            collapsible: true
+	        };
+	    }else{
+	    	item = this.useTabPanel ? {
+				title: title,										
+				html: text,
+				autoScroll: true
+			} : {
+	            title: title,			
+	            layout: "fit",			
+	            html: text,
+	            autoScroll: true,
+	            autoWidth: true,
+	            collapsible: true
+	        };
+	    }
+	    return item;
     },
 	
 	/** private: method[toggleActiveControl] 
@@ -408,68 +659,169 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 			sm.un('selectionchange',this.changeSelected,this);
 		}
 	},
-	/** private: method[activateActiveControl] 
-	 *  activate the active control. called on tool activation
-	 *  if a layer is selected, or on selectionchangeEvent
+    /** private: method[activateActiveControl] 
+     *  activate the active control. called on tool activation
+     *  if a layer is selected, or on selectionchangeEvent
      */
-	activateActiveControl: function(layer,title){
-		this.cleanActiveControl();
-		var tooltip;
-		var cleanup = function() {
-			if (tooltip) {
-				tooltip.destroy();
-			}  
-		};
-		
-		var control = new OpenLayers.Control.WMSGetFeatureInfo({
-		
-			title: 'Identify features by clicking',
-			layers: [layer],
-			hover: true,
-			queryVisible: true,
-			handlerOptions:{	
-				hover: {delay: 200,pixelTolerance:2}
-			},
-			eventListeners:{
-				scope:this,
-				
-				getfeatureinfo:function(evt){
-					cleanup();
-					// ////////////////////////////////////////////////////
-					// This function assume that teh body is empty in order 
-					// to return noDataMsg (no features)
-					// ////////////////////////////////////////////////////
-					var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
-					if (match && !match[1].match(/^\s*$/)) {
-						tooltip = new GeoExt.Popup({
-							
-							map: this.target.mapPanel,
-							panIn:true,
-							title: title || this.popupTitle,
-							width:490,
-							height:320,
-							autoScroll:false,
-							layout:'fit',
-							location:evt.xy,
-							resizable:true,
-							items:{xtype:'panel',autoScroll:true,html:'<div style="padding:5px">'+match[1]+'</div>'},
-							closable: true,
-							draggable: false,
-							listeners: {hide: cleanup}
-						});
-						
-						tooltip.show();
-					}
-					
+    activateActiveControl: function(layer, title){
+        this.cleanActiveControl();
+        var tooltip;
+        var cleanup = function() {
+            if (tooltip) {
+                tooltip.destroy();
+            }
+        };
+        
+        var vendorParams = {};
+        Ext.apply(vendorParams, layer.vendorParams || this.vendorParams || {});
+        if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
+            vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
+        }
 
-				},deactivate: cleanup
-			}
-		});
-		this.target.mapPanel.map.addControl(control);
-		this.activeControl=control;
-		control.activate();
-		
-	},
+        var selectedLayer = this.target.mapPanel.layers.queryBy(function(x){
+            return (layer.id == x.getLayer().id) && x.get("queryable") ;
+        });
+
+        selectedLayer.each(function(x){      
+
+			// Obtain info format
+        	var infoFormat = this.getInfoFormat(x);
+                    
+            var control = new OpenLayers.Control.WMSGetFeatureInfo({
+                title: 'Identify features by clicking',
+                layers: [layer],
+                infoFormat: infoFormat,
+                maxFeatures:this.maxFeatures,
+                vendorParams: vendorParams,
+                hover: true,
+                queryVisible: true,
+                handlerOptions:{    
+                    hover: {delay: 200,pixelTolerance:2}
+                },
+                eventListeners:{
+                    scope:this,
+
+                    getfeatureinfo:function(evt){
+                        cleanup();
+                        
+                        var disableAfterClick = this.disableAfterClick;
+                        var button = this.button;
+                        
+                        setTimeout(function(){
+                            if(disableAfterClick)
+                                button.toggle();
+                        }, 300);
+
+                        // Issue #91
+                        var title = x.get("title") || x.get("name");
+                        if (infoFormat == "text/html") {
+                            var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
+                            if (match && !match[1].match(/^\s*$/)) {
+                                !this.infoPanelId ? this.displayPopup(evt, title, match[1]) : this.displayInfoInPanel(evt, title, match[1], this.infoPanelId);
+                            }
+                        } else if (infoFormat == "text/plain") {
+                            !this.infoPanelId ? this.displayPopup(evt, title, '<pre>' + evt.text + '</pre>') : this.displayInfoInPanel(evt, title, '<pre>' + evt.text + '</pre>', this.infoPanelId);
+                        } else if (evt.features && evt.features.length > 0) {
+                            !this.infoPanelId ? this.displayPopup(evt, title, null, null, null, evt.features) : this.displayInfoInPanel(evt, title, null, this.infoPanelId, evt.features);
+                        } 
+                    },deactivate: cleanup
+                }
+            });
+            this.target.mapPanel.map.addControl(control);
+            this.activeControl=control;
+            control.activate();
+        }, this);
+        
+    },   
+
+    getInfoFormat: function(layer){
+
+    	var infoFormat;
+    	if(layer){
+    		infoFormat = layer.get("infoFormat");
+    	}
+        if (infoFormat === undefined) {
+            infoFormat = (this.format == "grid") ? "application/vnd.ogc.gml" : "text/html";
+        }
+        return infoFormat;
+    },
+    /** private: method[clearPopups]
+     *  Clear last popup openned. Fixes issue #178.
+     */
+    clearPopups: function(){
+        if(this._lastPopup){
+            this._lastPopup.hide();
+        }
+    },   
+    /** private: method[obtainFeatureInfoFromData]
+     *  Obtain feature info panel by layer
+     * :arg text: ``String`` Body text.
+     * :arg features: ``Array`` With features.
+     * :arg parentTitle: ``String`` Title of parent tab.
+     */
+    obtainFeatureInfoFromData: function(text, features, parentTitle) {
+
+        var featureGrids = [];
+
+        if (features) {
+            var index = 0;
+            Ext.each(features,function(feature) {
+                featureGrids.push(this.obtainFeatureGrid(feature, String.format(this.defaultGroupTitleText, parentTitle, index++)));
+            }, this);
+        }else {
+            featureGrids.push(this.obtainFromText(text));
+        }
+
+        return featureGrids;
+    },   
+    /** private: method[obtainFeatureGrid]
+     *  Obtain feature grid
+     * :arg feature: ``Object`` Feature data.
+     * :arg title: ``String`` Title for the grid.
+     */
+    obtainFeatureGrid: function(feature, title){
+
+        var fields = [];
+
+        Ext.iterate(feature.data,function(fieldName,fieldValue) {
+            // We add the field.
+            fields.push(fieldName);
+        });
+
+        var featureGridConfig = {
+            xtype: 'gxp_editorgrid',
+            readOnly: true,
+            title: title,
+            fields: fields,
+            feature: feature,
+            layout: {
+                type: 'vbox',
+                align: 'stretch',
+                pack: 'start'
+            },
+            listeners: {
+                'beforeedit': function(e) {
+                    return false;
+                }
+            }
+        };
+
+        return featureGridConfig;
+    },
+    /** private: method[obtainFromText]
+     *  Obtain a simple panel with text.
+     * :arg text: ``String`` Body text.
+     */
+    obtainFromText: function(text) {
+        return {
+            xtype: 'panel',
+            layout: 'fit',
+            items: {
+                xtype: 'label',
+                text: text ? text : this.noDataMsg
+            }
+        };
+    },
 	/**
 	 * private:[changeSelected]
 	 * method called on selection change. Is defined out the space

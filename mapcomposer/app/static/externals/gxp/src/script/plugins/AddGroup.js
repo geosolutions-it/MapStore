@@ -20,6 +20,7 @@
 
 /**
  * @requires plugins/Tool.js
+ * @requires widgets/tree/LayerNodeUI.js
  */
 
 /** api: (define)
@@ -36,6 +37,8 @@ Ext.namespace("gxp.plugins");
  *  .. class:: AddGroup(config)
  *
  *    Plugin for adding a new group on layer tree.
+ *
+ *  Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
  */
 gxp.plugins.AddGroup = Ext.extend(gxp.plugins.Tool, {
     
@@ -137,7 +140,7 @@ gxp.plugins.AddGroup = Ext.extend(gxp.plugins.Tool, {
                                     if(textField.isDirty() && textField.isValid()){
                                         var group = textField.getValue();
                                         
-                                        var LayerNodeUI = Ext.extend(GeoExt.tree.LayerNodeUI,
+                                        var LayerNodeUI = Ext.extend(gxp.tree.LayerNodeUI,
                                             new GeoExt.tree.TreeNodeUIEventMixin());
                                     
                                         var locIndex= tree.localIndexs[GeoExt.Lang.locale];

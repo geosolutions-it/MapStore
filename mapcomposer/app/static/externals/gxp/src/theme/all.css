@@ -1,9 +1,53 @@
+/* this is a hack! In order to show always the Message box on top (to use it define a cls: 'msg_floating' to the 'Ext.Msg.show' statement)*/
+.msg_floating {
+    position: absolute !important;
+    z-index: 1000000 !important;
+}
+
 .x-tree-node-leaf  .gx-tree-layer-icon {
     background-image: url(img/geosilk/vector.png);
 }
 
 .x-tree-node-leaf  .gxp-tree-rasterlayer-icon {
     background-image: url(img/silk/map.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-icon {
+    background-image: url(img/accept.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-icon-error {
+    background-image: url(img/decline.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-icon-layer-disabled {
+    background-image: url(img/silk/exclamation.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-icon-add {
+    background-image: url(img/silk/add.png);
+}
+
+.x-tree-node-leaf  .gx-tree-resource-folder-icon{
+	background-image: url(img/silk/folder.png);
+}
+
+.x-tree-node .service_error a span{
+	color: #ABAAA7;
+	font-style: italic;
+}
+
+.tree-icon-collapse-all {
+	background-image:url(img/collapse-all.gif) !important;
+}
+
+.tree-icon-expand-all {
+	background-image:url(img/expand-all.gif) !important;
+}
+
+/*gxp_advancedsnappingagent*/
+.snapping-button{
+    background-image: url(img/magnet.png) !important;
 }
 
 /* position the zoom slider within map panel */
@@ -26,60 +70,12 @@
     background-image: url(img/silk/shape_square.png) !important;
 }
 
-
-/* Pan- and Zoom- Panel Styles*/
-
-.olControlPanPanel div {
-    background-image:url(../../../../externals/ext/resources/images/gray/panel/tool-sprites.gif);
-    height:15px;
-    width:15px;
-    /* workaround for button height in IE */
-    font-size:0px;
+.execution-cls{
+	background-image: url(img/silk/add.png) !important;
 }
 
-.olControlPanPanel .olControlPanNorthItemInactive {
-    background-position:15px -60px;
-    left:16px
-}
-.olControlPanPanel .olControlPanEastItemInactive {
-    background-position:15px -120px;
-    left: 30px;
-    top: 16px;
-}
-.olControlPanPanel .olControlPanSouthItemInactive {
-    background-position:15px -75px;
-    left: 16px;
-    top: 32px;
-}
-.olControlPanPanel .olControlPanWestItemInactive {
-    background-position:15px -105px;
-    left: 2px;
-    top: 16px;
-}
-
-.olControlZoomPanel {
-    left:21px;
-}
-
-.olControlZoomPanel div {
-    background-image:url(../../../../externals/ext/resources/images/gray/panel/tool-sprites.gif);
-    height:15px;
-    width:15px;
-    /* workaround for button height in IE */
-    font-size:0px;
-}
-
-.olControlZoomPanel .olControlZoomInItemInactive {
-    background-position:15px -240px;
-}
-
-.olControlZoomPanel .olControlZoomToMaxExtentItemInactive {
-    display: none;
-}
-
-.olControlZoomPanel .olControlZoomOutItemInactive {
-    background-position:15px -255px;
-    top: 123px;
+.execution-cls-delete{
+	background-image: url(img/geosilk/erase.png) !important;
 }
 
 .x-btn .add {
@@ -154,6 +150,11 @@
     background-image: url(img/silk/printer.png);
 }
 
+/* gxp_print_snapshot */
+.x-btn .gxp-icon-printsnapshot, .x-menu-item .gxp-icon-printsnapshot, .x-tree-node .gxp-icon-printsnapshot {
+    background-image: url(img/silk/camera.png);
+}
+
 /* gxp_wmsgetfeatureinfo */
 .x-btn .gxp-icon-getfeatureinfo, .x-menu-item .gxp-icon-getfeatureinfo, .x-tree-node .gxp-icon-getfeatureinfo {
    background-image: url(img/silk/information.png) !important;
@@ -161,7 +162,7 @@
 
 /* gxp_importexport */
 .x-btn .gxp-icon-importexport, .x-menu-item .gxp-icon-importexport, .x-tree-node .gxp-icon-importexport {
-    background-image: url(img/geosilk/disk.png) !important;
+    background-image: url(img/geosilk/page_white_map.png) !important;
 }
 
 /* gxp-icon-import-map */
@@ -281,6 +282,10 @@
     background-image: url(img/silk/find.png);
 }
 
+.x-btn .gxp-icon-map-filter, .x-menu-item .gxp-map-filter { 
+    background-image: url(img/silk/map_filter.png);
+}
+
 /* gxp_selectfeature */
 .x-btn .gxp-icon-selectfeature, .x-menu-item .gxp-icon-selectfeature { 
     background-image: url(img/silk/cursor.png);
@@ -392,4 +397,124 @@ div.map-overlay div.overlay-element {
     bottom: 0px;
     left: 0px;
     margin-top: 0px;
+}
+
+.gxp-icon-addtomap{
+	background-image: url(img/geosilk/vector_add.png) !important;
+}
+
+/* gxp_playback */
+div.olMap div.gx-overlay-playback {
+    position: absolute;
+    z-index: 1000;
+    top: 22px;
+    left: 80px;
+}
+.gx-overlay-playback.x-toolbar {
+    background: none;
+    border: none;
+}
+.gx-overlay-playback .x-btn{
+    width:16px !important;height:16px !important;
+    background-repeat: no-repeat;
+}
+
+/** gx_playbacktoolbar**/
+.x-btn .gxp-icon-reset{
+    background-image:url('img/time/control_start_blue.png')
+}
+.x-btn .gxp-icon-back{
+    background-image:url('img/time/control_start_blue.png')
+}
+.x-btn .gxp-icon-currenttime{
+    background-image:url('img/time/time.png')
+}
+.x-btn .gxp-icon-settings{
+    background-image:url('img/time/control_equalizer_blue.png')
+}
+.x-btn .gxp-icon-next{
+    background-image:url('img/time/control_end_blue.png')
+}
+.x-btn .gxp-icon-last{
+    background-image:url('img/time/control_end_blue.png')
+}
+.x-btn .gxp-icon-play{
+    background-image:url('img/time/control_play_blue.png')
+}
+.x-btn .gxp-icon-pause{
+    background-image:url('img/time/control_pause_blue.png')
+}
+.x-btn .gxp-icon-stop{
+    background-image:url('img/time/control_stop_blue.png')
+}
+.x-btn .gxp-icon-loop{
+    background-image:url('img/time/control_repeat_blue.png')
+}
+.x-btn .gxp-icon-ffwd{
+    background-image:url('img/time/control_fastforward_blue.png')
+}
+.x-btn-over .gxp-icon-reset{
+    background-image:url('img/time/control_start.png')
+}
+.x-btn-over .gxp-icon-settings{
+    background-image:url('img/time/control_equalizer.png')
+}
+.x-btn-over .gxp-icon-next{
+    background-image:url('img/time/control_end_blue.png')
+}
+.x-btn-over .gxp-icon-last{
+    background-image:url('img/time/control_end.png')
+}
+.x-btn-over .gxp-icon-play{
+    background-image:url('img/time/control_play.png')
+}
+.x-btn-over .gxp-icon-pause{
+    background-image:url('img/time/control_pause.png')
+}
+.x-btn-over .gxp-icon-stop{
+    background-image:url('img/time/control_stop.png')
+}
+.x-btn-over .gxp-icon-loop{
+    background-image:url('img/time/control_repeat.png')
+}
+.x-btn-over .gxp-icon-ffwd,.x-item-disabled .gxp-icon-ffwd{
+    background-image:url('img/time/control_fastforward.png')
+}
+
+.gx_timeslider div.x-slider-thumb{
+    background-position:1;
+    cursor: pointer;
+}
+.gx_timeslider div.x-slider-min-thumb{
+    background-image:url('img/time/resultset_next.png');
+}
+.gx_timeslider div.x-slider-max-thumb{
+    background-image:url('img/time/resultset_previous.png');
+}
+.gx_timeslider div.x-slider-tail-thumb{
+    background-image:url('img/time/stop.png');
+    background-position:0;
+    width: 14px;
+    height: 14px;
+    top: 4px;
+    left:-14px;
+}
+
+/* csv_export */
+.x-btn .gxp-icon-csvexport, .x-menu-item .gxp-icon-csvexport {
+    background-image: url(img/geosilk/disk.png) !important;
+}
+
+.x-btn .gxp-icon-csvexport-single, .x-menu-item .gxp-icon-csvexport-single {
+    background-image: url(img/silk/table.png) !important;
+}
+
+.x-btn .gxp-icon-csvexport-multiple, .x-menu-item .gxp-icon-csvexport-multiple {
+    background-image: url(img/silk/table_multiple.png) !important;
+}
+
+.x-action-col-cell  .zoomaction{
+	background-image: url(img/silk/magnifier.png) !important;
+	width:16px;
+	height:16px;
 }

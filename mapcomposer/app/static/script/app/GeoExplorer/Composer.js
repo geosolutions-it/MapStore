@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright (c) 2009-2010 The Open Planning Project
  *
  * @requires GeoExplorer.js
@@ -18,17 +18,10 @@
 GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
     // Begin i18n.
-    exportMapText: "Publish Map",
-    toolsTitle: "Choose tools to include in the toolbar:",
-    previewText: "Preview",
     backText: "Back",
     nextText: "Next",
     fullScreenText: "Full Screen",	
-
     cswFailureAddLayer: ' The layer cannot be added to the map',
-    alertEmbedTitle: "Attention",
-    alertEmbedText: "Save the map before using the 'Publish Map' tool",
-	
 	cswZoomToExtentMsg: "BBOX not available",
 	cswZoomToExtent: "CSW Zoom To Extent",
 	
@@ -47,12 +40,14 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		    config.tools = [
 		        {
 		            ptype: "gxp_layertree",
+                    id: "layertree_plugin",
 		            outputConfig: {
 		                id: "layertree"
 		            },
 		            outputTarget: "tree"
 		        }, {
 		            ptype: "gxp_legend",
+                    id: "legend_plugin",
 		            outputTarget: 'legend',
 		            outputConfig: {
 		                autoScroll: true
@@ -63,98 +58,128 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		                    style: 'padding:5px',                  
 		                    baseParams: {
 		                        LEGEND_OPTIONS: 'forceLabels:on;fontSize:10',
-		                        WIDTH: 12, HEIGHT: 12
+		                        WIDTH: 20, HEIGHT: 20
 		                    }
 		                }
 		            }
 		        }, {
 		            ptype: "gxp_addlayers",
+                    id: "addlayers_plugin",
 		            actionTarget: "tree.tbar",
-					id: "addlayers",
-		            upload: true
+					id: "addlayers"
 		        }, {
 		            ptype: "gxp_removelayer",
+                    id: "removelayer_plugin",
 		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
 		        }, {
 		            ptype: "gxp_removeoverlays",
+                    id: "removeoverlays_plugin",
 		            actionTarget: "tree.tbar"
 		        }, {
 		            ptype: "gxp_addgroup",
+                    id: "addgroup_plugin",
 		            actionTarget: "tree.tbar"
 		        }, {
 		            ptype: "gxp_removegroup",
+                    id: "removegroup_plugin",
 		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
 		        }, {
 		            ptype: "gxp_groupproperties",
+                    id: "groupproperties_plugin",
 		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
 		        }, {
 		            ptype: "gxp_layerproperties",
+                    id: "layerproperties_plugin",
 		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
 		        }, {
 		            ptype: "gxp_zoomtolayerextent",
+                    id: "zoomtolayerextent_plugin",
 		            actionTarget: {target: "layertree.contextMenu", index: 0}
 		        },{
 		            ptype:"gxp_geonetworksearch",
+                    id: "geonetworksearch_plugin",
 		            actionTarget: ["layertree.contextMenu"]
 		        }, {
 		            ptype: "gxp_zoomtoextent",
+                    id: "zoomextent_plugin",
 		            actionTarget: {target: "paneltbar", index: 15}
 		        }, {
-		            ptype: "gxp_navigation", toggleGroup: this.toggleGroup,
+		            ptype: "gxp_navigation", 
+                    id: "navigation_plugin",
+                    toggleGroup: this.toggleGroup,
 		            actionTarget: {target: "paneltbar", index: 16}
 		        }, {
-		            actions: ["-"], actionTarget: "paneltbar"
+                    id: "zoombox_separator",
+		            actions: ["-"], 
+                    actionTarget: "paneltbar"
 		        }, {
-		            ptype: "gxp_zoombox", toggleGroup: this.toggleGroup,
+		            ptype: "gxp_zoombox", 
+                    id: "zoombox_plugin",
+                    toggleGroup: this.toggleGroup,
 		            actionTarget: {target: "paneltbar", index: 17}
 		        }, {
 		            ptype: "gxp_zoom",
+                    id: "zoom_plugin",
 		            actionTarget: {target: "paneltbar", index: 18}
 		        }, {
-		            actions: ["-"], actionTarget: "paneltbar"
+                    id: "navigationhistory_separator",
+		            actions: ["-"], 
+                    actionTarget: "paneltbar"
 		        }, {
 		            ptype: "gxp_navigationhistory",
+                    id: "navigationhistory_plugin",
 		            actionTarget: {target: "paneltbar", index: 19}
 		        }, {
-		            actions: ["-"], actionTarget: "paneltbar"
+                    id: "wmsgetfeatureinfo_menu_separator",
+		            actions: ["-"], 
+                    actionTarget: "paneltbar"
 		        }, {
 		            ptype: "gxp_wmsgetfeatureinfo_menu", 
+                    id: "wmsgetfeatureinfo_plugin",
 					toggleGroup: this.toggleGroup,
 					useTabPanel: true,
 		            actionTarget: {target: "paneltbar", index: 20}
 		        }, {
-		            actions: ["-"], actionTarget: "paneltbar"
+                    id: "measure_separator",
+		            actions: ["-"], 
+                    actionTarget: "paneltbar"
 		        }, {
-		            ptype: "gxp_measure", toggleGroup: this.toggleGroup,
+		            ptype: "gxp_measure", 
+                    id: "measure_plugin",
+                    toggleGroup: this.toggleGroup,
 		            actionTarget: {target: "paneltbar", index: 21}
-		        }, {
-		            actions: ["-"], actionTarget: "paneltbar"
-		        }, {
-		            ptype: "gxp_saveDefaultContext",
-		            actionTarget: {target: "paneltbar", index: 24},
-					needsAuthorization: true
-		        }, {
-		            ptype: "gxp_googleearth",
-		            actionTarget: {target: "paneltbar", index: 25}
 		        }
 		    ];
 
+            if(config.removeTools) {
+                for(var r=0; r < config.removeTools.length; r++) {
+                    config.tools = this.removeTool(config.tools, config.removeTools[r]);
+                }
+            }
+            
 			if(config.customTools)
 			{
 				for(var c=0; c < config.customTools.length; c++)
 				{
 					var toolIsDefined = false;
-					for(var t=0; t < config.tools.length; t++)
+                    var t=0;
+					for(t=0; t < config.tools.length; t++)
 					{
 						//plugin already defined
 						if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {
-							toolIsDefined = true;
-							break;
+                            toolIsDefined = true;
+                            if(config.customTools[c].forceMultiple){
+                                config.tools.push(config.customTools[c])
+                            }else{
+                                config.tools[t]=config.customTools[c];
+                            }
+                            break;
 						}
 					}
 				
-					if(!toolIsDefined)
-						config.tools.push(config.customTools[c]);
+					if(!toolIsDefined){
+                        config.tools.push(config.customTools[c])
+                    }
 				}
 			}
 			
@@ -163,9 +188,36 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         if (config.showGraticule == true){
             config.tools.push({
                 ptype: "gxp_graticule",
+                id: "graticule_plugin",
                 actionTarget: {target: "paneltbar", index: 22}
             })
         }
+		
+		config.tools.push({
+			actions: ["-"], actionTarget: "paneltbar"
+		});
+		
+		// ////////////////////////////////////////////////////////////
+		// Check if the Save plugin already exists (for example this 
+		// could be exists in an imported configuraztion file (.map), 
+		// see the ImportExport plugin).
+		// ////////////////////////////////////////////////////////////
+		var savePlugin = false;
+		for(i=0; i<config.tools.length; i++){
+			if(config.tools[i]["ptype"] == "gxp_saveDefaultContext"){
+				var savePlugin = true;
+				break;
+			}
+		}
+		
+		if(!savePlugin){
+			config.tools.push({
+				ptype: "gxp_saveDefaultContext",
+                id: "saveDefaultContext_plugin",
+				actionTarget: {target: "paneltbar", index: 21},
+				needsAuthorization: true
+			});
+		}
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },
@@ -176,6 +228,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         this.loginButton = null;
         GeoExplorer.Composer.superclass.destroy.apply(this, arguments);
     },
+    
     
     /**
      * api: method[createTools]
@@ -191,13 +244,59 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 id: "full-screen-button",
                 iconCls: "icon-fullscreen",
                 enableToggle: true,
+				state:{},
+				tools:{},
+				scale: this.actionToolScale,
                 handler: function(button, evt){
                     if(button.pressed){
-                        Ext.getCmp('tree').findParentByType('panel').collapse();
+                       var tree = Ext.getCmp('tree');
+					   
+						if(tree){
+							var panel = tree.findParentByType('panel');
+							if(panel){
+								button.saveState(panel);
+								panel.collapse(true);
+							}
+						}	
+						
+						var east = Ext.getCmp('east');
+						if(east){
+							button.saveState(east);
+							east.collapse(true);
+							
+						}
+						
+						var south = Ext.getCmp('south');
+						if(south){
+							button.saveState(south);
+							south.collapse(true);
+						}
                     } else {
-                        Ext.getCmp('tree').findParentByType('panel').expand();
+						for(var tool in button.tools){
+							button.restoreState(button.tools[tool]);
+						}                        
                     }
-                }
+                },
+				//restore the previous state of the button
+				restoreState: function(panel){
+					if(!this.state) return;
+					var id = panel.getId();
+					var wasVisible = this.state[id];
+					if(panel && wasVisible){
+						panel.expand(true);
+					}
+				},
+				//save the state of the button
+				saveState: function(panel){
+					if(!this.state) return;
+					var id =panel.getId();
+					if(id){
+						this.state[id] = panel.isVisible();
+					}
+					if(!this.tools[id]){
+						this.tools[id] = panel;
+					}
+				}
             });
 
             tools.unshift(fullScreen);
@@ -213,51 +312,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 			tools.unshift(layerChooser);
 		}
         
-		if(this.mapId && this.mapId != -1){
-			tools.push(new Ext.Button({
-				tooltip: this.exportMapText,
-				handler: function() {
-					this.showEmbedWindow();
-				},
-				scope: this,
-				iconCls: 'icon-export'
-			}));
-			
-			tools.push('-');
-		}
-        
         return tools;
 
-    },
-    
-    /** private: method[viewMetadata]
-     */
-    viewMetadata: function(url, uuid, title){
-        var tabPanel = Ext.getCmp(this.renderToTab);
-        
-        var tabs = tabPanel.find('title', title);
-        if(tabs && tabs.length > 0){
-            tabPanel.setActiveTab(tabs[0]); 
-        }else{
-            var metaURL = url.indexOf("uuid") != -1 ? url : url + '?uuid=' + uuid;
-            
-            var meta = new Ext.Panel({
-                title: title,
-                layout:'fit', 
-                tabTip: title,
-                closable: true,
-                items: [ 
-                    new Ext.ux.IFrameComponent({ 
-                        url: metaURL 
-                    }) 
-                ]
-            });
-            
-            tabPanel.add(meta);
-			meta.items.first().on('render', function() {
-				this.addLoadingMask(meta.items.first());
-			},this);						
-        }
     },
 	
 	/** private: method[addLoadingMask]
@@ -277,105 +333,5 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				loading.hide();
 			};
 		}
-	},
-
-    /** private: method[openPreview]
-     */
-    openPreview: function(embedMap) {
-        var preview = new Ext.Window({
-            title: this.previewText,
-            layout: "fit",
-            resizable: false,
-            items: [{border: false, html: embedMap.getIframeHTML()}]
-        });
-        preview.show();
-        var body = preview.items.get(0).body;
-        var iframe = body.dom.firstChild;
-        var loading = new Ext.LoadMask(body);
-        loading.show();
-        Ext.get(iframe).on('load', function() { loading.hide(); });
-    },
-
-    /** private: method[showEmbedWindow]
-     */
-    showEmbedWindow: function() {        
-	    if (this.mapId == -1 || (this.modified == true && authorization == true)){
-            Ext.MessageBox.show({
-                title: this.alertEmbedTitle,
-                msg: this.alertEmbedText,
-                buttons: Ext.MessageBox.OK,
-                animEl: 'mb4',
-                icon: Ext.MessageBox.WARNING,
-                scope: this
-            });
-        }else{
-           var toolsArea = new Ext.tree.TreePanel({title: this.toolsTitle, 
-               autoScroll: true,
-               root: {
-                   nodeType: 'async', 
-                   expanded: true, 
-                   children: this.viewerTools
-               }, 
-               rootVisible: false,
-               id: 'geobuilder-0'
-           });
-
-           var previousNext = function(incr){
-               var l = Ext.getCmp('geobuilder-wizard-panel').getLayout();
-               var i = l.activeItem.id.split('geobuilder-')[1];
-               var next = parseInt(i, 10) + incr;
-               l.setActiveItem(next);
-               Ext.getCmp('wizard-prev').setDisabled(next==0);
-               Ext.getCmp('wizard-next').setDisabled(next==1);
-               if (incr == 1) {
-                   this.saveAndExport();
-               }
-           };
-           
-           var curLang = OpenLayers.Util.getParameters()["locale"] || 'en';            
-           
-           var embedMap = new gxp.EmbedMapDialog({
-               id: 'geobuilder-1',
-               url: "viewer" + "?locale=" + curLang + "&bbox=" + this.mapPanel.map.getExtent() + "&mapId=" + this.mapId
-           });
-
-           var wizard = {
-               id: 'geobuilder-wizard-panel',
-               border: false,
-               layout: 'card',
-               activeItem: 0,
-               defaults: {border: false, hideMode: 'offsets'},
-               /*bbar: [{
-                   id: 'preview',
-                   text: this.previewText,
-                   handler: function() {
-                       //this.saveAndExport(this.openPreview.createDelegate(this, [embedMap]));
-                       this.openPreview(embedMap);
-                   },
-                   scope: this
-               }, '->', {
-                   id: 'wizard-prev',
-                   text: this.backText,
-                   handler: previousNext.createDelegate(this, [-1]),
-                   scope: this,
-                   disabled: true
-               },{
-                   id: 'wizard-next',
-                   text: this.nextText,
-                   handler: previousNext.createDelegate(this, [1]),
-                   scope: this
-               }],*/
-
-               items: [embedMap]
-               //items: [toolsArea, embedMap]
-           };
-
-           new Ext.Window({
-                layout: 'fit',
-                width: 500, height: 300,
-                title: this.exportMapText,
-                items: [wizard]
-           }).show();
-        }
-    }
+	}
 });

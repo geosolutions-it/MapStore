@@ -44,7 +44,7 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
      */    
     draw: function() {
        
-        this.handler = new OpenLayers.Handler.Box( this,
+        this.handler = new OpenLayers.Handler.Box(this,
         {
             done: this.setAOI
         }, 
@@ -53,7 +53,7 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
         },
         {
             keyMask: this.keyMask
-        } );
+        });
     },
 
     /**
@@ -71,8 +71,7 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
         else
             control = false;
            
-        if(control){    
-    
+        if(control){        
             if(this.aoi!=null){       
                 this.boxes.removeFeatures(this.aoi);
             }
@@ -126,8 +125,7 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
                     if(index)
                         this.map.setLayerIndex(this.boxes,index); 
                 }
-                
-                    
+
                 if(this.onChangeAOI)
                     this.onChangeAOI();
                    
