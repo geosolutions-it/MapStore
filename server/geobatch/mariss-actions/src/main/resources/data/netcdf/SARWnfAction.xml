@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+    
+    <id>SARWnfAction</id>
+    <description>NetCDF Ingestion configuration flow</description>
+    <name>SAR wnf Action flow</name>
+    
+    <autorun>true</autorun>
+    
+    <EventGeneratorConfiguration>
+        <wildCard>*.tgz</wildCard>
+        <watchDirectory>SARWnfAction/in</watchDirectory>
+        <osType>OS_UNDEFINED</osType>
+        <eventType>FILE_ADDED</eventType>
+        <id>SARWnfActionFlow</id>
+        <serviceID>fsEventGeneratorService</serviceID>
+        <description>Netcdf Action event generator description</description>
+        <name>SARWnfAction</name>
+    </EventGeneratorConfiguration>
+    
+    <EventConsumerConfiguration>
+        <id>sarwnfAction</id>
+        <description>SARWnfAction</description>
+        <name>sarWnfAction</name>               
+        <performBackup>false</performBackup>
+
+		<listenerId>ConsumerLogger0</listenerId>
+		<listenerId>Cumulator</listenerId>
+		<!--listenerId>StatusActionLogger0</listenerId-->
+                
+        <SARWnfActionConfiguration>
+            <id>SARWnfActionGeneratorService</id>
+            <description>SARWnfAction action</description>
+            <name>SARWnfActionConfiguration</name>
+                        
+            <!-- Configures the output feature: mandatory -->      
+            <outputFeature>
+            	            
+                <dataStore>                    
+                    <entry>
+                      <string>dbtype</string>
+                      <string>postgis</string>
+                    </entry>
+                    <entry>
+                      <string>host</string>
+                      <string>192.168.1.111</string>
+                    </entry>
+                    <entry>
+                      <string>port</string>
+                      <string>5432</string>
+                    </entry>
+                    <entry>
+                      <string>database</string>
+                      <string>netcdf</string>
+                    </entry>
+                    <entry>
+                      <string>user</string>
+                      <string>postgres</string>
+                    </entry>
+                    <entry>
+                      <string>schema</string>
+                      <string>public</string>
+                    </entry>
+                    <entry>
+                      <string>passwd</string>
+                      <string>postgres</string>
+                    </entry>                     
+                </dataStore>
+            </outputFeature>
+            
+            <netcdfDirectory>/home/geosolutions/Nicola/mariss/E-GEOS-MARISS/2015_03_03/gb_data_dir/netcdf</netcdfDirectory>
+            <metocDictionaryPath>/home/geosolutions/Nicola/mariss/E-GEOS-MARISS/2015_03_03/gb_data_dir/dictionary/metoc-dictionary.xml</metocDictionaryPath>
+            <geoserverPWD>geoserver</geoserverPWD>
+            <geoserverUID>admin</geoserverUID>
+            <geoserverURL>http://localhost:8085/geoserver</geoserverURL>
+            <defaultNamespace>sde</defaultNamespace>
+            <productsTableName>netcdf</productsTableName>
+            <geoserverDataDirectory>/home/geosolutions/Nicola/DLR/test_data_dir</geoserverDataDirectory>
+            <pattern>.*([0-9]{8})_([0-9]{6})_.*</pattern>
+                
+        </SARWnfActionConfiguration>
+                    
+        
+    </EventConsumerConfiguration>
+    
+    <ListenerConfigurations>
+        <LoggingProgressListener>
+            <serviceID>loggingListenerService</serviceID>
+            <id>Logger</id>
+            <loggerName>it.geosolutions.geobatch</loggerName>
+        </LoggingProgressListener>
+        <CumulatingProgressListener>
+            <serviceID>cumulatingListenerService</serviceID>
+            <id>Cumulator</id>
+        </CumulatingProgressListener>
+        <StatusProgressListener>
+            <serviceID>statusListenerService</serviceID>
+            <id>Status</id>
+        </StatusProgressListener>
+    </ListenerConfigurations>
+</FlowConfiguration>

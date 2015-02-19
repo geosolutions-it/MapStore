@@ -44,10 +44,7 @@
                      <string>port</string>
                      <string>5432</string>
                    </entry>
-                   <entry>
-                     <string>database</string>
-                     <string>mariss</string>
-                   </entry>
+                   
                    <entry>
                      <string>database</string>
                      <string>mariss</string>
