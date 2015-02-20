@@ -335,6 +335,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                             strokeWidth: 4,
                             strokeOpacity: 1,
                             strokeColor: "#ff9933"
+                            
                         },
                         "Polygon": {
                             strokeWidth: 2,
@@ -347,7 +348,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                 })]
             }),
             "selected": new OpenLayers.Style(null, {
-                rules: [new OpenLayers.Rule({symbolizer: {display: "none"}})]
+                rules: [new OpenLayers.Rule({symbolizer: this.initialConfig.selectedSymbolizer || {display: "none"}})]
             })
         };
         
@@ -355,7 +356,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             displayInLayerSwitcher: false,
             visibility: false,
             styleMap: new OpenLayers.StyleMap({
-                "select": OpenLayers.Util.extend({display: ""},
+                "select": this.initialConfig.selectedSymbolizer ? this.style["selected"] :  OpenLayers.Util.extend({display: ""},
                     OpenLayers.Feature.Vector.style["select"]),
                 "vertex": this.style["all"]
             }, {extendDefault: false})    
