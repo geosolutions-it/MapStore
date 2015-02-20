@@ -132,7 +132,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
 			var mHost = pattern.exec(apptarget.geoStoreBaseURL);
 			var mUrl = apptarget.geoStoreBaseURL + "users/user/details?includeattributes=true";
 
-			this.loginService = (mHost[2] == location.host ? mUrl : apptarget.proxy + mUrl);
+			this.loginService = url = OpenLayers.Request.makeSameOrigin(mUrl, apptarget.proxy);
 		}
 
 		var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [
