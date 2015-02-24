@@ -608,19 +608,22 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
         });
         // //////////////
         // QR CODE MENU 
+        // Example of QRCode Menu configuration
+        //
+        //  "embedLink": {
+        //      "embeddedTemplateName": "viewer",
+        //      "showDirectURL": true,
+        //      "showQRCode":true,
+        //      "qrCodeSize":128,
+        //      "showMapStoreMobileSource":true,
+        //      "appDownloadUrl":"http://demo.geo-solutions.it/share/mapstoremobile/MapStoreMobile.apk"
+        //  }
         // //////////////
         var showQR = (this.config.embedLink.showQRCode ==true && !Ext.isIE7 && !Ext.isIE8 && !Ext.isIE6);
         var size = config.embedLink.qrCodeSize;
         
-        this.QRCodeMenu=Ext.apply({config:config}, {
-        text: this.mobileText,
-        disabled: !showQR,
-        iconCls: 'ic_mobile',
-        menu: {
-            xtype: 'menu',
-            plain: true,
-            
-                items: [{
+        var qrcodeMenuItems = [
+                {
                     text: this.installApplicationText,
                     iconCls: 'ic_qrcode',
                     scope:this,
@@ -664,7 +667,14 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         });
                         win.show();
                     }
-                },{
+                }
+        ];
+        
+        // Shows the "Add this source to MapStoreMobile" menu, default true
+        if(!config.embedLink.hasOwnProperty("showMapStoreMobileSource")
+            || config.embedLink.showMapStoreMobileSource == true){
+            
+            qrcodeMenuItems.push({
                     iconCls: 'ic_qrcode',
                     text: this.loadThisSourceText,
                     tooltip: 'Share This Source',
@@ -708,7 +718,17 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                         });
                         win.show();
                     }
-                }]
+                });
+        }
+        
+        this.QRCodeMenu=Ext.apply({config:config}, {
+        text: this.mobileText,
+        disabled: !showQR,
+        iconCls: 'ic_mobile',
+        menu: {
+            xtype: 'menu',
+            plain: true,
+            items: qrcodeMenuItems
             }
         });
         // //////////////
