@@ -9,6 +9,7 @@
       "via":"geosolutions_it",
       "hashtags":""
    },
+   "loginDataStorage" : "sessionStorage",
    "mediaContent":"./externals/mapmanager/theme/media",
    "ASSET":{
         "delete_icon": "./externals/mapmanager/theme/img/user_delete.png",

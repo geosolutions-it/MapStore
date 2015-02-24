@@ -699,11 +699,37 @@
 			// ///////////////////////////////////////
 			// Wrap new map within an xml envelop
 			// ///////////////////////////////////////
-			var addedAttributes = false;
+			//var addedAttributes = false;
 			var xml = '<Resource>';
 			
+			if(data.owner || data.attributes){
+				xml += 	'<Attributes>';
+				
+				if(data.owner){
+					xml += 
+						'<attribute>' +
+							'<name>owner</name>' +
+							'<type>STRING</type>' +
+							'<value>' + data.owner + '</value>' +
+						'</attribute>';
+				}
+				
+				if(data.attributes){
+					for(var i=0; i<data.attributes.length; i++){
+						xml += 
+							'<attribute>' +
+								'<name>' + data.attributes[i].name + '</name>' +
+								'<type>' + data.attributes[i]["@type"] + '</type>' +
+								'<value>' + data.attributes[i].value + '</value>' +
+							'</attribute>';
+					}
+				}
+				
+				xml += '</Attributes>';
+			}
+			
 			/** This can remove all the attributes if present !!! do it in a better way as soon as possible **/
-			if (data.owner){
+			/*if (data.owner){
 				xml += 
 				'<Attributes>' +
 					'<attribute>' +
@@ -712,13 +738,12 @@
 						'<value>' + data.owner + '</value>' +
 					'</attribute>';
 				addedAttributes = true;
-			}
-			
+			}			
 
 			// close attributes
 			if(addedAttributes){
 				xml += '</Attributes>';
-			}
+			}*/
 				
 			xml +=
 				'<description>' + data.description + '</description>' +
@@ -740,7 +765,18 @@
 			
 			if ( json.Resource ){
 				var data = new Object;
-				data.owner = json.Resource.Attributes.attribute.value;
+				
+				data.attributes = [];
+				if(json.Resource.Attributes.attribute instanceof Array){
+					var array = json.Resource.Attributes.attribute;
+					for(var i=0; i<array.length; i++){
+						data.attributes.push(array[i]);
+					}
+				}else{
+					data.attributes.push(json.Resource.Attributes.attribute);
+				}
+				
+				//data.owner = json.Resource.Attributes.attribute.value;
 				data.description = json.Resource.description;
 				data.name = json.Resource.name;
 				data.blob = json.Resource.data.data;
@@ -750,6 +786,61 @@
 			} else {
 				this.onFailure_('cannot parse response');
 			}
+		},
+		create: function(item, callback, failureCallback, scope) {
+			// /////////////////////////////////////////////////////
+			// when a resource with the same name exists,
+			// geostore will return an error response (409 status)
+			// containing a valid name suggestion: client shall
+			// rename the resource and try again, up to MAX_RETRIES 
+			// times.
+			// /////////////////////////////////////////////////////
+			var MAX_RETRIES = 3,
+				retriesCounter = 0,
+				geostore = this;
+			var retryingFailureCallback = function(response) {
+				retriesCounter++;
+				if (response.status == 409 && retriesCounter < MAX_RETRIES) {
+					item.name = response.responseText;
+					geostore.create(item, callback, retryingFailureCallback);
+				} else {
+					// ////////////////////////////////////////////////// //
+					// TODO: Refactor this code externalize the           // 
+				    //	     Msg definition for the i18n                  //
+				    // ////////////////////////////////////////////////// //
+					Ext.Msg.show({
+						msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+						buttons: Ext.Msg.OK,
+						icon: Ext.MessageBox.ERROR
+					});
+				}
+			};
+			
+			// allow caller to override default error handling behavior
+			failureCallback = failureCallback || retryingFailureCallback;
+			
+			ContentProvider.prototype.create.call(this, item, callback, failureCallback, scope);
+		},
+		update: function(pk, item, callback, failureCallback) {
+			var defaultFailureCallback = function(response) {
+				var defaultErrMsg = response.statusText + "(status " + response.status + "):  " + response.responseText;
+				var conflictErrMsg = "A map with the same name already exists";
+				
+				// ////////////////////////////////////////////////// //
+				// TODO: Refactor this code externalize the           // 
+			    //	     Msg definition for the i18n                  //
+			    // ////////////////////////////////////////////////// //
+				Ext.Msg.show({
+					msg: (response.status === 409) ? conflictErrMsg : defaultErrMsg,
+					buttons: Ext.Msg.OK,
+					icon: Ext.MessageBox.ERROR
+				});
+			}
+			
+			// allow caller to override default error handling behavior
+			failureCallback = failureCallback || defaultFailureCallback;
+			
+			ContentProvider.prototype.update.call(this, pk, item, callback, failureCallback);
 		}
     });
 

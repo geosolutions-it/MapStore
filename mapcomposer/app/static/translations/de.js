@@ -53,7 +53,7 @@ GeoExt.Lang.add("de", {
     "gxp.plugins.AddLayers.prototype": {
         addActionMenuText: "Schicht hinzufügen",
         addActionTip: "Schicht hinzufügen",
-        addServerText: "Neuen Server hinzufügen",
+        addServerText: "Neuen Server",
         addButtonText: "Schichten hinzufügen",
         untitledText: "Ohne Überschrift",
         addLayerSourceErrorText: "Fehler beim finden der WMS capabilities ({msg}).\nBitte die Url kontrollieren und nochmals versuchen.",
@@ -242,11 +242,37 @@ GeoExt.Lang.add("de", {
     },
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Neuen Server hinzufügen...",
+        title: "Neuen Server",
         cancelText: "Löschen",
         addServerText: "Server hinzufügen",
         invalidURLText: "Als WMS endpoint gültige Url eingeben (e.g. http://example.com/geoserver/wms)",
-        contactingServerText: "Verbindungsversuch zum Server..."
+        contactingServerText: "Verbindungsversuch zum Server...",
+		sourceTypeLabel: "Type",
+		advancedOptionsTitle: "Advanced Options",
+		generalTabTitle: "General",
+		titleLabel: "Title",
+		versionLabel: "Version (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Params",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Add",
+		propNameLabel: "Name",
+		propValueLabel: "Value",
+		paramsWinTitle: "Params Options",
+		okButtonText: "Ok",
+		addPropDialogTitle: "Add Property",
+		addPropDialogMsg: "Property name or his value are not valid",
+		cancelButtonText: "Cancel",
+		removeButtonText: "Remove",
+		removePropDialogTitle: "Remove Property",
+		removePropDialogMsg: "This property cannot be removed: ",
+		newSourceDialogTitle: "New Source",
+		newSourceDialogMsg: "Some source selected properties are invalid.",
+		mandatoryLabelText: "All fields marked with (*) are mandatory."
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -283,7 +309,8 @@ GeoExt.Lang.add("de", {
 		mapMedatataSetTitle: "Karte Metadaten",	
 		mapNameLabel: "Name",	
 		mapDescriptionLabel: "Beschreibung",
-		addResourceButtonText: "In Map"
+		addResourceButtonText: "In Map",
+		conflictErrMsg: "Eine Karte mit dem gleichen Namen ist bereits vorhanden"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
@@ -298,6 +325,11 @@ GeoExt.Lang.add("de", {
         zoomInTooltip: "Zoom Box Vorwärts",
         zoomOutTooltip: "Zoom Box Zurück"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Schicht ist nicht in der Kartenprojektion",
+		errorTitle: "Fehler"
+	},
 
     "GeoExt.ux.PrintPreview.prototype":{
 	    paperSizeText: "Papierformat:",

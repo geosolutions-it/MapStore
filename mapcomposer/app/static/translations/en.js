@@ -221,11 +221,37 @@ GeoExt.Lang.add("en", {
     },
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Add New Server...",
+        title: "Add Server",
         cancelText: "Cancel",
         addServerText: "Add Server",
         invalidURLText: "Enter a valid URL to a WMS endpoint (e.g. http://example.com/geoserver/wms)",
-        contactingServerText: "Contacting Server..."
+        contactingServerText: "Contacting Server...",
+		sourceTypeLabel: "Type",
+		advancedOptionsTitle: "Advanced Options",
+		generalTabTitle: "General",
+		titleLabel: "Title",
+		versionLabel: "Version (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Params",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Add",
+		propNameLabel: "Name",
+		propValueLabel: "Value",
+		paramsWinTitle: "Params Options",
+		okButtonText: "Ok",
+		addPropDialogTitle: "Add Property",
+		addPropDialogMsg: "Property name or his value are not valid",
+		cancelButtonText: "Cancel",
+		removeButtonText: "Remove",
+		removePropDialogTitle: "Remove Property",
+		removePropDialogMsg: "This property cannot be removed: ",
+		newSourceDialogTitle: "New Source",
+		newSourceDialogMsg: "Some source properties are invalid.",
+		mandatoryLabelText: "All fields marked with (*) are mandatory."
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -262,7 +288,8 @@ GeoExt.Lang.add("en", {
 		mapMedatataSetTitle: "Map Metadata",	
 		mapNameLabel: "Name",	
 		mapDescriptionLabel: "Description",
-		addResourceButtonText: "Add Map"
+		addResourceButtonText: "Add Map",
+		conflictErrMsg: "A map with the same name already exists"
     },
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Select an area",
@@ -275,6 +302,12 @@ GeoExt.Lang.add("en", {
         zoomInTooltip: "Zoom Box In",
         zoomOutTooltip: "Zoom Box Out"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Layer is not available in the map projection",
+		errorTitle: "Error"
+	},
+	
     "GeoExt.ux.PrintPreview.prototype":{
         paperSizeText: "Paper size:",
         resolutionText: "Resolution:",

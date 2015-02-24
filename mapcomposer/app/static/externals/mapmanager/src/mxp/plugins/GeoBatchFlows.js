@@ -48,6 +48,12 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
     loginManager: null,    
     setActiveOnOutput: true,
     showConsumersDetails: false,
+    forceOrder: false,
+    /* api configuration
+        closable: if true the output element is closable
+    */
+    closable: true,
+	
     /* api configuration
     baseDir: '/home/geosolutions/admin/',
     
@@ -120,39 +126,12 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
                     flowsgrid.grid.refOwner.consumers.changeFlowId(flowid);
                     flowsgrid.grid.refOwner.archived.changeFlowId(flowid);
                     flowsgrid.grid.refOwner.tabs.activate(flowsgrid.grid.refOwner.consumers);
-                    if(flowsgrid.grid.runBtn){
-                        //TODO manage run local or other forms
-                        var runBtn = flowsgrid.grid.runBtn;
-                        if(this.runConfigs[flowid]){
-                            runBtn.setDisabled(false);
-                            runBtn.flowId = flowid;
-                            runBtn.flowName = flowName;
-                        }else{
-                            runBtn.setDisabled(true);
-                            runBtn.flowId = null;
-                            runBtn.flowName = null;
-                        }
-                        
-                    }
                 } 
             }
         });
         //button for button runner
-        var buttons = []
-        if(this.flowRunFormCategory){
-            buttons.push({
-                iconCls:'update_manager_ic',
-                ref:'../runBtn',
-                text: this.runButtonText,
-                disabled:true,
-                scope:this,
-                handler:function(btn){
-                    this.runWorkflow(btn.flowId, btn.flowName);
-                }
-            });
-            buttons.push("->");
-        }
-       
+        var buttons = ['->'];
+        
         var me = this;
         //configuration of the left grid of the flows 
         var flowsGrid = {
@@ -168,14 +147,19 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
             collapsible:true,   
             auth: this.auth,
             sm: selectionModel,
-            flows: this.skipFlowsNotInRunConfigs ? this.runConfigs : null
+            forceOrder: this.forceOrder,
+            flows: this.skipFlowsNotInRunConfigs ? this.runConfigs : null,
+            runHandler: function(flowId, flowName) {
+                this.runWorkflow(flowId, flowName);
+            },
+            scope: this
         }
         
         Ext.apply(this.outputConfig,{
             layout: 'border',
             itemId:'GBflows',
             xtype:'panel',
-            closable: true,
+            closable: this.closable,
             closeAction: 'close',
             iconCls: 'geobatch_ic',  
             header: false,

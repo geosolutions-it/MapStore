@@ -138,6 +138,10 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      */
 	useCapabilities: true,
 	
+	noCompatibleProjectionError: "Layer is not available in the map projection",
+	
+	errorTitle: "Error",
+	
     /** api: method[createStore]
      *
      *  Creates a store of layer records.  Fires "ready" when store is loaded.
@@ -148,6 +152,34 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		}
 		this.fireEvent("ready", this);
 		return null;
+	},
+	
+   /**
+	* Get the user's corrensponding authkey if present 
+	* (see MSMLogin.getLoginInformation for more details)
+	*/
+	getAuthParam: function(){
+		var userInfo = this.target.userDetails;
+		var authkey;
+		
+		if(userInfo.user.attribute instanceof Array){
+			for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
+				if( userInfo.user.attribute[i].name == "UUID" ){
+					authkey = userInfo.user.attribute[i].value;
+				}
+			}
+		}else{
+			if(userInfo.user.attribute && userInfo.user.attribute.name == "UUID"){
+			   authkey = userInfo.user.attribute.value;
+			}
+		}
+
+		if(authkey){
+			var authParam = userInfo.user.authParam;
+			this.authParam = authParam ? authParam : this.authParam;
+		}
+		
+		return authkey;
 	},
 	
     createCapabilitiesStore: function() {
@@ -165,21 +197,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 	    // (see MSMLogin.getLoginInformation for more details)
 	    // /////////////////////////////////////////////////////
 		if(this.authParam && this.target.userDetails){
-			var userInfo = this.target.userDetails;
-			var authkey;
-			
-			if(userInfo.user.attribute instanceof Array){
-				for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
-					if( userInfo.user.attribute[i].name == "UUID" ){
-						authkey = userInfo.user.attribute[i].value;
-					}
-				}
-			}else{
-				if(userInfo.user.attribute && userInfo.user.attribute.name == "UUID"){
-				   authkey = userInfo.user.attribute.value;
-				}
-			}
-
+			var authkey = this.getAuthParam();
 			if(authkey){
 				baseParams[this.authParam] = authkey;
 			}
@@ -305,6 +323,16 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		var layerProjection = this.getProjection(original);
 		if (layerProjection) {
 			layer.addOptions({projection: layerProjection});
+		} else {
+			Ext.Msg.show({
+                title: this.errorTitle,
+                msg: this.noCompatibleProjectionError,
+                buttons: Ext.Msg.OK,
+                width: 300,
+                icon: Ext.MessageBox.ERROR
+          });
+			
+		  return null;
 		}
 		
 		var projCode = projection.getCode();
@@ -356,7 +384,6 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		
 		// use all params from original
 		params = Ext.applyIf(params, layer.params);
-
 
 		// /////////////////////////////////////////////////////////
 		// Checking if the OpenLayers transition should be 
@@ -641,7 +668,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             format: params.FORMAT,
             styles: params.STYLES, 
             transparent: params.TRANSPARENT,
-            cql_filter: params.CQL_FILTER,
+            //cql_filter: params.CQL_FILTER,
             elevation: params.ELEVATION
         });
     },    

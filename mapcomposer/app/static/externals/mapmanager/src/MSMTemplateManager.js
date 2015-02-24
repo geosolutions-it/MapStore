@@ -120,6 +120,9 @@ MSMTemplateManager = Ext.extend(Ext.form.FormPanel, {
                     scope: this,
 		            listeners: {
 		            	'rowclick': this.templateClick, 
+						'delete_template': function(response){
+							this.templatePanel.onReset();
+						},
 			            scope: this
 		            }
 				}]

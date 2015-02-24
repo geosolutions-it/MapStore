@@ -56,7 +56,7 @@ GeoExt.Lang.add("es", {
     "gxp.plugins.AddLayers.prototype": {
         addActionMenuText: "Añadir capas",
         addActionTip: "Añadir capas",
-        addServerText: "Añadir un nuevo servidor",
+        addServerText: "Añadir Servidor",
         addButtonText: "Añadir capas",
         untitledText: "Sin nombre",
         addLayerSourceErrorText: "Error obteniento capabilities del WMS ({msg}).\nPor favor, compruebe la url y vuelva a intentarlo.",
@@ -221,11 +221,37 @@ GeoExt.Lang.add("es", {
     },
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Añadir un nuevo servidor...",
+        title: "Añadir un servidor",
         cancelText: "Cancelar",
         addServerText: "Añadir Server",
         invalidURLText: "Introducir una URL válida de un servicio WMS (por ejemplo: http://example.com/geoserver/wms)",
-        contactingServerText: "Contactando con el servidor..."
+        contactingServerText: "Contactando con el servidor...",
+		sourceTypeLabel: "Type",
+		advancedOptionsTitle: "Advanced Options",
+		generalTabTitle: "General",
+		titleLabel: "Title",
+		versionLabel: "Version (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Params",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Add",
+		propNameLabel: "Name",
+		propValueLabel: "Value",
+		paramsWinTitle: "Params Options",
+		okButtonText: "Ok",
+		addPropDialogTitle: "Add Property",
+		addPropDialogMsg: "Property name or his value are not valid",
+		cancelButtonText: "Cancel",
+		removeButtonText: "Remove",
+		removePropDialogTitle: "Remove Property",
+		removePropDialogMsg: "This property cannot be removed: ",
+		newSourceDialogTitle: "New Source",
+		newSourceDialogMsg: "Some source selected properties are invalid.",
+		mandatoryLabelText: "All fields marked with (*) are mandatory."
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -262,19 +288,28 @@ GeoExt.Lang.add("es", {
 		mapMedatataSetTitle: "Metadatos del Mapa",	
 		mapNombreLabel: "Nombre",	
 		mapDescripciónLabel: "Descripción",
-		addResourceButtonText: "Añadir Mapa"
+		addResourceButtonText: "Añadir Mapa",
+		conflictErrMsg: "Un mapa con el mismo nombre ya existe"
     },
+	
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Seleccionar un área",
         menuText: "GeoReferencias",
         tooltip: "GeoReferencias"
     },
+	
     "gxp.plugins.ZoomBox.prototype":{
         zoomInMenuText: "Zoom Box Siguiente",
         zoomOutMenuText: "Zoom Box Anterior",
         zoomInTooltip: "Zoom Box Siguiente",
         zoomOutTooltip: "Zoom Box Anterior"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Capa no está disponible en la proyección cartográfica",
+		errorTitle: "Error"
+	},
+	
     "GeoExt.ux.PrintPreview.prototype":{
         paperSizeText: "Tamaño del folio:",
         resolutionText: "Resolución:",

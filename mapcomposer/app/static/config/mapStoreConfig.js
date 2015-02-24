@@ -1,5 +1,4 @@
 {
-
    "scaleOverlayMode": "basic",
    "gsSources":{ 
    	"geosolutions":
@@ -146,72 +145,31 @@
 		   "displayProjectionCode":"EPSG:4326",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
 		}, {
-		  "ptype": "gxp_featuremanager",
-		  "id": "featuremanager",
-		  "autoLoadFeatures":true,
-		  "pagingType":1,
-			"maxFeatures":15
-	    }, 
-	     {	
-		 	"ptype": "gxp_featureeditor",
-    		"featureManager": "featuremanager",
-    		"autoLoadFeatures": "true"
-	    },{
-		  "ptype": "gxp_featuregrid",
-		  "featureManager": "featuremanager",
-		
-		  "outputConfig": {
-			  "id": "featuregrid",
-			  "title": "Features"
-				 		
-		  },
-		  "outputTarget": "south",
-		  "exportFormats": ["CSV","shape-zip"]
-	    }, {
-          "ptype": "gxp_spatialqueryform",
-          "featureManager": "featuremanager",
-          "featureGridContainer": "south",
-          "outputTarget": "east",
-          "showSelectionSummary": true,
-          "actions": null,
-          "id": "bboxquery",
-          "outputConfig":{
-                  "outputSRS": "EPSG:900913",
-                  "selectStyle":{
-                          "strokeColor": "#ee9900",
-                          "fillColor": "#ee9900",
-                          "fillOpacity": 0.4,
-                          "strokeWidth": 1
-                  },
-                  "spatialFilterOptions": {    
-                          "lonMax": 20037508.34,  
-                          "lonMin": -20037508.34,
-                          "latMax": 20037508.34,  
-                          "latMin": -20037508.34  
-                  },
-                  "bufferOptions": {
-                        "minValue": 1,
-                        "maxValue": 1000,
-                        "decimalPrecision": 2,
-                        "distanceUnits": "m"
-                  }
-          },
-          "spatialSelectorsConfig":{
-                "bbox":{
-                    "xtype": "gxp_spatial_bbox_selector"
-                },
-                "buffer":{
-                    "xtype": "gxp_spatial_buffer_selector"
-                },
-                "circle":{
-                    "xtype": "gxp_spatial_circle_selector",
-                    "zoomToCurrentExtent": true
-                },
-                "polygon":{
-                    "xtype": "gxp_spatial_polygon_selector"
-                }
-              }
-        }, {
+			"ptype": "gxp_metadataexplorer",
+			"id": "metadataexplorer",
+            "outputTarget": "south",
+            "saveState":true,
+            "cswconfig": {
+                "catalogs": [
+                        {"name": "CSI Piemonte", "url": "http://www.ruparpiemonte.it/geocatalogorp/geonetworkrp/srv/it/csw", "description": "GeoPortale della Regione Piemonte"},
+                        {"name": "Comune di Firenze", "url": "http://datigis.comune.fi.it/geonetwork/srv/it/csw", "description": "GeoPortale del Comune di Firenze"},
+                        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
+                        {"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
+                        {"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
+                        {"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
+                        {"name": "EauFrance", "url": "http://sandre.eaufrance.fr/geonetwork/srv/fr/csw", "description" : "EauFrance"},
+                        {"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
+                        {"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
+                        {"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
+                ],
+                "dcProperty": "title",
+                "cswVersion": "2.0.2",
+                "filterVersion": "1.1.0",
+                "start": 1,
+                "limit": 10,
+                "timeout": 60000
+            }            
+		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,

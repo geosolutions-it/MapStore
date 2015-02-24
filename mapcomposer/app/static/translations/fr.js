@@ -56,14 +56,14 @@ GeoExt.Lang.add("fr", {
     "gxp.plugins.AddLayers.prototype": {
         addActionMenuText: "Ajouter des couches",
         addActionTip: "Ajouter des couches",
-        addServerText: "Ajouter un nouveau serveur",
+        addServerText: "Ajouter Serveur",
         addButtonText: "Ajouter des couches",
         untitledText: "Sans titre",
         addLayerSourceErrorText: "Erreur d’obtention des capacités WMS ({msg}).\nVeuillez vérifier l`URL et essayer à nouveau.",
         availableLayersText: "Couches disponibles",
         expanderTemplateText: "<p><b>Résumé:</b> {abstract}</p>",
         panelTitleText: "Titre",
-        layerSelectionText: "Visualiser les données disponibles depuis:",
+        layerSelectionText: "Visualiser les données disponibles:",
         doneText: "Terminé",
         removeFilterText: "Effacer le filtre", 
         filterEmptyText: "Filtre",
@@ -220,11 +220,37 @@ GeoExt.Lang.add("fr", {
     },  
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Ajouter un nouveau serveur...",
+        title: "Ajouter un serveur",
         cancelText: "Annuler",
         addServerText: "Ajouter un serveur",
         invalidURLText: "Saisir l’URL d’un serveur WMS(par ex. : http://example.com/geoserver/wms)",
-        contactingServerText: "Contact du serveur en cours"
+        contactingServerText: "Contact du serveur en cours",
+		sourceTypeLabel: "Type",
+		advancedOptionsTitle: "Advanced Options",
+		generalTabTitle: "General",
+		titleLabel: "Title",
+		versionLabel: "Version (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Params",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Add",
+		propNameLabel: "Name",
+		propValueLabel: "Value",
+		paramsWinTitle: "Params Options",
+		okButtonText: "Ok",
+		addPropDialogTitle: "Add Property",
+		addPropDialogMsg: "Property name or his value are not valid",
+		cancelButtonText: "Cancel",
+		removeButtonText: "Remove",
+		removePropDialogTitle: "Remove Property",
+		removePropDialogMsg: "This property cannot be removed: ",
+		newSourceDialogTitle: "New Source",
+		newSourceDialogMsg: "Some source selected properties are invalid.",
+		mandatoryLabelText: "All fields marked with (*) are mandatory."
     },  
 
     "gxp.ScaleOverlay.prototype": { 
@@ -260,7 +286,8 @@ GeoExt.Lang.add("fr", {
 		mapMedatataSetTitle: "Métadonnées de la carte",	
 		mapNameLabel: "Nom",	
 		mapDescriptionLabel: "Description",
-		addResourceButtonText: "Ajouter la carte"
+		addResourceButtonText: "Ajouter la carte",
+		conflictErrMsg: "Une carte avec le même nom existe déjà"
     },
     "gxp.plugins.GeoReferences.prototype":{
         initialText: "Sélectionner une zone",
@@ -274,6 +301,12 @@ GeoExt.Lang.add("fr", {
         zoomInTooltip: "Outil de Zoom Avant",
         zoomOutTooltip: "Outil de Zoom Arrière"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Couche ne est pas disponible dans la projection cartographique",
+		errorTitle: "Erreur"
+	},
+	
     "GeoExt.ux.PrintPreview.prototype":{
         paperSizeText: "Taille de papier:",
         resolutionText: "Résolution:",

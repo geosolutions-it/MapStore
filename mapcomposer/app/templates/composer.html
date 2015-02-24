@@ -307,10 +307,14 @@
 				}
 				return section;
 			}
+
+			var parseHeader = function(section) {
+				return (section && section.header !== undefined && section.header !== null) ? section.header : false;
+			}
 			
 			if(header || footer){
 				var north = {
-					header: false,
+					header: parseHeader(header.container),
 					region: 'north',
 					id: 'msheader'
 				};
@@ -321,7 +325,7 @@
 				}
 				
 			    var south = {
-					header: false,
+					header: parseHeader(footer.container),
 					region: 'south',
 					id: 'msfooter'
 				};
@@ -530,8 +534,10 @@
         serverConfig = Ext.applyIf(serverConfig, localConfig);
 		serverConfig.geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');
 
+		var configuration = customConfigName ? customConfigName : "mapStoreConfig";
+		
 		// use GeoExplorerLoader to load configuration files
-		var loader = new GeoExplorerLoader(serverConfig, customConfigName, mapStoreDebug, mapIdentifier, 
+		var loader = new GeoExplorerLoader(serverConfig, configuration, mapStoreDebug, mapIdentifier, 
 			authorization, fullScreen, templateId);
 		
 		loader.on("configfinished", function (config){

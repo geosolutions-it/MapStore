@@ -491,6 +491,27 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                            
                         },
                         {
+                            header   : userManager.textGroups, 
+                            sortable : false, 
+                            dataIndex: 'groups',
+                            renderer: function(value, metaData, record, rowIndex, colIndex, store) {                            	
+                            	var groupsArray =  [], groupNames = [];
+                            	if (Ext.isArray(value['group'])) {
+                            		groupsArray =  value['group'];
+                            	} else if (value['group']) {
+                            		groupsArray.push(value['group']); 
+                            	}
+                            	
+                            	Ext.each(groupsArray, function(group) {
+                            		groupNames.push(group.groupName);
+                            	});
+                            	
+                            	groupNames.sort();
+                            	
+                            	return groupNames.join(', ');
+                            }
+                        },
+                        {
                             xtype: 'actioncolumn',
                             hideable:false,
                             width: 50,
@@ -598,7 +619,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                         successProperty: 'ExtUserList',
                         idProperty: 'id',
                         remoteSort: false,
-                        fields: ['id', 'name', 'password', 'role','enabled'],
+                        fields: ['id', 'name', 'password', 'role', 'groups', 'enabled'],
                         sortInfo: { field: "name", direction: "ASC" },
                         proxy: new Ext.data.HttpProxy({
                             url: this.getSearchUrl(),
