@@ -65,7 +65,9 @@
     <script type="text/javascript" src="script/qrcodejs.js"></script>
     <!-- common data  -->
     <script type="text/javascript" src="config/common/localConfig.js"></script>
-    
+    <!-- geocollect -->
+   <link rel="stylesheet" type="text/css" href="css/gccomposer.css" />	
+      <script type="text/javascript" src="script/gccomposer.js"></script>
 	<!-- translation data  -->
     <script type="text/javascript" src="translations/en.js"></script>
     <script type="text/javascript" src="translations/fr.js"></script>
@@ -115,7 +117,7 @@
         // ///////////////////////////////////////////////////////////////
         var proxy; 
         var serverConfig;
-        var customConfigName;		
+        var customConfigName="develope";	
 		
         // //////////////////////////////////////////////////
         // Parsing the request to get the parameters
@@ -190,7 +192,7 @@
 				}
 			}
         }		
-		
+	
         var onReady = function(){
 
             Ext.BLANK_IMAGE_URL = (function() {
@@ -418,7 +420,8 @@
 				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
                 georeferences: georeferences_data,
                 map: serverConfig.map,
-				customTools: serverConfig.customTools
+				customTools: serverConfig.customTools,
+				customComposerWest:serverConfig.customComposerWest
             }, mapIdentifier, authorization && authorization == "false" ? null: authorization, fullScreen, templateId);   
             
             app.on({

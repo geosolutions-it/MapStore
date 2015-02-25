@@ -7,10 +7,10 @@
     display: block;
 }
 .m_up {
-    background-image: url(../../../ext/ux/images/up2.gif) !important;
+    background-image: url(../images/arrow_up.png) !important;
 }
 .m_down {
-    background-image: url(../../../ext/ux/images/down2.gif) !important;
+    background-image: url(../images/arrow_down.png) !important;
 }
 /*GetFeatureInfo with Photos styles*/
 .thumb {
@@ -41,4 +41,40 @@
     background-image: url("/images/table_go.png") !important;
     height: 16px;
     width: 16px;
+}
+.service-manager-icon
+{
+    background-image: url(../images/camera.png);
+}
+.mission_resource_edit{
+	 background-image: url(../images/script_edit.png);
+
+}
+.gc_db_resource_edit,#GCDeResourceEditor,.x-panel-tl .x-panel-header.gc_db_resource_edit{
+	 background-image: url(../images/database.png);
+
+}
+.gc_advanced_resource_edit,.x-panel-tl .x-panel-header.gc_advanced_resource_edit{
+	 background-image: url(../images/wrench.png);
+
+}
+.gc-mobile-resource-edit,.x-panel-tl .x-panel-header.gc-mobile-resource-edit{
+	 background-image: url(../images/phone.png);
+
+}
+.addgc{
+background:url(../images/add.png) no-repeat 10px 8px;
+display:block;
+}
+.deletegc{
+background:url(../images/delete.png) no-repeat 10px 8px;
+display:block;
+}
+.gui_json{
+background:url(../images/door_in.png) no-repeat 10px 8px;
+display:block;
+}
+.json_gui{
+background:url(../images/door_out.png) no-repeat 10px 8px;
+display:block;
 }

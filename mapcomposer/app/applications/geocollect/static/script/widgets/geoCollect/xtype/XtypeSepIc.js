@@ -28,7 +28,8 @@ mxp.widgets.XtypeSepIc = Ext.extend(Ext.FormPanel,{
 
     /** api: xtype = mxp_gc_xtype_separatorWithIcon */
 	xtype:'mxp_gc_xtype_separatorWithIcon',
-	
+	  labFieldLabel:"Label",
+    valueFieldLabel:"Value of PriorityField",
 	//Utilizzat per ripulire i campi valori
    clV:new RegExp("^(\\${origin.)(.*)(})$"),
    jObj:null,
@@ -37,21 +38,21 @@ initComponent: function() {
 
 this.items=[ {	//contiene il valore del priority field 
    				xtype:'textfield', 
-				fieldLabel:'Value of PriorityField',
+				fieldLabel:this.valueFieldLabel,
 				ref:'valueField',
 				disabled:true,
 				allowBlank:false,
 				
 		     },{
    				xtype:'textfield', 
-				fieldLabel:'Label',
+				fieldLabel:this.labFieldLabel,
 				ref:'labField',
 				allowBlank:false,
 		    }
     		 ];
     
     
-this.on('render',this.setPfield,this)
+this.on('render',this.setPfield,this);
     
     
              mxp.widgets.XtypeSepIc.superclass.initComponent.call(this, arguments);
@@ -96,7 +97,7 @@ loadXtype:function(o){
 getXtype:function(){
    
    o={
-    	"type":null,
+    	"type":"text",
     	"value":"${origin."+this.getPriorityField()+"}",
     	"label":this.labField.getValue(),
     	 "xtype":"separatorWithIcon"
@@ -145,7 +146,7 @@ setPfield:function(){
 setLabel:function(){
 	 var	parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 	    val = parent.fieldSelector.getValue();
-	    this.labField.setValue('${'+val+'}');
+	    this.labField.setValue('${origin.'+val+'}');
 },
 
 
@@ -160,10 +161,9 @@ getPriorityField:function(){
  * Return boolean
  */
 isDirty:function(){
-	a=Ext.encode(this.jObj);
-	b=Ext.encode(this.getXtype());
-	return (a==b)? false:true;		
-	
+    a=Ext.encode(this.jObj);
+    b=Ext.encode(this.getXtype());
+    return (a==b)? false:true;      
 	
 }
 });

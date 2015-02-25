@@ -83,31 +83,6 @@
           "index": 2
         }
     },{ 
-        "ptype": "mxp_geostore_resource_editor",
-        "category": "GEOCOLLECT",
-        "buttonText": "Mission Templates",
-        "actionTarget":{
-             "target": "north.tbar",
-             "index": 3
-            }
-
-    },{ 
-        "ptype": "mxp_geostore_resource_editor",
-        "category": "MAP",
-        "buttonText": "Maps",
-        "actionTarget":{
-             "target": "north.tbar",
-             "index": 5
-            },
-		"attributeFields":[{
-			"xtype":"textfield",
-			"id":"attribute.owner",
-			"anchor":'95%',
-			"fieldLabel": "Owner",
-			"name":"attribute.owner"
-		}]
-
-    },{ 
         "ptype": "mxp_geostore_mission_resource_editor",
         "category": "GEOCOLLECT",
          "loginManager": "loginTool",
@@ -119,6 +94,7 @@
            "resourceEditor":{
 			"xtype":"mxp_gc_resource_editor",
 			"ref":"/missionResEdit",
+			"gcSource":"http://geocollect.geo-solutions.it/geoserver/it.geosolutions/ows",
 			"authParam":"authkey"
 		},
     },{ 
@@ -174,7 +150,14 @@
 		"showDirectURL": true,
         "showQRCode":true,
         "qrCodeSize":128,
-        "appDownloadUrl":"http://demo.geo-solutions.it/share/mapstoremobile/MapStoreMobile.apk"
+        "showMapStoreMobileSource":false,
+        "appDownloadUrl":"http://build.geo-solutions.it/mapstoremobile/downloads/releases/1.0.0/developement/GeoCollect.apk"
 
-	}
+	},
+    "availableMapButtons":[
+        "editinfo",
+        "deletemap",
+        "viewmap"
+    ]
+
 }

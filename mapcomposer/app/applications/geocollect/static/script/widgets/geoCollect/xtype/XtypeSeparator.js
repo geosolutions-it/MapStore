@@ -28,7 +28,7 @@ mxp.widgets.XtypeSeparator = Ext.extend(Ext.FormPanel,{
 
     /** api: xtype = mxp_gc_xtype_separator */
 	xtype:'mxp_gc_xtype_separator',
-	
+	labFieldLabel:"Label",
 	//Utilizzat per ripulire i campi valori
    clV:new RegExp("^(\\${origin.)(.*)(})$"),
    jObj:null,
@@ -38,7 +38,7 @@ initComponent: function() {
 
 this.items=[ {
    				xtype:'textfield', 
-				fieldLabel:'Label',
+				fieldLabel:this.labFieldLabel,
 				ref:'labField',
 				allowBlank:false,
 		    }
@@ -135,6 +135,7 @@ setLabel:function(){
  * Return boolean
  */
 isDirty:function(){
+    
 	a=Ext.encode(this.jObj);
 	b=Ext.encode(this.getXtype());
 	return (a==b)? false:true;		

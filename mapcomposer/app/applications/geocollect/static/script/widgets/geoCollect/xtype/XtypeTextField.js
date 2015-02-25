@@ -31,7 +31,11 @@ mxp.widgets.XtypeTextField = Ext.extend(Ext.FormPanel,{
 
     /** api: xtype = mxp_gc_xtype_textfield */
 	xtype:'mxp_gc_xtype_textfield',
-	
+	   idFieldLabel:"Field",
+    labFieldLabel:"Label",
+    valueFieldLabel:"Value",
+    mandatoryFieldLabel:"Mandatory",
+     optFieldLabel:"Options",
 	//Utilizzat per ripulire i campi valori
    clV:new RegExp("^(\\${origin.)(.*)(})$"),
 
@@ -41,38 +45,38 @@ initComponent: function() {
 
 this.items=[{
    				xtype:'textfield', 
-				fieldLabel:'Field ',
+				fieldLabel:this.idFieldLabel,
 				ref:'idField',
 				disabled:true,
 				allowBlank:false
 			},
 			{
    				xtype:'textfield', 
-				fieldLabel:'Label',
+				fieldLabel:this.labFieldLabel,
 				ref:'labField',
 				allowBlank:false,
 		    },
 
 			{
    				xtype:'textfield', 
-				fieldLabel:'Value',
+				fieldLabel:this.valueFieldLabel,
 				ref:'valueField',
 				allowBlank:true	
 		     },{
    				xtype:'checkbox', 
-				fieldLabel:'Mandatory',
+				fieldLabel:this.mandatoryFieldLabel,
 				ref:'mandCk'
 				
 		     },{
    				xtype:'mxp_gc_options', 
-				fieldLabel:'Options',
+				fieldLabel:this.optFieldLabel,
 				ref:'optField'
 			}
 		     ];
     
     
-this.on('render',this.setidField,this)
-this.on('render',this.setMandatory,this)
+this.on('render',this.setidField,this);
+this.on('render',this.setMandatory,this);
     
              mxp.widgets.XtypeTextField.superclass.initComponent.call(this, arguments);
 	
@@ -125,7 +129,7 @@ getXtype:function(){
     	"type":this.getType(),
     	"label":this.labField.getValue(),
     	"xtype":"textfield",
-    	"mandatory":this.mandCk.getValue()
+    	"mandatory":(this.mandCk.getValue())?"true":"false"
    };
    var opt=this.optField.getOptions();
   if(opt.length)o.options=opt;
@@ -208,10 +212,9 @@ getType:function(){
  * Return boolean
  */
 isDirty:function(){
-	a=Ext.encode(this.jObj);
-	b=Ext.encode(this.getXtype());
-	return (a==b)? false:true;		
-	
+    a=Ext.encode(this.jObj);
+    b=Ext.encode(this.getXtype());
+    return (a==b)? false:true;      		
 	
 }
 });

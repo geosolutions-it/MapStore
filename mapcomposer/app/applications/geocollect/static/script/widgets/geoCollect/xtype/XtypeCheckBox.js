@@ -28,7 +28,9 @@ mxp.widgets.XtypeCheckBox = Ext.extend(Ext.FormPanel,{
 
     /** api: xtype = mxp_gc_xtype_label */
 	xtype:'mxp_gc_xtype_checkbox',
-	
+	idFieldLabel:"Field",
+	labFieldLabel:"Label",
+
 	//Utilizzat per ripulire i campi valori
    clV:new RegExp("^(\\${origin.)(.*)(})$"),
    jObj:null,
@@ -37,21 +39,21 @@ initComponent: function() {
 
 this.items=[{
    				xtype:'textfield', 
-				fieldLabel:'FieldId',
+				fieldLabel:this.idFieldLabel,
 				ref:'idField',
 				disabled:true,
 				allowBlank:false
 				
 		     },{
    				xtype:'textfield', 
-				fieldLabel:'Label',
+				fieldLabel:this.labFieldLabel,
 				ref:'labField',
 				allowBlank:false,
 		    }
     		 ];
     
     
-this.on('render',this.setfieldId,this)
+this.on('render',this.setfieldId,this);
     
     
              mxp.widgets.XtypeCheckBox.superclass.initComponent.call(this, arguments);
@@ -95,8 +97,8 @@ loadXtype:function(o){
 getXtype:function(){
    
   o={
-    	"type":null,
-    	"value":this.idField.getValue(),
+    	"type":"text",
+    	"fieldId":this.idField.getValue(),
     	"label":this.labField.getValue(),
     	 "xtype":"checkbox"
    };

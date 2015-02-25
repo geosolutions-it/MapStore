@@ -36,7 +36,17 @@ mxp.widgets.GcResourceEditor = Ext.extend(Ext.Panel, {
 
     /** api: xtype = mxp_gc_resource_editor */
 	xtype:'mxp_gc_resource_editor',
-	
+	//Strings:
+	jsonPanel:'Advanced Configuration',
+	jsonToGuiBtnText:'Apply',
+	jsonToGuiBtnTooltip:'Apply Configuration To User  Interface',
+	guiToJSONBtnText:'Get',
+    guiToJSONBtnTooltip:'Get Configuration  From User Interface',
+    checkMissionBtn:"Validate",
+    checkMissionBtnTooltip:"Validate Configuration",
+    validateMsgValid:"Mission Template Valid",
+    validateMsgInvalid:"Mission Template Invalid",
+    validateMsgTitle:"Is Valid?",
 	layout:'accordion',
 	border:false,
 	resource:null, // la risorsa caricata
@@ -51,9 +61,10 @@ mxp.widgets.GcResourceEditor = Ext.extend(Ext.Panel, {
 	
 initComponent: function() {
 this.items=[{
-	xtype:'mxp_gc_db_resourcce_editor',
-	ref:'dbEdit',
-	'authParam':this.authParam,
+	xtype:"mxp_gc_db_resource_editor",
+	ref:"dbEdit",
+	authParam:this.authParam,
+	gcSource:this.gcSource,
 	listeners:{
 		ready:function(dbp){	
 		this.mobEdit.setStore(dbp);	
@@ -64,7 +75,6 @@ this.items=[{
 		},
 		resLoaded:function(){
 			//caricare le risorse in tutti i pannelli :-D
-			
 			//Va ritardato
 			task= new Ext.util.DelayedTask(function(){
     			 this.mobEdit.loadResourceData(this.resource);
@@ -73,7 +83,7 @@ this.items=[{
 		},
 	 afterrender: function(me, eOpts){
                     me.header.on('mousedown',function(e){
-                    if(!me.collapsed)  me.stopCollapse=true;
+                    if(!me.collapsed)  me.stopCollapse=true;//Blocca chiusura panel alemeno non posso chiudere accordion e ne ho uno sempre aperto
                 });
                 },
                 beforecollapse: function(me, dir, an, opt){
@@ -86,7 +96,7 @@ this.items=[{
 	scope:this	
 	}
 },{
-	xtype:'mxp_gc_mobile_resourcce_editor',
+	xtype:'mxp_gc_mobile_resource_editor',
 	ref:'mobEdit',
 	listeners: {
                 afterrender: function(me, eOpts){
@@ -101,8 +111,6 @@ this.items=[{
                         return false;
                     }
                 } 
-                
-                    
                 }
 	
 },//pannello con json modificabile a mano non so se 
@@ -110,7 +118,8 @@ this.items=[{
                 frame:true,
                 layout:'fit',
                 xtype:'form',
-                title:'Advanced configuration',
+                title: this.jsonPanel,
+                iconCls:"gc_advanced_resource_edit",
                 border:false,
                 ref:'jsonP',
                 listeners: {
@@ -130,10 +139,28 @@ this.items=[{
                     
                 },
                 tbar:[	{xtype:'toolbar',
-			 				items:[{
-		       					text:'GUI -> JSON',
-			                    tooltip: 'Generate from Interface',
-			                    iconCls: "accept",
+			 				items:[
+			 				{
+                                text:this.checkMissionBtn,
+                                
+                                tooltip: this.checkMissionBtnTooltip,
+                                iconCls: "accept",
+                                handler: function(btn){ 
+                                    
+                                    Ext.Msg.show({
+                                        title:this.validateMsgTitle,
+                                        msg:this.jsonP.canCommit()? this.validateMsgValid:this.validateMsgInvalid,
+                                        animEl: 'elId',
+                                        icon: Ext.MessageBox.INFO
+});
+                                                                
+                                },scope:this}, ]},'-',
+			 				
+			 				
+			 				{
+		       					text:this.guiToJSONBtnText,
+			                    tooltip: this.guiToJSONBtnTooltip,
+			                    iconCls: "gui_json",
 			                    style:{'text indent':0},
 			                    handler: function(btn){ 
 			                    //Se sono in editing il bottone è disabilitato|| 
@@ -143,24 +170,16 @@ this.items=[{
                                 scope:this
 			                    
 			                  		},'-',{
-		       					text:'JSON -> GUI',
-			                    tooltip: 'Load to Interface',
-			                    iconCls: "addgc",
+		       					text:this.jsonToGuiBtnText,
+			                    tooltip: this.jsonToGuiBtnTooltip,
+			                    iconCls: "json_gui",
 			                    handler: function(btn){ 
 			                    //Se sono in editing il bottone è disabilitato|| 
-			             	
+			                   
 			                    			this.loadResourceData(this.jsonP.getResourceData());
 			                    	 },scope:this
 			                    
-			                  		},'-',{
-			 					text:'Check Mission',
-               					
-			                    tooltip: 'Check Page Validity',
-			                    iconCls: "accept",
-			                    handler: function(btn){ 
-			                    	Ext.Msg.alert('Status', 'Page valid:'+this.canCommit()); 
-			                    		                    	
-			                    },scope:this}, ]}],
+			                  		}],
                 items:[
                			
                 {
@@ -178,22 +197,24 @@ this.items=[{
 					f.setValues({blob:resource});
                 },
                 canCommit :function(){
-                    var f = this.getForm();
-                    return f.isValid();
+                    var f = this.getForm().getValues().blob;
+                    if (f.length<1)return false;
+                    try{
+                    var res= Ext.util.JSON.decode(f);}
+                    catch (e){
+                        return false;    
+                    }
+                    return true;
                 }
             })
 
 ];	
-	
-
-
-
 mxp.widgets.GcResourceEditor.superclass.initComponent.call(this, arguments);	
 },
 //Ritorna json completo da salvare montando i vari pezzi
 getResourceData: function(){
   	//Devo recuperare il titolo da fuori!!
-  	 var	parent =this.findParentByType('mxp_geostore_mission_resource_form');
+  	 var	parent =this.findParentByType('mxp_geostoreresourceform');
   		if(parent && parent.general  && parent.general.getForm()){
   					catField=parent.general.getForm().getFieldValues();
   					
@@ -217,7 +238,7 @@ loadResourceData: function(resource){
                    		var pr=new  OpenLayers.Format.JSON();
     					res= pr.read(resource);
                    		this.resource=res;
-                   		this.jsonP.loadResourceData(resource);		
+                   	//	this.jsonP.loadResourceData(resource);		
                    		this.dbEdit.loadResourceData(this.resource.schema_seg);
                    //Carichi solo il db panle le altre vanno caricate dopo di lui
                 },

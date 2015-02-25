@@ -62,7 +62,7 @@ Ext.ns("mxp.widgets");
 mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
 
     /** api: xtype = mxp_gc_db_resourcce_editor */
-	xtype:'mxp_gc_db_resourcce_editor',
+	xtype:'mxp_gc_db_resource_editor',
     
     /** api: config[forceUpdateStoredData]
      * ``boolean`` if true, force a second call to the /data service of GeoStore to commit the Stored Data.
@@ -71,8 +71,14 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
      */
 
     id:'GCDeResourceEditor',
-   
-   
+    title:'Data Sources',//i18n
+    selectDbLabel:'Select db source',
+    noticeTitle:"Notice",
+    surveyTitle:'Survey',
+    sColName:"Name",
+    sColType:"Type",
+    serverError:"Invalid response from server.",
+    errorLayer:"Trouble creating layer store from response.",   
     //Contorllo per inizializzazione!
     authkey:null,
     authParam:null,
@@ -143,12 +149,9 @@ var baseParams = this.baseParams || {
 				baseParams[this.authParam] = authkey;
 			}
 		}
-	
-		
-		
         //Creo lo store per recuperare le sorgenti dati
         this.dbstore = new GeoExt.data.WMSCapabilitiesStore({
-            url: config.gcSource,//recupero url configurata in localconfig TODO:in fututo dovrà essere configurabile
+            url: this.gcSource,//recupero url configurata in localconfig TODO:in fututo dovrà essere configurabile
             baseParams: baseParams,        
             autoLoad: true,
          
@@ -191,9 +194,9 @@ var baseParams = this.baseParams || {
                   //  delete this.store;
                     var msg;
                     if (type === "response") {
-                        msg = arg || "Invalid response from server.";
+                        msg = arg || this.serverError;
                     } else {
-                        msg = "Trouble creating layer store from response.";
+                        msg =  this.errorLayer;
                     }
                     // TODO: decide on signature for failure listeners
                     this.fireEvent("failure", this, msg, Array.prototype.slice.call(arguments));
@@ -215,7 +218,7 @@ this.dbstore.addEvents(
 //il combobox che contiene la lista daelle sorgenti disponibili  //se mi passono il layer devo settarelo come visisbile e scaricare gli attributi
 this.comboSource = new Ext.form.ComboBox({
   	xtype:'combo',
-  	fieldLabel:'Select db source',
+  	fieldLabel:this.selectDbLabel,
   	typeAhead:false,
     store:this.dbstore,
     displayField: 'name',
@@ -293,9 +296,9 @@ this.comboSource = new Ext.form.ComboBox({
                     //delete this.store;
                     var msg;
                     if (type === "response") {
-                        msg = arg || "Invalid response from server.";
+                        msg = arg || this.serverError;
                     } else {
-                        msg = "Trouble creating layer store from response.";
+                        msg = this.errorLayer;
                     }
                     // TODO: decide on signature for failure listeners
                     this.fireEvent("failure", this, msg, Array.prototype.slice.call(arguments));
@@ -312,9 +315,9 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
                     //delete this.store;
                     var msg;
                     if (type === "response") {
-                        msg = arg || "Invalid response from server.";
+                        msg = arg || this.serverError;
                     } else {
-                        msg = "Trouble creating layer store from response.";
+                        msg = this.errorLayer;
                     }
                     // TODO: decide on signature for failure listeners
                     this.fireEvent("failure", this, msg, Array.prototype.slice.call(arguments));
@@ -325,14 +328,14 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
      //Grid che mostra la lista dei campi disponibili dello schema segnalazioni
    var seg_schema_grid={
    		xtype:'grid',
-   	   	title: "Warning",
+   	   	title: this.noticeTitle,
         store: this.seg_fieldStore,
      	flex:1,
      	autoScroll:true,
 	
     	        cm: new Ext.grid.ColumnModel([
-            {id: "name", header: "Name", dataIndex: "name", sortable: true},
-            {id: "localType", header: "Type", dataIndex: "localType", sortable: true}
+            {id: "name", header: this.sColName, dataIndex: "name", sortable: true},
+            {id: "localType", header: this.sColType, dataIndex: "localType", sortable: true}
         ]),
         sm: new	 Ext.grid.RowSelectionModel({singleSelect:true}),
         autoExpandColumn: "name",
@@ -345,13 +348,13 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
    var sop_schema_grid={
   
    		xtype:'grid',
-   	   	title: 'Survey' ,
+   	   	title: this.surveyTitle ,
         store: this.sop_fieldStore,
       	flex:1,
       	autoScroll:true,
         cm: new Ext.grid.ColumnModel([
-            {id: "name", header: "Name", dataIndex: "name", sortable: true},
-            {id: "localType", header: "Type", dataIndex: "localType", sortable: true}
+            {id: "name", header: this.sColName, dataIndex: "name", sortable: true},
+            {id: "localType", header: this.sColType, dataIndex: "localType", sortable: true}
         ]),
         sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
         autoExpandColumn: "name"
@@ -362,9 +365,9 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
 
 //Setto le impostazioni di base del panel!!
 this.frame=true;
-this.layout='anchor',
-this.iconCls='resource_edit';
-this.title='Data sources';//i18n
+this.layout='anchor';
+this.iconCls='gc_db_resource_edit';
+
 this.border= false;
 this.autoScroll=true;
 		this.items = [
@@ -535,18 +538,19 @@ this.autoScroll=true;
  	return recObj;
  	},
  	               
-                
-                //expect il suo pezzo gia in oggetto se arriva oggetto parsato è gia solo il suo blocco
     loadResourceData: function(resource){
     		
     			s_seg=resource;
     			
     			//Se esiste schema recupero ed inizializzo
     			//Non ho altro da fare perchè tutte le info le recupero dallo stor
-	    		if(s_seg && s_seg.typeName)	
+	    		if(s_seg && s_seg.typeName && this.typeName!=s_seg.typeName ){	
     					this.typeName=s_seg.typeName;
-    		this.setComboValue(this.typeName);
-             	this.isLoaded=true;
+    		            this.setComboValue(this.typeName);
+    		         }else if( this.typeName==s_seg.typeName)
+    		         this.fireEvent("resLoaded",this);
+    		         
+             	         this.isLoaded=true;
              	
              	//per ora disabilito
              			

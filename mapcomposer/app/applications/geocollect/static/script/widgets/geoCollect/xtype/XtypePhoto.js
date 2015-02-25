@@ -28,7 +28,7 @@ mxp.widgets.XtypePhoto = Ext.extend(Ext.FormPanel,{
 
     /** api: xtype = mxp_gc_xtype_photo */
 	xtype:'mxp_gc_xtype_photo',
-	
+	labFieldLabel:"Action Text",
 	//Utilizzat per ripulire i campi valori
    jObj:null,
    
@@ -37,9 +37,9 @@ initComponent: function() {
 this.items=[
 {
    				xtype:'textfield', 
-				fieldLabel:'Label',
+				fieldLabel:this.labFieldLabel,
 				ref:'labField',
-				allowBlank:false,
+				allowBlank:true,
 		    }
     		 ];
     
@@ -83,7 +83,7 @@ loadXtype:function(o){
 getXtype:function(){
    
    o={
-    	"type":null,
+    	
     	"text":this.labField.getValue(),
     	"xtype":"photo"
    };
@@ -97,8 +97,9 @@ getXtype:function(){
  * */
 isValid:function(){
 	
-	if(this.labField.isValid())return true;
-		return false;
+	//if(this.labField.isValid())return true;
+		//return false;
+		return true;
 },
 
 /**
@@ -130,8 +131,6 @@ isDirty:function(){
 	a=Ext.encode(this.jObj);
 	b=Ext.encode(this.getXtype());
 	return (a==b)? false:true;		
-	
-	
 }
 });
 

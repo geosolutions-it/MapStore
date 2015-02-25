@@ -30,8 +30,20 @@ Ext.ns("mxp.widgets");
 mxp.widgets.GcMListResourceEditor = Ext.extend(Ext.Panel, {
 
     /** api: xtype = mxp_gc_db_resourcce_editor */
-	xtype:'mxp_gc_ml_resourcce_editor',
-    
+	xtype:'mxp_gc_ml_resource_editor',
+    nameFieldLabel:'Name Field',
+    descriptionFieldLabel:"Description Field",
+    orderingFieldLabel:"Ordering Field",
+    iconFieldLabel:"Select Icon Field",
+    addCondBtnTooltib:'Add Condition',
+    removeCondBtnTooltib:'Remove Condition',
+    condMsgTitle:"Error",
+    condMsg:"Invalid Condition,  Needed Condition Type, Value And Color",
+    bntValidateText:"Validate",
+    btnValidateTooltip:"Validate Short Preview",
+    validateMsgValid:"Mission Template Valid",
+    validateMsgInvalid:"Mission Template Invalid",
+    validateMsgTitle:"Is Valid?",
     store:null,
   	resource:null,
     resourceNotValid: "Resource not valid",
@@ -39,6 +51,7 @@ mxp.widgets.GcMListResourceEditor = Ext.extend(Ext.Panel, {
     
 initComponent: function() {
      //Setto le impostazioni di base del panel!!
+
 this.frame=true;
 this.layout='form';
 this.border= false;
@@ -59,11 +72,11 @@ defaultComboList={
 
 //Filtro lo store dai campi gemoetry
 
-//creao i combo box
-  this.listName= new Ext.form.ComboBox(Ext.apply(defaultComboList,{fieldLabel:'Name field',store:this.store}));
-  this.listDescription= new Ext.form.ComboBox(Ext.apply(defaultComboList,{fieldLabel:'Description field',store:this.store}));
-  this.listOrdering= new Ext.form.ComboBox(Ext.apply(defaultComboList,{fieldLabel:'Ordering field',store:this.store}));
-  this.listIcon= new Ext.form.ComboBox(Ext.apply(defaultComboList,{fieldLabel:'Select icon field',store:this.store,
+//creo i combo box
+  this.listName= new Ext.form.ComboBox(Ext.apply(defaultComboList,{fieldLabel:this.nameFieldLabel,store:this.store}));
+  this.listDescription= new Ext.form.ComboBox(Ext.apply(defaultComboList,{fieldLabel:this.descriptionFieldLabel,store:this.store}));
+  this.listOrdering= new Ext.form.ComboBox(Ext.apply(defaultComboList,{fieldLabel:this.orderinfFieldLabel,store:this.store}));
+  this.listIcon= new Ext.form.ComboBox(Ext.apply(defaultComboList,{fieldLabel:this.iconFieldLabel,store:this.store,
   listeners:{
 	    select:function(a,rec,c){
 		    this.addConFilter.enable();
@@ -107,7 +120,7 @@ this.items=[ {
 		        			{
 			                    xtype: "button",
 			                    ref:'/addConFilter',
-			                    tooltip: 'Add conditionns',
+			                    tooltip: this.addCondBtnTooltib,
 			                    style: "padding-left: 2px",	
 			                    iconCls: "add",
 			                    disabled:true,
@@ -117,7 +130,7 @@ this.items=[ {
 				    				var filterArray=this.filterContainer.findByType('mxp_filterfield');
 				    				var lastFilter=filterArray[filterArray.length - 1];
 				    				if(lastFilter && !lastFilter.validateValue()){
-				    					Ext.Msg.alert('Status',' Condition must be valid, needed condition type, value and color ');
+				    					Ext.Msg.alert(this.condMsgTitle,this.condMsg);
 				    					return;
 				    				};
 				    					idx =this.listIcon.store.find('name',ltIcon.getValue());
@@ -130,11 +143,17 @@ this.items=[ {
         			]},{
         				
         				xtype:'button',
-        				text:'Validate',
-			                    tooltip: 'Check Page Validity',
-			                    iconCls: "accept",
+        				text:this.bntValidateText,
+			            tooltip: this.btnValidateTooltip,
+			            iconCls: "accept",
 			                    handler: function(btn){ 
-			                    	Ext.Msg.alert('Status', 'Page valid:'+this.canCommit()); 
+			                         Ext.Msg.show({
+                                        title:this.validateMsgTitle,
+                                        msg:this.canCommit()? this.validateMsgValid:this.validateMsgInvalid,
+                                        animEl: 'elId',
+                                        icon: Ext.MessageBox.INFO
+                                        });
+			                    //	Ext.Msg.alert('Status', 'Page valid:'+this.canCommit()); 
 			                    		                    	
 			                    },scope:this
         			}
@@ -173,7 +192,7 @@ this.items=[ {
                 style: "padding-left: 2px",
                 items: {
                     xtype: "button",
-                    tooltip: 'Remove conditionns',
+                    tooltip: this.removeCondBtnTooltib,
                     iconCls: "delete",
                     handler: function(btn){
                     	var grandParent=btn.findParentByType('container').findParentByType('container');

@@ -31,6 +31,10 @@ Ext.ns("mxp.widgets");
 mxp.widgets.OptionsCreator = Ext.extend(Ext.form.CompositeField,{
     /** api: xtype = mxp_gc_otions */
 	xtype:'mxp_gc_options',
+	erroMsg:"Must not contain spaces",
+	insertLabel:"Insert options",
+	btnAddTooltip:"Add Options",
+	btnRemoveTooltip:"Remove Options",
 	
    
 	fieldLabel:'Options',   
@@ -41,7 +45,7 @@ Ext.apply(Ext.form.VTypes, {
                 GCOPT: function(v) {
                     return  new RegExp("[A-Za-z0-9_éèàì',]","i").test(v);
                 },
-                GCOPTText: "Must not contain spaces",
+                GCOPTText: this.erroMsg,
                 GCOPTMask: new RegExp("[A-Za-z0-9_éèàì',]","i")
            });
 
@@ -64,7 +68,7 @@ this.items=[ {
 				
 		     },{
 		     	xtype:'label',
-		     	text:'Insert options',
+		     	text:this.insertLabel,
 		     	style:{
 		     		paddingTop:'5px',
 		     	}
@@ -85,10 +89,9 @@ this.items=[ {
 					
 					
 				}
-		    },{ xtype: "button",
-			                    tooltip: 'Add options',
+		    },{                 xtype: "button",
+			                    tooltip: this.btnAddTooltip,
 			                    iconCls: "add",
-			                    tooltip: 'Add options',
 			                    handler: function(btn){ 
 			                    	this.addOptions();
 			                    	
@@ -97,9 +100,8 @@ this.items=[ {
 			                    },
     						 { 
     						 	xtype: "button",
-			                    tooltip: 'Remove options',
+			                    tooltip: this.btnRemoveTooltip,
 			                    iconCls: "delete",
-			                    tooltip: 'Remove otprons',
 			                    handler: function(btn){ 
 			                    	this.optList.getStore().removeAll();
 			                    	this.optList.clearValue();
@@ -174,7 +176,7 @@ getOptions:function(){
   
   this.optList.getStore().each(function(o){
   	options.push(o.get('name'));  	
-  })
+  });
 	return options;
 },
 /**

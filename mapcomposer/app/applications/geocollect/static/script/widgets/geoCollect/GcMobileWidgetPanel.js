@@ -52,6 +52,31 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
     actions_store : null,
     sourceLabel : 'Origin Fields',
     destLabel : 'Mission Fields',
+    wdgTypeLabel: 'Widget Type',
+    widgetsGridTitle:"Widgets",
+    inputTypeLabel:"Input",
+    wdgGridXTypeHd:"Xtype",
+    wdgGridFiledHd:"Field Id",
+    wdgGridValueHd:"Value",
+    btnValidateTitle:"Validate",
+    btnValidateTooltip:'Page Validate Widgets',
+    validateMsgValid:"Mission Template Valid",
+    validateMsgInvalid:"Mission Template Invalid",
+    validateMsgTitle:"Is Valid?",
+    btnAddTooltip:"Add Widget",
+    addMsgTitle: "Save Widget?",
+    addMsg:"Would You Like To Save Your Widget?",
+    btnDelTooltip:"Delete Widget",
+    delMsgTitle:"Delete Widget",
+    delMsg:"Would You Like To Delete Your Widget?",
+    btnSaveTooltip:"Save Widget",
+    btnSaveText:"Save",
+    pageTitleLabel:"Page Title",
+    pageMsgLabel:"Page Message",
+    saveMsg:"Would You Like To Save Your Widget?",   
+    saveMsgTitle:"Save Widget?",
+    saveAlertMsg:"Invalid widget properties",
+    saveAlertTitle:"Error",
     autoScroll:true,
     //Utilizzat per ripulire i campi valori
     clV : new RegExp("^(\\${origin.)(.*)(})$"),
@@ -84,7 +109,7 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
             xtype : 'grid',
            region:'west',
            width : 340,
-            title : "Widgets",
+            title : this.widgetsGridTitle,
             store : this.wid_store,
             autoScroll : true,
             style : {
@@ -93,17 +118,17 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
             frame : true,
             cm : new Ext.grid.ColumnModel([{
                 id : "name",
-                header : "Xtype",
+                header : this.wdgGridXTypeHd,
                 dataIndex : "xtype",
                 sortable : false
             }, {
                 id : "sop",
-                header : "Field ID",
+                header : this.wdgGridFieldHd,
                 dataIndex : "fieldId",
                 sortable : false
             }, {
                 id : "seg",
-                header : "Value",
+                header : this.wdgGridValueHd,
                 dataIndex : "value",
                 sortable : false
             }]),
@@ -163,24 +188,30 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
             bbar : {
                 xtype : 'toolbar',
                 items : [{
-                    text : 'Validate',
+                    text : this.btnValidateTitle,
                     ref : '/../ckPage',
-                    tooltip : 'Check Page Validity',
+                    tooltip : this.btnValidateTooltip,
                     iconCls : "accept",
                     handler : function(btn) {
-                        Ext.Msg.alert('Status', 'Page valid:' + this.isValid());
-
+                        
+                         Ext.Msg.show({
+                                        title:this.validateMsgTitle,
+                                        msg:this.isValid()? this.validateMsgValid:this.validateMsgInvalid,
+                                        animEl: 'elId',
+                                        icon: Ext.MessageBox.INFO
+                                        });
+                        
                     },
                     scope : this
                 }, '->', {
                     ref : '/../addW',
-                    tooltip : 'Add widget',
+                    tooltip : this.btnAddTooltip,
                     iconCls : "add",
                     handler : function(btn) {
                         if (this.widList.getSelectionModel().getSelected() && this.xpanlForm.isDirty()) {
                           Ext.Msg.show({
-                                title : 'Save Widget?',
-                                msg : 'Would you like to save your widget?',
+                                title :this.addMsgTitle,
+                                msg : this.addMsg,
                                 buttons : Ext.Msg.YESNOCANCEL,
                                 fn : function(res) {
 
@@ -230,14 +261,14 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
                     scope : this
 
                 }, {
-                    tooltip : 'Delete widget',
+                    tooltip : this.btnDelTooltip,
                     iconCls : "delete",
                     ref : '/../delW',
                     handler : function(btn) {
                         if ( rec = this.widList.getSelectionModel().getSelected()) {
                             Ext.Msg.show({
-                                title : 'Delete Widget?',
-                                msg : 'Would you like to delete your whidget?',
+                                title : this.delMsgTitle,
+                                msg : this.delMsg,
                                 buttons : Ext.Msg.YESNOCANCEL,
 
                                 fn : function(res) {
@@ -261,8 +292,8 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
                     scope : this
 
                 }, {
-                    text : 'Save',
-                    tooltip : 'Save widget',
+                    text : this.btnSaveText,
+                    tooltip : this.btnSaveTooltip,
                     iconCls : "accept",
                     ref : '/../saveW',
                     handler : function(btn) {
@@ -343,7 +374,7 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
                 },
                 items : [{
                     xtype : 'label',
-                    text : 'Page Title',
+                    text : this.pageTitleLabel,
                     style : {
                         paddingTop : '4px'
                     },
@@ -355,7 +386,7 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
                 }, {
                     xtype : 'label',
                     hidden : this.pViwHide,
-                    text : 'Page message',
+                    text : this.pageMsgLabel,
                     style : {
                         paddingTop : '4px'
                     },
@@ -374,7 +405,7 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
                 autoScroll:true,
                 items : [{
                     xtype : 'label',
-                    text : 'Widget type',
+                    text :this.wdgTypeLabel,
                     style : {
                         paddingTop : '4px'
                     },
@@ -448,7 +479,7 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
 
                 }, {
                     xtype : 'label',
-                    text : 'Input Type',
+                    text : this.inputTypeLabel,
                     style : {
                         paddingTop : '4px'
                     },
@@ -523,8 +554,8 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
         for ( i = 0; i < this.actions_store.length; i++) {
             act = this.actions_store[i];
             if (act.type == 'photo') {
-                r = this.wid_store.find('xtype', 'photo');
-                r.text = act.text;
+                r = this.wid_store.getAt(this.wid_store.find('xtype', 'photo'));
+                r.json.text = act.text;
             } else if (act.type == 'send')
                 this.wid_store.loadData([{
                     xtype : 'actionsend',
@@ -597,13 +628,13 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
     loadXtype : function(o) {
         //setto
         //Se è uno nuvo creato lo imposto al primo!!
+        
         if (o._created == true) {
             o.xtype = this.xtypeSelector.store.getAt(0).get('value');
         };
         this.setComboVal(this.xtypeSelector, o.xtype, 'value');
 
-        if (this.xpanlForm)
-            this.xpanlForm.loadXtype(o);
+       
         //Setto anche nella lista dei campi se è un campo origine altrimenti lasci al panel
 
         if (o.value && o.value.search(this.clV) > -1)
@@ -612,6 +643,9 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
             this.setComboVal(this.sopSelector, o.fieldId, 'name');
         if (o.type)
             this.setComboVal(this.xdatatypeSelector, o.type, 'value');
+            
+         if (this.xpanlForm)
+            this.xpanlForm.loadXtype(o);    
     },
     /**
      *
@@ -679,7 +713,7 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
     setComboVal : function(selector, val, sfield) {
 
         var store = selector.getStore();
-        idx = store.find(sfield, val);
+        idx = store.find(sfield, new RegExp('^' + val + '$'));
         if (idx > -1) {//SE TROVO PER TYPENAME ALLORA SETTO
             rec = store.getAt(idx);
             selector.setValue(rec.get(sfield));
@@ -746,7 +780,6 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
     },
     //Aggiorna il widget corrente nella lista
     seveWidget : function() {
-
         obj = this.getXtype();
         r = this.widList.getSelectionModel().getSelected();
         //Se è una actionsend defi creare action
@@ -754,9 +787,16 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
 
         //Se photo devo creare la actions relativa problema id
         if (obj.xtype === 'photo') {
+            //DEvi prima rimuovere quello che ho già se esiste
+            if(!r.get('_created')){
+                this.actions_store[this.action_store.findAction('photo')]=this.actionPhoto(obj);
+                }else
             this.actions_store.push(this.actionPhoto(obj));
         }//ho action send
         else if (obj.xtype === 'actionsend') {
+             if(!r.get('_created')){
+                 this.actions_store[this.action_store.findAction('actionsend')]=this.actionSend(obj);
+             }
             this.actions_store.push(this.actionSend(obj));
         } else if (obj.xtype === 'mapViewPoint') {
             if (obj.localize)
@@ -909,11 +949,11 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
     saveMe : function(rowIndex) {
 
         Ext.Msg.show({
-            title : 'Save Widget?',
-            msg : 'Would you like to save your widget?',
+            title : this.saveMsgTitle,
+            msg : this.saveMsg,
             buttons : Ext.Msg.YESNOCANCEL,
             fn : function(res) {
-                var sm = this.widList.getSelectionModel()
+                var sm = this.widList.getSelectionModel();
                 if (res == 'yes') {
                     if (this.xpanlForm.isValid() === true) {
                         this.dirty = true;
@@ -921,7 +961,7 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
                         if (rowIndex)
                             sm.selectRow(rowIndex);
                     } else
-                        Ext.Msg.alert('Status', 'Invalid widget properties');
+                        Ext.Msg.alert(this.saveAlertTitle, this.saveAlertMsg);
 
                 } else if (res == 'no') {
                     rec = sm.getSelected();

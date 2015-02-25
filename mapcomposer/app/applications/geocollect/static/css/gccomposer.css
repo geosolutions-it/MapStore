@@ -1,0 +1,9 @@
+.gc-icon-map
+{
+    background-image: url(../externals/gxp/src/theme/img/silk/map.png);
+}
+.gc-icon-notice
+{
+    background-image: url(../images/report.png);
+}
+.required .x-form-item-label {font-weight:bold;color:red;}

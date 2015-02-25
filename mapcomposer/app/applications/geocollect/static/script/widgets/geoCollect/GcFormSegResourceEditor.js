@@ -33,7 +33,6 @@ mxp.widgets.GcFormSegResourceEditor = Ext.extend(mxp.widgets.GcFormResourceEdito
 
     /** api: xtype = mxp_gc_formseg_resourcce_editor */
 	xtype:'mxp_gc_formseg_resourcce_editor',
-    
     seg_store:null,
     sop_store:null, 
     pages_store:null,	

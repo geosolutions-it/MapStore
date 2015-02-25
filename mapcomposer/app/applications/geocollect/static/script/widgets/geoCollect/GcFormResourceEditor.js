@@ -30,9 +30,27 @@ Ext.ns("mxp.widgets");
  */
 mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 
-	/** api: xtype = mxp_gc_form_resourcce_editor */
-	xtype : 'mxp_gc_form_resourcce_editor',
-
+	/** api: xtype = mxp_gc_form_resource_editor */
+	xtype : 'mxp_gc_form_resource_editor',
+    surveyFormTitle:"Form Title",
+    btnAddPageText:"New Page",
+    btnAddPageTooltip:"Create A New Page",
+    savePageMsgTitle:"Save Page?",
+    savePageMsg:"Would You Like To Save Your Page?",
+    saveErroMsgTitle:"Error",
+    saveErrorMsg:"Invalid Page Properties",
+    btnDelPageText:"Delete Page",
+    btnDelPageTooltip:"Delete Active Page",
+    delPageMsgTitle:"Delete Page?",
+    delPageMsg:"Would you like to delete your Page?",
+    btnSavePageText:"Save",
+    btnSavePageTooltip:"Save active Page",
+    pagesGridTitle:"Pages",
+    btnValidateText:"Validate",
+    btnValidateTooltip:"Check Preview Validity",
+    validateMsgValid:"Mission Template Valid",
+    validateMsgInvalid:"Mission Template Invalid",
+    validateMsgTitle:"Is Valid?",
 	seg_store : null,
 	sop_store : null,
 	pages_store : null,
@@ -71,7 +89,7 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 
 			items : ['-', {
 				xtype : 'label',
-				text : 'Form Title '
+				text : this.surveyFormTitle
 
 			}, ' ', {
 				ref : '//formTitle',
@@ -80,15 +98,15 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 
 			}, '-', {
 				ref : '//addP',
-				text : 'New Page',
+				text : this.btnAddPageText,
 				iconCls : "addgc",
-				tooltip : 'Create a new Page',
+				tooltip : this.btnAddPageTooltip,
 				handler : function(btn) {
 
 					if (this.pageList.getSelectionModel().getSelected() && this.pageWidget.isDirty()) {
 						Ext.Msg.show({
-							title : 'Save Page?',
-							msg : 'Would you like to save your page?',
+							title : this.savePageMsgTitle,
+							msg : this.savePageMsg,
 							buttons : Ext.Msg.YESNOCANCEL,
 							fn : function(res) {
 								if (res == 'yes') {
@@ -101,7 +119,7 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 										}], true);
 										this.pageList.getSelectionModel().selectLastRow();
 									} else
-										Ext.Msg.alert('Status', 'Invalid page properties');
+										Ext.Msg.alert(this.saveErroMsgTitle, this.saveErrorMsg);
 								} else if (res == 'no') {
 									//se è nuovo devo eliminarlo
 									rec = this.pageList.getSelectionModel().getSelected();
@@ -131,15 +149,15 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 				scope : this
 			}, {
 				ref : '//delP',
-				text : 'Delete Page',
+				text : this.btnDelPageText,
 				iconCls : "deletegc",
-				tooltip : 'Delete active Page',
+				tooltip : this.btnDelPageTooltip,
 				handler : function(btn) {
 
 					if ( rec = this.pageList.getSelectionModel().getSelected()) {
 						Ext.Msg.show({
-							title : 'Delete Page?',
-							msg : 'Would you like to delete your Page?',
+							title : this.delPageMsgTitle,
+							msg : this.delPageMsg,
 							buttons : Ext.Msg.YESNOCANCEL,
 
 							fn : function(res) {
@@ -165,9 +183,9 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 				scope : this
 			}, '-', {
 				ref : '//saveP',
-				text : 'Save',
+				text : this.btnSavePageText,
 				iconCls : "accept",
-				tooltip : 'Save active Page',
+				tooltip : this.btnSavePageTooltip,
 				handler : function(btn) {
 
 					this.saveMe();
@@ -183,7 +201,7 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 			xtype : 'grid',
 			width : 150,
 			collapsible : true,
-			title : "Pages",
+			title : this.pagesGridTitle,
 			store : this.pages_store,
 			autoScroll : true,
 			autoExpandColumn : "tit",
@@ -228,13 +246,21 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 
 				xtype : 'toolbar',
 				items : [{
-					text : 'Validate',
+					text : this.btnValidateText,
 					ref : '/../ckForm',
 					iconCls : "accept",
-					tooltip : 'Check Preview Validity',
+					tooltip : this.btnValidateTooltip,
 					handler : function(btn) {
 						this.getResourceData();
-						Ext.Msg.alert('Status', 'Page valid:' + this.isValid());
+						
+						
+						   Ext.Msg.show({
+                                        title:this.validateMsgTitle,
+                                        msg:this.isValid()? this.validateMsgValid:this.validateMsgInvalid,
+                                        animEl: 'elId',
+                                        icon: Ext.MessageBox.INFO
+                                        });
+						
 
 					},
 					scope : this
@@ -461,8 +487,8 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 
 	saveMe : function(rowIndex) {
 		Ext.Msg.show({
-			title : 'Save Page?',
-			msg : 'Would you like to save your page?',
+			title : this.savePageMsgTitle,
+			msg : this.savePageMsg,
 			buttons : Ext.Msg.YESNOCANCEL,
 			fn : function(res) {
 				var sm = this.pageList.getSelectionModel();
@@ -473,7 +499,7 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 						if (rowIndex)
 							sm.selectRow(rowIndex);
 					} else
-						Ext.Msg.alert('Status', 'Invalid page properties');
+						Ext.Msg.alert(this.saveErroMsgTitle, this.saveErroMsg);
 				} else if (res == 'no') {
 					//se è nuovo devo eliminarlo
 					rec = sm.getSelected();

@@ -28,7 +28,9 @@ mxp.widgets.XActionSend = Ext.extend(Ext.FormPanel,{
 
     /** api: xtype = mxp_gc_xtype_label */
 	xtype:'mxp_gc_xtype_actionsend',
-	
+	valueFieldLabel:"Text",
+	labFieldLabel:"Message",
+		
 	//Utilizzat per ripulire i campi valori
    clV:new RegExp("^(\\${origin.)(.*)(})$"),
    jObj:null,
@@ -37,13 +39,13 @@ initComponent: function() {
 
 this.items=[{
    				xtype:'textfield', 
-				fieldLabel:'Text',
+				fieldLabel:this.valueFieldLabel,
 				ref:'valueField',
 				allowBlank:false
 				
 		     },{
    				xtype:'textfield', 
-				fieldLabel:'Message',
+				fieldLabel:this.labFieldLabel,
 				ref:'labField',
 				allowBlank:false,
 		       }

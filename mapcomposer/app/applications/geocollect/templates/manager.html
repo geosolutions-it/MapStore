@@ -34,7 +34,7 @@
     <!-- colorpicker resources -->
     <link rel="stylesheet" type="text/css" href="externals/colorpicker/css/colorpicker.css">
     <script type="text/javascript" src="script/colorpicker.js"></script> 
-    <link rel="stylesheet" type="text/css" href="externals/ext/ux/css/Spinner.css">
+    
     
     <!-- translation data  -->
     <script type="text/javascript" src="externals/mapmanager/translations/en.js"></script>
@@ -50,6 +50,10 @@
     <script type="text/javascript" src="script/ux.js"></script>
     <script type="text/javascript" src="script/mapmanager.js"></script>
     <script type="text/javascript" src="script/geocollect.js"></script>
+   <link rel="stylesheet" type="text/css" href="css/Spinner.css">
+   <link rel="stylesheet" type="text/css" href="css/geocollects.css" />	
+  <!--script type="text/javascript" src="translations/it.js"></script-->
+
     <!-- QR Code -->
     <script type="text/javascript" src="script/qrcodejs.js"></script>
     <!-- common data  -->
@@ -153,7 +157,7 @@
         };
         
         Ext.Ajax.request({
-              url: customConfigName ? "config/" + customConfigName + ".js"  : "config/geocollectManager.js",
+              url: customConfigName ? "config/" + customConfigName + ".js"  : "config/geoCollectManager.js",
               method: 'GET',
               success: function(response, opts){      
                                           
@@ -214,4 +218,3 @@
 		<div id="wrap" style="visibility:hidden"></div>
     </body>
 </html>
-   

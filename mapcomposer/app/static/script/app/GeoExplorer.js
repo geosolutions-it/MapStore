@@ -336,7 +336,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 checked: true,
                 iconCls: "gxp-icon-graticule",
                 ptype: "gxp_graticule"
-            })
+            });
         }
             
         GeoExplorer.superclass.constructor.apply(this, arguments);
@@ -467,8 +467,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     initPortal: function() {
         this.appMask = new Ext.LoadMask(Ext.getBody(), {msg: this.mainLoadingMask});
 		this.appMask.show();
-		
-        var westPanel = new Ext.TabPanel({
+
+        var westPanel = new Ext.TabPanel(Ext.applyIf(this.customComposerWest || {}, {
             border: false,
             activeTab:0,
             id: 'west',
@@ -493,7 +493,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 					title: this.legendText
                 }
             ]
-        });
+        }));
         
         this.toolbar = new Ext.Toolbar({
             disabled: true,

@@ -28,7 +28,9 @@ mxp.widgets.XtypeLabel = Ext.extend(Ext.FormPanel,{
 
     /** api: xtype = mxp_gc_xtype_label */
 	xtype:'mxp_gc_xtype_label',
-	
+	idFieldLabel:"Field",
+    labFieldLabel:"Label",
+    valueFieldLabel:"Value",
 	//Utilizzat per ripulire i campi valori
    clV:new RegExp("^(\\${origin.)(.*)(})$"),
    jObj:null,
@@ -37,7 +39,7 @@ initComponent: function() {
 
 this.items=[{
    				xtype:'textfield', 
-				fieldLabel:'Field ',
+				fieldLabel:this.idFieldLabel,
 				ref:'idField',
 				name:'fieldId',
 				disabled:true,
@@ -46,7 +48,7 @@ this.items=[{
 },			
 {
    				xtype:'textfield', 
-				fieldLabel:'Value',
+				fieldLabel:this.valueFieldLabel,
 				ref:'valueField',
 				name:'value',
 				disabled:!this.isFielIdActive(),
@@ -54,7 +56,7 @@ this.items=[{
 				
 		     },{
    				xtype:'textfield', 
-				fieldLabel:'Label',
+				fieldLabel:this.labFieldLabel,
 				ref:'labField',
 				name:'label',
 				allowBlank:false,
@@ -107,11 +109,11 @@ loadXtype:function(o){
  * */
 getXtype:function(){
    
-var o   ={
-    	"type":null,
+var o ={
+    	"type":"text",
     	"value":this.valueField.getValue(),
     	"label":this.labField.getValue(),
-    	 "xtype":"label"
+    	"xtype":"label"
    };
    if(this.isFielIdActive())o.fieldId=this.idField.getValue();
 
@@ -125,8 +127,8 @@ var o   ={
  * */
 isValid:function(){
 	
-	a= (this.isFielIdActive())? this.idField.isValid():true;
-	b= (this.isSegActive())? this.valueField.isValid():true;
+	var a= (this.isFielIdActive())? this.idField.isValid():true;
+	var b= (this.isSegActive())? this.valueField.isValid():true;
 	if(this.labField.isValid() && b && a)return true;
 		return false;
 },
@@ -156,7 +158,7 @@ setField:function(){
 	 if(this.isSegActive())
 	 	{var parent= this.findParentByType('mxp_gc_mobile_widget_panel');
 	    val = parent.fieldSelector.getValue();
-	    this.valueField.setValue('${origin.'+val+'}');}
+	    this.valueField.setValue("${origin."+val+"}");}
 	    
 },
 //Recupera il valore dal widget fields e lo setta!!
@@ -184,9 +186,9 @@ isSegActive:function(){
  * Return boolean
  */
 isDirty:function(){
-	a=Ext.encode(this.jObj);
-	b=Ext.encode(this.getXtype());
-	return (a==b)? false:true;		
+    a=Ext.encode(this.jObj);
+    b=Ext.encode(this.getXtype());
+    return (a==b)? false:true;  	
 	
 	
 }

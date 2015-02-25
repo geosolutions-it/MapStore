@@ -30,7 +30,8 @@ mxp.widgets.XtypeDateField = Ext.extend(Ext.FormPanel,{
 
     /** api: xtype = mxp_gc_xtype_textfield */
 	xtype:'mxp_gc_xtype_datefield',
-	
+	idFieldLabel:"Field",
+    labFieldLabel:"Label",
 	//Utilizzat per ripulire i campi valori
    clV:new RegExp("^(\\${origin.)(.*)(})$"),
    jObj:null,
@@ -39,14 +40,14 @@ initComponent: function() {
 
 this.items=[{
    				xtype:'textfield', 
-				fieldLabel:'Field ',
+				fieldLabel:this.idFieldLabel,
 				ref:'idField',
 				disabled:true,
 				allowBlank:false
 			},
 			{
    				xtype:'textfield', 
-				fieldLabel:'Label',
+				fieldLabel:this.labFieldLabel,
 				ref:'labField',
 				allowBlank:false,
 		    },
@@ -55,12 +56,13 @@ this.items=[{
    				xtype:'textfield', 
 				fieldLabel:'Date Format',
 				ref:'formatField',
-				allowBlank:false	
+				hidden:"true",
+				allowBlank:true	
 		     }
 		     ];
     
     
-this.on('render',this.setidField,this)
+this.on('render',this.setidField,this);
 
     
              mxp.widgets.XtypeDateField.superclass.initComponent.call(this, arguments);
@@ -107,12 +109,13 @@ loadXtype:function(o){
  */
 getXtype:function(){
    
-   o={
+   o={  
+        "type":"text",
    		"fieldId":this.idField.getValue(),
     	"label":this.labField.getValue(),
-    	"xtype":"datefield",
-    	"format":this.formatField.getValue()
+    	"xtype":"datefield"
    };
+   if(this.formatField.getValue())o.format=this.formatField.getValue();
   
 	return o;
 },
@@ -161,11 +164,9 @@ setidField:function(){
  * Return boolean
  */
 isDirty:function(){
-	a=Ext.encode(this.jObj);
-	b=Ext.encode(this.getXtype());
-	return (a==b)? false:true;		
-	
-	
+    a=Ext.encode(this.jObj);
+    b=Ext.encode(this.getXtype());
+    return (a==b)? false:true;      
 }
 });
 

@@ -48,7 +48,17 @@ mxp.widgets.XtypeMap = Ext.extend(Ext.FormPanel,{
 
     /** api: xtype = mxp_gc_xtype_mapViewPoint */
 	xtype:'mxp_gc_xtype_mapViewPoint',
-	
+	descrFieldLabel:"Description",
+	editableFieldLabel:"Ediatable",
+	panFieldLabel:"Allow Pan",
+	zoomFieldLabel:"Allow Zoom",
+	displayFieldLabel:"Dispaly Value",
+	centerFieldLabel:"Center",
+	centerMsgLabel:"Message",
+	localizeFieldLabel:"Localize",
+	localizeMsgLabel:"Message",
+	zoomLevelLabel:"Zoom Level",
+	mapHeightLabel:"Map heigth",
 	//Utilizzat per ripulire i campi valori
    clV:new RegExp("^(\\${origin.)(.*)(})$"),
    jObj:null,
@@ -56,29 +66,29 @@ initComponent: function() {
 
 this.items=[ {
    				xtype:'textfield', 
-				fieldLabel:'Description',
+				fieldLabel:this.descrFieldLabel,
 				ref:'descriptionField',
 				allowBlank:true
 				
 		     },{
    				xtype:'checkbox', 
-				fieldLabel:'Editable',
+				fieldLabel:this.editableFieldLabel,
 				ref:'editCk'
 				
 		    }
 		    ,{
    				xtype:'checkbox', 
-				fieldLabel:'Allow Pan',
+				fieldLabel:this.panFieldLabel,
 				ref:'panCk'
 				
 		    }
 		    ,{
    				xtype:'checkbox', 
-				fieldLabel:'Allow Zoom',
+				fieldLabel:this.zoomFieldLabel,
 				ref:'zoomCk'
 			},{
    				xtype:'checkbox', 
-				fieldLabel:'Display Value',
+				fieldLabel:this.displayFieldLabel,
 				ref:'origValCk'
 				
 		    },{
@@ -86,18 +96,18 @@ this.items=[ {
            
            	items:[{
    				xtype:'checkbox',
-				 fieldLabel: 'Center',
+				fieldLabel: this.centerFieldLabel,
 				ref:'/centerCk',
 				listeners:{
 					check:function( o, checked ){
 						if(checked)this.centerMsg.enable();
-						else 	this.centerMsg.disable()					
+						else 	this.centerMsg.disable();					
 					},scope:this
 				}
 				
 		    },{
 		    	xtype:'label',
-		    	text:'Message',
+		    	text:this.centerMsgLabel,
 		    	style:{
 		    		paddingTop:'3px'
 		    	}
@@ -113,19 +123,19 @@ this.items=[ {
            
            	items:[{
    				xtype:'checkbox', 
-				fieldLabel:'Localize',
+				fieldLabel:this.localizeFieldLabel,
 				ref:'/localizeCk',
 				listeners:{
 					check:function( o, checked ){
 						if(checked)this.localizeMsg.enable();
-						else 	this.localizeMsg.disable()					
+						else 	this.localizeMsg.disable();					
 					},scope:this
 				}
 				
 		    }
 		    ,{
 		    	xtype:'label',
-		    	text:'Message',
+		    	text:this.localizeMsgLabel,
 		    	style:{
 		    		paddingTop:'3px'
 		    	}
@@ -138,7 +148,7 @@ this.items=[ {
 		    }
 		    ]},{
             	xtype: 'spinnerfield',
-            	fieldLabel: 'Zoom level',
+            	fieldLabel: this.zoomLevelLabel,
             	name: 'Map Height',
             	ref:'zoomLev',
             	minValue: 1,
@@ -147,7 +157,7 @@ this.items=[ {
            }
 		    ,{
             	xtype: 'spinnerfield',
-            	fieldLabel: 'Map Height',
+            	fieldLabel: this.mapHeightLabel,
             	name: 'Map Height',
             	ref:'heigthFild',
             	minValue: 300,
@@ -190,8 +200,8 @@ loadXtype:function(o){
 	this.jObj=o;
 	if(o.attributes){	
 		if(o.attributes.editable) this.editCk.setValue(o.attributes.editable);
-		if(o.attributes.disablePan) this.panCk.setValue(o.attributes.disablePan);
-		if(o.attributes.disableZoom) this.zoomCk.setValue(o.attributes.disableZoom);
+		if(o.attributes.disablePan) this.panCk.setValue(!o.attributes.disablePan);
+		if(o.attributes.disableZoom) this.zoomCk.setValue(!o.attributes.disableZoom);
 		if(o.attributes.displayOriginalValue) this.origValCk.setValue(o.attributes.displayOriginalValue);
 		if(o.attributes.description)this.descriptionField.setValue(o.attributes.description);
 		if(o.attributes.height)this.heigthFild.setValue(o.attributes.height);
@@ -202,7 +212,7 @@ loadXtype:function(o){
 			}
 		if(o.center){
 			this.centerCk.setValue(o.center);
-			this.centerMsg.setValue(o.centerMsg)
+			this.centerMsg.setValue(o.centerMsg);
 			}			
 	}
 
@@ -229,21 +239,23 @@ getXtype:function(){
    
    var attributes={
    	'editable':this.editCk.getValue(),
-   	'disablePan':this.panCk.getValue(),
-   	'disableZoom':this.zoomCk.getValue(),
+   	'disablePan':!this.panCk.getValue(),
+   	'disableZoom':!this.zoomCk.getValue(),
    	'displayOriginalValue':this.origValCk.getValue(),
-   	'height':this.heigthFild.getValue(),
-   	'zoom':this.zoomLev.getValue()
+   	'height':this.heigthFild.getValue()
+   	
    };
+    if(this.zoomCk.getValue())attribute.zoom=this.zoomLev.getValue();
     if(this.descriptionField.getValue()) attributes.description=this.descriptionField.getValue();
    
    geom= this.getGeometryFields();
    var o={
     	"type":'geoPoint',
-    	"value":(this.isSegActive())? "${origin."+geom.value+"}":'',
-    	"fieldId":geom.fieldId,
+//    	"value":(this.isSegActive())? "${origin."+geom.value+"}":"",
+        "value":(this.isSegActive())? "${origin.the_geom}":"",
     	"xtype":"mapViewPoint",
-    	"attributes":attributes,
+    	"fieldId":geom.fieldId,
+    	"attributes":attributes
       	
    };
   if(this.localizeCk.getValue()){
@@ -301,9 +313,9 @@ getGeometryFields:function(){
 	fieldId=	 parent.sopSelector.getValue();
 	
 	return  {
-		'value':value,
-		'fieldId':fieldId
-		}
+		"value":value,
+		"fieldId":fieldId
+		};
 	
 },
 isSegActive:function(){

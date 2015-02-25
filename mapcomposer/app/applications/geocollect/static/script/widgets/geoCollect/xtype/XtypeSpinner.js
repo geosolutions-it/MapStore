@@ -31,7 +31,9 @@ mxp.widgets.XtypeSpinner= Ext.extend(Ext.FormPanel,{
 
     /** api: xtype = mxp_gc_xtype_spinner */
 	xtype:'mxp_gc_xtype_spinner',
-	
+	idFieldLabel:"Field",
+    labFieldLabel:"Label",
+    optFieldLabel:"Options",
 	//Utilizzat per ripulire i campi valori
    clV:new RegExp("^(\\${origin.)(.*)(})$"),
 
@@ -41,25 +43,25 @@ initComponent: function() {
 
 this.items=[{
    				xtype:'textfield', 
-				fieldLabel:'Field ',
+				fieldLabel:this.idFieldLabel,
 				ref:'idField',
 				disabled:true,
 				allowBlank:false
 			},
 			{
    				xtype:'textfield', 
-				fieldLabel:'Label',
+				fieldLabel:this.labFieldLabel,
 				ref:'labField',
 				allowBlank:false,
 		    },{
    				xtype:'mxp_gc_options', 
-				fieldLabel:'Options',
+				fieldLabel:this.optFieldLabel,
 				ref:'optField'
 			}
 		     ];
     
     
-this.on('render',this.setidField,this)
+this.on('render',this.setidField,this);
 
     
              mxp.widgets.XtypeSpinner.superclass.initComponent.call(this, arguments);
@@ -84,7 +86,9 @@ this.on('render',this.setidField,this)
  * */
 loadXtype:function(o){
 	this.jObj=o;
-	if(o.label)this.labField.setValue(o.label);
+	if(o.label){
+	    this.labField.setRawValue(o.label);
+	    }
 	this.setidField();
 	if(o.options)this.optField.loadOptions(o.options);
 },
@@ -105,12 +109,11 @@ loadXtype:function(o){
  *				 }
  * */
 getXtype:function(){
-  o={
+  o={   
+        "type":"text",
    		"fieldId":this.idField.getValue(),
-    	"type":null,
     	"label":this.labField.getValue(),
-    	"xtype":"spinner",
-    	
+    	"xtype":"spinner"
    };
    var opt=this.optField.getOptions();
   if(opt.length)o.options=opt;
@@ -162,12 +165,10 @@ setidField:function(){
  * Return boolean
  */
 isDirty:function(){
-	a=Ext.encode(this.jObj);
-	b=Ext.encode(this.getXtype());
-	return (a==b)? false:true;		
-	
-	
-}
+	   
+    a=Ext.encode(this.jObj);
+    b=Ext.encode(this.getXtype());
+    return (a==b)? false:true;      }
 });
 
 Ext.reg(mxp.widgets.XtypeSpinner.prototype.xtype, mxp.widgets.XtypeSpinner);

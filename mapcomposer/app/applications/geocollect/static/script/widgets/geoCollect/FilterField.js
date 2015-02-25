@@ -597,7 +597,7 @@ mxp.widgets.FilterField = Ext.extend(Ext.form.CompositeField, {
 			//TODO:: Da sistemare esteica validare che ci sia un colore  e magari far comparire dopo selzione valore
 
 			xtype : 'colorpickerfield',
-			fieldLabel : 'pick a color',
+			//fieldLabel : 'pick a color',
 			width : 40,
 			ref:'colorfield',
 			editable:false,

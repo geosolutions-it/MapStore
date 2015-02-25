@@ -36,7 +36,7 @@ mxp.plugins.GeostoreMissionResourceEditor = Ext.extend(mxp.plugins.Tool, {
     /** api: ptype = mxp_geostore_mission_resource_edito */
     ptype: "mxp_geostore_mission_resource_editor",
     
-    buttonText: "Mission Editor",
+    buttonText: "Mission Configuration",
     outputItemId: "MissionResourceEditor",
 
     loginManager: null,    
@@ -45,7 +45,7 @@ mxp.plugins.GeostoreMissionResourceEditor = Ext.extend(mxp.plugins.Tool, {
     /**
      * icon for the plugin
      */
-    iconCls: 'resource_edit',
+    iconCls: 'mission_resource_edit',
 
     
     /** api: method[addActions]

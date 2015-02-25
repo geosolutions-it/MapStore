@@ -31,8 +31,8 @@ Ext.ns("mxp.widgets");
  */
 mxp.widgets.GcPViewResourceEditor = Ext.extend(mxp.widgets.GcMobileWidgetPanel, {
 
-    /** api: xtype = mxp_gc_pview_resourcce_editor */
-	xtype:'mxp_gc_pview_resourcce_editor',
+    /** api: xtype = mxp_gc_pview_resource_editor */
+	xtype:'mxp_gc_pview_resource_editor',
     
 initComponent: function() {                    
 

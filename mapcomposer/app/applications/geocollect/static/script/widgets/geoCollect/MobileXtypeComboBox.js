@@ -39,8 +39,8 @@ filterType:{
             "^((?!PointPropertyType).)*$", "i"
         ),
 	'datefield':new RegExp("^(date|datetime|string|text)$", "i" ),
-	'checkbox':new RegExp("^(boolean)$", "i" ),
-	//'checkbox':new RegExp("^((?!PointPropertyType).)*$", "i"),
+	//'checkbox':new RegExp("^(boolean|string|text)$", "i" ),
+	'checkbox':new RegExp("^((?!PointPropertyType).)*$", "i"),
 	'photo':new RegExp("^(!?)$", "i" ),
 	'mapViewPoint':new RegExp("^(PointPropertyType)$", "i" ),
 	'separatorWithIcon':new RegExp("^((?!PointPropertyType).)*$", "i"),

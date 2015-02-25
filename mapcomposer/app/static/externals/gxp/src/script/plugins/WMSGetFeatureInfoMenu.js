@@ -817,7 +817,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 					url: this.picturesBrowserConfig.baseUrl
 					     +'?action=get_filelist&folder='
 						 +this.picturesBrowserConfig.folder
-						 +feature.data[this.picturesBrowserConfig.featureProperty]+this.picturesBrowserConfig.urlSuffix,
+						 +feature.data[this.picturesBrowserConfig.featureProperty]+"/"+feature.fid,
 					//url: 'http://84.33.2.28/opensdi2-manager/mvc/fileManager/extJSbrowser?action=get_filelist&folder='+'/geocollect/media/punti_abbandono/'+feature.data["id"]+'/2',
 					autoLoad: true,
 					root: 'data',
