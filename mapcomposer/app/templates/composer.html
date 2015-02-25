@@ -439,7 +439,9 @@
                 }, 
                 'ready' : function(){
                     app.modified = false;
-					
+                    if(app.mapPanel.map.restrictedExtent && app.mapPanel.map.fractionalZoom){
+                        app.mapPanel.map.zoomToExtent(app.mapPanel.map.restrictedExtent);
+                    }
 					// ///////////////////////////////////////////////////
 					// Visualizing metadata tab and layers at startup 
 					// ///////////////////////////////////////////////////
