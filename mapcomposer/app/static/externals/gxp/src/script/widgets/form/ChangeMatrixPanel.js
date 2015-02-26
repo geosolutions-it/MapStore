@@ -131,7 +131,12 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
     		title: this.roiTitleText,
 			layout : 'form',
 			autoScroll: true,
-	        items: this.getRoiItems(config)
+	        items: this.getRoiItems(config),
+			listeners: {
+				expand: function(panel){
+					panel.doLayout();
+				}
+			}
 	    }];
 	},
 
