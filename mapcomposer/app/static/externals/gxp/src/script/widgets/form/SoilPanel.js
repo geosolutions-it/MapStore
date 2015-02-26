@@ -774,6 +774,12 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			}
 		}
 		
+		if (this.useCuda) {
+			params.jcuda = true;
+		} else {
+			params.jcuda = false;
+		}
+		
 		// get inputs
 		var inputs = {
 			name : new OpenLayers.WPSProcess.LiteralData({
@@ -808,6 +814,9 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				value : this.roiFieldSet.returnType != null 
 					&& this.roiFieldSet.returnType.getValue 
 					&& this.roiFieldSet.returnType.getValue() == 'subs' ? "AU_SUBS" : "AU_LIST"
+			}),			
+			jcuda : new OpenLayers.WPSProcess.LiteralData({
+				value : params.jcuda.toString()
 			})
 		};
 
