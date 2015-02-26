@@ -379,6 +379,39 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 										scope: this,
 										rowclick: function(el, rowIndex, evt){
 											this.paramGrid.removeButton.enable();
+										},
+										afterrender: function(propertyGrid) {
+											// register listeners on relevant grid editors
+											// (workaround for issue #547: https://github.com/geosolutions-it/MapStore/issues/547)
+											if (Ext.isChrome) {
+												var cm = propertyGrid.getColumnModel();
+												var fieldTypes = ['date', 'string', 'number']; // fix only editors using a TextField or a subclass of TextField
+												Ext.each(fieldTypes, function(fieldType) {
+													var editor = cm.editors[fieldType];
+													if (editor) {
+														editor.addListener("beforestartedit", function() {
+															var currentScroll = propertyGrid.getGridEl().child(".x-grid3").getScroll();
+															// save currentScroll as a property of the grid
+															propertyGrid.savedScroll = currentScroll;
+															//console.log("saved grid scroll value: { left: " + currentScroll.left + ", top: " + currentScroll.top + "}");
+														});
+														
+														editor.addListener("startedit", function() {
+															var savedScroll = propertyGrid.savedScroll;
+															if (savedScroll) {
+																var el = propertyGrid.getGridEl().child(".x-grid3");
+																var delayedTask = new Ext.util.DelayedTask(function() {
+																	// restore grid's scroll value
+																	el.scrollTo("left", savedScroll.left);
+																	el.scrollTo("top", savedScroll.top);
+																	//console.log("restored grid scroll value: { left: " + savedScroll.left + ", top: " + savedScroll.top + "}");
+																});
+																delayedTask.delay(10);
+															}													
+														});
+													}
+												});
+											}
 										}
 									},									
 									bbar:["->",{
