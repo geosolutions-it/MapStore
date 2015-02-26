@@ -337,6 +337,7 @@
               '<div align="center" style="background-image:url(theme/app/img/banner/lose/Destination-bg.png);background-repeat: repeat;width:100%;height:100%">',
               '<img src="theme/app/img/banner/lose/BannerDestination.png" style="float:left"/>',
 			  '<img src="theme/app/img/banner/lose/BannerDestination1.png" style="float:right;position:absolute;top:0px;right:0px;"/>',
+              '<div id="logout" style="position:absolute;bottom:0;right:0"></div>',
               '</div>',
               //'<td>',
               //'<img src="theme/app/img/logos/banner4.gif"/>',
@@ -411,46 +412,190 @@
 			      Ext.Ajax.defaultHeaders = {
                 'Authorization' : auth
             };*/
-
-            app = new GeoExplorer.Composer({
-                modified: false,
-                proxy: proxy,
-				tools: serverConfig.tools,
-                xmlJsonTranslateService: serverConfig.xmlJsonTranslateService,
-				embedding: serverConfig.embedding,
-				wfsBaseURL: serverConfig.wfsBaseURL,
-				wfsLayerName: serverConfig.wfsLayerName,
-                defaultSourceType: "gxp_wmssource",
-                renderToTab : 'appTabs',
-                about: {
-                    title: "Custom Map",
-                    'abstract': "Custom Map",
-                    contact: "<a href='#'>#</a>."
-                },
-                sources: sources,
-				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
-				//showGraticule: false,  //Set showGraticule property to true only if the map projection is EPSG:4326 
-                georeferences: comuni,
-                cswconfig: serverConfig.cswconfig,
-                map: serverConfig.map,
-				customTools: serverConfig.customTools
-            }, mapIdentifier, authorization, fullScreen);   
             
-            app.on({
-                'portalready' : function() {              	
-                    if(fullScreen) {
-                        var westPanel = Ext.getCmp('west');
-                        westPanel.setActiveTab('legend');
-                        westPanel.hideTabStripItem('tree');
+            var initComposer = function(userDetails){
+                var app = new GeoExplorer.Composer({
+                    modified: false,
+                    proxy: proxy,
+                    tools: serverConfig.tools,
+                    xmlJsonTranslateService: serverConfig.xmlJsonTranslateService,
+                    embedding: serverConfig.embedding,
+                    wfsBaseURL: serverConfig.wfsBaseURL,
+                    wfsLayerName: serverConfig.wfsLayerName,
+                    defaultSourceType: "gxp_wmssource",
+                    renderToTab : 'appTabs',
+                    about: {
+                        title: "Custom Map",
+                        'abstract': "Custom Map",
+                        contact: "<a href='#'>#</a>."
+                    },
+                    userToken: userDetails.token,
+                    user: userDetails.user,
+                    sources: sources,
+                    scaleOverlayUnits: serverConfig.scaleOverlayUnits,
+                    //showGraticule: false,  //Set showGraticule property to true only if the map projection is EPSG:4326 
+                    georeferences: comuni,
+                    cswconfig: serverConfig.cswconfig,
+                    map: serverConfig.map,
+                    customTools: serverConfig.customTools
+                }, mapIdentifier, authorization, fullScreen);   
+                
+                app.on({
+                    'portalready' : function() {
+                        if(fullScreen) {
+                            var westPanel = Ext.getCmp('west');
+                            westPanel.setActiveTab('legend');
+                            westPanel.hideTabStripItem('tree');
+                        }
+                    }, 
+                    'ready' : function(){
+                        app.modified = false;
+                        var messages = gxp.plugins.GeoStoreLogin.prototype;
+                        new Ext.Button({
+                            renderTo: 'logout',
+                            text: messages.logoutButtonText,
+                            handler: function() {
+                                var logoutFunction = function(buttonId, text,opt){        
+                                if(buttonId === 'ok'){ 						
+                                    // Clear the sessionStorage
+                                    for(var i = 0; i < sessionStorage.length; i++) {
+                                        var key = sessionStorage.key(i);
+                                        if(key) {
+                                            sessionStorage.removeItem(key);
+                                        }
+                                    }
+                                    
+                                    location.reload();
+                                }
+                            }
+                            
+                            Ext.Msg.show({
+                               title: messages.logoutTitle,
+                               msg: messages.logoutText,
+                               buttons: Ext.Msg.OKCANCEL,
+                               fn: logoutFunction,
+                               icon: Ext.MessageBox.QUESTION
+                            });   
+                            }
+                        });
+                        /*app.mapPanel.map.events.register( 'moveend', this, function(){
+                            alert(app.mapPanel.map.getCenter());
+                        });*/
                     }
-                }, 
-                'ready' : function(){
-                    app.modified = false;
-					/*app.mapPanel.map.events.register( 'moveend', this, function(){
-						alert(app.mapPanel.map.getCenter());
-					});*/
-                }
-            });
+                });
+                return app;
+            }
+            
+            var testSameOrigin = function (url) {
+				var loc = window.location,
+					a = document.createElement('a');
+
+				a.href = url;
+
+				return a.hostname == loc.hostname &&
+					   a.port == loc.port &&
+					   a.protocol == loc.protocol;
+			}
+			
+			var loginService = testSameOrigin(serverConfig.geoStoreBase) ? serverConfig.geoStoreBase + 
+					"users/user/details?includeattributes=true" : proxy + encodeURIComponent(serverConfig.geoStoreBase 
+						+ "users/user/details?includeattributes=true");
+            
+            var login = new gxp.plugins.GeoStoreLogin({
+				draggable:false,
+				closable: false,
+				actionTarget: {target: "paneltbar",index: 40},
+				loginService:  loginService,
+				loginSync: function(){
+					this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
+					Ext.getCmp('paneltbar').items.each(function(tool) {
+						if (tool.needsAuthorization === true) {
+							tool.enable();	
+							tool.auth=login.token;
+						}           
+					},this);
+					
+					this.loginAction.disable();
+					this.loginAction.setHidden(true);
+					this.logoutAction.show();
+					this.logoutAction.enable();
+					this.logged = true;
+					
+					if(this.win){
+						this.win.close();
+					}				
+				},
+				loginSuccess: function(response){					
+					if(login.user){		
+						var uDetails = {
+							token: login.token,
+							user: login.user,
+							provider: "geostore"
+						};
+						
+						sessionStorage["userDetails"] = Ext.util.JSON.encode(uDetails);							
+						app = initComposer(uDetails);
+
+						/*app.on('ready',function(){
+							login.target = Ext.getCmp('paneltbar');
+							login.addActions();
+							login.loginSync();
+							 var myAccount = new gxp.plugins.GeoStoreAccount({
+								outputTarget:'appTabs',
+								user:login.user,
+								auth:login.token,
+								geoStoreBase : serverConfig.geoStoreBase
+							 });
+							 myAccount.addOutput();                        
+						});*/
+					}
+				},
+				showLogout : function(){
+					var logoutFunction = function(buttonId, text,opt){        
+						if(buttonId === 'ok'){ 						
+							// Clear the sessionStorage
+							for(var i = 0; i < sessionStorage.length; i++) {
+								var key = sessionStorage.key(i);
+								if(key) {
+									sessionStorage.removeItem(key);
+								}
+							}
+							
+							location.reload();
+						}
+					}
+					
+					Ext.Msg.show({
+					   title: this.logoutTitle,
+					   msg: this.logoutText,
+					   buttons: Ext.Msg.OKCANCEL,
+					   fn: logoutFunction,
+					   icon: Ext.MessageBox.QUESTION,
+					   scope: this
+					});        
+				}
+			});
+            
+            var existingUserDetails = sessionStorage["userDetails"];
+			if(!existingUserDetails){				
+				login.showLoginDialog();
+			}else{
+				app = initComposer(Ext.util.JSON.decode(existingUserDetails));
+				
+				/*app.on('ready',function(){
+					login.target = Ext.getCmp('paneltbar');
+					login.addActions();
+					login.loginSync();
+					var myAccount = new gxp.plugins.GeoStoreAccount({
+						outputTarget:'appTabs',
+						user: app.userDetails.user,
+						auth: app.userDetails.token,
+						geoStoreBase : serverConfig.geoStoreBase
+					 });
+					 myAccount.addOutput();                        
+				});*/
+			}
+            
 	    };
 
 	    Ext.Ajax.request({

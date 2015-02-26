@@ -2173,7 +2173,22 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return obj;
     },
     
+    getAuthKey: function() {
+        var user = this.appTarget.user || {};
+        if(user && user.attribute) {
+            var attributes = (user.attribute instanceof Array) ? user.attribute : [user.attribute];
+            for(var i=0, l = attributes.length; i < l; i++) {
+                var attribute = attributes[i];
+                if(attribute.name === 'UUID') {
+                    return attribute.value;
+                }
+            }
+        }
+        return null;
+    },
+    
     getWFSStoreProxy: function(featureName, filter, sortBy){
+        var authkey = this.getAuthKey();
         var filterProtocol=new OpenLayers.Filter.Logical({
             type: OpenLayers.Filter.Logical.AND,
             filters: new Array()
@@ -2186,7 +2201,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
         var proxy= new GeoExt.data.ProtocolProxy({ 
             protocol: new OpenLayers.Protocol.WFS({ 
-                url: this.wfsURL, 
+                url: this.wfsURL + (authkey ? '?authkey='+authkey : ''), 
                 featureType: featureName, 
                 readFormat: new OpenLayers.Format.GeoJSON(),
                 featureNS: this.destinationNS, 

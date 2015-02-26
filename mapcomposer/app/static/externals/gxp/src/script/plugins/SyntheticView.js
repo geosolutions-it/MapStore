@@ -342,11 +342,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 destinationNS: this.destinationNS                
             });
         },this);
-
+        var authkey = this.getAuthKey();
+        var user, password;
+        if(!authkey && this.target.userToken) {
+            var parts = Base64.decode(this.target.userToken.substring(6)).split(':');
+            user = parts[0];
+            password = parts[1];
+        }
         this.geoStore = new gxp.plugins.GeoStoreClient({
             url: this.geoStoreBase,
-            user: this.geoStoreUser || undefined,
-            password: this.geoStorePassword || undefined,
+            user: user || this.geoStoreUser || undefined,
+            password: password || this.geoStorePassword || undefined,
+            authToken: authkey,
             proxy: this.proxy,
             listeners: {
                 "geostorefailure": function(tool, msg){
@@ -361,6 +368,20 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         });          
      },
     
+     getAuthKey: function() {
+        var user = this.target.user || {};
+        if(user && user.attribute) {
+            var attributes = (user.attribute instanceof Array) ? user.attribute : [user.attribute];
+            for(var i=0, l = attributes.length; i < l; i++) {
+                var attribute = attributes[i];
+                if(attribute.name === 'UUID') {
+                    return attribute.value;
+                }
+            }
+        }
+        return null;
+    },
+    
     /** private: method[createLayerRecord]
      *   :arg config: ``Object``
      *     creates a record for a new layer, with the given configuration
@@ -370,7 +391,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         var params = {
             layers: config.name, 
             transparent: true, 
-            format: this.layerImageFormat
+            format: this.layerImageFormat,
+            authkey: this.getAuthKey() || undefined
         };
         if(config.params) {
             params = Ext.apply(params,config.params);
@@ -577,15 +599,17 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
         return null;
     },
-    
+    getBasicAuthentication: function() {
+        return this.target.userToken || ( this.geoStoreUser ? {
+            "Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
+        } : undefined);
+    },
     deleteDownload: function(downloadUrl, removeResource, callback) {
         var me = this;
         var deleteDownloadProcess = this.wpsClient.getProcess('destination', 'gs:DestinationRemoveDownload');                                  
                                 
         deleteDownloadProcess.execute({
-            headers: me.geoStoreUser ? {
-                "Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
-            } : undefined,
+            headers: this.getBasicAuthentication(),
             // spatial input can be a feature or a geometry or an array of
             // features or geometries
             inputs: {
@@ -2104,9 +2128,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			}
 			me.saveDownloadPanel.getEl().mask(this.saveDownloadLoadingMsg);
 			downloadProcess.execute({
-				headers: me.geoStoreUser ? {
-					"Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
-				} : undefined,
+				headers: this.getBasicAuthentication(),
 				// spatial input can be a feature or a geometry or an array of
 				// features or geometries
 				inputs: {
@@ -2600,9 +2622,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             //riskProcess.describe({callback: function() {
                 //riskProcess.setResponseForm([{}], {supportedFormats: {'application/json':true}});
             riskProcess.execute({
-                headers: me.geoStoreUser ? {
-                    "Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
-                } : undefined,
+                headers: this.getBasicAuthentication(),
                 // spatial input can be a feature or a geometry or an array of
                 // features or geometries
                 inputs: {
@@ -3337,9 +3357,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 var data = status.simulation.targets.length > 0 ? status.simulation.targets.join('_') : status.damageArea;
                 
                 repositoryProcess.execute({
-                    headers: me.geoStoreUser ? {
-                        "Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
-                    } : undefined,
+                    headers: this.getBasicAuthentication(),
                     inputs: {
                         store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
                         action: new OpenLayers.WPSProcess.LiteralData({value:'save'}),
@@ -3378,9 +3396,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             var targetId = this.getChosenTarget(status);            
             var me = this;
             riskProcess.execute({
-                headers: me.geoStoreUser ? {
-                    "Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
-                } : undefined,
+                headers: this.getBasicAuthentication(),
                 // spatial input can be a feature or a geometry or an array of
                 // features or geometries
                 inputs: {

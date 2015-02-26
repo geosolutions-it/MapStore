@@ -89,6 +89,10 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
      */
     password: null,
     
+    /** private: property[authToken]
+      *  ``String`` Token for the authenticate requests
+     */
+    authToken: null,
 
     /** private: method[constructor]
      */
@@ -125,7 +129,9 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
         if(contentType)
             headers['Content-Type']= contentType;
 	
-        if(this.user && this.password){
+        if(this.authToken) {
+            headers['Authorization']= 'Bearer ' + this.authToken;
+        } else if(this.user && this.password){
             headers['Authorization']= 'Basic ' + Base64.encode(this.user + ':' + this.password);
             headers['AJP_Shib-Identita-CodiceFiscale'] = this.user;
         }
