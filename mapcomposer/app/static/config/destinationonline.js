@@ -177,91 +177,91 @@
             "source": "destinationtiled",
             "title": "Beni culturali",
             "name": "beni_culturali_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },
         {
             "source": "destinationtiled",
 			"title": "Zone urbanizzate",
 			"name": "zone_urbanizzate_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
 			"title": "Acque sotterranee",
 			"name": "acque_sotterranee_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
 			"title": "Acque superficiali",
 			"name": "acque_superficiali_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
 			"title": "Aree protette",
 			"name": "aree_protette_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
 			"title": "Aree boscate",
 			"name": "aree_boscate_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
 			"title": "Aree agricole",
 			"name": "aree_agricole_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
 			"title": "Addetti/utenti centri commerciali",
 			"name": "centri_commerciali_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
 			"title": "Addetti/utenti strutture scolastiche",
 			"name": "strutture_scolastiche_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
 			"title": "Addetti/utenti strutture sanitarie",
 			"name": "strutture_sanitarie_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
 			"title": "Addetti industria e servizi",
 			"name": "industria_servizi_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
 			"title": "Popolazione turistica",
 			"name": "popolazione_turistica_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
 			"title": "Popolazione residente",
 			"name": "popolazione_residente_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
 			"visibility": false
         },{
             "source": "destinationtiled",
@@ -303,7 +303,7 @@
         {
             "name": "Provincia di Bolzano", 
             "url": "http://sdi.provincia.bz.it/geonetwork/srv/it/csw", 
-            "description": "Provincia di Bolzano"
+            "description": "Autonome Provinz Bozen"
         },{
             "name": "PTA", 
             "url": "http://www.gruppoiit.lispa.it/geoportal/csw",

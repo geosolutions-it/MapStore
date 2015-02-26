@@ -718,7 +718,8 @@ GeoExt.Lang.add("de", {
         graphicStyle: "Tematisierung",
         showTrack: "Route anzeigen",
         styleData: "Richtungsintervall",
-        applyText: "Anwenden"
+        applyText: "Anwenden",
+        resetText: "Reset"
     },
     "gxp.PlaybackToolbar.prototype": {
         playLabel: "Wiedergabe",

@@ -55,6 +55,8 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 	
 	applyText: "Applica",
     
+	resetText: "Reset",
+    
     timeSliderDataTitle: "Data",
 	
     // End i18n.
@@ -674,7 +676,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					}
 				},
 				{
-					text: "Reset",
+					text: this.resetText,
 					iconCls: "obu-filter-reset",
 					scope: this,
 					handler: function(){
