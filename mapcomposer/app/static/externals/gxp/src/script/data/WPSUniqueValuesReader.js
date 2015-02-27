@@ -21,6 +21,15 @@ Ext.namespace("gxp.data");
  */
 gxp.data.WPSUniqueValuesReader = Ext.extend(Ext.data.JsonReader, {
     constructor: function(config) {
+      	/*Ext.applyIf(config, {
+            root: 'values',
+            totalProperty: 'size',
+            idProperty: 'value',
+            fields: [{name:'value', mapping: '', convert: function (a,b) {
+                    return b;
+                }}]
+        });*/
+        //temporary fix for null value    
       	Ext.applyIf(config, {
             root: 'values',
             totalProperty: 'size',
