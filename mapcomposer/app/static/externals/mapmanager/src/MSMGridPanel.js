@@ -1277,7 +1277,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
              */
             openMapComposer : function(mapUrl, userProfile, idMap, desc, templateId) {
                     var scrollTop;
-					var src = mapUrl + '?locale=' + grid.lang + userProfile;
+					var src = mapUrl + '?locale=' + grid.lang + userProfile+'&manager=true';
+					
 					
 					if(idMap != -1){
 						src += '&mapId=' + idMap;
@@ -1286,7 +1287,6 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     if(templateId != -1){
                         src += '&configId=' + templateId;
                     }
-					
 					var iframeTitle = (!(userProfile == "&auth=false") ? grid.IframeComposerTitle : grid.IframeViewerTitle) + desc;
                     var iframeconfig = {
                         waitMsg: grid.IframeWaitMsg,
@@ -1696,6 +1696,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                             templateId = values.templateId;
                         }
                         Ext.get(id).on('click', function(e){
+                            
                             var idMap = values.id,
                             	desc = values.name;
                             expander.openMapComposer(grid.murl, userProfile, idMap, desc, templateId);

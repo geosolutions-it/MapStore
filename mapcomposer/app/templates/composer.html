@@ -533,6 +533,7 @@
 		
         serverConfig = Ext.applyIf(serverConfig, localConfig);
 		serverConfig.geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');
+		serverConfig.manager=manager;
 
 		var configuration = customConfigName ? customConfigName : "mapStoreConfig";
 		

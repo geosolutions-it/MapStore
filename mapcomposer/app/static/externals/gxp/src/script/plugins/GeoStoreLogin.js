@@ -125,7 +125,11 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
      * api: method[addActions]
      */
     addActions: function() {
+	      //If in manager Iframe tab hide this plugin
+	    if(serverConfig.manager)return gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this);
+	
 		var apptarget = this.target;
+	
 	
         if (!this.loginService) {
 			var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
@@ -134,6 +138,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
 
 			this.loginService = url = OpenLayers.Request.makeSameOrigin(mUrl, apptarget.proxy);
 		}
+        
 
 		var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [
 			[{
