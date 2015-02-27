@@ -37,7 +37,7 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
 
     buttonText: "Services",
     tooltipText: "Open service manager",
-
+    outputItemId: "__ServiceManager__",
     loginManager: null,    
     setActiveOnOutput: true,
     actionURL: null,
@@ -47,7 +47,8 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
     addActions: function() {
         
         var thisButton = new Ext.Button({
-            // iconCls:'template_manger_ic', // TODO: icon
+            iconCls:'service-manager-icon', 
+
             text: this.buttonText,
             tooltip: this.tooltipText,
             handler: function() { 
@@ -110,12 +111,13 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
             this.target.adminUrl ? this.target.adminUrl + "mvc/fileManager/upload" : // use relative path from adminUrl
             "/opensdi2-manager/mvc/fileManager/upload"; // by default search on root opensdi-manager2
 
-        Ext.apply(this.outputConfig, {
+       this.outputConfig=   Ext.apply(this.outputConfig, {
             xtype: "FileBrowser",
             layout: 'border',
             closable: true,
             closeAction: 'close',
             autoWidth: true,
+            outputItemId: this.outputItemId,
             // iconCls: "template_manger_ic",  // TODO: icon
             header: false,
             viewConfig: {
@@ -132,6 +134,32 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
             mediaContent: this.target.initialConfig.mediaContent,
             url: actionURL
         });
+
+
+
+         if(this.output.length > 0
+            && this.outputTarget){
+            for(var i = 0; i < this.output.length; i++){
+                if(this.output[i].ownerCt
+                    && this.output[i].ownerCt.xtype 
+                    && this.output[i].ownerCt.xtype == "tabpanel"
+                    && !this.output[i].isDestroyed){
+                    var outputConfig = config || this.outputConfig;
+                    // Not duplicate tabs
+                    for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
+                        var item = this.output[i].ownerCt.items.items[index];
+                        var isCurrentItem = this.outputItemId == item.initialConfig["outputItemId"];
+                        if(isCurrentItem){
+                            this.output[i].ownerCt.setActiveTab(index);
+                            return;
+                        }
+                    } 
+                }
+            }
+        }
+
+
+
 
         return mxp.plugins.ServiceManager.superclass.addOutput.apply(this, arguments);
     }
