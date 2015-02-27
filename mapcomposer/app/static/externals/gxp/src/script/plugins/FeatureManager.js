@@ -469,7 +469,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                 } else {
                     this.fireEvent("layerchange", this, null);
                     
-                    if(selectedLayerToQueryId)
+                    if(selectedLayerToQueryId && selectedLayerToQueryId.body)
                         selectedLayerToQueryId.body.update('');
                 }
             }
