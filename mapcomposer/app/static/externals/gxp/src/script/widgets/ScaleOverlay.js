@@ -206,7 +206,7 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
 				this.zoomSelector.clearValue();
 			}else{
 				var scale = this.map.getScale();
-				this.zoomSelector.setValue("1 : " + parseInt(scale, 10));				
+				this.zoomSelector.setValue("1 : " + Ext.util.Format.number(parseInt(scale, 10),'0.000/i'));				
 			}
         }
     },
@@ -225,7 +225,7 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
         });       
         this.zoomSelector = new Ext.form.ComboBox({
             emptyText: this.zoomLevelText,
-            tpl: '<tpl for="."><div class="x-combo-list-item">1 : {[parseInt(values.scale)]}</div></tpl>',
+            tpl: !this.fractionalZoom ? '<tpl for="."><div class="x-combo-list-item">1 : {[parseInt(values.scale)]}</div></tpl>' : '<tpl for="."><div class="x-combo-list-item">1 : {[Ext.util.Format.number(parseInt(values.scale),\'0.000/i\')]}</div></tpl>',
             editable: this.fractionalZoom,
             triggerAction: 'all',
             mode: 'local',
@@ -237,21 +237,27 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
         });
         this.zoomSelector.on({
             //click: this.stopMouseEvents, // to manage fractionalZoom = true
-            //mousedown: this.stopMouseEvents, // to manage fractionalZoom = true
+            //mousedown: this.stopMouseEvents, // to manage fractionalZoom = true,
             select: function(combo, record, index) {
 				if(!this.fractionalZoom){
-					this.map.zoomTo(record.data.level);
+					this.map.zoomToScale(record.data.scale);
 				}else{
 					this.map.zoomToScale(record.data.scale,true);
-					this.zoomSelector.setRawValue('1 : ' + parseInt(record.data.scale,10));					
+					this.zoomSelector.setRawValue('1 : ' + Ext.util.Format.number(parseInt(record.data.scale,10),'0.000/i'));					
 				}
             },
 			specialkey: function(combo, e){
 				if (e.getKey() == e.ENTER) {
 					var scale, zoomSelectorValue;
-					zoomSelectorValue = combo.getValue().replace(/\s+/g, '');
-
-					if(zoomSelectorValue.indexOf(":") !== -1){
+					zoomSelectorValue = combo.getValue().replace(/[\. ,-]+/g, '');
+                    
+                    if (zoomSelectorValue === ''){
+                        var comboStore = combo.getStore();
+                        var count = comboStore.getCount();
+                        var record = comboStore.getAt(0);
+                        var startValue = record.get('scale');
+                        scale = parseInt(startValue, 10);                        
+					}else if(zoomSelectorValue.indexOf(":") !== -1){
 						var zoomSelectorValueArray = zoomSelectorValue.split(":");
 						scale = parseInt(zoomSelectorValueArray[1], 10);
 					}else{
@@ -259,7 +265,7 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
 					}
 					
 					this.map.zoomToScale(scale,false);
-					this.zoomSelector.setRawValue("1 : " + scale);
+					this.zoomSelector.setRawValue("1 : " + Ext.util.Format.number(scale,'0.000/i'));
 				}
 			},
 			expand: function( combo ){
