@@ -71,6 +71,7 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 		['mapViewPoint', "Map"],
 		['photo', "Photo"], 
 		['actionsend', "Action Send"],
+		['actionsave', "Action Save"],
 		['spinner', "Spinner"]];
 
         this.dirty=false;

@@ -44,7 +44,9 @@ filterType:{
 	'photo':new RegExp("^(!?)$", "i" ),
 	'mapViewPoint':new RegExp("^(PointPropertyType)$", "i" ),
 	'separatorWithIcon':new RegExp("^((?!PointPropertyType).)*$", "i"),
-	'actionsend':new RegExp("^(!?)$", "i" )
+	'actionsend':new RegExp("^(!?)$", "i" ),
+	'actionsave':new RegExp("^(!?)$", "i" )
+
 },
     
     filterXDataType:{
@@ -57,7 +59,8 @@ filterType:{
 	'photo':new RegExp("^(!?)$", "i" ),
 	'mapViewPoint':new RegExp("^(!?)$", "i" ),
 	'separatorWithIcon':new RegExp("^(!?)$", "i" ),
-	'actionsend':new RegExp("^(!?)$", "i" )
+	'actionsend':new RegExp("^(!?)$", "i" ),
+	'actionsave':new RegExp("^(!?)$", "i" )
 },
     
     
@@ -86,7 +89,8 @@ filterType:{
 ['mapViewPoint', "Map"],
 ['separatorWithIcon',"Separator With Icon"]
 ['actionsend',"Action Send"],
-['spinner',"S"]
+['actionsave',"Action Save"],
+['spinner',"Spinner"]
 ];
   
   

@@ -29,6 +29,7 @@
  * @include widgets/geoCollect/xtype/XtypeSeparator.js
  * @include widgets/geoCollect/xtype/XtypePhoto.js
  * @include widgets/geoCollect/xtype/XtypeActionSend.js
+ * @include widgets/geoCollect/xtype/XtypeActionSave.js
  * @include widgets/geoCollect/xtype/XtypeSpinner.js
  * @include widgets/geoCollect/MobileXtypeComboBox.js
  * @include widgets/geoCollect/MobileXDataTypeComboBox.js
@@ -564,6 +565,14 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
                         confirmMessage : act.attributes.confirmMessage
                     }
                 }], true);
+             else if (act.type == 'save')
+                this.wid_store.loadData([{
+                    xtype : 'actionsave',
+                    text : act.text,
+                    attributes : {
+                        confirmMessage : act.attributes.confirmMessage
+                    }
+                }], true);    
             else if (act.type == 'center') {
                 r = this.wid_store.find('xtype', 'mapViewPoint');
                 r.center = true;
@@ -795,14 +804,29 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
         }//ho action send
         else if (obj.xtype === 'actionsend') {
              if(!r.get('_created')){
-                 this.actions_store[this.action_store.findAction('actionsend')]=this.actionSend(obj);
-             }
+                 this.actions_store[this.action_store.findAction('send')]=this.actionSend(obj);
+             }else
             this.actions_store.push(this.actionSend(obj));
-        } else if (obj.xtype === 'mapViewPoint') {
+        }else if (obj.xtype === 'actionsave') {
+             if(!r.get('_created')){
+                 this.actions_store[this.action_store.findAction('save')]=this.actionSave(obj);
+             }else
+            this.actions_store.push(this.actionSave(obj));
+        } 
+        else if (obj.xtype === 'mapViewPoint') {
+           
+             if(!r.get('_created')){
+            if (obj.localize)
+                this.actions_store[this.action_store.findAction('localize')]=this.actionLocalize(obj);
+            if (obj.center)
+               this.actions_store[this.action_store.findAction('center')]=this.actionCenter(obj);
+                } else
+                {
             if (obj.localize)
                 this.actions_store.push(this.actionLocalize(obj));
             if (obj.center)
                 this.actions_store.push(this.actionCenter(obj));
+                }
 
         }
         r.set('_created', false);
@@ -842,6 +866,23 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
             "type" : 'send',
             "name" : 'send',
             "iconCls" : "ic_send",
+            "iconCls" : o.iconCls,
+            "attributes" : o.attributes
+        };
+        return a;
+
+    },
+      //Crea action save
+       actionSave : function(o) {
+
+        o.attributes.url = config.adminUrl + 'mvc/geocollect/action/store';
+        o.attributes.mediaurl = config.adminUrl + '/mvc/geocollect/data';
+
+        a = {
+
+            "type" : 'save',
+            "name" : 'save',
+            "iconCls" : "ic_save",
             "iconCls" : o.iconCls,
             "attributes" : o.attributes
         };
