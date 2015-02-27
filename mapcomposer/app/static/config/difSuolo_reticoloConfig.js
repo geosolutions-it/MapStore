@@ -136,18 +136,11 @@
 		"projection": "EPSG:3003",
 		"displayProjection": "EPSG:3003",
 		"units": "m",
-		"center": [1665000,4807000],
-		"maxResolution": 1000,
-		"zoom": 1,
-		"numZoomLevels": 14,
-		"maxExtent": [
-				708923.00, 4290035.00,
-				2631134.00, 5369149.00
-		],
-		"restrictedExtent": [
-				708923.00, 4290035.00,
-				2631134.00, 5369149.00
-		],        
+		"fractionalZoom": true,
+		"center": [1671579.00, 4803992.00],
+		"scales": [50, 1000, 2000, 5000, 8000, 10000, 15000, 25000.1, 50000.1, 100000.1, 250000, 500000, 1000000, 1500000.1, 2000000],
+		"maxExtent": [1328298.3134386, 4554791.501599, 2014859.6865614, 5053192.498401],
+		"restrictedExtent": [1550750, 4674330, 1775720, 4929790],         
 		"layers": [{
                 "source": "geoscopio",
                 "group": "background",
@@ -328,10 +321,10 @@
 				"group": "Reticolo Idrografico RT",
                 "expanded": true,
                 "checked": false,
-				"title": "Reticolo idrografico LR 79/2012 aggiornato con DCRT 9/2015",
-				"name": "reticolo_lr79_2012",
-                "styles": ["reticolo_idrografico_dcrt9_2015"],
-                "style": ["reticolo_idrografico_dcrt9_2015"],                
+				"title": "Reticolo idrografico LR 79/2012 approvato con DCRT 57/2013",
+				"name": "reticolo_idrografico",
+                "styles": ["reticolo_idrografico_dcrt57_2013"],
+                "style": ["reticolo_idrografico_dcrt57_2013"],                
 				"displayInLayerSwitcher": true,
 				"visibility": false,
 				"tiled": false,
@@ -356,6 +349,8 @@
                 "checked": false,
 				"title": "Reticolo di gestione LR 79/2012 approvato con DCRT 57/2013",
 				"name": "retgest_79_2012",
+                "styles": ["reticolo_gestione_dcrt57_2013"],
+                "style": ["reticolo_gestione_dcrt57_2013"],                  
 				"displayInLayerSwitcher": true,
 				"visibility": false,
 				"tiled": false,
@@ -410,9 +405,6 @@
 			"actionTarget": {"target": "paneltbar", "index": 2},
 			"embeddedTemplateName": "viewer",
 			"showDirectURL": true
-		}, {
-			"ptype": "gxp_categoryinitializer",
-            "silentErrors": true
 		},{
             "ptype":"gxp_wmsgetfeatureinfo",
             "id": "wmsgetfeatureinfo_plugin",
