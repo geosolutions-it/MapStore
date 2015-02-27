@@ -362,7 +362,7 @@ GeoExt.Lang.add("en", {
         passwordFieldText: "Password"
     },
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Display on map",
+        displayFeatureText: "Display",
         firstPageTip: "First page",
         previousPageTip: "Previous page",
         zoomPageExtentTip: "Zoom to page extent",
@@ -372,7 +372,7 @@ GeoExt.Lang.add("en", {
         totalMsg: "Total: {0} records",
         displayExportCSVText: "Export to CSV",
         exportCSVSingleText: "Single Page",
-        exportCSVMultipleText: "Whole Page",
+        exportCSVMultipleText: "All Pages",
         failedExportCSV: "Failed to find response for output format CSV",
         invalidParameterValueErrorText: "Invalid Parameter Value",
 		zoomToFeature: "Zoom To Feature",
