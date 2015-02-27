@@ -30,6 +30,9 @@ import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
 
+import it.geosolutions.geobatch.geoserver.GeoServerActionConfig;
+import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
+
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;

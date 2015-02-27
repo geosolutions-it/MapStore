@@ -42,22 +42,26 @@
             <version>1.4-SNAPSHOT</version>
         </dependency>
 
-		<dependency>
+        <dependency>
             <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-tools</artifactId>
         </dependency>
-		<dependency>
-			<groupId>it.geosolutions.tools</groupId>
-  			<artifactId>tools-commons</artifactId>
-			<version>${gb.version}</version>
-		</dependency>
-		<dependency>
+	<dependency>
+	    <groupId>it.geosolutions.tools</groupId>
+	    <artifactId>tools-commons</artifactId>
+            <version>${gb.version}</version>
+       </dependency>
+	<dependency>
             <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-action-tools</artifactId>
         </dependency>
-	
+      <dependency>
+         <groupId>it.geosolutions.geobatch</groupId>
+         <artifactId>gb-action-geoserver</artifactId>
+         <version>${project.version}</version>
+      </dependency>	
 		<!-- GeoBatch CORE -->
-		<dependency>
+            <dependency>
             <groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-core-impl</artifactId>
 		</dependency>
