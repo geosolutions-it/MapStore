@@ -376,17 +376,10 @@ mxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
                     && this.output[i].ownerCt.xtype 
                     && this.output[i].ownerCt.xtype == "tabpanel"
                     && !this.output[i].isDestroyed){
-                    var outputConfig = config || this.outputConfig;
                     // Not duplicate tabs
                     for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
                         var item = this.output[i].ownerCt.items.items[index];
-                        var isCurrentItem = true;
-                        for (var key in outputConfig){
-                            if(outputConfig[key]){
-                                isCurrentItem = isCurrentItem && (outputConfig[key] == item.initialConfig[key]);
-                            }
-                        }
-                        if(isCurrentItem){
+                        if(this.output[i] === item){
                             this.output[i].ownerCt.setActiveTab(index);
                             return;
                         }
@@ -418,7 +411,17 @@ mxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
                 items: [outputConfig]
             })).show().items.get(0);
         }
-        var component = container.add(config);            
+        var component = container.add(config);
+        // register listener to remove component from
+        // this.output when it is destroyed
+        component.on({
+        	"destroy": function(destroyedComponent) {
+        		if (this.output && Ext.isArray(this.output)) {
+        			this.output.remove(destroyedComponent);
+        		}
+        	},
+        	scope: this
+        });
         if (component instanceof Ext.Window) {
             component.show();
         } else {
