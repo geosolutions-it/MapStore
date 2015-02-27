@@ -124,7 +124,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      * ``String``
      * Text for feature display button (i18n).
      */
-    displayFeatureText: "Display on map",
+    displayFeatureText: "Display",
     
     /** api: config[displayExportCSVText]
      * ``String``
@@ -148,7 +148,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      * ``String``
      * Text for CSV Export Multiple Pages button (i18n).
      */
-    exportCSVMultipleText: "Whole Page",       
+    exportCSVMultipleText: "All Pages",       
 
     /** api: config[failedExportCSV]
      * ``String``
