@@ -558,8 +558,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         if (!this.describeLayerQueue) {
             this.describeLayerQueue=[];
         }
-        //Cotrollo se ho DescribeStore in caricamente se si lo accodo
-        for(lname in this.describedLayers){
+        //If I'm wating for a describe layer request I have queue new request!    
+            for(lname in this.describedLayers){
             if(typeof this.describedLayers[lname]== "function"){
                 this.describeLayerQueue.push(arguments);        
                 return;
@@ -576,6 +576,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 if (name == layerName) {
                    this.describeLayerStore.un("load", arguments.callee, this);
                     this.describedLayers[name] = true;
+                    //Check's if we have some describe layer request in queue!
                     if(this.describeLayerQueue.length>0){
                             var arg=this.describeLayerQueue.pop();
                         this.describeLayer(arg[0],arg[1],arg[2]);
@@ -587,7 +588,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     this.describeLayerStore.un("load", fn, this);
                     fn.apply(this, arguments);
                 }
-            }
+            }//Check's if we have some describe layer request in queue!
              if(this.describeLayerQueue.length>0){
                             var arg=this.describeLayerQueue.pop();
                         this.describeLayer(arg[0],arg[1],arg[2]);
@@ -610,16 +611,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 scope: this
             });
         } else if ((index = this.describeLayerStore.findExact("layerName", layerName)) == -1) {
-            this.describeLayerStore.on("load", cb, this);
-            this.describeLayerStore.load({
-                params: {
-                    LAYERS: layerName
-                },
-                add: true,
-                callback: cb,
-                scope: this
-            });
-            
+            this.describeLayerStore.on("load", cb, this);               
         } else {
             delayedCallback(this.describeLayerStore.getAt(index));
         }
