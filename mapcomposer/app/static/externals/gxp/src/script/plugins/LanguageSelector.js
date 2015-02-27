@@ -85,7 +85,10 @@ gxp.plugins.LanguageSelector = Ext.extend(gxp.plugins.Tool, {
 			data : this.data
 		});
         
+        
         var actions = ['->', languageSelector];
+        
+        if(serverConfig.manager)actions=[];
         return gxp.plugins.LanguageSelector.superclass.addActions.apply(this, [actions]);
     }
         

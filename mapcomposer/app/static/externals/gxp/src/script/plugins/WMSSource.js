@@ -556,7 +556,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             this.describedLayers = {};
         }
         if (!this.describeLayerQueue) {
-            this.describeLayerQueue=[];
+
+            this.describeLayerQueue = [];
         }
         //If I'm wating for a describe layer request I have queue new request!    
             for(lname in this.describedLayers){
