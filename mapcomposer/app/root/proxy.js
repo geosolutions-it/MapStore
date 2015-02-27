@@ -119,17 +119,22 @@ function proxyPass(config) {
             async: false
         });
     }
-    exchange.wait();
-    var headers = new Headers(objects.clone(exchange.headers));
-    if (!config.allowAuth) {
-        // strip out authorization and cookie headers
-        headers.unset("WWW-Authenticate");
-        headers.unset("Set-Cookie");
+    if (!exchange) {
+    	response = responseForStatus(404);
+    	return response;
+    } else {
+    	exchange.wait();
+        var headers = new Headers(objects.clone(exchange.headers));
+        if (!config.allowAuth) {
+            // strip out authorization and cookie headers
+            headers.unset("WWW-Authenticate");
+            headers.unset("Set-Cookie");
+        }
+        headers.unset("Content-Length");
+        return {
+            status: exchange.status,
+            headers: headers,
+            body: new MemoryStream(exchange.contentBytes)
+        };
     }
-    headers.unset("Content-Length");
-    return {
-        status: exchange.status,
-        headers: headers,
-        body: new MemoryStream(exchange.contentBytes)
-    };
 }
