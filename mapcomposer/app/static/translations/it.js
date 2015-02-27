@@ -391,7 +391,7 @@ GeoExt.Lang.add("it", {
     },
 
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Visualizza in mappa",
+        displayFeatureText: "Visualizza",
         firstPageTip: "Prima pagina",
         previousPageTip: "Pagina precedente",
         zoomPageExtentTip: "Zoom all'estensione della pagina",

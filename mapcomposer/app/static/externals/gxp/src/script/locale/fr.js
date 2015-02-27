@@ -25,7 +25,7 @@ GeoExt.Lang.add("fr", {
     },
     
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Afficher sur la carte",
+        displayFeatureText: "Afficher",
         firstPageTip: "Première page",
         previousPageTip: "Page précédente",
         zoomPageExtentTip: "Zoom sur la page",
