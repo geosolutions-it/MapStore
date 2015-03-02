@@ -515,16 +515,31 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      *  created from this source.
      */
     initDescribeLayerStore: function() {
-        var req = this.store.reader.raw.capability.request.describelayer;
-        if (req) {
-            this.describeLayerStore = new GeoExt.data.WMSDescribeLayerStore({
-                url: req.href,
-                baseParams: {
-                    VERSION: this.store.reader.raw.version,
-                    REQUEST: "DescribeLayer"
-                }
-            });
-        }
+    	var url;
+    	var version;
+    	var baseParams = {
+    			REQUEST: "DescribeLayer"
+    		};
+    	
+    	if (this.useCapabilities === true &&
+    		this.store.reader.raw.capability.request.describelayer) {
+    		var req = this.store.reader.raw.capability.request.describelayer;
+    		url = req.href;
+    		version = this.store.reader.raw.version;
+    	} else {
+    		Ext.apply(baseParams, {
+    			SERVICE: "WMS"
+    		});
+    		url = this.url;
+    		version = this.version;
+    	}
+    	
+    	this.describeLayerStore = new GeoExt.data.WMSDescribeLayerStore({
+    		url: url,
+    		baseParams: Ext.apply(baseParams, {
+    			VERSION: version
+    		})
+    	});
     },
     
     /** api: method[describeLayer]
