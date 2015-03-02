@@ -408,7 +408,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 			config.title || config.name, 
 			layer.url, 
 			params, {
-				attribution: layer.attribution,
+				attribution: ("attribution" in config) ? (config.attribution ? layer.attribution : '') : layer.attribution,
 				maxExtent: maxCachedExtent,
 				restrictedExtent: maxExtent,
 				displayInLayerSwitcher: ("displayInLayerSwitcher" in config) ? config.displayInLayerSwitcher :true,
@@ -421,7 +421,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 				dimensions: original.data.dimensions,
 				projection: layerProjection,
 				vendorParams: config.vendorParams,
-				transitionEffect: transitionEffect
+				transitionEffect: transitionEffect,
+                minScale: config.minscale,
+                maxScale: config.maxscale             
 			}
 		);
 
