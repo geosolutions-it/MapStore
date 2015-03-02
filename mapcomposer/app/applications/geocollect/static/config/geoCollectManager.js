@@ -85,27 +85,26 @@
     },{ 
         "ptype": "mxp_geostore_mission_resource_editor",
         "category": "GEOCOLLECT",
-         "loginManager": "loginTool",
+        "loginManager": "loginTool",
         "buttonText": "Mission Configuration",
-             "actionTarget":{
-             "target": "north.tbar",
-         "index": 6
-            },
-           "resourceEditor":{
-			"xtype":"mxp_gc_resource_editor",
-			"ref":"/missionResEdit",
-			"gcSource":"http://geocollect.geo-solutions.it/geoserver/it.geosolutions/ows",
-			"authParam":"authkey"
-		},
+        "actionTarget":{
+            "target": "north.tbar",
+            "index": 4
+        },
+        "resourceEditor":{
+            "xtype":"mxp_gc_resource_editor",
+            "ref":"/missionResEdit",
+            "gcSource":"http://geocollect.geo-solutions.it/geoserver/it.geosolutions/ows",
+            "authParam":"authkey"
+        },
     },{ 
         "ptype": "mxp_servicemanager",
-	"buttonText": "Photos",
+        "buttonText": "Photos",
         "notDuplicateOutputs":true,
         "actionTarget":{
-             "target": "north.tbar",
-             "index": 4
-            }
-
+            "target": "north.tbar",
+            "index": 5
+        }
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
