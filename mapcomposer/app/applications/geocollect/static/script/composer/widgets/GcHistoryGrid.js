@@ -211,7 +211,7 @@ createStore:function(){
             messageProperty: 'crs',
             sortInfo:{
                 field:this.sortBy,
-                direction:'DESC'
+                direction:this.direction
                 },
             autoLoad: false,
             fields:this.createRecordsModel(),
