@@ -134,14 +134,16 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
 
 			this.loginService = (mHost[2] == location.host ? mUrl : apptarget.proxy + mUrl);
 		}
+       
+        this.isEmbed = window != window.parent;
 
-		var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [
+	   var actions = gxp.plugins.GeoStoreLogin.superclass.addActions.apply(this, [
 			[{
 				menuText: this.loginText,
 				iconCls: "login",
 				text: this.loginText,
 				disabled: false,
-				hidden: false,
+				hidden: this.hideInIframe && this.isEmbed,
 				scale: this.scale || 'small',
 				tooltip: this.loginText,
 				handler: function() {
@@ -388,7 +390,7 @@ gxp.plugins.GeoStoreLogin = Ext.extend(gxp.plugins.Tool, {
         this.loginAction.disable();
 		
 		this.loginAction.hide();
-		
+		if(!(this.hideInIframe && this.isEmbed))
         this.logoutAction.show();
         this.logoutAction.enable();
 
