@@ -798,18 +798,18 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
         if (obj.xtype === 'photo') {
             //DEvi prima rimuovere quello che ho già se esiste
             if(!r.get('_created')){
-                this.actions_store[this.action_store.findAction('photo')]=this.actionPhoto(obj);
+                this.actions_store[this.findAction('photo')]=this.actionPhoto(obj);
                 }else
             this.actions_store.push(this.actionPhoto(obj));
         }//ho action send
         else if (obj.xtype === 'actionsend') {
              if(!r.get('_created')){
-                 this.actions_store[this.action_store.findAction('send')]=this.actionSend(obj);
+                 this.actions_store[this.findAction('send')]=this.actionSend(obj);
              }else
             this.actions_store.push(this.actionSend(obj));
         }else if (obj.xtype === 'actionsave') {
              if(!r.get('_created')){
-                 this.actions_store[this.action_store.findAction('save')]=this.actionSave(obj);
+                 this.actions_store[this.findAction('save')]=this.actionSave(obj);
              }else
             this.actions_store.push(this.actionSave(obj));
         } 
@@ -817,9 +817,9 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
            
              if(!r.get('_created')){
             if (obj.localize)
-                this.actions_store[this.action_store.findAction('localize')]=this.actionLocalize(obj);
+                this.actions_store[this.findAction('localize')]=this.actionLocalize(obj);
             if (obj.center)
-               this.actions_store[this.action_store.findAction('center')]=this.actionCenter(obj);
+               this.actions_store[this.findAction('center')]=this.actionCenter(obj);
                 } else
                 {
             if (obj.localize)
@@ -858,9 +858,6 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
     //Crea action send
     actionSend : function(o) {
 
-        o.attributes.url = config.adminUrl + 'mvc/geocollect/action/store';
-        o.attributes.mediaurl = config.adminUrl + '/mvc/geocollect/data';
-
         a = {
 
             "type" : 'send',
@@ -874,9 +871,6 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
     },
       //Crea action save
        actionSave : function(o) {
-
-        o.attributes.url = config.adminUrl + 'mvc/geocollect/action/store';
-        o.attributes.mediaurl = config.adminUrl + '/mvc/geocollect/data';
 
         a = {
 
