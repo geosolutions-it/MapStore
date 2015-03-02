@@ -859,11 +859,10 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
     actionSend : function(o) {
 
         a = {
-
+            "text" : o.text,
             "type" : 'send',
             "name" : 'send',
             "iconCls" : "ic_send",
-            "iconCls" : o.iconCls,
             "attributes" : o.attributes
         };
         return a;
@@ -873,11 +872,10 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
        actionSave : function(o) {
 
         a = {
-
+            "text" : o.text,
             "type" : 'save',
             "name" : 'save',
             "iconCls" : "ic_save",
-            "iconCls" : o.iconCls,
             "attributes" : o.attributes
         };
         return a;
