@@ -327,6 +327,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		var defProp = this.getDefaultProps(original, config);            
 		
 		config = Ext.applyIf(defProp, config);
+		
 		// If the layer is not available in the map projection, find a
 		// compatible projection that equals the map projection. This helps
 		// us in dealing with the different EPSG codes for web mercator.
@@ -394,6 +395,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		
 		// use all params from original
 		params = Ext.applyIf(params, layer.params);
+
 		// /////////////////////////////////////////////////////////
 		// Checking if the OpenLayers transition should be 
 		// disabled (transitionEffect: null).
