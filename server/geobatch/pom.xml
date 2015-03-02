@@ -85,8 +85,7 @@
 
     <geostore.version>1.1.0</geostore.version>
 
-    <gt.version>10-SNAPSHOT</gt.version>
-    <gb.version>1.4-SNAPSHOT</gb.version>
+    <gt.version>10.8</gt.version>
     <imageio-ext.version>1.2-M102011</imageio-ext.version>
     <spring.version>3.0.3.RELEASE</spring.version>
     <spring.security.version>3.0.3.RELEASE</spring.security.version>
@@ -95,10 +94,10 @@
     <camel.version>2.9.0</camel.version>
     <slf4j.version>1.5.11</slf4j.version>
     <jt.version>1.2.0</jt.version>
-    <jai-ext.version>1.0-SNAPSHOT</jai-ext.version>
+    <jaiext.version>1.0-SNAPSHOT</jaiext.version>
     <jetty.version>6.1.14</jetty.version>
     <nelios.restlet.version>1.1.10</nelios.restlet.version>
-    <cxf-version>2.5.8</cxf-version>
+    <cxf-version>2.5.11</cxf-version>
 
     <dao.type>xstream</dao.type>    <!-- the default dao type -->
     <allow.test.skip>true</allow.test.skip>
@@ -519,7 +518,7 @@
       <dependency>
         <groupId>it.geosolutions.jaiext.scheduler</groupId>
         <artifactId>jt-scheduler</artifactId>
-		<version>${jai-ext.version}</version>
+		<version>${jaiext.version}</version>
       </dependency>
       
       <dependency>

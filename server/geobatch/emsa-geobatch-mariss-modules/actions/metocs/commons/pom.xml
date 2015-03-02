@@ -49,7 +49,7 @@
 	<dependency>
 	    <groupId>it.geosolutions.tools</groupId>
 	    <artifactId>tools-commons</artifactId>
-            <version>${gb.version}</version>
+            <version>${project.version}</version>
        </dependency>
 	<dependency>
             <groupId>it.geosolutions.geobatch</groupId>
