@@ -1,4 +1,4 @@
-/*
+	/*
 *  Copyright (C) 2014 GeoSolutions S.A.S.
 *  http://www.geo-solutions.it
 *
@@ -33,6 +33,8 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 	/** api: xtype = mxp_gc_form_resource_editor */
 	xtype : 'mxp_gc_form_resource_editor',
     surveyFormTitle:"Form Title",
+    surveyFormDataUrlLabel:"Data Url",
+    surveyFormMediaUrlLabel:"Media Url",
     btnAddPageText:"New Page",
     btnAddPageTooltip:"Create A New Page",
     savePageMsgTitle:"Save Page?",
@@ -88,7 +90,7 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 		this.tbar = [{
 			xtype : 'toolbar',
 
-			items : ['-', {
+			items : [ {
 				xtype : 'label',
 				text : this.surveyFormTitle
 
@@ -98,6 +100,24 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 				allowBlank : false
 
 			}, '-', {
+                xtype : 'label',
+                text : this.surveyFormDataUrlLabel
+
+            }, ' ', {
+                ref : '//formUrl',
+                xtype : 'textfield',
+                allowBlank : true
+
+            }, '-',{
+                xtype : 'label',
+                text : this.surveyFormMediaUrlLabel
+
+            }, ' ', {
+                ref : '//formMediaUrl',
+                xtype : 'textfield',
+                allowBlank : true
+
+            }, '-',{
 				ref : '//addP',
 				text : this.btnAddPageText,
 				iconCls : "addgc",
@@ -340,12 +360,16 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 		return {
 			id : 1,
 			name : this.formTitle.getValue(),
+			url:this.formUrl.getValue()||"",
+			mediaurl:this.formMediaUrl.getValue()||"",
 			pages : pages
 		};
 	}, //Attenzione lo puoi caricare solo dopo che sono arrivati gli store!!
 	loadResourceData : function(res) {
 		//Setto il titolo e la lista delle pagine
 		this.formTitle.setValue(res.name);
+		this.formUrl.setValue(res.url);
+		this.formMediaUrl.setValue(res.mediaurl);
 		this.pages_store.loadData(res.pages);
 	},
 
