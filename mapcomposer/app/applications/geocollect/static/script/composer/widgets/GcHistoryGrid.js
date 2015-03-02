@@ -204,11 +204,15 @@ createHistoryGrid:function(schema){
  
 //Crea JSON WFS STORE
 createStore:function(){
-                 
+                 console.log(this.sortBy);
         return store = new Ext.data.JsonStore({
             combo: this,
             root: this.root,
             messageProperty: 'crs',
+            sortInfo:{
+                field:this.sortBy,
+                direction:'DESC'
+                },
             autoLoad: false,
             fields:this.createRecordsModel(),
             mapPanel:this.mapPanel,
