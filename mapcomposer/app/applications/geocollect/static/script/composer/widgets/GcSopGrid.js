@@ -356,6 +356,7 @@ createStore: function(schema) {
                         layer: this.featureLayer,
                         ogcFilter: this.filter,
                         autoLoad: this.autoLoad,
+                        sortBy:'DATA_AGG',
                         autoSave: false,
                         listeners: {
                             "write": function() {

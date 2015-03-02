@@ -236,6 +236,7 @@
            "configHistory":{
                     "queriableAttribute" : "GCID" ,
                     "sortBy":"hist_date",
+                    "direction":"DESC",
                     "wfsURL": "http://84.33.2.28:8081/geoserver/it.geosolutions/ows",
                     "typeName": "punti_abbandono_his",
                      "colConfig":{
