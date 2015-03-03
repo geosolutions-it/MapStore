@@ -76,10 +76,10 @@
           <artifactId>gb-fsm-core</artifactId>
         </dependency>
         
-        <dependency>
+        <!-- dependency>
           <groupId>it.geosolutions.geobatch</groupId>
           <artifactId>gb-alias-registry</artifactId>
-        </dependency>
+        </dependency -->
         <dependency>
           <groupId>it.geosolutions.geobatch</groupId>
           <artifactId>gb-dao-xstream</artifactId>

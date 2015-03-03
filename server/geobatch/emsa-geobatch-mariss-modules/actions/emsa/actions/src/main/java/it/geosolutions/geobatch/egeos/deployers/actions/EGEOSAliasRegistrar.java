@@ -25,8 +25,8 @@ package it.geosolutions.geobatch.egeos.deployers.actions;
 import it.geosolutions.geobatch.egeos.deployers.services.EGEOSGeoServerDeployerConfiguration;
 import it.geosolutions.geobatch.egeos.deployers.services.EGEOSRegistryDeployerConfiguration;
 import it.geosolutions.geobatch.egeos.deployers.services.EGEOSWebDeployerConfiguration;
-import it.geosolutions.geobatch.registry.AliasRegistrar;
-import it.geosolutions.geobatch.registry.AliasRegistry;
+
+import org.springframework.core.AliasRegistry;
 
 /**
  * Register XStream aliases for the relevant services we ship in this class.

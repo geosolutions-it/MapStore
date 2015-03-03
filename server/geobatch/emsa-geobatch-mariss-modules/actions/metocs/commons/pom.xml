@@ -70,10 +70,10 @@
 			<artifactId>gb-fs-catalog</artifactId>
 		</dependency>
  		
-		<dependency>
+		<!-- dependency>
             <groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-alias-registry</artifactId>
-		</dependency>
+		</dependency -->
 		<dependency>
 			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-action-geotiff</artifactId>

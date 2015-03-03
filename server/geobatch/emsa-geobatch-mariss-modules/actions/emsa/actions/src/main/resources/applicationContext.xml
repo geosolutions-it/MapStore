@@ -10,8 +10,6 @@
     	<constructor-arg type="String"><value>EMSAScriptingService</value></constructor-arg>
     </bean>	      
 
-
-
 	<!-- Environment Initialization -->
 	<bean id="EGEOSWebDeployerService" class="it.geosolutions.geobatch.egeos.deployers.services.EGEOSWebDeployerService">
 		<constructor-arg type="String"><value>EGEOSWebDeployerService</value></constructor-arg>
@@ -30,7 +28,6 @@
     	<constructor-arg type="String"><value>EGEOSGeoServerDeployerService</value></constructor-arg>
     	<constructor-arg type="String"><value>EGEOSGeoServerDeployerService</value></constructor-arg>
     </bean>
-
 
 	<bean id="EGEOSAliasRegistrar" class="it.geosolutions.geobatch.egeos.deployers.actions.EGEOSAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />

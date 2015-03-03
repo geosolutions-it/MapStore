@@ -57,6 +57,11 @@
           </exclusions>
 		</dependency>
 
+      <dependency>
+          <groupId>org.apache.cxf</groupId>
+          <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+      </dependency>
+
         <!-- Use the compiled library https://github.com/Unidata/thredds/tree/v4.3.21/cdm -->
         <dependency>
           <groupId>edu.ucar</groupId>
@@ -118,14 +123,25 @@
 		<!-- GeoBatch services -->
 		<!-- ============================== -->
 
-		<dependency>
-			<groupId>it.geosolutions.geobatch</groupId>
-			<artifactId>gb-rest-impl</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-rest-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-rest-impl</artifactId>
+        </dependency>
+
 		<!-- Provides class org.apache.cxf.transport.servlet.CXFServlet when the 
 			rest profile is not enabled -->
 		<!-- <dependency> <groupId>org.apache.cxf</groupId> <artifactId>cxf-rt-bindings-http</artifactId> 
 			<scope>test</scope> </dependency> -->
+
+        <!-- GeoServer REST Manager ==================================== -->
+        <dependency>
+            <groupId>it.geosolutions</groupId>
+            <artifactId>geoserver-manager</artifactId>
+        </dependency>
 
 		<!-- ============================== -->
 		<!-- -->

@@ -84,8 +84,9 @@
     <doc.sphinx.outdir>${site.outdir}/doc/</doc.sphinx.outdir>
 
     <geostore.version>1.1.0</geostore.version>
+    <gs-manager.version>1.7-SNAPSHOT</gs-manager.version>
 
-    <gt.version>10.8</gt.version>
+    <gt.version>10-SNAPSHOT</gt.version>
     <imageio-ext.version>1.2-M102011</imageio-ext.version>
     <spring.version>3.0.3.RELEASE</spring.version>
     <spring.security.version>3.0.3.RELEASE</spring.security.version>
@@ -603,6 +604,11 @@
       </dependency>
       <dependency>
         <groupId>it.geosolutions.geobatch</groupId>
+        <artifactId>gb-action-geoserver</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>it.geosolutions.geobatch</groupId>
         <artifactId>gb-ftp-support</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -694,7 +700,7 @@
       <dependency>
         <groupId>it.geosolutions</groupId>
         <artifactId>geoserver-manager</artifactId>
-        <version>1.6-SNAPSHOT</version>
+        <version>${gs-manager.version}</version>
       </dependency>
       <!-- =========================================================== -->
       <!-- GeoStore -->
@@ -1986,8 +1992,8 @@
   <!-- =========================================================== -->
   
   <modules>
-    <module>emsa-geobatch-mariss-modules</module>
-    <module>mariss-tests</module>
+    <!-- module>emsa-geobatch-mariss-modules</module -->
+    <!-- module>mariss-tests</module -->
     <module>mariss-schemas</module>
     <module>mariss-ingestion-logic</module>
     <module>mariss-actions</module>

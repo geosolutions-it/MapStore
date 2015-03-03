@@ -86,13 +86,13 @@ public class DataPackageIngestionProcessorTest {
 		imConfig.setAllowMultithreading(true);
 		imConfig.setBackgroundValue("NaN");
 		imConfig.setUseJaiImageRead(true);
-		imConfig.setDefaultNamespace("mariss");
-		imConfig.setDefaultStyle("raster");
-		imConfig.setCrs("EPSG:4326");
-		imConfig.setDatastorePropertiesPath("EXTERNAL");
-		imConfig.setGeoserverUID("admin");
-		imConfig.setGeoserverPWD("geoserver");
-		imConfig.setGeoserverURL("http://localhost:8080/geoserver");
+		//imConfig.setDefaultNamespace("mariss");
+		//imConfig.setDefaultStyle("raster");
+		//imConfig.setCrs("EPSG:4326");
+		//imConfig.setDatastorePropertiesPath("EXTERNAL");
+		//imConfig.setGeoserverUID("admin");
+		//imConfig.setGeoserverPWD("geoserver");
+		//imConfig.setGeoserverURL("http://localhost:8080/geoserver");
 		imConfig.setTileSizeH(512);
 		imConfig.setTileSizeW(512);
 
@@ -102,9 +102,9 @@ public class DataPackageIngestionProcessorTest {
 		domainAttribute.setRegEx("<![CDATA[(?<=[a-Z])[0-9]{8}(?=_.*tif)]]>");
 		domainAttribute.setEndRangeAttribName("endtime");
 		domainAttribute.setEndRangeRegEx("<![CDATA[(?<=[a-Z][0-9]{8}_)[0-9]{8}(?=.*tif)]]>");
-		List<DomainAttribute> domainAttributes = new LinkedList<DomainAttribute>();
-		domainAttributes.add(domainAttribute);
-		imConfig.setDomainAttributes(domainAttributes);
+		//List<DomainAttribute> domainAttributes = new LinkedList<DomainAttribute>();
+		//domainAttributes.add(domainAttribute);
+		imConfig.addDomainAttribute(domainAttribute);
 		
 		return imConfig;
 	}
