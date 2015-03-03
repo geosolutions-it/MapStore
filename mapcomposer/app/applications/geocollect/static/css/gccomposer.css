@@ -7,3 +7,4 @@
     background-image: url(../images/report.png);
 }
 .required .x-form-item-label {font-weight:bold;color:red;}
+.x-required  {font-weight:bold;border-color:red;}

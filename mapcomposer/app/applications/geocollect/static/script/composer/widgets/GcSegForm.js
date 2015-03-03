@@ -349,6 +349,10 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
         
         var ucExcludeFields = this.excludeFields ?
             this.excludeFields.join(",").toUpperCase().split(",") : [];
+        var ucRequiredFields = this.requiredFields ?
+            this.requiredFields.join(",").toUpperCase().split(",") : [];
+       
+       
         this.grid = new Ext.grid.PropertyGrid({
             border: false,
           // header :false,
@@ -361,6 +365,10 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
                 getRowClass: function(record) {
                     if (ucExcludeFields.indexOf(record.get("name").toUpperCase()) !== -1) {
                         return "x-hide-nosize";
+                    }
+                     if (ucRequiredFields.indexOf(record.get("name").toUpperCase()) !== -1) {
+                        if(record.get("value")===null)                 
+                        return "x-required";
                     }
                 }
             },
@@ -410,45 +418,7 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
         
         gxp.plugins.GcSegForm.superclass.initComponent.call(this);
         
-       
-        
-        
-     /*   this.on({
-            "show": function() {
-                if(this.editing) {
-                    this.editing = null;
-                    this.startEditing();
-                }
-            },
-            "beforeclose": function() {
-                if(!this.editing) {
-                    return;
-                }
-                if(this.feature.state === this.getDirtyState()) {
-                    Ext.Msg.show({
-                        title: this.closeMsgTitle,
-                        msg: this.closeMsg,
-                        buttons: Ext.Msg.YESNOCANCEL,
-                        fn: function(button) {
-                            if(button && button !== "cancel") {
-                                this.stopEditing(button === "yes");
-                               
-                            } else {
-                                this.fireEvent("cancelclose", this);
-                            }
-                        },
-                        scope: this,
-                        icon: Ext.MessageBox.QUESTION,
-                        animEl: this.getEl()
-                    });
-                    return false;
-                } else {
-                    this.stopEditing(false);
-                }
-            },
-            scope: this
-        });*/
-    },
+        },
     
     
     /** private: method[getDirtyState]
@@ -466,6 +436,7 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
     startEditing: function() {
         if(!this.editing) {
             this.editing = true;
+            // this.setRequired();
          //   this.anc && this.unanchorPopup();
             this.fireEvent( "startsegediting",this);
             this.editButton.hide();

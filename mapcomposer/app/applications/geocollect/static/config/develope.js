@@ -308,7 +308,8 @@
                                 "allowBlank":false
                 },"CODICE":{"allowBlank":false},"GRAVITA":{"allowBlank":false},"RISCHIO":{"allowBlank":false}
                 },
-                "propertyNames":{"status":"STATUS"}
+                "propertyNames":{"status":"STATUS"},
+                "requiredFields":["status","GRAVITA","RISCHIO","CODICE"]
         },
         {
           "ptype": "gxp_spatialqueryform",
