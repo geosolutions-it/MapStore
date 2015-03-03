@@ -458,6 +458,8 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     xtype:"gxp_gcsopgrid",
                     target:this.target,
                     baseParams:bParams,
+                    authParam:this.authParam,
+                    authKey:this.authkey,
                     wfsURL: "http://84.33.2.28:8081/geoserver/it.geosolutions/ows",
                     typeName: "rilevamenti_effettuati",
                     ref:"../../sop",

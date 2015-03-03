@@ -330,7 +330,7 @@ createStore: function(schema) {
                    
                     var protocolOptions = Ext.apply({    
                         srsName: this.target.mapPanel.map.getProjection(),
-                        url: schema.url,
+                        url: (this.authKey && this.authParam)? schema.url+"?"+this.authParam+"="+this.authKey:schema.url,
                         featureType: schema.reader.raw.featureTypes[0].typeName,
                         featureNS: schema.reader.raw.targetNamespace,
                         geometryName: geometryName
@@ -351,7 +351,6 @@ createStore: function(schema) {
                                 outputFormat: this.format 
                             }
                         },
-                        baseParams:this.baseParams,
                         maxFeatures: this.maxFeatures,
                         layer: this.featureLayer,
                         ogcFilter: this.filter,
