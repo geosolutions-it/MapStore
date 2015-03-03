@@ -250,7 +250,12 @@
                                 "triggerAction": "all"
                                 }
                             }
-                    }
+                    },
+                    "picturesBrowserConfig": {
+                "baseUrl": "http://geocollect.geo-solutions.it/opensdi2-manager/mvc/fileManager/extJSbrowser",
+                "folder": "/media/punti_abbandono/",
+                "featureProperty": "MY_ORIG_ID"
+            }
            },"configSurvey":{
                
                "wfsURL": "http://84.33.2.28:8081/geoserver/it.geosolutions/ows",
