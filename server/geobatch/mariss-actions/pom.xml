@@ -31,7 +31,7 @@
             <groupId>it.geosolutions.mariss</groupId>
             <artifactId>gb-mariss-ingestion</artifactId>
         </dependency>
-        <dependency>
+        <!-- dependency>
             <groupId>it.geosolutions.mariss</groupId>
             <artifactId>gb-mariss-action-e-geos-metocs</artifactId>
             <version>${project.version}</version>
@@ -45,7 +45,7 @@
                 <artifactId>netcdf</artifactId>
               </exclusion>
             </exclusions>
-        </dependency>
+        </dependency-->
         <dependency>
           <groupId>it.geosolutions.mariss</groupId>
           <artifactId>gb-mariss-tests</artifactId>

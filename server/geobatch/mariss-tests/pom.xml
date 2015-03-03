@@ -31,11 +31,11 @@
   	<!-- =========================================================== -->
   	<dependencies>
       	<!-- Internal -->
-          <dependency>
+          <!-- dependency>
               <groupId>it.geosolutions.mariss</groupId>
               <artifactId>gb-mariss-action-e-geos-metocs</artifactId>
               <version>${project.version}</version>
-          </dependency>
+          </dependency -->
 
           <dependency>
             <groupId>it.geosolutions.geobatch</groupId>
