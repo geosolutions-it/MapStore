@@ -72,14 +72,13 @@ gxp.plugins.he.Statistics = Ext.extend(gxp.plugins.Tool, {
 			items:[{
                         
                     ref:'pipeline',
-                    name:'pipeline',
+                    hiddenName:'pipeline',
                     filter:'pipeline',
                     xtype:'gxp_searchboxcombo',
                     avoidSelectEvent:true,
                     emptyText: 'Select a pipeline',
                     fieldLabel:' Select A Pipeline To Begin',
                     anchor:'100%',
-                    xtype:'gxp_searchboxcombo',
 
                     //behiviour
                     avoidSelectEvent:true,
@@ -118,59 +117,45 @@ gxp.plugins.he.Statistics = Ext.extend(gxp.plugins.Tool, {
                         }
                      ]
                 },{
-                    xtype:'button',
-                    toggle:true,
-                    text:"Selected Points/All Points",
-                    handler:function(){
-                        var canvasWindow = new Ext.Window({
-                            title:'Ext JS Canvas Window',
-                            layout:'border',
-                            autoScroll:false,
-                            height:300,
-                            width:900,
-                            items:[{
-                                region: 'center',
-                                xtype:'gxp_ChartJsChart'
-                            }]
-                        }).show();
-                    }
-
-                },{
+                    layout:'hbox',
+                    xtype: 'buttongroup',
+                    columns:2,
+                    items: [{
+                        xtype:'button',
+                        text:"Selected Points",
+                        enableToggle:true,
+                        toggleGroup:'selected_points',
+                        pressed:true
+                    },{
+                        xtype:'button',
+                        text:"All Points",
+                        enableToggle:true,
+                        toggleGroup:'selected_points'
+                    }]
+                }/*,{
                     xtype: 'box',
                     autoEl: {
                         tag: 'div',
                         html:'Show Average Schedule Capacity For:'
 
                     }
-                },{
-                    xtype:'button',
-                    toggle:true,
-                    text:"Last Calendar year/for Dates",
-                    handler:function(){
-                        var canvasWindow = new Ext.Window({
-                            title:'Ext JS Canvas Window',
-                            layout:'border',
-                            autoScroll:false,
-                            height:500,
-                            width:900,
-                            items:[{
-                                region: 'center',
-                                xtype:'panel',
-                                layout:'absolute',
-                                border:false,
-                                items:[{
-                                    region: 'center',
-                                    x: 50,
-                                    y: 50,
-                                    border:true,
-                                    width:300,
-                                    height:300,
-                                    xtype:'gxp_C3Chart'
-                                },{}]
-                            }]
-                        }).show();
-                    }
-
+                }*/,{
+                    layout:'hbox',
+                    xtype: 'buttongroup',
+                    title:'Show Average Schedule Capacity For:',
+                    columns:2,
+                    items: [{
+                        xtype:'button',
+                        text:"Last Calendar year",
+                        enableToggle:true,
+                        toggleGroup:'capacity_date_option',
+                        pressed:true
+                    },{
+                        xtype:'button',
+                        text:"For Dates",
+                        enableToggle:true,
+                        toggleGroup:'capacity_date_option'
+                    }]
                 },{
                     layout:'column',
                     items:[{
@@ -202,12 +187,19 @@ gxp.plugins.he.Statistics = Ext.extend(gxp.plugins.Tool, {
                     disabled:false,
                     handler: function(){
                         var pipelineId = this.refOwner.getForm().getValues().pipeline;
+                        var combobox = this.refOwner.pipeline;
+                        
+                        var pipelineName = combobox.getRawValue();
+                        // record.get("pl_PipelineName");
+                        //var record = combobox.findRecord(combobox.valueField, pipelineId);
+                        
                         new Ext.Window({
-                            title: pipelineId +' - Pipeline Statistics',
+                            title: pipelineName +' - Pipeline Statistics',
                             layout: 'border',
                             autoScroll: false,
                             border:false,
-                            height: 700,
+                            height: Math.min(Ext.getBody().getViewSize().height,780),
+                            maximizable:true,
                             width: 900,
                             items:[{
                                 xtype: 'he_pipeline_statistics',

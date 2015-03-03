@@ -42,7 +42,7 @@
         "actionTarget":null
     },{
         "ptype": "mxp_categoryinitializer",
-         "neededCategories": ["TEMPLATE", "MAP"],
+         "neededCategories": ["TEMPLATE", "MAP","MAPSTORECONFIG"],
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",

@@ -30,20 +30,31 @@
         <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/gxtheme-gray.css">
         <script type="text/javascript" src="script/GeoExt.js"></script> 
         
-		<!-- canvg-1.2 resources -->
+        <!-- IE compatiblity -->
         <!--[if lte IE 8]>
-            <script src="script/excanvas.js"></script>
+            <script src="script/ie8_compat.js"></script>
         <![endif]-->
-		<script type="text/javascript" src="script/canvg-1.2.js"></script> 
-		<!-- charts -->
+        <!--[if lte IE 9]>
+    <script src="aight.min.js"></script>
+    <![endif]-->
+        
+        <!--[if lte IE 8]><script src="r2d3.js" charset="utf-8"></script><![endif]-->
+        <!--[if gte IE 9]><!-->
+            <script type="text/javascript" src="script/d3.js"></script>
+    <!--<![endif]-->
+        <!-- canvg-1.2 resources -->
+        <script type="text/javascript" src="script/canvg-1.2.js"></script> 
+        <!-- charts -->
         <script type="text/javascript" src="script/chartjs.js"></script> 
-        <link rel="stylesheet" type="text/css" href="css/c3.min.css">
-        
         <script type="text/javascript" src="script/c3.js"></script> 
+        <script type="text/javascript" src="script/mg.js"></script> 
         
+
         <!-- gxp resources -->
         <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
         <link rel="stylesheet" type="text/css" href="css/gcd.css">
+        <link rel="stylesheet" type="text/css" href="css/metricsgraphics.css">
+        <link rel="stylesheet" type="text/css" href="css/c3.min.css">
         <script type="text/javascript" src="script/gxp.js"></script> 
 
         <!-- GeoExplorer resources -->
@@ -255,11 +266,12 @@
 					serverConfig.geoStoreBase = gsturl;
 				}
                 
-                app = new GeoExplorer.Viewer({
+                app = new GeoExplorer.GCDViewer({
                     scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
 				    defaultLanguage: serverConfig.defaultLanguage,	
 					actionToolScale: serverConfig.actionToolScale || "small",
                     customPanels: serverConfig.customPanels,
+                    mapPanelContainerPanels:serverConfig.mapPanelContainerPanels,
                     proxy: proxy,
 					viewerTools: serverConfig.viewerTools,
                     removeTools: serverConfig.removeTools,

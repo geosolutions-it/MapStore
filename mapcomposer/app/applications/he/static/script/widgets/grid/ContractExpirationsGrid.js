@@ -31,66 +31,113 @@ Ext.namespace('gxp.he');
  *
  */
 Ext.namespace('gxp.he.grid');
-gxp.he.grid.CustomerCapacityGrid = Ext.extend(Ext.grid.GridPanel,{
-    xtype: 'he_grid_customercapacity',
+gxp.he.grid.ContractExpirationsGrid = Ext.extend(Ext.grid.GridPanel,{
+    xtype: 'he_grid_contractexpiration',
     layout:'fit',
     
-    columns: [
-        {
-            id       :'rate',
-            header   : 'Rate', 
-            width    : 25,
-            sortable : true, 
-            dataIndex: 'rate'
-        },
-        {
-            id       : 'customername',
-            header   : 'Customer Name', 
-            width    : 75, 
-            sortable : true, 
-            //renderer : 'usMoney', 
-            dataIndex: 'customername'
-        },
-        {
+    
+    initComponent:function() {
+        Ext.apply(this,{cm: new Ext.grid.ColumnModel({columns: [
+            {
+                id       :'year',
+                header   : 'Year', 
+                width    : 25,
+                sortable : true, 
+                dataIndex: 'year'
+            },{
 
-            id: 'capacity', 
-            header   : 'Capacity',
-            dataIndex: 'capacity',
-            fakebar : [
-            '<div class="x-progress-wrap">',
-                '<div class="x-progress-inner">',
-                    '<div class="x-progress-bar" style="height: 16px; width: {barwidth}px;">',
-                    '<div class="x-progress-text" style="z-index: 99; width: {textwidth}px;text-align:left;margin: 1px 5px 1px 5px;padding: 0px;"><div style="width: {factor}px; height: 18px;">{progress}</div></div>',
-                '</div>',
-                '<div class="x-progress-text x-progress-text-back"><div style="width: {factor}px; height: 18px;text-align:left;">{progress}</div></div>',
-                '</div>',
-            '</div>'].join(''),
-            width: 50, 
-            max: 250,
-            renderer : function(val, metaData, record, rowIndex, colIndex, store) {
-                if(val) {
-                    var progress = Math.round((val || 0) * 100) / 100;
-                    var id = Ext.id();
-                    var shift = 4;
-                    var factor = this.width ;
+                id: 'transport', 
+                header   : 'Transport Throughput (MDth/d)',
+                dataIndex: 'transport',
+                
+                fakebar : [
+                '<div class="x-progress-wrap">',
+                    '<div class="x-progress-inner">',
+                        '<div class="x-progress-bar" style="height: 16px; width: {barwidth}px;">',
+                        '<div class="x-progress-text" style="z-index: 99; width: {textwidth}px;text-align:left;margin: 1px 5px 1px 5px;padding: 0px;"><div style="width: {factor}px; height: 18px;">{progress}</div></div>',
+                    '</div>',
+                    '<div class="x-progress-text x-progress-text-back"><div style="width: {factor}px; height: 18px;text-align:left;">{progress}</div></div>',
+                    '</div>',
+                '</div>'].join(''),
+                width: 90, 
+                max: 2500,
+                renderer : function(val, metaData, record, rowIndex, colIndex, store) {
+                    if(undefined != val) {
+                        var progress = Math.round((val || 0) * 100) / 100;
+                        var id = Ext.id();
+                        var shift = 4;
+                        var factor = this.width -12;
+                        var max = this.getMax(store,this.dataIndex) || this.max;
+                        return '<span id="progressbar-' + id + '">' + 
+                                this.fakebar
+                                    .replace(/\{progress\}/g,progress) 
+                                    .replace(/\{factor\}/g,( factor))
+                                    .replace(/\{barwidth\}/g,( factor/ max * progress))
+                                    .replace(/\{textwidth\}/g,Math.max((factor / max * progress) - shift,0))
+                            + '</span>';
+                    } else {
+                        return '';
+                    }
+                },
+                getMax:function(myStore,id){
+                    if (myStore.getCount() > 0)
+                    {
+                      var maxId = myStore.getAt(0).get(id); // initialise to the first record's id value.
+                      myStore.each(function(rec) // go through all the records
+                      {
+                        maxId = Math.max(maxId, rec.get(id));
+                      });
+                    }
+                    return maxId;
+                }
+            },{
 
-                    return '<span id="progressbar-' + id + '">' + 
-                            this.fakebar
-                                .replace(/\{progress\}/g,progress) 
-                                .replace(/\{factor\}/g,( factor))
-                                .replace(/\{barwidth\}/g,( factor/ this.max * progress))
-                                .replace(/\{textwidth\}/g,Math.max((factor / this.max * progress) - shift,0))
-                        + '</span>';
-                } else {
-                    return '';
+                id: 'storage', 
+                header   : 'Storage Quantity (Bcf)',
+                dataIndex: 'storage',
+                fakebar : [
+                '<div class="x-progress-wrap">',
+                    '<div class="x-progress-inner">',
+                        '<div class="x-progress-bar" style="height: 16px; width: {barwidth}px;">',
+                        '<div class="x-progress-text" style="z-index: 99; width: {textwidth}px;text-align:left;margin: 1px 5px 1px 5px;padding: 0px;"><div style="width: {factor}px; height: 18px;">{progress}</div></div>',
+                    '</div>',
+                    '<div class="x-progress-text x-progress-text-back"><div style="width: {factor}px; height: 18px;text-align:left;">{progress}</div></div>',
+                    '</div>',
+                '</div>'].join(''),
+                width: 100, 
+                max: 2500,
+                renderer : function(val, metaData, record, rowIndex, colIndex, store) {
+                    if(undefined != val) {
+                        var progress = Math.round((val || 0) * 100) / 100;
+                        var id = Ext.id();
+                        var shift = 4;
+                        var factor = this.width -12;
+                        var max = this.getMax(store,this.dataIndex) || this.max;
+                        return '<span id="progressbar-' + id + '">' + 
+                                this.fakebar
+                                    .replace(/\{progress\}/g,progress) 
+                                    .replace(/\{factor\}/g,( factor))
+                                    .replace(/\{barwidth\}/g,( factor/ max * progress))
+                                    .replace(/\{textwidth\}/g,Math.max((factor / max * progress) - shift,0))
+                            + '</span>';
+                    } else {
+                        return '';
+                    }
+                },
+                getMax:function(myStore,id){
+                    if (myStore.getCount() > 0)
+                    {
+                      var maxId = myStore.getAt(0).get(id); // initialise to the first record's id value.
+                      myStore.each(function(rec) // go through all the records
+                      {
+                        maxId = Math.max(maxId, rec.get(id));
+                      });
+                    }
+                    return maxId;
                 }
             }
-        },
-
-
-    ],
-
-    autoExpandColumn: 'customername'
-
+        ]})});
+        gxp.he.grid.ContractExpirationsGrid.superclass.initComponent.call(this);
+    }
 });
-Ext.reg(gxp.he.grid.CustomerCapacityGrid.prototype.xtype, gxp.he.grid.CustomerCapacityGrid);
+Ext.reg(gxp.he.grid.ContractExpirationsGrid.prototype.xtype, gxp.he.grid.ContractExpirationsGrid);

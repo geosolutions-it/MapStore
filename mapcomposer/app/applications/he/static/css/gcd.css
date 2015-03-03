@@ -45,3 +45,47 @@ ul.pie-legend li span{
     border-radius: 0.5em; /* Comment out if you prefer squarish samples */
     margin-right: 0.5em;
 }
+
+/* gxp_nrlChartButton */
+.x-btn .gxp-icon-nrl-chart, .x-menu-item .gxp-icon-nrl-chart, .x-tree-node .gxp-icon-nrl-chart,.x-panel-icon.gxp-icon-nrl-chart {
+    background-image: url(../images/chart_curve.png);
+}
+/* gxp_nrlMapButton */
+.x-btn  .gxp-icon-nrl-map,  .x-menu-item  .gxp-icon-nrl-map,.x-tree-node .gxp-icon-nrl-map,.x-panel-icon.gxp-icon-nrl-map{
+    background-image: url(../images/map_go.png);
+}
+/* gxp_nrlTabButton */
+.x-btn  .gxp-icon-nrl-tab,  .x-menu-item  .gxp-icon-nrl-tab,.x-tree-node .gxp-icon-nrl-tab,.x-panel-icon.gxp-icon-nrl-tab {
+    background-image: url(../images/table.png);
+}
+
+.ic_wrench{
+    background-image: url(../images/wrench.png);
+}
+/** custom span (chart selector and so on **/
+span.icon_span{
+    padding-left:20px;
+    background-repeat: no-repeat;
+}
+.ic_chart-spline{
+    background-image: url(../images/chart_curve.png);
+    width: 16px;
+    height: 16px;
+}
+.ic_chart-bar{
+    background-image: url(../images/chart_bar.png);
+     width: 16px;
+    height: 16px;
+}
+.ic_chart-line{
+    background-image: url(../images/chart_line.png);
+     width: 16px;
+    height: 16px;
+}
+
+.ic_chart-area{
+    background-image: url(../images/chart_area.png);
+     width: 16px;
+    height: 16px;
+}
+

@@ -157,7 +157,34 @@
             }
            
           ]
-    }, {
+    },{ 
+        "ptype": "mxp_geostore_resource_editor",
+        "category": "MAP",
+        "buttonText": "Maps",
+        "actionTarget":{
+             "target": "north.tbar",
+             "id":"MAP",
+             "index": 2
+            },
+		"attributeFields":[{
+			"xtype":"textfield",
+			"id":"attribute.owner",
+			"anchor":'95%',
+			"fieldLabel": "Owner",
+			"name":"attribute.owner"
+		}]
+
+    }, { 
+        "ptype": "mxp_geostore_resource_editor",
+        "category": "MAPSTORECONFIG",
+        "buttonText": "Group Configurations",
+        "actionTarget":{
+             "target": "north.tbar",
+             "id":"MAPSTORECONFIG",
+             "index": 3
+            }
+
+    },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "actionTarget":{

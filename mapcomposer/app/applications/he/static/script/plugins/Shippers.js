@@ -149,6 +149,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                     mapPanel: this.target.mapPanel,
                     displayField: 'pl_PipelineName',
                     valueField: 'pl_FERC',
+                    hiddenName:'pipeline',
                     sortBy: 'pl_PipelineName',
                     queriableAttributes: [
                             "pl_PipelineName"
@@ -299,16 +300,21 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                 iconCls: 'gxp-icon-find',
                 disabled: false,
                 ref: 'contractbyCategoryButton',
+                scope: this,
                 handler: function(){
-                     var pipelineId = this.refOwner.getForm().getValues().pipeline;
+                     var pipelineId = this.output.getForm().getValues().pipeline;
+                    
                      var canvasWindow = new Ext.Window({
                         title: pipelineId +' - Transport Customers',
                         layout:'border',
                         autoScroll:false,
-                        height:750,
+                        height:Math.min(Ext.getBody().getViewSize().height,750),
                         width:900,
+                        maximizable:true,
                         items:[{
                                 xtype: 'he_contractsbycategory',
+                                ferc: pipelineId,
+                                url: this.geoServerUrl,
                                 region:'center',
                                 border:false
                             }]

@@ -31,22 +31,51 @@ Ext.namespace('gxp.he');
  *
  */
 gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
-    
-    genericInformationTemplate:[
+    url : "http://he.geo-solutions.it/geoserver/gascapacity/ows",
+    params:{
+        service:"WFS",
+        version:"1.0.0",
+        request:"GetFeature",
+        outputFormat: "application/json"
+    },
+    generic_typeName:"gascapacity:gcd_v_pipeline_statistics",
+    genInfoTemplates:{
+        I:[
         '<table style="width:100%">',
           '<tr>',
-            '<th>Owner: </th><td>{owner}</td>',
-            '<th>System Capacity:</th><td>{SystemCapacity}</td>',
+            '<th>Owner: </th><td>{Owner}</td>',
+            '<th>System Capacity:</th><td>{System_Capacity}</td>',
           '</tr>',
           '<tr>',
-            '<th>Operator:</th><td>{operator}</td>',
-            '<th>Seasonal Storage:</th><td>{seasonalStorage}</td>',
+            '<th>Operator:</th><td>{Operator}</td>',
+            '<th>Seasonal Storage:</th><td>{Seasonal_Storage}</td>',
           '</tr>',
           '<tr>',
-            '<th>Miles of Pipeline:</th><td>{miles}</td>',
-            '<th>Compressor Stations:</th>{compressorStations}<td></td>',
+            '<th>Miles of Pipeline:</th><td>{Miles_of_Pipeline}</td>',
+            '<th>Compressor Stations:</th><td>{Compressor_Stations}</td>',
           '</tr>',
         '</table>'],
+        S:[
+        '<table style="width:100%">',
+          '<tr>',
+            '<th>Owner: </th><td>{Owner}</td>',
+            '<th>Peak njection</th><td>{Peak_Injection}</td>',
+          '</tr>',
+          '<tr>',
+            '<th>Storage Type:</th><td>{Storage_Type}</td>',
+            '<th>Peak Withdrawal:</th><td>{Peak_Withdrawal}</td>',
+          '</tr>',
+          '<tr>',
+            '<th>Working Gas Capacity:</th><td>{Working_Gas_Capacity}</td>',
+            '<th>Cycles:</th><td>{pops01_StoCycles}</td>',
+          '</tr>',
+        '</table>']
+    },
+    fin_layer:'gascapacity:gcd_v_financial_highlights',
+    tslayer:'gascapacity:gcd_v_annual_throughput_storage_quantities',
+    storagecustomerslayer:'gascapacity:gcd_v_storage_customers',
+    transportcustomerslayer:'gascapacity:gcd_v_transport_customers',
+    contractexpirationlayer:'gascapacity:gcd_v_contract_expirations',
     /* ptype =  gxp_chartpanel */
     xtype: "he_pipeline_statistics",
     updateDelay: 0,
@@ -62,7 +91,8 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
             ['Iberdrola Energy Svcs.',"FT1",  240],
             ['Canadian Nat Rsrcs. Ltd',"FT1",  205],
             ['Conocophillips Co',"FT1",  201],
-            ['Iberdrola Energy Svcs.',"FT1",  10]
+            ['Iberdrola Energy Svcs.',"FT1",  10],
+            
             
         ];
         var storageDataTest = [
@@ -76,23 +106,101 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
             ['Company 5',"FT1",  50]
             
         ];
-        var storeTransport = new Ext.data.ArrayStore({
-            data:transportDataTest,
+        var storeTransport1 = new Ext.data.JsonStore({
+            root: 'features',
+            messageProperty: 'crs',
+            autoLoad: true,
             fields: [
-               {name: 'customername'},
-               {name: 'rate',      type: 'string'},
-               {name: 'capacity',     type: 'float'}
-            ]
+               {name: 'customername', type:'string', mapping:'properties.Customer'},
+               {name: 'rate',      type: 'string', mapping: 'properties.Rate'},
+               {name: 'capacity',     type: 'float', mapping: 'properties.Transp_Capacity'}
+            ],
+            sortInfo: {
+                field: 'capacity',
+                direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
+            },
+            url: this.url,
+            limit:5,
+            baseParams:{
+                service:'WFS',
+                version:'1.1.0',
+                request:'GetFeature',
+                typeName:this.transportcustomerslayer ,
+                outputFormat: 'application/json',
+                viewParams: 'FERC:'+this.ferc,
+                maxFeatures:10,
+                startIndex:0,
+                sortBy:'Transp_Capacity'
+            },
+            listeners:{
+                load:function(store,rec,opt){
+                    var i = 0;
+                    store.filterBy(function(rec ){
+                        return i++<5
+                    });
+                }
+            }
+        });
+        var storeTransport2 = new Ext.data.JsonStore({
+            root: 'features',
+            messageProperty: 'crs',
+            autoLoad: true,
+            sortInfo: {
+                field: 'capacity',
+                direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
+            },
+            fields: [
+               {name: 'customername', type:'string', mapping:'properties.Customer'},
+               {name: 'rate',      type: 'string', mapping: 'properties.Rate'},
+               {name: 'capacity',     type: 'float', mapping: 'properties.Transp_Capacity'}
+            ],
+            limit:5,
+            url: this.url,
+            baseParams:{
+                service:'WFS',
+                version:'1.1.0',
+                request:'GetFeature',
+                typeName:this.transportcustomerslayer ,
+                outputFormat: 'application/json',
+                viewParams: 'FERC:'+this.ferc,
+                maxFeatures:10,
+                startIndex:0,
+                sortBy:'Transp_Capacity',
+                
+            },
+            listeners:{
+                load:function(store,rec,opt){
+                    var i = 0;
+                    store.filterBy(function(rec){
+                        return i++>=5
+                    });
+                }
+            }
         });
         
         
-        var storeStorage = new Ext.data.ArrayStore({
-            data:storageDataTest,
+        var storeStorage = new Ext.data.JsonStore({
+            root: 'features',
+            messageProperty: 'crs',
+            autoLoad: true,
+            sortInfo: {
+                field: 'capacity',
+                direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
+            },
             fields: [
-               {name: 'customername'},
-               {name: 'rate',      type: 'string'},
-               {name: 'capacity',     type: 'float'}
-            ]
+               {name: 'customername', type:'string', mapping:'properties.Customer'},
+               {name: 'rate', type: 'string', mapping: 'properties.Rate'},
+               {name: 'capacity', type: 'float', mapping: 'properties.Storage_Capacity'}
+            ],
+            url: this.url,
+            baseParams:{
+                service:'WFS',
+                version:'1.1.0',
+                request:'GetFeature',
+                typeName:this.storagecustomerslayer ,
+                outputFormat: 'application/json',
+                viewParams: 'FERC:'+this.ferc
+            }
         });
         
         var TSDataTest = [
@@ -106,13 +214,28 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
             [2008, 1728,  200]
             
         ];
-        var storetTS = new Ext.data.ArrayStore({
-            data:TSDataTest,
+        var storetTS = new Ext.data.JsonStore({
+            root: 'features',
+            messageProperty: 'crs',
+            autoLoad: true,
+            sortInfo: {
+                field: 'year',
+                direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
+            },
             fields: [
-               {name: 'year'},
-               {name: 'transport',type: 'float'},
-               {name: 'storage',type: 'float'}
-            ]
+               {name: 'year', type: Ext.data.Types.INT , mapping: 'properties.Year'},
+               {name: 'transport', type: Ext.data.Types.INT , mapping: 'properties.Transport_Throughput'},
+               {name: 'storage', type: Ext.data.Types.INT , mapping: 'properties.Storage_Quantity'}
+            ],
+            url: this.url,
+            baseParams:{
+                service:'WFS',
+                version:'1.1.0',
+                request:'GetFeature',
+                typeName:this.tslayer ,
+                outputFormat: 'application/json',
+                viewParams: 'FERC:'+this.ferc
+            }
         });
          var finDataTest = [
            /* ['Conocophillips Co',"FT1",  280],
@@ -124,15 +247,63 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
             [2009, 287,  0,287,63]
              
         ];
-        var storefin = new Ext.data.ArrayStore({
-            data:finDataTest,
+        /* 
+          "pop_tbl_Sect0607_FinancialHL"."pops0607_Year" AS "Year", 
+          "pop_tbl_Sect0607_FinancialHL"."pops06_TranspRev" AS "Transport_Rev", 
+          "pop_tbl_Sect0607_FinancialHL"."pops06_StorageRev" AS "Storage_Rev", 
+          "pop_tbl_Sect0607_FinancialHL"."pops06_TotalOperRev" AS "Total_Op_Rev", 
+          "pop_tbl_Sect0607_FinancialHL"."pops06_NetIncome" AS "Net_Income"
+          */
+        
+            
+        var storefin = new Ext.data.JsonStore({
+            root: 'features',
+            messageProperty: 'crs',
+            autoLoad: true,
+            sortInfo: {
+                field: 'year',
+                direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
+            },
             fields: [
-               {name: 'year'},
-               {name: 'transportrev',type: 'float'},
-               {name: 'storagerev',type: 'float'},
-               {name: 'totoprev',type: 'float'},
-               {name: 'netincome',type: 'float'}
-            ]
+               {name: 'year',  type: Ext.data.Types.INT , mapping: 'properties.Year'},
+               {name: 'transportrev', type: 'string', mapping: 'properties.Transport_Rev'},
+               {name: 'storagerev', type: 'string', mapping: 'properties.Storage_Rev'},
+               {name: 'totoprev', type: 'string', mapping: 'properties.Total_Op_Rev'},
+               {name: 'netincome', type: 'string', mapping: 'properties.Net_Income'}
+            ],
+            url: this.url,
+            baseParams:{
+                service:'WFS',
+                version:'1.1.0',
+                request:'GetFeature',
+                typeName:this.fin_layer ,
+                outputFormat: 'application/json',
+                viewParams: 'FERC:'+this.ferc
+            }
+        });
+        
+        var expirationStorage = new Ext.data.JsonStore({
+            root: 'features',
+            messageProperty: 'crs',
+            autoLoad: true,
+            sortInfo: {
+                field: 'year',
+                direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
+            },
+            fields: [
+               {name: 'year', type: Ext.data.Types.INT , mapping: 'properties.Year'},
+               {name: 'transport', type: Ext.data.Types.INT , mapping: 'properties.Transport'},
+               {name: 'storage', type: Ext.data.Types.INT , mapping: 'properties.Storage'}
+            ],
+            url: this.url,
+            baseParams:{
+                service:'WFS',
+                version:'1.1.0',
+                request:'GetFeature',
+                typeName:this.contractexpirationlayer ,
+                outputFormat: 'application/json',
+                viewParams: 'FERC:'+this.ferc
+            }
         });
         //TRANSPORT Customer CAPACITY GRID
          var grid = 
@@ -145,17 +316,55 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                 title: 'General Information' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">FERC Code:' + this.ferc + '</i>',
                 anchor:'100%',
                 items:[{
-                    tpl : new Ext.Template(
-                        this.genericInformationTemplate
-                    ),
-                    data:{
-                        owner:"Enbridge(50%)/Veresen Inc.(50%)",
-                        operator:"Alliance Pipeline KP",
-                        miles:86
-                    },
-                    
                     frame:true,
-                    border:false
+                    height:55,
+                    border:false,
+                    ref:'../generalInfo',
+                    listeners:{
+                        scope: this,
+                        render: function(panel){
+                            var mask = new Ext.LoadMask( panel.getEl() )
+                            mask.show();
+                            var ferc =this.ferc;
+                            var url = this.url;
+                            var templates = this.genInfoTemplates;
+                            var params = Ext.apply({
+                                typeName:this.generic_typeName,
+                                cql_filter: "FERC = '"+this.ferc+"'",
+                            },this.params);
+                            Ext.Ajax.request({
+                                url: url,
+                                params:params,
+                                success: function(response,option){
+                                    detailEl = panel;
+                                    mask.hide();
+                                    var jsonResponse = Ext.util.JSON.decode(response.responseText);
+                                    response = jsonResponse.features[0]
+                                    //Use the propert template
+                                    if(response && response.properties){
+                                        var type = response.properties.PipelineOrStorage;
+                                        var template =  new Ext.XTemplate(templates[type]);
+                                        var ht = template.apply(response.properties);
+                                        detailEl.update(ht);
+                                        //set up the grids for the pipeline type
+                                        if(type == 'S'){
+                                            //Hide transport if is a storage company
+                                            var tsgrid = panel.refOwner.tsgrid;
+                                            tsgrid.getColumnModel().setHidden(1, type == 'S');
+                                            var cegrid = panel.refOwner.cegrid;
+                                            cegrid.getColumnModel().setHidden(1, type == 'S');
+                                        }
+                                        
+                                    }
+                                    
+                                },
+                                failure:function(){
+                                    mask.hide();
+                                }
+                                
+                            });
+                        }
+                    }
                 }]
         //ROW 2
         },{
@@ -174,7 +383,7 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                         layout:'fit',
                         border:false,
                         height:180,
-                        items:[new gxp.he.grid.CustomerCapacityGrid({store:storeTransport,viewConfig: {forceFit: true}})]
+                        items:[new gxp.he.grid.CustomerCapacityGrid({store:storeTransport1,viewConfig: {forceFit: true},loadMask:true})]
                     }]
                 },{
                     columnWidth:.5,
@@ -186,7 +395,7 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                         layout:'fit',
                         border:false,
                         height:180,
-                        items:[new gxp.he.grid.CustomerCapacityGrid({store:storeTransport,viewConfig: {forceFit: true}})]
+                        items:[new gxp.he.grid.CustomerCapacityGrid({store:storeTransport2,viewConfig: {forceFit: true},loadMask:true})]
                         
                     }]
                 }]
@@ -211,12 +420,13 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                         layout:'fit',
                         title: 'Top 5 Storage Customers' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">Capacity (Bcf)</i>',
                         height:200,
-                        items:[new gxp.he.grid.CustomerCapacityGrid({store:storeStorage,viewConfig: {forceFit: true}})]
+                        items:[new gxp.he.grid.CustomerCapacityGrid({store:storeStorage,viewConfig: {forceFit: true},loadMask:true})]
                     }]
                 // Contract Expirations 
                 },{
                     columnWidth:.5,
                     layout: 'fit',
+                     xtype: 'container',
                     border:false,
                     items: [{
                         
@@ -225,8 +435,13 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                         header:true,
                         height:200,
                         title:'Contract Expirations'+ '<i  style="font-size:.8em;color:#C47A02; float:right; ">*Agg. Cap. (Transport - MDth/d, Storage - Bcf)</i>',
-                        anchor:'100%',
-                        html:"---"
+                        layout:'fit',
+                        items:[new gxp.he.grid.ContractExpirationsGrid({
+                            ref:'../../../cegrid',
+                            store:expirationStorage,
+                            viewConfig: {forceFit: true},
+                            loadMask:true
+                        })]
                     }]
                 }]
         // ROW 4
@@ -250,7 +465,7 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                         layout:'fit',
                         title: 'Financial Highlights (Revenue/Net Income)' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">$ Millions</i>',
                         height:200,
-                        items:[new gxp.he.grid.FinancialHighlightsGrid({store:storefin,viewConfig: {forceFit: true}})]
+                        items:[new gxp.he.grid.FinancialHighlightsGrid({store:storefin,viewConfig: {forceFit: true},loadMask:true})]
                     }]
                 // Contract Expirations 
                 },{
@@ -258,14 +473,18 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                     layout: 'fit',
                     border:false,
                     items: [{
-                        style:'padding: 0px  5px 0px 0',
                         xtype:'panel',
                         frame:true,
                         header:true,
                         layout:'fit',
                         height:200,
                         title: 'Annual Throughput and Storage Quantities',
-                        items:[new gxp.he.grid.AnnualThroughputStorageGrid({store:storetTS,viewConfig: {forceFit: true}})]
+                        items:[new gxp.he.grid.AnnualThroughputStorageGrid({
+                            ref:'../../../tsgrid',
+                            store:storetTS,
+                            viewConfig: {forceFit: true},
+                            loadMask:true
+                        })]
                     }]
                 }]
         // ROW 4

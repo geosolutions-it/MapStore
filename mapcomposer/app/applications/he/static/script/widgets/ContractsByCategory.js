@@ -39,11 +39,46 @@ gxp.he.ContractsByCategory = Ext.extend(Ext.Container, {
     deferredRender: false,
     autoScroll: true,
     style:'padding:10px',
+    contractbycategorylayer: 'gascapacity:gcd_v_contract_by_category',
+    contractbycustomerlayer: 'gascapacity:gcd_v_contract_by_customer',
     initComponent: function () {
-
+        this.byCategoryStore = new Ext.data.JsonStore({
+            root: 'features',
+            messageProperty: 'crs',
+            autoLoad: true,
+            fields: [
+               {name: 'category',      type: 'string', mapping: 'properties.Category'},
+               {name: 'capacity',     type: 'float', mapping: 'properties.Contracted_Capacity'}
+            ],
+            sortInfo: {
+                field: 'capacity',
+                direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
+            },
+            url: this.url,
+            baseParams:{
+                service:'WFS',
+                version:'1.1.0',
+                request:'GetFeature',
+                typeName:this.contractbycategorylayer ,
+                outputFormat: 'application/json',
+                viewParams: 'FERC:'+this.ferc
+            },
+            listeners:{
+                scope:this,
+                beforeload:function(){
+                    this.getEl().mask("Please wait...","x-mask-loading");
+                },
+                load:function(){
+                    this.getEl().unmask();
+                },
+                loadexception: function(){
+                    this.getEl().unmask();
+                }
+            }
+        });
         //ROW 1
+        var me = this;
         this.items = [{
-                
                 frame:true,
                 xtype:'panel',
                 header:true,
@@ -55,215 +90,140 @@ gxp.he.ContractsByCategory = Ext.extend(Ext.Container, {
                     region: 'center',
                     xtype:'gxp_ChartJsChart',
                     type:'pie',
+                    mask:false,
                     layout:'fit',
                     legendRef:'legendPanel',
                     ref: 'chart',
-                    data: [
-                        {
-                            value: 563.510,
-                            label: "Producer",
-                            color: '#215C2B'
-                        },
-                        {
-                            value: 445.863,
-                            label: "Trader/Marketer",
-                            color: '#F9A50D'
-                        },
-                        {
-                            value: 241.995,
-                            label: "Transmission",
-                            color: '#3E1E58'
-                        },
-                        {
-                            value: 239.478,
-                            label: "Utility/Power Gen.",
-                            color: '#254180'
-                        },
-                        {
-                            value: 0,
-                            label: "Industrial",
-                            color: '#9C1A20'
+                    store: this.byCategoryStore,
+                    valueField:'capacity',
+                    labelField:'category',
+                    autoColorOptions:{base:180,range:300, s: 0.67,v :0.67},
+                    listeners: {
+                        chartrefresh: function (chart){
+                            var data = this.data;
+                            var rows = me.createCustomerRows(data);
+                            me.add(rows);
+                            me.doLayout();
                         }
-                    ],
+                    }
                 },{
                     region:'east',
                     width:150,
                     ref:'legendPanel'
-
                 }]
-        //ROW 2
-        },{
-                xtype: 'container',
-                layout:'column',
-                style:'padding-top:10px',
-                border:false,
-                
-                items:[{
-                    columnWidth:.5,
-                    layout: 'fit',
-                    xtype: 'container',
-                    border:false,
-                    // Storage Consumers
-                    items: [{
-                        xtype:'gxp_chart_panel',
-                        height: 200,
-                        title: 'Producer' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">MDth/d</i>',
-                        data: this.producerTestData,
-                        chartOptions:{
-                            autoColorOptions: {
-                                base: 130, 
-                                range: 0
-                            }
-                        }
-                    }]
-                // Contract Expirations 
-                },{
-                    columnWidth:.5,
-                    layout: 'fit',
-                    border:false,
-                    items: [{
-                        
-                        xtype:'panel',
-                        frame:true,
-                        header:true,
-                        layout:'fit',
-                        height:200,
-                        title: 'Trader/Marketer' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">MDth/d</i>',
-                        items:[{
-                            region: 'center',
-                            xtype:'gxp_ChartJsChart',
-                            type:'pie',
-                            autoColorOptions:{
-                                base:39, //center
-                                range: 0
-                            },
-                            data: [
-                                {
-                                    value: 300,
-                                    label: "a"
-                                },
-                                {
-                                    value: 50,
-                                    label: "b"
-                                },
-                                {
-                                    value: 100,
-                                    label: "c"
-                                },
-                                {
-                                    value: 40,
-                                    label: "d"
-                                },
-                                {
-                                    value: 120,
-                                    label: "e"
-                                }
-                            ]
-                        }]
-                    }]
-                }]
-        // ROW 4
-        },{
-                xtype: 'container',
-                layout:'column',
-                style:'padding-top:10px',
-                border:false,
-                
-                items:[{
-                    columnWidth:.5,
-                    layout: 'fit',
-                    xtype: 'container',
-                    border:false,
-                    // Storage Consumers
-                    items: [{
-                        style:'padding: 0px  5px 0px 0',
-                        xtype:'panel',
-                        frame:true,
-                        header:true,
-                        layout:'fit',
-                        title: 'Transmission' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">MDth/d</i>',
-                        height:200,
-                        items:[{
-                            region: 'center',
-                            xtype:'gxp_ChartJsChart',
-                            type:'pie',
-                            autoColorOptions:{
-                                base:273, //center
-                                range: 0
-                            },
-                            data: [
-                                {
-                                    value: 300,
-                                    label: "a"
-                                },
-                                {
-                                    value: 50,
-                                    label: "b"
-                                },
-                                {
-                                    value: 100,
-                                    label: "c"
-                                },
-                                {
-                                    value: 40,
-                                    label: "d"
-                                },
-                                {
-                                    value: 120,
-                                    label: "e"
-                                }
-                            ],
-                        }]
-                    }]
-                // Contract Expirations 
-                },{
-                    columnWidth:.5,
-                    layout: 'fit',
-                    border:false,
-                    items: [{
-                        xtype:'panel',
-                        frame:true,
-                        header:true,
-                        layout:'fit',
-                        height:200,
-                        title: 'Utility/Power Generation'+ '<i  style="font-size:.8em;color:#C47A02; float:right; ">MDth/d</i>',
-                        items:[{
-                            region: 'center',
-                            xtype:'gxp_ChartJsChart',
-                            type:'pie',
-                            autoColorOptions:{
-                                base:222, //center
-                                range: 0
-                            },
-                            data: [
-                                {
-                                    value: 300,
-                                    label: "a"
-                                },
-                                {
-                                    value: 50,
-                                    label: "b"
-                                },
-                                {
-                                    value: 100,
-                                    label: "c"
-                                },
-                                {
-                                    value: 40,
-                                    label: "d"
-                                },
-                                {
-                                    value: 120,
-                                    label: "e"
-                                }
-                            ],
-                        }]
-                    }]
-                }]
-        // ROW 4
         }];
         
         gxp.he.ContractsByCategory.superclass.initComponent.call(this);
+    },
+    createCustomerRows: function(data){
+        var rows = []
+        //Create rows of 2 columns
+        for(var i = 0 ; i < data.length; i = i+2){
+            var column1 = data[i];
+            var column1Store = new Ext.data.JsonStore({
+                root: 'features',
+                messageProperty: 'crs',
+                autoLoad: true,
+                fields: [
+                   {name: 'customer',      type: 'string', mapping: 'properties.Customer'},
+                   {name: 'capacity',     type: 'float', mapping: 'properties.Contracted_Capacity'}
+                ],
+                sortInfo: {
+                    field: 'capacity',
+                    direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
+                },
+                url: this.url,
+                baseParams:{
+                    service:'WFS',
+                    version:'1.1.0',
+                    request:'GetFeature',
+                    typeName:this.contractbycustomerlayer ,
+                    outputFormat: 'application/json',
+                    viewParams: 'FERC:'+this.ferc+";CATEGORY:"+column1.label
+                }
+            });
+            var row = {
+                xtype: 'container',
+                layout:'column',
+                style:'padding-top:10px',
+                border:false,
+                items:[{
+                    columnWidth:.5,
+                    layout: 'fit',
+                    xtype: 'container',
+                    border:false,
+                    items: [{
+                        xtype:'gxp_chart_panel',
+                        height: 200,
+                        title: column1.label + '<i  style="font-size:.8em;color:#C47A02; float:right; ">MDth/d</i>',
+                        store:column1Store,
+                        chartOptions:{
+                            store:column1Store,
+                            valueField:'capacity',
+                            labelField:'customer',
+                            groupResultsMoreThan:5,
+                            autoColorOptions: {
+                                base: column1.color, 
+                                range: 20
+                            }
+                        }
+                    }]
+                }]
+            // ROW 4
+            };
+           
+            if(data.length > i +1){
+                column2 = data[i+1];
+                var column2Store = new Ext.data.JsonStore({
+                    root: 'features',
+                    messageProperty: 'crs',
+                    autoLoad: true,
+                    fields: [
+                       {name: 'customer',      type: 'string', mapping: 'properties.Customer'},
+                       {name: 'capacity',     type: 'float', mapping: 'properties.Contracted_Capacity'}
+                    ],
+                    sortInfo: {
+                        field: 'capacity',
+                        direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
+                    },
+                    url: this.url,
+                    baseParams:{
+                        service:'WFS',
+                        version:'1.1.0',
+                        request:'GetFeature',
+                        typeName:this.contractbycustomerlayer ,
+                        outputFormat: 'application/json',
+                        viewParams: 'FERC:'+this.ferc+";CATEGORY:"+column2.label
+                    }
+                });
+                row.items.push({
+                        columnWidth:.5,
+                        layout: 'fit',
+                        border:false,
+                        items: [{
+
+                            xtype:'gxp_chart_panel',
+                            header:true,
+                            height:200,
+                            title: column2.label + '<i  style="font-size:.8em;color:#C47A02; float:right; ">MDth/d</i>',
+                            chartOptions:{
+                                store:column2Store,
+                                valueField:'capacity',
+                                labelField:'customer',
+                                groupResultsMoreThan:5,
+                                autoColorOptions:{
+                                    base:column2.color, 
+                                    range: 20
+                                }
+                            },
+                            store:column2Store
+                            
+                        }]
+                    });
+            }
+            rows.push(row);
+        }
+        return rows;
     },
     // TEST DATA
     producerTestData: [

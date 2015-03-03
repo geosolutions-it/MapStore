@@ -162,7 +162,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
         this.store = new Ext.data.JsonStore({
 			combo: this,
 			root: this.root,
-			messageProperty: 'crs',
+			
 			autoLoad: false,
 			fields:this.recordModel,
 			mapPanel: this.mapPanel,
@@ -171,7 +171,8 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 			paramNames:{
 				start: "startindex",
 				limit: "maxfeatures",
-				sort: "sortBy"
+				sort: "sortBy",
+                totalProperty: 'totalFeatures'
 			},
 			baseParams:{
 				service:'WFS',
@@ -222,7 +223,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 					}
 	
 				};
-				o.totalRecords = estimateTotal(o,options,this);
+				o.totalRecords = this.reader.jsonData.totalFeatures || estimateTotal(o,options,this);
 				//end of custom total workaround
 				
 				var r = o.records, t = o.totalRecords || r.length;
@@ -243,7 +244,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 					this.applySort();
 					this.fireEvent('datachanged', this);
 				}else{
-					this.totalLength = Math.max(t, this.data.length+r.length);
+					this.totalLength = this.reader.jsonData.totalFeatures || Math.max(t, this.data.length+r.length);
 					this.add(r);
 				}
 				this.fireEvent('load', this, r, options);
@@ -253,55 +254,63 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 			}
 			
         });
+        this.on({
+            focus: function() {
+                if(this.clearOnFocus) this.clearValue();
+            },
+            beforequery:function(queryEvent){
+                var queryString = queryEvent.query;
+                queryEvent.query = "";
+                if(queryString !=""){
+                    for( var i = 0 ; i < this.queriableAttributes.length ; i++){
+                        queryEvent.query +=  "(" + this.queriableAttributes[i] + " "+this.predicate+" '%" + queryString + "%')";
+                        if ( i < this.queriableAttributes.length -1) {
+                            queryEvent.query += " OR ";
+                        }
+                    }
+                }
+                
+                //add cql filter in and with the other condictions
+                if(this.vendorParams && this.vendorParams.cql_filter) {
+                    queryEvent.query = queryEvent.query != "" ? "(" + queryEvent.query + ")AND(" +this.vendorParams.cql_filter +")" : this.vendorParams.cql_filter;
+                }
+                if(queryEvent.query==""){
+                    queryEvent.query ="INCLUDE";
+                }
+
+            }
+        });
+        if(!this.avoidSelectEvent){
+            this.on({select : function(combo, record) {
+                if (record && record.data.custom) {
+                    this.custom = record.data.custom;
+                } else {
+                    this.custom = null;
+                }
+                if (record && record.data.geometry) {
+                    var wkt_options = {};
+                    var geojson_format = new OpenLayers.Format.GeoJSON({
+                        ignoreExtraDims: true
+                    });
+                    var testFeature = geojson_format.read(record.data.geometry);
+                    var wkt = new OpenLayers.Format.WKT(wkt_options);
+                    var out = wkt.write(testFeature);
+
+                    var geomCollectionIndex = out.indexOf('GEOMETRYCOLLECTION(');
+                    if (geomCollectionIndex == 0) {
+                        out = out.substring(19,out.length-1);
+                    }
+                    this.geometry = out;
+                } else {
+                    this.geometry = null;
+                }
+            }});
+        
+        }
 
         return gxp.form.WFSSearchComboBox.superclass.initComponent.apply(this, arguments);
     },
-	listeners: {
-		focus: function() {
-			if(this.clearOnFocus) this.clearValue();
-		},
-		beforequery:function(queryEvent){
-			var queryString = queryEvent.query;
-			queryEvent.query = "";
-			for( var i = 0 ; i < this.queriableAttributes.length ; i++){
-				queryEvent.query +=  "(" + this.queriableAttributes[i] + " "+this.predicate+" '%" + queryString + "%')";
-				if ( i < this.queriableAttributes.length -1) {
-					queryEvent.query += " OR ";
-				}
-			}
-			//add cql filter in and with the other condictions
-			if(this.vendorParams && this.vendorParams.cql_filter) {
-				queryEvent.query = "(" + queryEvent.query + ")AND(" +this.vendorParams.cql_filter +")";
-			}
 		
-		},
-		select : function(combo, record) {
-			if (record && record.data.custom) {
-				this.custom = record.data.custom;
-			} else {
-				this.custom = null;
-			}
-			if (record && record.data.geometry) {
-				var wkt_options = {};
-				var geojson_format = new OpenLayers.Format.GeoJSON({
-					ignoreExtraDims: true
-				});
-				var testFeature = geojson_format.read(record.data.geometry);
-				var wkt = new OpenLayers.Format.WKT(wkt_options);
-				var out = wkt.write(testFeature);
-				
-				var geomCollectionIndex = out.indexOf('GEOMETRYCOLLECTION(');
-				if (geomCollectionIndex == 0) {
-					out = out.substring(19,out.length-1);
-				}
-				this.geometry = out;
-			} else {
-				this.geometry = null;
-			}
-		}
-
-	},
-	
 	getCustom : function() {
 		return this.custom;
 	},

@@ -39,78 +39,79 @@ Ext.namespace("gxp.plugins.he");
  *  .. class:: GCD(config)
  *
  *    Plugin for adding GCD modules to a :class:`gxp.Viewer`.
- */   
+ */
 gxp.plugins.he.GCD = Ext.extend(gxp.plugins.Tool, {
-    
+
     /** api: ptype = he_gcd */
     ptype: "he_gcd",
 
-    
+
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
-    addOutput: function(config) {
-		
-        var target = this.target, me = this;
-		
+    addOutput: function (config) {
+
+        var target = this.target,
+            me = this;
+
         config = Ext.apply({
-			xtype: 'tabpanel',
-			id:'modulewrapper',
-			border: false,
-			split: true,
-			deferredRender:true,
+            xtype: 'tabpanel',
+            id: 'modulewrapper',
+            border: false,
+            split: true,
+            deferredRender: true,
             collapseMode: "mini",
-			activeItem:0,
-			activeTab:0,
-			enableTabScroll : true,
+            activeItem: 0,
+            activeTab: 0,
+            enableTabScroll: true,
             header: false,
-			
-			listeners:{
-				afterrender: function(tabpanel){
-					//set active tab after render
-					target.on('ready',function(){
-						if(tabpanel.startTab){
-							tabpanel.setActiveTab(tabpanel.startTab);
-						}else{
-							tabpanel.setActiveTab(0);
-						}
-					});
-				}
-			}
-			
+
+            listeners: {
+                afterrender: function (tabpanel) {
+                    //set active tab after render
+                    target.on('ready', function () {
+                        if (tabpanel.startTab) {
+                            tabpanel.setActiveTab(tabpanel.startTab);
+                        } else {
+                            tabpanel.setActiveTab(0);
+                        }
+                    });
+                }
+            }
+
         }, config || {});
-        
+
 
         var he_Modules = gxp.plugins.he.GCD.superclass.addOutput.call(this, config);
-        
+
         return he_Modules;
     },
-    enableData: function(){
+    enableData: function () {
         var tabs = this.output[0].items;
-        for (var i = 0; i<tabs.items.length;i++){
-            if (tabs.items[i].outputType && tabs.items[i].outputType.items.items){
+        for (var i = 0; i < tabs.items.length; i++) {
+            if (tabs.items[i].outputType && tabs.items[i].outputType.items.items) {
                 tabs.items[i].outputType.items.items[0].enable();
-            }else{
-                if(tabs.items[i].outputType){
+            } else {
+                if (tabs.items[i].outputType) {
                     tabs.items[i].outputType.items[0].disabled = false;
                 }
             }
         }
     },
-    disableData: function(){
+    disableData: function () {
         var tabs = this.output[0].items;
-        for (var i = 0; i<tabs.items.length;i++){
-            if (tabs.items[i].outputType && tabs.items[i].outputType.items.items){
+        for (var i = 0; i < tabs.items.length; i++) {
+            if (tabs.items[i].outputType && tabs.items[i].outputType.items.items) {
                 tabs.items[i].outputType.items.items[0].disable();
-                tabs.items[i].outputType.items.items[1].setValue("chart");                
-            }else{
-                if(tabs.items[i].outputType){
+                tabs.items[i].outputType.items.items[1].setValue("chart");
+            } else {
+                if (tabs.items[i].outputType) {
                     tabs.items[i].outputType.items[0].disabled = true;
                     tabs.items[i].outputType.items[0].inputValue = "chart";
                 }
             }
         }
-    }
+    },
 });
 
 Ext.preg(gxp.plugins.he.GCD.prototype.ptype, gxp.plugins.he.GCD);

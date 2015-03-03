@@ -87,24 +87,28 @@ gxp.charts.C3Chart = Ext.extend(Ext.Container, {
 
     createChart: function (data, options) {
         this.setChartDimensions();
-
-        this.chart = c3.generate({
-            bindto: '#' + this.canvasBox.getId(),
-            legend: {
-              inset: {
-                anchor: 'top-right',
-                x: 20,
-                y: 10,
-                step: 2
-              }
-            },
-            data: {
-                columns: [
-                ['data1', 30, 200, 100, 400, 150, 250],
-                ['data2', 50, 20, 10, 40, 15, 25]
-              ]
-            }
-        });
+        if(this.data){
+            this.chart = c3.generate({
+                bindto: '#' + this.canvasBox.getId(),
+                axis: {
+                    x: {
+                        type: 'timeseries',
+                        tick: {
+                            format: '%Y-%m-%dZ'
+                        }
+                    }
+                },
+                legend: {
+                    inset: {
+                        anchor: 'top-right',
+                        x: 20,
+                        y: 10,
+                        step: 2
+                    }
+                },
+                data:this.data
+            });
+        }
 
     },
     //add the canvas
@@ -115,9 +119,9 @@ gxp.charts.C3Chart = Ext.extend(Ext.Container, {
             layout: 'fit',
             autoEl: {
                 tag: 'div',
-                
+                html: '&nbsp;',
                 style: {
-                    margin:5,
+                    margin: 5,
                     width: "100% !important",
                     maxWidth: "1500px",
                     overflow: 'hidden',
@@ -293,6 +297,90 @@ gxp.charts.C3Chart = Ext.extend(Ext.Container, {
                 data: [28, 48, 40, 19, 86, 27, 90]
             }
         ]
+    },
+     bindStore: function (store, initial) {
+        if (!initial && this.store) {
+            if (store !== this.store && this.store.autoDestroy) {
+                this.store.destroy();
+            } else {
+                this.store.un("datachanged", this.onDataChange, this);
+                this.store.un("load", this.onLoad, this);
+                this.store.un("add", this.onAdd, this);
+                this.store.un("remove", this.onRemove, this);
+                this.store.un("update", this.onUpdate, this);
+                this.store.un("clear", this.onClear, this);
+                this.store.un("beforeload",this.onBeforeLoad,this);
+            }
+        }
+
+        if (store) {
+            store = Ext.StoreMgr.lookup(store);
+            store.on({
+                scope: this,
+                load: this.onLoad,
+                datachanged: this.onDataChange,
+                add: this.onAdd,
+                remove: this.onRemove,
+                update: this.onUpdate,
+                beforeload:this.onBeforeLoad,
+                clear: this.onClear
+            });
+        }
+
+        this.store = store;
+        if (store && !initial) {
+            this.refresh();
+        }
+    },
+    handleError: function (title, cause) {
+        if (this.verbose)
+            Ext.Msg.alert(title, cause);
+        // TODO: Add doc for this listener and function
+        this.fireEvent("charterror", title, cause);
+    },
+
+    setChartDimensions: function () {
+        var width = this.getWidth(),
+            height = this.getHeight();
+        if (this.canvasBox) {
+            var svg = $(this.canvasBox.getEl()).find('svg');
+            this.canvasBox.setWidth(width);
+            this.canvasBox.setHeight(height);
+            svg.attr("height",height);
+        }
+    },
+    refresh: function(){
+        this.data = {x:'x',xFormat: '%Y-%m-%dZ'};
+        var items = this.store.data.items;
+        var cx = ['x'];
+        var cy =  ['y'];
+        this.data.columns = [cx,cy];
+        for (var x = 0; x < items.length; x++) {
+            var record = items[x];
+            if (this.xField) {
+                cx.push(record.data[this.xField]);
+                cy.push(record.data[this.yField]);
+            }
+        }
+        this.createChart();
+        this.fireEvent('chartrefresh', this, this.chart);
+    },
+    onLoad: function() {
+        this.refresh();
+        this.getEl().unmask();
+    },
+    onDataChange: function(){
+    },
+    onAdd: function(){
+    },
+    onRemove:function(){
+    },
+    onClear:function(){
+    },
+    onUpdate: function(){
+    },
+    onBeforeLoad: function(){
+        this.getEl().mask("Please wait...","x-mask-loading");
     }
 
 });

@@ -33,16 +33,17 @@ Ext.namespace('gxp.he');
 gxp.charts.ChartPanel = Ext.extend(Ext.Panel, {
 
     xtype: 'gxp_chart_panel',
-    style: 'padding: 0px  5px 0px 0',
+    style: 'padding: 0px 0px 0px 0',
            
     frame: true,
     header: true,
     layout: 'border',
-    
+    showLegend:true,
     
     initComponent: function () {
 
-
+        this.addEvents('chartrefresh');
+        
         var chartConfig = Ext.apply({
             ref: 'chart',
             region: 'center',
@@ -51,16 +52,23 @@ gxp.charts.ChartPanel = Ext.extend(Ext.Panel, {
             legendRef: 'legendPanel',
             data: this.data
         },this.chartOptions);
+         this.items = [chartConfig]
         //TODO apply this too
-        var legendConfig = {
-            region: 'east',
-            width: 150,
-            ref: 'legendPanel'
+        if(this.showLegend){
+            var legendConfig = Ext.apply({
+                region: 'east',
+                width: 200,
+                ref: 'legendPanel',
+                autoScroll:true,
+                bubbleEvents: ['chartrefresh']
 
-        };
-        this.items = [chartConfig, legendConfig];
+            },this.legendConfig);
+            this.items.push(legendConfig);
+        }
+        
 
         gxp.charts.ChartPanel.superclass.initComponent.call(this);
+        
     }
 
 });

@@ -48,7 +48,7 @@ gxp.he.grid.FinancialHighlightsGrid = Ext.extend(Ext.grid.GridPanel,{
             header   : 'Transport Rev.', 
             width    : 75, 
             sortable : true, 
-            renderer : 'usMoney', 
+            //renderer : 'usMoney', 
             dataIndex: 'transportrev'
         },
         {
@@ -56,7 +56,7 @@ gxp.he.grid.FinancialHighlightsGrid = Ext.extend(Ext.grid.GridPanel,{
             header   : 'Storage Rev.', 
             width    : 75, 
             sortable : true, 
-            renderer : 'usMoney', 
+            //renderer : 'usMoney', 
             dataIndex: 'storagerev'
         },
         {
@@ -64,7 +64,7 @@ gxp.he.grid.FinancialHighlightsGrid = Ext.extend(Ext.grid.GridPanel,{
             header   : 'Total Op. Rev.', 
             width    : 75, 
             sortable : true, 
-            renderer : 'usMoney', 
+            //renderer : 'usMoney', 
             dataIndex: 'totoprev'
         },
         {
@@ -72,7 +72,7 @@ gxp.he.grid.FinancialHighlightsGrid = Ext.extend(Ext.grid.GridPanel,{
             header   : 'Net Income', 
             width    : 75, 
             sortable : true, 
-            renderer : 'usMoney', 
+            //renderer : 'usMoney', 
             dataIndex: 'netincome'
         }
 
