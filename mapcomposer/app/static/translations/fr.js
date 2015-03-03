@@ -364,7 +364,7 @@ GeoExt.Lang.add("fr", {
     },
 	
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Afficher sur la carte",
+        displayFeatureText: "Afficher",
         firstPageTip: "Première page",
         previousPageTip: "Page précédente",
         zoomPageExtentTip: "Zoom sur la page",
@@ -374,7 +374,7 @@ GeoExt.Lang.add("fr", {
         totalMsg: "Total : {0} entités",
         displayExportCSVText: "Exporter au format CSV",
         exportCSVSingleText: "Une seule page",
-        exportCSVMultipleText: "Toute la  page",
+        exportCSVMultipleText: "Toutes les pages",
         failedExportCSV: "Impossible de trouver une réponse pour le format de sortie CSV",
         invalidParameterValueErrorText: "Valeur de paramètre non valide",
 		zoomToFeature: "Zoom sur l’Entité",

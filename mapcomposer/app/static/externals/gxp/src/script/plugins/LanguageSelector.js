@@ -76,13 +76,17 @@ gxp.plugins.LanguageSelector = Ext.extend(gxp.plugins.Tool, {
 		var url = Ext.urlDecode(query);        
 		var code = url.locale || this.target.defaultLanguage || "en";			
 		
+		var isEmbed = window != window.parent;
+		
+		
 		// ////////////////////////////////////////////////////
 		// Setting the language selector
 		// ////////////////////////////////////////////////////
 		var languageSelector = new gxp.form.LanguageSwitcher({
 			currentContext: code,
 			saveMessage: this.target.auth,
-			data : this.data
+			data : this.data,
+			hidden:this.hideInIframe && isEmbed
 		});
         
         var actions = ['->', languageSelector];
