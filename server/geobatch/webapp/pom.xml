@@ -164,101 +164,122 @@
 		<!-- Platform -->
 		<!-- ============================== -->
 
-		<!-- ============================== -->
-		<!-- Test: JETTY -->
-		<!-- ============================== -->
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jsp-2.1</artifactId>
-			<scope>test</scope>
-			<!-- <exclusions> -->
-			<!-- <exclusion> -->
-			<!-- <groupId>javax.servlet.jsp</groupId> -->
-			<!-- <artifactId>jsp-api</artifactId> -->
-			<!-- </exclusion> -->
-			<!-- </exclusions> -->
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http</artifactId>
-			<!--<scope>test</scope> -->
-		</dependency>
-		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>jstl</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
-		</dependency>
+    <!-- ============================== -->
+    <!-- Platform -->
+    <!-- ============================== -->
 
-		<!-- <dependency> <groupId>org.apache.cxf</groupId> <artifactId>cxf-api</artifactId> 
-			</dependency> -->
-	</dependencies>
+    <!--
+        Provides class org.apache.cxf.transport.servlet.CXFServlet
+        when the rest profile is not enabled
+    -->
+    <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-transports-http</artifactId>
+    </dependency>
 
-	<build>
+<!--     <dependency> -->
+<!--       <groupId>javax.servlet.jsp</groupId> -->
+<!--       <artifactId>jsp-api</artifactId> -->
+<!--       <scope>provided</scope> -->
+<!--     </dependency> -->
+    
+<!--     <dependency> -->
+<!--       <groupId>javax.servlet.jsp</groupId> -->
+<!--       <artifactId>jsp-api</artifactId> -->
+<!--       <scope>provided</scope> -->
+<!--     </dependency> -->
 
-		<finalName>geobatch</finalName>
-		<plugins>
-			<plugin>
-				<inherited>true</inherited>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.2</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-				<dependencies>
-					<!-- dependency> <groupId>it.geosolutions.geobatch</groupId> <artifactId>gb-application</artifactId> 
-						<version>${project.version}</version> <type>test-jar</type> </dependency -->
-				</dependencies>
-				<!-- The configuration of the plugin -->
-				<configuration>     <!-- Configuration of the archiver -->
-					<archive>       <!-- Manifest specific configuration -->
-						<manifest>  <!-- Classpath is added to the manifest of the created jar file. -->
-							<addClasspath>true</addClasspath>
-							<!-- Configures the classpath prefix. This configuration option is 
-								used to specify that all needed libraries are found under lib/ directory. -->
-							<classpathPrefix>${geobatch_starter.classpath}</classpathPrefix>
-							<!-- Specifies the main class of the application -->
-							<mainClass>it.geosolutions.geobatch.jetty.Start</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
+    <!-- ============================== -->
+    <!-- Test: JETTY -->
+    <!-- ============================== -->
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jsp-2.1</artifactId>
+      <scope>test</scope>
+<!--       <exclusions> -->
+<!-- 	    <exclusion> -->
+<!-- 	      <groupId>javax.servlet.jsp</groupId> -->
+<!-- 	      <artifactId>jsp-api</artifactId> -->
+<!-- 	    </exclusion> -->
+<!--      </exclusions> -->
+    </dependency>
+    
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>jstl</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+     </dependency>
+  </dependencies>
 
-			<plugin>
-				<inherited>true</inherited>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.3</version>
-				<configuration>
-					<warName>geobatch</warName>
-					<!--<outputDirectory>${site.outdir}</outputDirectory> -->
-					<!--<webappDirectory>${project.build.directory}/geobatch</webappDirectory> -->
-					<overlays>
-						<overlay>
-							<groupId>it.geosolutions.geobatch</groupId>
-							<artifactId>gb-web-core</artifactId>
-							<excludes>
-								<exclude>WEB-INF/classes/**/*</exclude> <!-- imported as jar -->
-								<exclude>WEB-INF/lib/**/*</exclude>     <!-- imported as dependencies -->
-							</excludes>
-						</overlay>
-					</overlays>
-				</configuration>
+  <build>
+    <finalName>geobatch</finalName>
+    <plugins>
+      <plugin>
+        <inherited>true</inherited>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.2</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <!-- dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-application</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+          </dependency -->
+        </dependencies>
+        <!-- The configuration of the plugin -->
+        <configuration>  <!-- Configuration of the archiver -->
+          <archive>      <!-- Manifest specific configuration -->
+            <manifest>   <!-- Classpath is added to the manifest of the created jar file. -->
+              <addClasspath>true</addClasspath>
+              <!-- Configures the classpath prefix. This configuration option is used 
+						to specify that all needed libraries are found under lib/ directory. -->
+              <classpathPrefix>${geobatch_starter.classpath}</classpathPrefix> <!-- Specifies the main class of the application -->
+              <mainClass>it.geosolutions.geobatch.jetty.Start</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <inherited>true</inherited>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.3</version>
+
+        <configuration>
+          <warName>geobatch</warName>
+          <outputDirectory>${site.outdir}</outputDirectory>
+          <webappDirectory>${project.build.directory}/geobatch</webappDirectory>
+          <overlays>
+            <overlay>
+                <groupId>it.geosolutions.geobatch</groupId>
+                <artifactId>gb-web-core</artifactId>
+                <excludes>
+                   <exclude>WEB-INF/classes/**/*</exclude> <!-- imported as jar -->
+                   <exclude>WEB-INF/lib/**/*</exclude>     <!-- imported as dependencies -->
+                </excludes>
+            </overlay>
+          </overlays>
+        </configuration>
 
 				<executions>
 					<execution>
@@ -278,57 +299,919 @@
 				</executions>
 			</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.4</version>
-				<executions>
-					<execution>
-						<id>unpack_csv</id>
-						<phase>package</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>it.geosolutions.mariss</groupId>
-									<artifactId>gb-mariss-actions</artifactId>
-									<version>${project.version}</version>
-									<!--<classifier>flowdata</classifier> -->
-									<type>jar</type>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
-									<includes>data/**</includes>
-								</artifactItem>
-							</artifactItems>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+<!--      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <overlays>
+            <overlay>
+              <groupId>it.geosolutions.geobatch</groupId>
+              <artifactId>gb-web-core</artifactId>
+            </overlay>
+          </overlays>
+        </configuration>
+      </plugin>-->
 
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.26</version>
-				<configuration>
-					<contextPath>geobatch</contextPath>
-					<connectors>
-						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-							<port>${jetty.port}</port>
-							<maxIdleTime>10000</maxIdleTime>
-						</connector>
-					</connectors>
-					<contextPath>geobatch</contextPath>
-					<webAppSourceDirectory>${project.build.directory}/geobatch</webAppSourceDirectory>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<profiles>
-		<!-- GB-SERVICES==================================================== -->
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.26</version>
+<!--        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>9.0.4.v20130625</version>        -->
 
-	</profiles>
+        <configuration>
+          <contextPath>geobatch</contextPath>
+
+          <connectors>
+            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+              <port>8081</port>
+              <maxIdleTime>10000</maxIdleTime>
+            </connector>
+          </connectors>
+
+          <webAppSourceDirectory>${project.build.directory}/geobatch</webAppSourceDirectory>
+          <war>${basedir}/target/geobatch</war> <!-- used by run-exploded - new plugin -->
+          <webApp>${basedir}/target/geobatch</webApp> <!-- used by run-exploded - old plugin -->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+  	<!-- GB-SERVICES==================================================== -->
+    <!-- REST =========================================================== -->
+    <profile>
+      <id>rest</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-rest-impl</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_rest</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-rest-impl</artifactId>
+                      <classifier>flowsettings</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}/data/</outputDirectory>
+                      <includes>settings/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- JMS =========================================================== -->
+    <profile>
+      <id>jms</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-jms</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_jms</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-jms</artifactId>
+                      <classifier>flowsettings</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}/data/</outputDirectory>
+                      <includes>settings/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- JMX ======================================================== -->
+    <profile>
+      <id>jmx</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch.services</groupId>
+          <artifactId>gb-jmx</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_jms</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch.services</groupId>
+                      <artifactId>gb-jmx</artifactId>
+                      <classifier>flowsettings</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}/data/</outputDirectory>
+                      <includes>settings/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Octave ======================================================== -->
+    <profile>
+      <id>octave</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-octave</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+    <!-- ======================================================================== 
+			ACTIONS ======================================================================== 
+			We need sample flows to be packed into the test jars of every action (was: 
+			flowmanager). maven-dependency-plugin will extract the sample flows and put 
+			them in the WEB-INF/data directory. If you need to specify all the actions, 
+			please define the all_actions env var. Before using maven-dependency-plugin, 
+			the overlay mechanism (http://maven.apache.org/plugins/maven-war-plugin/overlays.html) 
+			was checked to accomplish this very task, but when more actions were specified, 
+			only one was choosen to extract the sample data from. -->
+    <!-- Ds2ds ================================================== -->
+	<profile>
+      <id>ds2ds</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-ds2ds</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_ds2ds</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-ds2ds</artifactId>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Commons ================================================== -->
+    <profile>
+      <id>commons</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-commons</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_shp2pg</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-commons</artifactId>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- GeoNetwork ================================================== -->
+    <profile>
+      <id>geonetwork</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-geonetwork</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_geonetwork</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-geonetwork</artifactId>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- GeoStore ================================================== -->
+    <profile>
+      <id>geostore</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-geostore</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_geostore</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-geostore</artifactId>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Xstream ================================================== -->
+    <profile>
+      <id>xstream</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-xstream</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_xstream</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-xstream</artifactId>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- FreeMarker ================================================== -->
+    <profile>
+      <id>freemarker</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-freemarker</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_freemarker</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-freemarker</artifactId>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- GeoServer ======================================================== -->
+    <profile>
+      <id>geoserver</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-geoserver</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_geoserver</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-geoserver</artifactId>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- GeoTIFF ======================================================== -->
+    <profile>
+      <id>geotiff</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-geotiff</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_geotiff</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-geotiff</artifactId>
+                      <version>${project.version}</version>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- ShapeFile ====================================================== -->
+    <profile>
+      <id>shapefile</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-shapefile</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_shape</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-shapefile</artifactId>
+                      <version>${project.version}</version>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Task Executor ================================================== -->
+    <profile>
+      <id>task-executor</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-taskexecutor</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_taskexec</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-taskexecutor</artifactId>
+                      <version>${project.version}</version>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- action-octave-fileinfileout ================================================== -->
+    <profile>
+      <id>freemarker-filein-fileout</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-freemarker</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-octave-fileinfileout</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-octave</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_octave_fileinfileout</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-octave-fileinfileout</artifactId>
+                      <version>${project.version}</version>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- FTP ============================================================ -->
+    <profile>
+      <id>ftp</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-ftp</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_ftp</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-ftp</artifactId>
+                      <version>${project.version}</version>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- SCRIPTING ====================================================== -->
+    <profile>
+      <id>scripting</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-scripting</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_scripting</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-scripting</artifactId>
+                      <version>${project.version}</version>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- ImageMosaic ==================================================== -->
+    <profile>
+      <id>imagemosaic</id>
+      <activation>
+        <property>
+          <name>all</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-imagemosaic</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <id>unpack_imagemosaic</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>it.geosolutions.geobatch</groupId>
+                      <artifactId>gb-action-imagemosaic</artifactId>
+                      <version>${project.version}</version>
+                      <classifier>flowdata</classifier>
+                      <type>jar</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/${flow.dir}</outputDirectory>
+                      <includes>data/**</includes>
+                    </artifactItem>
+                  </artifactItems>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
