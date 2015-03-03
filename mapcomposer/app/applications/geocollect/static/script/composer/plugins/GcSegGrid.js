@@ -136,7 +136,9 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
    btnMapTooltip: "Show Map",
    noticeDetailsPanelTitle:"Notice Details",
    photoBrowserPanelTitle:"Surveys Images",
-    surveysPanelTitle:"Surveys",
+   noticePhotoBrowserPanelTitle:"Notice Images",
+   surveysPanelTitle:"Surveys",
+   noticePanelTitle:"Notice",
     /** api: config[displayFeatureText]
      * ``String``
      * Text for feature display button (i18n).
@@ -356,7 +358,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                          title:'Pictures',
                          authParam:this.authParam,
                          authKey:this.authkey,
-                         ref:'../../../phBrowser',
+                         //ref:'../../../phBrowser',
                          picturesBrowserConfig:this.configSurvey.picturesBrowserConfig,
                      store: new Ext.data.JsonStore({
                                 url: "http://geosolution.it",
@@ -418,7 +420,9 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         if(this.configSurvey.picturesBrowserConfig){
             var photoBrowser=this.createPhotoBrowser();
         }
-        
+        if(this.configHistory.picturesBrowserConfig){
+            var photoBrowserNotice=this.createPhotoBrowser();
+        }
         
          this.segdet=
         new Ext.Panel({
@@ -444,12 +448,26 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 activeItem:0  ,
             
                 height:500,
-                items:[Ext.apply({
+                items:[
+                    {
+                     xtype:'panel',
+                     layout:'accordion',
+                     title:this.noticePanelTitle,
+                   items:[ Ext.apply({
                         xtype:"gxp_gchistroygrid",
-                        ref:'../seg_history',
+                        ref:'../../seg_history',
                         mapPanel:this.target.mapPanel,
                          baseParams:bParams
                     },this.initialConfig.configHistory||{}),
+                    {
+                         title:this.noticePhotoBrowserPanelTitle,
+                         disabled:true,
+                         hidden:(!photoBrowserNotice),
+                         items:[photoBrowserNotice||{}],
+                     }
+                    
+                    ]
+                    },
                     {
                      xtype:'panel',
                      layout:'accordion',
@@ -507,7 +525,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                if(record){
                 this.seg_history.loadHistory(record.data[this.fKey]);
                 this.sop.loadSop(record.data[this.fKey]);
-            //    if(this.phBrowser) this.phBrowser.loadPhotos(record);
+                   if(photoBrowserNotice) photoBrowserNotice.loadPhotos(record);
                 this.doLayout();
                 }
                
