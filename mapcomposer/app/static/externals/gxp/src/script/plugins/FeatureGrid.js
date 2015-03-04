@@ -750,7 +750,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         handler: function() {
                             if(this.exportWindow.form.getForm().isValid()){
                                 var format = this.exportWindow.form.getForm().getValues().format;
-                                this.doExport(false, format);
+                                this.doExport(true, format);
                             }else{
                                 Ext.Msg.show({
                                     title: this.noFormatTitleText,
@@ -838,16 +838,22 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
     /** api: method[doExport]
      */    
     doExport: function(single, outputFormat){
-    
         var featureManager = this.target.tools[this.featureManager];
         var grid = this.output[0];
         var protocol = grid.getStore().proxy.protocol;
         var allPage = {};
-        
         allPage.extent = featureManager.getPagingExtent("getMaxExtent");
-        
+       //IF WFS_PAGING create filter with fid id
+       if (featureManager.pagingType === gxp.plugins.FeatureManager.WFS_PAGING) {
+           var fidsA=[];
+           featureManager.featureStore.each(function(r){
+               fidsA.push(r.get("fid"));
+           });
+            var filter= new OpenLayers.Filter.FeatureId({fids: fidsA});
+           }
+       else{
         var filter = featureManager.setPageFilter(single ? featureManager.page : allPage);
-        
+        }
         var node = new OpenLayers.Format.Filter({
             version: protocol.version,
             srsName: protocol.srsName
@@ -863,7 +869,8 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         for (var i=0; i<numColumns; i++){
             var header = colModel.getColumnHeader(i) ;
             if( header && header != "" && !colModel.isHidden(i)){
-                propertyName.push(header);
+                 var fieldName= colModel.getDataIndex(i);
+                propertyName.push(fieldName);
             }
         }   
         var failedExport = String.format(this.failedExport, outputFormat);
