@@ -556,16 +556,33 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         if (!this.describedLayers) {
             this.describedLayers = {};
         }
+        if (!this.describeLayerQueue) {
+
+            this.describeLayerQueue = [];
+        }
+        //If I'm wating for a describe layer request I have to append to the queue new request!    
+            for(lname in this.describedLayers){
+            if(typeof this.describedLayers[lname]== "function"){
+                this.describeLayerQueue.push(arguments);        
+                return;//Stop cycle and return
+            }
+        }
         var layerName = rec.getLayer().params.LAYERS;
         var cb = function() {
+            
             var recs = Ext.isArray(arguments[1]) ? arguments[1] : arguments[0];
             var rec, name;
             for (var i=recs.length-1; i>=0; i--) {
                 rec = recs[i];
                 name = rec.get("layerName");
                 if (name == layerName) {
-                    this.describeLayerStore.un("load", arguments.callee, this);
+                   this.describeLayerStore.un("load", arguments.callee, this);
                     this.describedLayers[name] = true;
+                    //Check's if we have some describe layer request in queue!
+                    if(this.describeLayerQueue.length>0){
+                            var arg=this.describeLayerQueue.pop();
+                        this.describeLayer(arg[0],arg[1],arg[2]);
+                    }
                     callback.call(scope, rec);
                     return;
                 } else if (typeof this.describedLayers[name] == "function") {
@@ -573,7 +590,11 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     this.describeLayerStore.un("load", fn, this);
                     fn.apply(this, arguments);
                 }
-            }
+            }//Check's if we have some describe layer request in queue!
+             if(this.describeLayerQueue.length>0){
+                            var arg=this.describeLayerQueue.pop();
+                        this.describeLayer(arg[0],arg[1],arg[2]);
+                    }
             // something went wrong (e.g. GeoServer does not return a valid
             // DescribeFeatureType document for group layers)
             delete describedLayers[layerName];
