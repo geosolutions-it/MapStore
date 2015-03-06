@@ -597,7 +597,7 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
 
         var fields = [];
         this.wid_store.each(function(r) {
-            if (r.data.xtype !== 'actionsend')
+            if (r.data.xtype !== 'actionsend' && r.data.xtype !== 'actionsave')
                 fields.push(r.json);
         });
         this.page = {//titolo dalla pagina e campi!!
