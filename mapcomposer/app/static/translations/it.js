@@ -330,6 +330,7 @@ GeoExt.Lang.add("it", {
 	
 	"gxp.plugins.WMSSource.prototype": {
 		noCompatibleProjectionError: "Il layer non è disponibile nella proiezione della mappa",
+		wfsDescribeFeatureTypeError: "Errore nel recupero degli attributi per il tipo di oggetto",
 		errorTitle: "Errore"
 	},
 

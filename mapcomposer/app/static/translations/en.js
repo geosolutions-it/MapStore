@@ -305,6 +305,7 @@ GeoExt.Lang.add("en", {
 	
 	"gxp.plugins.WMSSource.prototype": {
 		noCompatibleProjectionError: "Layer is not available in the map projection",
+		wfsDescribeFeatureTypeError: "Error getting attributes of feature type",
 		errorTitle: "Error"
 	},
 	

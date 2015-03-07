@@ -307,6 +307,7 @@ GeoExt.Lang.add("es", {
 	
 	"gxp.plugins.WMSSource.prototype": {
 		noCompatibleProjectionError: "Capa no está disponible en la proyección cartográfica",
+		wfsDescribeFeatureTypeError: "Error al obtener los atributos de tipo de entidad",
 		errorTitle: "Error"
 	},
 	

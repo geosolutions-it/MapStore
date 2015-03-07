@@ -140,6 +140,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 	
 	noCompatibleProjectionError: "Layer is not available in the map projection",
 	
+	wfsDescribeFeatureTypeError: "Error getting attributes of feature type",
+	
 	errorTitle: "Error",
 	
     /** api: method[createStore]
@@ -510,29 +512,48 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         return compatibleProjection;
     },
     
+    /** private: method[switchWmsVersion]
+     *  returns the WMS version alternative to the one passed as parameter
+     */
+    switchWmsVersion: function(wmsVersion) {
+    	var WMS_VERSIONS = {
+    		"1.1.1": "1.3.0",
+    		"1.3.0": "1.1.1"
+    	};
+    	
+    	return WMS_VERSIONS[wmsVersion];
+    },
+    
     /** private: method[initDescribeLayerStore]
      *  creates a WMSDescribeLayer store for layer descriptions of all layers
      *  created from this source.
      */
     initDescribeLayerStore: function() {
+    	var DEFAULT_WMS_VERSION = "1.1.1";
     	var url;
     	var version;
     	var baseParams = {
+    			SERVICE: "WMS",
     			REQUEST: "DescribeLayer"
     		};
     	
-    	if (this.useCapabilities === true &&
-    		this.store.reader.raw.capability.request.describelayer) {
-    		var req = this.store.reader.raw.capability.request.describelayer;
-    		url = req.href;
-    		version = this.store.reader.raw.version;
+    	if (this.useCapabilities === true) {
+    		var describeLayerRequest = this.store.reader.raw.capability.request.describelayer;
+    		var wmsVersion = this.store.reader.raw.version;
+    		
+    		if (describeLayerRequest) {
+    			url = describeLayerRequest.href;
+    			version = wmsVersion; 
+    		} else {
+    			url = this.url;
+    			version = this.switchWmsVersion(wmsVersion);
+    		}
     	} else {
-    		Ext.apply(baseParams, {
-    			SERVICE: "WMS"
-    		});
     		url = this.url;
     		version = this.version;
     	}
+    	
+    	version = version || DEFAULT_WMS_VERSION;
     	
     	this.describeLayerStore = new GeoExt.data.WMSDescribeLayerStore({
     		url: url,
@@ -584,6 +605,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         var cb = function() {
             
             var recs = Ext.isArray(arguments[1]) ? arguments[1] : arguments[0];
+            var options = Ext.isObject(arguments[2]) ? arguments[2] : arguments[1];
             var rec, name;
             for (var i=recs.length-1; i>=0; i--) {
                 rec = recs[i];
@@ -603,16 +625,33 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     this.describeLayerStore.un("load", fn, this);
                     fn.apply(this, arguments);
                 }
-            }//Check's if we have some describe layer request in queue!
+            }
+            // something went wrong (e.g. using a WMS version which does not support
+            // DescribeLayer operation): try again with a different WMS version 
+            // before giving up...
+            if (arguments.callee.retryCount < 2) {
+            	var otherWmsVersion = this.switchWmsVersion(this.describeLayerStore.baseParams.VERSION);
+            	// override VERSION parameter both in the store's baseParams
+            	// AND in the options object passed to the load method 
+            	this.describeLayerStore.setBaseParam('VERSION', otherWmsVersion);
+            	options.params.VERSION = otherWmsVersion;
+            	arguments.callee.retryCount++;
+            	
+            	this.describeLayerStore.load(options);
+            	return;
+            }
+            
+            //Check's if we have some describe layer request in queue!
              if(this.describeLayerQueue.length>0){
                             var arg=this.describeLayerQueue.pop();
                         this.describeLayer(arg[0],arg[1],arg[2]);
                     }
-            // something went wrong (e.g. GeoServer does not return a valid
+            // something went definitively wrong (e.g. GeoServer does not return a valid
             // DescribeFeatureType document for group layers)
             delete describedLayers[layerName];
             callback.call(scope, false);
         };
+        cb.retryCount = 1;
         var describedLayers = this.describedLayers;
         var index;
         if (!describedLayers[layerName]) {
@@ -676,6 +715,15 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                         listeners: {
                             "load": function() {
                                 callback.call(scope, schema);
+                            },
+                            "exception": function(data) {
+                            	Ext.MessageBox.show({
+                            		title: this.errorTitle,
+                            		msg: this.wfsDescribeFeatureTypeError + " " + typeName,
+                            		buttons: Ext.Msg.OK,
+                            		animEl: 'elId',
+                            		icon: Ext.MessageBox.ERROR
+                            	});
                             },
                             scope: this
                         }
