@@ -129,6 +129,7 @@
           "collapseMode":"mini",
           "header": true
       }],
+    "removeTools":["gxp_wmsgetfeatureinfo_menu"],
 	"customTools":[
 		{
 		   "ptype": "gxp_mouseposition",
@@ -174,6 +175,7 @@
         "countryLayer":"gascapacity:gcd_lst_USCounties",
         "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
         "featureManager": "featuremanager",
+        "featureGridContainer":"south",
 		  "outputConfig":{
 			 "id":"CapacityDataForm"
 			 
@@ -212,7 +214,7 @@
 		  "ptype": "gxp_featuremanager",
           "remoteSort":true,
           "pagingType": 1,
-          "format": "GML2",
+          "format": "JSON",
 		  "id": "featuremanager",
           "autoSetLayer":false
 	    }, {
@@ -222,7 +224,7 @@
           "customActionsProvider":"gcd",
           "customColumnsProvider": "gcd",
 		  "outputConfig": {
-			  "id": "featuregrid",
+			  "id": "capacity_grid",
               "region":"south",
               "height":300,
               "collapsible":true,

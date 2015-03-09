@@ -46,13 +46,13 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
     /** i18n **/
     titleText: 'Capacity',
     types: [
-        ['', '-All Types-'],
-        ["B", "Bidirectional"],
-        ["D", "Delivery"],
-        ["I", "Injection"],
-        ["R", "Receipt"],
-        ["U", "Unknown"],
-        ["W", "Withdrawal"]
+        ["", '-All Types-'],
+        ["'B'", "Bidirectional"],
+        ["'D'", "Delivery"],
+        ["'I'", "Injection"],
+        ["'R'", "Receipt"],
+        ["'U'", "Unknown"],
+        ["'W'", "Withdrawal"]
     ],
     layerName: "gascapacity:test_capacity_point",
     /*
@@ -344,11 +344,12 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     displayField: 'label',
                     fieldLabel: 'Point Type',
                     valueField: 'id',
+                    hiddenName:'ptype',
                     anchor: '100%',
                     autoLoad: true,
                     mode: 'local',
                     forceSelected: true,
-                    value: '',
+                    value: "",
                     allowBlank: false,
                     triggerAction: 'all',
                     //TODO load from db and use this to add the -- All types -- record :
@@ -415,9 +416,18 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                 scope: this,
                 handler: function () {
 
-
+                    
                     var values = this.output.getForm().getValues();
-
+                    if(!(values.queryby == 'pipeline' && values.pipeline )){
+                        Ext.Msg.show({
+                           
+                           msg: 'This feature is not implemented yet. Please select "Query by Pipeline" and select a pipeline in the "Refine Query" box',
+                           buttons: Ext.Msg.OK,
+                           animEl: 'elId',
+                           icon: Ext.MessageBox.INFO
+                        });
+                        return 
+                    }
                     var viewParams=this.createViewParams();
                     var filter// = this.createFilter(values);
                     //var cql_filter = filter.toString();
@@ -427,7 +437,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                         layers: this.layerName,
                         //styles: style ,
                         transparent: "true",
-                        querible: false,
+                        
                         vendorParams: {
                             //cql_filter: cql_filter
                             viewparams: viewParams
@@ -446,6 +456,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                             name: this.layerName,
                             group: "data",
                             layer: wms,
+                            queryable: true,
                             selected: true
 
                         };
@@ -491,6 +502,10 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     featureManager.layerRecord = undefined;
                     featureManager.setLayer(this.layerRecord);
                     featureManager.loadFeatures(filter);
+                    var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
+                    if(container){
+                        container.expand();
+                    }
 
 
                 }
@@ -519,6 +534,10 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         var endDate = "END_DATE:" + fieldValues.end.format('Y-m-d');;
         var aggregation = "AGGREGATION:" + values.aggregation;
         var viewParams = [ferc,startDate,endDate,aggregation];
+        if(values.ptype && values.ptype != ''){
+            var ptype = "PTYPE:" + values.ptype;
+            viewParams.push(ptype);
+        }
         
         return   viewParams.join(";");
         

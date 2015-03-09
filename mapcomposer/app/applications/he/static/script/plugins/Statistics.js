@@ -186,9 +186,18 @@ gxp.plugins.he.Statistics = Ext.extend(gxp.plugins.Tool, {
                     iconCls:'gxp-icon-find',
                     disabled:false,
                     handler: function(){
+                        var values = this.refOwner.getForm().getValues();
                         var pipelineId = this.refOwner.getForm().getValues().pipeline;
                         var combobox = this.refOwner.pipeline;
-                        
+                        if(!( values.pipeline )){
+                            Ext.Msg.show({
+                               msg: 'Please select a pipeline in the "Refine Query" box',
+                               buttons: Ext.Msg.OK,
+                               animEl: 'elId',
+                               icon: Ext.MessageBox.INFO
+                            });
+                            return 
+                        }
                         var pipelineName = combobox.getRawValue();
                         // record.get("pl_PipelineName");
                         //var record = combobox.findRecord(combobox.valueField, pipelineId);

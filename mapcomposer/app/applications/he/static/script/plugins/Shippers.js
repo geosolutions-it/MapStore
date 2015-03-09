@@ -302,8 +302,18 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                 ref: 'contractbyCategoryButton',
                 scope: this,
                 handler: function(){
+                     var values = this.output.getForm().getValues()
                      var pipelineId = this.output.getForm().getValues().pipeline;
-                    
+                     if(!(values.queryby == 'pipeline' && values.pipeline )){
+                        Ext.Msg.show({
+                           
+                           msg: 'This feature is not implemented yet. Please select "Query by Pipeline/Storage Facility" and select a pipeline in the "Refine Query" box',
+                           buttons: Ext.Msg.OK,
+                           animEl: 'elId',
+                           icon: Ext.MessageBox.INFO
+                        });
+                        return 
+                    }
                      var canvasWindow = new Ext.Window({
                         title: pipelineId +' - Transport Customers',
                         layout:'border',
