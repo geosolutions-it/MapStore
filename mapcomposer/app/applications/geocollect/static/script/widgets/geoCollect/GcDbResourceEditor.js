@@ -510,7 +510,7 @@ this.autoScroll=true;
 							this.seg_fieldStore;
 			schema_seg=	{ 
 				"type":rec.get('owsType'),		// Type of the service (currently only JSON format is supported)
-   	 			"URL": rec.get('owsURL'),	// WFS url
+   	 			"URL": this.gcSource,	// WFS url
    	 			"typeName":this.typeName,	// typeName to ask for
    		 	    "localSourceStore":rec.get('name'),	// local device table name
    	 			"fields":this.getFieldsObj(this.seg_fieldStore)
