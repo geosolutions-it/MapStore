@@ -39,6 +39,7 @@ gxp.charts.MGChart = Ext.extend(Ext.Container, {
     updateDelay: 0,
     deferredRender: false,
     autoScroll: false,
+    dateFormat: "%Y-%m-%dZ",
 
     initComponent: function () {
 
@@ -77,9 +78,11 @@ gxp.charts.MGChart = Ext.extend(Ext.Container, {
         if(this.data){
             var min = Number.POSITIVE_INFINITY;
             var max = Number.NEGATIVE_INFINITY;
+            var formatTime = d3.time.format(this.dateFormat);
             for(var i = 0; i< this.data.length; i++){
                 var datum = this.data[i];
-                datum.date = new Date(datum.date);
+                //datum.date = new Date(datum.date);
+                datum.date = formatTime.parse(datum.date);
                 data.push(datum);
                 max = max > datum.value ? max : datum.value;
                 min = min < datum.value ? min : datum.value;

@@ -159,7 +159,8 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                                     }
                                 }),
                                 //xtype: 'gxp_C3Chart'
-                                xtype: 'gxp_MGChart'
+                                xtype: 'gxp_MGChart',
+                                dateFormat : '%Y-%m-%dZ'
 
                             }
                         };
