@@ -170,7 +170,13 @@ GeoExt.Lang.add("de", {
         infoActionTip: "Feature Info erhalten",
         popupTitle: "Feature Info",
 		noDataMsg: "Keine Daten vom Server erhalten",
-		activeActionTip: "Informationen über ausgewählte Schicht"
+		activeActionTip: "Informationen über ausgewählte Schicht",
+		firstFtTip: "Erste Feature",
+        previousPageTip: "Vorheriges Feature",
+        nextPageTip: "Nächste Feature",
+        lastPageTip: "LetzteFeature",
+        ftLabel: "Feature",
+        ftOfLabel: "von", 
     },
 
     "gxp.plugins.Zoom.prototype": {

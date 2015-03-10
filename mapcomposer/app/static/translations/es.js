@@ -176,7 +176,13 @@ GeoExt.Lang.add("es", {
         popupTitle: "Feature Info",
 		noDataMsg: "El servidor no devolvió datos",
 		maskMessage: "Recuperando Feature Info...",
-		activeActionTip:"Activar información de la capa seleccionada"
+		activeActionTip:"Activar información de la capa seleccionada",
+		firstFtTip: "Primera Feature",
+        previousPageTip: "Feature Anterior",
+        nextPageTip: "Siguiente Feature",
+        lastPageTip: "Ultima Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "de", 
     },
 
     "gxp.plugins.Zoom.prototype": {
