@@ -328,6 +328,7 @@ GeoExt.Lang.add("de", {
 	
 	"gxp.plugins.WMSSource.prototype": {
 		noCompatibleProjectionError: "Schicht ist nicht in der Kartenprojektion",
+		wfsDescribeFeatureTypeError: "Fehler beim Abrufen der Eigenschaften von Feature-Typ",
 		errorTitle: "Fehler"
 	},
 

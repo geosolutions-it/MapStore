@@ -304,6 +304,7 @@ GeoExt.Lang.add("fr", {
 	
 	"gxp.plugins.WMSSource.prototype": {
 		noCompatibleProjectionError: "Couche ne est pas disponible dans la projection cartographique",
+		wfsDescribeFeatureTypeError: "Erreur d'obtention des attributs de type d'entité",
 		errorTitle: "Erreur"
 	},
 	
