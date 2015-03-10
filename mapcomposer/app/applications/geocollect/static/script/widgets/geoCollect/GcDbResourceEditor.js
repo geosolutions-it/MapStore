@@ -525,23 +525,21 @@ this.autoScroll=true;
                 }},
                 //Preoara oggetto con fields  {nome:type,nome:type}
  getFieldsObj:function(store){
- 	
+     //TODO customiza here type conversion
+ 	var transformType={
+ 	    'int':'integer'
+ 	};
  	var recObj={};
- 	
  			store.each(function(rec){			
- 				recObj[rec.get('name')]=rec.get('localType');
+ 			    var type =rec.get('localType');
+                 			  type=(transformType[type])?transformType[type]:type;  
+ 				recObj[rec.get('name')]=type;
  				});
- 			
-
- 	
- 	
  	return recObj;
  	},
  	               
     loadResourceData: function(resource){
-    		
     			s_seg=resource;
-    			
     			//Se esiste schema recupero ed inizializzo
     			//Non ho altro da fare perchè tutte le info le recupero dallo stor
 	    		if(s_seg && s_seg.typeName && this.typeName!=s_seg.typeName ){	
@@ -549,9 +547,7 @@ this.autoScroll=true;
     		            this.setComboValue(this.typeName);
     		         }else if( this.typeName==s_seg.typeName)
     		         this.fireEvent("resLoaded",this);
-    		         
              	         this.isLoaded=true;
-             	
              	//per ora disabilito
              			
              	},
