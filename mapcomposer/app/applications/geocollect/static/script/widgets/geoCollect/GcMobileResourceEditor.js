@@ -115,6 +115,7 @@ this.items=[{
 		this.tabbi.add({xtype:'mxp_gc_pview_resource_editor',title:this.infoTabTitle,seg_store:dbp.getSeg_Store(),sop_store:dbp.getSop_Store(),ref:'/pView'});
 		this.tabbi.add({xtype:'mxp_gc_form_resource_editor',title:this.surveyTabTitle,seg_store:dbp.getSeg_Store(),sop_store:dbp.getSop_Store(),ref:'/pForm'});
 		this.tabbi.add({xtype:'mxp_gc_formseg_resourcce_editor',title:this.noticeTabTitle,seg_store:dbp.getSop_Store(),sop_store:dbp.getSeg_Store(),ref:'/pFormseg'});//GLi passo store invertiti!!
+		this.tabbi.add({xtype:'mxp_gc_config_panel',ref:'/pConfig'});
 		this.tabbi.doLayout();
 		this.tabbi.setActiveTab(0);		
 },
@@ -130,9 +131,11 @@ getResourceData: function(){
 	             pvRes= this.pView.getResourceData();
 	             frRes=this.pForm.getResourceData();
 	             frSeg=this.pFormseg.getResourceData();
+             	 conf=this.pConfig.getResourceData();
              	 res=Ext.apply(mlRes,pvRes);
              	 res.sop_form=frRes;
              	 if(frSeg)res.seg_form=frSeg;
+             	 if(conf)res.config=conf;
              	 return res;
                 },              
                     
@@ -142,6 +145,7 @@ loadResourceData: function(resource){
 	if(resource.preview)this.pView.loadResourceData(resource.preview);
 	if(resource.sop_form)this.pForm.loadResourceData(resource.sop_form);
 	if(resource.seg_form)this.pFormseg.loadResourceData(resource.seg_form);
+	if(resource.config)this.pConfig.loadResourceData(resource.config);
 	//Per caricare le risorse devi prima caricare il pannello db poi caricare il resto
 		
 	
