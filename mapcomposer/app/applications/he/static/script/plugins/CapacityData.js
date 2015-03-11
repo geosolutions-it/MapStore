@@ -95,6 +95,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     }, {
                         boxLabel: 'State/County',
                         name: 'queryby',
+                        hidden: true,
                         inputValue: 'state'
                     }, {
                         boxLabel: 'Point Name/Number',
@@ -104,6 +105,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                         boxLabel: 'Rextag\'s Map Book Points',
                         name: 'queryby',
                         inputValue: 'book',
+                        hidden: true,
                         disabled: true
                     }],
                     listeners: {
@@ -128,6 +130,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     }
                 }, {
                     xtype: 'box',
+                    hidden: true,
                     autoEl: {
                         tag: 'i',
                         html: 'Query By Book Points Coming Soon',
