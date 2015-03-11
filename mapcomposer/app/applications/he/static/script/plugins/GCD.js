@@ -44,8 +44,10 @@ gxp.plugins.he.GCD = Ext.extend(gxp.plugins.Tool, {
 
     /** api: ptype = he_gcd */
     ptype: "he_gcd",
-
-
+    
+    /** a card layout panel than needs to be switched on tabchange event  */
+    resultsCardPanel: "results_panel",
+    
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -76,6 +78,27 @@ gxp.plugins.he.GCD = Ext.extend(gxp.plugins.Tool, {
                             tabpanel.setActiveTab(0);
                         }
                     });
+                },
+                /**
+                NOTE: This listener requires the tabs to have a "cardId" property
+                      that matches an existing panel ID in the "resultsCardPanel" layout
+                      Example:
+                      {
+                        "id": "capacity_data",
+                        "ptype":"he_capacity_data",
+                        [...]
+                        "outputConfig":{
+                             "id":"CapacityDataForm",
+                             "cardId": 0
+                        }
+                        [...]
+                      }
+                **/
+                tabchange: function(tabPanel, tab){
+                    var cardPanel = me.resultsCardPanel ? Ext.getCmp(me.resultsCardPanel) : null;
+                    if(cardPanel){
+                        cardPanel.getLayout().setActiveItem(tab.cardId);
+                    }
                 }
             }
 

@@ -116,13 +116,23 @@
           "header": true
       }
     ],
-        "mapPanelContainerPanels":[{   
+        "mapPanelContainerPanels":[{
           "xtype": "panel",
           "title": "Results",
           "border": true,
-          "id": "south",
+          "id": "results_panel",
           "region": "south",
-          "layout": "fit",
+          "layout": "card",
+          "activeItem":0,
+          "items": [{
+              "xtype": "panel",
+            "id": "capacity_results_panel",
+            "layout": "fit"
+          },{
+            "xtype": "panel",
+            "id": "shippers_results_panel",
+            "layout": "fit"
+          }],
           "height": 280,
           "collapsed": true,
           "collapsible": true,
@@ -162,6 +172,7 @@
 			 "region":"east",
 			 "startTab":"CapacityDataForm"
 		  },
+          "resultsCardPanel":"results_panel",
 		  "outputTarget":"west"
 	   }, {
         "id": "capacity_data",
@@ -175,12 +186,12 @@
         "countryLayer":"gascapacity:gcd_lst_USCounties",
         "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
         "featureManager": "featuremanager",
-        "featureGridContainer":"south",
-		  "outputConfig":{
-			 "id":"CapacityDataForm"
-			 
-		  },
-		  "outputTarget":"gcd"
+        "featureGridContainer":"results_panel",
+		"outputConfig":{
+			 "id":"CapacityDataForm",
+			 "cardId": 0
+        },
+		"outputTarget":"gcd"
 	  },{
 	    "ptype":"he_shippers",
         "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
@@ -188,13 +199,16 @@
         "countryLayer":"gascapacity:gcd_lst_USCounties",
         "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
         "shipperNamesLayer":"gascapacity:ioc_lst_ShipperNames",
+        "layerName":"gascapacity:gcd_v_shippers_by_pipeline",
         "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
 		"titleText": "Shippers",
 		  "outputConfig":{
-			 "id":"ShippersForm"
-			 
+			 "id":"ShippersForm",
+			 "cardId": 1
 		  },
-		  "outputTarget":"gcd"
+        "featureManager": "featuremanager",
+        "featureGridContainer":"shippers_results_panel",
+		"outputTarget":"gcd"
 	  },{
 	    "ptype":"he_gcd_statistics",
         "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"},
@@ -206,8 +220,8 @@
         "layerSource":"gs",
 		"titleText": "Statistics",
 		  "outputConfig":{
-			 "id":"MapperaForm"
-			 
+			 "id":"MapperaForm",
+			 "cardId": 2
 		  },
 		  "outputTarget":"gcd"
 	  }, {
@@ -233,7 +247,7 @@
               "mask": {"msg":"Please wait..."}
 			  
 		  },
-		  "outputTarget": "south",
+		  "outputTarget": "capacity_results_panel",
 		  "showExportCSV": true
 	    }
 	]
