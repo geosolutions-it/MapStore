@@ -347,7 +347,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                 })]
             }),
             "selected": new OpenLayers.Style(null, {
-                rules: [new OpenLayers.Rule({symbolizer: {display: "none"}})]
+              rules: [new OpenLayers.Rule({symbolizer: this.initialConfig.selectedSymbolizer || {display: "none"}})]
             })
         };
         
@@ -355,7 +355,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             displayInLayerSwitcher: false,
             visibility: false,
             styleMap: new OpenLayers.StyleMap({
-                "select": OpenLayers.Util.extend({display: ""},
+                "select": this.initialConfig.selectedSymbolizer ? this.style["selected"] :  OpenLayers.Util.extend({display: ""},
                     OpenLayers.Feature.Vector.style["select"]),
                 "vertex": this.style["all"]
             }, {extendDefault: false})    
@@ -724,10 +724,10 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                                 if(this.lazyGeometryLoad) st.each(function(r){
                                     r.data.feature.geometry={
                                         CLASS_NAME: "",
-                                        getBounds: function(calback,scope){
+                                        getBounds: function(maskId,callback,scope){
                                             me.loadGeometry(r,function(r){
-                                                if(calback)calback.call(scope,r.data.feature.geometry.getBounds());
-                                            },me
+                                                if(callback)callback.call(scope,r.data.feature.geometry.getBounds());
+                                            },me,maskId
                                             );
                                             }
                                     };});
@@ -750,9 +750,8 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      * */
     //TODO: Could be improved using wps service to request only bbox and nthe geometry!!
     
-    loadGeometry:function(record,callback,scope){
+    loadGeometry:function(record,callback,scope,maskId){
         //GET GEOMETRY ONLY FOR RECORD!!
-        
         if(!this.loadedReq)this.loadedReq=0;
         this.loadedReq++;
         var rec=record;
@@ -763,13 +762,14 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             featureType: record.store.featureType,
             featureNS: record.store.featureNS,
             geometryName: record.store.geometryName,
-            version: "1.1.0",
-            outputFormat: "JSON",
+            version:'1.1.0',
+            //version: this.layerRecord.get('layer').params.VERSION,
+            outputFormat: this.format,
             propertyNames:  [record.store.geometryName],//Get only geometry
-            filter: filter,
-            
+            filter: filter
         });
-      var mask = new Ext.LoadMask(Ext.getBody(), {msg:"Retrieving Geometry",removeMask :true});
+      var maskEl=(maskId)? Ext.getCmp(maskId).el:Ext.getBody();
+      var mask = new Ext.LoadMask(maskEl, {msg:"Retrieving Geometry",removeMask :true});
       var me =this;
       var response=  getFeature.read({
                     callback: function(response) {
