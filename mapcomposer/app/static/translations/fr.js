@@ -175,7 +175,13 @@ GeoExt.Lang.add("fr", {
         popupTitle: "Info sur l’entité",
 		noDataMsg: "Aucune donnée n'a été renvoyée par le serveur",
 		maskMessage: "Obtenir des infos sur l’entité...",
-		activeActionTip:"Obtenir des infos sur l’entité sélectionnée"
+		activeActionTip:"Obtenir des infos sur l’entité sélectionnée",
+		firstFtTip: "Premièr Feature",
+		previousPageTip: "Feature Précédente",
+        nextPageTip: "Feature Suivante",
+        lastPageTip: "Derinèr Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "sur", 
     }, 	
 
     "gxp.plugins.Zoom.prototype": {
