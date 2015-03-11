@@ -49,7 +49,7 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
     btnSavePageTooltip:"Save active Page",
     pagesGridTitle:"Pages",
     btnValidateText:"Validate",
-    btnValidateTooltip:"Check Preview Validity",
+    btnValidateTooltip:"Check Pages Validity",
     validateMsgValid:"Mission Template Valid",
     validateMsgInvalid:"Mission Template Invalid",
     validateMsgTitle:"Is Valid?",

@@ -108,7 +108,7 @@ gxp.grid.GcHistoryGrid = Ext.extend(Ext.grid.GridPanel, {
     /** api: config[loadingText]
      *  ``String`` loading text for i18n 
      */
-    loadingText: 'Searching...',
+    loadingText: "Please wait...",
     /** api: config[emptyText]
      *  ``String`` empty text for i18n 
      */
@@ -151,7 +151,7 @@ gxp.grid.GcHistoryGrid = Ext.extend(Ext.grid.GridPanel, {
         this.bbar=[];
         this.getSchema(this.createHistoryGrid,this);
         this.on('render',function(){
-            if(!this.mask) this.mask=  new Ext.LoadMask(this.id, {msg:"Please wait...",store:this.store});
+            if(!this.mask) this.mask=  new Ext.LoadMask(this.id, {msg:this.loadingText,store:this.store});
         },this);
       return gxp.grid.GcHistoryGrid.superclass.initComponent.apply(this, arguments);
     },
@@ -204,7 +204,6 @@ createHistoryGrid:function(schema){
  
 //Crea JSON WFS STORE
 createStore:function(){
-                 console.log(this.sortBy);
         return store = new Ext.data.JsonStore({
             combo: this,
             root: this.root,
