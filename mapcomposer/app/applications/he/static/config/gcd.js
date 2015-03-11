@@ -207,7 +207,8 @@
 			 "cardId": 1
 		  },
         "featureManager": "featuremanager",
-        "featureGridContainer":"shippers_results_panel",
+        "featureGridContainer":"results_panel",
+        "resultsGridCardPanel":"shippers_results_panel",
 		"outputTarget":"gcd"
 	  },{
 	    "ptype":"he_gcd_statistics",

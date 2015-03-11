@@ -335,7 +335,122 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                 xtype: 'button',
                 text: 'Lookup',
                 iconCls: 'gxp-icon-find',
-                disabled: true
+                disabled: false,
+                scope: this,
+                handler: function () {
+
+                    var values = this.output.getForm().getValues();
+                    if(!(values.queryby == 'pipeline' && values.pipeline )){
+                        Ext.Msg.show({
+                           
+                           msg: 'This feature is not implemented yet. Please select "Pipeline/Storage Facility" query type and select a pipeline name in the "Refine Query By" box',
+                           buttons: Ext.Msg.OK,
+                           animEl: 'elId',
+                           icon: Ext.MessageBox.INFO
+                        });
+                        return 
+                    }
+                    
+                    // This is the card panel that will hold the results
+                    var resultsGridPanel = this.resultsGridCardPanel ? Ext.getCmp(this.resultsGridCardPanel) : null;
+                    if(resultsGridPanel){
+                        
+                        // Remove previously added grid panels
+                        resultsGridPanel.removeAll();
+                        
+                    
+                        var storeShippers = new Ext.data.JsonStore({
+                            root: 'features',
+                            //messageProperty: 'crs',
+                            autoLoad: true,
+                            sortInfo: {
+                                field: 'contract_number',
+                                direction: 'ASC' // or 'DESC' (case sensitive for local sorting)
+                            },
+                            fields: [
+                               {name: 'shipper',  type: Ext.data.Types.STRING , mapping: 'properties.Shipper'},
+                               {name: 'expiration_date', type: Ext.data.Types.DATE, mapping: 'properties.Expiration_Date'},
+                               {name: 'contract_number', type: Ext.data.Types.STRING, mapping: 'properties.Contract_Number'},
+                               {name: 'rate_schedule', type: Ext.data.Types.STRING, mapping: 'properties.Rate_Schedule'},
+                               {name: 'transportation_qty', type: Ext.data.Types.INT, mapping: 'properties.Transportation_Qty'}
+                            ],
+                            url: this.geoServerUrl,
+                            baseParams:{
+                                service:'WFS',
+                                version:'1.1.0',
+                                request:'GetFeature',
+                                typeName:this.layerName,
+                                outputFormat: 'application/json',
+                                viewParams: this.createViewParams()
+                            }
+                        });
+                        
+                        var shippers_grid = new Ext.grid.GridPanel({
+                            
+                            store:storeShippers,
+                            viewConfig: {
+                                forceFit: true
+                            },
+                            loadMask:true,
+                            layout:'fit',
+                            autoExpandColumn:'shipper',
+                            columns: [
+                                {
+                                    id       :'shipper',
+                                    header   : 'Shipper', 
+                                    width    : 50,
+                                    sortable : true, 
+                                    dataIndex: 'shipper'
+                                },
+                                {
+                                    id       : 'expiration_date',
+                                    header   : 'Expiration Date', 
+                                    width    : 75, 
+                                    sortable : true, 
+                                    //renderer : 'usMoney', 
+                                    dataIndex: 'expiration_date'
+                                },
+                                {
+                                    id       : 'contract_number',
+                                    header   : 'Contract Number', 
+                                    width    : 75, 
+                                    sortable : true, 
+                                    //renderer : 'usMoney', 
+                                    dataIndex: 'contract_number'
+                                },
+                                {
+                                    id       : 'rate_schedule',
+                                    header   : 'Rate Schedule', 
+                                    width    : 75, 
+                                    sortable : true, 
+                                    //renderer : 'usMoney', 
+                                    dataIndex: 'rate_schedule'
+                                },
+                                {
+                                    id       : 'transportation_qty',
+                                    header   : 'Transportation Qty', 
+                                    width    : 75, 
+                                    sortable : true, 
+                                    //renderer : 'usMoney', 
+                                    dataIndex: 'transportation_qty'
+                                }
+
+                            ]
+                        });
+                        
+                        
+                        // Add our panel
+                        resultsGridPanel.add(shippers_grid);
+                        resultsGridPanel.doLayout();
+                        
+                        // Display the parent cardlayout panel
+                        var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
+                        if(container){
+                            container.expand();
+                        }
+                    }
+
+                }
             }]
         };
         config = Ext.apply(form, config || {});
@@ -345,6 +460,23 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
 
 
         return this.output;
+    },
+    
+    createViewParams: function(){
+        var values = this.output.getForm().getValues();
+        var fieldValues = this.output.getForm().getFieldValues();
+        
+        var ferc = "FERC:" + values.pipeline;
+        var startDate = "START_DATE:" + fieldValues.start.format('Y-m-d');
+        var endDate = "END_DATE:" + fieldValues.end.format('Y-m-d');;
+        var viewParams = [ferc,startDate,endDate];
+        if(values.ptype && values.ptype != ''){
+            var ptype = "PTYPE:" + values.ptype;
+            viewParams.push(ptype);
+        }
+        
+        return   viewParams.join(";");
+        
     }
 
 });
