@@ -335,7 +335,6 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                             strokeWidth: 4,
                             strokeOpacity: 1,
                             strokeColor: "#ff9933"
-                            
                         },
                         "Polygon": {
                             strokeWidth: 2,
@@ -348,7 +347,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                 })]
             }),
             "selected": new OpenLayers.Style(null, {
-                rules: [new OpenLayers.Rule({symbolizer: this.initialConfig.selectedSymbolizer || {display: "none"}})]
+              rules: [new OpenLayers.Rule({symbolizer: this.initialConfig.selectedSymbolizer || {display: "none"}})]
             })
         };
         
@@ -614,13 +613,14 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         }
     },
     
-    /** private: method[setFeatureStore]
+   /** private: method[setFeatureStore]
      *  :arg filter: ``OpenLayers.Filter``
      *  :arg autoLoad: ``Boolean``
      */
     setFeatureStore: function(filter, autoLoad) {
         var record = this.layerRecord;
         var source = this.target.getSource(record);
+        var propertyNames=[];
         if (source && source instanceof gxp.plugins.WMSSource) {
             source.getSchema(record, function(schema) {
                 if (schema === false) {
@@ -656,6 +656,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         if (match) {
                             geometryName = r.get("name");
                             this.geometryType = match[1];
+                            var geomType=match[1];
                         } else {
                             // TODO: use (and improve if needed) GeoExt.form.recordToField
                             var type = types[r.get("type")];
@@ -668,6 +669,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                                 field.dateFormat = "Y-m-d\\Z";
                             }
                             fields.push(field);
+                            propertyNames.push(r.get("name"));
                         }
                     }, this);
                     
@@ -678,7 +680,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         featureNS: schema.reader.raw.targetNamespace,
                         geometryName: geometryName
                     };
-                    
+                  
                     //
                     // Check for existing 'viewparams' inside the selected layer
                     //
@@ -686,7 +688,6 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                     if(layer){
                         protocolOptions = Ext.applyIf(protocolOptions, layer.vendorParams ? {viewparams: layer.vendorParams.viewparams} : {});
                     }
-
                     this.hitCountProtocol = new OpenLayers.Protocol.WFS(Ext.apply({
                         version: "1.1.0",
                         readOptions: {output: "object"},
@@ -694,11 +695,17 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         filter: filter
                     }, protocolOptions));
                     
+                    if (this.lazyGeometryLoad) 
+                    Ext.apply(protocolOptions, {proxy: {
+                            protocol: {
+                                outputFormat: this.format,
+                                propertyNames:  propertyNames
+                            }}});
                     this.featureStore = new gxp.data.WFSFeatureStore(Ext.apply({
                         fields: fields,
                         proxy: {
                             protocol: {
-                                outputFormat: this.format 
+                                outputFormat: this.format,
                             }
                         },
                         maxFeatures: this.maxFeatures,
@@ -712,7 +719,18 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                             "write": function() {
                                 this.redrawMatchingLayers(record);
                             },
-                            "load": function() {
+                            "load": function(st) {
+                                var me=this;
+                                if(this.lazyGeometryLoad) st.each(function(r){
+                                    r.data.feature.geometry={
+                                        CLASS_NAME: "",
+                                        getBounds: function(maskId,callback,scope){
+                                            me.loadGeometry(r,function(r){
+                                                if(callback)callback.call(scope,r.data.feature.geometry.getBounds());
+                                            },me,maskId
+                                            );
+                                            }
+                                    };});
                                 this.fireEvent("query", this, this.featureStore, this.filter);
                             },
                             scope: this
@@ -725,6 +743,49 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             this.clearFeatureStore();
             this.fireEvent("layerchange", this, record, false);
         }        
+    },
+    /**
+     * api method[loadGeometry]
+     * arg Ext.data.Record
+     * */
+    //TODO: Could be improved using wps service to request only bbox and nthe geometry!!
+    
+    loadGeometry:function(record,callback,scope,maskId){
+        //GET GEOMETRY ONLY FOR RECORD!!
+        if(!this.loadedReq)this.loadedReq=0;
+        this.loadedReq++;
+        var rec=record;
+        var filter= new OpenLayers.Filter.FeatureId({fids: [record.get("fid")]});
+        var getFeature= new OpenLayers.Protocol.WFS({
+            srsName: this.target.mapPanel.map.getProjection(),
+            url: record.store.url,
+            featureType: record.store.featureType,
+            featureNS: record.store.featureNS,
+            geometryName: record.store.geometryName,
+            version:'1.1.0',
+            //version: this.layerRecord.get('layer').params.VERSION,
+            outputFormat: this.format,
+            propertyNames:  [record.store.geometryName],//Get only geometry
+            filter: filter
+        });
+      var maskEl=(maskId)? Ext.getCmp(maskId).el:Ext.getBody();
+      var mask = new Ext.LoadMask(maskEl, {msg:"Retrieving Geometry",removeMask :true});
+      var me =this;
+      var response=  getFeature.read({
+                    callback: function(response) {
+                       me.loadedReq--;
+                        if(response.code==1){
+                            rec.data.feature.geometry=response.features[0].geometry.clone(); 
+                            callback.call(scope,rec);
+                           
+                            }//add geometry to existiing feature!!
+                             if(me.loadedReq==0){
+                                 mask.hide();
+                                 me.redrawMatchingLayers(rec);
+                                 }
+                    }});
+                    mask.show();
+    
     },
     
     /** private: method[redrawMatchingLayers]
