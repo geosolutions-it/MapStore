@@ -23,7 +23,6 @@ package it.geosolutions.geobatch.mariss.actions;
 
 import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
-import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
 import it.geosolutions.geobatch.remoteBrowser.configuration.RemoteBrowserConfiguration;
 
 /**
@@ -88,33 +87,6 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
      * Output for fail files
      */
     private String failPath;
-
-    /**
-     * Image mosaic configuration for the DLR product ingestion
-     */
-    private ImageMosaicConfiguration dlrProductsIMConfiguration;
-
-    /**
-     * Image mosaic folder for the DLR tif ingestion
-     */
-    private String dlrProductsTiffFolder;
-
-    /**
-     * Type name for the DLR product ingestion
-     */
-    private String dlrProductIngestionTypeName;
-
-    /**
-     * Relative path for the CSV ingestion
-     */
-    private String csvIngestionPath;
-
-    // /**
-    // *
-    // */
-    // private String netCDFWavePath;
-    //
-    // private String netCDFWindPath;
 
     public RemoteServiceHandlingConfiguration(String id, String name, String description) {
         super(id, name, description);
@@ -273,62 +245,6 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
      */
     public void setTimeFormatConfiguration(TimeFormatConfiguration timeFormatConfiguration) {
         this.timeFormatConfiguration = timeFormatConfiguration;
-    }
-
-    /**
-     * @return the dlrProductsIMConfiguration
-     */
-    public ImageMosaicConfiguration getDlrProductsIMConfiguration() {
-        return dlrProductsIMConfiguration;
-    }
-
-    /**
-     * @param dlrProductsIMConfiguration the dlrProductsIMConfiguration to set
-     */
-    public void setDlrProductsIMConfiguration(ImageMosaicConfiguration dlrProductsIMConfiguration) {
-        this.dlrProductsIMConfiguration = dlrProductsIMConfiguration;
-    }
-
-    /**
-     * @return the dlrProductsTiffFolder
-     */
-    public String getDlrProductsTiffFolder() {
-        return dlrProductsTiffFolder;
-    }
-
-    /**
-     * @param dlrProductsTiffFolder the dlrProductsTiffFolder to set
-     */
-    public void setDlrProductsTiffFolder(String dlrProductsTiffFolder) {
-        this.dlrProductsTiffFolder = dlrProductsTiffFolder;
-    }
-
-    /**
-     * @return the dlrProductIngestionTypeName
-     */
-    public String getDlrProductIngestionTypeName() {
-        return dlrProductIngestionTypeName;
-    }
-
-    /**
-     * @param dlrProductIngestionTypeName the dlrProductIngestionTypeName to set
-     */
-    public void setDlrProductIngestionTypeName(String dlrProductIngestionTypeName) {
-        this.dlrProductIngestionTypeName = dlrProductIngestionTypeName;
-    }
-
-    /**
-     * @return the csvIngestionPath
-     */
-    public String getCsvIngestionPath() {
-        return csvIngestionPath;
-    }
-
-    /**
-     * @param csvIngestionPath the csvIngestionPath to set
-     */
-    public void setCsvIngestionPath(String csvIngestionPath) {
-        this.csvIngestionPath = csvIngestionPath;
     }
 
 }

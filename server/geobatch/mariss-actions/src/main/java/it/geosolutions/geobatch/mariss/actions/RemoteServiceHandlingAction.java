@@ -726,23 +726,30 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
         Queue<EventObject> resultList = new LinkedList<EventObject>();
         String msg = null;
 
-        // TODO: add known folders for other ingestions
         if ("AOI".equals(service.getStatus()) && ACQ_LIST_FOLDER.equals(folder)) {
+            
             // copy to target folder
+            
             try {
-                String csvFileName = CSVIngestUtils.getUserServiceFileName(inputFile.getName(),
+                
+                final String csvFileName = CSVIngestUtils.getUserServiceFileName(inputFile.getName(),
                         user, service.getServiceId());
+                
                 File targetFile = new File(getTempDir().getAbsolutePath() + File.separator + folder
                         + File.separator + csvFileName);
+                
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("inputFile: [" + inputFile.getAbsolutePath() + "] - targetFile: ["
                             + targetFile.getAbsolutePath() + "]");
                     LOGGER.debug("folder: [" + folder + "] - file: [" + csvFileName + "]");
                 }
+                
                 if (!targetFile.exists())
                     FileUtils.copyFile(inputFile, targetFile);
+                
                 FileSystemEvent event = new FileSystemEvent(targetFile,
                         FileSystemEventType.FILE_ADDED);
+                
                 msg = "Processed " + inputFile + ". Check the CSV ingestion related";
 
                 // update the service status
@@ -753,13 +760,18 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                 LOGGER.error(msg, e);
             }
         } else if ("ACQUISITIONPLAN".equals(service.getStatus()) && PRODUCTS_FOLDER.equals(folder)) {
-            String filePath = inputFile.getAbsolutePath();
+            
+            final String filePath = inputFile.getAbsolutePath();
+            
             if (inputFile.getName().equalsIgnoreCase("packageready.txt")) {
                 try {
+                    
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("PRODUCTS READY folder: [" + folder + "] - file: [" + filePath + "]");
                     }
+                    
                     File targetFile = new File(getTempDir().getAbsolutePath() + File.separator + folder + File.separator + inputFile.getName());
+                    
                     if (!targetFile.exists())
                         FileUtils.copyFile(inputFile, targetFile);
                     
@@ -774,7 +786,10 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                     LOGGER.error(msg, e);
                 }
             }
-            /*if (filePath.endsWith(".csv")) {
+            
+            /*
+            
+            if (filePath.endsWith(".csv")) {
                 pendingCSVFiles.add(filePath);
                 msg = "Pending " + inputFile + " for checks at the end of the service files.";
             } else {
@@ -799,7 +814,10 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                     msg = "Error processing MARISS product ingestion";
                     LOGGER.error(msg, e);
                 }
-            }*/
+            }
+            
+            */
+            
         }
         return resultList;
     }
