@@ -754,7 +754,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
             }
         } else if ("ACQUISITIONPLAN".equals(service.getStatus()) && PRODUCTS_FOLDER.equals(folder)) {
             String filePath = inputFile.getAbsolutePath();
-            if (filePath.equalsIgnoreCase("packageready.txt")) {
+            if (inputFile.getName().equalsIgnoreCase("packageready.txt")) {
                 try {
                     if (LOGGER.isDebugEnabled()) {
                         LOGGER.debug("PRODUCTS READY folder: [" + folder + "] - file: [" + filePath + "]");
