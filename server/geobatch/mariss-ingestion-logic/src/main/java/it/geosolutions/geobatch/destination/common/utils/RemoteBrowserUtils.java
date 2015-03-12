@@ -393,14 +393,12 @@ public class RemoteBrowserUtils {
      */
     private static List<String> localLS(String path, Pattern pattern, Boolean foldersFlag) {
         List<String> names = new LinkedList<String>();
-        File folder = new File(path);
+        final File folder = new File(path);
         if (folder.exists() && folder.isDirectory()) {
             for (String fileName : folder.list()) {
                 boolean mustCheck = true;
                 if (foldersFlag != null) {
-                    if (foldersFlag && new File(path + SEPARATOR + fileName).isDirectory()) {
-                        mustCheck = true;
-                    } else {
+                    if (!foldersFlag && new File(path, fileName).isDirectory()) {
                         mustCheck = false;
                     }
                 }

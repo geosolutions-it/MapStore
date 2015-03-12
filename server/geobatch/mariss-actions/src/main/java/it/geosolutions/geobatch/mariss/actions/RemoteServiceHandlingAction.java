@@ -410,7 +410,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                         
                         List<String> fileNames = RemoteBrowserUtils.ls(serverProtocol, serverUser,
                                 serverPWD, serverHost, serverPort, currentRemoteFolder,
-                                connectMode, timeout, null, false);
+                                connectMode, timeout, null, Boolean.FALSE);
 
                         if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("Processing files ... " + fileNames);
