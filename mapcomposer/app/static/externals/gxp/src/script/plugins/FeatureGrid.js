@@ -863,7 +863,8 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         for (var i=0; i<numColumns; i++){
             var header = colModel.getColumnHeader(i) ;
             if( header && header != "" && !colModel.isHidden(i)){
-                propertyName.push(header);
+               var fieldName= colModel.getDataIndex(i);
+                propertyName.push(fieldName);
             }
         }   
         var failedExport = String.format(this.failedExport, outputFormat);
