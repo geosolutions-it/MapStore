@@ -481,6 +481,9 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                                                 serviceFolderIndex, serviceFolderFilesSize,
                                                 serviceFolderFileIndex, error, msg,
                                                 inputFile.getAbsolutePath());
+                                        
+                                        // Clean-up packageReady inputFile
+                                        inputFile.delete();
                                     } catch (Exception e) {
                                         if (LOGGER.isErrorEnabled()) {
                                             LOGGER.error("Error processing " + fileName, e);
@@ -654,10 +657,10 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
             String targetPath = null;
             if (!error) {
                 // success: put on success remote dir
-                targetPath = configuration.getSuccesPath() + localRelativeFolder;
+                targetPath = configuration.getSuccesPath() + LOCAL_SEPARATOR + localRelativeFolder;
             } else {
                 // fail: put on fail remote dir
-                targetPath = configuration.getFailPath() + localRelativeFolder;
+                targetPath = configuration.getFailPath() + LOCAL_SEPARATOR + localRelativeFolder;
             }
 
             // put the file in the target path
