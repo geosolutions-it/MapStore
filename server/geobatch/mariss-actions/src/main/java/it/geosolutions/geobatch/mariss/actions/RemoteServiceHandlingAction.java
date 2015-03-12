@@ -690,9 +690,11 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
      */
     private boolean isObservableServiceFolder(Service service, String folder) {
         // TODO: add known folders for other ingestions
-        if (!"ACQUISITIONLIST".equals(service.getStatus()) && ACQ_LIST_FOLDER.equals(folder)) {
+        if (/*!"ACQUISITIONLIST".equals(service.getStatus())*/ 
+                "AOI".equals(service.getStatus()) && ACQ_LIST_FOLDER.equals(folder)) {
             return true;
-        } else if (!"PRODUCTS".equals(service.getStatus()) && PRODUCTS_FOLDER.equals(folder)) {
+        } else if (/*!"PRODUCTS".equals(service.getStatus()) &&*/
+                "ACQUISITIONPLAN".equals(service.getStatus()) && PRODUCTS_FOLDER.equals(folder)) {
             return true;
         } else {
             return false;
