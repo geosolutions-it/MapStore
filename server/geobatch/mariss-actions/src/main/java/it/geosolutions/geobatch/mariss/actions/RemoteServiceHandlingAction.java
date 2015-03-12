@@ -401,13 +401,21 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                     // check if it's observable
                     if (isObservableServiceFolder(service, folder)) {
 
-                        String currentRemoteFolder = remotePath + FTP_SEPARATOR
+                        final String currentRemoteFolder = remotePath + FTP_SEPARATOR
                                 + remoteRelativeFolder;
-                        // get files in the ACQ_LIST folder
+                        
+                        if (LOGGER.isInfoEnabled()) {
+                            LOGGER.info("Get files in the folder " + currentRemoteFolder);
+                        }
+                        
                         List<String> fileNames = RemoteBrowserUtils.ls(serverProtocol, serverUser,
                                 serverPWD, serverHost, serverPort, currentRemoteFolder,
                                 connectMode, timeout, null, false);
 
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("Processing files ... " + fileNames);
+                        }
+                        
                         // files size and folder index
                         int serviceFolderFilesSize = fileNames.size();
                         int serviceFolderFileIndex = 0;

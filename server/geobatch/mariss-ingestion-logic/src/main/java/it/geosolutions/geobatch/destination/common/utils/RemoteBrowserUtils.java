@@ -398,7 +398,7 @@ public class RemoteBrowserUtils {
             for (String fileName : folder.list()) {
                 boolean mustCheck = true;
                 if (foldersFlag != null) {
-                    if (foldersFlag.equals(new File(path + SEPARATOR + fileName).isDirectory())) {
+                    if (foldersFlag && new File(path + SEPARATOR + fileName).isDirectory()) {
                         mustCheck = true;
                     } else {
                         mustCheck = false;
