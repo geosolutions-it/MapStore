@@ -164,7 +164,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 					
 					fieldSetList = [prodOpt,areaOpt,yieldOpt];
 					
-				}else if(mode === 'compareRegion'){
+				} else if(mode === 'compareRegion'){
 					for (var compareRegion in optionsCompare.series){
 						fieldSetList.push(mainButton.createOptionsFildset(compareRegion,optionsCompare.series[compareRegion],compareRegion));
 					}
@@ -464,35 +464,9 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
             }
         });       
         
-    },
+    }
 	
-	
-    randomColorsRGB: function(total){
-        var i = 360 / (total - 1); // distribute the colors evenly on the hue range
-        var r = []; // hold the generated colors
-        var hsvToRgb = function(h,s,v){
-            var rgb= Ext.ux.ColorPicker.prototype.hsvToRgb(h,s,v);
-            return rgb;
-        }
-        for (var x=0; x<total; x++)
-        {
-            r.push(hsvToRgb(i * x, 0.57, 0.63)); // you can also alternate the saturation and value for even more contrast between the colors
-        }
-        return r;
-    },
-    randomColorsHEX: function(total){
-        var i = 360 / (total - 1); // distribute the colors evenly on the hue range
-        var r = []; // hold the generated colors
-        var hsvToRgb = function(h,s,v){
-            var rgb= Ext.ux.ColorPicker.prototype.hsvToRgb(h,s,v);
-            return "#" +  Ext.ux.ColorPicker.prototype.rgbToHex( rgb );
-        }
-        for (var x=0; x<total; x++)
-        {
-            r.push(hsvToRgb(i * x, 0.57, 0.63)); // you can also alternate the saturation and value for even more contrast between the colors
-        }
-        return r;
-    }	
+    
 });
 
 

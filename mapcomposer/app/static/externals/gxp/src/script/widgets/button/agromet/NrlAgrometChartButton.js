@@ -47,61 +47,37 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
      * ``Object`` opts the chartopts object to manage
      * ``String`` prefix the prefix to use in radio names
      */
-    createOptionsFildset: function(title,opts,prefix){
-        
-        var fieldSet = {
-                xtype:'fieldset',
-                title:title,
-                items:[{
-                    //type
-                    fieldLabel:"Type",
-                    xtype:"radiogroup", 
-                    columns:2,
-                     items:[
-                        {  boxLabel:"<span class=\"icon_span ic_chart-line\">Line</span>",name:prefix+"_chart_type",inputValue:"line", checked : opts.type == "line"},
-                        {  boxLabel:"<span class=\"icon_span ic_chart-spline\">Curve</span>",name:prefix+"_chart_type",inputValue:"spline", checked : opts.type == "spline"},
-                        {  boxLabel:"<span class=\"icon_span ic_chart-bar\">Bar</span>",name:prefix+"_chart_type", inputValue:"column",checked : opts.type == "column"},
-                        {  boxLabel:"<span class=\"icon_span ic_chart-area\">Area</span>",name:prefix+"_chart_type", inputValue:"area",checked : opts.type == "area"}
-                        
-                    ],
-                    listeners: {
-                        change: function(group,checked){
-                            if(checked){
-                                opts.type = checked.inputValue;
-                            }
-                        }
-                    },
-                    scope:this
-                },{ //color
-                    fieldLabel: 'Color', 
-                    xtype:'colorpickerfield',
-                    anchor:'100%',
-                    value : opts.color.slice(1),
-                     listeners: {
-                        select: function(comp,hex,a,b,c,d,e){
-                            if(hex){
-                                opts.color = '#' + hex;
-                                var rgb = comp.menu.picker.hexToRgb(hex);
-                                opts.lcolor = "rgb(" +rgb[0]+ "," +rgb[1]+ ","+rgb[2]+ ")";
-                            }
-                        }
-                    }
-                }]
-        }
-        return fieldSet;
-    },
+    
     menu : {
         
         items:[{
             ref:'../chartoptions',
             iconCls:'ic_wrench',
             text: 'Options', handler: function(option){
-                //Main Button
+                //get mode
                 var mainButton = this.refOwner;
-                var options = mainButton.chartOpt;
-                var current =  mainButton.createOptionsFildset("Reference Year",options.series['current'],'current');
-                var previous =  mainButton.createOptionsFildset("Previous Year",options.series['previous'],'previous');
-                var aggregated =  mainButton.createOptionsFildset("Period Mean",options.series['aggregated'],'aggregated');
+                var form = mainButton.form.output.getForm();
+				var data = form.getValues();
+				var mode = data.mode;
+                var fieldSetList = [];
+                //create fieldsets for the mode selected
+                if (mode === 'compareTime'){
+                    var options = mainButton.chartOpt;
+                    var current =  nrl.chartbuilder.util.createOptionsFildset("Reference Year",options.series['current'],'current');
+                    var previous =  nrl.chartbuilder.util.createOptionsFildset("Previous Year",options.series['previous'],'previous');
+                    var aggregated =  nrl.chartbuilder.util.createOptionsFildset("Period Mean",options.series['aggregated'],'aggregated');
+                    fieldSetList = [current,previous,aggregated]
+                } else if (mode = 'composite') {
+                    var optionsCompare = mainButton.optionsCompareComposite;
+                    for (var id in optionsCompare.series){
+                        var opt = optionsCompare.series[id];
+                        var label = opt.name;
+                        fieldSetList.push(nrl.chartbuilder.util.createOptionsFildset(label,opt,id));
+                    }
+                    
+                    
+                }
+                
                 var win = new Ext.Window({
                     iconCls:'ic_wrench',
                     title:   mainButton.optionsTitle,
@@ -110,7 +86,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                     minWidth:250,
                     minHeight:200,
                     layout:'fit',
-                    autoScroll:false,
+                    autoScroll:true,
                     maximizable: true, 
                     modal:true,
                     resizable:true,
@@ -119,9 +95,10 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                     items:  {
                         ref:'form',
                         xtype:'form',
+						autoScroll:true,
                         frame:'true',
                         layout:'form',
-                        items: [current,previous,aggregated]
+                        items: fieldSetList
                     }
                     
                     
@@ -188,6 +165,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
         var granType = data.areatype;
         var fromYear = data.startYear;
         var toYear = data.endYear;
+        var mode = data.mode;
         //get start and end dekads.
         var months = this.form.output.monthRangeSelector.slider.getValues();
         var start_dec = (months[0])*3;
@@ -251,7 +229,8 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
             factorValues: factorValues,
 			factorStore: factorStore,
             startDec: start_dec,
-            endDec: end_dec
+            endDec: end_dec,
+            mode: mode
         };
         
         //loading mask
@@ -336,213 +315,21 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
     },
 	
 	createResultPanel:function(store, listVar, allPakistanRegions){
-
-		var charts  = this.makeChart(store, listVar, allPakistanRegions);
-		/*
-		var resultpanel = {
-			columnWidth: .95,
-			style: 'padding:10px 10px 10px 10px',
-			xtype: 'gxp_controlpanel',
-			//panelTitle: "XXX",
-			season: listVar.season,
-			province: listVar.numRegion,
-			fromYear: listVar.fromYear,
-			toYear: listVar.toYear,
-            today: listVar.today,
-            chartTitle: listVar.chartTitle,
-			chart: charts,
-			chartHeight: this.chartOpt.height
-		};
-       
+        customOpt = {
+            highChartExportUrl : this.highChartExportUrl
+        };
+        var mode = listVar.mode;
+        var opt = this.chartOpt;
+        if(mode == "composite"){
+            opt = this.optionsCompareComposite
+        }else{
+        
+        }
+		var charts  = nrl.chartbuilder.agromet[mode].makeChart(store, opt, listVar, allPakistanRegions,customOpt);
 		
-		if(!tabs){
-			var cropDataTab = new Ext.Panel({
-				title: 'AgroMet',
-				id:this.targetTab,
-				itemId:this.targetTab,
-				border: true,
-				layout: 'form',
-				autoScroll: true,
-				tabTip: 'AgroMet',
-				closable: true,
-				items: resultpanel
-			});
-			
-			tabPanel.add(cropDataTab); 
-		}else{
-			tabs.items.each(function(a){a.collapse()});
-			tabs.add(resultpanel);
-		}
-		 */
         var wins = gxp.WindowManagerPanel.Util.createChartWindows(charts,listVar);
         gxp.WindowManagerPanel.Util.showInWindowManager(wins,this.tabPanel,this.targetTab,this.windowManagerOptions);
-	},
-	
-	makeChart: function(store, listVar, allPakistanRegions){		
-		var grafici = [];
-		var factorStore = [];
-		
-		for (var i = 0;i<listVar.factorValues.length;i++){
-            factorStore[i] = new Ext.data.JsonStore({
-                root: 'features',
-                fields: [{
-                    name: 'factor',
-                    mapping: 'properties.factor'
-                },{
-                    name: 'month',
-                    mapping: 'properties.month'
-                },{
-                    name: 'dec',
-                    mapping: 'properties.dec'
-                },{
-                    name: 's_dec',
-                    mapping: 'properties.order'
-                }, {
-                    name: 'current',
-                    mapping: 'properties.current'
-                },{
-                    name: 'previous',
-                    mapping: 'properties.previous'
-                },{
-                    name: 'aggregated',
-                    mapping: 'properties.aggregated'
-                }]                
-            });
-
-            store.queryBy(function(record,id){
-                if (record.get('factor') == listVar.factorValues[i]){
-                    factorStore[i].insert(id,record);
-                }
-            });
-			
-            factorStore[i].sort("s_dec", "ASC");    
-			var chart;
-			
-			var text = "";
-			if(allPakistanRegions){
-				text += listVar.factorStore[i].get('label') + " - Pakistan";
-			}else{
-				text += listVar.factorStore[i].get('label') + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION");
-			}
-			var chartOpts = {
-                series :  [
-					Ext.apply({
-							//name:listVar.toYear -1
-                            name: listVar.season == 'rabi' ? (listVar.toYear -2) + "-" + (listVar.toYear -1) : listVar.toYear -1
-						},this.chartOpt.series.previous),
-					Ext.apply({
-							//name: ((listVar.season == 'rabi') &&  (new Date().getFullYear() == listVar.toYear)) ? listVar.toYear -1 + " - " + listVar.toYear : listVar.toYear
-                            name: listVar.season == 'rabi' ? (listVar.toYear -1) + "-" + listVar.toYear : listVar.toYear
-						},this.chartOpt.series.current),
-					Ext.apply({
-							name:"mean " + listVar.fromYear +"-"+ (listVar.toYear -1)
-						},this.chartOpt.series.aggregated)					
-				]
-            };
-            //SORT charts layers to follow the rule (area,bar,line)
-            chartOpts.series.sort(function(a,b){
-                //area,bar,line,spline are aphabetically ordered as we want
-                return a.type < b.type ? -1 : 1;
-            });
-			chart = new Ext.ux.HighChart({
-				animation:false,
-				series: chartOpts.series,
-				height: this.chartOpt.height,
-				//width: 900,
-				store: factorStore[i],
-				animShift: true,				
-				chartConfig: {
-					chart: {
-						zoomType: 'x',
-                        spacingBottom: 65           
-					},
-                    exporting: {
-                        enabled: true,
-                        width: 1200,
-                        url: this.highChartExportUrl
-                    },
-					title: {
-						//text: listVar.factorStore[i].get('label') + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION")
-						text: text
-					},
-					subtitle: {
-                        text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />' +
-                              '<span style="font-size:10px;">Date: ' + listVar.today + '</span><br />' +
-                              '<span style="font-size:10px;">AOI: ' + (allPakistanRegions ? "Pakistan" : listVar.chartTitle) + '</span><br />' +
-                              '<span style="font-size:10px;">Season: ' + listVar.season.toUpperCase() + '</span><br />' +
-                              '<span style="font-size:10px;">Years: ' + listVar.fromYear + "-" + listVar.toYear + '</span><br />',
-                        align: 'left',
-                        verticalAlign: 'bottom',
-                        useHTML: true,
-                        x: 30,
-                        y: -15
-					},					
-					xAxis: [{
-						type: 'linear',
-						categories: ['s_dec'],
-						tickWidth: 0,
-						gridLineWidth: 1,
-                        style: { 
-                            backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
-                        },                        
-						labels: {
-                            style: { 
-                                backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
-                            },                        
-                            rotation: 320,
-                            y: +22,
-							formatter: function () {
-                               // var months = ["Nov-1","Nov-2","Nov-3","Dec-1","Dec-2","Dec-3","Jan-1","Jan-2","Jan-3","Feb-1","Feb-2","Feb-3","Mar-1","Mar-2","Mar-3","Apr-1","Apr-2","Apr-3","May-1","May-2","May-3","Jun-1","Jun-2","Jun-3","Jul-1","Jul-2","Jul-3","Aug-1","Aug-2","Aug-3","Sep-1","Sep-2","Sep-3","Oct-1","Oct-2","Oct-3"];
-                                var dek = (listVar.startDec + this.value -2) % 36 +1;
-                                var dek_in_mon = ((dek -1)% 3)+1;
-                                var mon =Math.floor((dek-1)/3);
-                                var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-                                return months[mon] + "-" + dek_in_mon ;//+ "(" + this.value +")" + dek;
-							}							
-						}                        
-					}],
-					yAxis: [{ // YEARS
-						title: {
-							text: listVar.factorStore[i].get('label')	+ " " + listVar.factorStore[i].get('unit'),
-                            style: { 
-                                backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
-                            }							
-						},                    
-						labels: {                   
-							formatter: function () {
-								return this.value;
-							}							
-						}
-					}], 
-					tooltip: {
-                        formatter: function() {
-                            var data =  this.points[0].point.data;
-                            var s = '<b>'+data.month + "-" + data.dec+'</b>';
-                            
-                            Ext.each(this.points, function(i, point) {
-                                s += '<br/><span style="color:'+i.series.color+'">' + ((i.key>=1&&i.key<=18) ? ((i.key>=1&&i.key<=6) && (i.series.index==1 || i.series.index==0) ? i.series.name : ((i.series.index==1 || i.series.index==0) ? i.series.name.split("-")[1].replace(/\s/g, "") : i.series.name)) :  i.series.name) + ': </span>'+
-                                    '<span style="font-size:12px;">'+ i.y.toFixed(2)+'</span>';
-                            });                            
-                            return s;
-                        },
-                        shared: true,
-						crosshairs: true
-					},
-                    legend: {
-                        labelFormatter: function() {
-                            if (this.name == 'Area (000 hectares)'){
-                                return 'Area (000 ha)';
-                            }else{
-                                return this.name;
-                            }                            
-                        }
-                    }            
-				}
-			});
-			grafici.push(chart);
-		}		
-		return grafici; 
-	}	
+	}
 });
 
 Ext.reg(gxp.widgets.button.NrlAgrometChartButton.prototype.xtype, gxp.widgets.button.NrlAgrometChartButton);

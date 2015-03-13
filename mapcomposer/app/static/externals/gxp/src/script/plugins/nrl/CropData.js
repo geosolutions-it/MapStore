@@ -426,29 +426,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                            //update selected crops
                             var cseries = {};
                             var button = this.output.submitButton;
-                            if(records.length > 0){
-                                var commodities = records;
-                                var colorRGB = button.randomColorsRGB(commodities.length);
-                                var colorHEX = button.randomColorsHEX(commodities.length);
-
-                                for( var i = 0; i < commodities.length ; i++){
-                                    var rec = commodities[i];
-
-                                    cseries[rec.get('crop')] = {
-                                        name: rec.get('label'),
-                                        color: colorHEX[i],
-                                        lcolor: 'rgb(' + colorRGB[i] + ')',
-                                        type: 'column',
-                                        dataIndex: rec.get('crop')
-                                    }
-                                }
-                            }
-                            var optionsCompare = {
-                                series:cseries,
-                                height:500
-                            }
-                            
-                            //TODO refactor this better
+                            var optionsCompare = nrl.chartbuilder.util.generateDefaultChartOpt(records,'label','crop');
                             button.optionsCompareCommodities = optionsCompare;
                             //var commoditySelected = records.length >0;
                             //button.setDisabled( !commoditySelected );
@@ -812,8 +790,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 				var chartOptCompare = {};
 				var series = {};
 				
-				var colorRGB = button.randomColorsRGB(numRegion.length);
-				var colorHEX = button.randomColorsHEX(numRegion.length);
+				var colorRGB = nrl.chartbuilder.util.randomColorsRGB(numRegion.length);
+				var colorHEX = nrl.chartbuilder.util.randomColorsHEX(numRegion.length);
 				// update selected regions
 				for (var i = 0;i<numRegion.length;i++){
 					

@@ -287,6 +287,26 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					}
 					
 				},
+                { 
+                    fieldLabel: 'Mode',
+                    xtype: 'radiogroup',
+                    anchor:'100%',
+                    autoHeight:true,
+                    ref: 'mode',
+                    title: this.outputTypeText,
+                    defaultType: 'radio',
+                    columns: 2,
+                    disabled:false,
+                    items:[
+                        {boxLabel: 'Time Comparison' , name: 'mode', inputValue: 'compareTime',checked:true},
+                        {boxLabel: 'Composite' , name: 'mode', inputValue: 'composite'}
+                    ],
+                    listeners: {
+                        change: function(c,checked){
+                            
+                        }
+                    }
+                },
                 new Ext.ux.grid.CheckboxSelectionGrid({
                     title: 'Factors',
                     enableHdMenu:false,
@@ -350,6 +370,11 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                     yearRangeSelector.setMinValue(min);
                                 }
                             }
+                            //Create options for charts
+                            var cseries = {};
+                            var button = this.refOwner.submitButton;
+                            var optionsCompare = nrl.chartbuilder.util.generateDefaultChartOpt(records,'label','factor');
+                            button.optionsCompareComposite = optionsCompare;
                         }
                     }
                     
