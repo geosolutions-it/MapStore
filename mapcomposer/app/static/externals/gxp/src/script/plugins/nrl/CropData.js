@@ -78,7 +78,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
             typeName:"nrl:district_crop",
             queriableAttributes:[
                 "district",
-                "province"                
+                "province"
              ],
              recordModel:[
                 {
@@ -100,7 +100,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                    mapping:"properties"
                 } 
             ],
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"
         },
         province:{             
             typeName:"nrl:province_crop",
@@ -126,7 +126,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 "province"
             ],
             displayField:"name",
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"                            
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
         }    
     },
     commodityFields:[
@@ -155,7 +155,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 
     addOutput: function(config) {
         var conf = {
-            //TODO year ranges (from available data)            
+            //TODO year ranges (from available data)
         };
 		
         //Override the comboconfig url;
@@ -220,7 +220,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 submitButton.destroy();
                                 delete submitButton;
 								
-                                this.output.addButton({              
+                                this.output.addButton({
                                     url: this.dataUrl, 
                                     xtype: 'gxp_nrlCropDataTabButton',
                                     ref: '../submitButton',
@@ -235,7 +235,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 									
                                 var store = areaSelector.store;
                                 this.output.fireEvent('update',store);
-                                this.output.fireEvent('show');                                
+                                this.output.fireEvent('show');
                                 this.output.doLayout();
                                 this.output.syncSize();
 
@@ -319,15 +319,15 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							
                             aoiFieldSet.gran_type.eachItem(function(item){
 								if(item.inputValue == "pakistan"){
-									item.setDisabled(!pakenabled);					
+									item.setDisabled(!pakenabled);
 								}
 								var el = item.wrap.child('.x-form-cb-label');
-								el.update(mapConvert[item.inputValue]);                     
+								el.update(mapConvert[item.inputValue]);
                             },this);
 							
                             this.output.doLayout();
-                        },                        
-                        scope: this                        
+                        },
+                        scope: this
                     }
                 },{ 
                     fieldLabel: this.seasonText,
@@ -376,7 +376,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     columns: 1,
                     disabled:false,
                     items:[
-                        {boxLabel: 'Composite' , name: 'mode', inputValue: 'composite',checked:true},                        
+                        {boxLabel: 'Composite' , name: 'mode', inputValue: 'composite',checked:true},
                         {boxLabel: 'Comparison by Region' , name: 'mode', inputValue: 'compareRegion'},
 						{boxLabel: 'Comparison by Commodity' , name: 'mode', inputValue: 'compareCommodity'},
                     ],
@@ -421,47 +421,38 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     anchor:'100%',
                     
                     listeners: {
+                        scope:this,
                         selectionchange:function(records){
-                            /*var yearRangeSelector =this.refOwner.yearRangeSelector;
-                            if(records.length<=0){
-                               yearRangeSelector.setDisabled(true); 
-                            }else{
-                                var max=-99999,min=99999;
-                                for(var i=0;i<records.length ;i++){
-                                    var rec = records[i];
-                                    var curmax = rec.get('max');
-                                    var curmin = rec.get('min');
-                                    if(curmax > max){
-                                        max = curmax;
+                           //update selected crops
+                            var cseries = {};
+                            var button = this.output.submitButton;
+                            if(records.length > 0){
+                                var commodities = records;
+                                var colorRGB = button.randomColorsRGB(commodities.length);
+                                var colorHEX = button.randomColorsHEX(commodities.length);
+
+                                for( var i = 0; i < commodities.length ; i++){
+                                    var rec = commodities[i];
+
+                                    cseries[rec.get('crop')] = {
+                                        name: rec.get('label'),
+                                        color: colorHEX[i],
+                                        lcolor: 'rgb(' + colorRGB[i] + ')',
+                                        type: 'column',
+                                        dataIndex: rec.get('crop')
                                     }
-                                    if(curmin < min){
-                                        min = curmin;
-                                    }  
                                 }
-                                if(max==99999|| min == -99999){
-                                     yearRangeSelector.setDisabled(true);
-                                }else{
-                                    yearRangeSelector.setDisabled(false);
-                                    yearRangeSelector.setMaxValue(max);
-                                    yearRangeSelector.setMinValue(min);
-                                }
-                            }*/
-                        }/*,
-                        select: function(cb,record,index){
-                            //set year range for the selected crop
-                            var selectedCommodity = record;
-                            var yrs= cb.ownerCt.yearRangeSelector;
-                            yrs.setMaxValue(selectedCommodity.get('max'));
-                            yrs.setMinValue(selectedCommodity.get('min'));
-                            cb.ownerCt.referenceYear.setText(yrs.endValue.getValue());
-                            var comValue = cb.getValue();
-                            //filter and set unit of measures
-                            var units = this.refOwner.units;
-                            filterUnitByCrop(units,comValue);
-                            resetUnitComboboxes(this.refOwner.units,selectedCommodity);
+                            }
+                            var optionsCompare = {
+                                series:cseries,
+                                height:500
+                            }
                             
-                            
-                        }*/
+                            //TODO refactor this better
+                            button.optionsCompareCommodities = optionsCompare;
+                            //var commoditySelected = records.length >0;
+                            //button.setDisabled( !commoditySelected );
+                        }   
                     } 
                     
                 //
@@ -739,7 +730,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 }
                             }
                     }]
-                }            
+                }
             ],
             changeMode: function(mode){	
                 this.mode.setValue(mode);
@@ -751,7 +742,13 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 season.setVisible(mode == 'composite');*/
                 this.compare_variable.setVisible(mode == 'compareRegion' || mode == 'compareCommodity');
 				
-				var gran_type = this.aoiFieldSet.gran_type;		
+				var gran_type = this.aoiFieldSet.gran_type;
+                //update button
+                
+                if(mode == 'compareCommodity' ){
+                    var commoditySelected = commoditygrid.getSelectionModel().getSelections().length >0;
+                    //this.submitButton.setDisabled( commoditySelected );
+                }
 				
 				gran_type.eachItem(function(item){
 					if(item.inputValue === 'pakistan'){
@@ -810,23 +807,23 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					var attrs = records[i].get("attributes");
 					var region = attrs.district ? attrs.district + "," + attrs.province : attrs.province;
 					numRegion.push(region.toLowerCase());
-				}			
+				}
 				
 				var chartOptCompare = {};
 				var series = {};
 				
 				var colorRGB = button.randomColorsRGB(numRegion.length);
 				var colorHEX = button.randomColorsHEX(numRegion.length);
-				
-				for (var i = 0;i<numRegion.length;i++){				
+				// update selected regions
+				for (var i = 0;i<numRegion.length;i++){
 					
 					var dataIndex = numRegion[i].split(',')[0];
 					
 					if (gran_type == "province"){
-						var newNumRegion = numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1);               
+						var newNumRegion = numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1);
 					}else{
 						var splitRegion = numRegion[i].split(',');
-						var newNumRegion = splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + ")";           
+						var newNumRegion = splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + ")";
 					}
 					
 					series[dataIndex] = {
@@ -838,13 +835,13 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					};
 					
 				}
-				
-				chartOptCompare = {
+                chartOptCompare = {
 					series:series,
 					height:500
 				};
-				
-				button.chartOptCompare = chartOptCompare;	
+                
+                
+				button.chartOptCompare = chartOptCompare;
 				
             }else if(xTypeButton == 'gxp_nrlCropDataTabButton'){
 				button.setDisabled(store.getCount()<=0 && gran_type != "pakistan");

@@ -20,6 +20,10 @@
 
 Ext.namespace('gxp.widgets.button');
 
+
+
+
+
 /** api: constructor
  *  .. class:: NrlCropDataButton(config)
  *
@@ -77,8 +81,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                                 opts.type = checked.inputValue;
                             }
                         }
-                    },
-                    scope:this
+                    }
                 },{ //color
                     fieldLabel: 'Color', 
                     xtype:'colorpickerfield',
@@ -102,7 +105,6 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 		var fieldSet = {
 			xtype: 'fieldset',
 			title: 'Stack charts of the same type',
-			scope: this,
 			items: [{
 				xtype: 'radiogroup',
 				columns:1,			
@@ -129,8 +131,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 					change: function(c,checked){
 						stackedCharts.series.stacking = checked.inputValue;
 					}
-				},
-				scope: this
+				}
 			}]
 		};
 		return fieldSet;
@@ -143,17 +144,17 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
             iconCls:'ic_wrench',
             text: 'Options',
 			handler:function(option){
-				
-                //Main Button
+				//get mode
                 var mainButton = this.refOwner;
-				var options = mainButton.chartOpt;				
-				var optionsCompare = mainButton.chartOptCompare;			
+                var form = mainButton.form.output.getForm();
+				var data = form.getValues();
+				var mode = data.mode;
+				var options = mainButton.chartOpt;
+				var optionsCompare = mode == 'compareRegion' ? mainButton.chartOptCompare : mainButton.optionsCompareCommodities;
 				var stackedCharts = mainButton.stackedCharts;
 				var fieldSetList = [];
 				
-				var form = mainButton.form.output.getForm();
-				var data = form.getValues();
-				var mode = data.mode;	
+				
 				
 				if (mode === 'composite'){
 					
@@ -163,13 +164,17 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 					
 					fieldSetList = [prodOpt,areaOpt,yieldOpt];
 					
-				}else{
+				}else if(mode === 'compareRegion'){
 					for (var compareRegion in optionsCompare.series){
-						fieldSetList.push(mainButton.createOptionsFildset(compareRegion,optionsCompare.series[compareRegion],compareRegion));						
+						fieldSetList.push(mainButton.createOptionsFildset(compareRegion,optionsCompare.series[compareRegion],compareRegion));
 					}
-					fieldSetList.push(mainButton.createStackChartsOptions(stackedCharts));					
-				}
-				
+					fieldSetList.push(mainButton.createStackChartsOptions(stackedCharts));
+				}else if(mode === 'compareCommodity'){
+                    for (var compareRegion in optionsCompare.series){
+						fieldSetList.push(mainButton.createOptionsFildset(compareRegion,optionsCompare.series[compareRegion],compareRegion));
+					}
+					fieldSetList.push(mainButton.createStackChartsOptions(stackedCharts));
+                }
                 var win = new Ext.Window({
                     iconCls:'ic_wrench',
                     title:   mainButton.optionsTitle,
@@ -275,29 +280,26 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 		this.mode = data.mode;		
 		this.variableCompare = data.compare_variable;
 		
-		var commoditiesStore  = this.form.output.commodities.getSelectionModel().getSelections();
-		var factorValues = [];
-		var factorList = "";
-
+		var selectedCommodities  = this.form.output.commodities.getSelectionModel().getSelections();
+		var crops;
+        cropTitles = [];
+        // get selected crops to genereate the proper viewparam
 		if (this.mode === 'compareCommodity'){
-			if (commoditiesStore.length === 0){
+            cropIds = [];
+            
+			if (selectedCommodities.length === 0){
 				Ext.Msg.alert("Grid Commodities","Must be selected at least one Commodity!");
 				return;
 			}else{
-				var commodities = commoditiesStore[0].data;
-				
-				for (var i=0;i<commoditiesStore.length;i++){
-					var crop = commoditiesStore[i].data;
-					var factorValue = crop.crop;
-					factorValues.push(factorValue);
-					if( i == commoditiesStore.length - 1){
-						factorList += "'" + factorValue + "'";
-					}else{
-						factorList += "'" + factorValue.concat("'\\,");                    
-					}
+				var commodities = selectedCommodities[0].data;
+				for (var i=0;i<selectedCommodities.length;i++){
+					var cropId = selectedCommodities[i].get('crop');
+                    var cropTitle = selectedCommodities[i].get('label');
+					cropIds.push(cropId);
+                    cropTitles.push(cropTitle);
 				}
-				Ext.Msg.alert("Grid Commodities","Comparison by Commodity not yet implemented!!!");
-				return;
+                //create string " 'crop1'\,'crop2' " as view param
+                crops = "'" + cropIds.join("'\\,'") + "'";
 			}
 		}
 
@@ -383,7 +385,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         }
         
 		// check if composite or compareRegion
-		var viewParamsCrop = commodities ? commodities : commodity;
+		var viewParamsCrop = crops ? crops : "'" + commodity+  "'";
 		//var viewParamsCrop = commodities ? commodities.crop : commodity;
 		
         var listVar = {
@@ -394,14 +396,15 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
             fromYear: fromYear,
             toYear: toYear,
             commodity: viewParamsCrop,
-			variableCompare: this.variableCompare
+			variableCompare: this.variableCompare,
+            cropTitles: cropTitles
         };       
         
         var tabPanel = Ext.getCmp('id_mapTab');
 
         var tabs = Ext.getCmp('cropData_tab');
 		
-		var viewparams = (viewParamsCrop     ? "crops:'" + viewParamsCrop + "';" : "") +
+		var viewparams = (viewParamsCrop     ? "crops:" + viewParamsCrop + ";" : "") +
                          (granType        ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "") +
                          (fromYear        ? "start_year:" + fromYear + ";" : "") +
                          (toYear          ? "end_year:" + toYear + ";" : "") +
@@ -436,15 +439,22 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                 }
 				
 				var aggregatedDataOnly = (granType == "pakistan");
-				
+				var customOpt = {
+                    stackedCharts: this.stackedCharts,
+                    highChartExportUrl: this.target.highChartExportUrl,
+                    variableCompare: this.variableCompare
+                }
 				
 				if (this.mode === 'composite'){
-					var data = this.getData(jsonData, aggregatedDataOnly);
-					var charts  = this.makeChart(data, this.chartOpt, listVar, aggregatedDataOnly);
-				}else{
-					var data = this.getDataCompare(jsonData, aggregatedDataOnly);
-					var charts  = this.makeChartCompare(data, this.chartOptCompare, listVar, aggregatedDataOnly, this.stackedCharts);
-				}
+					var data = nrl.chartbuilder.crop.composite.getData(jsonData, aggregatedDataOnly,customOpt);
+					var charts  = nrl.chartbuilder.crop.composite.makeChart(data, this.chartOpt, listVar, aggregatedDataOnly,customOpt);
+				}else if(this.mode === 'compareRegion'){
+					var data = nrl.chartbuilder.crop.compareRegion.getData(jsonData, aggregatedDataOnly,customOpt);
+					var charts  = nrl.chartbuilder.crop.compareRegion.makeChart(data, this.chartOptCompare, listVar, aggregatedDataOnly, customOpt);
+				}else if (this.mode ==='compareCommodity'){
+                    var data = nrl.chartbuilder.crop.compareCommodity.getData(jsonData, aggregatedDataOnly,customOpt);
+					var charts  = nrl.chartbuilder.crop.compareCommodity.makeChart(data, this.optionsCompareCommodities, listVar, aggregatedDataOnly, customOpt);
+                }
 
                 var wins = gxp.WindowManagerPanel.Util.createChartWindows(charts,listVar);
                 gxp.WindowManagerPanel.Util.showInWindowManager(wins,this.tabPanel,this.targetTab, this.windowManagerOptions);
@@ -456,702 +466,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         
     },
 	
-	getData: function (json, aggregatedDataOnly){
-		var chartData = [];
-		
-		for (var i=0 ; i<json.features.length; i++) {
-			var feature = json.features[i];
-			var obj = null;
-			
-			//search already existing entries
-			for (var j=0; j<chartData.length; j++){
-				if(chartData[j].region == feature.properties.region){
-					obj = chartData[j];
-				}
-			}
-			
-			//create entry if doesn't exists yet
-			if(!obj){
-				obj = {
-					region:feature.properties.region,
-					title:feature.properties.region,
-					subtitle:feature.properties.crop,
-					rows: []/*,
-					avgs:{
-						area:0,
-						prod:0,
-						yield:0,
-						years:0
-					},
-					*/
-				};
-				chartData.push(obj);
-			}
-			
-			//create a row entry
-			var yr = feature.properties.year;
-			var a = feature.properties.area;
-			var p = feature.properties.production;
-			var yi = feature.properties.yield;
-			
-			obj.rows.push({
-				time: yr,
-				area: parseFloat(a.toFixed(2)),
-				prod: parseFloat(p.toFixed(2)),
-				yield: parseFloat(yi.toFixed(2))//,
-				//crop: feature.properties.crop
-			});
-			
-			//obj.avgs.area+=a;
-			//obj.avgs.prod+=p;
-			//obj.avgs.yield+=yi;
-			//obj.avgs.years+=1;
-		}
 	
-		//create mean chart if needed
-		var mean;
-		if (chartData.length > 1){			
-			mean = {
-				region: "all",
-				title: "Aggregated data",
-				subtitle: json.features[0].properties.crop,
-				rows: []/*,
-				avgs:{
-					area:0,
-					prod:0,
-					yield:0,
-					years:0
-				}*/
-			};
-
-			var meanareas = []
-			var meanproductions = [];
-			var meanyields = [];
-			var nyears = {};
-			
-			//sum all values
-			for (var i=0; i<chartData.length; i++){
-				var rows = chartData[i].rows;
-				for (var j=0; j<rows.length; j++){
-					var yr = rows[j].time;
-					var area = rows[j].area;
-					var prod = rows[j].prod;
-					var yield = rows[j].yield;
-					meanareas[yr] = (meanareas[yr] ? meanareas[yr] :0) + area;
-					meanproductions[yr] = (meanproductions[yr] ? meanproductions[yr]:0) +prod;
-					meanyields[yr] = (meanyields[yr] ? meanyields[yr]:0) +yield;
-					nyears[yr] = (nyears[yr]?nyears[yr]:0) + 1;
-				}
-			}
-			
-			//divide by nyears
-			for(var i=0 in nyears){				
-				mean.rows.push({
-					time: i,
-					area: parseFloat(meanareas[i].toFixed(2)), //(meanareas[i]/nyears[i]).toFixed(2),
-					prod: parseFloat(meanproductions[i].toFixed(2)), //(meanproductions[i]/nyears[i]).toFixed(2),
-					yield: parseFloat((meanyields[i]/nyears[i]).toFixed(2))					
-				});
-			}
-			
-			chartData.push(mean);
-		}	
-		
-		if(aggregatedDataOnly && mean){
-			chartData = [mean];
-		}else{		
-			// Sorts array elements in ascending order numerically.
-			function CompareForSort(first, second){
-				if (first.time == second.time)
-					return 0;
-				if (first.time < second.time)
-					return -1;
-				else
-					return 1; 
-			}
-			
-			//sort all year ascending
-			for (var i=0; i<chartData.length; i++){
-				//chartData[i].rows.sort(function(a,b){return a.time > b.time});
-				chartData[i].rows.sort(CompareForSort);        
-			}
-		}
-        
-		return chartData;
-	},
-	
-	getDataCompare: function (json, aggregatedDataOnly){
-		var chartData = [];
-		
-		for (var i=0 ; i<json.features.length; i++) {
-			var feature = json.features[i];
-			var obj = null;
-			
-			//search already existing entries
-			for (var j=0; j<chartData.length; j++){
-				if(chartData[j].region == feature.properties.region){
-					obj = chartData[j];
-				}
-			}
-			
-			//create entry if doesn't exists yet
-			if(!obj){
-				obj = {
-					region:feature.properties.region,
-					crop: feature.properties.crop,
-					title:feature.properties.region,
-					subtitle:feature.properties.crop,
-					rows: []
-				};
-				chartData.push(obj);
-			}
-			
-			//create a row entry
-			var yr = feature.properties.year;
-			var a = feature.properties.area;
-			var p = feature.properties.production;
-			var yi = feature.properties.yield;
-			
-			var row = {
-				time: yr,
-				area: parseFloat(a.toFixed(2)),
-				prod: parseFloat(p.toFixed(2)),
-				yield: parseFloat(yi.toFixed(2))
-			};
-			
-			obj.rows.push(row);
-
-		}
-		
-		var newChartData = [];
-
-		var newObj = {
-			title: this.variableCompare,
-			rows: []
-		};	
-		
-		var count = 0;
-		
-		chartData.reverse();
-		
-		for (var i = 0; i<chartData.length;i++){
-
-			for (var x = 0; x<chartData[i].rows.length;x++){
-				var variable = chartData[i].rows[x][this.variableCompare];
-				var time = chartData[i].rows[x]['time'];
-				var newRegion = chartData[i].region.toLowerCase();
-				
-				var newRows = {};
-				
-				newRows[newRegion] = variable;
-				newRows['time'] = time;
-
-				if  (count===0){
-					newObj.rows.push(newRows);
-				}
-				
-				if(typeof newObj.rows[x] != 'undefined'){
-					if (newObj.rows[x].time === newRows['time']){
-						newObj.rows[x][newRegion] = variable;						
-					}				
-				}
-			}
-			
-			count++;			
-		}
-		
-		newChartData.push(newObj);
-		
-		if(aggregatedDataOnly && mean){
-			chartData = [mean];
-		}else{		
-			// Sorts array elements in ascending order numerically.
-			function CompareForSort(first, second){
-				if (first.time == second.time)
-					return 0;
-				if (first.time < second.time)
-					return -1;
-				else
-					return 1; 
-			}
-			
-			//sort all year ascending
-			for (var i=0; i<newChartData.length; i++){
-				//chartData[i].rows.sort(function(a,b){return a.time > b.time});
-				newChartData[i].rows.sort(CompareForSort);        
-			}
-		}
-        
-		return newChartData;
-	},
-
-    /**
-     * private method[generateyAxisConfig]
-     * generates the yAxis config.
-     * opt: chartOpt 
-     * avg: average line value
-     */
-    generateyAxisConfig: function(opt,avg){
-        return { // AREA
-            title: {
-                text: opt.name,
-                rotation: 270,
-                style: {
-                    color: opt.color,
-                    backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
-                }
-            },                    
-            labels: {
-                formatter: function () {
-                    return this.value;
-                },
-                style: {
-                    color: opt.color
-                }
-            },
-            plotLines: [{ //mid values
-                value: avg,
-                color: opt.color,//opt.series.area.lcolor,
-                dashStyle: 'LongDash',
-                width: 1                       
-            }]
-
-        }
-    
-    },
-	
-    /**
-     * private method[getOrderedChartConfigs]
-     * get chart configurations properly sorted 
-     * to place charts with line style on top and 
-     * area styles behind. The fields of the ExtJs store 
-     * needs and yAxis configuration needs to be sorted in the same way.
-     * ``Object`` opt chartOpts object
-     * data. data to use for the chart
-     * 
-     */
-	getOrderedChartConfigs:function(opt,avgs){
-        var ret = {};
-        ret.series = [opt.series.prod,
-					opt.series.yield,
-					opt.series.area		];
-        //sort series in an array (lines on top, than bars then areas)
-        ret.series.sort(function(a,b){
-            //area,bar,line,spline are aphabetically ordered as we want
-            return a.type < b.type ? -1 : 1;
-        });
-        ret.avgs = [];
-        //first element must be time, the other element 
-        // must have the same order of the opt and yAxis
-        ret.fields=  [{
-            name: 'time',
-            type: 'string'
-        }];
-        //sort avg objects
-        for (var k in opt.series){
-            for(var i = 0; i < ret.series.length; i++){
-                if(ret.series[i]===opt.series[k]){
-                    ret.avgs[i] = avgs[k];
-                    
-                }
-            }
-        }
-        
-        // generate yAxisConfig for each element
-        ret.yAxis = [];
-        for(var i = 0 ; i < ret.series.length; i++){
-            //TODO FIX THIS: THE SORTING MUST BE DIFFERENT
-            var yAxisIndex = i;
-            //invert last 2 axes.
-            switch(ret.series[i].dataIndex){
-                case "area": yAxisIndex=0 ; break;
-                case "prod": yAxisIndex=1 ; break;
-                case "yield": yAxisIndex=2 ; break;
-            } 
-                
-            ret.yAxis[yAxisIndex] = this.generateyAxisConfig(ret.series[i],ret.avgs[i]);
-            //console.log("yAxis:"+  yAxisIndex + ",chartOpt:" + i + ret.yAxis[yAxisIndex].title.text + ";" + ret.series[i].name);
-            // add opposite option to the yAxis config (except the first)
-            if(yAxisIndex>0){
-                var yAxis = ret.yAxis[yAxisIndex];
-                yAxis.opposite = true;
-                //yAxis.rotation = 90;
-                
-            }
-        }
-        return ret;
-
-    
-    },
-
-    /**
-     * private method[getOrderedChartConfigs]
-     * get chart configurations properly sorted 
-     * to place charts with line style on top and 
-     * area styles behind. The fields of the ExtJs store 
-     * needs and yAxis configuration needs to be sorted in the same way.
-     * ``Object`` opt chartOpts object
-     * data. data to use for the chart
-     * 
-     */
-	getOrderedChartConfigsCompare:function(opt,listVar,stackedCharts){
-        var ret = {};
-		
-		ret.series = [];
-		
-		for (var listFields in opt.series){
-			ret.series.push(opt.series[listFields]);
-		};
-		
-		// TODO
-        ret.series.sort(function(a,b){
-            //area,bar,line,spline are aphabetically ordered as we want
-            return a.type < b.type ? -1 : 1;
-        });
-		
-		
-        //ret.avgs = [];
-        //first element must be time, the other element 
-        // must have the same order of the opt and yAxis
-        ret.fields=  [{
-            name: 'time',
-            type: 'string'
-        }];
-		
-		ret.yAxis = [{ // AREA
-			title: {
-				text: ""
-			},                    
-			labels: {
-				formatter: function () {
-					return this.value;
-				},
-				style: {
-					color: "#666666"
-				}
-			}
-
-		}];
-		
-		ret.plotOptions = stackedCharts;
-		
-        return ret;    
-    },
-	
-	makeChart: function(data, opt, listVar, aggregatedDataOnly){
-		
-		var charts = [];
-		var getAvg = function(arr,type) {
-			var sum = 0,len = arr.length;
-			for (var i=0;i<len;i++){
-				sum += arr[i][type];
-			}
-			return sum/len;
-		};
-		
-		for (var r=0; r<data.length; r++){
-            //calculate avg
-            var prodavg = getAvg(data[r].rows,'prod');
-			var yieldavg = getAvg(data[r].rows,'yield');
-			var areaavg = getAvg(data[r].rows,'area');
-			var avgs = {
-                prod :prodavg,
-                yield:yieldavg,
-                area:areaavg
-            }
-            //get chart configs (sorting them properly)
-            var chartConfig = this.getOrderedChartConfigs(opt,avgs);
-            //console.log(chartConfig);
-			// Store for random data
-			var fields = [{
-					name: 'time',
-					type: 'string'
-				} , {
-					name: 'area',
-					type: 'float'
-				}, {
-					name: 'prod',
-					type: 'float'
-				}, {
-					name: 'yield',
-					type: 'float'
-				},{
-					name:'crop',
-					type:'string'
-			}];
-			
-			var store = new Ext.data.JsonStore({
-				data: data[r],
-				fields:  fields,
-				root: 'rows'
-			});
-
-			var chart;
-			
-			//
-			// Making Chart Title
-			//
-			var text = "";
-			var dataTitle = data[r].title.toUpperCase();
-			var commodity = listVar.commodity.toUpperCase();
-            
-			var chartTitle = listVar.chartTitle.split(',')[r];
-			
-			if(dataTitle){				
-				if(dataTitle == "AGGREGATED DATA"){
-					if(aggregatedDataOnly){
-						text += dataTitle + " (Pakistan) - " + commodity;
-					}else{
-						text += dataTitle + " - " + commodity;
-					}					
-				}else{
-					text += commodity + " - " + chartTitle;
-				}
-			}
-			
-			//
-			// AOI Subtitle customization
-			//
-			var aoiSubtitle = "";
-			if(dataTitle == "AGGREGATED DATA"){
-				if(aggregatedDataOnly){
-					aoiSubtitle += "Pakistan";
-				}else{
-					aoiSubtitle += listVar.chartTitle;
-				}	
-			}else{
-				aoiSubtitle += chartTitle;
-			}
-			
-			chart = new Ext.ux.HighChart({
-				series: chartConfig.series,				
-				
-				height: opt.height,
-				//width: 900,
-				store: store,
-				animShift: true,
-				xField: 'time',
-				chartConfig: {
-					chart: {
-						zoomType: 'x',
-                        spacingBottom: 145                       
-					},
-                    exporting: {
-                        enabled: true,
-                        width: 1200,
-                        url: this.target.highChartExportUrl
-                    },
-					title: {
-						//text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase() +" - "+listVar.chartTitle.split(',')[r]) // + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : listVar.chartTitle.split(',')[r])
-						text: text
-					},
-					subtitle: {
-                        text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
-                              '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
-                              '<span style="font-size:10px;">AOI: '+ aoiSubtitle /*(data[r].title.toUpperCase()=="AGGREGATED DATA" ? listVar.chartTitle : listVar.chartTitle.split(',')[r])*/ + '</span><br />' +
-                              '<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
-                              '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
-                              '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />'+ 
-                              '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
-                              '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+opt.series.prod.unit+'</span><br />'+
-                              '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+opt.series.yield.unit+'</span>',
-                        align: 'left',
-                        verticalAlign: 'bottom',
-                        useHTML: true,
-                        x: 30,
-                        y: -10
-					},
-					xAxis: [{
-						type: 'datetime',
-						categories: 'time',
-						tickWidth: 0,
-						gridLineWidth: 1
-					}],
-					yAxis: chartConfig.yAxis,
-					tooltip: {
-                        formatter: function() {
-                            var s = '<b>'+ this.x +'</b>';
-                            
-                            Ext.each(this.points, function(i, point) {
-                                s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
-                                    '<span style="font-size:12px;">'+ i.y+'</span>';
-                            });
-                            
-                            return s;
-                        },
-                        shared: true,
-						crosshairs: true
-					},
-                    legend: {
-                        labelFormatter: function() {
-                            if (this.name == 'Area (000 hectares)'){
-                                return 'Area (000 ha)';
-                            }else{
-                                return this.name;
-                            }
-                            
-                        }
-                    }            
-				}
-			});
-			charts.push(chart);
-		}
-		
-		return charts; 
-	},
-	
-	makeChartCompare: function(data, opt, listVar, aggregatedDataOnly, stackedCharts){
-		
-		var charts = [];
-		var getAvg = function(arr,type) {
-			var sum = 0,len = arr.length;
-			for (var i=0;i<len;i++){
-				sum += arr[i][type];
-			}
-			return sum/len;
-		};
-		
-		for (var r=0; r<data.length; r++){
-            //calculate avg
-            /*var prodavg = getAvg(data[r].rows,'prod');
-			var yieldavg = getAvg(data[r].rows,'yield');
-			var areaavg = getAvg(data[r].rows,'area');
-			var avgs = {
-                prod :prodavg,
-                yield:yieldavg,
-                area:areaavg
-            }*/
-            //get chart configs (sorting them properly)
-            var chartConfig = this.getOrderedChartConfigsCompare(opt,listVar,stackedCharts);
-			
-			var fields = [{
-					name: 'time',
-					type: 'string'
-				},{
-					name:'crop',
-					type:'string'
-			}];
-			
-			for (var listFields in opt.series){
-				fields.push(
-					{
-						name: listFields,
-						type: 'float'
-						
-					}
-				);
-			}			
-			
-            //console.log(chartConfig);
-			// Store for random data
-			
-			var store = new Ext.data.JsonStore({
-				data: data[r],
-				fields:  fields,
-				root: 'rows'
-			});
-
-			var chart;
-			var text = listVar.commodity.toUpperCase() + ' - ' + opt.name;
-			
-			//
-			// AOI Subtitle customization
-			//
-			/*var aoiSubtitle = "";
-			if(dataTitle == "AGGREGATED DATA"){
-				if(aggregatedDataOnly){
-					aoiSubtitle += "Pakistan";
-				}else{
-					aoiSubtitle += listVar.chartTitle;
-				}	
-			}else{
-				aoiSubtitle += chartTitle;
-			}*/
-			
-			//
-			// Making Chart Title
-			//			
-			chart = new Ext.ux.HighChart({
-				series: chartConfig.series,				
-				
-				height: opt.height,
-				//width: 900,
-				store: store,
-				animShift: true,
-				xField: 'time',
-				chartConfig: {
-					chart: {
-						zoomType: 'x',
-                        spacingBottom: 145                       
-					},
-                    exporting: {
-                        enabled: true,
-                        width: 1200,
-                        url: this.target.highChartExportUrl
-                    },
-					title: {
-						//text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase() +" - "+listVar.chartTitle.split(',')[r]) // + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : listVar.chartTitle.split(',')[r])
-						text: text
-					},
-					subtitle: {
-                        text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
-                              '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
-                              //'<span style="font-size:10px;">AOI: '+ listVar.chartTitle  + '</span><br />' +
-                              '<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
-                              '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
-                              '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />', //+ 
-                              //'<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
-                              //'<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+opt.series.prod.unit+'</span><br />'+
-                              //'<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+opt.series.yield.unit+'</span>',
-                        align: 'left',
-                        verticalAlign: 'bottom',
-                        useHTML: true,
-                        x: 30,
-                        y: 30
-					},
-					xAxis: [{
-						type: 'datetime',
-						categories: 'time',
-						tickWidth: 0,
-						gridLineWidth: 1
-					}],
-					yAxis: chartConfig.yAxis,
-					plotOptions: chartConfig.plotOptions,
-					tooltip: {
-                        formatter: function() {
-                            var s = '<b>'+ this.x +'</b>';
-                            
-                            Ext.each(this.points, function(i, point) {
-                                s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
-                                    '<span style="font-size:12px;">'+ i.y+'</span>';
-                            });
-                            
-                            return s;
-                        },
-                        shared: true,
-						crosshairs: true
-					},
-                    legend: {
-						layout: 'vertical',
-						align: 'right',
-						verticalAlign: 'middle',
-						borderWidth: 0,						
-                        labelFormatter: function() {
-                            if (this.name == 'Area (000 hectares)'){
-                                return 'Area (000 ha)';
-                            }else{
-                                return this.name;
-                            }
-                            
-                        }
-                    }            
-				}
-			});
-			charts.push(chart);
-		}
-		
-		return charts; 
-	},
     randomColorsRGB: function(total){
         var i = 360 / (total - 1); // distribute the colors evenly on the hue range
         var r = []; // hold the generated colors
