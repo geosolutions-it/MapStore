@@ -73,10 +73,47 @@
 				"displayInLayerSwitcher":false,
 				"visibility": false
 			},{
+				"source": "mapquest",
+				"title": "MapQuest OpenStreetMap",
+				"name": "osm",
+				"group": "background",
+                "visibility": true
+			},{
+				"source": "osm",
+				"title": "Open Street Map",
+				"name": "mapnik",
+				"group": "background",
+                "visibility": false
+			},{
 				"source": "bing",
 				"title": "Bing Aerial",
 				"name": "Aerial",
-				"group": "background"
+				"group": "background",
+				"visibility": false
+			},{
+				"source": "bing",
+				"title": "Bing Aerial With Labels",
+				"name": "AerialWithLabels",
+				"group": "background",
+                "visibility": false
+			},{
+				"source": "google",
+				"title": "Google Terrain",
+				"name": "TERRAIN",
+				"group": "background",
+                "visibility": false
+			},{
+				"source": "google",
+				"title": "Google Hybrid",
+				"name": "HYBRID",
+				"group": "background",
+                "visibility": false
+			},{
+				"source": "google",
+				"title": "Google Roadmap",
+				"name": "ROADMAP",
+				"group": "background",
+                "visibility": false
 			},{
 				"source": "nrl",
 				"title": "Administrative",
@@ -220,6 +257,16 @@
 			"extent": [	6770799.251963,2705604.806669,8826743.330978,4442826.247111 ],
 			"actionTarget": {"target": "paneltbar", "index": 2}
 		 },{
+          "ptype":"gxp_printsnapshot",
+          "service": "/servicebox/",
+          "customParams":{
+            "outputFilename":"mapstore-print"
+          },
+          "actionTarget":{
+            "target":"paneltbar",
+            "index":3
+          }
+      },{
 		  "ptype":"gxp_print",
 		  "customParams":{
 			 "outputFilename":"mapstore-print"
