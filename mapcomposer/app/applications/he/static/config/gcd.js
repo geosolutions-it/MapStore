@@ -198,8 +198,9 @@
         "source": "gs",
         "countryLayer":"gascapacity:gcd_lst_USCounties",
         "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
-        "shipperNamesLayer":"gascapacity:ioc_lst_ShipperNames",
-        "layerName":"gascapacity:gcd_v_shippers_by_pipeline",
+        "shipperNamesLayer":"gascapacity:ioc_v_shippernames",
+        "qryByPipelineLayerName":"gascapacity:gcd_v_shippers_by_pipeline",
+        "qryByShipperLayerName":"gascapacity:gcd_v_shippers_by_shipper",
         "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
 		"titleText": "Shippers",
 		  "outputConfig":{
