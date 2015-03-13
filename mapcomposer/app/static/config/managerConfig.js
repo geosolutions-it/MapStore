@@ -45,7 +45,7 @@
     }],
    "adminTools":[{
          "ptype": "mxp_cmre_ondemand_services",
-         "osdi2ManagerRestURL":"https://geos3.cmre.nato.int/opensdi2-manager/mvc/process/wps/",         
+         "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",         
          "baseMapUrl": "./?config=assetAllocatorResult",
          "autoRefreshTime": 30000,
          "autoOpen":true,
@@ -53,7 +53,30 @@
          "actionTarget":{
            "target": "north.tbar",
            "index": 0
-         }
+         },
+         "defaultData": {
+			"maxlon": "20",
+			"maxlat": "20",
+			"minlat": "0",
+			"minlon": "50"
+		},
+		"riskMapTypes" : {
+         	"WCS" : {
+         		"description" : "WCS Piracy Attack Group Map",
+         		"defaultData": {
+					"maxlon": "80",
+					"maxlat": "20",
+					"minlat": "10",
+					"minlon": "50"
+				},
+				"owsBaseURL": "http://localhost:8080/geoserver/ows",
+				"owsService": "WCS",
+				"owsVersion": "1.0.0",
+				"owsResourceIdentifier": "TDA:PAG_M",
+				"requestCRS": "4326",
+				"timeResolution": "3"
+         	}
+         } 
     },{ 
         "ptype": "mxp_geostore_resource_editor",
         "category": "MAPSTORECONFIG",
@@ -195,7 +218,7 @@
     }],
     "loggedTools":[{
          "ptype": "mxp_cmre_ondemand_services",
-         "osdi2ManagerRestURL":"https://geos3.cmre.nato.int/opensdi2-manager/mvc/process/wps/",
+         "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
          "baseMapUrl": "./?config=assetAllocatorResult",
          "autoRefreshTime": 30000,
          "autoOpen":true,
@@ -204,7 +227,30 @@
          "actionTarget":{
            "target": "north.tbar",
            "index": 0
-         }
+         },
+         "defaultData": {
+			"maxlon": "20",
+			"maxlat": "20",
+			"minlat": "0",
+			"minlon": "50"
+		 },
+         "riskMapTypes" : {
+         	"WCS" : {
+         		"description" : "WCS Piracy Attack Group Map",
+         		"defaultData": {
+					"maxlon": "80",
+					"maxlat": "20",
+					"minlat": "10",
+					"minlon": "50"
+				},
+				"owsBaseURL": "http://localhost:8080/geoserver/ows",
+				"owsService": "WCS",
+				"owsVersion": "1.0.0",
+				"owsResourceIdentifier": "TDA:PAG_M",
+				"requestCRS": "4326",
+				"timeResolution": "3"
+         	}
+         } 
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",

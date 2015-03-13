@@ -38,9 +38,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	mapPanel : null,
 	vectorLayer : null,
 	maxAllowedTimeHorizon : 72,
+	riskMapTypes : {},
 	serviceAreaLimitsTolerance : 0.01,
 	serviceAreaLimits : {
-		bottom: -34.80,
+		bottom: -24.80,
 		left: 30.55,
 		right: 100.90,
 		top: 33.10
@@ -538,7 +539,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 								setTimeout(function(){me.loadData(data);},500);
 							}
 							me.doLayout();
-							
 						},
 						beforecollapse : function(p) {
 							var bboxLayer = me.mapPanel.map.getLayersByName("BBOX")[0];
@@ -563,18 +563,47 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 				mode : 'local',
 				store : new Ext.data.SimpleStore({
 					fields : ['abbr', 'name'],
-					data : [["PAG", "Piracy Attack Group Map"]]
+					data : this.getRiskMapTypeDataStores()
 				}),
 				displayField : 'name',
 				valueField : 'abbr',
 				triggerAction : 'all',
-				value : 'PAG',
+				//value : 'PAG',
 				selectOnFocus : true,
 				autoSelect : true,
 				forceSelection : true,
 				allowBlank : false,
 				maxLength : 180,
-				anchor : '95%'
+				anchor : '95%',
+				listeners : {
+					// SHOW /Hide distance units for DWITHIN
+					select : function(c, record, index) {
+						var map = this.mapPanel.map;
+						var riskMapObj = eval("this.riskMapTypes."+record.json[0]);
+						
+						var bounds = new OpenLayers.Bounds(
+								parseFloat(riskMapObj.defaultData.minlon),
+								parseFloat(riskMapObj.defaultData.minlat),
+								parseFloat(riskMapObj.defaultData.maxlon),
+								parseFloat(riskMapObj.defaultData.maxlat)
+						);
+						var maxBounds = map.getMaxExtent().clone();
+						
+						var bboxBounds;
+
+						if (this.selectBBOX.map.getProjection() != ("EPSG:"+riskMapObj.requestCRS)) {
+							var bboxProjection = new OpenLayers.Projection("EPSG:"+riskMapObj.requestCRS);
+							bboxBounds = bounds.transform(bboxProjection, this.selectBBOX.map.getProjectionObject());
+						} else {
+							bboxBounds = bounds;
+						}
+						
+						this.selectBBOX.currentAOI = bboxBounds.left+","+bboxBounds.bottom+","+bboxBounds.right+","+bboxBounds.top;
+						this.selectBBOX.onChangeAOI();
+						this.selectBBOX.setAOI(bboxBounds,true);
+					},
+					scope : this
+				}
 			}, {
 				xtype : 'fieldset',
 				ref : 'assets',
@@ -685,6 +714,16 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		}];
 
 		mxp.widgets.CMREOnDemandServiceInputForm.superclass.initComponent.call(this, arguments);
+	},
+	getRiskMapTypeDataStores: function(){
+		var riskMapType = [];
+		
+		for(ri in this.riskMapTypes) {
+			var riskMapObj = eval("this.riskMapTypes."+ri);
+			riskMapType.push([ri, riskMapObj.description]);
+		}
+		
+		return riskMapType;
 	},
 	resetForm: function(){
 		var resourceform = this.resourceform;
@@ -1240,6 +1279,16 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		//prepare and send inputs
 		var map = this.mapPanel.map;
 		var serviceRunInputs = this.resourceform.getForm().getValues();
+		
+		var riskMapObj = eval("this.riskMapTypes."+serviceRunInputs.riskMapType);
+		
+		serviceRunInputs.owsBaseURL = riskMapObj.owsBaseURL;
+		serviceRunInputs.owsService = riskMapObj.owsService;
+		serviceRunInputs.owsVersion = riskMapObj.owsVersion;
+		serviceRunInputs.owsResourceIdentifier = riskMapObj.owsResourceIdentifier;
+		serviceRunInputs.requestCRS = riskMapObj.requestCRS;
+		serviceRunInputs.timeResolution = riskMapObj.timeResolution;
+		
 		//serviceRunInputs.assets = this.assetFramePanel.getForm().getValues();
 		serviceRunInputs.assets = [];
 		

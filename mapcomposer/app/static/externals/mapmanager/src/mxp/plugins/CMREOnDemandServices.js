@@ -71,12 +71,13 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
 		right: 100.90,
 		top: 33.10
 	},
-	defaultData:{
+	defaultData: {
 		maxlon: "70",
 		maxlat: "20",
 		minlat: "0",
 		minlon: "50"
 	},
+	riskMapTypes : {},
     /** api: method[addActions]
      */
     addActions: function() {
@@ -167,6 +168,7 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
             serviceAreaLimitsTolerance : me.serviceAreaLimitsTolerance,
             serviceAreaLimits: this.serviceAreaLimits,
             defaultData: this.defaultData,
+            riskMapTypes: this.riskMapTypes,
             selectFirst: true,
             geoStoreBase: this.geoStoreBase,
             tbar:buttons,

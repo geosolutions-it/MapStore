@@ -72,6 +72,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 		right: 100.90,
 		top: 33.10
 	},
+	riskMapTypes : {},
 	
 	//if true, select the fist row on load
 	selectFirst: true,
@@ -341,6 +342,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 								geoStoreBase: me.geoStoreBase,
 								serviceAreaLimitsTolerance : me.serviceAreaLimitsTolerance,
 								serviceAreaLimits: me.serviceAreaLimits,
+								riskMapTypes : me.riskMapTypes,
 								auth: me.auth,
 								defaultData: defaultData,
 								dataId: dataId,
