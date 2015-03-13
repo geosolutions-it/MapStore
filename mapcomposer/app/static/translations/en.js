@@ -168,7 +168,13 @@ GeoExt.Lang.add("en", {
         infoActionTip: "Get Feature Info",
         popupTitle: "Feature Info",
 		noDataMsg: "No data returned from the server",
-		maskMessage: "Getting Feature Info..."
+		maskMessage: "Getting Feature Info...",
+		firstFtTip: "First Feature",
+        previousPageTip: "Previuos Feature",
+        nextPageTip: "Next Feature",
+        lastPageTip: "Last Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "of"
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
@@ -176,7 +182,13 @@ GeoExt.Lang.add("en", {
         popupTitle: "Feature Info",
 		noDataMsg: "No data returned from the server",
 		maskMessage: "Getting Feature Info...",
-		activeActionTip:"Active info on selected layer"
+		activeActionTip:"Active info on selected layer",
+		firstFtTip: "First Feature",
+        previousPageTip: "Previuos Feature",
+        nextPageTip: "Next Feature",
+        lastPageTip: "Last Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "of"
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -305,6 +317,7 @@ GeoExt.Lang.add("en", {
 	
 	"gxp.plugins.WMSSource.prototype": {
 		noCompatibleProjectionError: "Layer is not available in the map projection",
+		wfsDescribeFeatureTypeError: "Error getting attributes of feature type",
 		errorTitle: "Error"
 	},
 	
