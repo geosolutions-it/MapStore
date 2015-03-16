@@ -47,12 +47,13 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
     titleText: 'Flows & Statistics',
     types: [
         ["", '-All Types-'],
-        ["'B'", "Bidirectional"],
+        //["'B'", "Bidirectional"],
         ["'D'", "Delivery"],
-        ["'I'", "Injection"],
+        //["'I'", "Injection"],
         ["'R'", "Receipt"],
-        ["'U'", "Unknown"],
-        ["'W'", "Withdrawal"]
+        ["'T'", "Throughput"],
+        ["'U'", "Unknown"]
+        //,["'W'", "Withdrawal"]
     ],
     layerName: "gascapacity:test_capacity_point",
     /*
