@@ -44,7 +44,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
     /** api: ptype = he_capacity_data */
     ptype: "he_capacity_data",
     /** i18n **/
-    titleText: 'Capacity',
+    titleText: 'Flows & Statistics',
     types: [
         ["", '-All Types-'],
         ["'B'", "Bidirectional"],
@@ -154,8 +154,8 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     hiddenName: 'pipeline',
 
                     //view
-                    emptyText: 'Select a pipeline',
-                    fieldLabel: ' Pipeline Name',
+                    emptyText: 'Select An Operator Name',
+                    fieldLabel: ' Operator Name',
                     anchor: '100%',
                     xtype: 'gxp_searchboxcombo',
 
@@ -409,115 +409,116 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     name: 'aggregate',
                     inputValue: 3
                 }]
-            }],
-            buttons: [{
-                ref: '../btnLookup',
+            },{
+                ref: 'btnLookup',
                 xtype: 'button',
-                text: 'Lookup',
+                text: 'Look Up',
                 iconCls: 'gxp-icon-find',
                 disabled: true,
                 scope: this,
-                handler: function () {
-
-                    
-                    var values = this.output.getForm().getValues();
-                    if(!(values.queryby == 'pipeline' && values.pipeline )){
-                        Ext.Msg.show({
-                           
-                           msg: 'This feature is not implemented yet. Please select "Query by Pipeline" and select a pipeline in the "Refine Query" box',
-                           buttons: Ext.Msg.OK,
-                           animEl: 'elId',
-                           icon: Ext.MessageBox.INFO
-                        });
-                        return 
-                    }
-                    var viewParams=this.createViewParams();
-                    var filter// = this.createFilter(values);
-                    //var cql_filter = filter.toString();
-                    var layerProps = {
-                        title: this.layerName,
-                        name: this.layerName,
-                        layers: this.layerName,
-                        //styles: style ,
-                        transparent: "true",
-                        
-                        vendorParams: {
-                            //cql_filter: cql_filter
-                            viewparams: viewParams
-                            //TODO env: parameters for style if needed
-                        }
-                    };
-
-                    if (!this.layerRecord) {
-                        var source = this.target.tools.addlayer.checkLayerSource(this.geoServerUrl);
-                        var record = source.createLayerRecord(layerProps);
-                        var wms = record.getLayer();
-
-                        var data = {
-                            title: this.layerName,
-                            source: this.source,
-                            name: this.layerName,
-                            group: "data",
-                            layer: wms,
-                            queryable: true,
-                            selected: true
-
-                        };
-                        var fields = [{
-                            name: "name",
-                            type: "string"
-                        }, {
-                            name: "group",
-                            type: "string"
-                        }, {
-                            name: "title",
-                            type: "string"
-                        }, {
-                            name: "selected",
-                            type: "boolean"
-                        }, {
-                            name: "querible",
-                            type: "boolean"
-                        }];
-                        var Record = GeoExt.data.LayerRecord.create(fields);
-                        this.layerRecord = new Record(data);
-                        this.target.mapPanel.layers.add([this.layerRecord]);
-                    } else {
-                        var layer =this.layerRecord.getLayer();
-                        layer.mergeNewParams({
-                            //cql_filter: filter.toString()
-                            viewparams: this.createViewParams()
-                        });
-                        
-                    }
-                    var layer =this.layerRecord.getLayer();
-                    //target.mapPanel.map.addLayers([wms]);
-                    layer.vendorParams = Ext.apply(layer.vendorParams,{
-                            //cql_filter: filter.toString()
-                            viewparams: this.createViewParams()
-                        });
-                    // target.mapPanel.map.addControl(control);
-                    //add to list of layers and controls 
-
-                    
-                    var featureManager = this.target.tools[this.featureManager];
-                    featureManager.clearFeatureStore();
-                    featureManager.layerRecord = undefined;
-                    featureManager.setLayer(this.layerRecord);
-                    featureManager.loadFeatures(filter);
-                    var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
-                    if(container){
-                        container.expand();
-                    }
-
-
-                }
-            }]
+                handler: this.lookupButtonHandler
+            }],
+            buttons: []
         };
         config = Ext.apply(form, config || {});
         this.output = gxp.plugins.he.CapacityData.superclass.addOutput.call(this, config);
         return this.output;
     },
+    
+    lookupButtonHandler: function () {      
+        var values = this.output.getForm().getValues();
+        if(!(values.queryby == 'pipeline' && values.pipeline )){
+            Ext.Msg.show({
+               
+               msg: 'This feature is not implemented yet. Please select "Query by Pipeline" and select a pipeline in the "Refine Query" box',
+               buttons: Ext.Msg.OK,
+               animEl: 'elId',
+               icon: Ext.MessageBox.INFO
+            });
+            return 
+        }
+        var viewParams=this.createViewParams();
+        var filter// = this.createFilter(values);
+        //var cql_filter = filter.toString();
+        var layerProps = {
+            title: this.layerName,
+            name: this.layerName,
+            layers: this.layerName,
+            //styles: style ,
+            transparent: "true",
+            
+            vendorParams: {
+                //cql_filter: cql_filter
+                viewparams: viewParams
+                //TODO env: parameters for style if needed
+            }
+        };
+
+        if (!this.layerRecord) {
+            var source = this.target.tools.addlayer.checkLayerSource(this.geoServerUrl);
+            var record = source.createLayerRecord(layerProps);
+            var wms = record.getLayer();
+
+            var data = {
+                title: this.layerName,
+                source: this.source,
+                name: this.layerName,
+                group: "data",
+                layer: wms,
+                queryable: true,
+                selected: true
+
+            };
+            var fields = [{
+                name: "name",
+                type: "string"
+            }, {
+                name: "group",
+                type: "string"
+            }, {
+                name: "title",
+                type: "string"
+            }, {
+                name: "selected",
+                type: "boolean"
+            }, {
+                name: "querible",
+                type: "boolean"
+            }];
+            var Record = GeoExt.data.LayerRecord.create(fields);
+            this.layerRecord = new Record(data);
+            this.target.mapPanel.layers.add([this.layerRecord]);
+        } else {
+            var layer =this.layerRecord.getLayer();
+            layer.mergeNewParams({
+                //cql_filter: filter.toString()
+                viewparams: this.createViewParams()
+            });
+            
+        }
+        var layer =this.layerRecord.getLayer();
+        //target.mapPanel.map.addLayers([wms]);
+        layer.vendorParams = Ext.apply(layer.vendorParams,{
+                //cql_filter: filter.toString()
+                viewparams: this.createViewParams()
+            });
+        // target.mapPanel.map.addControl(control);
+        //add to list of layers and controls 
+
+        
+        var featureManager = this.target.tools[this.featureManager];
+        featureManager.clearFeatureStore();
+        featureManager.layerRecord = undefined;
+        featureManager.setLayer(this.layerRecord);
+        featureManager.loadFeatures(filter);
+        var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
+        if(container){
+            container.expand();
+        }
+
+
+    },
+    
     createFilter: function (values) {
         if (values.queryby == 'pipeline') {
             return new OpenLayers.Filter.Comparison({

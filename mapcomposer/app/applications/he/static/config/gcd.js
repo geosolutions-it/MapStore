@@ -146,10 +146,6 @@
 		   "displayProjectionCode":"EPSG:4326",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
 		}, {
-			"ptype": "gxp_geolocationmenu",
-			"actionTarget": {"target": "paneltbar", "index": 23},
-			"toggleGroup": "toolGroup"
-		}, {
 			"ptype": "gxp_wmsgetfeatureinfo", 
 			"useTabPanel": true,
 			"toggleGroup": "toolGroup",
@@ -178,7 +174,7 @@
         "id": "capacity_data",
 	    "ptype":"he_capacity_data",
         "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
-		"titleText": "Capacity",
+		"titleText": "Flows & Statistics",
         "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
         "source": "gs",
         "layerName":"gascapacity:gcd_v_scheduled_capacity_by_pipeline",
@@ -202,7 +198,7 @@
         "qryByPipelineLayerName":"gascapacity:gcd_v_shippers_by_pipeline",
         "qryByShipperLayerName":"gascapacity:gcd_v_shippers_by_shipper",
         "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
-		"titleText": "Shippers",
+		"titleText": "Contracts",
 		  "outputConfig":{
 			 "id":"ShippersForm",
 			 "cardId": 1

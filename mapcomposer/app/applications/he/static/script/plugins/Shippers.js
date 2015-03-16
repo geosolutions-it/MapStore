@@ -271,9 +271,21 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                     name: 'shipperlist',
                     hidden: true
                     }]
+                },
+                {
+                    layout: 'hbox',
+                    pack: 'end',
+                    items:[
+                {
+                    xtype: 'button',
+                    text: 'Look Up',
+                    iconCls: 'gxp-icon-find',
+                    disabled: false,
+                    scope: this,
+                    handler: this.lookupButtonHandler
                 },{
                 xtype: 'button',
-                text: 'Contracts by Category',
+                text: 'Chart Contracts By Shipper Type',
                 iconCls: 'gxp-icon-find',
                 disabled: false,
                 ref: 'contractbyCategoryButton',
@@ -307,14 +319,24 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                             }]
                     }).show();
                 }
-            }],
-            buttons: [{
-                xtype: 'button',
-                text: 'Lookup',
-                iconCls: 'gxp-icon-find',
-                disabled: false,
-                scope: this,
-                handler: function () {
+            }
+            ]
+                }
+            
+            
+            ],
+            buttons: []
+        };
+        config = Ext.apply(form, config || {});
+
+        this.output = gxp.plugins.he.Shippers.superclass.addOutput.call(this, config);
+
+
+
+        return this.output;
+    },
+    
+    lookupButtonHandler : function () {
 
                     var values = this.output.getForm().getValues();
                     if(!(values.queryby == 'pipeline' && values.pipeline )
@@ -499,17 +521,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                         resultsGridPanel.doLayout();
                     }
 
-                }
-            }]
-        };
-        config = Ext.apply(form, config || {});
-
-        this.output = gxp.plugins.he.Shippers.superclass.addOutput.call(this, config);
-
-
-
-        return this.output;
-    },
+                },
     
     createViewParams: function(){
         var values = this.output.getForm().getValues();
