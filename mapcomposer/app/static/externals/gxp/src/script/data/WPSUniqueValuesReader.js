@@ -51,7 +51,31 @@ gxp.data.WPSUniqueValuesReader = Ext.extend(Ext.data.JsonReader, {
      */
     readResponse : function(action, response) {
         this.read(response);
-	}
+    },
+    
+    /*
+     * Overridden version of private method createAccessor in Ext.data.JsonReader.
+     * This version tolerates null or undefined record objects in the recordset, 
+     * in which case the accessor returns null.
+     */
+    createAccessor : function(){
+        var re = /[\[\.]/;
+        return function(expr) {
+            if(Ext.isEmpty(expr)){
+                return Ext.emptyFn;
+            }
+            if(Ext.isFunction(expr)){
+                return expr;
+            }
+            var i = String(expr).search(re);
+            if(i >= 0){
+                return new Function('obj', 'return (obj) ? obj' + (i > 0 ? '.' : '') + expr) + ' : null'; // obj may be null or undefined
+            }
+            return function(obj){
+                return (obj) ? obj[expr] : null; // obj may be null or undefined
+            };
+        };
+    }()
 
 });
 Ext.reg('gxp_wpsuniquereader', gxp.data.WPSUniqueValuesReader);
