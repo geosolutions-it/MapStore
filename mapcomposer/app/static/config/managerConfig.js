@@ -55,27 +55,42 @@
            "index": 0
          },
          "defaultData": {
-			"maxlon": "20",
-			"maxlat": "20",
-			"minlat": "0",
-			"minlon": "50"
-		},
-		"riskMapTypes" : {
-         	"WCS" : {
-         		"description" : "WCS Piracy Attack Group Map",
+			"maxlon": "180",
+			"maxlat": "90",
+			"minlat": "-90",
+			"minlon": "-180"
+		 },
+		 "riskMapTypes" : {
+         	"PAG" : {
+         		"description" : "Piracy Attack Group Map",
          		"defaultData": {
-					"maxlon": "80",
+					"maxlon": "70",
 					"maxlat": "20",
-					"minlat": "10",
+					"minlat": "0",
 					"minlon": "50"
 				},
-				"owsBaseURL": "http://localhost:8080/geoserver/ows",
+				"owsBaseURL": "http://karpathos-dev/geoserver/ows",
 				"owsService": "WCS",
 				"owsVersion": "1.0.0",
-				"owsResourceIdentifier": "TDA:PAG_M",
+				"owsResourceIdentifier": "TDA:PAGM",
 				"requestCRS": "4326",
 				"timeResolution": "3"
-         	}
+         	},
+         	"NAVREF" : {
+         		"description" : "Naval Refuel Risk Map",
+         		"defaultData": {
+					"maxlon": "26",
+					"maxlat": "60",
+					"minlat": "56",
+					"minlon": "20"
+				},
+				"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+				"owsService": "WCS",
+				"owsVersion": "1.0.0",
+				"owsResourceIdentifier": "TDA:NavalRefuelRisk",
+				"requestCRS": "4326",
+				"timeResolution": "3"
+         	}         	
          } 
     },{ 
         "ptype": "mxp_geostore_resource_editor",
@@ -229,27 +244,42 @@
            "index": 0
          },
          "defaultData": {
-			"maxlon": "20",
-			"maxlat": "20",
-			"minlat": "0",
-			"minlon": "50"
+			"maxlon": "180",
+			"maxlat": "90",
+			"minlat": "-90",
+			"minlon": "-180"
 		 },
          "riskMapTypes" : {
-         	"WCS" : {
-         		"description" : "WCS Piracy Attack Group Map",
+         	"PAG" : {
+         		"description" : "Piracy Attack Group Map",
          		"defaultData": {
-					"maxlon": "80",
+					"maxlon": "70",
 					"maxlat": "20",
-					"minlat": "10",
+					"minlat": "0",
 					"minlon": "50"
 				},
-				"owsBaseURL": "http://localhost:8080/geoserver/ows",
+				"owsBaseURL": "http://karpathos-dev/geoserver/ows",
 				"owsService": "WCS",
 				"owsVersion": "1.0.0",
-				"owsResourceIdentifier": "TDA:PAG_M",
+				"owsResourceIdentifier": "TDA:PAGM",
 				"requestCRS": "4326",
 				"timeResolution": "3"
-         	}
+         	},
+         	"NAVREF" : {
+         		"description" : "Naval Refuel Risk Map",
+         		"defaultData": {
+					"maxlon": "26",
+					"maxlat": "60",
+					"minlat": "56",
+					"minlon": "20"
+				},
+				"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+				"owsService": "WCS",
+				"owsVersion": "1.0.0",
+				"owsResourceIdentifier": "TDA:NavalRefuelRisk",
+				"requestCRS": "4326",
+				"timeResolution": "3"
+         	}         	
          } 
     },{
         "ptype": "mxp_login",

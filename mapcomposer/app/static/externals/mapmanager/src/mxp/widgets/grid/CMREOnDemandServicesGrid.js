@@ -67,10 +67,10 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 	bounds : "-20037508.34, -20037508.34, 20037508.34, 20037508.34",
 	serviceAreaLimitsTolerance : 0.01,
 	serviceAreaLimits : {
-		bottom: -34.80,
-		left: 30.55,
-		right: 100.90,
-		top: 33.10
+		bottom: -90,
+		left: -180,
+		right: 180,
+		top: 90
 	},
 	riskMapTypes : {},
 	

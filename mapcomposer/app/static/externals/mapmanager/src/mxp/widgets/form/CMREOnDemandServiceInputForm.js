@@ -41,10 +41,10 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 	riskMapTypes : {},
 	serviceAreaLimitsTolerance : 0.01,
 	serviceAreaLimits : {
-		bottom: -24.80,
-		left: 30.55,
-		right: 100.90,
-		top: 33.10
+		bottom: -90,
+		left: -180,
+		right: 180,
+		top: 90
 	},
 	
 	/**

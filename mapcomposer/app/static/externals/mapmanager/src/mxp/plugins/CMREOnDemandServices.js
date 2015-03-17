@@ -66,10 +66,10 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
     customRunColumns:[],
     serviceAreaLimitsTolerance : 0.01,
     serviceAreaLimits : {
-		bottom: -34.80,
-		left: 30.55,
-		right: 100.90,
-		top: 33.10
+		bottom: -90,
+		left: -180,
+		right: 180,
+		top: 90
 	},
 	defaultData: {
 		maxlon: "70",
