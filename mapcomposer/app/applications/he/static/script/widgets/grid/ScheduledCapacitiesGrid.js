@@ -184,7 +184,7 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
             if (this.schema) {
                 name = f.get("name");
                 type = f.get("type").split(":").pop();
-                
+                align = undefined;
                 format = null;
                 switch (type) {
                     case "date":
@@ -202,6 +202,8 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                         break;
                     default:
                         xtype = "numbercolumn";
+                        align = "right";
+                        format = "0.000/i";
                 }
             } else {
                 name = f.name;
@@ -214,6 +216,7 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                     sortable: true,
                     xtype: xtype,
                     format: format,
+                    align: align ? align : undefined,
                     renderer: xtype ? undefined : renderer
                 });
             }

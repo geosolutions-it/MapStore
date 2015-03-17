@@ -336,8 +336,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
         return this.output;
     },
     
-    lookupButtonHandler : function () {
-
+    lookupButtonHandler : function () {        
                     var values = this.output.getForm().getValues();
                     if(!(values.queryby == 'pipeline' && values.pipeline )
                     && !(values.queryby == 'shipper' && values.shipper ) ){
@@ -363,7 +362,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                             qryLayer = this.qryByPipelineLayerName;
                             fields =  [
                                {name: 'shipper',  type: Ext.data.Types.STRING , mapping: 'properties.Shipper'},
-                               {name: 'expiration_date', type: Ext.data.Types.DATE, mapping: 'properties.Expiration_Date'},
+                               {name: 'expiration_date', type: Ext.data.Types.DATE, mapping: 'properties.Expiration_Date', dateFormat: 'Y-m-d\\Z'},
                                {name: 'contract_number', type: Ext.data.Types.STRING, mapping: 'properties.Contract_Number'},
                                {name: 'rate_schedule', type: Ext.data.Types.STRING, mapping: 'properties.Rate_Schedule'},
                                {name: 'transportation_qty', type: Ext.data.Types.INT, mapping: 'properties.Transportation_Qty'}
@@ -382,6 +381,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                                     header   : 'Expiration Date', 
                                     width    : 75, 
                                     sortable : true, 
+                                    xtype    : 'datecolumn',
                                     //renderer : 'usMoney', 
                                     dataIndex: 'expiration_date'
                                 },
@@ -406,6 +406,9 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                                     header   : 'Transportation Qty', 
                                     width    : 75, 
                                     sortable : true, 
+                                    xtype    : "numbercolumn",
+                                    format   : "0.000/i",
+                                    align    : "right",
                                     //renderer : 'usMoney', 
                                     dataIndex: 'transportation_qty'
                                 }
@@ -418,7 +421,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                             fields =  [
                                {name: 'shipper',  type: Ext.data.Types.STRING , mapping: 'properties.Shipper'},
                                {name: 'pipeline',  type: Ext.data.Types.STRING , mapping: 'properties.pipeline'},
-                               {name: 'expiration_date', type: Ext.data.Types.DATE, mapping: 'properties.Expiration_Date'},
+                               {name: 'expiration_date', type: Ext.data.Types.DATE, mapping: 'properties.Expiration_Date', dateFormat: 'Y-m-d\\Z'},
                                {name: 'contract_number', type: Ext.data.Types.STRING, mapping: 'properties.Contract_Number'},
                                {name: 'rate_schedule', type: Ext.data.Types.STRING, mapping: 'properties.Rate_Schedule'},
                                {name: 'transportation_qty', type: Ext.data.Types.INT, mapping: 'properties.Transportation_Qty'}
@@ -444,7 +447,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                                     header   : 'Expiration Date', 
                                     width    : 75, 
                                     sortable : true, 
-                                    //renderer : 'usMoney', 
+                                    xtype    : 'datecolumn',
                                     dataIndex: 'expiration_date'
                                 },
                                 {

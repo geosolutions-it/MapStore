@@ -182,7 +182,7 @@ gxp.plugins.he.Statistics = Ext.extend(gxp.plugins.Tool, {
                 },{
                     xtype:'button',
                     ref:'show_general_statistics_btn',
-                    text: 'Show General Statistics',
+                    text: 'Pipeline Statistics',
                     iconCls:'gxp-icon-find',
                     disabled:false,
                     handler: function(){

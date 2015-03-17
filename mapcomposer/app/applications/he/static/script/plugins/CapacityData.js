@@ -317,7 +317,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     xtype: 'textfield',
                     ref: 'point',
                     filter: 'point',
-                    fieldLabel: 'Enter Point\'s Name, or DRN, or RID',
+                    fieldLabel: 'Enter Part of the Point\'s Name or DRN',
                     hidden: true
 
                 }, {
@@ -396,7 +396,9 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                         inputValue: 'avg',
                     }]
                     //SEPARATOR
-                }, {
+                }
+                /*
+                , {
                     xtype: 'box',
                     ref: 'separator',
                     autoEl: {
@@ -409,7 +411,9 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     boxLabel: 'Also Group Aggregates',
                     name: 'aggregate',
                     inputValue: 3
-                }]
+                }
+                */
+                ]
             },{
                 ref: 'btnLookup',
                 xtype: 'button',
