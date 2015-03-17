@@ -407,7 +407,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                                     width    : 75, 
                                     sortable : true, 
                                     xtype    : "numbercolumn",
-                                    format   : "0.000/i",
+                                    format   : "0,000",
                                     align    : "right",
                                     //renderer : 'usMoney', 
                                     dataIndex: 'transportation_qty'
@@ -471,6 +471,9 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                                     header   : 'Transportation Qty', 
                                     width    : 75, 
                                     sortable : true, 
+                                    xtype    : "numbercolumn",
+                                    format   : "0,000",
+                                    align    : "right",
                                     //renderer : 'usMoney', 
                                     dataIndex: 'transportation_qty'
                                 }

@@ -203,7 +203,7 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                     default:
                         xtype = "numbercolumn";
                         align = "right";
-                        format = "0.000/i";
+                        format = "0,000";
                 }
             } else {
                 name = f.name;
