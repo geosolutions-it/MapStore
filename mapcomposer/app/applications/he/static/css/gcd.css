@@ -89,3 +89,10 @@ span.icon_span{
     height: 16px;
 }
 
+.x-progress-bar-gcd {
+    background-color: #BCBCBC;
+    background-image: url(../images/progress/progress-bg.gif);
+    border-top-color: #EF8F94;
+    border-bottom-color: #E66066;
+    border-right-color: #E66066;
+}

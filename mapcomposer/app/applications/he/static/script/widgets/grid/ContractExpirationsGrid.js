@@ -53,7 +53,7 @@ gxp.he.grid.ContractExpirationsGrid = Ext.extend(Ext.grid.GridPanel,{
                 fakebar : [
                 '<div class="x-progress-wrap">',
                     '<div class="x-progress-inner">',
-                        '<div class="x-progress-bar" style="height: 16px; width: {barwidth}px;">',
+                        '<div class="x-progress-bar x-progress-bar-gcd" style="height: 16px; width: {barwidth}px;">',
                         '<div class="x-progress-text" style="z-index: 99; width: {textwidth}px;text-align:left;margin: 1px 5px 1px 5px;padding: 0px;"><div style="width: {factor}px; height: 18px;">{progress}</div></div>',
                     '</div>',
                     '<div class="x-progress-text x-progress-text-back"><div style="width: {factor}px; height: 18px;text-align:left;">{progress}</div></div>',
@@ -98,7 +98,7 @@ gxp.he.grid.ContractExpirationsGrid = Ext.extend(Ext.grid.GridPanel,{
                 fakebar : [
                 '<div class="x-progress-wrap">',
                     '<div class="x-progress-inner">',
-                        '<div class="x-progress-bar" style="height: 16px; width: {barwidth}px;">',
+                        '<div class="x-progress-bar x-progress-bar-gcd" style="height: 16px; width: {barwidth}px;">',
                         '<div class="x-progress-text" style="z-index: 99; width: {textwidth}px;text-align:left;margin: 1px 5px 1px 5px;padding: 0px;"><div style="width: {factor}px; height: 18px;">{progress}</div></div>',
                     '</div>',
                     '<div class="x-progress-text x-progress-text-back"><div style="width: {factor}px; height: 18px;text-align:left;">{progress}</div></div>',
