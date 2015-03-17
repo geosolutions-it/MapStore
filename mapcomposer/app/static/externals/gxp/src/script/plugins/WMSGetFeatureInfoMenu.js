@@ -48,6 +48,41 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
     /** api: ptype = gxp_wmsgetfeatureinfo_menu */
     ptype: "gxp_wmsgetfeatureinfo_menu",
     
+        /** api: config[zoomFirstFaturePTip]
+     *  ``String``
+     *  Tooltip string for first page action (i18n).
+     */
+    firstFtTip: "First Feature",
+
+    /** api: config[previousFeatureTip]
+     *  ``String``
+     *  Tooltip string for previous page action (i18n).
+     */
+    previousPageTip: "Previous Feature",
+
+    /** api: config[nextFeatureTip]
+     *  ``String``
+     *  Tooltip string for next page action (i18n).
+     */
+    nextPageTip: "Next Feature",
+
+    /** api: config[lastFeatureTip]
+     *  ``String``
+     *  Tooltip string for last page action (i18n).
+     */
+    lastPageTip: "Last Feature",
+
+    /** api: config[featureLabel]
+     *  ``String``
+     */
+    ftLabel: "Feature",
+    
+    /** api: config[featureOfLabel]
+     *  ``String``
+     */
+    ftOfLabel: "of",  
+   
+    
     /** api: config[outputTarget]
      *  ``String`` Popups created by this tool are added to the map by default.
      */
@@ -149,13 +184,62 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      */
      disableAfterClick: false,
      
+       /** api: config[infoAction]
+     *  ``string``
+     *  Optional info action to configure: Opts : All, click,hover 
+     */
+     infoAction: 'All',
+     
+     
     /** api: method[addActions]
      */
     addActions: function() {
         this.popupCache = {};
         this.activeIndex = 0;
-        
-		var items = [new Ext.menu.CheckItem({
+   
+   
+if(this.infoAction=='click'){ 
+    this.button = new Ext.Button({
+            tooltip: this.infoActionTip,
+            iconCls: "gxp-icon-getfeatureinfo",
+            toggleGroup: this.toggleGroup,
+            group: this.toggleGroup,
+            enableToggle: true,
+            allowDepress: true,
+            toggleHandler: function(button, pressed) {
+                this.activeIndex = 0;
+                this.button.toggle(pressed);
+                for (var i = 0, len = info.controls.length; i < len; i++){
+                    if (pressed) {
+                        info.controls[i].activate();
+                    } else {
+                        info.controls[i].deactivate();
+                    }
+                }
+             }, scope: this
+        });
+        }
+        else if(this.infoAction=='hover'){ 
+            this.activeIndex = 1;
+            this.button = new Ext.Button({
+            tooltip:  this.activeActionTip,
+            iconCls: (this.outputConfig)? this.outputConfig.hoverIconCls || "gxp-icon-getfeatureinfo":"gxp-icon-getfeatureinfo",
+            toggleGroup: this.toggleGroup,
+            group: this.toggleGroup,
+            enableToggle: true,
+            allowDepress: true,
+            toggleHandler: function(button, pressed) {
+                this.activeIndex = 1;
+                this.button.toggle(pressed);
+                this.toggleActiveControl(pressed);
+                },
+                scope: this
+            
+        });
+        }   
+       else{
+           this.infoAction='All';
+           var items = [new Ext.menu.CheckItem({
             tooltip: this.infoActionTip,
 			text: this.infoActionTip,
             iconCls: "gxp-icon-getfeatureinfo",
@@ -203,7 +287,6 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 		this.button = new Ext.SplitButton({
             iconCls: "gxp-icon-getfeatureinfo",
             tooltip: this.measureTooltip,
-            enableToggle: true,
             toggleGroup: this.toggleGroup,
             allowDepress: true,
             handler: function(button, event) {
@@ -230,14 +313,18 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 items: items
             })
         });
+		}
+		
+		
 		
 		var actions = gxp.plugins.WMSGetFeatureInfoMenu.superclass.addActions.call(this, [this.button]);
-        var infoButton = items[0];
+        var infoButton = (items)? items[0]: this.button;
 
         var info = {controls: []};
 		var layersToQuery = 0;
 		
         var updateInfo = function() {
+            if(this.infoAction=='hover')return;
             var queryableLayers = this.target.mapPanel.layers.queryBy(function(x){
                 return x.get("queryable");
             });
@@ -346,7 +433,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 });
                 map.addControl(control);
                 info.controls.push(control);
-                if(infoButton.checked) {
+                if(infoButton.checked || infoButton.pressed ) {
                     control.activate();
                 }
             }, this);
@@ -367,14 +454,15 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             click: this.closePopups,
             scope:this
         });
-        Ext.each(this.button.menu.items.keys, function(key){
+       if(this.infoAction=='All'){ 
+       Ext.each(this.button.menu.items.keys, function(key){
             var item = this.button.menu.items.get(key);
             item.on({
                 click: this.closePopups,
                 scope:this
             });
         }, this);
-        
+       } 
         return actions;
     },
 
@@ -604,7 +692,15 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
     getPopupItem:function(text, title, features){
     	var item;
     	if(features){
-	    	 item = this.useTabPanel ? {
+	    	 if(this.paginate){
+	    	     item = this.obtainFeatureInfoFromData(text, features, title);
+	    	      if(! this.useTabPanel ) Ext.apply( item , {
+                    autoScroll: true,
+                    autoWidth: true,
+                    collapsible: true});
+	    	 }else
+	    	 {
+	    	  item = this.useTabPanel ? {
 	            title: title,     
 	            layout: "accordion",
 	            items: this.obtainFeatureInfoFromData(text, features, title),
@@ -616,8 +712,17 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 	            autoScroll: true,
 	            autoWidth: true,
 	            collapsible: true
-	        };
+	        };}
 	    }else{
+	        if(this.paginate){
+             item =this.paginateHtml(text,title);
+       
+             if(! this.useTabPanel ) Ext.apply( item , {
+                    autoScroll: true,
+                    autoWidth: true,
+                    collapsible: true
+            });
+        }else{
 	    	item = this.useTabPanel ? {
 				title: title,										
 				html: text,
@@ -630,6 +735,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 	            autoWidth: true,
 	            collapsible: true
 	        };
+	    }
 	    }
 	    return item;
     },
@@ -766,8 +872,13 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
         if (features) {
             var index = 0;
             Ext.each(features,function(feature) {
-                featureGrids.push(this.obtainFeatureGrid(feature, String.format(this.defaultGroupTitleText, parentTitle, index++)));
+                featureGrids.push(this.obtainFeatureGrid(feature, (!this.paginate)? String.format(this.defaultGroupTitleText, parentTitle, index++):null));
             }, this);
+                        if (this.paginate){
+                            return this.paginateHtml(text,parentTitle,featureGrids);
+                
+            }
+
         }else {
             featureGrids.push(this.obtainFromText(text));
         }
@@ -844,7 +955,165 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 			this.activeControl.deactivate();
 			this.activeControl.destroy();
 		}
-	}
+	},
+	
+createPageFromText:function(text){
+    
+      var re = /<table class="featureInfo">[\s\S]*?<\/table>/g,match, tables=[],totFt=0;
+         while(match = re.exec(text)){
+             var card={
+                                                        
+                    html: match[0],
+                    autoScroll: true
+                };
+                totFt++;
+             tables.push(card);
+         }
+         return tables;  
+},	
+
+createPageFromFeature:function(text){
+
+},
+	
+paginateHtml:function(text,title,ftGrids){
+    
+         
+         var tables=(ftGrids)?ftGrids :this.createPageFromText(text);
+         var totFt=tables.length;
+         var item = {
+            xtype:'panel',
+            layout:'card',
+            activeItem: 0,
+            aItem:0,
+            title: title,                                        
+            items:tables,
+            autoScroll: true,
+            bbar: [
+            {
+                iconCls: "x-tbar-page-first",
+                ref: "../firstFtButton",
+                tooltip: this.firstFtTip,
+                disabled: true,
+                handler: function() {
+                    var  pan=this.ownerCt.ownerCt;
+                    pan.aItem=0;
+                    pan.getLayout().setActiveItem(pan.aItem);
+                    pan.cardChange();
+                }
+            },
+            {
+                iconCls: "x-tbar-page-prev",
+                ref: "../prevFtButton",
+                tooltip: this.previousFtTip,
+                disabled: true,
+                handler: function(){ 
+                    var  pan=this.ownerCt.ownerCt;
+                    pan.aItem--;
+                    pan.getLayout().setActiveItem(pan.aItem);
+                    pan.cardChange();
+                },
+                disabled: true
+             },'-',
+             {
+                    xtype: 'compositefield',
+                    width: 130,
+                    items: [{
+                            xtype: 'label',
+                            text: this.ftLabel,
+                            autoWidth: true,
+                            style: {
+                                marginTop: '3px'
+                            }
+                        },{
+                            ref: "../../currentFt",
+                            xtype: "numberfield",
+                            width: 40,
+                            maxValue:totFt,
+                            minValue:(totFt==0)? 0:1,
+                            value: (totFt==0)? 0:1,
+                            disabled: (totFt==0),
+                            enableKeyEvents: true,
+                            listeners:{
+                                keypress: function(field, e){
+                                    var charCode = e.getCharCode();
+                                    if(charCode == 13){
+                                        var value = field.getValue();
+                                         var pan=field.ownerCt.ownerCt.ownerCt.ownerCt;
+                                         pan.aItem=value-1;
+                                         pan.getLayout().setActiveItem(pan.aItem);
+                                         pan.cardChange();
+                                    }
+                                }
+                            }
+                        },{
+                            xtype: 'label',
+                            width: 15,
+                            text: this.ftOfLabel,
+                            style: {
+                                marginTop: '3px'
+                            }
+                        },{
+                            xtype: 'label',
+                            ref: "../../numberOfFtLabel",
+                            width: 25,
+                            text: totFt,
+                            style: {
+                                marginTop: '3px'
+                            }
+                    }]
+                },
+        '-', // greedy spacer so that the buttons are aligned to each side
+            {
+                iconCls: "x-tbar-page-next",
+                ref: "../nextFtButton",
+                tooltip: this.nextFtTip,
+                disabled: (totFt<2),
+                handler: function(){ 
+                    var pan=this.ownerCt.ownerCt;
+                        pan.aItem++;
+                        pan.getLayout().setActiveItem(pan.aItem);
+                        pan.cardChange();
+                }
+            },
+            {
+                iconCls: "x-tbar-page-last",
+                ref: "../lastFtButton",
+                tooltip: this.lastFtTip,
+                disabled: (totFt<2),
+                handler: function() {
+                    var  pan=this.ownerCt.ownerCt;
+                    pan.aItem=totFt-1;
+                    pan.getLayout().setActiveItem(pan.aItem); 
+                    pan.cardChange();               
+                    }
+            }
+        ],    
+        cardChange:function(){
+            if(this.aItem==0 ){
+                this.firstFtButton.disable();
+                this.prevFtButton.disable();
+                this.lastFtButton.enable();
+                this.nextFtButton.enable();
+             }
+             else if(this.aItem > 0 && this.aItem <totFt-1){
+                 this.firstFtButton.enable();
+                 this.prevFtButton.enable();
+                 this.lastFtButton.enable();
+                 this.nextFtButton.enable();
+             }else if (this.aItem ==totFt-1){
+                 this.firstFtButton.enable();
+                 this.prevFtButton.enable();
+                 this.lastFtButton.disable();
+                 this.nextFtButton.disable();
+             }
+            this.currentFt.setValue(this.aItem+1);
+        }
+        }; 
+
+    return item;
+    
+}
 	
     
 });

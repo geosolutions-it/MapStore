@@ -167,7 +167,13 @@ GeoExt.Lang.add("fr", {
         infoActionTip: "Obtenir des infos sur l’entité",
         popupTitle: "Info sur l’entité",
 		noDataMsg: "Aucune donnée n'a été renvoyée par le serveur",
-		maskMessage: "Obtenir des infos sur l’entité..."
+		maskMessage: "Obtenir des infos sur l’entité...",
+		firstFtTip: "Premièr Feature",
+        previousPageTip: "Feature Précédente",
+        nextPageTip: "Feature Suivante",
+        lastPageTip: "Derinèr Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "sur"
     }, 
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
@@ -175,7 +181,13 @@ GeoExt.Lang.add("fr", {
         popupTitle: "Info sur l’entité",
 		noDataMsg: "Aucune donnée n'a été renvoyée par le serveur",
 		maskMessage: "Obtenir des infos sur l’entité...",
-		activeActionTip:"Obtenir des infos sur l’entité sélectionnée"
+		activeActionTip:"Obtenir des infos sur l’entité sélectionnée",
+		firstFtTip: "Premièr Feature",
+		previousPageTip: "Feature Précédente",
+        nextPageTip: "Feature Suivante",
+        lastPageTip: "Derinèr Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "sur", 
     }, 	
 
     "gxp.plugins.Zoom.prototype": {
@@ -304,6 +316,7 @@ GeoExt.Lang.add("fr", {
 	
 	"gxp.plugins.WMSSource.prototype": {
 		noCompatibleProjectionError: "Couche ne est pas disponible dans la projection cartographique",
+		wfsDescribeFeatureTypeError: "Erreur d'obtention des attributs de type d'entité",
 		errorTitle: "Erreur"
 	},
 	
@@ -364,7 +377,7 @@ GeoExt.Lang.add("fr", {
     },
 	
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Afficher sur la carte",
+        displayFeatureText: "Afficher",
         firstPageTip: "Première page",
         previousPageTip: "Page précédente",
         zoomPageExtentTip: "Zoom sur la page",
@@ -374,7 +387,7 @@ GeoExt.Lang.add("fr", {
         totalMsg: "Total : {0} entités",
         displayExportCSVText: "Exporter au format CSV",
         exportCSVSingleText: "Une seule page",
-        exportCSVMultipleText: "Toute la  page",
+        exportCSVMultipleText: "Toutes les pages",
         failedExportCSV: "Impossible de trouver une réponse pour le format de sortie CSV",
         invalidParameterValueErrorText: "Valeur de paramètre non valide",
 		zoomToFeature: "Zoom sur l’Entité",

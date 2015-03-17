@@ -163,14 +163,26 @@ GeoExt.Lang.add("de", {
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
         infoActionTip: "Feature Info erhalten",
         popupTitle: "Feature Info",
-		noDataMsg: "Keine Daten vom Server erhalten"
+		noDataMsg: "Keine Daten vom Server erhalten",
+		firstFtTip: "Erste Feature",
+        previousPageTip: "Vorheriges Feature",
+        nextPageTip: "Nächste Feature",
+        lastPageTip: "LetzteFeature",
+        ftLabel: "Feature",
+        ftOfLabel: "von" 
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
         infoActionTip: "Feature Info erhalten",
         popupTitle: "Feature Info",
 		noDataMsg: "Keine Daten vom Server erhalten",
-		activeActionTip: "Informationen über ausgewählte Schicht"
+		activeActionTip: "Informationen über ausgewählte Schicht",
+		firstFtTip: "Erste Feature",
+        previousPageTip: "Vorheriges Feature",
+        nextPageTip: "Nächste Feature",
+        lastPageTip: "LetzteFeature",
+        ftLabel: "Feature",
+        ftOfLabel: "von", 
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -328,6 +340,7 @@ GeoExt.Lang.add("de", {
 	
 	"gxp.plugins.WMSSource.prototype": {
 		noCompatibleProjectionError: "Schicht ist nicht in der Kartenprojektion",
+		wfsDescribeFeatureTypeError: "Fehler beim Abrufen der Eigenschaften von Feature-Typ",
 		errorTitle: "Fehler"
 	},
 
@@ -396,7 +409,7 @@ GeoExt.Lang.add("de", {
     },
 	
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Auf Karte anzeigen",
+        displayFeatureText: "Zeigen",
         firstPageTip: "Erste Seite",
         previousPageTip: "Vorherige Seite",
         zoomPageExtentTip: "Zoom zur Erweterung der Seite",
@@ -405,8 +418,8 @@ GeoExt.Lang.add("de", {
         title: "Zeilen",
         totalMsg: "Insgesamt: {0} Zeilen",
         displayExportCSVText: "Export to CSV",
-        exportCSVSingleText: "einzelne Seite",
-        exportCSVMultipleText: "Alle Seite",
+        exportCSVSingleText: "Einzelne Seite",
+        exportCSVMultipleText: "Alle Seiten",
         failedExportCSV: "Fehler beim Ansprechen für Ausgabeformat CSV finden",
         invalidParameterValueErrorText: "Ungültige Parameter Wert",
 		zoomToFeature: "Zoom auf Funktionen",
