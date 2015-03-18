@@ -434,6 +434,9 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                     //modified = true;
                 
                     if(!node.isLeaf()){
+
+                        if(node.childNodes.length === 0)node.expand();                        
+                        
                         var childs = node.childNodes;
                         var size = childs.length;
 

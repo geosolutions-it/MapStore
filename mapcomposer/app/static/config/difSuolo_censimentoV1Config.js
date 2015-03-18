@@ -325,7 +325,10 @@
                 "queryPanel": true
 			},{
 				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (AREALI)",
+				"group": "Opere Classificate II cat.A",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '2'"
+                },                
                 "expanded": true,
                 "checked": true,
 				"title": "Invaso",
@@ -336,18 +339,10 @@
                 "queryPanel": true
 			},{
 				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (AREALI)",
-                "expanded": true,
-                "checked": true,
-				"title": "Casse espansione",
-				"name": "cassa_espansione_v1",
-				"displayInLayerSwitcher": true,
-				"visibility": false,
-				"tiled": false,
-                "queryPanel": true
-			},{
-				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (LINEARI)",
+				"group": "Opere Classificate II cat.L",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '2'"
+                },                  
                 "expanded": true,
                 "checked": true,
 				"title": "Argine",
@@ -358,29 +353,10 @@
                 "queryPanel": true
 			},{
 				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (LINEARI)",
-                "expanded": true,
-                "checked": true,
-				"title": "Attraversamento",
-				"name": "attraversamento_v1",
-				"displayInLayerSwitcher": true,
-				"visibility": false,
-				"tiled": false,
-                "queryPanel": true
-			},{
-				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (LINEARI)",
-                "expanded": true,
-                "checked": true,
-				"title": "Canale artificiale",
-				"name": "canale_artificiale_v1",
-				"displayInLayerSwitcher": true,
-				"visibility": false,
-				"tiled": false,
-                "queryPanel": true
-			},{
-				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (LINEARI)",
+				"group": "Opere Classificate II cat.L",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '2'"
+                },                  
                 "expanded": true,
                 "checked": true,
 				"title": "Difesa si sponda",
@@ -391,7 +367,10 @@
                 "queryPanel": true
 			},{
 				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (PUNTUALI)",
+				"group": "Opere Classificate II cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '2'"
+                },                  
                 "expanded": true,
                 "checked": true,
 				"title": "Briglie",
@@ -402,18 +381,10 @@
                 "queryPanel": true
 			},{
 				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (PUNTUALI)",
-                "expanded": true,
-                "checked": true,
-				"title": "Casello idraulico",
-				"name": "casello_idraulico_v1",
-				"displayInLayerSwitcher": true,
-				"visibility": false,
-				"tiled": false,
-                "queryPanel": true
-			},{
-				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (PUNTUALI)",
+				"group": "Opere Classificate II cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '2'"
+                },                  
                 "expanded": true,
                 "checked": true,
 				"title": "Cateratta",
@@ -424,7 +395,10 @@
                 "queryPanel": true
 			},{
 				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (PUNTUALI)",
+				"group": "Opere Classificate II cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '2'"
+                },                  
                 "expanded": true,
                 "checked": true,
 				"title": "Cunettone",
@@ -435,29 +409,10 @@
                 "queryPanel": true
 			},{
 				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (PUNTUALI)",
-                "expanded": true,
-                "checked": true,
-				"title": "Difesa di sponda",
-				"name": "difesa_sponda_p_v1",
-				"displayInLayerSwitcher": true,
-				"visibility": false,
-				"tiled": false,
-                "queryPanel": true
-			},{
-				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (PUNTUALI)",
-                "expanded": true,
-                "checked": true,
-				"title": "Idrovoro",
-				"name": "idrovoro_v1",
-				"displayInLayerSwitcher": true,
-				"visibility": false,
-				"tiled": false,
-                "queryPanel": true
-			},{
-				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (PUNTUALI)",
+				"group": "Opere Classificate II cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '2'"
+                },                  
                 "expanded": true,
                 "checked": true,
 				"title": "Opere di presa",
@@ -468,7 +423,10 @@
                 "queryPanel": true
 			},{
 				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (PUNTUALI)",
+				"group": "Opere Classificate II cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '2'"
+                },                  
                 "expanded": true,
                 "checked": true,
 				"title": "Pennello",
@@ -479,29 +437,10 @@
                 "queryPanel": true
 			},{
 				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (PUNTUALI)",
-                "expanded": true,
-                "checked": true,
-				"title": "Rampa",
-				"name": "rampa_v1",
-				"displayInLayerSwitcher": true,
-				"visibility": false,
-				"tiled": false,
-                "queryPanel": true
-			},{
-				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (PUNTUALI)",
-                "expanded": true,
-                "checked": true,
-				"title": "Sfioratore",
-				"name": "sfioratore_v1",
-				"displayInLayerSwitcher": true,
-				"visibility": false,
-				"tiled": false,
-                "queryPanel": true
-			},{
-				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (PUNTUALI)",
+				"group": "Opere Classificate II cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '2'"
+                },                  
                 "expanded": true,
                 "checked": true,
 				"title": "Sifone",
@@ -512,7 +451,10 @@
                 "queryPanel": true
 			},{
 				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (PUNTUALI)",
+				"group": "Opere Classificate II cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '2'"
+                },                  
                 "expanded": true,
                 "checked": true,
 				"title": "Soglia",
@@ -523,7 +465,640 @@
                 "queryPanel": true
 			},{
 				"source": "geoserver_ds",
-				"group": "Censimento Opere-feb2015 (PUNTUALI)",
+				"group": "Opere Classificate II cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '2'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Traversa",
+				"name": "traversa_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.A",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                
+                "expanded": true,
+                "checked": true,
+				"title": "Invaso",
+				"name": "invaso_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.A",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Casse espansione",
+				"name": "cassa_espansione_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.L",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Argine",
+				"name": "argine_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.L",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Attraversamento",
+				"name": "attraversamento_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.L",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Canale artificiale",
+				"name": "canale_artificiale_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.L",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Difesa si sponda",
+				"name": "difesa_sponda_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Briglie",
+				"name": "briglie_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Casello idraulico",
+				"name": "casello_idraulico_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Cateratta",
+				"name": "cateratta_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Cunettone",
+				"name": "cunettone_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Difesa di sponda",
+				"name": "difesa_sponda_p_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Idrovoro",
+				"name": "idrovoro_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Opere di presa",
+				"name": "opera_presa_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Pennello",
+				"name": "pennello_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Rampa",
+				"name": "rampa_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Sfioratore",
+				"name": "sfioratore_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Sifone",
+				"name": "sifone_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Soglia",
+				"name": "soglia_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate III cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '3'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Traversa",
+				"name": "traversa_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate IV / V cat.L",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '4'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Argine",
+				"name": "argine_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate IV / V cat.L",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '4'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Difesa si sponda",
+				"name": "difesa_sponda_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate IV / V cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '4'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Briglie",
+				"name": "briglie_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate IV / V cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '4'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Cunettone",
+				"name": "cunettone_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate IV / V cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '4'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Opere di presa",
+				"name": "opera_presa_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate IV / V cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '4'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Sifone",
+				"name": "sifone_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate IV / V cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '4'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Soglia",
+				"name": "soglia_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Classificate IV / V cat.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = '4'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Traversa",
+				"name": "traversa_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.A",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Casse espansione",
+				"name": "cassa_espansione_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.L",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Argine",
+				"name": "argine_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.L",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Attraversamento",
+				"name": "attraversamento_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.L",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Canale artificiale",
+				"name": "canale_artificiale_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.L",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Difesa si sponda",
+				"name": "difesa_sponda_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Briglie",
+				"name": "briglie_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Casello idraulico",
+				"name": "casello_idraulico_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Cateratta",
+				"name": "cateratta_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Cunettone",
+				"name": "cunettone_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Difesa di sponda",
+				"name": "difesa_sponda_p_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Idrovoro",
+				"name": "idrovoro_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Opere di presa",
+				"name": "opera_presa_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Pennello",
+				"name": "pennello_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Rampa",
+				"name": "rampa_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Sfioratore",
+				"name": "sfioratore_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Sifone",
+				"name": "sifone_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
+                "expanded": true,
+                "checked": true,
+				"title": "Soglia",
+				"name": "soglia_v1",
+				"displayInLayerSwitcher": true,
+				"visibility": false,
+				"tiled": false,
+                "queryPanel": true
+			},{
+				"source": "geoserver_ds",
+				"group": "Opere Non Classificate.P",
+                "vendorParams":{
+                    "cql_filter": "ci523_1904 = 'NC'"
+                },                  
                 "expanded": true,
                 "checked": true,
 				"title": "Traversa",
@@ -558,7 +1133,7 @@
         "topOutUnits":"km"
     },	
     "removeTools": [
-        "wmsgetfeatureinfo_menu_plugin"
+        "wmsgetfeatureinfo_menu_plugin","layertree_plugin"
     ], 	    
 	"proj4jsDefs": {
 		"EPSG:3003": "+proj=tmerc +lat_0=0 +lon_0=9 +k=0.9996 +x_0=1500000 +y_0=0 +ellps=intl +units=m +no_defs +towgs84 = -104.1,-49.1,-9.9,0.971,-2.917,0.714,-11.68"
@@ -591,8 +1166,7 @@
               "collapsedonfull": true
 	      }
     ],	     
-	"customTools": [
-		{
+	"customTools": [{
 			"ptype": "gxp_embedmapdialog",
 			"actionTarget": {"target": "paneltbar", "index": 2},
 			"embeddedTemplateName": "viewer",
@@ -701,6 +1275,76 @@
 		            "xtype": "gxp_spatial_bbox_selector"
 		        }
 	      }
-    	}
+    	}, {
+            "ptype": "gxp_nestedlayertree",
+            "id": "nestedlayertree_plugin",
+            "unshift":true,
+            "groupConfig": [
+                {
+                    "title": "<span style=\"color:#FF0000;font-weight: bold;\">Opere Classificate II cat. - Censimento Febbraio 2015</span>",
+                    "children": [
+                        {"name": "Opere Classificate II cat.P", "title": "Opere Puntuali"},
+                        {"name": "Opere Classificate II cat.L", "title": "Opere Lineari"},
+                        {"name": "Opere Classificate II cat.A", "title": "Opere Areali"}
+                    ]
+                },           
+                {
+                    "title": "<span style=\"color:#008000;font-weight: bold;\">Opere Classificate III cat. - Censimento Febbraio 2015</span>",
+                    "children": [
+                        {"name": "Opere Classificate III cat.P", "title": "Opere Puntuali"},
+                        {"name": "Opere Classificate III cat.L", "title": "Opere Lineari"},
+                        {"name": "Opere Classificate III cat.A", "title": "Opere Areali"}
+                    ]
+                },                        
+                {
+                    "title": "<span style=\"color:#FF00FF;font-weight: bold;\">Opere Classificate IV / V cat. - Censimento Febbraio 2015</span>",
+                    "children": [
+                        {"name": "Opere Classificate IV / V cat.P", "title": "Opere Puntuali"},
+                        {"name": "Opere Classificate IV / V cat.L", "title": "Opere Lineari"}
+                    ]
+                },                      
+                {
+                    "title": "<span style=\"color:#969696;font-weight: bold;\">Opere Non Classificate - Censimento Febbraio 2015</span>",
+                    "children": [
+                        {"name": "Opere Non Classificate.P", "title": "Opere Puntuali"},
+                        {"name": "Opere Non Classificate.L", "title": "Opere Lineari"},
+                        {"name": "Opere Non Classificate.A", "title": "Opere Areali"}
+                    ]
+                },                         
+                {
+                    "title": "Reticolo",
+                    "folder": [
+                        {"name": "Reticolo", "title": "Reticolo"}
+                    ]
+                },                     
+                {
+                    "title": "Idrografia",
+                    "folder": [
+                        {"name": "Idrografia", "title": "Idrografia"}
+                    ]
+                },                    
+                {
+                    "title": "Toponimi",
+                    "folder": [
+                        {"name": "Toponimi", "title": "Toponimi"}
+                    ]
+                },
+                {
+                    "title": "Basi cartografiche",
+                    "folder": [
+                        {"name": "Basi cartografiche", "title": "Basi cartografiche"}
+                    ]
+                }, {
+                    "title": "Ortofotocarte 1:10.000",
+                    "folder": [
+                        {"name": "Ortofotocarte 1:10.000", "title": "Ortofotocarte 1:10.000"}
+                    ]
+                }
+            ],					
+            "outputConfig": {
+                "id": "layertree"
+            },
+            "outputTarget": "tree"
+            }
 	]
 }
