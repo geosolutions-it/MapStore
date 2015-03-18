@@ -206,10 +206,13 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 this.mon(this.printProvider,{
                     "beforeprint": function(printProvider){
 						this.busyMask.show();
-						
 					},
-                    "print": this.busyMask.hide,
-                    "printexception": this.busyMask.hide,
+                    "print": function(printProvider){
+                        this.busyMask.hide();
+                    },
+                    "printexception": function(printProvider){
+                        this.busyMask.hide;
+                    },
                     scope: this
                 });
             },
