@@ -436,6 +436,12 @@
                         westPanel.setActiveTab('legend');
                         westPanel.hideTabStripItem('tree');
                     }
+					/////////////////////
+					// Fractional Zoom //
+					/////////////////////
+                    if(app.mapPanel.map.restrictedExtent && app.mapPanel.map.fractionalZoom){
+                        app.mapPanel.map.zoomToExtent(app.mapPanel.map.restrictedExtent);
+                    }
                 }, 
                 'ready' : function(){
                     app.modified = false;

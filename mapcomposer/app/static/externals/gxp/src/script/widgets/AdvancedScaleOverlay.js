@@ -86,25 +86,6 @@ gxp.AdvancedScaleOverlay = Ext.extend(Ext.Panel, {
     zoomLevelText: "Zoom level",
 	
 	showMousePosition: false,
-
-    /**
-     * Property: fractionalZoom
-     * {Boolean} For a base layer that supports it, allow the map resolution
-     *     to be set to a value between one of the values in the resolutions
-     *     array.  Default is false.
-     *
-     * When fractionalZoom is set to true, it is possible to zoom to
-     *     an arbitrary extent.  This requires a base layer from a source
-     *     that supports requests for arbitrary extents (i.e. not cached
-     *     tiles on a regular lattice).  This means that fractionalZoom
-     *     will not work with commercial layers (Google, Yahoo, VE), layers
-     *     using TileCache, or any other pre-cached data sources.
-     *
-     * If you are using fractionalZoom, then you should also use
-     *     <getResolutionForZoom> instead of layer.resolutions[zoom] as the
-     *     former works for non-integer zoom levels.
-     */	
-	fractionalZoom: false,
 	
     /** private: method[initComponent]
      *  Initialize the component.
@@ -195,8 +176,10 @@ gxp.AdvancedScaleOverlay = Ext.extend(Ext.Panel, {
             }else{ 
                 Ext.get("id_box").insertBefore(Ext.get("zoom_selector"));               
             }
-            //this.getEl().on("click", this.stopMouseEvents, this); // to manage fractionalZoom = true
-            //this.getEl().on("mousedown", this.stopMouseEvents, this); // to manage fractionalZoom = true
+			if(!this._fractionalZoom){
+				this.getEl().on("click", this.stopMouseEvents, this);
+				this.getEl().on("mousedown", this.stopMouseEvents, this);
+			}
         }, this);
         
         this.scaleLinePanel.on('render', function(){
@@ -250,22 +233,25 @@ gxp.AdvancedScaleOverlay = Ext.extend(Ext.Panel, {
      */
     handleZoomEnd: function() {
         var scale = this.zoomStore.queryBy(function(record) { 
-			var zoom = this.map.getZoom();
-            return zoom == record.data.level;
+            return this.map.getZoom() == record.data.level;
         }, this);
         if (scale.length > 0) {
             scale = scale.items[0];
-            this.zoomSelector.setValue("1 : " + parseInt(scale.data.scale, 10));
+            this.zoomSelector.setValue(
+				!this._fractionalZoom ?
+				'1 : ' + parseInt(Math.round(scale.data.scale,10)) :
+				'1 : ' + Ext.util.Format.number(parseInt(Math.round(scale.data.scale,10)),'0.000/i')
+			);
         } else {
             if (!this.zoomSelector.rendered) {
                 return;
             }
 			// to manage fractionalZoom = true			
-			if(!this.fractionalZoom){
+			if(!this._fractionalZoom){
 				this.zoomSelector.clearValue();
 			}else{
-				var scale = this.map.getScale();
-				this.zoomSelector.setValue("1 : " + Ext.util.Format.number(parseInt(scale, 10),'0.000/i'));				
+				var fractionalScale = parseInt(Math.round(this.map.getScale()),10);
+				this.zoomSelector.setValue("1 : " + Ext.util.Format.number(fractionalScale,'0.000/i'));				
 			}
         }
     },
@@ -277,33 +263,30 @@ gxp.AdvancedScaleOverlay = Ext.extend(Ext.Panel, {
     addScaleCombo: function() {
 		
 		// to manage fractionalZoom = true
-		this.fractionalZoom = this.map.fractionalZoom;
+		this._fractionalZoom = this.map.fractionalZoom || false;
 		
         this.zoomStore = new GeoExt.data.ScaleStore({
             map: this.map
         });       
         this.zoomSelector = new Ext.form.ComboBox({
             emptyText: this.zoomLevelText,
-            tpl: !this.fractionalZoom ? '<tpl for="."><div class="x-combo-list-item">1 : {[parseInt(values.scale)]}</div></tpl>' : '<tpl for="."><div class="x-combo-list-item">1 : {[Ext.util.Format.number(parseInt(values.scale),\'0.000/i\')]}</div></tpl>',
-            editable: this.fractionalZoom,
+            tpl: !this._fractionalZoom ?
+				'<tpl for="."><div class="x-combo-list-item">1 : {[parseInt(Math.round(values.scale))]}</div></tpl>' :
+				'<tpl for="."><div class="x-combo-list-item">1 : {[Ext.util.Format.number(parseInt(Math.round(values.scale)),\'0.000/i\')]}</div></tpl>',
+            editable: this._fractionalZoom,
             triggerAction: 'all',
             mode: 'local',
             store: this.zoomStore,
             width: 110,
-			enableKeyEvents: this.fractionalZoom, // to manage fractionalZoom = true
-			typeAhead : true,
-			maskRe: /^\d{0,9}$/         
+			enableKeyEvents: this._fractionalZoom, // to manage fractionalZoom = true
+			maskRe: /^\d{0,9}$/,
+			selectOnFocus: this._fractionalZoom
         });
         this.zoomSelector.on({
-            //click: this.stopMouseEvents, // to manage fractionalZoom = true
-            //mousedown: this.stopMouseEvents, // to manage fractionalZoom = true,
+            click: !this._fractionalZoom ? this.stopMouseEvents : 'undefined',
+            mousedown: !this._fractionalZoom ? this.stopMouseEvents : 'undefined',
             select: function(combo, record, index) {
-				if(!this.fractionalZoom){
-					this.map.zoomToScale(record.data.scale);
-				}else{
-					this.map.zoomToScale(record.data.scale,true);
-					this.zoomSelector.setRawValue('1 : ' + Ext.util.Format.number(parseInt(record.data.scale,10),'0.000/i'));					
-				}
+				this.map.zoomTo(record.data.level);
             },
 			specialkey: function(combo, e){
 				if (e.getKey() == e.ENTER) {
@@ -324,11 +307,7 @@ gxp.AdvancedScaleOverlay = Ext.extend(Ext.Panel, {
 					}
 					
 					this.map.zoomToScale(scale,false);
-					this.zoomSelector.setRawValue("1 : " + Ext.util.Format.number(scale,'0.000/i'));
 				}
-			},
-			expand: function( combo ){
-				
 			},
             scope: this
         });
