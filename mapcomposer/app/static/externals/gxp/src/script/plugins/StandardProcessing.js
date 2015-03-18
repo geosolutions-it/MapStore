@@ -2173,8 +2173,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return obj;
     },
     
-    getAuthKey: function() {
-        var user = this.appTarget.user || {};
+    getAuthKey: function(target) {
+        var user = (target || this.appTarget).user || {};
         if(user && user.attribute) {
             var attributes = (user.attribute instanceof Array) ? user.attribute : [user.attribute];
             for(var i=0, l = attributes.length; i < l; i++) {
@@ -2187,8 +2187,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return null;
     },
     
-    getWFSStoreProxy: function(featureName, filter, sortBy){
-        var authkey = this.getAuthKey();
+    getWFSStoreProxy: function(featureName, filter, sortBy, target){
+        var authkey = this.getAuthKey(target);
         var filterProtocol=new OpenLayers.Filter.Logical({
             type: OpenLayers.Filter.Logical.AND,
             filters: new Array()

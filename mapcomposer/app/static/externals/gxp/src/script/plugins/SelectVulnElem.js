@@ -78,6 +78,8 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
     iconCls: "icon-selectvulnelem",
 	
 	partners: ['ao','rp','rl','bz','ti'],
+    
+    layerTreeGroup: ["Targets","Bersagli","Cibles","Betroffene Elemente"],
 
     /** private: method[constructor]
      */
@@ -141,7 +143,7 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                         type: OpenLayers.Filter.Comparison.LESS_THAN,
                         property: 'id_bersaglio',
                         value: 8
-                    }), "id_bersaglio"),
+                    }), "id_bersaglio", this.target),
                     autoLoad: false
                 });
 
@@ -230,7 +232,7 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                         type: OpenLayers.Filter.Comparison.GREATER_THAN,
                         property: 'id_bersaglio',
                         value: 0
-                    }), "id_bersaglio"),
+                    }), "id_bersaglio", this.target),
                     autoLoad: false
                 });
                 nothumanstargetStore.on('load', function (str, records) {
@@ -439,7 +441,7 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                                 
                                 var syntView = app.tools["syntheticview"];
                                 
-                                syntView.addVulnLayer(coverages,layerName,"Vulnerabilita",["Targets","Bersagli","Cibles","Betroffene Elemente"], this.humansGrid.getSelectionModel().hasSelection());
+                                syntView.addVulnLayer(coverages,layerName,"Vulnerabilita",this.layerTreeGroup, this.humansGrid.getSelectionModel().hasSelection());
                                 viewWin.close();
                             }
                             

@@ -403,7 +403,10 @@
         "ptype": "gxp_aoi",
         "id": "aoi",
         "outputConfig":{
-             "outputSRS": "EPSG:4326"
+             "outputSRS": "EPSG:4326",
+             "searchByFeature": true,
+             "wfsUrl":"http://localhost:8080/geoserver/ows",
+             "wfsVersion": "1.1.0"
          },
          "container": "fieldset"
 
@@ -413,6 +416,7 @@
 		"id": "seldamage",
 		"outputConfig": {
 			"outputSRS": "EPSG:4326",
+            "destinationNS": "destination",
             "bufferOptions":{
                 "minValue": 0,
                 "maValue":100000,
@@ -426,7 +430,8 @@
 		"actionTarget": {
 			"target": "paneltbar",
 			"index": 2
-		}
+		},
+        "layerTreeGroup": ["Targets","Bersagli","Cibles","Vulnerable Elemente"]
     },
     {
         "ptype":"gxp_navigation",
@@ -564,7 +569,7 @@
         "providerOptions": {
             "replaceURL": [{
                 "from": "http://localhost:8080/geoserver",
-                "to": "http://mbarto-geosol:8080/geoserver"
+                "to": "http://Geo-HP:8080/geoserver"
             }]
         },
         "customParams":{

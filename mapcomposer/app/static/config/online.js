@@ -425,7 +425,8 @@
 		"actionTarget": {
 			"target": "paneltbar",
 			"index": 2
-		}
+		},
+        "layerTreeGroup": ["Targets","Bersagli","Cibles","Vulnerable Elemente"]
     },
 	{
 		"ptype": "gxp_navigation",
