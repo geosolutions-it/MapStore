@@ -412,7 +412,13 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 				transitionEffect = this.target.map.animatedZooming.transitionEffect;
 			}
 		}
-		
+        
+        //
+		// retrive scale hints and bounds
+        //
+        if(this.useScaleHints){
+            config.useScaleHints = config.useScaleHints || this.useScaleHints
+        }
         var zoomLevelsConf={};
         if(config.minScale)zoomLevelsConf.minScale=config.minScale;
         if(config.maxScale)zoomLevelsConf.maxScale=config.maxScale;
@@ -422,6 +428,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         if(config.resolutions)zoomLevelsConf.resolutions=config.resolutions;
         if(config.numZoomLevels)zoomLevelsConf.numZoomLevels=config.numZoomLevels;
         if(config.units)zoomLevelsConf.units=config.units;
+        // if some option is defined in the layer configuration
+        // this options will override the hints
         var skipHint=(config.minScale||config.maxScale||config.minResolution||config.maxResolution||config.scales||config.resolutions||config.numZoomLevels);
         if(config.useScaleHints && !skipHint){
             var rad2 = Math.pow(2, 0.5);
