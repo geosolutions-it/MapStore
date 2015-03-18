@@ -204,10 +204,10 @@ GeoExt.Lang.add("it", {
         pageOfLabel: "di",
         totalRecordsLabel: "Elementi Totali",
         btnDetailsText:  "Dettagli",
-        btnDetailsTooltip: "Apri Dettaglii Segnalazione",
+        btnDetailsTooltip: "Apri Dettagli Segnalazione",
         btnMapText:  "Mappa",
         btnMapTooltip: "Mostra Mappa",
-        noticeDetailsPanelTitle:"Dettgli Segnalazione",
+        noticeDetailsPanelTitle:"Dettagli Segnalazione",
         photoBrowserPanelTitle:"Foto Sopralluogo",
         noticePhotoBrowserPanelTitle:"Foto Segnalazione",
         surveysPanelTitle:"Sopralluoghi",
@@ -235,7 +235,7 @@ GeoExt.Lang.add("it", {
         lastText : 'Ultima Pagina',
         refreshText : 'Aggiorna'
     },
-    "gxp.plugins.GcSegForm.protorype":{
+    "gxp.plugins.GcSegForm.prototype":{
         closeMsgTitle: 'Salvare Segnalazione?',
         closeMsg: 'Vuoi Salvare La Sgnalazione?',
         deleteMsgTitle: 'Eliminare Segnalazionie?',
