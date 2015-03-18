@@ -1,4 +1,4 @@
-<% extends ./base.html %>
+<% extends ../../../templates/base.html %>
 <% subskin extrahead %>
     <!-- OpenLayers resources -->
     <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
@@ -35,12 +35,14 @@
 	
     <!-- gxp resources -->
     <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
-
     <script type="text/javascript" src="script/gxp.js"></script> 
 
-    <!--script type="text/javascript" src="script/proj4js.js"></script-->
-	<!--script type="text/javascript" src="script/projCodes.js"></script-->
+    <script type="text/javascript" src="script/proj4js.js"></script>
+	<script type="text/javascript" src="script/projCodes.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="css/gcd.css">
+    <script type="text/javascript" src="script/gcd.js"></script>
+    
     <!-- GeoExplorer resources -->
     <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
     <link rel="stylesheet" type="text/css" href="theme/app/mapstore.css" />
@@ -180,13 +182,7 @@
 		
         var onReady = function(){
 
-            Ext.BLANK_IMAGE_URL = (function() {
-                    if (Ext.isIE8 || Ext.isGecko || Ext.isOpera || Ext.isChrome) {
-                        return "data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
-                    } else {
-                        return "theme/app/img/blank.gif";
-                    }
-            })();
+            
 
             OpenLayers.ImgPath = "externals/openlayers/theme/default/img/";
 			
@@ -294,14 +290,10 @@
 				}
 				return section;
 			}
-
-			var parseHeader = function(section) {
-				return (section && section.header !== undefined && section.header !== null) ? section.header : false;
-			}
 			
 			if(header || footer){
 				var north = {
-					header: parseHeader(header.container),
+					header: false,
 					region: 'north',
 					id: 'msheader'
 				};
@@ -312,7 +304,7 @@
 				}
 				
 			    var south = {
-					header: parseHeader(footer.container),
+					header: false,
 					region: 'south',
 					id: 'msfooter'
 				};
@@ -524,12 +516,13 @@
 					if(login.user){		
 						var uDetails = {
 							token: login.token,
-							user: login.user,
-							provider: "geostore"
+							user: login.user
 						};
 						
-						sessionStorage["userDetails"] = Ext.util.JSON.encode(uDetails);							
-						initComposer();
+						sessionStorage["userDetails"] = Ext.util.JSON.encode(uDetails);
+                        window.location.reload();
+						/*
+                        initComposer();
 
 						app.on('ready',function(){
 							login.target = Ext.getCmp('paneltbar');
@@ -537,12 +530,15 @@
 							login.loginSync();
 							 var myAccount = new gxp.plugins.GeoStoreAccount({
 								outputTarget:'appTabs',
+                hideAttributes: ["UUID","notes"],
+                displayPanels:false,
 								user:login.user,
 								auth:login.token,
 								geoStoreBase : serverConfig.geoStoreBase
 							 });
-							 myAccount.addOutput();                        
+							 myAccount.addOutput();
 						});
+                        */
 					}
 				},
 				showLogout : function(){
@@ -555,7 +551,7 @@
 									sessionStorage.removeItem(key);
 								}
 							}
-							
+							app.safeLeaving =true;
 							location.reload();
 						}
 					}
@@ -581,13 +577,15 @@
 					login.target = Ext.getCmp('paneltbar');
 					login.addActions();
 					login.loginSync();
-					var myAccount = new gxp.plugins.GeoStoreAccount({
+					 var myAccount = new gxp.plugins.GeoStoreAccount({
 						outputTarget:'appTabs',
+            hideAttributes: ["UUID","notes"],
+            displayPanels:false,
 						user: app.userDetails.user,
 						auth: app.userDetails.token,
 						geoStoreBase : serverConfig.geoStoreBase
 					 });
-					 myAccount.addOutput();                        
+					 myAccount.addOutput();                     
 				});
 			}
 			
@@ -619,8 +617,9 @@
         serverConfig = Ext.applyIf(serverConfig, localConfig);
 		serverConfig.geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');
 
+
 		// use GeoExplorerLoader to load configuration files
-		var loader = new GeoExplorerLoader(serverConfig, customConfigName, mapStoreDebug, mapIdentifier, 
+		var loader = new GeoExplorerLoader(serverConfig, customConfigName || 'login', mapStoreDebug, mapIdentifier, 
 			authorization, fullScreen, templateId);
 		
 		loader.on("configfinished", function (config){
@@ -633,4 +632,3 @@
 		});     
     </script>
 
-	<div style="position:absolute; top:-10000px; left:-10000px; visibility:hidden"><canvas id="printcanvas" /></div>

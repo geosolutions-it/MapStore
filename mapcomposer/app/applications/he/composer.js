@@ -9,9 +9,9 @@ exports.app = function(req) {
 	if(request.isPost){
 		var content = JSON.stringify(request.postParams);
 		//print("Post Content is : " + content);
-		var response = Response.skin(module.resolve("templates/gcd.html"), {status: details.status || 404, content: content});
+		var response = Response.skin(module.resolve("templates/composer.html"), {status: details.status || 404, content: content});
 	}else{
-		var response = Response.skin(module.resolve("templates/gcd.html"), {status: details.status || 404, content: "{}"});
+		var response = Response.skin(module.resolve("templates/composer.html"), {status: details.status || 404, content: "{}"});
 	}
 	
 	return response;

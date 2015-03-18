@@ -19,7 +19,7 @@
  */
 
 /**
- * @requires plugins/Tool.js
+ * -@requires plugins/Tool.js
  */
 
 /** api: (define)

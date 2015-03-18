@@ -518,8 +518,3 @@ div.olMap div.gx-overlay-playback {
 	width:16px;
 	height:16px;
 }
-
-/* gxp_enablelabel */
-.x-btn .gxp-icon-enablelabel, .x-menu-item .gxp-icon-enablelabel, .x-tree-node .gxp-icon-enablelabel {
-   background-image: url(img/silk/style.png) !important;
-}

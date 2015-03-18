@@ -96,3 +96,8 @@ span.icon_span{
     border-bottom-color: #E66066;
     border-right-color: #E66066;
 }
+
+/* gxp_enablelabel */
+.x-btn .gxp-icon-enablelabel, .x-menu-item .gxp-icon-enablelabel, .x-tree-node .gxp-icon-enablelabel {
+   background-image: url(../images/style.png) !important;
+}
