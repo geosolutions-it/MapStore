@@ -217,102 +217,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     radiusData: {
     },
     
-    /*radiusData : {
-         "1":{
-            "E" : {
-                "L": { "humans": [15,32,51,75],        "notHumans": [15,8,8,8,null,null]},
-                "G": { "humans": [75,90,110,130],      "notHumans": [75,25,25,25,null,null]}
-            }
-         },
-         "2":{
-            "G" : {
-                "L": { "humans": [25,null,81,null],    "notHumans": [null,8,8,8,null,null]},
-                "G": { "humans": [45,null,90,null],    "notHumans": [null,25,25,25,null,null]}
-            }
-        },
-        "3":{
-            "D" : {
-                "L": { "humans": [35,70,null,null],    "notHumans": [null,8,8,null,null,null]},
-                "G": { "humans": [65,132,null,null],   "notHumans": [null,25,25,null,null,null]}
-            },
-            "F" : {
-                "L": { "humans": [60,95,110,140],      "notHumans": [60,8,8,null,null,null]},
-                "G": { "humans": [180,230,420,500],    "notHumans": [180,25,25,null,null,null]}
-            }
-        },
-        "4":{
-            "E" : {
-                "L": { "humans": [30,65,null,null],    "notHumans": [null,8,8,null,null,null]},
-                "G": { "humans": [60,148,null,null],   "notHumans": [null,25,25,null,null,null]}
-            },
-            "F" : {
-                "L": { "humans": [55,93,100,131],      "notHumans": [55,8,8,null,null,null]},
-                "G": { "humans": [112,210,339,467],    "notHumans": [112,25,25,null,null,null]}
-            },
-            "M" : {
-                "L": { "humans": [60,null,110,null],   "notHumans": [null,8,8,8,null,null]},
-                "G": { "humans": [110,null,230,null],  "notHumans": [null,25,25,25,null,null]}
-            }
-        },
-        "5":{
-            "B" : {
-                "L": { "humans": [45,96,null,null],    "notHumans": [null,8,8,null,null,null]},
-                "G": { "humans": [110,150,null,null],  "notHumans": [null,25,25,null,null,null]}
-            },
-            "L" : {
-                "L": { "humans": [130,null,567,null],  "notHumans": [null,8,8,8,null,null]},
-                "G": { "humans": [250,null,780,null],  "notHumans": [null,25,25,25,null,null]}
-            }
-        },
-        "6":{
-            "G" : {
-                "L": { "humans": [25,null,81,null],    "notHumans": [null,8,8,8,null,null]},
-                "G": { "humans": [45,-1,90,-1],    "notHumans": [null,25,25,25,null,null]}
-            }
-        },
-        "7":{
-            "H" : {
-                "L": { "humans": [null,null,null,null],"notHumans": [null,null,null,8,8,8]},
-                "G": { "humans": [null,null,null,null],"notHumans": [null,null,null,25,25,25]}
-            }
-        },
-        "8":{
-            "C" : {
-                "L": { "humans": [35,45,52,60],        "notHumans": [35,8,8,8,null,null]},
-                "G": { "humans": [80,110,130,145],     "notHumans": [80,25,25,25,null,null]}
-            },
-            "D" : {
-                "L": { "humans": [45,90,null,null],    "notHumans": [null,8,8,null,null,null]},
-                "G": { "humans": [127,250,null,null],  "notHumans": [null,25,25,null,null,null]}
-            },
-            "H" : {
-                "L": { "humans": [null,null,null,null],"notHumans": [null,null,null,8,8,8]},
-                "G": { "humans": [null,null,null,null],"notHumans": [null,null,null,25,25,25]}
-            }
-        },
-        "9":{
-            "A" : {
-                "L": { "humans": [30,42,48,58],        "notHumans": [30,8,8,null,null,null]},
-                "G": { "humans": [75,109,125,138],     "notHumans": [75,25,25,null,null,null]}
-            },
-            "B" : {
-                "L": { "humans": [40,88,null,null],    "notHumans": [8,8,null,null,null,null]},
-                "G": { "humans": [70,150,null,null],   "notHumans": [25,25,null,null,null,null]}
-            },
-            "I" : {
-                "L": { "humans": [30,null,60,null],    "notHumans": [8,8,8,8,null,null]},
-                "G": { "humans": [80,null,160,null],   "notHumans": [25,25,25,25,null,null]}
-            }
-        },
-         "10":{
-            "H" : {
-                "L": { "humans": [null,null,null,null],"notHumans": [null,null,null,8,8,8]},
-                "G": { "humans": [null,null,null,null],"notHumans": [null,null,null,25,25,25]}
-            }
-        }
-    },*/
-         
-
     /** private: method[init]
      *  :arg target: ``Object`` The object initializing this plugin.
      */
@@ -480,6 +384,43 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     isMixedTargets: function() {
         return this.status.target.humans === null;
+    },
+    
+    addTargets: function(layers, bounds, radius, extraTargets, roi) { 
+        
+        var name = this.status.target ? this.status.target.layer : 'bersagli_all';
+        var wkt;
+        if(this.status.processing === 4) {
+            bounds = '0,1,0,1'.replace(/,/g, "\\\,");
+            wkt = this.status.damageArea.replace(/,/g, "\\\,");            
+        } else {
+            wkt = 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'.replace(/,/g, "\\\,");
+        }
+        var targetViewParams = "bounds:" + bounds + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman + ';wkt:' + wkt;
+        
+        this.analyticViewLayers.push(name);
+        this.analyticViewLayers.push(this.selectedTargetLayer);
+        layers.push(this.createLayerRecord({
+            name: name,
+            title: this.targetLayerTitle[GeoExt.Lang.getLocaleIndex()], 
+            params: {                                                                
+                viewparams: targetViewParams
+            }
+        }, {
+            singleTile: true,
+            bounds: roi,
+			visibility: true
+        }));
+        
+        if(Ext.getCmp('targets_view').pressed) {
+            Ext.getCmp('featuregrid').setCurrentPanel('targets');
+			if(Ext.getCmp("south").collapsed) {
+				Ext.getCmp("south").on("expand", function() { this.loadTargetGrids(targetViewParams, extraTargets); }, this, {single: true});
+			} else {
+				this.loadTargetGrids(targetViewParams, extraTargets);
+			}
+        }   
+            
     },
     
     addDamageBuffer: function(title, geometry, roi) {
@@ -2457,74 +2398,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
        }, this);
     },
     
-    /*loadRoadsGrid: function() {
-        var wfsGrid = Ext.getCmp("featuregrid");
-        
-        var map = this.target.mapPanel.map;        
-        var status = this.getStatus();        
-       
-        
-        var status = this.status;
-        var targetId = this.getChosenTarget(status);            
-        var me = this;
-        
-        var riskProcess = this.wpsClient.getProcess('destination', 'gs:RiskCalculator');  
-        var bounds;
-        if(status && status.roi) {
-            bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
-        } else {
-            bounds = map.getExtent();
-        }         
-        
-        var filter = new OpenLayers.Filter.Spatial({ 
-          type: OpenLayers.Filter.Spatial.BBOX,
-          property: 'geometria',
-          value: bounds, 
-          projection: map.getProjection() 
-       });
-        wfsGrid.getEl().mask(this.loadMsg);
-        //riskProcess.describe({callback: function() {
-            //riskProcess.setResponseForm([{}], {supportedFormats: {'application/json':true}});
-        riskProcess.execute({
-            // spatial input can be a feature or a geometry or an array of
-            // features or geometries
-            inputs: {
-                features: new OpenLayers.WPSProcess.ReferenceData({
-                    href:'http://geoserver/wfs', 
-                    method:'POST', mimeType: 'text/xml', 
-                    body: {
-                        wfs: {
-                            featureType: 'destination:siig_geo_ln_arco_1', 
-                            version: '1.1.0',
-                            filter: filter
-                        }
-                    }
-                }),
-                store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
-                processing: new OpenLayers.WPSProcess.LiteralData({value:status.processing}),
-                formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
-                target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
-                materials: new OpenLayers.WPSProcess.LiteralData({value:status.sostanza.id.join(',')}),
-                scenarios: new OpenLayers.WPSProcess.LiteralData({value:status.accident.id.join(',')}),
-                entities: new OpenLayers.WPSProcess.LiteralData({value:status.seriousness.id.join(',')}),
-                severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'}),
-                fp: new OpenLayers.WPSProcess.LiteralData({value:status.temporal.value})
-            },
-            outputs: [new OpenLayers.WPSProcess.Output({
-                mimeType: 'application/json'
-            })],
-            type: "raw",
-            success: function(json) {
-                wfsGrid.getEl().unmask();
-                wfsGrid.loadGridsFromJson(undefined, undefined, {"ARCHI": Ext.decode(json)}, status);
-            }
-        }); 
-        //}});
-        
-        
-        
-    },*/
-    
     loadRoadsGrid: function(viewParams) {
         if(!viewParams) {
             var map = this.target.mapPanel.map;        
@@ -2543,8 +2416,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         var map = this.target.mapPanel.map;        
         var status = this.getStatus();                
         
-        /*var viewParams = "bounds:" + bounds;
-        wfsGrid.loadGrids(undefined, undefined, this.selectionLayerProjection, viewParams);*/
         
         var status = this.status;
         var targetId = this.getChosenTarget(status);            
@@ -2598,18 +2469,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				distances.push(new OpenLayers.WPSProcess.LiteralData({value: dist.distance}));
                 distanceNames.push(new OpenLayers.WPSProcess.LiteralData({value: dist.type}));
 			}
-            /*if(radius.radiusNotHum) {
-                distances.push(new OpenLayers.WPSProcess.LiteralData({value: radius.radiusNotHum}));
-                distanceNames.push(new OpenLayers.WPSProcess.LiteralData({value: 'ambientale'}));
-            }
-            if(radius.radiusHum) {
-                for(var i=0; i<radius.radiusHum.length; i++) {
-                    if(radius.radiusHum[i]) {
-                        distances.push(new OpenLayers.WPSProcess.LiteralData({value: radius.radiusHum[i]}));
-                        distanceNames.push(new OpenLayers.WPSProcess.LiteralData({value: 'sociale' + i}));
-                    }
-                }
-            }*/
+            
             
             var filter = new OpenLayers.Filter.Spatial({ 
               type: OpenLayers.Filter.Spatial.BBOX,
@@ -2619,8 +2479,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             });
 			wfsGrid.distances = unorderedDistances;
             wfsGrid.getEl().mask(this.loadMsg);
-            //riskProcess.describe({callback: function() {
-                //riskProcess.setResponseForm([{}], {supportedFormats: {'application/json':true}});
+            
             riskProcess.execute({
                 headers: this.getBasicAuthentication(),
                 // spatial input can be a feature or a geometry or an array of
@@ -2702,9 +2561,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
         
         
-        //}});
-        
-        
         
     },
     
@@ -2725,42 +2581,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return bounds.toBBOX().replace(/,/g, "\\\,");
     },
     
-    addTargets: function(layers, bounds, radius, extraTargets, roi) { 
         
-        var name = this.status.target ? this.status.target.layer : 'bersagli_all';
-        var wkt;
-        if(this.status.processing === 4) {
-            bounds = '0,1,0,1'.replace(/,/g, "\\\,");
-            wkt = this.status.damageArea.replace(/,/g, "\\\,");            
-        } else {
-            wkt = 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'.replace(/,/g, "\\\,");
-        }
-        var targetViewParams = "bounds:" + bounds + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman + ';wkt:' + wkt;
-        
-        this.analyticViewLayers.push(name);
-        this.analyticViewLayers.push(this.selectedTargetLayer);
-        layers.push(this.createLayerRecord({
-            name: name,
-            title: this.targetLayerTitle[GeoExt.Lang.getLocaleIndex()], 
-            params: {                                                                
-                viewparams: targetViewParams
-            }
-        }, {
-            singleTile: true,
-            bounds: roi,
-			visibility: true
-        }));
-        
-        if(Ext.getCmp('targets_view').pressed) {
-            Ext.getCmp('featuregrid').setCurrentPanel('targets');
-			if(Ext.getCmp("south").collapsed) {
-				Ext.getCmp("south").on("expand", function() { this.loadTargetGrids(targetViewParams, extraTargets); }, this, {single: true});
-			} else {
-				this.loadTargetGrids(targetViewParams, extraTargets);
-			}
-        }   
-            
-    },
     
     loadTargetGrids: function(viewParams, extraTargets) {
         if(!viewParams) {
@@ -2851,55 +2672,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return roi;
     },
     
-    
-    
-    /*addNotHumanRisk: function(layers, bounds) {    
-        this.currentRiskLayers.push(this.notHumanRiskLayer);
-        var viewParams = "bounds:" + bounds 
-            + ';urbanizzate:' + (this.status.target.id.indexOf(10) === -1 ? 0 : 1) 
-            + ';boscate:' + (this.status.target.id.indexOf(11) === -1 ? 0 : 1) 
-            + ';protette:' + (this.status.target.id.indexOf(12) === -1 ? 0 : 1) 
-            + ';agricole:' + (this.status.target.id.indexOf(13) === -1 ? 0 : 1) 
-            + ';sotterranee:' + (this.status.target.id.indexOf(14) === -1 ? 0 : 1)
-            + ';superficiali:' + (this.status.target.id.indexOf(15) === -1 ? 0 : 1) 
-            + ';culturali:' + (this.status.target.id.indexOf(16) === -1 ? 0 : 1) 
-            + ';sostanze:' + this.status.sostanza.id.join('\\,')
-            + ';scenari:' + this.status.accident.id.join('\\,')
-            + ';gravita:' + this.status.seriousness.id.join('\\,');
-        layers.push(this.createLayerRecord({
-            name: this.notHumanRiskLayer,
-            title: this.notHumanRiskLayerTitle[GeoExt.Lang.getLocaleIndex()], 
-            params: {
-                viewparams: viewParams,                
-                env:"low:"+this.status.themas['ambientale'][0]+";medium:"+this.status.themas['ambientale'][1]+";max:"+this.status.themas['ambientale'][2],
-                riskPanel: true
-            }
-        }, true));
-    },
-    
-    addHumanRisk: function(layers, bounds) {
-        this.currentRiskLayers.push(this.humanRiskLayer);
-        var viewParams = "bounds:" + bounds 
-            + ';residenti:' + (this.status.target.id.indexOf(1) === -1 ? 0 : 1) 
-            + ';turistica:' + (this.status.target.id.indexOf(2) === -1 ? 0 : 1) 
-            + ';industria:' + (this.status.target.id.indexOf(4) === -1 ? 0 : 1) 
-            + ';sanitarie:' + (this.status.target.id.indexOf(5) === -1 ? 0 : 1) 
-            + ';scolastiche:' + (this.status.target.id.indexOf(6) === -1 ? 0 : 1)
-            + ';commerciali:' + (this.status.target.id.indexOf(7) === -1 ? 0 : 1) 
-            + ';sostanze:' + this.status.sostanza.id.join('\\,')
-            + ';scenari:' + this.status.accident.id.join('\\,')
-            + ';gravita:' + this.status.seriousness.id.join('\\,');
-        layers.push(this.createLayerRecord({
-            name: this.humanRiskLayer,
-            title: this.humanRiskLayerTitle[GeoExt.Lang.getLocaleIndex()], 
-            params: {                                                                
-                viewparams: viewParams,
-                env:"low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1]+";max:"+this.status.themas['sociale'][2],
-                riskPanel: true
-            }
-        }, true));
-    },*/
-
     getRoi: function(status, map, buffer) {
         status = status || this.status;
         map = map || this.target.mapPanel.map;
@@ -3040,25 +2812,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     getMixedFormulaEnv: function() {
         return "lowsociale:"+this.status.themas['sociale'][0]+";mediumsociale:"+this.status.themas['sociale'][1]+";maxsociale:"+this.status.themas['sociale'][2]+";lowambientale:"+this.status.themas['ambientale'][0]+";mediumambientale:"+this.status.themas['ambientale'][1]+";maxambientale:"+this.status.themas['ambientale'][2];
     },
-    
-    /*extractLayers: function(layers, titles) {
-                var map = this.target.mapPanel.map;
-        var layerStore = this.target.mapPanel.layers;
-        for(var i=0, layerTitle; layerTitle = titles[i]; i++) {
-            var layerIndex = layerStore.findBy(function(rec) {
-                return rec.get('title') === layerTitle;
-            }, this);
-            if(layerIndex !== -1) {
-                var layer = layerStore.getAt(layerIndex);
-                layer.get('layer').clearGrid();
-                layerStore.remove(layer);
-                                var mapLayers=map.getLayersByName(layer.get('name'));
-                                if(mapLayers.length == 1)
-                                layer.visibility= mapLayers[0].visibility;
-                layers.push(layer);
-            }
-        }
-    },*/
     
     extractLayersByName: function(layers, names, field) {
         field = field || 'name';
@@ -3306,11 +3059,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         //enable save processing button for all processing type except for standard type
         var saveProcMenuButtons = this.fieldSet.getBottomToolbar().items.items[0].menu.items.items[0];
-        //if (status.processing != 1){            
+        
             saveProcMenuButtons.enable();
-        /*}else{
-            saveProcMenuButtons.disable();
-        }*/
         
         var bounds = this.getBounds(status, map);
         
@@ -3427,13 +3177,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     }
                 }
             });            
-            //
         }
     },
     fillFormulaResults: function(formulaTitle, result) {
-        /*var html  = '<h2>' + formulaTitle + '</h2>';
-        html     += '<div id="synthetic-results-table"></div>';
-        this.resultsContainer.update(html);*/
         
         var data =[];
         for(var i = 0; i < result.targets.length; i++) {
