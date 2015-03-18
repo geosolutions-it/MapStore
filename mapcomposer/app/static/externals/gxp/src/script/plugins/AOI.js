@@ -58,7 +58,8 @@ gxp.plugins.AOI = Ext.extend(gxp.plugins.Tool, {
         
         var aoiFielset = new gxp.form.AOIFieldset(Ext.apply({
             map: target.mapPanel.map,
-            id: me.id+"_widget"
+            id: me.id+"_widget",
+            appTarget: target
         }, this.outputConfig));
         
        

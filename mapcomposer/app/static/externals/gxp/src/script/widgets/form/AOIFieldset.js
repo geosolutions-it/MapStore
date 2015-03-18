@@ -60,6 +60,12 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
      */
     outputSRS: 'EPSG:4326',
     
+    /**
+     * Property: searchByFeature
+     * {Boolean} enables search by feature panel
+     *     
+     */
+    searchByFeature: false,
     
     /** api: property[infoEPSG]
      *  ``Boolean``
@@ -129,6 +135,11 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
     setAoiText: "Seleziona Area",        
     setAoiTooltip: "Abilita la selezione della regione di interesse sulla mappa",
     waitEPSGMsg: "Attendere... Caricamento in corso",
+    aoiMethodLabel: "Modalità",
+    aoiByRectLabel: "Rettangolo",
+    aoiByFeatureLabel: "Seleziona limite",
+    provinceLabel: "Province",
+    comuniLabel: "Comuni",
     // end i18n
     
 
@@ -140,15 +151,25 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
        
         
         this.autoHeight= true;
-        this.layout='table';
-        this.layoutConfig= {
+        var aoiByRectOptions = {
+            layout: 'table',
+            layoutConfig : {
             columns: 3
-        };
-        this.defaults= {
+            },
+            defaults : {
             // applied to each contained panel
             bodyStyle:'padding:5px;'
+            },
+            bodyCssClass : 'aoi-fields'
         };
-        this.bodyCssClass= 'aoi-fields';
+        
+        if(this.searchByFeature) {
+            this.layout = 'form';
+        } else {
+            Ext.apply(this, aoiByRectOptions);
+        }
+        
+        
         
         Ext.util.CSS.createStyleSheet(".olHandlerBoxZoomBox_"+this.id+" {\n"
             +" border: "+this.selectStyle.strokeWidth+"px solid "+this.selectStyle.strokeColor+"; \n"
@@ -248,8 +269,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             }
         }); 
                 
-        this.items = [];
-        this.items = [{
+        var rectangleAoiItems = [{
             layout: "form",
             cellCls: 'spatial-cell',
             labelAlign: "top",
@@ -290,6 +310,135 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             ]
         }];
             
+        if(this.searchByFeature) {
+        
+            var provinceStore= new GeoExt.data.FeatureStore({ 
+                 id: "provinceStore",
+                 fields: [{
+                            "name": "id",              
+                            "mapping": "cod_provincia"
+                  },{
+                            "name": "name",              
+                            "mapping": "descrizione"
+                  }],
+                 proxy: this.getWFSStoreProxy("siig_geo_pl_province"),
+                 autoLoad: true
+           });
+           
+           var comuniStore= new GeoExt.data.FeatureStore({ 
+                 id: "comuniStore",
+                 fields: [{
+                            "name": "id",              
+                            "mapping": "cod_comune"
+                  },{
+                            "name": "name",              
+                            "mapping": "descrizione"
+                  }],
+                 proxy: this.getWFSStoreProxy("siig_geo_pl_comuni"),
+                 autoLoad: true
+           });
+        
+            this.province = new Ext.form.ComboBox({
+                fieldLabel: this.provinceLabel,
+                id: "provcb",
+                width: 150,
+                hideLabel : false,
+                store: provinceStore, 
+                valueField: 'id',
+                displayField: 'name',   
+                lastQuery: '',
+                typeAhead: true,
+                forceSelection: true,
+                triggerAction: 'all',
+                selectOnFocus:true,            
+                resizable: true,    
+                listeners: {
+                    scope: this,                
+                    expand: function(combo) {
+                        this.loadUserElab = false;
+                        combo.list.setWidth( 'auto' );
+                        combo.innerList.setWidth( 'auto' );
+                    },
+                    select: function(combo, record, index) {
+                        /*                        
+                        // to change formula according to scale
+                        var store = this.formula.getStore();
+                        this.filterComboFormulaScale(this.formula);
+                        this.formula.setValue(store.data.items[0].get('id_formula'));
+                        
+                        this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
+                        this.enableDisableSimulation(record.get('id') === 3);*/
+                    }
+                }          
+            });
+            
+            this.comuni = new Ext.form.ComboBox({
+                fieldLabel: this.comuniLabel,
+                id: "comunicb",
+                width: 150,
+                hideLabel : false,
+                store: comuniStore, 
+                valueField: 'id',
+                displayField: 'name',   
+                lastQuery: '',
+                typeAhead: true,
+                forceSelection: true,
+                triggerAction: 'all',
+                selectOnFocus:true,            
+                resizable: true,    
+                listeners: {
+                    scope: this,                
+                    expand: function(combo) {
+                        this.loadUserElab = false;
+                        combo.list.setWidth( 'auto' );
+                        combo.innerList.setWidth( 'auto' );
+                    },
+                    select: function(combo, record, index) {
+                        /*                        
+                        // to change formula according to scale
+                        var store = this.formula.getStore();
+                        this.filterComboFormulaScale(this.formula);
+                        this.formula.setValue(store.data.items[0].get('id_formula'));
+                        
+                        this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
+                        this.enableDisableSimulation(record.get('id') === 3);*/
+                    }
+                }          
+            });
+            
+            this.items = [{
+                xtype: 'radiogroup',
+                fieldLabel: this.aoiMethodLabel,
+                items: [
+                    {id: this.id + '-byrectcheck', boxLabel: this.aoiByRectLabel, name: 'aoimethod', checked: true},
+                    {id: this.id + '-byfeaturecheck', boxLabel: this.aoiByFeatureLabel, name: 'aoimethod'}
+                ],
+                listeners: {
+                    'change': function(group, checked) {
+                        if(checked.id === this.id + '-byrectcheck') {
+                            Ext.getCmp(this.id + '-byrect').show();
+                            Ext.getCmp(this.id + '-byfeature').hide();
+                        } else {
+                            Ext.getCmp(this.id + '-byfeature').show();
+                            Ext.getCmp(this.id + '-byrect').hide();
+                        }
+                    },
+                    scope: this
+                }
+            }, Ext.apply(aoiByRectOptions, {
+                xtype: 'fieldset',
+                id:this.id + '-byrect',
+                items: rectangleAoiItems
+            }), {
+                id:this.id + '-byfeature',
+                xtype: 'fieldset',
+                items: [this.province],
+                hidden: true
+            }];
+        } else {
+            this.items = rectangleAoiItems;
+        }
+        
         if(this.infoSRS)   
             this.title+=" <a href='#' id='"+me.id+"_bboxAOI-set-EPSG'>["+this.aoiProjection.getCode()+"]</a>";
         
@@ -321,6 +470,39 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
         
        
         gxp.form.AOIFieldset.superclass.initComponent.call(this);
+    },
+    
+    getAuthKey: function() {
+        var user = this.appTarget.user || {};
+        if(user && user.attribute) {
+            var attributes = (user.attribute instanceof Array) ? user.attribute : [user.attribute];
+            for(var i=0, l = attributes.length; i < l; i++) {
+                var attribute = attributes[i];
+                if(attribute.name === 'UUID') {
+                    return attribute.value;
+                }
+            }
+        }
+        return null;
+    },
+    
+    getWFSStoreProxy: function(featureName, filter, sortBy){
+        var authkey = this.getAuthKey();
+        
+        var proxy= new GeoExt.data.ProtocolProxy({ 
+            protocol: new OpenLayers.Protocol.WFS({ 
+                url: this.wfsUrl + (authkey ? '?authkey='+authkey : ''), 
+                featureType: featureName, 
+                readFormat: new OpenLayers.Format.GeoJSON(),
+                featureNS: this.destinationNS, 
+                filter: filter, 
+                outputFormat: "application/json",
+                version: this.wfsVersion,
+                sortBy: sortBy || undefined
+            }) 
+        });
+        return proxy;         
+        
     },
     
     /** private: method[isDark]
