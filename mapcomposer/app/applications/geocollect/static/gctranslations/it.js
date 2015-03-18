@@ -7,7 +7,7 @@
 */
 
 GeoExt.Lang.add("it", {
-   //GeoCollect Manager Classes
+    //GeoCollect Manager Classes
 	"mxp.plugins.GeostoreMissionResourceEditor.prototype": {
         buttonText: "Configurazione Missione"
     },
@@ -21,7 +21,7 @@ GeoExt.Lang.add("it", {
         checkMissionBtnTooltip:"Valida La Configurazione",
         validateMsgValid:"Template Missione Valido",
         validateMsgInvalid:"Template Missione Non Valido",
-        validateMsgTitle:"Valido?",        
+        validateMsgTitle:"Valido?"
     },
     "mxp.widgets.GcMobileResourceEditor.prototype":{
         title:'Mobile',
@@ -30,7 +30,7 @@ GeoExt.Lang.add("it", {
         surveyTabTitle:"Scheda Sopralluoghi",
         noticeTabTitle:"Scheda Segnalazioni",
         previewMsgTitle:"Attenzione",
-        previewMsg:"Lista Segnalazioni Deve Essere Valida Per Procedere",
+        previewMsg:"Lista Segnalazioni Deve Essere Valida Per Procedere"
     },
     "mxp.widgets.GcMListResourceEditor.prototype":{
 
@@ -88,8 +88,8 @@ GeoExt.Lang.add("it", {
         savePageMsg:"Vuoi Salvare La Pagina?",
         saveErroMsgTitle:"Errore",
         saveErrorMsg:"Proprietà Pagina Non Valide",
-        btnDelPageText:"Elimna Pagina",
-        btnDelPageTooltip:"Eliina Pagina Selezionata",
+        btnDelPageText:"Elimina Pagina",
+        btnDelPageTooltip:"Elimina Pagina Selezionata",
         delPageMsgTitle:"Elimina Pagina?",
         delPageMsg:"Vuoi Eliminare La Pagina",
         btnSavePageText:"Salva",
@@ -98,7 +98,7 @@ GeoExt.Lang.add("it", {
         btnValidateText:"Valida",
         btnValidateTooltip:"Valida Pagine",
         validateMsgValid:"Template Sopralluoghi Valide",
-        validateMsgInvalid:"Template Sopralluoghi Non Valid",
+        validateMsgInvalid:"Template Sopralluoghi Non Valido",
         validateMsgTitle:"Valido?",
         destLabel : 'Campi Sopralluogo'
 
@@ -107,7 +107,7 @@ GeoExt.Lang.add("it", {
         destLabel:'Campi Segnalazione'
      },
       "mxp.widgets.GcConfigPanel.prototype":{
-        title : "Configrazioni Aggiuntive",
+        title : "Configurazioni Aggiuntive",
         checkMissionBtn:"Valida",
         checkMissionBtnTooltip:"Valida Configurazioni",
         validateMsgValid:"Configurazioni Valide",
@@ -115,7 +115,7 @@ GeoExt.Lang.add("it", {
         validateMsgTitle:"Valida?"
      },
      "mxp.widgets.GcDbResourceEditor.prototype":{
-        title:'Sorgente Dati',//i18n
+        title:'Sorgente Dati',
         selectDbLabel:'Schema ',
         noticeTitle:"Segnalazioni",
         surveyTitle:'Sopralluoghi',
@@ -152,18 +152,18 @@ GeoExt.Lang.add("it", {
     },
    "mxp.widgets.XtypeMap.prototype":{
         descrFieldLabel:"Descrizione",
-        editableFieldLabel:"Ediatabile",
-        panFieldLabel:"Abilita Pam",
+        editableFieldLabel:"Editabile",
+        panFieldLabel:"Abilita Pan",
         zoomFieldLabel:"Abilita Zoom",
         displayFieldLabel:"Mostra Valore",
         centerFieldLabel:"Centra",
         centerMsgLabel:"Messaggio",
         localizeFieldLabel:"Localizza",
         localizeMsgLabel:"Messaggio",
-        zoomLevelLabel:"Levelli Zoom",
+        zoomLevelLabel:"Livello Zoom",
         mapHeightLabel:"Altezza Mappa"
     },
-    "mxp.widgets.XtypeLabel":{
+    "mxp.widgets.XtypeLabel.prototype":{
         idFieldLabel:"Campo",
         labFieldLabel:"Label",
         valueFieldLabel:"Valore"
@@ -181,10 +181,10 @@ GeoExt.Lang.add("it", {
     },
     "mxp.widgets.XActionSave.prototype":{
         valueFieldLabel:"Testo",
-        labFieldLabel:"Messaggio",
+        labFieldLabel:"Messaggio"
     },
     //GeoCollect Composer Classes
-     "gxp.plugins.GcSegGrid.prototype": {
+    "gxp.plugins.GcSegGrid.prototype": {
         displayFeatureText: "Mostra In  Mappa",
         firstPageTip: "Prima Pagina",
         previousPageTip: "Pagina Precedente",
@@ -211,18 +211,18 @@ GeoExt.Lang.add("it", {
         photoBrowserPanelTitle:"Foto Sopralluogo",
         noticePhotoBrowserPanelTitle:"Foto Segnalazione",
         surveysPanelTitle:"Sopralluoghi",
-        noticePanelTitle:"Segnalazione",        
+        noticePanelTitle:"Segnalazione"    
     },
     "gxp.plugins.GcFeatureEditor.prototype":{
         createFeatureActionTip: "Crea Nuova Segnalazione",
         saveOrCancelEdit:'Salva O Elimina Modifiche',
-        editFeatureActionTip: "Seleziona Segnalazione",
+        editFeatureActionTip: "Seleziona Segnalazione"
 
     },
     "gxp.grid.GcHistoryGrid.prototype":{
         title:'Storico',
         loadingText: 'Aspetta...Carico Storico',
-        emptyText: "Ricerca",
+        emptyText: "Ricerca"
     },
     "Ext.PagingToolbar.prototype":{
         displayMsg : 'Mostrando {0} - {1} di {2}',
