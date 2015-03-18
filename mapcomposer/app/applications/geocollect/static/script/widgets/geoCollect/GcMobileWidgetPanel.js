@@ -76,7 +76,7 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
     pageMsgLabel:"Page Message",
     saveMsg:"Would You Like To Save Your Widget?",   
     saveMsgTitle:"Save Widget?",
-    saveAlertMsg:"Invalid widget properties",
+    saveAlertMsg:"Invalid Widget Properties",
     saveAlertTitle:"Error",
     autoScroll:true,
     //Utilizzat per ripulire i campi valori
@@ -401,7 +401,7 @@ mxp.widgets.GcMobileWidgetPanel = Ext.extend(Ext.Panel, {
                 xtype : 'panel',
                 ref : '/xtypeform',
                 border : false,
-                width : 900,
+                width : 950,
                 layout:'column',
                 autoScroll:true,
                 items : [{

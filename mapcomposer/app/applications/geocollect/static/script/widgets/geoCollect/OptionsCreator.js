@@ -35,8 +35,6 @@ mxp.widgets.OptionsCreator = Ext.extend(Ext.form.CompositeField,{
 	insertLabel:"Insert options",
 	btnAddTooltip:"Add Options",
 	btnRemoveTooltip:"Remove Options",
-	
-   
 	fieldLabel:'Options',   
     
 initComponent: function() {
@@ -54,11 +52,11 @@ this.items=[ {
    				displayField: "name",
            		valueField: "name",
 				ref:'optList',
-				 allowBlank: true,
+				allowBlank: true,
     			mode: "local",
 				queryMode: 'local',
 				forceSelection: true,
-   				 triggerAction: "all",
+   				triggerAction: "all",
     			editable:false,
     			lastQuery:'',
     		

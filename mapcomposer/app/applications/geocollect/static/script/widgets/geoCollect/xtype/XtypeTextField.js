@@ -31,11 +31,11 @@ mxp.widgets.XtypeTextField = Ext.extend(Ext.FormPanel,{
 
     /** api: xtype = mxp_gc_xtype_textfield */
 	xtype:'mxp_gc_xtype_textfield',
-	   idFieldLabel:"Field",
+	idFieldLabel:"Field",
     labFieldLabel:"Label",
     valueFieldLabel:"Value",
     mandatoryFieldLabel:"Mandatory",
-     optFieldLabel:"Options",
+    optFieldLabel:"Options",
 	//Utilizzat per ripulire i campi valori
    clV:new RegExp("^(\\${origin.)(.*)(})$"),
 

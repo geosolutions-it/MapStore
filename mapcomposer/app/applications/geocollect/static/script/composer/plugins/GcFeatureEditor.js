@@ -48,11 +48,11 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``String``
      *  Tooltip string for create new feature action (i18n).
      */
-    createFeatureActionTip: "Crea nuova segnalazione",
+    createFeatureActionTip: "New Notice",
 
 
 
-     saveOrCancelEdit:'Save or cancel changes',
+     saveOrCancelEdit:'Save Or Cancel Changes',
 
     /** api: config[createFeatureActionText]
      *  ``String``
@@ -63,7 +63,7 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``String``
      *  Tooltip string for edit existing feature action (i18n).
      */
-    editFeatureActionTip: "Seleziona segnalazioni",
+    editFeatureActionTip: "Select Notice",
 
     /** api: config[editFeatureActionText]
      *  ``String``

@@ -75,7 +75,7 @@ defaultComboList={
 //creo i combo box
   this.listName= new Ext.form.ComboBox(Ext.apply(defaultComboList,{fieldLabel:this.nameFieldLabel,store:this.store}));
   this.listDescription= new Ext.form.ComboBox(Ext.apply(defaultComboList,{fieldLabel:this.descriptionFieldLabel,store:this.store}));
-  this.listOrdering= new Ext.form.ComboBox(Ext.apply(defaultComboList,{fieldLabel:this.orderinfFieldLabel,store:this.store}));
+  this.listOrdering= new Ext.form.ComboBox(Ext.apply(defaultComboList,{fieldLabel:this.orderingFieldLabel,store:this.store}));
   this.listIcon= new Ext.form.ComboBox(Ext.apply(defaultComboList,{fieldLabel:this.iconFieldLabel,store:this.store,
   listeners:{
 	    select:function(a,rec,c){

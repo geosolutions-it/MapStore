@@ -168,41 +168,7 @@ gxp.grid.GcFeatureGrid = Ext.extend(Ext.grid.GridPanel, {
         }
 		
        
-		  var columns = [/*{
-            xtype: 'actioncolumn',
-            header: "", 
-            width: 30,
-            hidden: false,
-            scope: this,
-            items: [{
-                iconCls: 'getinfo',
-                tooltip: this.actionTooltip,
-                scope: this,
-                handler: function(grid, rowIndex, colIndex){
-                    var store = grid.getStore();
-                    var row = store.getAt(rowIndex);
-                    var feature = row.data.feature;
-                  
-                
-                  
-                   this.segDetPanel.showMe(grid, rowIndex, colIndex);
-                    
-                    if(feature){
-                        var bounds = feature.geometry.getBounds();
-                        if(bounds){
-                   //         this.map.zoomToExtent(bounds);
-                            
-                            var showButton = Ext.getCmp("showButton");
-                            if(!showButton.pressed){
-                                showButton.toggle(true);                                
-                            }
-                            
-                            grid.getSelectionModel().selectRow(rowIndex);                   
-                        }
-                    }
-                }
-            }]
-        }*/];		
+		  var columns = [];		
 		var name, type, xtype, format, renderer;
         (this.schema || store.fields).each(function(f) {
             if (this.schema) {
