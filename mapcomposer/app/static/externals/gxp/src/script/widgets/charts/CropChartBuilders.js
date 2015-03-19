@@ -515,11 +515,21 @@ nrl.chartbuilder.crop.compareRegion = {
 		var getAvg = function(arr,type) {
 			var sum = 0,len = arr.length;
 			for (var i=0;i<len;i++){
-				sum += arr[i][type];
+				sum += (arr[i][type] === undefined) ? 0 : arr[i][type];
 			}
 			return sum/len;
 		};
 		
+		/**
+		 * create an object where any keys is a region and
+		 * any values is a AVG of data region
+		 */
+		var avgs = {};
+		for(var region in opt.series){
+			var avg = getAvg(data[0].rows, region);
+			avgs[region] = avg;
+		}
+
 		for (var r=0; r<data.length; r++){
             //calculate avg
             /*var prodavg = getAvg(data[r].rows,'prod');
@@ -531,7 +541,7 @@ nrl.chartbuilder.crop.compareRegion = {
                 area:areaavg
             }*/
             //get chart configs (sorting them properly)
-            var chartConfig = this.getOrderedChartConfigs(opt,listVar,customOpt.stackedCharts);
+            var chartConfig = this.getOrderedChartConfigs(opt,listVar,customOpt.stackedCharts, avgs);
 			
 			var fields = [{
 					name: 'time',
@@ -563,6 +573,8 @@ nrl.chartbuilder.crop.compareRegion = {
 			var chart;
 			var text = listVar.commodity.toUpperCase() + ' - ' + opt.name;
 			
+			//var text = 'Crop Data Analysis: Comparsion by Region\n' + listVar.commodity.toUpperCase();
+
 			//
 			// AOI Subtitle customization
 			//
@@ -598,15 +610,21 @@ nrl.chartbuilder.crop.compareRegion = {
                         width: 1200,
                         url: customOpt.highChartExportUrl
                     },
+                    /*
 					title: {
 						//text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase() +" - "+listVar.chartTitle.split(',')[r]) // + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : listVar.chartTitle.split(',')[r])
 						text: text
+					},*/
+					title: { // 2 line title (part of issue #104 fixing)
+						useHTML: true,
+						text: '<p>Crop Data Analysis: Comparsion by Region' + '<br>' + listVar.cropTitles[0].toUpperCase() + '</p>',
+						margin: 32
 					},
 					subtitle: {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
                               '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
                               //'<span style="font-size:10px;">AOI: '+ listVar.chartTitle  + '</span><br />' +
-                              '<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
+                              //'<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />', //+ 
                               //'<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
@@ -634,7 +652,7 @@ nrl.chartbuilder.crop.compareRegion = {
                                 s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
                                     '<span style="font-size:12px;">'+ i.y+'</span>';
                             });
-                            
+
                             return s;
                         },
                         shared: true,
@@ -654,11 +672,45 @@ nrl.chartbuilder.crop.compareRegion = {
                             
                         }
                     }            
-				}
+				},
+				info: "<div id='list2' style='border: none; border='0'>" +
+                      "<ol>" +
+                          "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+                          "<li><p><em> Date: </em>"+listVar.today+"</p></li>" +
+                          "<li><p><em> AOI: </em>"+listVar.chartTitle+"</p></li>" +
+                          (listVar.commodity ? "<li><p><em> Commodity: </em>" + listVar.commodity.toUpperCase() + "</p></li>" :"")+
+                          "<li><p><em> Season: </em>" + listVar.season.toUpperCase() + "</p></li>" +
+                          "<li><p><em> Years: </em>" + listVar.fromYear + "-" + listVar.toYear + "</p></li>" +
+                      "</ol>" +
+                      "</div>"
 			});
+
+            var avgInfos = '<table style="width:100%; margin-top: 4px;">' +
+                             '<tr>'+
+                               '<th colspan="4"><b>Mean Values</b></th>'+
+                             '</tr>';
+
+			for(var i=0; i<chartConfig.series.length; i++){
+				var regionID = chartConfig.series[i].dataIndex;
+				var regionLbl = chartConfig.series[i].name;
+				var regionAvg = avgs[regionID].toFixed(2);
+				var regionColor = chartConfig.series[i].color;
+				var uom = opt.unit;
+
+				avgInfos += '<tr>' +
+				              '<td><span style="color:' + regionColor +'"> &#x25A0; </span></td>' + 
+				              '<td>' + regionLbl + '</td>' +
+				              '<td>' + regionAvg + '</td>' +
+				              '<td>' + uom + '</td>' +
+				            '</tr>';
+			}
+
+            avgInfos += '</table>';
+            chart.info = chart.info + avgInfos;
 			charts.push(chart);
 		}
-		
+
+
 		return charts; 
 	},
     /**
@@ -671,7 +723,7 @@ nrl.chartbuilder.crop.compareRegion = {
      * data. data to use for the chart
      * 
      */
-	getOrderedChartConfigs:function(opt,listVar,stackedCharts){
+	getOrderedChartConfigs:function(opt,listVar,stackedCharts, avgs){
         var ret = {};
 		
 		ret.series = [];
@@ -697,7 +749,7 @@ nrl.chartbuilder.crop.compareRegion = {
 		
 		ret.yAxis = [{ // AREA
 			title: {
-				text: ""
+				text: opt.name // adds u.o.m. to yAxis (in order to fix issue #104)
 			},                    
 			labels: {
 				formatter: function () {
@@ -706,15 +758,52 @@ nrl.chartbuilder.crop.compareRegion = {
 				style: {
 					color: "#666666"
 				}
-			}
+			},
+			plotLines: this.getChartAvgLinesConfig(opt, avgs)
 
 		}];
 		
 		ret.plotOptions = stackedCharts;
 		
         return ret;    
-    }
+    },
 
+    /**
+     * private method [getChartAvgLinesConfig]
+     * makes configs to add avg-lines to charts.
+     *
+     * ``Object`` opt chartOpts object
+     * ``Object`` avgs dictionary within name-regions and avg-values
+     *
+     * return: ``Array`` an array for Highcharts yAxis plotLines property.
+     */
+    getChartAvgLinesConfig: function(opt, avgs){
+		var ret = [];
+		for (var region in avgs){
+			ret.push(this.getLineConfig(opt.series[region], avgs[region]));
+		}
+		return ret;
+    },
+    /**
+     * private method [getLineConfig]
+     * makes a configuration for an avg-line
+     *
+     * ``Object`` region plot configuration set
+     * ``Number`` avg-value
+     *
+     * return: ``Object`` line configuration with value, color, ...
+     */
+	getLineConfig: function(regionPlotConf, regionAvg){
+		var color = nrl.chartbuilder.util.hexColorToRgba(regionPlotConf.color);
+		color.setAlpha(0.4);
+
+		return {
+			value: regionAvg,
+			color: color.toString(),
+			dashStyle: 'LongDash',
+			width: 1
+		}
+	}
 }
 
 nrl.chartbuilder.crop.compareCommodity = {
