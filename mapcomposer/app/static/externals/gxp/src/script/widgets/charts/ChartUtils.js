@@ -99,5 +99,73 @@ nrl.chartbuilder.util = {
         }
         return fieldSet;
     },
-}
+    /**
+     * private method[hexColorToRgba]
+     * converts an hex color notation (#RRGGBB) in an object that
+     * rapresents color in rgba notation.
+     *
+     * ``String`` hex color string
+     * return: ``Object`` an object with properies:
+     *                     - red   (decimal value for red);
+     *                     - green (decimal value for green);
+     *                     - blu   (decimal value for blu);
+     *                     - alpha (decimal value for alpha channel);
+     */
+    hexColorToRgba: function(hexColor){
+        var rgba = {
+            red: 0,
+            green: 0,
+            blu: 0,
+            alpha: 1,
+            toString: function(){
+                return 'rgba(' + this.red + ', ' + this.green + ', ' + this.blu + ', ' + this.alpha + ')'
+            },
+            setAlpha: function(n){
+                if (n > 1) this.alpha = 1;
+                else if (n < 0) this.alpha = 0;
+                else this.alpha = n;
+            }
+        };
 
+        /**
+         * private method [byteToDec]
+         * converts a string that rapresents a hexadecimal value
+         * in a decimal number.
+         *
+         * ``String`` hexadecimal number
+         * return: ``Number`` decimal value
+         */
+        function byteToDec(strByte){
+
+            function hexDigitToDecValue(hexDigit){
+                var value;
+                switch(hexDigit){
+                    case 'A': case 'a' : value = 10; break;
+                    case 'B': case 'b' : value = 11; break;
+                    case 'C': case 'c' : value = 12; break;
+                    case 'D': case 'd' : value = 13; break;
+                    case 'E': case 'e' : value = 14; break;
+                    case 'F': case 'f' : value = 15; break;
+                    default: value = parseInt(hexDigit);
+                }
+                return value;
+            }
+
+            var dec = 0;
+            var e = strByte.length-1;
+
+            for (var i=0; i<strByte.length; i++){
+                dec *= 16;
+                dec += hexDigitToDecValue(strByte[i]);
+            }
+            return dec;
+        }
+
+        hexColor   = hexColor.substr(1);
+        rgba.red   = byteToDec(hexColor.substr(0,2));
+        rgba.green = byteToDec(hexColor.substr(2,2));
+        rgba.blu   = byteToDec(hexColor.substr(4,2));
+
+        return rgba;
+    }
+}

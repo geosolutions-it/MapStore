@@ -235,7 +235,7 @@ gxp.WindowManagerPanel.Util = {
             var info =charts[i].info,
             panel = new Ext.Window({
                 iconCls: "gxp-icon-nrl-chart",
-                title: charts[i].chartConfig.title.text,
+                title: charts[i].chartConfig.title.text.replace('<br>',' - '),
                 layout: 'fit',
                 width:700,
                 height:400,
