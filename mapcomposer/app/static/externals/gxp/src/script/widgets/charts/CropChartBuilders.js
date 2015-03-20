@@ -1212,7 +1212,8 @@ nrl.chartbuilder.crop.compareCommodity = {
                             }
                             
                         }
-                    }            
+                    }
+                    ,plotOptions: chartConfig.plotOptions
 				},
 				info: "<div id='list2' style='border: none; border='0'>" +
                       "<ol>" +
