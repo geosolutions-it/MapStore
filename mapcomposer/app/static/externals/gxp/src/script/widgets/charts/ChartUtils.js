@@ -167,5 +167,11 @@ nrl.chartbuilder.util = {
         rgba.blu   = byteToDec(hexColor.substr(4,2));
 
         return rgba;
+    },
+    toTitleCase: function(str){
+        function toUpperCamelCase(word){
+            return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+        }
+        return str.replace(/\w\S*/g, toUpperCamelCase);
     }
 }

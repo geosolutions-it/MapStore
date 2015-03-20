@@ -954,7 +954,7 @@ nrl.chartbuilder.crop.compareCommodity = {
 
     
     },
-/**
+	/**
      * private method[getOrderedChartConfigs]
      * get chart configurations properly sorted 
      * to place charts with line style on top and 
@@ -964,7 +964,7 @@ nrl.chartbuilder.crop.compareCommodity = {
      * data. data to use for the chart
      * 
      */
-	getOrderedChartConfigs:function(opt,listVar,stackedCharts){
+	getOrderedChartConfigs:function(opt,listVar,stackedCharts, avgs){
         var ret = {};
 		
 		ret.series = [];
@@ -999,7 +999,8 @@ nrl.chartbuilder.crop.compareCommodity = {
 				style: {
 					color: "#666666"
 				}
-			}
+			},
+			plotLines: this.getChartAvgLinesConfig(opt, avgs)
 
 		}];
 		
@@ -1007,7 +1008,42 @@ nrl.chartbuilder.crop.compareCommodity = {
 		
         return ret;    
     },
+    /**
+     * private method [getChartAvgLinesConfig]
+     * makes configs to add avg-lines to charts.
+     *
+     * ``Object`` opt chartOpts object
+     * ``Object`` avgs dictionary within name-regions and avg-values
+     *
+     * return: ``Array`` an array for Highcharts yAxis plotLines property.
+     */
+    getChartAvgLinesConfig: function(opt, avgs){
+		var ret = [];
+		for (var crop in avgs){
+			ret.push(this.getLineConfig(opt.series[crop], avgs[crop]));
+		}
+		return ret;
+    },
+    /**
+     * private method [getLineConfig]
+     * makes a configuration for an avg-line
+     *
+     * ``Object`` cropPlotConf crop plot configuration set
+     * ``Number`` cropAvg avg-value
+     *
+     * return: ``Object`` line configuration with value, color, ...
+     */
+	getLineConfig: function(cropPlotConf, cropAvg){
+		var color = nrl.chartbuilder.util.hexColorToRgba(cropPlotConf.color);
+		color.setAlpha(0.4);
 
+		return {
+			value: cropAvg,
+			color: color.toString(),
+			dashStyle: 'LongDash',
+			width: 1
+		}
+	},
 	makeChart: function(data, opt, listVar, aggregatedDataOnly,customOpt){
 		
 		var charts = [];
@@ -1020,9 +1056,22 @@ nrl.chartbuilder.crop.compareCommodity = {
 		};
 		
 		for (var r=0; r<data.length; r++){
-           
+
+			// makes an object of mean values, one for each crops.
+            var commodityList = listVar.commodity.replace(/['\\]/g, '').split(',');
+            var avgs = {};
+			for(var i=0; i<commodityList.length; i++){
+				var crop = commodityList[i];
+				var sum = 0;
+				for(var j=0; j<data[r].rows.length; j++){
+					sum += data[r].rows[j][crop] == undefined ? 0 : data[r].rows[j][crop];
+				}
+				var avg = sum/data[r].rows.length;
+				avgs[crop] = avg;
+			}
+
             //get chart configs (sorting them properly)
-            var chartConfig = this.getOrderedChartConfigs(opt,listVar,customOpt.stackedCharts);
+            var chartConfig = this.getOrderedChartConfigs(opt,listVar,customOpt.stackedCharts, avgs);
             //console.log(chartConfig);
 			// Store for random data
 			var fields = [{
@@ -1049,8 +1098,19 @@ nrl.chartbuilder.crop.compareCommodity = {
 			//
 			// Making Chart Title
 			//
-			var text = "";
-			var dataTitle = data[r].title.toUpperCase();
+			//var dataTitle = data[r].title.toUpperCase();
+			var text = "Crop Data Analysis: Comparsion by Commodity<br>";
+			if (listVar.numRegion[r].split(',')[1] != undefined){
+				var province = '(' + listVar.numRegion[r].split(',')[1].toUpperCase() + ')';
+				var district = nrl.chartbuilder.util.toTitleCase(listVar.numRegion[r].split(',')[0]);
+			} else {
+				var province = listVar.numRegion[r].split(',')[0].toUpperCase();
+				var district = '';
+			}
+
+			text += district == '' ? province : district + ' ' +province;
+
+			var dataTitle = data[r].title;
 			var commodity = listVar.commodity.toUpperCase();
             
 			var chartTitle = dataTitle;
@@ -1063,7 +1123,7 @@ nrl.chartbuilder.crop.compareCommodity = {
 						text += dataTitle + " - " + commodity;
 					}					
 				}else{
-					text += cropTitles.join(",") + " - " + chartTitle;
+					//text += cropTitles.join(",") + " - " + chartTitle;
 				}
 			}
 			
@@ -1101,14 +1161,19 @@ nrl.chartbuilder.crop.compareCommodity = {
                     },
 					title: {
 						//text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase() +" - "+listVar.chartTitle.split(',')[r]) // + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : listVar.chartTitle.split(',')[r])
-						text: text
+						text: text,
+						useHTML: true,
+						margin: 28,
+						style: {
+							'font-size': '14px'
+						}
 					},
 					subtitle: {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
                               '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
                               '<span style="font-size:10px;">AOI: '+ aoiSubtitle /*(data[r].title.toUpperCase()=="AGGREGATED DATA" ? listVar.chartTitle : listVar.chartTitle.split(',')[r])*/ + '</span><br />' +
-                              '<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
-                              '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
+                              //'<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
+                              //'<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />',
                              
                         align: 'left',
@@ -1148,8 +1213,42 @@ nrl.chartbuilder.crop.compareCommodity = {
                             
                         }
                     }            
-				}
+				},
+				info: "<div id='list2' style='border: none; border='0'>" +
+                      "<ol>" +
+                          "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
+                          "<li><p><em> Date: </em>"+listVar.today+"</p></li>" +
+                          "<li><p><em> AOI: </em>"+listVar.chartTitle+"</p></li>" +
+                          (listVar.commodity ? "<li><p><em> Commodity: </em>" + listVar.commodity.toUpperCase() + "</p></li>" :"")+
+                          "<li><p><em> Season: </em>" + listVar.season.toUpperCase() + "</p></li>" +
+                          "<li><p><em> Years: </em>" + listVar.fromYear + "-" + listVar.toYear + "</p></li>" +
+                      "</ol>" +
+                      "</div>"
 			});
+
+			var avgInfos = '<table style="width:100%; margin-top: 4px;">' +
+                             '<tr>'+
+                               '<th colspan="4"><b>Mean Values</b></th>'+
+                             '</tr>';
+
+			for(var i=0; i<chartConfig.series.length; i++){
+				var cropID = chartConfig.series[i].dataIndex;
+				var cropLbl = chartConfig.series[i].name;
+				var cropAvg = avgs[cropID].toFixed(2);
+				var cropColor = chartConfig.series[i].color;
+				var uom = opt.unit;
+
+				avgInfos += '<tr>' +
+				              '<td><span style="color:' + cropColor +'"> &#x25A0; </span></td>' + 
+				              '<td>' + cropLbl + '</td>' +
+				              '<td>' + cropAvg + '</td>' +
+				              '<td>' + uom + '</td>' +
+				            '</tr>';
+			}
+
+            avgInfos += '</table>';
+            chart.info = chart.info + avgInfos;
+
 			charts.push(chart);
 		}
 		
