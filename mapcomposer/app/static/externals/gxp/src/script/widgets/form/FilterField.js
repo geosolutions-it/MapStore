@@ -115,7 +115,8 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
     
     addAutocompleteStore: function(config) {
         var uniqueValuesStore = new gxp.data.WPSUniqueValuesStore({
-            pageSize: this.autoCompleteCfg.pageSize || this.pageSize
+            pageSize: this.autoCompleteCfg.pageSize || this.pageSize,
+            listeners: this.autoCompleteCfg.listeners || {}
         });
         
         this.initUniqueValuesStore(uniqueValuesStore, this.autoCompleteCfg.url || this.attributes.url, this.attributes.baseParams.TYPENAME, this.attributes.format.namespaces, this.filter.property);
