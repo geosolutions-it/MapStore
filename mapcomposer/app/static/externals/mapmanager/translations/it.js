@@ -56,7 +56,8 @@ GeoExt.Lang.add("it", {
 		showMapTooltip: "Mostra in una nuova finestra",
 		embedCodeTitle: "Codice Da Incorporare",
 		embedURL: "URL diretto",		
-		urlLabel: "URL",
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
 		exportMapText: "Collega Mappa",
         mobileText: "Mobile", 
         installApplicationText: "Installazione applicazione Android", 
@@ -97,7 +98,8 @@ GeoExt.Lang.add("it", {
         loginErrorTitle: "Autenticazione fallita",
         userFieldText: "Utente",
         passwordFieldText: "Password",
-        loginFormTitle: "Effettua l'autenticazione"
+        loginFormTitle: "Effettua l'autenticazione",
+        loginWaitMessage: "Accesso in corso. Attendere..."
     },
     "UserManagerView.prototype":{
         textGeneral:"Generale",
@@ -257,5 +259,82 @@ GeoExt.Lang.add("it", {
     },
 	"MSMTemplateManager.prototype":{
 		title: "Gestore Modelli"
-	}
+	},
+    "mxp.widgets.GeoStoreResourceForm.prototype":{
+        dataFieldLabel: "Risorsa",
+        nameLabel: "Nome",
+        textAttribute: "Attributi",
+        textGeneral: "Generale",
+        descriptionLabel: "Descrizione",
+        visibilityLabel: "Visibilità",
+        textSave: "Salva",
+        savingMessage:"Salvataggio...",
+        loadingMessage: "Caricamento...",
+        saveSuccessTitle:"Salvato",
+        saveSuccessMessage:"Risorsa salvata",
+        failSaveTitle: "Salvataggio della risorsa fallita",
+        resourceNotValid: "La risorsa non è valida",
+        deleteSuccessMessage: "Risorsa cancellata",
+        permissionTitleText: "Permessi"
+    },
+    "mxp.widgets.GeoStoreCategoryManager.prototype":{
+        resourceListTitle: "Risorse",
+        emptyMessage: "Nessuna risorsa da mostrare",
+        displayMessage: "{0} - {1} risorse di {2}",
+		titleConfirmDeleteMsg: "Conferma eliminazione risorsa",
+		textConfirmDeleteMsg: "La risorsa verrà eliminata. Continuare?"
+    },
+    "mxp.plugins.GeoBatchFlows.prototype": {
+        buttonText: "Workflows",
+        flowsListTitle:'Flussi',
+        runButtonText: "Esecuzione",
+        consumersGridTitle: 'Attivi',
+        archivedGridTitle: 'Archiviati'
+    },
+    "mxp.widgets.GeoBatchFlowsGrid.prototype": {
+        nameText: 'Titolo',
+        descriptionText:'Descrizione',
+        loadingMessage: 'Caricamento...',
+        runButtonTooltip:'Esegui',
+        errorContactingGeobatch: 'Errore nel caricamento dei flussi da GeoBatch'
+    },
+    "mxp.widgets.GeoBatchConsumerGrid.prototype": {
+        statusText: 'Stato',
+        startDateText: 'Data Inizio',
+        fileText:'File',
+        actionText:'Azione',
+        taskText:'Task',
+        progressText:'Progresso',
+        refreshText:'Ricarica',
+        autoRefreshText:'Auto Ricarica',
+        descriptionText:'Descrizione',
+        tooltipDelete: 'Pulizia',
+        tooltipLog: 'Verifica Log',
+        clearFinishedText: 'Rimuovi Terminati',
+        archiveText: 'Archivia Selezionati',
+        loadingMessage: 'Caricamento...',
+        cleanMaskMessage:'Pulizia esecuzioni...',
+        textConfirmDeleteMsg: 'Confermi di voler cancellare questa esecuzione?',
+        errorDeleteConsumerText:'Errore durante la cancellazione dell\'esecuzione',
+        errorArchiveConsumerText:'Errore durante l\'archiviazione dell\'esecuzione',
+        confirmClearText: 'Vuoi rimuovere le esecuzioni con stato SUCCESS o FAIL?',
+        titleConfirmClearMsg: 'Conferma',
+        confirmArchiveText: 'Vuoi archiviare le esecuzioni selezionate?',
+        titleConfirmArchiveMsg: 'Conferma',
+        GWCButtonLabel: 'Tile Cache',
+        errorContactingGeobatch: 'Errore di caricamento esecuzioni da GeoBatch',
+        errorContactingGeostore: 'Errore di caricamento esecuzioni archiviate da GeoStore'
+    },
+    "mxp.widgets.GeoBatchRunLocal.prototype": {
+        successText: "Successo",
+        errorText:"Errore",
+        runSuccessText: "Il flusso è stato avviato correttamente<br/>"
+    },
+    "mxp.widgets.GeoBatchRunLocalForm.prototype": {
+        runButtonText: "Esecuzione",
+        uploadButtonText: "Upload",
+        successText: "Successo",
+        errorText:"Errore",
+        runSuccessText: "Il flusso è stato avviato correttamente<br/>"
+    }
 });

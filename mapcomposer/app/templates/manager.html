@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
     <head>
     <!--meta http-equiv="X-UA-Compatible" content="IE=8" /-->
@@ -36,7 +36,8 @@
     <script type="text/javascript" src="externals/mapmanager/translations/it.js"></script>
     <script type="text/javascript" src="externals/mapmanager/translations/de.js"></script>
     <script type="text/javascript" src="externals/mapmanager/translations/es.js"></script>
-    
+    <!-- common scripts  -->
+    <script type="text/javascript" src="script/mapstoreCommon.js"></script>
     <!-- MapStoreManager includes  -->
     <script type="text/javascript" src="auth/base64.js"></script>
     <link rel="stylesheet" type="text/css" href="externals/mapmanager/theme/css/mapstoremanager.css">
@@ -46,7 +47,7 @@
     <script type="text/javascript" src="script/qrcodejs.js"></script>
     <!-- common data  -->
     <script type="text/javascript" src="config/common/localConfig.js"></script>
-   
+    
     
 
     <script>
@@ -131,7 +132,7 @@
                 code: code
             });
             manager = new mxp.widgets.ManagerViewport({
-                layout:'fit',
+                layout:'border',
                 config: config,
                 items:{
                     xtype: 'tabpanel',
@@ -206,3 +207,4 @@
 		<div id="wrap" style="visibility:hidden"></div>
     </body>
 </html>
+   

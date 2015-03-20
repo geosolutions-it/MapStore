@@ -80,6 +80,12 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      */
     loginFormTitle: 'Please Login',
     /**
+     * Property: loginFormTitle
+     * {string} title of login form
+     * 
+     */
+    loginWaitMessage: "Please wait...",
+    /**
      * Property: grid
      * {object} property grid to access GridPanel
      * 
@@ -115,6 +121,13 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      * 
      */
     statelessSession: true,
+    /**
+     * Property: forceLogin
+     * {Boolean} If true, the login window is opened on tool add, not closable and mask the background.
+     *           in this way users must login. 
+     * 
+     */
+    forceLogin: false,
      
     /** private: method[constructor]
      */
@@ -170,10 +183,18 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 scope: this,
                 handler: this.submitLogin
             }]
-        }),
+        });
         
         this.loginButton = new Ext.Button({
-            id: 'id_loginButton'            
+            id: 'id_loginButton',
+            listeners:{
+                scope:this,
+                afterrender: function(){
+                    if(this.forceLogin){
+                        this.showLoginForm();
+                    }
+                }
+            }
         });
         
         this.userLabel = new Ext.form.Label({
@@ -193,9 +214,11 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
             this.getLoginInformation();   
         }else{
             this.showLogin();
+            
         }
         
         MSMLogin.superclass.initComponent.call(this, arguments);
+        
     },
 
     /**
@@ -221,7 +244,8 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
 					// //////////////////////////////////////////////////////////
 					var userDetails = {
 						token: this.token,
-						user: user.User
+						user: user.User,
+						provider: "geostore"
 					};
 					
 					sessionStorage.removeItem("userDetails");
@@ -232,10 +256,13 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 }else{
                     // invalid user state
                     this.showLogin();
+                    
                 }
             },
             failure: function(response, form, action) {        
                 this.showLogin();
+                
+                
             }
         });
     },
@@ -252,6 +279,8 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
             layout: "fit",
             width: 275,
 			closeAction: 'hide',
+            closable: !this.forceLogin,
+            draggable: !this.forceLogin,
             height: 130,
             plain: true,
             border: false,
@@ -331,13 +360,13 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      * Submits the login.
      */ 
     submitLogin: function () {
-        
+        var mask = new Ext.LoadMask(this.getEl(),{msg:this.loginWaitMessage});
         var form = this.getForm();
         var fields = form.getValues();
         var pass = fields.loginPassword;
         var user = fields.loginUsername;
         var auth= 'Basic ' + Base64.encode(user+':'+pass);
-
+        mask.show();
         Ext.Ajax.request({
             method: 'GET',
             url: this.geoStoreBase + 'users/user/details/',
@@ -346,7 +375,8 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 'Accept': 'application/json',
                 'Authorization' : auth
             },
-            success: function(response, form, action) {            
+            success: function(response, form, action) {  
+                mask.hide();
                 this.win.hide();
                 this.getForm().reset();
                 
@@ -363,6 +393,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 this.fireEvent("login", this.username, auth, user.User);
             },
             failure: function(response, form, action) {
+                mask.hide();
                 Ext.MessageBox.show({
                     title: this.loginErrorTitle,
                     msg: this.loginErrorText,
@@ -398,6 +429,8 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         var handler = this.showLoginForm;
         this.applyLoginState('login', text, userLabel, handler, this);
         this.fireEvent("logout");
+        //force show login window on startup
+        
     },
 
     /** private: method[showLogout]

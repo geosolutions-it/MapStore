@@ -322,12 +322,12 @@ mxp.plugins.ExpiringTaskStatus = Ext.extend(mxp.plugins.Tool, {
                           {
                             name:'receiver',
                             dataIndex:'receiver',
-                            header:this.receiverText,
+                            header:this.receiverText
                           },{
                             name:'address',
                             dataIndex:'address',
                             hidden: true,
-                            header:this.emailText,
+                            header:this.emailText
                            },{
                             name:'status',
                             dataIndex:'status',
@@ -341,9 +341,7 @@ mxp.plugins.ExpiringTaskStatus = Ext.extend(mxp.plugins.Tool, {
                            },{
                             id:'message',
                             dataIndex:'message',
-                            header: this.messageText,
-                            
-                            
+                            header: this.messageText
                            }
                         ],
                         height: 200,

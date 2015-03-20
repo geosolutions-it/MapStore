@@ -57,7 +57,8 @@ GeoExt.Lang.add("de", {
 		showMapTooltip: "In einem neuen Fenster anzeigen",	
 		embedCodeTitle: "Embed Code",
 		embedURL: "Direct URL",			
-		urlLabel: "URL",
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
 		exportMapText: "Link Map",
         mobileText: "Mobile", 
         installApplicationText: "Install Android-Anwendung", 
@@ -98,7 +99,8 @@ GeoExt.Lang.add("de", {
         loginErrorTitle: "Authentifizierung fehlgeschlagen",
         userFieldText: "Benutzer",
         passwordFieldText: "Password",
-        loginFormTitle: "Authentifizieren"
+        loginFormTitle: "Authentifizieren",
+        loginWaitMessage: "Anmeldung. Warten Sie mal ..."
     },
     "UserManagerView.prototype":{
         textGeneral:"Allgemein",
@@ -258,5 +260,82 @@ GeoExt.Lang.add("de", {
     },
 	"MSMTemplateManager.prototype":{
 		title: "Vorlage-Manager"
-	}
+	},
+    "mxp.widgets.GeoStoreResourceForm.prototype": {
+         dataFieldLabel: "Ressource", 
+         namelabel: "Name", 
+         textAttribute: "Attribute", 
+         textGeneral: "Allgemein" ,
+         description: "Beschreibung",
+         visibilityLabel: "Sichtbarkeit", 
+         textSave: "Speichern" ,
+         savingMessage: "Saving ...", 
+         loadingMessage: "Loading ..." ,
+         saveSuccessTitle: "Saved", 
+         saveSuccessMessage: "Ressourcen erfolgreich gespeichert",
+         failSaveTitle: "Fehler beim Speichern von Ressourcen", 
+         resourceNotValid: "Ressourcen nicht gültig", 
+         deleteSuccessMessage: "Ressourcen Erfolgreich gelöscht", 
+         permissionTitleText: "Berechtigungen" 
+     }, 
+     "mxp.widgets.GeoStoreCategoryManager.prototype": {
+         resourceListTitle: "Ressourcen",
+         emptyMessage: "Nein Ressource angezeigt werden", 
+         displayMessage: "Zeige {0} - {1} von {2}",
+		 titleConfirmDeleteMsg: "Ressource löschen",
+		 textConfirmDeleteMsg: "Bist du sicher das du diese Ressource löschen möchtest?"
+     },
+    "mxp.plugins.GeoBatchFlows.prototype": {
+        buttonText: "Workflows",
+        flowsListTitle:'Ströme',
+        runButtonText: "Run",
+        consumersGridTitle: 'Aktiv',
+        archivedGridTitle: 'Archiviert'
+    },
+    "mxp.widgets.GeoBatchFlowsGrid.prototype": {
+        nameText: 'Titel',
+        descriptionText:'Beschreibung',
+        loadingMessage: 'Laden ...',
+        runButtonTooltip:'Run',
+        errorContactingGeobatch: 'Fehler beim Laden von GeoBatch fließt'
+    },
+    "mxp.widgets.GeoBatchConsumerGrid.prototype": {
+        statusText: 'Status',
+        startDateText: 'Startdate',
+        fileText:'Datei',
+        actionText:'Action',
+        taskText:'Aufgabe',
+        progressText:'Progress',
+        refreshText:'Aktualisieren',
+        autoRefreshText:'Automatische Aktualisierung',
+        descriptionText:'Beschreibung',
+        tooltipDelete: 'Clear dieses',
+        tooltipLog: 'Prüfen Log',
+        clearFinishedText: 'Clear Fertig',
+        archiveText: 'Archiv Selected',
+        loadingMessage: 'Laden ...',
+        cleanMaskMessage:'Entfernen läuft...',
+        textConfirmDeleteMsg: 'Haben Sie bestätigen, dass Sie diesen Lauf löschen?',
+        errorDeleteConsumerText:'Es gab einen Fehler beim Löschen des run',
+        errorArchiveConsumerText:'Es gab einen Fehler bei der Archivierung run',
+        confirmClearText: 'Wollen Sie wirklich alle Läufe mit ERFOLGS entfernen oder FAIL Status möchten?',
+        titleConfirmClearMsg: 'Bestätigen',
+        confirmArchiveText: 'Wollen Sie die ausgewählten Läufe archivieren?',
+        titleConfirmArchiveMsg: 'Bestätigen',
+        GWCButtonLabel: 'Tile Cache',
+        errorContactingGeobatch: 'Fehler beim Laden läuft von GeoBatch',
+        errorContactingGeostore: 'Fehler beim Laden der archivierten läuft von GeoStore'
+    },
+    "mxp.widgets.GeoBatchRunLocal.prototype": {
+        successText: "Erfolg",
+        errorText:"Error",
+        runSuccessText: "Der Arbeitsablauf wurde erfolgreich begonnen<br/>"
+    },
+    "mxp.widgets.GeoBatchRunLocalForm.prototype": {
+        runButtonText: "Run",
+        uploadButtonText: "Upload",
+        successText: "Erfolg",
+        errorText:"Error",
+        runSuccessText: "Der Arbeitsablauf wurde erfolgreich begonnen<br/>"
+    }
 });

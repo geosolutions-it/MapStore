@@ -33,7 +33,7 @@ GeoExt.Lang.add("ca", {
     },
     
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Mostra al mapa",
+        displayFeatureText: "Mostra",
         firstPageTip: "Primera pàgina",
         previousPageTip: "Pàgina anterior",
         zoomPageExtentTip: "Ajusta vista a l'extensió de la pàgina",

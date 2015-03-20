@@ -157,6 +157,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                         this.notSupportedMessage(suppLayers);
                         return;
                     }
+
                     this.startLoading();
                     var me = this;
                     html2canvas( app.mapPanel.map.div,{

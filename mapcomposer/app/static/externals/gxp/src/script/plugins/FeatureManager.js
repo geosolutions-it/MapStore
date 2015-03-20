@@ -669,19 +669,30 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                             fields.push(field);
                         }
                     }, this);
-                    var protocolOptions = {
+                    
+                    var protocolOptions = {    
                         srsName: this.target.mapPanel.map.getProjection(),
                         url: schema.url,
                         featureType: schema.reader.raw.featureTypes[0].typeName,
                         featureNS: schema.reader.raw.targetNamespace,
                         geometryName: geometryName
                     };
+                    
+                    //
+                    // Check for existing 'viewparams' inside the selected layer
+                    //
+                    var layer = record.getLayer();
+                    if(layer){
+                        protocolOptions = Ext.applyIf(protocolOptions, layer.vendorParams ? {viewparams: layer.vendorParams.viewparams} : {});
+                    }
+
                     this.hitCountProtocol = new OpenLayers.Protocol.WFS(Ext.apply({
                         version: "1.1.0",
                         readOptions: {output: "object"},
                         resultType: "hits",
                         filter: filter
                     }, protocolOptions));
+                    
                     this.featureStore = new gxp.data.WFSFeatureStore(Ext.apply({
                         fields: fields,
                         proxy: {
@@ -692,6 +703,8 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         maxFeatures: this.maxFeatures,
                         layer: this.featureLayer,
                         ogcFilter: filter,
+                        sortBy: this.sortBy,
+                        remoteSort:this.remoteSort,
                         autoLoad: autoLoad,
                         autoSave: false,
                         listeners: {
