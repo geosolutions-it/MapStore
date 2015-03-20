@@ -706,7 +706,8 @@ nrl.chartbuilder.crop.compareRegion = {
 			}
 
             avgInfos += '</table>';
-            chart.info = chart.info + avgInfos;
+            // removes mean-values from info if chart is a percentage-stack plot
+            chart.info = chartConfig.plotOptions.series.stacking != 'percent' ? chart.info + avgInfos : chart.info;
 			charts.push(chart);
 		}
 
@@ -749,7 +750,7 @@ nrl.chartbuilder.crop.compareRegion = {
 		
 		ret.yAxis = [{ // AREA
 			title: {
-				text: opt.name // adds u.o.m. to yAxis (in order to fix issue #104)
+				text: stackedCharts.series.stacking == 'percent' ? 'Percent (%)' : opt.name
 			},                    
 			labels: {
 				formatter: function () {
@@ -759,7 +760,8 @@ nrl.chartbuilder.crop.compareRegion = {
 					color: "#666666"
 				}
 			},
-			plotLines: this.getChartAvgLinesConfig(opt, avgs)
+			// doesn't plot mean-lines if chart is a percentage-stack plot
+			plotLines: stackedCharts.series.stacking == 'percent' ? null : this.getChartAvgLinesConfig(opt, avgs)
 
 		}];
 		
