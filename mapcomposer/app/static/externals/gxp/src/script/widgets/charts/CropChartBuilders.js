@@ -990,7 +990,7 @@ nrl.chartbuilder.crop.compareCommodity = {
 		
 		ret.yAxis = [{ // AREA
 			title: {
-				text: ""
+				text: opt.name
 			},                    
 			labels: {
 				formatter: function () {
