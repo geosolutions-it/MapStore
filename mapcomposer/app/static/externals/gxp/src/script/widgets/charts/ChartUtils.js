@@ -168,6 +168,15 @@ nrl.chartbuilder.util = {
 
         return rgba;
     },
+    /**
+     * Make a string in title case.
+     * A string in title case format have the first char of each word in upper case;
+     * the remain part of word is lower case. "The Title Case Format" is an
+     * example of string in title case format.
+     *
+     * ``String`` str a string.
+     * return: ``String`` str in title case.
+     */
     toTitleCase: function(str){
         function toUpperCamelCase(word){
             return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
