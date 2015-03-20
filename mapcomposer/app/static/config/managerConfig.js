@@ -122,6 +122,22 @@
           "index": 2
         }
     },{
+         "ptype": "mxp_updater",
+         "geoBatchRestURL":"http://he.geo-solutions.it/opensdi2-manager/facade/geobatch/rest/",
+         "uploadUrl":"http://he.geo-solutions.it/opensdi2-manager/mvc/admin/updater/upload",
+
+         "actionTarget":{
+           "target": "north.tbar",
+           "index": 3
+         }
+    },{
+         "ptype": "mxp_gwc_manager",
+         "GWCRestURL":"http://he.geo-solutions.it/opensdi2-manager/facade/geoserver/gwc/rest/",
+         "actionTarget":{
+           "target": "north.tbar",
+           "index": 4
+         }
+    },{
          "ptype": "mxp_he_expiring_task_status",
          "actionTarget":{
            "target": "north.tbar",
@@ -172,8 +188,6 @@
    "embedLink": {
 		"embeddedTemplateName": "viewer",
 		"showDirectURL": true,
-        "showQRCode":true,
-        "qrCodeSize":128,
         "appDownloadUrl":"http://demo.geo-solutions.it/share/mapstoremobile/MapStoreMobile.apk"
 
 	}
