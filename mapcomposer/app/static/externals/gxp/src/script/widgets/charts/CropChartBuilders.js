@@ -926,7 +926,7 @@ nrl.chartbuilder.crop.compareCommodity = {
 		
 		ret.yAxis = [{ // AREA
 			title: {
-				text: opt.name
+				text: stackedCharts.series.stacking == 'percent' ? 'Percent (%)' : opt.name
 			},                    
 			labels: {
 				formatter: function () {
@@ -936,7 +936,8 @@ nrl.chartbuilder.crop.compareCommodity = {
 					color: "#666666"
 				}
 			},
-			plotLines: this.getChartAvgLinesConfig(opt, avgs)
+			// doesn't plot mean-lines if chart is a percentage-stack plot
+			plotLines: stackedCharts.series.stacking == 'percent' ? null : this.getChartAvgLinesConfig(opt, avgs)
 
 		}];
 		
@@ -1116,7 +1117,10 @@ nrl.chartbuilder.crop.compareCommodity = {
                         verticalAlign: 'bottom',
                         useHTML: true,
                         x: 30,
-                        y: 10
+                        y: 10,
+                        style: {
+							'margin-top': '12px'
+                        }
 					},
 					xAxis: [{
 						type: 'datetime',
@@ -1184,7 +1188,8 @@ nrl.chartbuilder.crop.compareCommodity = {
 			}
 
             avgInfos += '</table>';
-            chart.info = chart.info + avgInfos;
+            // removes mean-values from info if chart is a percentage-stack plot
+            chart.info = chartConfig.plotOptions.series.stacking != 'percent' ? chart.info + avgInfos : chart.info;
 
 			charts.push(chart);
 		}
