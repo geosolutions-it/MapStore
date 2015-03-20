@@ -750,7 +750,7 @@ nrl.chartbuilder.crop.compareRegion = {
 		
 		ret.yAxis = [{ // AREA
 			title: {
-				text: stackedCharts.series.stacking == 'percent' ? 'Percent (%)' : opt.name
+				text: stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : opt.name
 			},                    
 			labels: {
 				formatter: function () {
@@ -928,7 +928,7 @@ nrl.chartbuilder.crop.compareCommodity = {
 		
 		ret.yAxis = [{ // AREA
 			title: {
-				text: stackedCharts.series.stacking == 'percent' ? 'Percent (%)' : opt.name
+				text: stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : opt.name
 			},                    
 			labels: {
 				formatter: function () {
