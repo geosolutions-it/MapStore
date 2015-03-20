@@ -17,7 +17,7 @@
    },
    
    "footer": {
-		"html": "<div id=\"footer\"><img src=\"theme/app/img/banner/logo_footer.png\" > Â© Hart Energy 2014 &nbsp;</div>",
+		"html": "<div id=\"footer\"><img src=\"theme/app/img/banner/logo_footer.png\" > © Hart Energy 2014 &nbsp;</div>",
 		"css": "<style type='text/css'>#footer{background-color:black;height:100%;text-align:right;color:white;line-height:30px} #footer img{text-align:left; float:left; margin:5px;}</style>",
 		"container": {
 			"border": false,
@@ -62,7 +62,12 @@
 		}
 	},
     "tab":true,
-    
+
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
+	},
 	"map": {
 		"projection": "EPSG:900913",
 		"units": "m",
@@ -100,26 +105,16 @@
 				"source": "bing",
 				"title": "Bing Aerial With Labels",
 				"name": "AerialWithLabels",
-				"group": "background",
-                "visibility": false
+				"group": "background"
 			},{
-				"source": "google",
-				"title": "Google Terrain",
-				"name": "TERRAIN",
+				"source": "ol",
 				"group": "background",
-                "visibility": false
-			},{
-				"source": "google",
-				"title": "Google Hybrid",
-				"name": "HYBRID",
-				"group": "background",
-                "visibility": false
-			},{
-				"source": "google",
-				"title": "Google Roadmap",
-				"name": "ROADMAP",
-				"group": "background",
-                "visibility": false
+				"fixed": true,
+				"type": "OpenLayers.Layer",
+				"visibility": false,
+				"args": [
+					"None", {"visibility": false}
+				]
 			}
 		]
 	},
@@ -130,7 +125,7 @@
 			"actionTarget": {"target": "paneltbar", "index": 2},
 			"embeddedTemplateName": "viewer",
 			"showDirectURL": true
-		},  {
+		}, {
 		   "ptype": "gxp_mouseposition",
 		   "displayProjectionCode":"EPSG:4326",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
@@ -138,7 +133,7 @@
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,
-			"showReport": false,
+			"showReport": "never",
 			"directAddLayer": false,
 			"id": "addlayer"
 		}, {
@@ -151,7 +146,7 @@
 		}, {
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
-		},{
+		}, {
              "ptype": "gxp_wmsgetfeatureinfo_menu",
              "toggleGroup": "toolGroup",
              "regex":"<table[^>]*>([\\s\\S]*)<\\/table>",

@@ -43,6 +43,11 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
 
     loginManager: null,    
     setActiveOnOutput: true,
+    /**
+	 * Property: flowId
+	 * {string} the GeoBatch flow name to manage
+	 */	
+    flowId: 'ds2ds_zip2pg',
     
     /** api: method[addActions]
      */
@@ -98,7 +103,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
             width:400,
             ref:'uploader',
             collapsible:true,   
-            url: proxy + uploadUrl,
+            url: OpenLayers.Request.makeSameOrigin(uploadUrl,proxy),
             multipart: true,
             auth: this.auth,
 			mediaContent: this.target.initialConfig.mediaContent,
@@ -138,6 +143,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
                     GWCRestURL: this.GWCRestURL,
                     layout:'fit',
                     autoScroll:true,
+                    flowId: this.flowId,
                     auth: this.auth,
                     autoWidth:true,
                     region:'center',

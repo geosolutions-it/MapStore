@@ -53,7 +53,7 @@ GeoExt.Lang.add("de", {
     "gxp.plugins.AddLayers.prototype": {
         addActionMenuText: "Schicht hinzufügen",
         addActionTip: "Schicht hinzufügen",
-        addServerText: "Neuen Server hinzufügen",
+        addServerText: "Neuen Server",
         addButtonText: "Schichten hinzufügen",
         untitledText: "Ohne Überschrift",
         addLayerSourceErrorText: "Fehler beim finden der WMS capabilities ({msg}).\nBitte die Url kontrollieren und nochmals versuchen.",
@@ -163,14 +163,26 @@ GeoExt.Lang.add("de", {
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
         infoActionTip: "Feature Info erhalten",
         popupTitle: "Feature Info",
-		noDataMsg: "Keine Daten vom Server erhalten"
+		noDataMsg: "Keine Daten vom Server erhalten",
+		firstFtTip: "Erste Feature",
+        previousPageTip: "Vorheriges Feature",
+        nextPageTip: "Nächste Feature",
+        lastPageTip: "LetzteFeature",
+        ftLabel: "Feature",
+        ftOfLabel: "von" 
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
         infoActionTip: "Feature Info erhalten",
         popupTitle: "Feature Info",
 		noDataMsg: "Keine Daten vom Server erhalten",
-		activeActionTip: "Informationen über ausgewählte Schicht"
+		activeActionTip: "Informationen über ausgewählte Schicht",
+		firstFtTip: "Erste Feature",
+        previousPageTip: "Vorheriges Feature",
+        nextPageTip: "Nächste Feature",
+        lastPageTip: "LetzteFeature",
+        ftLabel: "Feature",
+        ftOfLabel: "von", 
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -242,11 +254,37 @@ GeoExt.Lang.add("de", {
     },
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Neuen Server hinzufügen...",
+        title: "Neuen Server",
         cancelText: "Löschen",
         addServerText: "Server hinzufügen",
         invalidURLText: "Als WMS endpoint gültige Url eingeben (e.g. http://example.com/geoserver/wms)",
-        contactingServerText: "Verbindungsversuch zum Server..."
+        contactingServerText: "Verbindungsversuch zum Server...",
+		sourceTypeLabel: "Type",
+		advancedOptionsTitle: "Advanced Options",
+		generalTabTitle: "General",
+		titleLabel: "Title",
+		versionLabel: "Version (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Params",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Add",
+		propNameLabel: "Name",
+		propValueLabel: "Value",
+		paramsWinTitle: "Params Options",
+		okButtonText: "Ok",
+		addPropDialogTitle: "Add Property",
+		addPropDialogMsg: "Property name or his value are not valid",
+		cancelButtonText: "Cancel",
+		removeButtonText: "Remove",
+		removePropDialogTitle: "Remove Property",
+		removePropDialogMsg: "This property cannot be removed: ",
+		newSourceDialogTitle: "New Source",
+		newSourceDialogMsg: "Some source selected properties are invalid.",
+		mandatoryLabelText: "All fields marked with (*) are mandatory."
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -283,7 +321,8 @@ GeoExt.Lang.add("de", {
 		mapMedatataSetTitle: "Karte Metadaten",	
 		mapNameLabel: "Name",	
 		mapDescriptionLabel: "Beschreibung",
-		addResourceButtonText: "In Map"
+		addResourceButtonText: "In Map",
+		conflictErrMsg: "Eine Karte mit dem gleichen Namen ist bereits vorhanden"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
@@ -298,6 +337,12 @@ GeoExt.Lang.add("de", {
         zoomInTooltip: "Zoom Box Vorwärts",
         zoomOutTooltip: "Zoom Box Zurück"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Schicht ist nicht in der Kartenprojektion",
+		wfsDescribeFeatureTypeError: "Fehler beim Abrufen der Eigenschaften von Feature-Typ",
+		errorTitle: "Fehler"
+	},
 
     "GeoExt.ux.PrintPreview.prototype":{
 	    paperSizeText: "Papierformat:",
@@ -364,7 +409,7 @@ GeoExt.Lang.add("de", {
     },
 	
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Auf Karte anzeigen",
+        displayFeatureText: "Zeigen",
         firstPageTip: "Erste Seite",
         previousPageTip: "Vorherige Seite",
         zoomPageExtentTip: "Zoom zur Erweterung der Seite",
@@ -373,8 +418,8 @@ GeoExt.Lang.add("de", {
         title: "Zeilen",
         totalMsg: "Insgesamt: {0} Zeilen",
         displayExportCSVText: "Export to CSV",
-        exportCSVSingleText: "einzelne Seite",
-        exportCSVMultipleText: "Alle Seite",
+        exportCSVSingleText: "Einzelne Seite",
+        exportCSVMultipleText: "Alle Seiten",
         failedExportCSV: "Fehler beim Ansprechen für Ausgabeformat CSV finden",
         invalidParameterValueErrorText: "Ungültige Parameter Wert",
 		zoomToFeature: "Zoom auf Funktionen",
@@ -647,7 +692,8 @@ GeoExt.Lang.add("de", {
 		previewText: "Vorschau",				
 		embedCodeTitle: "Embed Code",
 		embedURL: "Direct URL",		
-		urlLabel: "URL",
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
 		showMapTooltip: "In einem neuen Fenster anzeigen",
         loadMapText: "Load this Map (installieren Sie zuerst die Anwendung)", 
         downloadAppText: "Die Anwendung Installieren", 
@@ -798,8 +844,10 @@ GeoExt.Lang.add("de", {
 		rootNodeText: "Ressourcen Import",
 		serviceErrorTitle: "Dienstfehler",
 		tabTitle: "Importiert",
-		layerNodeName: "Levels",
-		serviceNodeName: "Service"
+		layerNodeName: "Ressourcen",
+		waitMsg: "Laden von Ressourcen ...",
+		expandAllText: "Alle Knoten Erweitern",
+		collapseAllText: "Alles Alle Knoten"
     },
 	
 	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
@@ -824,5 +872,52 @@ GeoExt.Lang.add("de", {
 
 	"gxp.plugins.AdvancedSnappingAgent.prototype":{
         tooltipText: "Aktivieren/Deaktivieren Snapping"
+    },
+	
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Wiedergabe",
+        playTooltip: "Wiedergabe",
+        stopLabel: "Stopp",
+        stopTooltip: "Stopp",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Double Speed​​-Wiedergabe",
+        backLabel:'Zurück',
+        backTooltip:'Zeichnen Sie ein Bild zurück',            
+        nextLabel: "Nächste",
+        nextTooltip: "Ein Bild vor",
+        loopLabel: "Schleife",
+        loopTooltip: "Stufenlos Schleife die Animation",
+        normalTooltip: "Rückkehr zur normalen Wiedergabe",
+        pauseLabel: "Pause",
+        pauseTooltip: "Pause"
+    },
+	
+    "gxp.PlaybackOptionsPanel.prototype": {
+        optionTitleText: "Datum & Zeit",
+        rangeFieldsetText: "Zeitbereich",
+        animationFieldsetText: "Animationsoptionen",
+        startText: "Starten",
+        endText: "Ende",
+        saveText: 'Sparen',
+        cancelText: 'Stornieren',         
+        listOnlyText: "Verwenden Sie Genaue Werte-Liste nur",
+        stepText: "Zeichentrick Schritt",
+        unitsText: "Zeichentrick-Einheiten",
+        frameRateText:'Zeichentrick-Verzögerung (s)',        
+        noUnitsText: "Snap To Zeitliste",
+        loopText: "Loop-Animation",
+        reverseText: "Reverse-Zeichentrick",
+        rangeChoiceText: "Wählen Sie den Bereich für die Zeitsteuerung",
+        rangedPlayChoiceText: "Wiedergabemodus",
+        secondsText: 'Sekunden', 
+        minutesText: 'Protokoll', 
+        hoursText: 'Stunden', 
+        daysText: 'Tage', 
+        monthsText: 'Monate', 
+        yearsText: 'Jahre'        
+    },
+	
+	"gxp.plugins.StaticPage.prototype": {
+        tabTitle: "Statische Seite"
     }  
 });

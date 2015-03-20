@@ -1,0 +1,103 @@
+/** PORTAL **/
+.x-portal .x-panel-dd-spacer {
+    margin-bottom:10px;
+}
+
+.x-portlet {
+    margin-bottom:10px;
+}
+
+/* Clean up the look of the portlets */
+.x-portlet .x-panel-ml {
+    padding-left:2px;
+}
+.x-portlet .x-panel-mr {
+    padding-right:2px;
+}
+.x-portlet .x-panel-bl {
+    padding-left:2px;
+}
+
+.x-portlet .x-panel-br {
+    padding-right:2px;
+}
+.x-portlet .x-panel-body {
+    background:white;
+}
+.x-portlet .x-panel-mc {
+    padding-top:2px;
+}
+.x-portlet .x-panel-bc .x-panel-footer {
+    padding-bottom:2px;
+}
+.x-portlet .x-panel-nofooter .x-panel-bc {
+    height:2px;
+}
+ul.pie-legend li{
+    margin: 5px;
+}
+ul.pie-legend li span{
+    display: block;
+    float: left;
+    width: 1em;
+    height: 1em;
+    border: 2px solid; /* Comment out if you don't want to show the fillColor */
+    border-radius: 0.5em; /* Comment out if you prefer squarish samples */
+    margin-right: 0.5em;
+}
+
+/* gxp_nrlChartButton */
+.x-btn .gxp-icon-nrl-chart, .x-menu-item .gxp-icon-nrl-chart, .x-tree-node .gxp-icon-nrl-chart,.x-panel-icon.gxp-icon-nrl-chart {
+    background-image: url(../images/chart_curve.png);
+}
+/* gxp_nrlMapButton */
+.x-btn  .gxp-icon-nrl-map,  .x-menu-item  .gxp-icon-nrl-map,.x-tree-node .gxp-icon-nrl-map,.x-panel-icon.gxp-icon-nrl-map{
+    background-image: url(../images/map_go.png);
+}
+/* gxp_nrlTabButton */
+.x-btn  .gxp-icon-nrl-tab,  .x-menu-item  .gxp-icon-nrl-tab,.x-tree-node .gxp-icon-nrl-tab,.x-panel-icon.gxp-icon-nrl-tab {
+    background-image: url(../images/table.png);
+}
+
+.ic_wrench{
+    background-image: url(../images/wrench.png);
+}
+/** custom span (chart selector and so on **/
+span.icon_span{
+    padding-left:20px;
+    background-repeat: no-repeat;
+}
+.ic_chart-spline{
+    background-image: url(../images/chart_curve.png);
+    width: 16px;
+    height: 16px;
+}
+.ic_chart-bar{
+    background-image: url(../images/chart_bar.png);
+     width: 16px;
+    height: 16px;
+}
+.ic_chart-line{
+    background-image: url(../images/chart_line.png);
+     width: 16px;
+    height: 16px;
+}
+
+.ic_chart-area{
+    background-image: url(../images/chart_area.png);
+     width: 16px;
+    height: 16px;
+}
+
+.x-progress-bar-gcd {
+    background-color: #BCBCBC;
+    background-image: url(../images/progress/progress-bg.gif);
+    border-top-color: #EF8F94;
+    border-bottom-color: #E66066;
+    border-right-color: #E66066;
+}
+
+/* gxp_enablelabel */
+.x-btn .gxp-icon-enablelabel, .x-menu-item .gxp-icon-enablelabel, .x-tree-node .gxp-icon-enablelabel {
+   background-image: url(../images/style.png) !important;
+}

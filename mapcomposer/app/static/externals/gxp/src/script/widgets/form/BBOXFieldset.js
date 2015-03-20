@@ -314,15 +314,17 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
             ]
         }];
             
-        if(this.infoSRS)   
-            this.title += " <a href='#' id='"+me.id+"_bboxAOI-set-EPSG'>["+this.bboxProjection.getCode()+"]</a>";
+        if(this.infoSRS){
+			var url = this.getCRSURLFromCode();
+			this.title += " <a href='#' onclick=\"window.open('" + url + "');\" id='"+me.id+"_bboxAOI-set-EPSG'>["+this.bboxProjection.getCode()+"]</a>";
+		}
         
         this.listeners = {
            "afterlayout": function(){
-                var link = Ext.get(me.id+"_bboxAOI-set-EPSG");
+                /*var link = Ext.get(me.id+"_bboxAOI-set-EPSG");
                 if(link){
                   link.addListener("click", me.openEPSGWin, me);  
-                }
+                }*/
                 
 				var baseProj = me.map.getProjection();
 				var projection = baseProj ? baseProj : me.map.projection; 				
@@ -461,21 +463,21 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
     /** private: method[openEpsgWin]
      *    Opens a popup with current BBOX CRS description 
      */
-    openEPSGWin: function() {
-      
-        this.epsgWinHeight= this.epsgWinHeight ? this.epsgWinHeight : Ext.getBody().getHeight()*.7;
-        this.epsgWinWidth=  this.epsgWinWidth ? this.epsgWinWidth : Ext.getBody().getWidth()*.8;
+    openEPSGWin: function() {      
+        this.epsgWinHeight = this.epsgWinHeight ? this.epsgWinHeight : Ext.getBody().getHeight()*.7;
+        this.epsgWinWidth =  this.epsgWinWidth ? this.epsgWinWidth : Ext.getBody().getWidth()*.8;
      
-        var me= this;
-        var win= new Ext.Window({
-            layout:'fit', 
-            id: me.id+'_epsg_info_win',
-            width:me.epsgWinWidth,
-            closeAction:'destroy',
-            html: '<div id="'+me.id+'_loaderIframe"><iframe id="'+me.id+'_epsgIframe" src="'+ me.getCRSURLFromCode() +'" width="99%" height="'+me.epsgWinHeight+'"></iframe></div>',
+        var me = this;
+		
+        var win = new Ext.Window({
+            layout: 'fit', 
+            id: me.id + '_epsg_info_win',
+            width: me.epsgWinWidth,
+            closeAction: 'destroy',
+            html: '<div id="' + me.id + '_loaderIframe"><iframe id="' + me.id + '_epsgIframe" src="' + me.getCRSURLFromCode() + '" width="99%" height="' + me.epsgWinHeight + '"></iframe></div>',
             listeners: {
                 afterrender: function(el, eOpts) {
-                    var ml=new Ext.LoadMask(document.getElementById(me.id+'_loaderIframe'), 
+                    var ml=new Ext.LoadMask(document.getElementById(me.id + '_loaderIframe'), 
                     {
                         msg: me.waitEPSGMsg,
                         removeMask: true
@@ -484,7 +486,7 @@ gxp.form.BBOXFieldset = Ext.extend(Ext.form.FieldSet,  {
                     function rml(){
                         ml.hide();
                     }
-                    var iframe = document.getElementById(me.id+'_epsgIframe');
+                    var iframe = document.getElementById(me.id + '_epsgIframe');
                     if (iframe.attachEvent) {
                         iframe.attachEvent("onload", rml);
                     } else if (iframe.addEventListener) {

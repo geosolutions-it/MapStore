@@ -224,3 +224,71 @@ div#homelogos ul li a:hover {
 .initCategoriesMessage{
     padding: 20px;
 }
+
+/* LayerNodeUI */
+.x-tree-node-error .x-tree-node-icon{
+	background-image:url(img/silk/cancel.png) !important;
+}
+/* when OL encounters a 404, don't display the pink image 
+.olImageLoadError { 
+    
+    display: none !important;
+} */
+
+/*FIX FOLLSCREEN BEHAVIOUR */
+.x-layout-collapsed{
+    position:absolute;
+    left:-10000px;
+    top:-10000px;
+    visibility:hidden;
+    /*width:20px !important;
+    height:20px !important;*/
+    overflow:hidden;
+	border:0px solid;
+	z-index:20;
+}
+
+.ext-border-box .x-layout-collapsed{
+    width:22px;
+    height:22px;
+}
+
+.x-layout-collapsed-over{
+    cursor:pointer;
+}
+
+.x-layout-collapsed.x-layout-collapsed-north, .x-layout-collapsed.x-layout-collapsed-south{
+	position:absolute;
+    top:0;
+    left:0;
+    height:20px !important;    
+}
+
+.x-layout-collapsed.x-layout-collapsed-east, .x-layout-collapsed.x-layout-collapsed-west{
+	position:absolute;
+    top:0;
+    left:0;
+    width:20px !important;
+}
+
+.x-layout-collapsed-west .x-layout-collapsed-tools, .x-layout-collapsed-east .x-layout-collapsed-tools{
+	position:absolute;
+    top:0;
+    left:0;
+    width:20px;
+    height:20px;
+}
+
+.x-layout-collapsed.x-layout-cmini-west, .x-layout-collapsed.x-layout-cmini-east {
+    border:0 none;
+    width:5px !important;
+    padding:0;
+    background-color:transparent;
+}
+
+.x-layout-collapsed.x-layout-cmini-north, .x-layout-collapsed.x-layout-cmini-south {
+    border:0 none;
+    height:5px !important;
+    padding:0;
+    background-color:transparent;
+}

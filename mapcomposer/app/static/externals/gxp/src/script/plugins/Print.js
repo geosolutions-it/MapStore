@@ -151,6 +151,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                 defaultResolutionIndex:this.defaultResolutionIndex,
                 url: this.printService,
                 customParams: this.customParams,
+				printParams: this.printParams,
                 autoLoad: false,
 				
                 listeners: {

@@ -83,74 +83,82 @@ gxp.plugins.AdvancedSnappingAgent = Ext.extend(gxp.plugins.Tool, {
         snapTarget = Ext.apply({}, snapTarget);
 		var featureManager;
 		
+		var strategyBBOX = new OpenLayers.Strategy.BBOX({ratio: 1.5});
+		
 		var featureManagerConfig = {
             maxFeatures: null,
             paging: false,
             listeners: {
                 layerchange: function() {
-                    var map = this.target.mapPanel.map;
-					
-					var featureLayer = map.getLayersByName(snapTarget.name || "snapping_target")[0];
-					if(featureLayer){
-						map.removeLayer(featureLayer);
-					}
-                    
-				    var style = {
-						"all": new OpenLayers.Style(null, {
-							rules: [new OpenLayers.Rule({
-								symbolizer: {
-									"Point": {
-										pointRadius: 4,
-										graphicName: "square",
-										fillOpacity: 0,
-										strokeWidth: 1,
-										strokeOpacity: 0
-									},
-									"Line": {
-										strokeWidth: 4,
-										strokeOpacity: 0
-									},
-									"Polygon": {
-										strokeWidth: 2,
-										strokeOpacity: 0,
-										fillOpacity: 0
-									}
-								}
-							})]
-						})
-					};
-		
-					var layer = new OpenLayers.Layer.Vector(snapTarget.name || "snapping_target", {
-                        protocol: featureManager.featureStore.proxy.protocol,
-                        strategies: [new OpenLayers.Strategy.BBOX({ratio: 1.5})],
-                        displayInLayerSwitcher: false,
-                        visibility: true,
-						styleMap: new OpenLayers.StyleMap(style["all"], {extendDefault: true}),    
-                        minResolution: snapTarget.minResolution,
-                        maxResolution: snapTarget.maxResolution
-                    });
-					
-                    map.addLayer(layer);
-                    map.events.on({
-                        moveend: function() {
-                            var min = snapTarget.minResolution || Number.NEGATIVE_INFINITY;
-                            var max = snapTarget.maxResolution || Number.POSITIVE_INFINITY;
-                            var resolution = map.getResolution();
-                            if (min <= resolution && resolution < max) {
-                                layer.strategies[0].update();
-                            }
-                        },
-                        scope: this
-                    });
-					
-                    snapTarget.layer = layer;
-                    this.snappingTargets.push(snapTarget);
-					
-                    for (var i=0, ii=this.controls.length; i<ii; ++i) {
-                        this.controls[i].addTarget(snapTarget);
+					// FIX about undefined geometryType on DB
+                    if(featureManager.featureStore && featureManager.geometryType != "Geometry"){                    
+                        var map = this.target.mapPanel.map;
+                        
+                        var featureLayer = map.getLayersByName(snapTarget.name || "snapping_target")[0];
+                        if(featureLayer){
+                            map.removeLayer(featureLayer);
+                        }
+                        
+                        var style = {
+                            "all": new OpenLayers.Style(null, {
+                                rules: [new OpenLayers.Rule({
+                                    symbolizer: {
+                                        "Point": {
+                                            pointRadius: 4,
+                                            graphicName: "square",
+                                            fillOpacity: 0,
+                                            strokeWidth: 1,
+                                            strokeOpacity: 0
+                                        },
+                                        "Line": {
+                                            strokeWidth: 4,
+                                            strokeOpacity: 0
+                                        },
+                                        "Polygon": {
+                                            strokeWidth: 2,
+                                            strokeOpacity: 0,
+                                            fillOpacity: 0
+                                        }
+                                    }
+                                })]
+                            })
+                        };
+            
+                        var layer = new OpenLayers.Layer.Vector(snapTarget.name || "snapping_target", {
+                            protocol: featureManager.featureStore.proxy.protocol,
+                            strategies: [strategyBBOX],
+                            displayInLayerSwitcher: false,
+                            visibility: true,
+                            styleMap: new OpenLayers.StyleMap(style["all"], {extendDefault: true}),    
+                            minResolution: snapTarget.minResolution,
+                            maxResolution: snapTarget.maxResolution
+                        });
+                        
+                        map.addLayer(layer);
+                        map.events.on({
+                            moveend: function() {
+                                var min = snapTarget.minResolution || Number.NEGATIVE_INFINITY;
+                                var max = snapTarget.maxResolution || Number.POSITIVE_INFINITY;
+                                var resolution = map.getResolution();
+                                if (min <= resolution && resolution < max) {
+                                    layer.strategies[0].update();
+                                }
+                            },
+                            scope: this
+                        });
+                        
+                        snapTarget.layer = layer;
+                        this.snappingTargets.push(snapTarget);
+                        
+                        for (var i=0, ii=this.controls.length; i<ii; ++i) {
+                            this.controls[i].addTarget(snapTarget);
+                        }
+
+                        this.actions[0].enable();
+						
+                    }else{
+                        this.actions[0].disable();
                     }
-					
-					this.actions[0].enable();
                 },
                 scope: this
             }

@@ -168,7 +168,13 @@ GeoExt.Lang.add("en", {
         infoActionTip: "Get Feature Info",
         popupTitle: "Feature Info",
 		noDataMsg: "No data returned from the server",
-		maskMessage: "Getting Feature Info..."
+		maskMessage: "Getting Feature Info...",
+		firstFtTip: "First Feature",
+        previousPageTip: "Previuos Feature",
+        nextPageTip: "Next Feature",
+        lastPageTip: "Last Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "of"
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
@@ -176,7 +182,13 @@ GeoExt.Lang.add("en", {
         popupTitle: "Feature Info",
 		noDataMsg: "No data returned from the server",
 		maskMessage: "Getting Feature Info...",
-		activeActionTip:"Active info on selected layer"
+		activeActionTip:"Active info on selected layer",
+		firstFtTip: "First Feature",
+        previousPageTip: "Previuos Feature",
+        nextPageTip: "Next Feature",
+        lastPageTip: "Last Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "of"
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -221,11 +233,37 @@ GeoExt.Lang.add("en", {
     },
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Add New Server...",
+        title: "Add Server",
         cancelText: "Cancel",
         addServerText: "Add Server",
         invalidURLText: "Enter a valid URL to a WMS endpoint (e.g. http://example.com/geoserver/wms)",
-        contactingServerText: "Contacting Server..."
+        contactingServerText: "Contacting Server...",
+		sourceTypeLabel: "Type",
+		advancedOptionsTitle: "Advanced Options",
+		generalTabTitle: "General",
+		titleLabel: "Title",
+		versionLabel: "Version (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Params",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Add",
+		propNameLabel: "Name",
+		propValueLabel: "Value",
+		paramsWinTitle: "Params Options",
+		okButtonText: "Ok",
+		addPropDialogTitle: "Add Property",
+		addPropDialogMsg: "Property name or his value are not valid",
+		cancelButtonText: "Cancel",
+		removeButtonText: "Remove",
+		removePropDialogTitle: "Remove Property",
+		removePropDialogMsg: "This property cannot be removed: ",
+		newSourceDialogTitle: "New Source",
+		newSourceDialogMsg: "Some source properties are invalid.",
+		mandatoryLabelText: "All fields marked with (*) are mandatory."
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -262,7 +300,8 @@ GeoExt.Lang.add("en", {
 		mapMedatataSetTitle: "Map Metadata",	
 		mapNameLabel: "Name",	
 		mapDescriptionLabel: "Description",
-		addResourceButtonText: "Add Map"
+		addResourceButtonText: "Add Map",
+		conflictErrMsg: "A map with the same name already exists"
     },
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Select an area",
@@ -275,6 +314,13 @@ GeoExt.Lang.add("en", {
         zoomInTooltip: "Zoom Box In",
         zoomOutTooltip: "Zoom Box Out"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Layer is not available in the map projection",
+		wfsDescribeFeatureTypeError: "Error getting attributes of feature type",
+		errorTitle: "Error"
+	},
+	
     "GeoExt.ux.PrintPreview.prototype":{
         paperSizeText: "Paper size:",
         resolutionText: "Resolution:",
@@ -329,7 +375,7 @@ GeoExt.Lang.add("en", {
         passwordFieldText: "Password"
     },
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Display on map",
+        displayFeatureText: "Display",
         firstPageTip: "First page",
         previousPageTip: "Previous page",
         zoomPageExtentTip: "Zoom to page extent",
@@ -339,7 +385,7 @@ GeoExt.Lang.add("en", {
         totalMsg: "Total: {0} records",
         displayExportCSVText: "Export to CSV",
         exportCSVSingleText: "Single Page",
-        exportCSVMultipleText: "Whole Page",
+        exportCSVMultipleText: "All Pages",
         failedExportCSV: "Failed to find response for output format CSV",
         invalidParameterValueErrorText: "Invalid Parameter Value",
 		zoomToFeature: "Zoom To Feature",
@@ -608,7 +654,8 @@ GeoExt.Lang.add("en", {
 		previewText: "Preview",				
 		embedCodeTitle: "Embed Code",
 		embedURL: "Direct URL",		
-		urlLabel: "URL",
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
 		showMapTooltip: "Show in a new Window",
         loadMapText: "Load this Map (install application first)",
         downloadAppText: "Install Application",
@@ -759,8 +806,10 @@ GeoExt.Lang.add("en", {
 		rootNodeText: "Imported Resources",
 		serviceErrorTitle: "Service Error",
 		tabTitle: "Imported",
-		layerNodeName: "Layers",
-		serviceNodeName: "Services"
+		layerNodeName: "Resources",
+		waitMsg: "Loading Resources ...",
+		expandAllText: "Expand All Nodes",
+		collapseAllText: "Collapse All Nodes"
     },
 	
 	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
@@ -798,5 +847,54 @@ GeoExt.Lang.add("en", {
 	
 	"gxp.plugins.AdvancedSnappingAgent.prototype":{
         tooltipText: "Enable/Disable Snapping"
-    } 	
+    },
+	
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Play",
+        playTooltip: "Play",
+        stopLabel: "Stop",
+        stopTooltip: "Stop",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Double Speed Playback",
+        backLabel:'Back',
+        backTooltip:'Draw back One Frame',            
+        nextLabel: "Next",
+        nextTooltip: "Advance One Frame",
+        resetLabel: "Reset",
+        resetTooltip: "Whole interval",
+        loopLabel: "Loop",
+        loopTooltip: "Continously loop the animation",
+        normalTooltip: "Return to normal playback",
+        pauseLabel: "Pause",
+        pauseTooltip: "Pause"
+    },
+	
+    "gxp.PlaybackOptionsPanel.prototype": {
+        optionTitleText: "Date & Time Options",
+        rangeFieldsetText: "Time Range",
+        animationFieldsetText: "Animation Options",
+        startText: "Start",
+        endText: "End",
+        saveText: 'Save',
+        cancelText: 'Cancel',         
+        listOnlyText: "Use Exact List Values Only",
+        stepText: "Animation Step",
+        unitsText: "Animation Units",
+        frameRateText:'Animation Delay (s)',        
+        noUnitsText: "Snap To Time List",
+        loopText: "Loop Animation",
+        reverseText: "Reverse Animation",
+        rangeChoiceText: "Choose the range for the time control",
+        rangedPlayChoiceText: "Playback Mode",
+        secondsText: 'Seconds', 
+        minutesText: 'Minutes', 
+        hoursText: 'Hours', 
+        daysText: 'Days', 
+        monthsText: 'Months', 
+        yearsText: 'Years'        
+    },
+	
+	"gxp.plugins.StaticPage.prototype": {
+        tabTitle: "Static Page"
+    }
 });

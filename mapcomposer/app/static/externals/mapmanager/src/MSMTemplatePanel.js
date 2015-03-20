@@ -34,6 +34,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 	/** i18n **/
 	title: "Template Editor",
     headerTitleText: "Header",
+	headerCheckboxText: "Header",
     footerTitleText: "Footer",
     sectionContentTitleText: "{0} Content",
     sectionCSSTitleText: "CSS Style",
@@ -164,11 +165,12 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 				headerMinWidth: values.header.container.minWidth,
 				headerMaxHeight: values.header.container.maxHeight,
 				headerHeight: values.header.container.height,
+				headerWidth: values.header.container.width,
 				// footer
 				footer: values.footer.html,
 				footerCSS: this.cleanupStyle(values.footer.css),
 				footerBorder: values.footer.container.border ? "on" : "off",
-				footerChk: values.footer.container.footer ? "on" : "off",
+				footerChk: values.footer.container.header ? "on" : "off",
 				footerCollapsible: values.footer.container.collapsible ? "on" : "off",
 				footerCollapseMode: values.footer.container.collapseMode,
 				footerHideCollapse: values.footer.container.hideCollapseTool ? "on" : "off",
@@ -176,7 +178,8 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 				footerAnimeCollapse: values.footer.container.animCollapse ? "on" : "off",
 				footerMinWidth: values.footer.container.minWidth,
 				footerMaxHeight: values.footer.container.maxHeight,
-				footerHeight: values.footer.container.height
+				footerHeight: values.footer.container.height,
+				footerWidth: values.footer.container.width,
 			});
 		}catch (e){
 			console.error("Error parsing template data");
@@ -217,7 +220,8 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 					"animCollapse": values.headerAnimeCollapse && values.headerAnimeCollapse == "on",
 					"minWidth": values.headerMinWidth,
 					"maxHeight": values.headerMaxHeight,
-					"height": values.headerHeight
+					"height": values.headerHeight,
+					"width": values.headerWidth
 			   }
 			},   
     		"footer": {
@@ -233,7 +237,8 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 					"animCollapse": values.footerAnimeCollapse && values.footerAnimeCollapse == "on",
 					"minWidth": values.footerMinWidth,
 					"maxHeight": values.footerMaxHeight,
-					"height": values.footerHeight
+					"height": values.footerHeight,
+					"width": values.footerWidth
 			   }
 			}
     	};
@@ -328,7 +333,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
                         text: this.addResourceButtonText,
                         iconCls: "accept",
                         scope: this,
-                        handler: function(){      
+                        handler: function(){
                             win.hide(); 
 
                             var saveValues = win.formPanel.getForm().getValues();
@@ -339,7 +344,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 									description: saveValues.description,
 									blob: blob
 								}, 
-								function success(response){                                                                            
+								function success(response){
 									//update security rule to make it public 
 									//response contains the id of the new resource
 									if(saveValues.groupId && response){
@@ -418,7 +423,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
            headers:{
               'Content-Type' : contentType,
               'Accept' : 'application/json, text/plain, text/xml',
-              'Authorization' : this.auth
+              'Authorization' : this.target.auth
            },
            params: blob,
            scope: this,
@@ -444,7 +449,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
     },
 
     getTemplateSectionEditor: function(section){
-    	var title = section == "header" ? this.headerTitleText: section == "footer" ? this.footerTitleText: section;
+    	var title = section == "header" ? this.headerTitleText : section == "footer" ? this.footerTitleText : section;
     	var sectionContentTitleText = String.format(this.sectionContentTitleText, title);
     	return {
 			title: title,
@@ -488,7 +493,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 						name: section + "Border"
 					},{
 						xtype: "checkbox",
-						fieldLabel: title,
+						fieldLabel: this.headerCheckboxText,
 						name: section + "Chk"
 					},{
 						xtype: "checkbox",
