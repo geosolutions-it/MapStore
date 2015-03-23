@@ -91,6 +91,9 @@ gxp.plugins.FeatureEditorGrid = Ext.extend(Ext.grid.PropertyGrid, {
             // determine the order of attributes
             attributes = {};
             for (var i=0,ii=this.fields.length; i<ii; ++i) {
+                if(typeof this.fields[i]=='object')
+                attributes[this.fields[i].name] = feature.attributes;
+                else
                 attributes[this.fields[i]] = feature.attributes[this.fields[i]];
             }
         } else {

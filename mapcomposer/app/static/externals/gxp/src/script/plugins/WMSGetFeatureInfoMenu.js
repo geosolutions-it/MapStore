@@ -241,50 +241,48 @@ if(this.infoAction=='click'){
            this.infoAction='All';
            var items = [new Ext.menu.CheckItem({
             tooltip: this.infoActionTip,
-			text: this.infoActionTip,
+            text: this.infoActionTip,
             iconCls: "gxp-icon-getfeatureinfo",
             toggleGroup: this.toggleGroup,
             group: this.toggleGroup,
-			listeners: {
-				checkchange: function(item, checked) {
-					this.activeIndex = 0;
-					this.button.toggle(checked);
-					if (checked) {
-						this.button.setIconClass(item.iconCls);
-					}
-					for (var i = 0, len = info.controls.length; i < len; i++){
+            listeners: {
+            checkchange: function(item, checked) {
+                this.activeIndex = 0;
+                this.button.toggle(checked);
+                if (checked) {
+                    this.button.setIconClass(item.iconCls);
+                }
+                for (var i = 0, len = info.controls.length; i < len; i++){
                     if (checked) {
-							info.controls[i].activate();
-						} else {
-							info.controls[i].deactivate();
-							
-						}
-					}
-				},
-				scope: this
-			}
-		}),new Ext.menu.CheckItem({
+                        info.controls[i].activate();
+                    } else {
+                        info.controls[i].deactivate();
+                    }
+                }
+           },
+           scope: this  
+    }
+    }),new Ext.menu.CheckItem({
             tooltip: this.activeActionTip,
-			text: this.activeActionTip,
+            text: this.activeActionTip,
             iconCls: "gxp-icon-mouse-map",
-			
             toggleGroup: this.toggleGroup,
             group: this.toggleGroup,
-			allowDepress:false,
-			listeners: {
-				checkchange: function(item, checked) {
-					this.activeIndex = 1;
-					this.button.toggle(checked);
-					if (checked) {
-						this.button.setIconClass(item.iconCls);
-					}
-					this.toggleActiveControl(checked);
-				},
-				scope: this
-			}
-		})];
-		
-		this.button = new Ext.SplitButton({
+            allowDepress:false,
+            listeners:{
+                checkchange: function(item, checked) {
+                    this.activeIndex = 1;
+                    this.button.toggle(checked);
+                    if (checked) {
+                        this.button.setIconClass(item.iconCls);
+                    }
+                    this.toggleActiveControl(checked);
+                },
+                scope: this
+           }
+    })];
+
+        this.button = new Ext.SplitButton({
             iconCls: "gxp-icon-getfeatureinfo",
             tooltip: this.measureTooltip,
             toggleGroup: this.toggleGroup,
@@ -313,16 +311,14 @@ if(this.infoAction=='click'){
                 items: items
             })
         });
-		}
-		
-		
-		
-		var actions = gxp.plugins.WMSGetFeatureInfoMenu.superclass.addActions.call(this, [this.button]);
+    }
+
+        var actions = gxp.plugins.WMSGetFeatureInfoMenu.superclass.addActions.call(this, [this.button]);
         var infoButton = (items)? items[0]: this.button;
 
         var info = {controls: []};
-		var layersToQuery = 0;
-		
+        var layersToQuery = 0;
+
         var updateInfo = function() {
             if(this.infoAction=='hover')return;
             var queryableLayers = this.target.mapPanel.layers.queryBy(function(x){
@@ -336,26 +332,26 @@ if(this.infoAction=='click'){
                 control.deactivate();  // TODO: remove when http://trac.openlayers.org/ticket/2130 is closed
                 control.destroy();
             }
-			
+
             info.controls = [];
             var started = false;
             var atLeastOneResponse = false;
             // click position, in lat/lon coordinates (issue #422)
             var startLatLon = null;
-			this.masking = false;
-			
+            this.masking = false;
+
             queryableLayers.each(function(x){                
                 var l = x.getLayer();
-				
-				var vendorParams = {};
-		    	Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
-				if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
-					vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
-				}
 
-				// Obtain info format
+            var vendorParams = {};
+            Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
+                if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
+                    vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
+                }
+
+                // Obtain info format
             	var infoFormat = this.getInfoFormat(x);
-				
+
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
                     url: l.url,
                     queryVisible: true,
@@ -866,7 +862,6 @@ if(this.infoAction=='click'){
      * :arg parentTitle: ``String`` Title of parent tab.
      */
     obtainFeatureInfoFromData: function(text, features, parentTitle) {
-
         var featureGrids = [];
 
         if (features) {
@@ -893,17 +888,31 @@ if(this.infoAction=='click'){
     obtainFeatureGrid: function(feature, title){
 
         var fields = [];
-
+        var lname=feature.gml.featureNSPrefix+":"+feature.gml.featureType;
+        var ignoreFields=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].ignoreFields)?this.outputGridConfig[lname].ignoreFields:[];
+        var propertyNames=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].propertyNames)?this.outputGridConfig[lname].propertyNames:null;
+        var extraFields=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].extraFields)?this.outputGridConfig[lname].extraFields:null;
         Ext.iterate(feature.data,function(fieldName,fieldValue) {
-            // We add the field.
             fields.push(fieldName);
         });
-
+             var  customRenderers={};
+             for(var f in extraFields){
+                 fields.push({"name":f});
+                 customRenderers[f] = (function() {
+                                return function(d) {
+                                    var tpl=new Ext.XTemplate(extraFields[f]);
+                                     return tpl.apply(d);
+                                };
+                            })();
+                            }
         var featureGridConfig = {
             xtype: 'gxp_editorgrid',
             readOnly: true,
             title: title,
             fields: fields,
+            propertyNames :propertyNames ||{},
+            excludeFields :ignoreFields||[],
+            customRenderers:customRenderers,
             feature: feature,
             layout: {
                 type: 'vbox',
