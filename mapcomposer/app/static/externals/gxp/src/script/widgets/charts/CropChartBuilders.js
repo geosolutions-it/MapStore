@@ -868,7 +868,54 @@ nrl.chartbuilder.crop.compareCommodity = {
 	
 		//create mean chart if needed
 		var mean;
-		
+		if (chartData.length > 1){			
+			mean = {
+				region: "all",
+				title: "Region",
+				//subtitle: json.features[0].properties.crop,
+				rows: []/*,
+				avgs:{
+					area:0,
+					prod:0,
+					yield:0,
+					years:0
+				}*/
+			};
+
+			for (var i=0; i<chartData.length; i++){
+				for (var j=0; j<chartData[i].rows.length; j++){
+
+					var year = chartData[i].rows[j].time;
+					var entry = null;
+					for (var z=0; z<mean.rows.length; z++){
+						if (mean.rows[z].time == year)
+							entry = mean.rows[z];
+					}
+					if(!entry){
+						entry = {
+							time: year
+						};
+						mean.rows.push(entry);
+					}
+					for(var crop in chartData[i].rows[j]){
+						if (crop != 'time'){
+							var newCropData = chartData[i].rows[j][crop];
+							entry[crop] = (!entry[crop]) ? newCropData : entry[crop] + newCropData;
+						}
+					}
+				}
+			}
+			/*
+			for(var i=0; i<mean.rows.length; i++){
+				for(var crop in mean.rows[i]){
+					if(crop != 'time'){
+						mean.rows[i][crop] /= mean.rows.length; 
+					}
+				}
+			}
+			*/
+			chartData.push(mean);
+		}
 		
 		if(aggregatedDataOnly && mean){
 			chartData = [mean];
@@ -994,6 +1041,8 @@ nrl.chartbuilder.crop.compareCommodity = {
 			return sum/len;
 		};
 		
+		var regionsList = [];
+
 		for (var r=0; r<data.length; r++){
 
 			// makes an object of mean values, one for each crops.
@@ -1038,16 +1087,23 @@ nrl.chartbuilder.crop.compareCommodity = {
 			// Making Chart Title
 			//
 			//var dataTitle = data[r].title.toUpperCase();
+			
 			var text = "Crop Data Analysis: Comparsion by Commodity<br>";
-			if (listVar.numRegion[r].split(',')[1] != undefined){
-				var province = '(' + listVar.numRegion[r].split(',')[1].toUpperCase() + ')';
-				var district = nrl.chartbuilder.util.toTitleCase(listVar.numRegion[r].split(',')[0]);
-			} else {
-				var province = listVar.numRegion[r].split(',')[0].toUpperCase();
-				var district = '';
+			if (listVar.numRegion[r] === undefined){
+				text += data[r].title;
+			}else {
+				if (listVar.numRegion[r].split(',')[1] != undefined){
+					var province = '(' + listVar.numRegion[r].split(',')[1].toUpperCase() + ')';
+					var district = nrl.chartbuilder.util.toTitleCase(listVar.numRegion[r].split(',')[0]);
+				} else {
+					var province = listVar.numRegion[r].split(',')[0].toUpperCase();
+					var district = '';
+				}
+				var title = (district == '' ? province : district + ' ' + province);
+				text += title;
+				regionsList.push(title);
 			}
 
-			text += district == '' ? province : district + ' ' +province;
 
 			var dataTitle = data[r].title;
 			var commodity = listVar.commodity.toUpperCase();
@@ -1069,7 +1125,8 @@ nrl.chartbuilder.crop.compareCommodity = {
 			//
 			// AOI Subtitle customization
 			//
-			var aoiSubtitle = "";
+			var aoiSubtitle = chartTitle;
+/*
 			if(dataTitle == "AGGREGATED DATA"){
 				if(aggregatedDataOnly){
 					aoiSubtitle += "Pakistan";
@@ -1077,9 +1134,9 @@ nrl.chartbuilder.crop.compareCommodity = {
 					aoiSubtitle += listVar.chartTitle;
 				}	
 			}else{
-				aoiSubtitle += chartTitle;
+				
 			}
-			
+*/			
 			chart = new Ext.ux.HighChart({
 				series: chartConfig.series,
 				
@@ -1110,7 +1167,9 @@ nrl.chartbuilder.crop.compareCommodity = {
 					subtitle: {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
                               '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
-                              '<span style="font-size:10px;">AOI: '+ aoiSubtitle /*(data[r].title.toUpperCase()=="AGGREGATED DATA" ? listVar.chartTitle : listVar.chartTitle.split(',')[r])*/ + '</span><br />' +
+                              '<span style="font-size:10px;">' + (data[r].title == 'Region' ? 'Regions: ' + listVar.chartTitle : 'AOI: ' + aoiSubtitle ) + '</span><br />' +
+                              //(data[r].title == 'Region' ? '<span style="font-size:10px;">Regions: ' + regionsList.join(', ') + '</span><br />' : '<span style="font-size:10px;">AOI: ' + aoiSubtitle + '</span><br />') +
+                              //'<span style="font-size:10px;">AOI: '+ aoiSubtitle /*(data[r].title.toUpperCase()=="AGGREGATED DATA" ? listVar.chartTitle : listVar.chartTitle.split(',')[r])*/ + '</span><br />' +
                               //'<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
                               //'<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />',
@@ -1161,6 +1220,7 @@ nrl.chartbuilder.crop.compareCommodity = {
                       "<ol>" +
                           "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
                           "<li><p><em> Date: </em>"+listVar.today+"</p></li>" +
+                          //'<span style="font-size:10px;">' + (data[r].title == 'Region' ? 'Regions: ' + listVar.chartTitle : 'AOI: ' + aoiSubtitle ) + '</span><br />' +
                           "<li><p><em> AOI: </em>"+listVar.chartTitle+"</p></li>" +
                           (listVar.commodity ? "<li><p><em> Commodity: </em>" + listVar.commodity.toUpperCase() + "</p></li>" :"")+
                           "<li><p><em> Season: </em>" + listVar.season.toUpperCase() + "</p></li>" +
