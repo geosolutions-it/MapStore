@@ -862,7 +862,6 @@ if(this.infoAction=='click'){
      * :arg parentTitle: ``String`` Title of parent tab.
      */
     obtainFeatureInfoFromData: function(text, features, parentTitle) {
-
         var featureGrids = [];
 
         if (features) {
@@ -889,7 +888,7 @@ if(this.infoAction=='click'){
     obtainFeatureGrid: function(feature, title){
 
         var fields = [];
-        var lname=feature.fid.split('.')[0];
+        var lname=feature.gml.featureNSPrefix+":"+feature.gml.featureType;
         var ignoreFields=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].ignoreFields)?this.outputGridConfig[lname].ignoreFields:[];
         var propertyNames=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].propertyNames)?this.outputGridConfig[lname].propertyNames:null;
         var extraFields=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].extraFields)?this.outputGridConfig[lname].extraFields:null;
