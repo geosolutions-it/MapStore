@@ -465,7 +465,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 				vendorParams: config.vendorParams,
 				transitionEffect: transitionEffect,             
                 displayOutsideMaxExtent: ("displayOutsideMaxExtent" in config) ? config.displayOutsideMaxExtent : true
-			},zoomLevelsConf)
+			},zoomLevelsConf
 		);
 
         // data for the new record
