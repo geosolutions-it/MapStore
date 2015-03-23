@@ -456,6 +456,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 					var charts  = nrl.chartbuilder.crop.compareRegion.makeChart(data, this.chartOptCompare, listVar, aggregatedDataOnly, customOpt);
 				}else if (this.mode ==='compareCommodity'){
                     var data = nrl.chartbuilder.crop.compareCommodity.getData(jsonData, aggregatedDataOnly,customOpt);
+                    this.optionsCompareCommodities.unit = this.chartOptCompare.unit;
+                    this.optionsCompareCommodities.name = this.chartOptCompare.name;
 					var charts  = nrl.chartbuilder.crop.compareCommodity.makeChart(data, this.optionsCompareCommodities, listVar, aggregatedDataOnly, customOpt);
                 }
 
