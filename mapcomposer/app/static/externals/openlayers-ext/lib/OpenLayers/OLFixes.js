@@ -219,3 +219,75 @@ var patchedWFTSwriters = {
 };
 
 OpenLayers.Format.WFST.v1.prototype.writers = patchedWFTSwriters;
+
+// OpenLayers support for multiple remote sorting
+OpenLayers.Format.WFST.v1_1_0.prototype.writers.wfs.Query = function(options) {
+                options = OpenLayers.Util.extend({
+                    featureNS: this.featureNS,
+                    featurePrefix: this.featurePrefix,
+                    featureType: this.featureType,
+                    srsName: this.srsName
+                }, options);
+                var prefix = options.featurePrefix;
+                var node = this.createElementNSPlus("wfs:Query", {
+                    attributes: {
+                        typeName: (prefix ? prefix + ":" : "") +
+                            options.featureType,
+                        srsName: options.srsName
+                    }
+                });
+                if(options.featureNS) {
+                    node.setAttribute("xmlns:" + prefix, options.featureNS);
+                }
+                if(options.propertyNames) {
+                    for(var i=0,len = options.propertyNames.length; i<len; i++) {
+                        this.writeNode(
+                            "wfs:PropertyName", 
+                            {property: options.propertyNames[i]},
+                            node
+                        );
+                    }
+                }
+                if(options.filter) {
+                    OpenLayers.Format.WFST.v1_1_0.prototype.setFilterProperty.call(this, options.filter);
+                    this.writeNode("ogc:Filter", options.filter, node);
+                }
+                if(options.sortBy) {                    
+                    var me = this;
+                    var createSortOption = function(sortProperty,sortBy){
+                        if(typeof sortBy === "string") {
+                            sortProperty.appendChild(me.createElementNSPlus("ogc:PropertyName", {value: sortBy}));
+                            return
+                        }else{
+                            sortProperty.appendChild(me.createElementNSPlus("ogc:PropertyName", {value: sortBy.property}));
+                            sortProperty.appendChild(me.createElementNSPlus("ogc:SortOrder", {value: sortBy.order}));
+                        }
+                    }
+                    var sortByNode = this.createElementNSPlus("ogc:SortBy", {});
+                    
+                    if(Object.prototype.toString.call(options.sortBy) == '[object Array]'){
+                        for(var i = 0; i < options.sortBy.length ; i++){
+                            var sortProperty = this.createElementNSPlus("ogc:SortProperty", {});
+                            createSortOption(sortProperty,options.sortBy[i]);
+                            sortByNode.appendChild(sortProperty);
+                        }
+                    }else{
+                        var sortProperty = this.createElementNSPlus("ogc:SortProperty", {});
+                        createSortOption(sortProperty,options.sortBy);
+                        sortByNode.appendChild(sortProperty);
+                    }
+                    
+                    node.appendChild(sortByNode);
+                }
+                return node;
+            },
+OpenLayers.Format.WFST.v1_1_0.prototype.writers.wfs.PropertyName = function(obj) {
+                return this.createElementNSPlus("wfs:PropertyName", {
+                    value: obj.property
+                });
+            },
+OpenLayers.Format.WFST.v1_1_0.prototype.writers.wfs.SortOrder = function(obj){
+                return this.createElementNSPlus("wfs:SortOrder", {
+                    value: obj.property
+                });
+            }

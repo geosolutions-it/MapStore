@@ -45,7 +45,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		                id: "layertree"
 		            },
 		            outputTarget: "tree"
-		        }, {
+		        },{
 		            ptype: "gxp_legend",
                     id: "legend_plugin",
 		            outputTarget: 'legend',
@@ -178,7 +178,11 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 					}
 				
 					if(!toolIsDefined){
-                        config.tools.push(config.customTools[c])
+                        if(config.customTools[c]['unshift']){
+                            config.tools.unshift(config.customTools[c])
+                        }else{
+                            config.tools.push(config.customTools[c])
+                        }
                     }
 				}
 			}

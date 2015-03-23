@@ -172,6 +172,8 @@
 		}, {
 			"ptype": "gxp_languageselector",
 			"actionTarget": {"target": "panelbbar", "index": 3}
-		}
+		}, {
+            "ptype":"gxp_onpageunloadalert"
+        }
 	]
 }

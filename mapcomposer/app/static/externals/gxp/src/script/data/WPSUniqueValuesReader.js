@@ -21,14 +21,51 @@ Ext.namespace("gxp.data");
  */
 gxp.data.WPSUniqueValuesReader = Ext.extend(Ext.data.JsonReader, {
     constructor: function(config) {
-      	Ext.applyIf(config, {
+      	/*Ext.applyIf(config, {
             root: 'values',
             totalProperty: 'size',
             idProperty: 'value',
             fields: [{name:'value', mapping: '', convert: function (a,b) {
                     return b;
                 }}]
+        });*/
+        //temporary fix for null value    
+      	Ext.applyIf(config, {
+            root: 'values',
+            totalProperty: 'size',
+            idProperty: 'value',
+            fields: [{
+                name:'value',
+                mapping: function( o ) {
+                    var mapping = o ? o : null;
+                    return mapping; 
+                },
+                convert: function (a,b) {
+                    var value = b ? b : "no data";
+                    return value;
+                }
+            }]
         });
+        this.createAccessor = function(){
+            var re = /[\[\.]/;
+            return function(expr) {
+                if(Ext.isEmpty(expr)){
+                    return Ext.emptyFn;
+                }
+                if(Ext.isFunction(expr)){
+                    return expr;
+                }
+                var i = String(expr).search(re);
+                if(i >= 0){
+                    return new Function('obj', 'return obj' + (i > 0 ? '.' : '') + expr);
+                }
+                return function(obj){
+                    var obj = obj ? obj : "no data";
+                    return obj[expr];
+                };
+
+            };
+        }();
         gxp.data.WPSUniqueValuesReader.superclass.constructor.call(this, config);
     },
 	//parser: new OpenLayers.Format.GML(),
@@ -51,7 +88,58 @@ gxp.data.WPSUniqueValuesReader = Ext.extend(Ext.data.JsonReader, {
      */
     readResponse : function(action, response) {
         this.read(response);
-	}
+    },
+    
+    /*
+     * Overridden version of private method extractData in Ext.data.DataReader.
+     * This version skips null values in the data root (no row will be 
+     * created for these objects).
+     */
+    /**
+     * returns extracted, type-cast rows of data.  Iterates to call #extractValues for each row
+     * @param {Object[]/Object} data-root from server response
+     * @param {Boolean} returnRecords [false] Set true to return instances of Ext.data.Record
+     * @private
+     */
+    extractData : function(root, returnRecords) {
+        // A bit ugly this, too bad the Record's raw data couldn't be saved in a common property named "raw" or something.
+        var rawName = (this instanceof Ext.data.JsonReader) ? 'json' : 'node';
 
+        var rs = [];
+
+        // Had to add Check for XmlReader, #isData returns true if root is an Xml-object.  Want to check in order to re-factor
+        // #extractData into DataReader base, since the implementations are almost identical for JsonReader, XmlReader
+        if (this.isData(root) && !(this instanceof Ext.data.XmlReader)) {
+            root = [root];
+        }
+        var f       = this.recordType.prototype.fields,
+            fi      = f.items,
+            fl      = f.length,
+            rs      = [];
+        if (returnRecords === true) {
+            var Record = this.recordType;
+            for (var i = 0; i < root.length; i++) {
+                var n = root[i];
+                // skip null values
+                if (n !== null) {
+                    var record = new Record(this.extractValues(n, fi, fl), this.getId(n));
+                    record[rawName] = n;    // <-- There's implementation of ugly bit, setting the raw record-data.
+                    rs.push(record);
+                }
+            }
+        }
+        else {
+            for (var i = 0; i < root.length; i++) {
+            	// skip null values
+                if (root[i] !== null) {
+                    var data = this.extractValues(root[i], fi, fl);
+                    data[this.meta.idProperty] = this.getId(root[i]);
+                    rs.push(data);
+                }
+            }
+        }
+        return rs;
+    }
+    
 });
 Ext.reg('gxp_wpsuniquereader', gxp.data.WPSUniqueValuesReader);

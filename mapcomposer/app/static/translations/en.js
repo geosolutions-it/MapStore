@@ -168,7 +168,13 @@ GeoExt.Lang.add("en", {
         infoActionTip: "Get Feature Info",
         popupTitle: "Feature Info",
 		noDataMsg: "No data returned from the server",
-		maskMessage: "Getting Feature Info..."
+		maskMessage: "Getting Feature Info...",
+		firstFtTip: "First Feature",
+        previousPageTip: "Previuos Feature",
+        nextPageTip: "Next Feature",
+        lastPageTip: "Last Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "of"
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
@@ -176,7 +182,13 @@ GeoExt.Lang.add("en", {
         popupTitle: "Feature Info",
 		noDataMsg: "No data returned from the server",
 		maskMessage: "Getting Feature Info...",
-		activeActionTip:"Active info on selected layer"
+		activeActionTip:"Active info on selected layer",
+		firstFtTip: "First Feature",
+        previousPageTip: "Previuos Feature",
+        nextPageTip: "Next Feature",
+        lastPageTip: "Last Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "of"
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -288,7 +300,8 @@ GeoExt.Lang.add("en", {
 		mapMedatataSetTitle: "Map Metadata",	
 		mapNameLabel: "Name",	
 		mapDescriptionLabel: "Description",
-		addResourceButtonText: "Add Map"
+		addResourceButtonText: "Add Map",
+		conflictErrMsg: "A map with the same name already exists"
     },
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Select an area",
@@ -301,6 +314,13 @@ GeoExt.Lang.add("en", {
         zoomInTooltip: "Zoom Box In",
         zoomOutTooltip: "Zoom Box Out"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Layer is not available in the map projection",
+		wfsDescribeFeatureTypeError: "Error getting attributes of feature type",
+		errorTitle: "Error"
+	},
+	
     "GeoExt.ux.PrintPreview.prototype":{
         paperSizeText: "Paper size:",
         resolutionText: "Resolution:",
@@ -355,7 +375,7 @@ GeoExt.Lang.add("en", {
         passwordFieldText: "Password"
     },
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Display on map",
+        displayFeatureText: "Display",
         firstPageTip: "First page",
         previousPageTip: "Previous page",
         zoomPageExtentTip: "Zoom to page extent",
@@ -365,7 +385,7 @@ GeoExt.Lang.add("en", {
         totalMsg: "Total: {0} records",
         displayExportCSVText: "Export to CSV",
         exportCSVSingleText: "Single Page",
-        exportCSVMultipleText: "Whole Page",
+        exportCSVMultipleText: "All Pages",
         failedExportCSV: "Failed to find response for output format CSV",
         invalidParameterValueErrorText: "Invalid Parameter Value",
 		zoomToFeature: "Zoom To Feature",

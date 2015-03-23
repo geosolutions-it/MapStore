@@ -70,7 +70,8 @@ gxp.data.WFSProtocolProxy = Ext.extend(GeoExt.data.ProtocolProxy, {
                 schema: config.schema,
                 filter: config.filter,
                 maxFeatures: config.maxFeatures,
-				viewparams: config.viewparams
+				viewparams: config.viewparams,
+                sortBy: config.sortBy
             }, config.protocol));
         }
 
@@ -99,6 +100,16 @@ gxp.data.WFSProtocolProxy = Ext.extend(GeoExt.data.ProtocolProxy, {
         // remove the xaction param tagged on because we're using a single url
         // for all actions
         delete params.xaction;
+        var sort = params.sort;
+        var dir = params.dir;
+        params.sort = undefined;
+        params.dir = undefined; 
+        if(sort){
+            arg.sortBy = {
+                property: sort,
+                order: dir
+            }
+        }
         
         if (action === Ext.data.Api.actions.read) {
             this.load(params, reader, callback, scope, arg);

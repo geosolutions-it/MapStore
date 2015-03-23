@@ -125,10 +125,16 @@ if(environment.applicationPath) {
 		var application = null;
 		var files = applicationsFolder.getResources(true);
 		
-		for(var i = 0, l = files.length; i < l && i < 1; i++) {
+		for(var i = 0, l = files.length; i < l; i++) {
 			var file = files[i].path;
-			file = file.substring(applicationsFolder.path.length);
-			application = file.split('/')[0];
+            // Looks for the first folder containing a config.js file
+            if(file.lastIndexOf("config.js") > -1 ){
+                
+                file = file.substring(applicationsFolder.path.length);
+                application = file.split('/config.js')[0];
+                
+                break;
+            }
 		}
 		
 		if(application) {

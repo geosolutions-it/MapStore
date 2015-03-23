@@ -311,10 +311,14 @@
 				}
 				return section;
 			}
+
+			var parseHeader = function(section) {
+				return (section && section.header !== undefined && section.header !== null) ? section.header : false;
+			}
 			
 			if(header || footer){
 				var north = {
-					header: false,
+					header: parseHeader(header.container),
 					region: 'north',
 					id: 'msheader'
 				};
@@ -325,7 +329,7 @@
 				}
 				
 			    var south = {
-					header: false,
+					header: parseHeader(footer.container),
 					region: 'south',
 					id: 'msfooter'
 				};
@@ -432,10 +436,18 @@
                         westPanel.setActiveTab('legend');
                         westPanel.hideTabStripItem('tree');
                     }
+					/////////////////////
+					// Fractional Zoom //
+					/////////////////////
+                    if(app.mapPanel.map.restrictedExtent && app.mapPanel.map.fractionalZoom){
+                        app.mapPanel.map.zoomToExtent(app.mapPanel.map.restrictedExtent);
+                    }
                 }, 
                 'ready' : function(){
                     app.modified = false;
-					
+                    if(app.mapPanel.map.restrictedExtent && app.mapPanel.map.fractionalZoom){
+                        app.mapPanel.map.zoomToExtent(app.mapPanel.map.restrictedExtent);
+                    }
 					// ///////////////////////////////////////////////////
 					// Visualizing metadata tab and layers at startup 
 					// ///////////////////////////////////////////////////
@@ -550,4 +562,4 @@
 		});
     </script>
 
-	<div style="visibility:hidden"><canvas id="printcanvas" /></div>
+	<div style="position:absolute; top:-10000px; left:-10000px; visibility:hidden"><canvas id="printcanvas" /></div>

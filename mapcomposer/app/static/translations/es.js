@@ -168,7 +168,13 @@ GeoExt.Lang.add("es", {
         infoActionTip: "Obtener Feature Info",
         popupTitle: "Feature Info",
 		noDataMsg: "El servidor no devolvió datos",
-		maskMessage: "Recuperando el Feature Info..."
+		maskMessage: "Recuperando el Feature Info...",
+		firstFtTip: "Primera Feature",
+        previousPageTip: "Feature Anterior",
+        nextPageTip: "Siguiente Feature",
+        lastPageTip: "Ultima Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "de"
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
@@ -176,7 +182,13 @@ GeoExt.Lang.add("es", {
         popupTitle: "Feature Info",
 		noDataMsg: "El servidor no devolvió datos",
 		maskMessage: "Recuperando Feature Info...",
-		activeActionTip:"Activar información de la capa seleccionada"
+		activeActionTip:"Activar información de la capa seleccionada",
+		firstFtTip: "Primera Feature",
+        previousPageTip: "Feature Anterior",
+        nextPageTip: "Siguiente Feature",
+        lastPageTip: "Ultima Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "de", 
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -288,19 +300,29 @@ GeoExt.Lang.add("es", {
 		mapMedatataSetTitle: "Metadatos del Mapa",	
 		mapNombreLabel: "Nombre",	
 		mapDescripciónLabel: "Descripción",
-		addResourceButtonText: "Añadir Mapa"
+		addResourceButtonText: "Añadir Mapa",
+		conflictErrMsg: "Un mapa con el mismo nombre ya existe"
     },
+	
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Seleccionar un área",
         menuText: "GeoReferencias",
         tooltip: "GeoReferencias"
     },
+	
     "gxp.plugins.ZoomBox.prototype":{
         zoomInMenuText: "Zoom Box Siguiente",
         zoomOutMenuText: "Zoom Box Anterior",
         zoomInTooltip: "Zoom Box Siguiente",
         zoomOutTooltip: "Zoom Box Anterior"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Capa no está disponible en la proyección cartográfica",
+		wfsDescribeFeatureTypeError: "Error al obtener los atributos de tipo de entidad",
+		errorTitle: "Error"
+	},
+	
     "GeoExt.ux.PrintPreview.prototype":{
         paperSizeText: "Tamaño del folio:",
         resolutionText: "Resolución:",
@@ -356,7 +378,7 @@ GeoExt.Lang.add("es", {
         ContraseñaFieldText: "Contraseña"
     },
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Ver en el mapa",
+        displayFeatureText: "Ver",
         firstPageTip: "Primera página",
         previousPageTip: "Siguiente página",
         zoomPageExtentTip: "Zoom a la extensión de la página",
@@ -366,7 +388,7 @@ GeoExt.Lang.add("es", {
         totalMsg: "Total: {0} entidades",
         displayExportCSVText: "Exportar a CSV",
         exportCSVSingleText: "Página actual",
-        exportCSVMultipleText: "Toda la página",
+        exportCSVMultipleText: "Todas las páginas",
         failedExportCSV: "Error al encontrar una respuesta para la exportación a CSV",
         invalidParameterValueErrorText: "Valor de los parámetros inválido",
 		zoomToFeature: "Zoom a Entidad",

@@ -3,5 +3,6 @@
 var localConfig = {
    geoStoreBase: "",
    proxy: "http://159.213.57.108/proxy_lerici/proxy/?url=",
-   defaultLanguage: "it"
+   defaultLanguage: "it",
+   skipCustomConfigs: true
 };

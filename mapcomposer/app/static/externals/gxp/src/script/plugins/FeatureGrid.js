@@ -124,7 +124,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      * ``String``
      * Text for feature display button (i18n).
      */
-    displayFeatureText: "Display on map",
+    displayFeatureText: "Display",
     
     /** api: config[displayExportCSVText]
      * ``String``
@@ -148,7 +148,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      * ``String``
      * Text for CSV Export Multiple Pages button (i18n).
      */
-    exportCSVMultipleText: "Whole Page",       
+    exportCSVMultipleText: "All Pages",       
 
     /** api: config[failedExportCSV]
      * ``String``
@@ -272,6 +272,11 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``String``
      */
 	pageOfLabel: "of",	
+    /**
+     * api: config[ignoreFields]
+      ``Array`` do not display these records in grid
+     */
+    ignoreFields:["feature", "state", "fid"],
 	
     /** api: config[totalRecordsLabel]
      *  ``String``
@@ -642,7 +647,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
 			}
 			
             //TODO use schema instead of store to configure the fields
-            var ignoreFields = ["feature", "state", "fid"];
+            var ignoreFields = this.ignoreFields;
             schema && schema.each(function(r) {
                 r.get("type").indexOf("gml:") == 0 && ignoreFields.push(r.get("name"));
             });
@@ -745,7 +750,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         handler: function() {
                             if(this.exportWindow.form.getForm().isValid()){
                                 var format = this.exportWindow.form.getForm().getValues().format;
-                                this.doExport(false, format);
+                                this.doExport(true, format);
                             }else{
                                 Ext.Msg.show({
                                     title: this.noFormatTitleText,
@@ -839,9 +844,22 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         var protocol = grid.getStore().proxy.protocol;
         var allPage = {};
         
+        
+        
+        
         allPage.extent = featureManager.getPagingExtent("getMaxExtent");
         
-        var filter = featureManager.setPageFilter(single ? featureManager.page : allPage);
+         //IF WFS_PAGING create filter with fid id
+        if (featureManager.pagingType === gxp.plugins.FeatureManager.WFS_PAGING) {
+            var fidsA=[];
+            featureManager.featureStore.each(function(r){
+                fidsA.push(r.get("fid"));
+           });
+            var filter= new OpenLayers.Filter.FeatureId({fids: fidsA});
+        }
+       else{
+         var filter = featureManager.setPageFilter(single ? featureManager.page : allPage);               
+         }
         
         var node = new OpenLayers.Format.Filter({
             version: protocol.version,

@@ -294,10 +294,14 @@
 				}
 				return section;
 			}
+
+			var parseHeader = function(section) {
+				return (section && section.header !== undefined && section.header !== null) ? section.header : false;
+			}
 			
 			if(header || footer){
 				var north = {
-					header: false,
+					header: parseHeader(header.container),
 					region: 'north',
 					id: 'msheader'
 				};
@@ -308,7 +312,7 @@
 				}
 				
 			    var south = {
-					header: false,
+					header: parseHeader(footer.container),
 					region: 'south',
 					id: 'msfooter'
 				};
@@ -520,7 +524,8 @@
 					if(login.user){		
 						var uDetails = {
 							token: login.token,
-							user: login.user
+							user: login.user,
+							provider: "geostore"
 						};
 						
 						sessionStorage["userDetails"] = Ext.util.JSON.encode(uDetails);							
@@ -550,7 +555,7 @@
 									sessionStorage.removeItem(key);
 								}
 							}
-							
+							app.safeLeaving =true;
 							location.reload();
 						}
 					}
@@ -576,7 +581,7 @@
 					login.target = Ext.getCmp('paneltbar');
 					login.addActions();
 					login.loginSync();
-					 var myAccount = new gxp.plugins.GeoStoreAccount({
+					var myAccount = new gxp.plugins.GeoStoreAccount({
 						outputTarget:'appTabs',
 						user: app.userDetails.user,
 						auth: app.userDetails.token,
@@ -628,4 +633,4 @@
 		});     
     </script>
 
-	<div style="visibility:hidden"><canvas id="printcanvas" /></div>
+	<div style="position:absolute; top:-10000px; left:-10000px; visibility:hidden"><canvas id="printcanvas" /></div>
