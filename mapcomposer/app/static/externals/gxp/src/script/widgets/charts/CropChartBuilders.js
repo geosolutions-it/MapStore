@@ -1041,7 +1041,7 @@ nrl.chartbuilder.crop.compareCommodity = {
 			return sum/len;
 		};
 		
-		var regionsList = [];
+		listVar.numRegion.sort();
 
 		for (var r=0; r<data.length; r++){
 
@@ -1099,9 +1099,8 @@ nrl.chartbuilder.crop.compareCommodity = {
 					var province = listVar.numRegion[r].split(',')[0].toUpperCase();
 					var district = '';
 				}
-				var title = (district == '' ? province : district + ' ' + province);
-				text += title;
-				regionsList.push(title);
+
+				text += (district == '' ? province : district + ' ' + province);
 			}
 
 
@@ -1220,8 +1219,8 @@ nrl.chartbuilder.crop.compareCommodity = {
                       "<ol>" +
                           "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
                           "<li><p><em> Date: </em>"+listVar.today+"</p></li>" +
-                          //'<span style="font-size:10px;">' + (data[r].title == 'Region' ? 'Regions: ' + listVar.chartTitle : 'AOI: ' + aoiSubtitle ) + '</span><br />' +
-                          "<li><p><em> AOI: </em>"+listVar.chartTitle+"</p></li>" +
+                          '<span style="font-size:10px;">' + (data[r].title == 'Region' ? 'Regions: ' + listVar.chartTitle : 'AOI: ' + aoiSubtitle ) + '</span><br />' +
+                          //"<li><p><em> AOI: </em>"+listVar.chartTitle+"</p></li>" +
                           (listVar.commodity ? "<li><p><em> Commodity: </em>" + listVar.commodity.toUpperCase() + "</p></li>" :"")+
                           "<li><p><em> Season: </em>" + listVar.season.toUpperCase() + "</p></li>" +
                           "<li><p><em> Years: </em>" + listVar.fromYear + "-" + listVar.toYear + "</p></li>" +
