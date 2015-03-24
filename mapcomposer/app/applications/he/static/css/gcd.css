@@ -101,3 +101,7 @@ span.icon_span{
 .x-btn .gxp-icon-enablelabel, .x-menu-item .gxp-icon-enablelabel, .x-tree-node .gxp-icon-enablelabel {
    background-image: url(../images/style.png) !important;
 }
+
+.flame-icon {
+  background-image: url(../images/flame_icon.png);
+}
