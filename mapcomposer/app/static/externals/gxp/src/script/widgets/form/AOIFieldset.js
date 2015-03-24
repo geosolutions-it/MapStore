@@ -326,7 +326,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
            });
            
            provinceStore.on('load', function(str, records) {
-              str.insert(0, new str.recordType({"id": '0', "name":'&nbsp;'}));
+              str.insert(0, new str.recordType({"id": '0', "name":' '}));
            }, this);
            
            var comuniStore= new GeoExt.data.FeatureStore({ 
@@ -344,6 +344,10 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                  proxy: this.getWFSStoreProxy("v_comuni", undefined, "descrizione"),
                  autoLoad: true
            });
+           
+           comuniStore.on('load', function(str, records) {
+              str.insert(0, new str.recordType({"id": '0', "cod_provincia": '0', "name":' '}));
+           }, this);
         
             this.province = new Ext.form.ComboBox({
                 fieldLabel: this.provinceLabel,
@@ -355,6 +359,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                 displayField: 'name',   
                 lastQuery: '',
                 typeAhead: true,
+                mode: 'local',
                 forceSelection: true,
                 triggerAction: 'all',
                 selectOnFocus:true,            
@@ -370,7 +375,10 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                         
                         var codProvincia = record.get('id');
                         if(codProvincia !== '0'){
-                           store.filter('cod_provincia', codProvincia);
+                           store.filterBy(function(record, id) {
+                                return record.get('cod_provincia') === '0' || record.get('cod_provincia') === codProvincia;
+                           });
+                           this.comuni.setValue('0');
                         } else {
                             store.clearFilter();
                         }
@@ -388,6 +396,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                 displayField: 'name',   
                 lastQuery: '',
                 typeAhead: true,
+                mode: 'local',
                 forceSelection: true,
                 triggerAction: 'all',
                 selectOnFocus:true,            
@@ -397,6 +406,8 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                     expand: function(combo) {
                         combo.list.setWidth( 'auto' );
                         combo.innerList.setWidth( 'auto' );
+                    },
+                    beforequery: function(evt) {
                     }
                 }          
             });
@@ -530,6 +541,10 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
         this.southField.reset();
         this.eastField.reset();
         this.westField.reset();  
+        if(this.searchByFeature) {
+            this.province.setValue('0');
+            this.comuni.setValue('0');
+        }
     },
     
     /** public: method[setAOI]
@@ -554,15 +569,27 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
     },
     
     
+    getAoiMethod: function() {
+        if(this.searchByFeature && 
+            Ext.select('input[name=aoimethod]:checked').first().getAttribute('id').indexOf('byfeature') !== -1) {
+            return 'byfeature';
+        }
+        return 'byrect';
+    },
+    
     /** public: method[isValid]
      *  
      *     
      */
     isValid: function(){
-        return(this.westField.isValid() &&
-            this.southField.isValid() && 
-            this.eastField.isValid() && 
-            this.northField.isValid());
+        if(this.getAoiMethod() === 'byrect') {
+            return(this.westField.isValid() &&
+                this.southField.isValid() && 
+                this.eastField.isValid() && 
+                this.northField.isValid());
+        } else {
+            return this.province.getValue() !== '0' || this.comuni.getValue() !== '0';
+        }
     },
     
     
@@ -571,10 +598,14 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
      *     
      */
     isDirty: function(){
-        return(this.westField.isDirty() &&
-            this.southField.isDirty() && 
-            this.eastField.isDirty() && 
-            this.northField.isDirty());
+        if(this.getAoiMethod() === 'byrect') {
+            return(this.westField.isDirty() &&
+                this.southField.isDirty() && 
+                this.eastField.isDirty() && 
+                this.northField.isDirty());
+        } else {
+            return this.province.isDirty() || this.comuni.isDirty();
+        }
     },
 
 
@@ -585,10 +616,34 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
      *   return the selected AOI bounds defined with the Map Projection  
      */
     getAOIMapBounds: function(){
-        if(this.map.getProjection() != this.aoiProjection.getCode())  
-            return this.getAOIBounds().transform(this.aoiProjection,this.mapProjection);
-        else
-            return this.getAOIBounds();
+        if(this.getAoiMethod() === 'byrect') {
+            if(this.map.getProjection() != this.aoiProjection.getCode())  
+                return this.getAOIBounds().transform(this.aoiProjection,this.mapProjection);
+            else
+                return this.getAOIBounds();
+        } else {
+            var codProvincia = this.province.getValue();
+            var codComune = this.comuni.getValue();
+            var type, id, geometry, bbox;
+            if(codComune !== '0') {
+                type = 'comune';
+                id = codComune;
+                geometry = this.comuni.store.getAt(this.comuni.store.find('id', codComune)).getFeature().geometry;
+              } else {
+                type = 'provincia';
+                id = codProvincia;
+                geometry = this.province.store.getAt(this.province.store.find('id', codProvincia)).getFeature().geometry;
+            }
+            var bbox = new OpenLayers.Bounds.fromString(geometry.getBounds().toBBOX());
+            if(this.map.getProjection() != this.aoiProjection.getCode()) {
+                bbox = bbox.transform(this.aoiProjection,this.mapProjection);
+            }
+            return {
+                bbox: bbox,
+                type: type,
+                id: id
+            }
+        }
     },
     
     

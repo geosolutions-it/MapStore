@@ -1671,32 +1671,28 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *  :arg params: ``Object``     
      *     executes the processing using given parameters
      */
-    doProcess: function(params){
-        if(params){
-            //  this.showLayer(params);            
-
-            var status = this.getStatus(this.panel.getForm());                
-            
-            //
-            // Remove the AOI box
-            //
-            this.aoiFieldset.removeAOILayer();
-            // this.selectAOI.deactivate();
-            
-            this.selDamage.clearDrawFeature();
-            
-            this.switchToSyntheticView();
-            var syntView = this.appTarget.tools[this.syntheticView];
-            
-            //  syntView.getControlPanel().enable();
-            
-            syntView.setStatus(status);
-            
-            Ext.getCmp("south").collapse();
-            
-            syntView.doProcess(params.roi);
-            this.appTarget.mapPanel.map.events.unregister("move", this, this.aoiUpdater);
-        }
+    doProcess: function(){
+        var status = this.getStatus(this.panel.getForm());                
+        
+        //
+        // Remove the AOI box
+        //
+        this.aoiFieldset.removeAOILayer();
+        // this.selectAOI.deactivate();
+        
+        this.selDamage.clearDrawFeature();
+        
+        this.switchToSyntheticView();
+        var syntView = this.appTarget.tools[this.syntheticView];
+        
+        //  syntView.getControlPanel().enable();
+        
+        syntView.setStatus(status);
+        
+        Ext.getCmp("south").collapse();
+        
+        syntView.doProcess();
+        this.appTarget.mapPanel.map.events.unregister("move", this, this.aoiUpdater);
     },
     
     cancelProcessing: function() {
@@ -1738,26 +1734,31 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var error = null;
         
         var map = this.appTarget.mapPanel.map;
-        var params = {};
         
         if(!roi){
             return;
         }
-        
-        params.roi = new OpenLayers.Bounds.fromString(roi.toBBOX());
+        /*var bbox, fromPrj, selectionPrj;
+        if(roi instanceof OpenLayers.Bounds) {
+            bbox = new OpenLayers.Bounds.fromString(roi.toBBOX());
+            fromPrj = map.getProjectionObject();
+            selectionPrj = new OpenLayers.Projection(this.selectionLayerProjection);
+        } else {
+            bbox = roi.geometry.getBounds();
+            fromPrj = new OpenLayers.Projection("EPSG:4326");
+            selectionPrj = map.getProjectionObject();
+        }
         
         //
         // Check about the projection (this could needs Proj4JS definitions inside the mapstore config)
         //
-        var mapPrj = map.getProjectionObject();
-        var selectionPrj = new OpenLayers.Projection(this.selectionLayerProjection);
-        if(!mapPrj.equals(selectionPrj)){
-            roi = this.reproject(
-				roi,
-                mapPrj,    
+        if(!fromPrj.equals(selectionPrj)){
+            bbox = this.reproject(
+                bbox,
+                fromPrj,    
                 selectionPrj
             );
-        }
+        }*/
         
         var formula = this.formula.getValue();
         var sostanza = parseInt(this.getComboRecord(this.sostanze).data.value, 10);
@@ -1793,16 +1794,18 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             } else if(scale > this.cellViewScale && !visibleOnGrid) {
                 error = this.notVisibleOnGridMessage;
             }
-			var ambitoTerritoriale = formulaRec.get('ambito_territoriale')
-			var area = (roi.right - roi.left) * (roi.top - roi.bottom);
-			
-			if(ambitoTerritoriale && area > this.maxProcessingArea && visibleOnArcs) {
-				error = this.areaTooBigMessage;
-			}
+            if(roi instanceof OpenLayers.Bounds) {
+                var ambitoTerritoriale = formulaRec.get('ambito_territoriale')
+                var area = (roi.right - roi.left) * (roi.top - roi.bottom);
+                
+                if(ambitoTerritoriale && area > this.maxProcessingArea && visibleOnArcs) {
+                    error = this.areaTooBigMessage;
+                }
+            }
         }
         
         if(!error) {
-            this.doProcess(params);
+            this.doProcess();
         } else {
             Ext.Msg.show({
                 title: this.validationTitle,
@@ -1831,7 +1834,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *     if everything is ok
      */
     viewMap: function(){
-      
         if(! this.aoiFieldset.isValid()){            
             Ext.Msg.show({
                 title: this.bboxValidationTitle,
@@ -1843,8 +1845,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             this.makeParams(this.panel.getForm(), null);
         }else{
             var selbbox =  this.aoiFieldset.getAOIMapBounds();
-      
-            if(this.maxROIArea ? selbbox.toGeometry().getArea() > this.maxROIArea : false){
+            
+            if(selbbox instanceof OpenLayers.Bounds && this.maxROIArea ? selbbox.toGeometry().getArea() > this.maxROIArea : false){
                 
                 var useROI = function(buttonId, text, opt){
                     this.makeParams(this.panel.getForm(), buttonId === 'ok' ? selbbox : null);
@@ -1868,7 +1870,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     /** private: method[viewMap]   
      *  :arg params: ``Object``        
      *     updates the risk thema on the map with the given processing parameters
-     */
+    
     showLayer: function(params){
        
         var map = this.appTarget.mapPanel.map;
@@ -1890,23 +1892,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var stdElabLayer = map.getLayersByName(this.selectionLayerTitle)[0];
      
         if(!stdElabLayer){
-        /*stdElabLayer = new OpenLayers.Layer.WMS(
-                this.selectionLayerTitle,         
-                this.selectionLayerBaseURL,
-                {
-                    layers: this.selectionLayerName, 
-                    transparent: true, 
-                    format: this.selectionLayerFormat,
-                    filter: ogcFilterString
-                },
-                {
-                    isBaseLayer: false,
-                    singleTile: true,
-                    displayInLayerSwitcher: false
-                }
-            );
-                    
-            map.addLayer(stdElabLayer);*/
+        
         }else{                        
             stdElabLayer.mergeNewParams({
                 filter: ogcFilterString 
@@ -1916,7 +1902,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 map.zoomToExtent(params.roi);
             }            
         }
-    },
+    }, */
     
 	updateAOI: function() {
 		this.aoiFieldset.setAOI(this.appTarget.mapPanel.map.getExtent());
@@ -2076,19 +2062,29 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 }
             },this);
         }
-        
-        if(this.aoiFieldset.isDirty()){
-            obj.roi = {
-                label: this.selectionAreaLabel,
-                bbox : this.aoiFieldset.getAOIMapBounds()
-            };    
-        }else{
-            obj.roi = {
-                label: "Regione Piemonte", 
-                bbox : this.aoiFieldset.getAOIMapBounds()
-            
-            }
+        var roi = this.aoiFieldset.getAOIMapBounds();
+        var bbox, type, label, id;
+        if(roi instanceof OpenLayers.Bounds) {
+            type = 'aoi';
+            bbox = roi;
+        } else {
+            type = roi.type;
+            bbox = roi.bbox;
+            id = roi.id;
         }
+        if(this.aoiFieldset.isDirty()){
+            label = this.selectionAreaLabel;
+               
+        }else{
+            label = "Regione Piemonte"; 
+        }
+        
+        obj.roi = {
+            label: label,
+            bbox : bbox,
+            type: type,
+            id: id
+        }; 
         
         obj.target = this.getSelectedTarget().data; 
         obj.macroTarget = this.macrobers.getValue();

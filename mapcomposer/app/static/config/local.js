@@ -272,6 +272,14 @@
             "group": ["Roads","Strade","Routes"," Straßen"],
             "visibility": false
         },{
+            "source": "destinationtiled",
+            "title": "Province",
+            "name": "siig_geo_pl_province",
+            "displayInLayerSwitcher": true,
+            "tiled": true,
+            "group": ["Limiti","Limiti","Limiti"," Limiti"],
+            "visibility": false
+        },{
 			"source": "destinationtiled",
 			"title": "Gate",
 			"name": "gate_geo",

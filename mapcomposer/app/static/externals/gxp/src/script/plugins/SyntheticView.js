@@ -2564,21 +2564,25 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
     },
     
-    getBounds: function(status, map, buffer) {        
-        // bounds: current map extent or roi saved in the status
-        var bounds = this.getRoi(status, map, buffer);
+    getBounds: function(status, map, buffer) {
+        if(status && status.roi && status.roi.type === 'aoi') {
+            // bounds: current map extent or roi saved in the status
+            var bounds = this.getRoi(status, map, buffer);
+            
+            var mapPrj = map.getProjectionObject();
+            var selectionPrj = new OpenLayers.Projection(this.selectionLayerProjection);
+            if(!mapPrj.equals(selectionPrj)){
+                bounds = this.reproject(
+                    bounds,
+                    mapPrj,    
+                    selectionPrj
+                );
+            }
         
-        var mapPrj = map.getProjectionObject();
-        var selectionPrj = new OpenLayers.Projection(this.selectionLayerProjection);
-        if(!mapPrj.equals(selectionPrj)){
-            bounds = this.reproject(
-				bounds,
-                mapPrj,    
-                selectionPrj
-            );
+            return bounds.toBBOX().replace(/,/g, "\\\,");
+        } else {
+            return '0,1,0,1'.replace(/,/g, "\\\,");
         }
-    
-        return bounds.toBBOX().replace(/,/g, "\\\,");
     },
     
         
@@ -2736,6 +2740,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             + ';sostanze:' + this.status.sostanza.id.join('\\,')
             + ';scenari:' + this.status.accident.id.join('\\,')
             + ';gravita:' + this.status.seriousness.id.join('\\,');
+        if(status && status.roi && status.roi.type !== 'aoi') {
+            viewParams += ';' + status.roi.type + ':' + status.roi.id;
+        }
         if(formulaUdm) {
             formulaDesc = formulaDesc + ' ' + formulaUdm;
         }
@@ -3036,7 +3043,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         layer.setVisibility(visibility);
     },
     
-    doProcess: function(roi) {
+    doProcess: function() {
         
         if(this.simulationRestore) {
             for(var buttonId in this.simulationRestore.buttons) {
@@ -3096,8 +3103,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 this.addRisk(newLayers, bounds, status);
                 
                 this.target.mapPanel.layers.add(newLayers);
-                if(roi) {
-                    this.target.mapPanel.map.zoomToExtent(roi);
+                if(status && status.roi) {
+                    this.target.mapPanel.map.zoomToExtent(status.roi.bbox);
                 }
                 this.resultsContainer.removeAll();
             }

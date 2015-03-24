@@ -15,7 +15,7 @@ GeoExt.Lang.add("de", {
         adrClassLabel: "ADR Klasse",
         substanceLabel: "Substanz/Stoff",
         accidentLabel: "Unfall",
-        seriousnessLabel: "Entität",
+        seriousnessLabel: "Intensität",
         severenessLabel: "Schwere",
         buffersLabel: "Schadensbereich",
         fieldSetTitle: "Bearbeitung",
@@ -110,26 +110,26 @@ GeoExt.Lang.add("de", {
         adrLabel: "ADR Klasse",
         sostanzeLabel: "Stoffe",
         accidentLabel: "Unfall",
-        seriousnessLabel: "Entität",
+        seriousnessLabel: "Intensität",
         resetButton: "Zurücksetzen",
         cancelButton: "Abbrechen",
         viewMapButton: "Karte anzeigen",
         formLabel: "Bearbeitungsoptionen",
-        bboxValidationTitle: "Wählen Area of ​​Interest",
+        bboxValidationTitle: "Bearbeitungsbereich wählen",
         requiredMaterial: "Diese Formel erfordert die Angabe des Stoffes",
-        requiredAccident: "Diese Formel erfordert die Angabe des Umfall",    
-        requiredSeriousness: "Diese Formel erfordert die Angabe des Entities",  
-        requiredDamageArea: "Wählen Sie den Bereich Schaden",
+        requiredAccident: "Diese Formel erfordert die Angabe des Unfalls",    
+        requiredSeriousness: "Diese Formel erfordert die Angabe der Intensität",  
+        requiredDamageArea: "Wählen Sie den Schadensbereich",
         validationTitle: "Parameter-Fehler",
         invalidAOI: "Die Koordinaten des Gebiets von Interesse sind nicht gültig.",
-        bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",
+        bboxTooBig: "Der gewählte Bereich ist zu groß. Eine Antwort des Servers könnte einige Zeit benötigen. Falls Sie trotzdem fortfahren möchten, klicken Sie OK.",
         weatherLabel: "Wetter",  
         temporalLabel: "Szenarien",
         conditionsFielSetLabel: "Zeitliche Bedingungen",   
         allClassOption: "Alle Klassen",
         allSostOption: "Alle Substanzen/Stoffe",
         allScenOption: "Alle Unfälle",
-        allEntOption: "Alle Entitäten",
+        allEntOption: "Alle Intensitäten",
         allTargetOption: "Alle Ziele",
         allHumanTargetOption: "Alle anthropologischen Ziele",
         allNotHumanTargetOption: "Alle Umweltziele",
@@ -174,7 +174,7 @@ GeoExt.Lang.add("de", {
         noEditElementSelectionTitle: "Wählen Sie ein Element",
         noEditElementSelectionMsg: "Sie müssen ein Element auswählen!!!",
         activeEditSessionMsgTitle: "Bearbeitungsmodus aktiv",
-        activeEditSessionMsgText: "Sie sind im Bearbeitungsmodus der Element. Sie können das Element nicht löschen!"
+        activeEditSessionMsgText: "Sie sind im Bearbeitungsmodus. Sie können das Element nicht löschen!"
     },
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Zoomlevel: {zoom}</div><div>Maßstab: 1:{scale}</div>",
@@ -431,7 +431,7 @@ GeoExt.Lang.add("de", {
         title: "Neuen Server hinzufügen...",
         cancelText: "Löschen",
         addServerText: "Server hinzufügen",
-        invalidURLText: "Als WMS endpoint gültige Url eingeben (e.g. http://example.com/geoserver/wms)",
+        invalidURLText: "Gültige URL für WMS-Dienst eingeben (e.g. http://example.com/geoserver/wms)",
         contactingServerText: "Verbindungsversuch zum Server..."
     },
 
@@ -507,9 +507,9 @@ GeoExt.Lang.add("de", {
 
     "gxp.plugins.Login.prototype":{
         loginText: "Login",
-        loginErrorText: "Username oder password ungültig.",
+        loginErrorText: "Username oder Passwort ungültig.",
         userFieldText: "User",
-        passwordFieldText: "Password"
+        passwordFieldText: "Passwort"
     },
 
     "gxp.plugins.FeatureGrid.prototype": {
@@ -557,10 +557,10 @@ GeoExt.Lang.add("de", {
         largeSizeLabel: "Groß"
     },
     "gxp.plugins.GoogleGeocoder.prototype": {
-        addMarkerTooltip: "Marker rücksetzen"
+        addMarkerTooltip: "Marker zurücksetzen"
     },
 	"gxp.plugins.DynamicGeocoder.prototype": {
-        addMarkerTooltip: "Marker rücksetzen",
+        addMarkerTooltip: "Marker zurücksetzen",
         emptyText: "Geocoder..."
     },
 	"gxp.plugins.ReverseGeocoder.prototype": {
@@ -576,7 +576,7 @@ GeoExt.Lang.add("de", {
 	},
 	"gxp.form.ContextSwitcher.prototype":{
 		switchActionTip : "Änderung der Karte",
-		switchSaveAlert: "Die nicht gespeicherten daten werden verloren gehen.",
+		switchSaveAlert: "Die nicht gespeicherten Daten gehen verloren.",
 		switchConfirmationText : "Sind Sie sicher die Änderungen machen zu wollen?"
 
 	},
@@ -592,7 +592,7 @@ GeoExt.Lang.add("de", {
         southLabel:"Süden",
         title: "Bearbeitungsbereich",
         setAoiText: "Bereich wählen",        
-        setAoiTooltip: "Ermöglichen die Auswahl des Bereichs von Interesse auf der Karte",
+        setAoiTooltip: "Ermöglicht die Auswahl des Bearbeitungsbereichs auf der Karte",
         waitEPSGMsg: "Wird geladen. Bitte warten..."
     },
     "gxp.form.SelDamageArea.prototype":{
@@ -709,15 +709,15 @@ GeoExt.Lang.add("de", {
         fieldTypeLabel: "Ereignistyp",
         idEmptyText: "Suche nach Sattelschlepper",
         typeEmptyText: "Suche nach Ereignistyp",
-        velocityRange: "Geschwindigkeitsintervall",
+        velocityRange: "Geschwindigkeit",
         velocityMin: "Min",
         velocityMax: "Max",
-        descriptionRange: "Richtungsintervall",
+        descriptionRange: "Richtung",
         descriptionMin: "Min",
         descriptionMax: "Max",
         graphicStyle: "Tematisierung",
         showTrack: "Route anzeigen",
-        styleData: "Richtungsintervall",
+        styleData: "Richtung",
         applyText: "Anwenden",
         resetText: "Reset"
     },
