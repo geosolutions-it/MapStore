@@ -3,20 +3,16 @@
    "actionToolScale": "medium",     
    "tab": true,
    "gsSources":{
-   		"geoserver_centraline": {
+		"lamma_stazioni": {
 			"ptype": "gxp_wmssource",
-			"url": "http://159.213.57.108/geoserver/wms",
-			"title": "Geoserver Centraline",
-			"SRS": "EPSG:3003",
-			"version":"1.1.1",
-            "loadingProgress": true,
-			"layersCachedExtent": [
-				1547065, 4677785,
-				1803065, 4933785
-			],			
-			"layerBaseParams":{
-				"FORMAT":"image/png8",
-				"TILED":false
+			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/ows",
+			"title": "LaMMA Stazioni",
+			"SRS": "EPSG:4326",
+			"version": "1.1.1",
+			"loadingProgress": true,
+			"layerBaseParams": {
+				"FORMAT": "image/png8",
+				"TILED": false
 			}
 		},   
    		"geoscopio_osm_b": {
@@ -310,15 +306,40 @@
 				"tiled": false,
 				"attribution": false
 			},{
-				"source": "geoserver_centraline",
+				"source": "lamma_stazioni",
 				"group": "WEB CAM",
 				"title": "Consorzio LaMMA",
-				"name": "CENTRALINE:lamma_webcam_3003",
+				"name": "lamma_webcam_3003",
 				"displayInLayerSwitcher": true,
 				"visibility": true,
 				"tiled": false,
                 "ratio": 1
-			}
+			},{
+                "toUpdate": false,        
+                "format": "image/png8",
+                "group": "<b>Stazioni Meteorologiche</b>",
+                "name": "temp15_web",
+                "opacity": 1.0,
+                "selected": false,
+                "tiled": false,
+                "vendorParams":{
+                    "cql_filter": "data_ora <= '2015-03-23T15:54:48.468Z'"
+                },                
+                "source": "lamma_stazioni",
+                "styles": ["temperatura"],
+                "style": ["temperatura"],
+                "title": "Temperatura (°C)",
+                "transparent": true,
+                "visibility": true,
+                "ratio": 1,
+                "getGraph": true,
+                "graphTable": "temp15_web",
+                "graphAttribute": ["temp_c"],
+                "cumulative": false,
+                "tabCode": "id",
+                "elevation": "0.0",
+                "displayOutsideMaxExtent": true
+            }
 		]
 	},
 	"scaleOverlayUnits":{
@@ -326,26 +347,54 @@
         "bottomInUnits":"nmi",    
         "topInUnits":"m",    
         "topOutUnits":"km"
-    },	
+    },
+    "removeTools": [
+        "wmsgetfeatureinfo_menu_plugin"
+    ],    
 	"proj4jsDefs": {
 		"EPSG:3003": "+proj=tmerc +lat_0=0 +lon_0=9 +k=0.9996 +x_0=1500000 +y_0=0 +ellps=intl +units=m +no_defs +towgs84 = -104.1,-49.1,-9.9,0.971,-2.917,0.714,-11.68"
 	},
     "customPanels":[
         {
             "xtype": "panel",
-            "title": "Pannello WEBCAM",
+            "title": "WFSGrid TabPanel",
             "border": false,
+            "layout": "fit",
             "id": "south",
             "region": "south",
-            "layout": "fit",
-            "split":true,
-            "height": 180,
-            "collapsed": false,
+            "height": 200,
+            "split": true,
             "collapsible": true,
-            "header": true
+            "collapsed": false,
+            "header": true,
+            "items": [
+                {
+                  "xtype": "panel",
+                  "layout": "fit",
+                  "activeTab": 0,
+                  "region": "center",
+                  "id": "featurelist",
+                  "autoScroll": true,
+                  "border": false
+                }
+            ]
         }
     ],
 	"customTools": [{
+            "ptype":"gxp_wmsgetfeatureinfo",
+            "id": "wmsgetfeatureinfo_plugin",
+            "toggleGroup":"toolGroup",
+            "closePrevious": true,
+            "useTabPanel": true,
+            "infoPanelId": "",
+            "disableAfterClick": false,
+            "loadingMask": true,
+			"maxFeatures": 100,
+            "actionTarget":{
+                "target":"paneltbar",
+                "index":14
+            }
+        }, {
 		   "ptype": "gxp_mouseposition",
 		   "displayProjectionCode":"EPSG:3003",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505"
@@ -368,34 +417,70 @@
 			"poweredbyURL": "http://www.geo-solutions.it/about/contacts/",
 			"actionTarget": {"target": "panelbbar", "index": 1}
 		}, {
-            "ptype": "gxp_wfsgrid",
-            "wfsURL": "http://159.213.57.108/geoserver/wfs",
-            "featureType": "lamma_webcam_3003",
-            "outputTarget": "south",
+            "ptype": "gxp_tabpanelwfsgrids",
+            "wfsURL": "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/wfs",
+            "outputTarget": "featurelist",
             "srsName": "EPSG:3003",
-            "paging": false,
+            "paging": true,
             "pageSize": 10,
-            "fields": [
-                {
-                    "name": "localita",
-                    "mapping": "localita"
+            "panels": {
+                "states_poi": {
+                    "WEB-CAM": {
+                        "featureType": "lamma_webcam_3003",
+                        "fields": [
+                            {
+                                "name": "localita",
+                                "mapping": "localita"
+                            }
+                        ],
+                        "columns": [
+                            {
+                                "header": "LOCALITA'",
+                                "dataIndex": "localita"
+                            }
+                        ],
+                        "actionColumns": [{
+                            "type": "checkDisplay",
+                            "layerName": "Highlight Layer",
+                            "sourceSRS": "EPSG:3003"
+                        },
+                        {
+                            "type": "zoom",
+                            "sourceSRS": "EPSG:3003"
+                        }]    
+                    },
+                    "CENTRALINE": {
+                        "featureType": "temp15_web",
+                        "fields": [
+                            {
+                                "name": "fornitore",
+                                "mapping": "fornitore"
+                            },{
+                                "name": "nome",
+                                "mapping": "nome"
+                            }
+                        ],
+                        "columns": [
+                            {
+                                "header": "fornitore",
+                                "dataIndex": "fornitore"
+                            },{
+                                "header": "temp_c",
+                                "dataIndex": "temp_c"
+                            }
+                        ],
+                        "actionColumns": [{
+                            "type": "checkDisplay",
+                            "layerName": "Highlight Layer",
+                            "sourceSRS": "EPSG:3003"
+                        },
+                        {
+                            "type": "zoom",
+                            "sourceSRS": "EPSG:3003"
+                        }]    
+                    }
                 }
-            ],
-            "columns": [
-                {
-                    "header": "LOCALITA'",
-                    "dataIndex": "localita"
-                }
-            ],
-            "actionColumns": [{
-                "type": "checkDisplay",
-                "layerName": "Highlight Layer",
-                "sourceSRS": "EPSG:3003"
-            },
-            {
-                "type": "zoom",
-                "sourceSRS": "EPSG:3003"
-            }]            
+            }
         }
 	]
 }
