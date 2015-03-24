@@ -138,8 +138,8 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
     aoiMethodLabel: "Modalità",
     aoiByRectLabel: "Rettangolo",
     aoiByFeatureLabel: "Seleziona limite",
-    provinceLabel: "Province",
-    comuniLabel: "Comuni",
+    provinceLabel: "Provincia",
+    comuniLabel: "Comune",
     // end i18n
     
 
@@ -321,9 +321,13 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                             "name": "name",              
                             "mapping": "descrizione"
                   }],
-                 proxy: this.getWFSStoreProxy("siig_geo_pl_province"),
+                 proxy: this.getWFSStoreProxy("v_province", undefined, "descrizione"),
                  autoLoad: true
            });
+           
+           provinceStore.on('load', function(str, records) {
+              str.insert(0, new str.recordType({"id": '0', "name":'&nbsp;'}));
+           }, this);
            
            var comuniStore= new GeoExt.data.FeatureStore({ 
                  id: "comuniStore",
@@ -331,10 +335,13 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                             "name": "id",              
                             "mapping": "cod_comune"
                   },{
+                            "name": "cod_provincia",              
+                            "mapping": "cod_provincia"
+                  },{
                             "name": "name",              
                             "mapping": "descrizione"
                   }],
-                 proxy: this.getWFSStoreProxy("siig_geo_pl_comuni"),
+                 proxy: this.getWFSStoreProxy("v_comuni", undefined, "descrizione"),
                  autoLoad: true
            });
         
@@ -355,19 +362,18 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                 listeners: {
                     scope: this,                
                     expand: function(combo) {
-                        this.loadUserElab = false;
                         combo.list.setWidth( 'auto' );
                         combo.innerList.setWidth( 'auto' );
                     },
                     select: function(combo, record, index) {
-                        /*                        
-                        // to change formula according to scale
-                        var store = this.formula.getStore();
-                        this.filterComboFormulaScale(this.formula);
-                        this.formula.setValue(store.data.items[0].get('id_formula'));
+                        var store = this.comuni.getStore();
                         
-                        this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
-                        this.enableDisableSimulation(record.get('id') === 3);*/
+                        var codProvincia = record.get('id');
+                        if(codProvincia !== '0'){
+                           store.filter('cod_provincia', codProvincia);
+                        } else {
+                            store.clearFilter();
+                        }
                     }
                 }          
             });
@@ -389,19 +395,8 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                 listeners: {
                     scope: this,                
                     expand: function(combo) {
-                        this.loadUserElab = false;
                         combo.list.setWidth( 'auto' );
                         combo.innerList.setWidth( 'auto' );
-                    },
-                    select: function(combo, record, index) {
-                        /*                        
-                        // to change formula according to scale
-                        var store = this.formula.getStore();
-                        this.filterComboFormulaScale(this.formula);
-                        this.formula.setValue(store.data.items[0].get('id_formula'));
-                        
-                        this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
-                        this.enableDisableSimulation(record.get('id') === 3);*/
                     }
                 }          
             });
@@ -432,7 +427,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             }), {
                 id:this.id + '-byfeature',
                 xtype: 'fieldset',
-                items: [this.province],
+                items: [this.province, this.comuni],
                 hidden: true
             }];
         } else {
