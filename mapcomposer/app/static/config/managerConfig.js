@@ -74,7 +74,16 @@
 				"owsVersion": "1.0.0",
 				"owsResourceIdentifier": "TDA:PAGM",
 				"requestCRS": "4326",
-				"timeResolution": "3"
+				"timeResolution": "3",
+				"metocs": [
+					{
+						"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+						"owsService": "WMS",
+						"owsVersion": "1.3.0",
+						"owsResourceIdentifier": "TDA:PAGM",
+						"referenceTimeDim": true					
+					}
+				]
          	},
          	"NAVREF" : {
          		"description" : "Naval Refuel Risk Map",
@@ -89,7 +98,16 @@
 				"owsVersion": "1.0.0",
 				"owsResourceIdentifier": "TDA:NavalRefuelRisk",
 				"requestCRS": "4326",
-				"timeResolution": "3"
+				"timeResolution": "3",
+				"metocs": [
+					{
+						"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+						"owsService": "WMS",
+						"owsVersion": "1.3.0",
+						"owsResourceIdentifier": "TDA:PAGM",
+						"referenceTimeDim": true					
+					}
+				]
          	}         	
          } 
     },{ 
@@ -263,7 +281,16 @@
 				"owsVersion": "1.0.0",
 				"owsResourceIdentifier": "TDA:PAGM",
 				"requestCRS": "4326",
-				"timeResolution": "3"
+				"timeResolution": "3",
+				"metocs": [
+					{
+						"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+						"owsService": "WMS",
+						"owsVersion": "1.3.0",
+						"owsResourceIdentifier": "TDA:PAGM",
+						"referenceTimeDim": true					
+					}
+				]
          	},
          	"NAVREF" : {
          		"description" : "Naval Refuel Risk Map",
@@ -278,7 +305,16 @@
 				"owsVersion": "1.0.0",
 				"owsResourceIdentifier": "TDA:NavalRefuelRisk",
 				"requestCRS": "4326",
-				"timeResolution": "3"
+				"timeResolution": "3",
+				"metocs": [
+					{
+						"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+						"owsService": "WMS",
+						"owsVersion": "1.3.0",
+						"owsResourceIdentifier": "TDA:PAGM",
+						"referenceTimeDim": true					
+					}
+				]
          	}         	
          } 
     },{

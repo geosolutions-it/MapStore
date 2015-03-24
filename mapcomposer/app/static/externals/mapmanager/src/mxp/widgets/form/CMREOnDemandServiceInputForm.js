@@ -1289,6 +1289,24 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		serviceRunInputs.requestCRS = riskMapObj.requestCRS;
 		serviceRunInputs.timeResolution = riskMapObj.timeResolution;
 		
+		//Remove serviceRunInputs.riskMapType reference
+		delete serviceRunInputs.riskMapType;
+		
+		//Adding metocs
+		serviceRunInputs.metocs = [];
+		
+		if (riskMapObj.metocs) {
+			for( var m=0; m<riskMapObj.metocs.length; m++) {
+				serviceRunInputs.metocs[m] = {
+					owsBaseURL: riskMapObj.metocs[m].owsBaseURL,
+					owsService: riskMapObj.metocs[m].owsService,
+					owsVersion: riskMapObj.metocs[m].owsVersion,
+					owsResourceIdentifier: riskMapObj.metocs[m].owsResourceIdentifier,
+					referenceTimeDim: riskMapObj.metocs[m].referenceTimeDim
+				};
+			}			
+		}
+		
 		//serviceRunInputs.assets = this.assetFramePanel.getForm().getValues();
 		serviceRunInputs.assets = [];
 		
