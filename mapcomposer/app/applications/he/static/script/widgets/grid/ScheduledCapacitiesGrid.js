@@ -179,7 +179,7 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                     }
                 }]
             });
-		var name, type, xtype, format, renderer;
+		var name, type, xtype, format, renderer, width = 200;
         (this.schema || store.fields).each(function(f) {
             if (this.schema) {
                 name = f.get("name");
@@ -196,6 +196,7 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                         break;
                     case "boolean":
                         xtype = "booleancolumn";
+                        width = 30;
                         break;
                     case "string":
                         xtype = "gridcolumn";
@@ -203,6 +204,7 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                     default:
                         xtype = "numbercolumn";
                         align = "right";
+                        width = 100;
                         format = "0,000";
                 }
             } else {
@@ -212,7 +214,7 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                 columns.push({
                     dataIndex: name,
                     header: name.replace("_"," "),
-                    width: 200,
+                    width: width,
                     sortable: true,
                     xtype: xtype,
                     format: format,

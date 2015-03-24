@@ -177,7 +177,7 @@
 		"titleText": "Flows & Statistics",
         "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
         "source": "gs",
-        "layerName":"gascapacity:gcd_v_scheduled_capacity_by_pipeline",
+        "layerName":"gascapacity:gcd_v_capacity_by_pipeline_agg",
         "statesLayer":"gascapacity:gcd_lst_States",
         "countryLayer":"gascapacity:gcd_lst_USCounties",
         "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
@@ -235,6 +235,7 @@
 		  "featureManager": "featuremanager",
           "customActionsProvider":"gcd",
           "customColumnsProvider": "gcd",
+          "ignoreFields": ["count","FERC", "cpcty_RID"],
 		  "outputConfig": {
 			  "id": "capacity_grid",
               "region":"south",
