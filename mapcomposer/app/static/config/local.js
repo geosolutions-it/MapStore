@@ -613,8 +613,8 @@
         "index": 28,
         "geoStoreBase":"http://localhost:8082/geostore/rest/",
         "proxy":"/proxy/?url=",
-        "geoStoreUser": "base",
-        "geoStorePassword": "base",
+        "geoStoreUser": "super",
+        "geoStorePassword": "super",
 		"showDisclaimerBeforeExport": true
     },
 	{

@@ -542,7 +542,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     getBasicAuthentication: function() {
         return this.target.userToken || ( this.geoStoreUser ? {
-            "Authorization":  "Basic " + Base64.encode(me.geoStoreUser + ":" + me.geoStorePassword)
+            "Authorization":  "Basic " + Base64.encode(this.geoStoreUser + ":" + this.geoStorePassword)
         } : undefined);
     },
     deleteDownload: function(downloadUrl, removeResource, callback) {

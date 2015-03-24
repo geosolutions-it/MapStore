@@ -2208,6 +2208,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 filter: filterProtocol, 
                 outputFormat: "application/json",
                 version: this.wfsVersion,
+                headers: (target || this.appTarget).tools[this.syntheticView].getBasicAuthentication(),
                 sortBy: sortBy || undefined
             }) 
         });
