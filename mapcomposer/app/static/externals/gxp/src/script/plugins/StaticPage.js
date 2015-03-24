@@ -42,7 +42,7 @@ gxp.plugins.StaticPage = Ext.extend(gxp.plugins.Tool, {
     ptype:'gxp_staticpage',
 
 	tabTitle: "Static Page",
-	
+    
 	url: null,
 	
 	tabPosition: 0,
@@ -53,8 +53,8 @@ gxp.plugins.StaticPage = Ext.extend(gxp.plugins.Tool, {
 		var page_url = this.url;		
 		var appTabs = Ext.getCmp(this.target.renderToTab);
 		
-		if(appTabs instanceof Ext.TabPanel && page_url){					
-			this.staticPanel = new Ext.Panel({
+		if(appTabs instanceof Ext.TabPanel && page_url){
+            var panelConfig = Ext.apply({
 				id: 'staticPanel',
 				title: this.tabTitle,
 				layout: 'fit', 
@@ -64,7 +64,8 @@ gxp.plugins.StaticPage = Ext.extend(gxp.plugins.Tool, {
 						url: page_url 
 					}) 
 				]
-			});
+			}, this.outputConfig || {});               
+			this.staticPanel = new Ext.Panel(panelConfig);
 	
 			appTabs.insert(this.tabPosition, this.staticPanel);
 		}else{
