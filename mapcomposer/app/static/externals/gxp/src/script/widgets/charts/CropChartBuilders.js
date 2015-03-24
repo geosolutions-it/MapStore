@@ -350,6 +350,7 @@ nrl.chartbuilder.crop.composite = {
 				aoiSubtitle += chartTitle;
 			}
 			
+			var commoditiesListStr = nrl.chartbuilder.util.toTitleCase(listVar.commodity.replace(/[']/g, '').replace(/\\,/g,', ').toUpperCase());
 			chart = new Ext.ux.HighChart({
 				series: chartConfig.series,				
 				
@@ -376,7 +377,7 @@ nrl.chartbuilder.crop.composite = {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
                               '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
                               '<span style="font-size:10px;">AOI: '+ aoiSubtitle /*(data[r].title.toUpperCase()=="AGGREGATED DATA" ? listVar.chartTitle : listVar.chartTitle.split(',')[r])*/ + '</span><br />' +
-                              '<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
+                              '<span style="font-size:10px;">Commodity: '+commoditiesListStr+'</span><br />'+
                               '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />'+ 
                               '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
@@ -419,7 +420,16 @@ nrl.chartbuilder.crop.composite = {
                             
                         }
                     }            
-				}
+				},
+				info: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
+                      '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
+                      '<span style="font-size:10px;">AOI: '+ aoiSubtitle + '</span><br />' +
+                      '<span style="font-size:10px;">Commodity: '+commoditiesListStr+'</span><br />'+
+                      '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
+                      '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />'+ 
+                      '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
+                      '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+opt.series.prod.unit+'</span><br />'+
+                      '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+opt.series.yield.unit+'</span>'
 			});
 			charts.push(chart);
 		}
@@ -592,11 +602,11 @@ nrl.chartbuilder.crop.compareRegion = {
 			//
 			// Making Chart Title
 			//			
+			var commoditiesListStr = nrl.chartbuilder.util.toTitleCase(listVar.commodity.replace(/[']/g, '').replace(/\\,/g,', ').toUpperCase());
 			chart = new Ext.ux.HighChart({
 				series: chartConfig.series,				
 				
 				height: opt.height,
-				//width: 900,
 				store: store,
 				animShift: true,
 				xField: 'time',
@@ -610,11 +620,6 @@ nrl.chartbuilder.crop.compareRegion = {
                         width: 1200,
                         url: customOpt.highChartExportUrl
                     },
-                    /*
-					title: {
-						//text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase() +" - "+listVar.chartTitle.split(',')[r]) // + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : listVar.chartTitle.split(',')[r])
-						text: text
-					},*/
 					title: { // 2 line title (part of issue #104 fixing)
 						useHTML: true,
 						text: '<p>Crop Data Analysis: Comparsion by Region' + '<br>' + listVar.cropTitles[0].toUpperCase() + '</p>',
@@ -623,13 +628,8 @@ nrl.chartbuilder.crop.compareRegion = {
 					subtitle: {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
                               '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
-                              //'<span style="font-size:10px;">AOI: '+ listVar.chartTitle  + '</span><br />' +
-                              //'<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
-                              '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />', //+ 
-                              //'<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
-                              //'<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+opt.series.prod.unit+'</span><br />'+
-                              //'<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+opt.series.yield.unit+'</span>',
+                              '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />',
                         align: 'left',
                         verticalAlign: 'bottom',
                         useHTML: true,
@@ -678,7 +678,7 @@ nrl.chartbuilder.crop.compareRegion = {
                           "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
                           "<li><p><em> Date: </em>"+listVar.today+"</p></li>" +
                           "<li><p><em> AOI: </em>"+listVar.chartTitle+"</p></li>" +
-                          (listVar.commodity ? "<li><p><em> Commodity: </em>" + listVar.commodity.toUpperCase() + "</p></li>" :"")+
+                          (listVar.commodity ? "<li><p><em> Commodity: </em>" + commoditiesListStr + "</p></li>" :"")+
                           "<li><p><em> Season: </em>" + listVar.season.toUpperCase() + "</p></li>" +
                           "<li><p><em> Years: </em>" + listVar.fromYear + "-" + listVar.toYear + "</p></li>" +
                       "</ol>" +
@@ -862,79 +862,130 @@ nrl.chartbuilder.crop.compareCommodity = {
 				};
                 obj.rows.push(row);
 			}
-            row[feature.properties.crop] = tempFeatureDataMap[customOpt.variableCompare];
-            
+			/*
+			 * if the values requested by client are 'yield' then crop value
+			 * becomes an object that carry on yield value and area to allow the
+			 * computing of mean value of yield
+			 */
+            row[feature.properties.crop] = (customOpt.variableCompare == 'yield')
+				?
+					{
+						value: tempFeatureDataMap[customOpt.variableCompare],
+						area: tempFeatureDataMap.area
+					}
+				:
+					tempFeatureDataMap[customOpt.variableCompare]
+			;
 		}
 	
-		//create mean chart if needed
-		var mean;
+		//creates an aggregate chart
+		var aggrData;
 		if (chartData.length > 1){			
-			mean = {
+			aggrData = {
 				region: "all",
 				title: "Region",
-				//subtitle: json.features[0].properties.crop,
-				rows: []/*,
-				avgs:{
-					area:0,
-					prod:0,
-					yield:0,
-					years:0
-				}*/
+				rows: []
 			};
-
+			/*
+			 * in all data that are already parsed:
+			 * for each region...
+			 */
 			for (var i=0; i<chartData.length; i++){
+				/*
+				 * for each row in a region...
+				 */
 				for (var j=0; j<chartData[i].rows.length; j++){
-
+					/*
+					 * get the year of the data and look for an entry
+					 * in the aggregate-data collection that has the same year;
+					 * if there isn't, it creates one.
+					 */
 					var year = chartData[i].rows[j].time;
 					var entry = null;
-					for (var z=0; z<mean.rows.length; z++){
-						if (mean.rows[z].time == year)
-							entry = mean.rows[z];
+					for (var z=0; z<aggrData.rows.length; z++){
+						if (aggrData.rows[z].time == year)
+							entry = aggrData.rows[z];
 					}
 					if(!entry){
 						entry = {
 							time: year
 						};
-						mean.rows.push(entry);
+						aggrData.rows.push(entry);
 					}
+					/*
+					 * for each corp in the data, update the relative value in
+					 * the 'entry'.
+					 */
 					for(var crop in chartData[i].rows[j]){
 						if (crop != 'time'){
-							var newCropData = chartData[i].rows[j][crop];
-							entry[crop] = (!entry[crop]) ? newCropData : entry[crop] + newCropData;
+							/*
+							 * adds the sum of areas beside yield values to allow
+							 * the computing of weighted average.
+							 */
+							if (customOpt.variableCompare == 'yield'){
+								if (!entry[crop])
+									entry[crop] = {
+										value: 0,
+										area: 0
+									};
+								entry[crop].value += chartData[i].rows[j][crop].value * chartData[i].rows[j][crop].area;
+								entry[crop].area  += chartData[i].rows[j][crop].area;
+							}else{
+								var newCropData = chartData[i].rows[j][crop];
+								entry[crop] = (!entry[crop]) ? newCropData : entry[crop] + newCropData;
+							}
 						}
 					}
 				}
 			}
+
 			/*
-			for(var i=0; i<mean.rows.length; i++){
-				for(var crop in mean.rows[i]){
-					if(crop != 'time'){
-						mean.rows[i][crop] /= mean.rows.length; 
+			 * computes mean values in aggregate data if the
+			 * data requested by client is 'yield'.
+			 */
+			if (customOpt.variableCompare == 'yield')
+				for(var i=0; i<aggrData.rows.length; i++){
+					for(var crop in aggrData.rows[i]){
+						if (crop != 'time'){
+							var rowItem = aggrData.rows[i];
+							rowItem[crop].value = rowItem[crop].value / rowItem[crop].area;
+						}
+					}
+				}
+
+			chartData.push(aggrData);
+
+		}
+		
+		/*
+		 * makes chartData matching to the highcharts specifics
+		 * if necessary.
+		 */
+		if (customOpt.variableCompare == 'yield')
+			for(var i=0; i<chartData.length; i++){
+				for(var j=0; j<chartData[i].rows.length; j++){
+					for(var crop in chartData[i].rows[j]){
+						if (crop != 'time'){
+							var rowItem = chartData[i].rows[j];
+							rowItem[crop] = rowItem[crop].value;
+						}
 					}
 				}
 			}
-			*/
-			chartData.push(mean);
+
+		// Sorts array elements in ascending order numerically.
+		function CompareForSort(first, second){
+			if (first.time == second.time)
+				return 0;
+			if (first.time < second.time)
+				return -1;
+			else
+				return 1;
 		}
-		
-		if(aggregatedDataOnly && mean){
-			chartData = [mean];
-		}else{		
-			// Sorts array elements in ascending order numerically.
-			function CompareForSort(first, second){
-				if (first.time == second.time)
-					return 0;
-				if (first.time < second.time)
-					return -1;
-				else
-					return 1; 
-			}
-			
-			//sort all year ascending
-			for (var i=0; i<chartData.length; i++){
-				//chartData[i].rows.sort(function(a,b){return a.time > b.time});
-				chartData[i].rows.sort(CompareForSort);        
-			}
+
+		//sort all year ascending
+		for (var i=0; i<chartData.length; i++){
+			chartData[i].rows.sort(CompareForSort);
 		}
         
 		return chartData;
@@ -1071,7 +1122,6 @@ nrl.chartbuilder.crop.compareCommodity = {
 					{
 						name: listFields,
 						type: 'float'
-						
 					}
 				);
 			}	
@@ -1086,7 +1136,6 @@ nrl.chartbuilder.crop.compareCommodity = {
 			//
 			// Making Chart Title
 			//
-			//var dataTitle = data[r].title.toUpperCase();
 			
 			var text = "Crop Data Analysis: Comparsion by Commodity<br>";
 			if (listVar.numRegion[r] === undefined){
@@ -1109,38 +1158,15 @@ nrl.chartbuilder.crop.compareCommodity = {
             
 			var chartTitle = dataTitle;
 			
-			if(dataTitle){				
-				if(dataTitle == "AGGREGATED DATA"){
-					if(aggregatedDataOnly){
-						text += dataTitle + " (Pakistan) - " + commodity;
-					}else{
-						text += dataTitle + " - " + commodity;
-					}					
-				}else{
-					//text += cropTitles.join(",") + " - " + chartTitle;
-				}
-			}
-			
 			//
 			// AOI Subtitle customization
 			//
 			var aoiSubtitle = chartTitle;
-/*
-			if(dataTitle == "AGGREGATED DATA"){
-				if(aggregatedDataOnly){
-					aoiSubtitle += "Pakistan";
-				}else{
-					aoiSubtitle += listVar.chartTitle;
-				}	
-			}else{
-				
-			}
-*/			
+			var commoditiesListStr = nrl.chartbuilder.util.toTitleCase(listVar.commodity.replace(/[']/g, '').replace(/\\,/g,', ').toUpperCase());
 			chart = new Ext.ux.HighChart({
 				series: chartConfig.series,
 				
 				height: opt.height,
-				//width: 900,
 				store: store,
 				animShift: true,
 				xField: 'time',
@@ -1155,7 +1181,6 @@ nrl.chartbuilder.crop.compareCommodity = {
                         url: customOpt.highChartExportUrl 
                     },
 					title: {
-						//text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase() +" - "+listVar.chartTitle.split(',')[r]) // + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : listVar.chartTitle.split(',')[r])
 						text: text,
 						useHTML: true,
 						margin: 28,
@@ -1167,10 +1192,6 @@ nrl.chartbuilder.crop.compareCommodity = {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
                               '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
                               '<span style="font-size:10px;">' + (data[r].title == 'Region' ? 'Regions: ' + listVar.chartTitle : 'AOI: ' + aoiSubtitle ) + '</span><br />' +
-                              //(data[r].title == 'Region' ? '<span style="font-size:10px;">Regions: ' + regionsList.join(', ') + '</span><br />' : '<span style="font-size:10px;">AOI: ' + aoiSubtitle + '</span><br />') +
-                              //'<span style="font-size:10px;">AOI: '+ aoiSubtitle /*(data[r].title.toUpperCase()=="AGGREGATED DATA" ? listVar.chartTitle : listVar.chartTitle.split(',')[r])*/ + '</span><br />' +
-                              //'<span style="font-size:10px;">Commodity: '+listVar.commodity.toUpperCase()+'</span><br />'+
-                              //'<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />',
                              
                         align: 'left',
@@ -1195,7 +1216,7 @@ nrl.chartbuilder.crop.compareCommodity = {
                             
                             Ext.each(this.points, function(i, point) {
                                 s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
-                                    '<span style="font-size:12px;">'+ i.y+'</span>';
+                                    '<span style="font-size:12px;">'+ i.y.toFixed(2)+'</span>';
                             });
                             
                             return s;
@@ -1219,9 +1240,8 @@ nrl.chartbuilder.crop.compareCommodity = {
                       "<ol>" +
                           "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
                           "<li><p><em> Date: </em>"+listVar.today+"</p></li>" +
-                          '<span style="font-size:10px;">' + (data[r].title == 'Region' ? 'Regions: ' + listVar.chartTitle : 'AOI: ' + aoiSubtitle ) + '</span><br />' +
-                          //"<li><p><em> AOI: </em>"+listVar.chartTitle+"</p></li>" +
-                          (listVar.commodity ? "<li><p><em> Commodity: </em>" + listVar.commodity.toUpperCase() + "</p></li>" :"")+
+                          '<li><p><em> ' + (data[r].title == 'Region' ? 'Regions: </em>' + listVar.chartTitle : 'AOI: </em>' + aoiSubtitle ) + '</p></li>' +
+                          (listVar.commodity ? "<li><p><em> Commodity: </em>" + commoditiesListStr + "</p></li>" :"")+
                           "<li><p><em> Season: </em>" + listVar.season.toUpperCase() + "</p></li>" +
                           "<li><p><em> Years: </em>" + listVar.fromYear + "-" + listVar.toYear + "</p></li>" +
                       "</ol>" +
@@ -1253,6 +1273,7 @@ nrl.chartbuilder.crop.compareCommodity = {
             chart.info = chartConfig.plotOptions.series.stacking != 'percent' ? chart.info + avgInfos : chart.info;
 
 			charts.push(chart);
+			console.log(chart.info + '\n');
 		}
 		
 		return charts; 

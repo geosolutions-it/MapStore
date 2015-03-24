@@ -458,6 +458,25 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                     var data = nrl.chartbuilder.crop.compareCommodity.getData(jsonData, aggregatedDataOnly,customOpt);
                     this.optionsCompareCommodities.unit = this.chartOptCompare.unit;
                     this.optionsCompareCommodities.name = this.chartOptCompare.name;
+
+                    /*
+                     * removes from 'listVar.numRegion' the entries that aren't in
+                     * 'data'
+                     */
+                    for(var i=0; i<listVar.numRegion.length; i++){
+                        var findOut = false;
+                        var numRegionItem = listVar.numRegion[i].toUpperCase();
+
+                        for(var j=0; j<data.length; j++){
+                            var dataRegionItem = data[j].region.toUpperCase();
+                            findOut = findOut || (numRegionItem.search(dataRegionItem) != -1);
+                        }
+
+                        if (!findOut){
+                            listVar.numRegion.remove(listVar.numRegion[i]);
+                            i--;
+                        }
+                    }
 					var charts  = nrl.chartbuilder.crop.compareCommodity.makeChart(data, this.optionsCompareCommodities, listVar, aggregatedDataOnly, customOpt);
                 }
 

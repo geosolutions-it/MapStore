@@ -251,7 +251,7 @@ gxp.WindowManagerPanel.Util = {
                     id: 'help',
                     handler: function () {
                         var iframe;
-                        if(info == undefined){ //TODO use only info for all modules
+                        if(this.info == undefined){ //TODO use only info for all modules
                             iframe = 
                                     "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
                                     "<ol>" +
@@ -264,7 +264,7 @@ gxp.WindowManagerPanel.Util = {
                                     "</ol>" +
                                     "</div>" ;                     
                         }else{
-                            iframe=info;
+                            iframe=this.info;
                         }
                         var appInfo = new Ext.Panel({
                             header: false,
@@ -284,7 +284,7 @@ gxp.WindowManagerPanel.Util = {
                         win.show(); 
 
                     },
-                    scope: this
+                    scope: charts[i]
                 }],
                 
                 listeners: {
