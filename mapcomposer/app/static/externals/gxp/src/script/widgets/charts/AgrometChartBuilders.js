@@ -338,14 +338,12 @@ nrl.chartbuilder.agromet.compareTime = {
 					subtitle: {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />' +
                               '<span style="font-size:10px;">Date: ' + listVar.today + '</span><br />' +
-                              '<span style="font-size:10px;">AOI: ' + (allPakistanRegions ? "Pakistan" : listVar.chartTitle) + '</span><br />' +
-                              '<span style="font-size:10px;">Season: ' + listVar.season.toUpperCase() + '</span><br />' +
-                              '<span style="font-size:10px;">Years: ' + listVar.fromYear + "-" + listVar.toYear + '</span><br />',
+                              '<span style="font-size:10px;">AOI: ' + (allPakistanRegions ? "Pakistan" : listVar.chartTitle) + '</span><br />',
                         align: 'left',
                         verticalAlign: 'bottom',
                         useHTML: true,
                         x: 30,
-                        y: -15
+                        y: 16
 					},					
 					xAxis: [{
 						type: 'linear',
@@ -406,8 +404,11 @@ nrl.chartbuilder.agromet.compareTime = {
                                 return this.name;
                             }                            
                         }
-                    }            
-				}
+                    }
+				},
+                info: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />' +
+                      '<span style="font-size:10px;">Date: ' + listVar.today + '</span><br />' +
+                      '<span style="font-size:10px;">AOI: ' + (allPakistanRegions ? "Pakistan" : listVar.chartTitle) + '</span><br />'
 			});
 			grafici.push(chart);
 		}		
