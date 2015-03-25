@@ -1,5 +1,5 @@
 /**
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2015 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -179,46 +179,6 @@ gxp.plugins.he.Statistics = Ext.extend(gxp.plugins.Tool, {
                             anchor:'100%'
                         }]
                     }]
-                },{
-                    xtype:'button',
-                    ref:'show_general_statistics_btn',
-                    text: 'Pipeline Statistics',
-                    iconCls:'gxp-icon-find',
-                    disabled:false,
-                    handler: function(){
-                        var values = this.refOwner.getForm().getValues();
-                        var pipelineId = this.refOwner.getForm().getValues().pipeline;
-                        var combobox = this.refOwner.pipeline;
-                        if(!( values.pipeline )){
-                            Ext.Msg.show({
-                               msg: 'Please select a pipeline in the "Refine Query" box',
-                               buttons: Ext.Msg.OK,
-                               animEl: 'elId',
-                               icon: Ext.MessageBox.INFO
-                            });
-                            return 
-                        }
-                        var pipelineName = combobox.getRawValue();
-                        // record.get("pl_PipelineName");
-                        //var record = combobox.findRecord(combobox.valueField, pipelineId);
-                        
-                        new Ext.Window({
-                            title: pipelineName +' - Pipeline Statistics',
-                            layout: 'border',
-                            autoScroll: false,
-                            border:false,
-                            height: Math.min(Ext.getBody().getViewSize().height,780),
-                            maximizable:true,
-                            width: 900,
-                            items:[{
-                                xtype: 'he_pipeline_statistics',
-                                region:'center',
-                                ferc:pipelineId,
-                                border:false
-                            }]
-                        }).show();
-
-                    }
                 }]
             
 		};

@@ -1,5 +1,5 @@
 /**
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2015 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -128,13 +128,19 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                             //summarize.aggregate.setVisible(showAggregate);
                             if(!showAggregate){
                                 // value == 'point'
-                                this.refOwner.refOwner.btnLookup.setDisabled(false);
+                                this.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(false);
+                                this.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.hide();
                                 this.refOwner.refOwner.refine.pointtype.hide();
                             }else{
-                                if(!values.pipeline){
-                                    this.refOwner.refOwner.btnLookup.setDisabled(true);
-                                }
+
                                 this.refOwner.refOwner.refine.pointtype.show();
+                                this.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.show();
+                                if(!values.pipeline){
+                                    this.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(true);
+                                    this.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.setDisabled(true);
+                                }else{
+                                    this.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.setDisabled(false);
+                                }
                             }
                         }
 
@@ -205,7 +211,8 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     }],
                     listeners: {
                         select: function (combo, record, index) {
-                            this.refOwner.refOwner.btnLookup.setDisabled(false);
+                            this.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(false);
+                            this.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.setDisabled(false);
                         }
                     }
                 }, {
@@ -427,13 +434,58 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                 */
                 ]
             },{
-                ref: 'btnLookup',
-                xtype: 'button',
-                text: 'Look Up',
-                iconCls: 'gxp-icon-find',
-                disabled: true,
-                scope: this,
-                handler: this.lookupButtonHandler
+                layout: 'hbox',
+                ref: 'buttonsContainer',
+                pack: 'end',
+                items:[{
+                    ref: 'btnLookup',
+                    xtype: 'button',
+                    text: 'Look Up',
+                    iconCls: 'gxp-icon-find',
+                    disabled: true,
+                    scope: this,
+                    handler: this.lookupButtonHandler
+                },{
+                    xtype:'button',
+                    ref:'show_general_statistics_btn',
+                    text: 'Pipeline Statistics',
+                    iconCls:'gxp-icon-csvexport-single',
+                    disabled:false,
+                    handler: function(){
+                        var values = this.refOwner.refOwner.getForm().getValues();
+                        var pipelineId = values.pipeline;
+                        var combobox = this.refOwner.refOwner.getForm().findField('pipeline');
+                        if(!( pipelineId )){
+                            Ext.Msg.show({
+                               msg: 'Please select a pipeline in the "Refine Query" box',
+                               buttons: Ext.Msg.OK,
+                               animEl: 'elId',
+                               icon: Ext.MessageBox.INFO
+                            });
+                            return;
+                        }
+                        var pipelineName = combobox.getRawValue();
+                        // record.get("pl_PipelineName");
+                        //var record = combobox.findRecord(combobox.valueField, pipelineId);
+                        
+                        new Ext.Window({
+                            title: pipelineName +' - Pipeline Statistics',
+                            layout: 'border',
+                            autoScroll: false,
+                            border:false,
+                            height: Math.min(Ext.getBody().getViewSize().height,780),
+                            maximizable:true,
+                            width: 900,
+                            items:[{
+                                xtype: 'he_pipeline_statistics',
+                                region:'center',
+                                ferc:pipelineId,
+                                border:false
+                            }]
+                        }).show();
+
+                    }
+                }]
             }],
             buttons: []
         };
