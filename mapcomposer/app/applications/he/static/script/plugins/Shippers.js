@@ -1,5 +1,5 @@
 /**
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2015 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -284,9 +284,12 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                     scope: this,
                     handler: this.lookupButtonHandler
                 },{
+                    xtype:'spacer',
+                    flex:1
+                },{
                 xtype: 'button',
                 text: 'Chart Contracts By Shipper Type',
-                iconCls: 'gxp-icon-find',
+                iconCls: 'chart-pie-icon',
                 disabled: false,
                 ref: 'contractbyCategoryButton',
                 scope: this,

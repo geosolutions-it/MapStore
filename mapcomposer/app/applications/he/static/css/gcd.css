@@ -109,3 +109,7 @@ span.icon_span{
 .map-icon {
   background-image: url(../images/map.png);
 }
+
+.chart-pie-icon {
+  background-image: url(../images/chart_pie.png);
+}

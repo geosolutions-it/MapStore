@@ -317,7 +317,7 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                 anchor:'100%',
                 items:[{
                     frame:true,
-                    height:55,
+                    height:60,
                     border:false,
                     ref:'../generalInfo',
                     listeners:{

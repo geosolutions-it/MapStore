@@ -446,11 +446,14 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     scope: this,
                     handler: this.lookupButtonHandler
                 },{
+                    xtype:'spacer',
+                    flex:1
+                },{
                     xtype:'button',
                     ref:'show_general_statistics_btn',
                     text: 'Pipeline Statistics',
                     iconCls:'gxp-icon-csvexport-single',
-                    disabled:false,
+                    disabled:true,
                     handler: function(){
                         var values = this.refOwner.refOwner.getForm().getValues();
                         var pipelineId = values.pipeline;
@@ -473,7 +476,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                             layout: 'border',
                             autoScroll: false,
                             border:false,
-                            height: Math.min(Ext.getBody().getViewSize().height,780),
+                            height: Math.min(Ext.getBody().getViewSize().height,785),
                             maximizable:true,
                             width: 900,
                             items:[{
