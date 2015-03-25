@@ -1,5 +1,5 @@
 /**
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2015 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -38,47 +38,46 @@ Ext.namespace("gxp.plugins");
  *  Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
  */ 
 gxp.plugins.StaticPage = Ext.extend(gxp.plugins.Tool, {
-
-    ptype:'gxp_staticpage',
-
-	tabTitle: "Static Page",
     
-	url: null,
-	
-	tabPosition: 0,
-	
+    ptype:'gxp_staticpage',
+    
+    tabTitle: "Static Page",
+    
+    url: null,
+    
+    tabPosition: 0,
+    
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-		var page_url = this.url;		
-		var appTabs = Ext.getCmp(this.target.renderToTab);
-		
-		if(appTabs instanceof Ext.TabPanel && page_url){
+        var page_url = this.url;
+        var appTabs = Ext.getCmp(this.target.renderToTab);
+        
+        if(appTabs instanceof Ext.TabPanel && page_url){
             var panelConfig = Ext.apply({
-				id: 'staticPanel',
-				title: this.tabTitle,
-				layout: 'fit', 
-				items: [ 
-					new Ext.ux.IFrameComponent({ 
-						id: 'static-panel',
-						url: page_url 
-					}) 
-				]
-			}, this.outputConfig || {});               
-			this.staticPanel = new Ext.Panel(panelConfig);
-	
-			appTabs.insert(this.tabPosition, this.staticPanel);
-		}else{
-			Ext.Msg.show({
-				title: "Static Page Plugin",
-				msg: "The 'StaticPage' plugin cannot be enabled because you're not in 'tab' mode ('tab: true' in configuration) or the URL is not available.",
-				buttons: Ext.Msg.OK,
-				icon: Ext.MessageBox.INFO  
-			});	
-		}
-
+                id: 'staticPanel',
+                title: this.tabTitle,
+                layout: 'fit',
+                items: [
+                    new Ext.ux.IFrameComponent({
+                        id: 'static-panel',
+                        url: page_url
+                    })
+                ]
+            }, this.initialConfig || {});
+            this.staticPanel = new Ext.Panel(panelConfig);
+            appTabs.insert(this.tabPosition, this.staticPanel);
+        }else{
+            Ext.Msg.show({
+                title: "Static Page Plugin",
+                msg: "The 'StaticPage' plugin cannot be enabled because you're not in 'tab' mode ('tab: true' in configuration) or the URL is not available.",
+                buttons: Ext.Msg.OK,
+                icon: Ext.MessageBox.INFO
+            });
+        }
+        
         return gxp.plugins.StaticPage.superclass.addOutput.apply(this, config);
-    } 
+    }
 });
 
 Ext.preg(gxp.plugins.StaticPage.prototype.ptype, gxp.plugins.StaticPage);
