@@ -888,7 +888,7 @@ if(this.infoAction=='click'){
     obtainFeatureGrid: function(feature, title){
 
         var fields = [];
-        var lname=feature.gml.featureNSPrefix+":"+feature.gml.featureType;
+        var lname=(feature.gml.featureNSPrefix)?feature.gml.featureNSPrefix+":"+feature.gml.featureType:feature.gml.featureType;
         var ignoreFields=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].ignoreFields)?this.outputGridConfig[lname].ignoreFields:[];
         var propertyNames=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].propertyNames)?this.outputGridConfig[lname].propertyNames:null;
         var extraFields=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].extraFields)?this.outputGridConfig[lname].extraFields:null;
