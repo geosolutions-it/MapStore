@@ -120,12 +120,22 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
 
                             });
 
+                            var values = this.refOwner.refOwner.getForm().getValues();
                             //show aggregate
                             var showAggregate = value != 'point';
-                            var summarize = this.refOwner.refOwner.summarize;
-                            summarize.separator.setVisible(showAggregate);
-                            summarize.aggregate.setVisible(showAggregate);
-
+                            //var summarize = this.refOwner.refOwner.summarize;
+                            //summarize.separator.setVisible(showAggregate);
+                            //summarize.aggregate.setVisible(showAggregate);
+                            if(!showAggregate){
+                                // value == 'point'
+                                this.refOwner.refOwner.btnLookup.setDisabled(false);
+                                this.refOwner.refOwner.refine.pointtype.hide();
+                            }else{
+                                if(!values.pipeline){
+                                    this.refOwner.refOwner.btnLookup.setDisabled(true);
+                                }
+                                this.refOwner.refOwner.refine.pointtype.show();
+                            }
                         }
 
                     }
@@ -317,6 +327,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     xtype: 'textfield',
                     ref: 'point',
                     filter: 'point',
+                    name: 'point',
                     fieldLabel: 'Enter Part of the Point\'s Name or DRN',
                     hidden: true
 
@@ -345,6 +356,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     }]
                 }, {
                     xtype: 'combo',
+                    ref: 'pointtype',
                     displayField: 'label',
                     fieldLabel: 'Point Type',
                     valueField: 'id',
@@ -432,16 +444,36 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
     
     lookupButtonHandler: function () {      
         var values = this.output.getForm().getValues();
-        if(!(values.queryby == 'pipeline' && values.pipeline )){
-            Ext.Msg.show({
-               
-               msg: 'This feature is not implemented yet. Please select "Query by Pipeline" and select a pipeline in the "Refine Query" box',
-               buttons: Ext.Msg.OK,
-               animEl: 'elId',
-               icon: Ext.MessageBox.INFO
-            });
-            return 
+        if(values.queryby == 'pipeline'){
+            if( !values.pipeline ){
+                Ext.Msg.show({
+                   
+                   msg: 'Please select a pipeline in the "Refine Query" box',
+                   buttons: Ext.Msg.OK,
+                   animEl: 'elId',
+                   icon: Ext.MessageBox.INFO
+                });
+                return 
+            }
+            
+            this.layerName = this.bypipelineLayerName;
         }
+        
+        if(values.queryby == 'point'){
+            if (!values.point){
+                Ext.Msg.show({
+                   
+                   msg: 'Please enter part of the Point\'s Name or DRN',
+                   buttons: Ext.Msg.OK,
+                   animEl: 'elId',
+                   icon: Ext.MessageBox.INFO
+                });
+                return
+            }
+            
+            this.layerName = this.bypointLayerName;
+        }
+        
         var viewParams=this.createViewParams();
         var filter// = this.createFilter(values);
         //var cql_filter = filter.toString();
@@ -459,7 +491,12 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
             }
         };
 
-        if (!this.layerRecord) {
+        if (!this.layerRecord || this.layerRecord.getLayer().name != this.layerName) {
+            
+            if(this.layerRecord){
+                this.target.mapPanel.layers.remove([this.layerRecord]);
+            }
+            
             var source = this.target.tools.addlayer.checkLayerSource(this.geoServerUrl);
             var record = source.createLayerRecord(layerProps);
             var wms = record.getLayer();
@@ -497,7 +534,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
             var layer =this.layerRecord.getLayer();
             layer.mergeNewParams({
                 //cql_filter: filter.toString()
-                viewparams: this.createViewParams()
+                viewparams: viewParams
             });
             
         }
@@ -505,7 +542,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         //target.mapPanel.map.addLayers([wms]);
         layer.vendorParams = Ext.apply(layer.vendorParams,{
                 //cql_filter: filter.toString()
-                viewparams: this.createViewParams()
+                viewparams: viewParams
             });
         // target.mapPanel.map.addControl(control);
         //add to list of layers and controls 
@@ -520,7 +557,6 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         if(container){
             container.expand();
         }
-
 
     },
     
@@ -538,18 +574,27 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         var values = this.output.getForm().getValues();
         var fieldValues = this.output.getForm().getFieldValues();
         
-        var ferc = "FERC:" + values.pipeline;
         var startDate = "START_DATE:" + fieldValues.start.format('Y-m-d');
         var endDate = "END_DATE:" + fieldValues.end.format('Y-m-d');;
         var aggregation = "AGGREGATION:" + values.aggregation;
-        var viewParams = [ferc,startDate,endDate,aggregation];
+        var viewParams = [startDate,endDate,aggregation];
+        
+        if(values.ferc && values.ferc != ''){
+            var ferc = "FERC:" + values.pipeline;
+            viewParams.push(ferc);
+        }
+        
         if(values.ptype && values.ptype != ''){
             var ptype = "PTYPE:" + values.ptype;
             viewParams.push(ptype);
         }
         
-        return   viewParams.join(";");
+        if(values.point && values.point != ''){
+            var pnt_query = "PNT_QRY:" + values.point;
+            viewParams.push(pnt_query);
+        }
         
+        return viewParams.join(";");
     }
 
 });

@@ -146,10 +146,12 @@
 		   "displayProjectionCode":"EPSG:4326",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
 		}, {
-			"ptype": "gxp_wmsgetfeatureinfo", 
+			"ptype": "gxp_wmsgetfeatureinfo_menu", 
 			"useTabPanel": true,
 			"toggleGroup": "toolGroup",
-			"actionTarget": {"target": "paneltbar", "index": 24}
+			"actionTarget": {"target": "paneltbar", "index": 24},
+            "infoAction": "click",
+            "regex":"<table[^>]*>([\\s\\S]*)<\\/table>"
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
@@ -177,7 +179,8 @@
 		"titleText": "Flows & Statistics",
         "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
         "source": "gs",
-        "layerName":"gascapacity:gcd_v_capacity_by_pipeline_agg",
+        "bypipelineLayerName":"gascapacity:gcd_v_capacity_by_pipeline_agg",
+        "bypointLayerName":"gascapacity:gcd_v_capacity_by_point_agg",
         "statesLayer":"gascapacity:gcd_lst_States",
         "countryLayer":"gascapacity:gcd_lst_USCounties",
         "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
