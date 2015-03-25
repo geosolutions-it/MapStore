@@ -65,7 +65,7 @@ nrl.chartbuilder.agromet.composite = {
             }].concat(factorFields);
        
         //create the composite records
-        var current = this.createCompositeRecords(fields,store,listVar.factorValues);
+        var current = this.createCompositeRecords(fields,store,listVar.compositevalues);
         
 		for (var i = 0;i<listVar.factorStore.length;i++){
             var dataStore = new Ext.data.JsonStore({
@@ -80,9 +80,10 @@ nrl.chartbuilder.agromet.composite = {
 			
 			var text = "";
 			if(allPakistanRegions){
-				text += listVar.factorStore[i].get('label') + " - Pakistan";
+                text = listVar.toYear + " Composite - Pakistan";
 			}else{
-				text += listVar.factorStore[i].get('label') + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION");
+                var textYearPrefix = (listVar.compositevalues == 'avg' ? listVar.fromYear + '-' + listVar.toYear : listVar.toYear);
+                text = textYearPrefix + " Composite - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION");
 			}
 			
             //SORT charts layers to follow the rule (area,bar,line)
@@ -106,7 +107,7 @@ nrl.chartbuilder.agromet.composite = {
                 if(!unitMap[serie.unit]){
                     var yAx = { 
                         title: {
-                            text: factorRecord.get('label')	+ " " + factorRecord.get('unit'),
+                            text: factorRecord.get('label').replace(/(Min |Max )/g,'')	+ " " + factorRecord.get('unit'),
                             style: { 
                                 backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
                             }							
@@ -164,7 +165,7 @@ nrl.chartbuilder.agromet.composite = {
                         verticalAlign: 'bottom',
                         useHTML: true,
                         x: 30,
-                        y: 30
+                        y: 16
 					},					
 					xAxis: [{
 						type: 'linear',
@@ -197,7 +198,7 @@ nrl.chartbuilder.agromet.composite = {
                             var s = '<b>'+data.month + "-" + data.dec+'</b>';
                             
                             Ext.each(this.points, function(i, point) {
-                                s += '<br/><span style="color:'+i.series.color+'">' +  i.series.name + ': </span>'+
+                                s += '<br/><span style="color:'+i.series.color+'">' +  i.series.name + (listVar.compositevalues == 'avg' ? ' (avg)' : '') + ': </span>'+
                                     '<span style="font-size:12px;">'+ i.y.toFixed(2) + " " + i.series.options.unit + '</span>';
                             });                            
                             return s;
@@ -213,13 +214,14 @@ nrl.chartbuilder.agromet.composite = {
 		}		
 		return grafici; 
 	},
-    createCompositeRecords: function(fields,store){
+    createCompositeRecords: function(fields,store, compositeOpt){
         var CompositeField = Ext.data.Record.create(fields);
         var current =[];
         // map of s_dec -> factor ->record
         var map = {}
         var records = store.getRange();
         var results =[];
+        var dataType = (compositeOpt == 'avg' ? 'aggregated' : 'current');
         for (var i = 0; i< records.length; i++){
             var record = records[i];
             var s_dec = record.get('s_dec');
@@ -236,7 +238,7 @@ nrl.chartbuilder.agromet.composite = {
                 obj.dec = map[s_dec][f].get('dec');
                  obj.s_dec = map[s_dec][f].get('s_dec');
                 obj.month = map[s_dec][f].get('month');
-                obj[f] = map[s_dec][f].get( 'current' );
+                obj[f] = map[s_dec][f].get( dataType );
              }
             var rec = new CompositeField(obj);
             results.push(rec);
