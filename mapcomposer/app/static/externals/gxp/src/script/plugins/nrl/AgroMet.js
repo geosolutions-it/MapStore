@@ -298,7 +298,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                     columns: 2,
                     disabled:false,
                     items:[
-                        {boxLabel: 'Time Comparison' , name: 'mode', inputValue: 'compareTime',checked:true},
+                        {boxLabel: 'Single factor' , name: 'mode', inputValue: 'compareTime',checked:true},
                         {boxLabel: 'Composite' , name: 'mode', inputValue: 'composite'}
                     ],
                     listeners: {
