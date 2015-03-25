@@ -339,7 +339,6 @@ if(this.infoAction=='click'){
             // click position, in lat/lon coordinates (issue #422)
             var startLatLon = null;
             this.masking = false;
-
             queryableLayers.each(function(x){                
                 var l = x.getLayer();
 
@@ -368,6 +367,7 @@ if(this.infoAction=='click'){
 								startLatLon = this.target.mapPanel.map.getLonLatFromPixel(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
 								atLeastOneResponse=false;
 								layersToQuery=queryableLayers.length;
+								panIn=false;//Issue #623
 							}
                             
 							if(this.loadingMask && !this.masking) {
@@ -391,7 +391,7 @@ if(this.infoAction=='click'){
                                     if (popup) {
                                     	// not too pretty, I'm calling a private method... any better idea?
                                     	popup.panIntoView();
-                                    }
+                                    }else panIn=true; //issue #623
                                 }                                
 							}
 
@@ -399,14 +399,14 @@ if(this.infoAction=='click'){
                             if (infoFormat == "text/html") {
                                 var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
                                 if (match && match[1].match(this.regex)) {
-                                    !this.infoPanelId ? this.displayPopup(evt, title, match[1]) : this.displayInfoInPanel(evt, title, match[1], this.infoPanelId);
+                                    !this.infoPanelId ? this.displayPopup(evt, title, match[1],null,null,null,panIn) : this.displayInfoInPanel(evt, title, match[1], this.infoPanelId);
                                     atLeastOneResponse = true;
                                 }
                             } else if (infoFormat == "text/plain") {
-                                !this.infoPanelId ? this.displayPopup(evt, title, '<pre>' + evt.text + '</pre>') : this.displayInfoInPanel(evt, title, '<pre>' + evt.text + '</pre>', this.infoPanelId);
+                                !this.infoPanelId ? this.displayPopup(evt, title, '<pre>' + evt.text + '</pre>',null,null,null,panIn) : this.displayInfoInPanel(evt, title, '<pre>' + evt.text + '</pre>', this.infoPanelId);
                                 atLeastOneResponse = true;
                             } else if (evt.features && evt.features.length > 0) {
-                                !this.infoPanelId ? this.displayPopup(evt, title, null, null, null, evt.features) : this.displayInfoInPanel(evt, title, null, this.infoPanelId, evt.features);
+                                !this.infoPanelId ? this.displayPopup(evt, title, null, null, null, evt.features,panIn) : this.displayInfoInPanel(evt, title, null, this.infoPanelId, evt.features);
                                 atLeastOneResponse = true;
                             // no response at all
                             } else if(layersToQuery === 0 && !atLeastOneResponse) {
@@ -421,7 +421,7 @@ if(this.infoAction=='click'){
                             
                         },
 						nogetfeatureinfo: function(evt) {
-							layersToQuery--;							
+							layersToQuery--;	
 							this.unmask();							
 						},
                         scope: this
@@ -506,7 +506,7 @@ if(this.infoAction=='click'){
      * :arg text: ``String`` Body text.
      * :arg features: ``Array`` With features.
      */
-    displayPopup: function(evt, title, text, onClose, scope, features) {
+    displayPopup: function(evt, title, text, onClose, scope, features,panIn) {
         var popup;
         // Issue #91: Change pupupKey to lat/lon
         var pixel = new OpenLayers.Pixel(evt.xy.x, evt.xy.y);
@@ -526,7 +526,7 @@ if(this.infoAction=='click'){
 				items: [item]
 			}] : [item];
 
-            popup = this.cachePopup(latLon, items, popupKey, onClose);
+            popup = this.cachePopup(latLon, items, popupKey, onClose,panIn);
 			
         } else {
             popup = this.popupCache[popupKey];
@@ -597,7 +597,7 @@ if(this.infoAction=='click'){
      * :arg popupKey: ``String`` Key to save the popup on popup cache.
      * :arg onClose: ``Function`` Callback to be called on popup close.
      */
-    cachePopup: function(latLon, items, popupKey, onClose){
+    cachePopup: function(latLon, items, popupKey, onClose,panIn){
         var popup = this.addOutput({
             xtype: "gx_popup",
             title: this.popupTitle,
@@ -610,7 +610,7 @@ if(this.infoAction=='click'){
             unpinnable : true,*/
             items: items,
             draggable: true,
-            panIn: false, // Issue #422
+            panIn: panIn, // Issue #422 #623
             listeners: {
                 close: (function(key) {
                     return function(panel){
