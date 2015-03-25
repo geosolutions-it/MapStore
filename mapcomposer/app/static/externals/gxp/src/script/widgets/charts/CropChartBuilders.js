@@ -602,7 +602,7 @@ nrl.chartbuilder.crop.compareRegion = {
 			//
 			// Making Chart Title
 			//			
-			var commoditiesListStr = nrl.chartbuilder.util.toTitleCase(listVar.commodity.replace(/[']/g, '').replace(/\\,/g,', ').toUpperCase());
+			var commoditiesListStr = listVar.cropTitles.join(', ');
 			chart = new Ext.ux.HighChart({
 				series: chartConfig.series,				
 				
@@ -1162,7 +1162,7 @@ nrl.chartbuilder.crop.compareCommodity = {
 			// AOI Subtitle customization
 			//
 			var aoiSubtitle = chartTitle;
-			var commoditiesListStr = nrl.chartbuilder.util.toTitleCase(listVar.commodity.replace(/[']/g, '').replace(/\\,/g,', ').toUpperCase());
+			var commoditiesListStr = listVar.cropTitles.join(', ');
 			chart = new Ext.ux.HighChart({
 				series: chartConfig.series,
 				
@@ -1242,7 +1242,6 @@ nrl.chartbuilder.crop.compareCommodity = {
                           "<li><p><em> Date: </em>"+listVar.today+"</p></li>" +
                           '<li><p><em> ' + (data[r].title == 'Region' ? 'Regions: </em>' + listVar.chartTitle : 'AOI: </em>' + aoiSubtitle ) + '</p></li>' +
                           (listVar.commodity ? "<li><p><em> Commodity: </em>" + commoditiesListStr + "</p></li>" :"")+
-                          "<li><p><em> Season: </em>" + listVar.season.toUpperCase() + "</p></li>" +
                           "<li><p><em> Years: </em>" + listVar.fromYear + "-" + listVar.toYear + "</p></li>" +
                       "</ol>" +
                       "</div>"
