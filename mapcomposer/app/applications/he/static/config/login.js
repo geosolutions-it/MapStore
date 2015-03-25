@@ -1,4 +1,7 @@
 {
+    "portalConfig":{
+        "iconCls": "map-icon"
+    },
    "header": {
 	   "html": "<div class='topbanner'><div id='left-banner'><img src='../images/banner/banner_left.png'   height='86' border='0' /> </div><div id='right-banner'><img src='../images/banner/banner_right.png'  style='float:right'  border='0' /></div></div>",
 	   "css": "<style type='text/css'>div.topbanner{background-image: none;background-color:black;background-position:center top;height:100%;}</style>",
