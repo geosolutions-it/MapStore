@@ -81,7 +81,7 @@
 						"owsService": "WMS",
 						"owsVersion": "1.3.0",
 						"owsResourceIdentifier": "TDA:PAGM",
-						"referenceTimeDim": true					
+						"referenceTimeDim": true
 					}
 				]
          	},
@@ -105,7 +105,7 @@
 						"owsService": "WMS",
 						"owsVersion": "1.3.0",
 						"owsResourceIdentifier": "TDA:PAGM",
-						"referenceTimeDim": true					
+						"referenceTimeDim": true
 					}
 				]
          	}         	
@@ -288,7 +288,7 @@
 						"owsService": "WMS",
 						"owsVersion": "1.3.0",
 						"owsResourceIdentifier": "TDA:PAGM",
-						"referenceTimeDim": true					
+						"referenceTimeDim": true
 					}
 				]
          	},
@@ -308,11 +308,13 @@
 				"timeResolution": "3",
 				"metocs": [
 					{
+						"sourceId": "karpathos-dev",
+						"title":"Piracy Activity Group",
 						"owsBaseURL": "http://karpathos-dev/geoserver/ows",
 						"owsService": "WMS",
 						"owsVersion": "1.3.0",
 						"owsResourceIdentifier": "TDA:PAGM",
-						"referenceTimeDim": true					
+						"referenceTimeDim": true
 					}
 				]
          	}         	
