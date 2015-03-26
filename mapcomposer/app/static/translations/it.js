@@ -548,6 +548,9 @@ GeoExt.Lang.add("it", {
 		errorMsg: "Nessun indirizzo trovato",
 		waitMsg: "Attendere prego...",
 		addressTitle: "Indirizzo trovato",
+        coordinatesButtonText: "Cattura Coordinate",
+        copyToClipBoardText: "Copia negli appunti",
+        cancelText: "Chiudi",
 		geolocate: {
 			geolocateMenuText: "Geolocalizza",
 			geolocateTooltip: "Localizza posizione attuale",

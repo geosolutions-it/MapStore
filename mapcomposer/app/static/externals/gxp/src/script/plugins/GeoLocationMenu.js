@@ -152,6 +152,27 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
      *  title of the popup box displayed on address found
      */
 	addressTitle: "Address found",
+    
+    /** api: config[coordinatesButtonText]
+     *  ``String``
+     *  title of the popup box displayed on coordinates pick
+     */
+    coordinatesButtonText: "Pick Coordinates",
+    /** api: config[copyToClipBoardText]
+     *  ``String``
+     *  text for the copy to clipboard button
+     */
+    copyToClipBoardText: "Copy To Clipboard",
+     /** api: config[cancelText]
+     *  ``String``
+     *  text for the cancel button
+     */
+    cancelText: "Close",
+     /** api: config[coordinateTemplate]
+     *  ``String``
+     *  Ext.XTemplate to parse latlon object
+     */
+    coordinateTemplate : '{lat},{lon}',
 	
 	/** api: config[menuTooltip]
      *  ``String``
@@ -280,6 +301,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      */	 
 	geoButtonsWidth: 130,
+    coordinatesButtonWidth: 130,
 	
 	/** api: config[actionText]
      *  ``String``
@@ -342,9 +364,21 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
 			}
 		);
 		
+        this.coordinateHandler = new OpenLayers.Handler.Click( this,
+			{
+				"click": function(evt) {
+					me.coordinatePickerButton.toggle(false);
+					me.getCoordinates.call(me,evt,function() {
+						me.coordinatePickerButton.toggle(false);
+					});
+				}
+			},{
+				map: target.mapPanel.map
+			}
+		);
 		// reverse geocoding toggle button
 		var cfg = this.buttonConfig || {};
-		
+		var pickerCfg = this.coordinatePickerConfig ||{}
 		this.reverseGeoCoderButton = new Ext.Button(
 			Ext.apply({
 				enableToggle: true,
@@ -362,6 +396,24 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
 				},
 				scope:this
 			}, cfg)
+		);
+        this.coordinatePickerButton = new Ext.Button(
+			Ext.apply({
+				enableToggle: true,
+				width: this.coordinatesButtonWidth,
+				text: this.coordinatesButtonText,
+				tooltip: this.coordinatesButtonText,
+				iconCls: "gx-cursor",
+				toggleHandler: function(btn,state) {
+					if(state) {
+						this.coordinateHandler.activate();
+					} else {
+						this.coordinateHandler.deactivate();
+					}
+					
+				},
+				scope:this
+			}, pickerCfg)
 		);
 		
 		// initialize geocoder on ready
@@ -382,6 +434,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
 		var geoReferences = this.buildGeoRerencesAction();
 		var reverseGeocoder = this.reverseGeoCoderButton;
 		var dynamicGeocoder = this.comboContainer;
+        var coordinatePicker = this.coordinatePickerButton;
 		
 		var actions = [
 			geoReferences,
@@ -394,6 +447,10 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
 		}
 		
 		actions.push(reverseGeocoder);
+        
+        if(this.enableCoordinatePicker || true){
+            actions.push(coordinatePicker);
+        }
 		
 		this.menu = new Ext.menu.Menu({
 			id: 'geolocationmenu',
@@ -850,7 +907,48 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
 			},
 			scope:this
 		});			
-	}
+	},
+    
+    /** private: method[getCoordinates]
+	 * Gets the point coordinates and show a window.
+     */
+    getCoordinates: function(evt,callback) {
+		var map = this.target.mapPanel.map;
+		var me = this;
+		var latlon = map.getLonLatFromViewPortPx(evt.xy).transform(
+			map.getProjectionObject(),
+			new OpenLayers.Projection("EPSG:4326")
+		);	
+		var text = new Ext.XTemplate(this.coordinateTemplate).apply(latlon);
+		Ext.MessageBox.show({
+          title : this.coordinatesButtonText,
+          buttons:{
+            ok:this.copyToClipBoardText,
+            cancel: this.cancelText
+          },
+          fn: function(e,text){
+              if(e === 'ok'){
+                    me.copyToClipboard(text);
+              }
+          },
+          minWidth: Ext.MessageBox.minPromptWidth,
+          scope : this,
+          prompt: true,
+          width: 400,
+          value: text,
+          icon : Ext.MessageBox.QUESTION
+     });
+	},
+    /** private: method[copyToClipboard]
+	 * copy To Clipboard if possible
+     */
+    copyToClipboard: function (s){
+        if( window.clipboardData && clipboardData.setData ) {
+            clipboardData.setData("Text", s);
+        } else {
+           window.prompt(this.copyToClipBoardText +": Ctrl+C,Enter",s);
+        }
+}
 });
 
 /**

@@ -180,7 +180,7 @@ body {
     background-image: url(img/silk/map_add.png);
 }
 
-.gx-cursor{
+.x-btn .gx-cursor{
     background-image: url(img/silk/cursor.png);
 }
 

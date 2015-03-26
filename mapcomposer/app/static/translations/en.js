@@ -513,6 +513,9 @@ GeoExt.Lang.add("en", {
 		errorMsg: "No address found",
 		waitMsg: "Wait please...",
 		addressTitle: "Address found",
+        coordinatesButtonText: "Pick Coordinates",
+        copyToClipBoardText: "Copy To Clipboard",
+        cancelText: "Close",
 		geolocate: {
 			"geolocateMenuText": "Geolocate",
 			"geolocateTooltip": "Locate my position",

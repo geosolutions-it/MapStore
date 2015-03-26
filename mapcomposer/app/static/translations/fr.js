@@ -494,6 +494,9 @@ GeoExt.Lang.add("fr", {
 		errorMsg: "Aucune adresse trouvée",
 		waitMsg: "S'il vous plaît attendre...",
 		addressTitle: "Adresse trouvée",
+        coordinatesButtonText: "Choisissez Coordonnées",
+        copyToClipBoardText: "Copier vers le presse-papiers",
+        cancelText: "Fermer",
 		geolocate: {
 			geolocateMenuText: "Géolocaliser",
 			geolocateTooltip: "Localiser mon poste",
