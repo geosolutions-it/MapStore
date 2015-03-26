@@ -395,22 +395,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 // UNIT OF MEASURE
                 //
                 },
-                {
-					fieldLabel: 'Data Output',
-					xtype: 'radiogroup',
-					anchor: '100%',
-					autoHeight: true,
-					ref: 'outputmode',
-					title: this.outputTypeText,
-					defaultType: 'radio',
-					columns: 3,
-					hidden: false,
-					items: [
-						{boxLabel: 'Absolute' , name: 'outputmode', inputValue: 'abs',checked:true},
-						{boxLabel: 'AVG Difference' , name: 'outputmode', inputValue: 'diff'},
-						{boxLabel: 'AVG Difference (%)' , name: 'outputmode', inputValue: 'percent'},
-					]
-                },
+                
                 
                 //COMMODITY GRID
                  new Ext.ux.grid.CheckboxSelectionGrid({
@@ -510,6 +495,21 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 //REFERENCE YEAR
                 //
                 },{
+					fieldLabel: 'Chart Type',
+					xtype: 'radiogroup',
+					anchor: '100%',
+					autoHeight: true,
+					ref: 'outputmode',
+					title: this.outputTypeText,
+					defaultType: 'radio',
+					columns: 1,
+					hidden: false,
+					items: [
+						{boxLabel: 'Values' , name: 'outputmode', inputValue: 'abs',checked:true},
+						{boxLabel: 'Anomalies' , name: 'outputmode', inputValue: 'diff'},
+						{boxLabel: 'Anomalies (%)' , name: 'outputmode', inputValue: 'percent'},
+					]
+				},{
                     xtype: 'label',
                     anchor:'100%',
                     fieldLabel:'Reference Year',

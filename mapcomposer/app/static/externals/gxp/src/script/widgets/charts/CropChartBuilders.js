@@ -383,7 +383,7 @@ nrl.chartbuilder.crop.composite = {
 					text += commodity + " - " + chartTitle;
 				}
 			}
-			text += (customOpt.compositeMode != 'abs' ? '<br /><span style="font-size: 12px;">Difference from average</span>' : '');
+			text += (customOpt.compositeMode != 'abs' ? '<br /><span style="font-size: 12px;">Anomalies</span>' : '');
 			
 			//
 			// AOI Subtitle customization
