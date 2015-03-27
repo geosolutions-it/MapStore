@@ -106,7 +106,19 @@
 				"FORMAT": "image/png8",
 				"TILED": false
 			}
-		},        
+		},
+		"lamma_allerta": {
+			"ptype": "gxp_wmssource",
+			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/ALLERTA/ows",
+			"title": "LaMMA Stazioni",
+			"SRS": "EPSG:4326",
+			"version": "1.1.1",
+			"loadingProgress": true,
+			"layerBaseParams": {
+				"FORMAT": "image/png8",
+				"TILED": false
+			}
+		}, 		        
 		"geoscopio_ortofoto": {
 			"ptype": "gxp_wmssource",
 			"url": "http://web.regione.toscana.it/wmsraster/com.rt.wms.RTmap/wms?map=wmsofc",
@@ -151,7 +163,7 @@
 	"map": {
 		"projection": "EPSG:4326",
 		"displayProjection": "EPSG:4326",
-		"units": "m",
+		"units": "deg",
 		"center": [11,
 		43.5],
 		"numZoomLevels": 17,
@@ -189,6 +201,7 @@
 			"tiled": false,
 			"attribution": false,
 			"queryable": false,
+            "srs": "EPSG:4326",
 			"displayOutsideMaxExtent": true
 		},
 		{
@@ -201,7 +214,7 @@
 			"style": ["dem"],
 			"title": "DTM",
 			"transparent": true,
-			"visibility": true,
+			"visibility": false,
 			"ratio": 1,
 			"srs": "EPSG:4326",
 			"queryable": true,
@@ -218,6 +231,17 @@
 			"tiled": false,
 			"attribution": false,
 			"queryable": false
+		},
+		{
+			"source": "lamma_allerta",
+			"group": "<b>Aree Allerta Stats</b>",
+			"title": "Aree",
+			"name": "ZoneAllertaMultyStats",
+			"displayInLayerSwitcher": true,
+			"visibility": false,
+			"tiled": false,
+			"attribution": false,
+			"queryable": true
 		},
 		{
 			"format": "image/png",
@@ -625,7 +649,8 @@
 			"displayInLayerSwitcher": true,
 			"visibility": true,
             "queryable": false,
-			"tiled": false
+			"tiled": false,
+			"attribution": false
 		},
 		{
 			"source": "geoscopio_amb_ammin",
@@ -635,7 +660,8 @@
 			"displayInLayerSwitcher": true,
 			"visibility": false,
             "queryable": false,
-			"tiled": false
+			"tiled": false,
+			"attribution": false
 		},
 		{
 			"toUpdate": false,

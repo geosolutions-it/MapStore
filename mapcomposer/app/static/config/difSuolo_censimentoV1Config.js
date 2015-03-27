@@ -265,7 +265,7 @@
                 "source": "geoscopio_topogr",
                 "group": "Basi cartografiche",
                 "title": "Carta Topografica 50k",
-                "maxscale": 25000.1, 
+                "maxScale": 25000.1, 
                 "name": "rt_topogr.topografica50k.grey.rt",
                 "displayInLayerSwitcher": true,
                 "visibility": true,
@@ -277,7 +277,7 @@
                 "group": "Basi cartografiche",
                 "title": "CTR 1:10.000 Raster BW",
                 "name": "rt_ctr.10k",
-                "minscale": 25000.1,             
+                "minScale": 25000.1,             
                 "displayInLayerSwitcher": true,
                 "visibility": true,
                 "tiled": false,
@@ -287,7 +287,7 @@
                 "source": "geoscopio_ctr",
                 "group": "Basi cartografiche",
                 "title": "CTR 1:10.000 Raster GL",
-                "minscale": 25000.1,            
+                "minScale": 25000.1,            
                 "name": "rt_ctr.ctr10kgreylight",
                 "displayInLayerSwitcher": true,
                 "visibility": false,
@@ -310,7 +310,8 @@
 				"name": "rt_idrogr.corsi.rt.line",
 				"displayInLayerSwitcher": true,
 				"visibility": true,
-				"tiled": false
+				"tiled": false,
+                "attribution": false
 			},{
 				"source": "geoserver_ds",
 				"group": "Reticolo",
