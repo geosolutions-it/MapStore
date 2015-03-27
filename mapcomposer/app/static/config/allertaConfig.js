@@ -83,18 +83,6 @@
 				"TILED": false
 			}
 		},
-		"lamma_radar": {
-			"ptype": "gxp_wmssource",
-			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/RADAR/ows",
-			"title": "LaMMA Radar",
-			"SRS": "EPSG:4326",
-			"version": "1.1.1",
-			"loadingProgress": true,
-			"layerBaseParams": {
-				"FORMAT": "image/png8",
-				"TILED": false
-			}
-		},
 		"lamma_stazioni": {
 			"ptype": "gxp_wmssource",
 			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/ows",
