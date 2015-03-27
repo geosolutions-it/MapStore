@@ -270,8 +270,6 @@ nrl.chartbuilder.crop.composite = {
             if(yAxisIndex>0){
                 var yAxis = ret.yAxis[yAxisIndex];
                 yAxis.opposite = true;
-                //yAxis.rotation = 90;
-                
             }
         }
         return ret;
@@ -323,7 +321,40 @@ nrl.chartbuilder.crop.composite = {
 			}
 			return sum/len;
 		};
-		
+		var getAbsMaximums = function(chartRows){
+			var maximums = {};
+			for (var r=0; r<chartRows.length; r++){
+				var row = chartRows[r];
+				for(var item in row){
+					if (item != 'time'){
+						if (!maximums[item]) maximums[item] = [];
+						maximums[item].push(row[item]);
+					}
+				}
+			}
+			for (var item in maximums){
+				maximums[item] = Math.max(
+					Math.abs(Math.max.apply(null, maximums[item])),
+					Math.abs(Math.min.apply(null, maximums[item]))
+				);
+			}
+			return maximums;
+		};
+		var addMaxMinConfig = function(chartConfig, maximums){
+			var yAxisDataIdIndexMap = {};
+			for(var i=0; i<chartConfig.series.length; i++){
+				for(var j=0; j<chartConfig.yAxis.length; j++){
+					if (chartConfig.series[i].name == chartConfig.yAxis[j].title.text){
+						yAxisDataIdIndexMap[chartConfig.series[i].dataIndex] = j;
+					}
+				}
+			}
+
+			for(var item in maximums){
+				chartConfig.yAxis[yAxisDataIdIndexMap[item]].max =  maximums[item];
+				chartConfig.yAxis[yAxisDataIdIndexMap[item]].min = -maximums[item];
+			}
+		};
 		for (var r=0; r<data.length; r++){
             //calculate avg
             var prodavg = getAvg(data[r].rows,'prod');
@@ -336,6 +367,10 @@ nrl.chartbuilder.crop.composite = {
             }
             //get chart configs (sorting them properly)
             var chartConfig = this.getOrderedChartConfigs(opt,(customOpt.compositeMode == 'abs' ? avgs : undefined));
+            if (customOpt.compositeMode != 'abs'){
+				var maxes = getAbsMaximums(data[r].rows);
+				addMaxMinConfig(chartConfig, maxes);
+			}
             //console.log(chartConfig);
 			// Store for random data
 			var fields = [{
