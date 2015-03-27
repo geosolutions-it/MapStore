@@ -172,7 +172,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
      *  ``String``
      *  Ext.XTemplate to parse latlon object
      */
-    coordinateTemplate : '{lat},{lon}',
+    coordinateTemplate : '{[this.formatNumber(values.lat)]},{[this.formatNumber(values.lon)]}',
 	
 	/** api: config[menuTooltip]
      *  ``String``
@@ -919,7 +919,11 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
 			map.getProjectionObject(),
 			new OpenLayers.Projection("EPSG:4326")
 		);	
-		var text = new Ext.XTemplate(this.coordinateTemplate).apply(latlon);
+		var text = new Ext.XTemplate(this.coordinateTemplate,{
+            formatNumber: function(value) {
+                return value.toFixed(me.coordinatesMaxDigits ||6);
+            }
+        }).apply(latlon);
 		Ext.MessageBox.show({
           title : this.coordinatesButtonText,
           buttons:{
@@ -934,7 +938,7 @@ gxp.plugins.GeoLocationMenu = Ext.extend(gxp.plugins.Tool, {
           minWidth: Ext.MessageBox.minPromptWidth,
           scope : this,
           prompt: true,
-          width: 400,
+          width: this.coordinatePickerWindowWidth,
           value: text,
           icon : Ext.MessageBox.QUESTION
      });
