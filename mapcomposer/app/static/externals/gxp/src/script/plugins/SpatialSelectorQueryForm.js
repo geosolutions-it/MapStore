@@ -462,6 +462,15 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             queryForm.setDisabled(!schema);
 			
             if (schema) {
+                
+                // The Layer Source is configured to use an AuthKey
+                if(this.target.getSource(this.layerRecord) && this.target.getSource(this.layerRecord).authParam){
+                    me.autoComplete = Ext.apply(me.autoComplete, {
+                        "authParam" : this.target.getSource(this.layerRecord).authParam,
+                        "authKey" : this.target.getSource(this.layerRecord).getAuthParam()
+                    });
+                }
+                
                 queryForm.attributeFieldset.add({
                     xtype: "gxp_filterbuilder",
                     ref: "../filterBuilder",

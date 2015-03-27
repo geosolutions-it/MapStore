@@ -114,11 +114,25 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
     },
     
     addAutocompleteStore: function(config) {
-        var uniqueValuesStore = new gxp.data.WPSUniqueValuesStore({
-            pageSize: this.autoCompleteCfg.pageSize || this.pageSize
-        });
         
-        this.initUniqueValuesStore(uniqueValuesStore, this.autoCompleteCfg.url || this.attributes.url, this.attributes.baseParams.TYPENAME, this.attributes.format.namespaces, this.filter.property);
+        var wpsStoreConfig = {
+            pageSize: this.autoCompleteCfg.pageSize || this.pageSize
+        };
+        var baseParams ={};
+        var finalUrl = this.autoCompleteCfg.url || this.attributes.url;
+        // Authorization Key Param
+        if(this.autoCompleteCfg.authParam && this.autoCompleteCfg.authKey){
+            baseParams[this.autoCompleteCfg.authParam] = this.autoCompleteCfg.authKey;
+            wpsStoreConfig = Ext.apply(wpsStoreConfig, {
+                baseParams: baseParams
+            });
+            // baseParams are not supported by the underlying proxy, we must explicitly add the autKey to the URL
+            finalUrl = finalUrl + "?" + this.autoCompleteCfg.authParam + "=" + this.autoCompleteCfg.authKey;
+        }
+        
+        var uniqueValuesStore = new gxp.data.WPSUniqueValuesStore(wpsStoreConfig);
+        
+        this.initUniqueValuesStore(uniqueValuesStore, finalUrl, this.attributes.baseParams.TYPENAME, this.attributes.format.namespaces, this.filter.property);
         
         return Ext.apply(Ext.apply({}, config), {store: uniqueValuesStore});
     },
