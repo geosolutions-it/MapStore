@@ -414,20 +414,6 @@ gxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
      */
     getAuth: function(){
         return this.target.getAuth();
-        /*var auth;
-        //get from the parent
-        if(window.parent && window.parent.window && window.parent.window.manager && window.parent.window.manager.auth){
-          auth = window.parent.window.manager.auth;
-          return auth;
-        }
-        //if not present
-        //get from the session storage
-        var existingUserDetails = sessionStorage["userDetails"];
-        if(existingUserDetails){
-            this.userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
-            auth = this.userDetails.token;
-        }
-        return auth;*/
     }
     
 });

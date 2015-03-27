@@ -40,7 +40,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         this.config = config || {};
         this.mapId = mapId;
         
-        this.auth= this.getAuth();
+        this.authHeader= this.getAuth();
         this.fScreen = fScreen;
         this.templateId = templateId;
         this.geoStoreBaseURL = config != null && config.geoStoreBaseURL ? config.geoStoreBaseURL : ('http://' + window.location.host + '/geostore/rest/');
@@ -130,8 +130,8 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         var h = {
             'Accept': 'application/json'
         };
-        if(this.auth){
-            h['Authorization'] = this.auth;
+        if(this.authHeader){
+            h['Authorization'] = this.authHeader;
         }
         url = OpenLayers.Request.makeSameOrigin(url, this.proxy);
         this.adminConfigStore = new Ext.data.JsonStore({
@@ -207,8 +207,8 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         var h = {
             'Accept': 'application/json'
         };
-        if(this.auth){
-            h['Authorization'] = this.auth;
+        if(this.authHeader){
+            h['Authorization'] = this.authHeader;
         }
         Ext.Ajax.request({
             method: 'GET',
@@ -300,7 +300,7 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         var existingUserDetails = sessionStorage["userDetails"];
         if(existingUserDetails){
             this.userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
-            auth = this.userDetails.token;
+            auth = this.userDetails.authHeader;
         } else if(window.parent && window.parent.window && window.parent.window.manager && window.parent.window.manager.auth){
           //get from the parent
           auth = window.parent.window.manager.auth;

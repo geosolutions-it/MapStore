@@ -388,6 +388,7 @@
                     tools: serverConfig.tools,
                     removeTools: serverConfig.removeTools,
                     geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),
+                    adminUrl: serverConfig.adminUrl || ('http://' + window.location.host + '/admin/'),
                     portalConfig: serverConfig.portalConfig,
 					loadingPanel: serverConfig.loadingPanel || {},
                     defaultSourceType: "gxp_wmssource",
@@ -471,124 +472,59 @@
                                      icon: Ext.MessageBox.ALERT
                                 });  
                             }
+                            
                         }
+                        
+                        login.target = Ext.getCmp('paneltbar');
+                        login.addActions();
+                        gxp.plugins.GeoStoreLogin.prototype.loginSuccess.call(login, true);
+                        
+                        var myAccount = new gxp.plugins.GeoStoreAccount({
+                            outputTarget:'appTabs',
+                            user:app.userDetails.user,
+                            authHeader:app.userDetails.authHeader,
+                            geoStoreBase : serverConfig.geoStoreBase
+                        });
+                        myAccount.addOutput(); 
                             
                         if(bbox){
                             app.mapPanel.map.zoomToExtent(bbox, true);
                         }
                     }
                 });
+                
                 return app;
 			}
-			
-			var testSameOrigin = function (url) {
-				var loc = window.location,
-					a = document.createElement('a');
-
-				a.href = url;
-
-				return a.hostname == loc.hostname &&
-					   a.port == loc.port &&
-					   a.protocol == loc.protocol;
-			}
-			
-			var loginService = testSameOrigin(serverConfig.geoStoreBase) ? serverConfig.geoStoreBase + 
-					"users/user/details?includeattributes=true" : proxy + encodeURIComponent(serverConfig.geoStoreBase 
-						+ "users/user/details?includeattributes=true");
 			
 			var login = new gxp.plugins.GeoStoreLogin({
 				draggable:false,
 				closable: false,
 				actionTarget: {target: "paneltbar",index: 40},
-				loginService:  loginService,
-				loginSync: function(){
-					this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
-					Ext.getCmp('paneltbar').items.each(function(tool) {
-						if (tool.needsAuthorization === true) {
-							tool.enable();	
-							tool.auth=login.token;
-						}           
-					},this);
-					
-					this.loginAction.disable();
-					this.loginAction.setHidden(true);
-					this.logoutAction.show();
-					this.logoutAction.enable();
-					this.logged = true;
-					
-					if(this.win){
-						this.win.close();
-					}				
-				},
+                target: {
+                    geoStoreBaseURL: serverConfig.geoStoreBase,
+                    proxy: proxy
+                },
+                authenticationMethod: serverConfig.authenticationMethod || 'basic',
 				loginSuccess: function(response){					
 					if(login.user){		
 						var uDetails = {
 							token: login.token,
+							authHeader: login.authHeader,
 							user: login.user,
 							provider: "geostore"
 						};
 						
 						sessionStorage["userDetails"] = Ext.util.JSON.encode(uDetails);							
 						initComposer();
-
-						app.on('ready',function(){
-							login.target = Ext.getCmp('paneltbar');
-							login.addActions();
-							login.loginSync();
-							 var myAccount = new gxp.plugins.GeoStoreAccount({
-								outputTarget:'appTabs',
-								user:login.user,
-								auth:login.token,
-								geoStoreBase : serverConfig.geoStoreBase
-							 });
-							 myAccount.addOutput();                        
-						});
 					}
-				},
-				showLogout : function(){
-					var logoutFunction = function(buttonId, text,opt){        
-						if(buttonId === 'ok'){ 						
-							// Clear the sessionStorage
-							for(var i = 0; i < sessionStorage.length; i++) {
-								var key = sessionStorage.key(i);
-								if(key) {
-									sessionStorage.removeItem(key);
-								}
-							}
-							app.safeLeaving =true;
-							location.reload();
-						}
-					}
-					
-					Ext.Msg.show({
-					   title: this.logoutTitle,
-					   msg: this.logoutText,
-					   buttons: Ext.Msg.OKCANCEL,
-					   fn: logoutFunction,
-					   icon: Ext.MessageBox.QUESTION,
-					   scope: this
-					});        
 				}
 			});
 				
 			var existingUserDetails = sessionStorage["userDetails"];
-			if(!existingUserDetails){				
+			if(!existingUserDetails) {				
 				login.showLoginDialog();
-			}else{
+			} else {
 				initComposer();
-				
-				app.on('ready',function(){
-					login.target = Ext.getCmp('paneltbar');
-					login.addActions();
-					login.loginSync();
-					var myAccount = new gxp.plugins.GeoStoreAccount({
-						outputTarget:'appTabs',
-						user: app.userDetails.user,
-						auth: app.userDetails.token,
-						geoStoreBase : serverConfig.geoStoreBase
-					 });
-					 myAccount.addOutput();                        
-				});
 			}
 			
 		   /**
@@ -618,6 +554,7 @@
 		
         serverConfig = Ext.applyIf(serverConfig, localConfig);
 		serverConfig.geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');
+        serverConfig.adminUrl = serverConfig.adminUrl || ('http://' + window.location.host + '/admin/');
 
 		// use GeoExplorerLoader to load configuration files
 		var loader = new GeoExplorerLoader(serverConfig, customConfigName, mapStoreDebug, mapIdentifier, 
