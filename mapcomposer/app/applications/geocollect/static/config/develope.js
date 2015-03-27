@@ -139,7 +139,7 @@
                {
                 
                 "layout" : "vBox",
-                "width": 400,
+                "width": 420,
                  "minSize": 100,
                 "maxSize": 250,
                  "collapsible": true,
@@ -156,7 +156,7 @@
                     "border": false,
                     "id": "listasegnalazioni",
                     "layout": "fit",
-                    "width": 400,
+                    "width": 420,
                     "tbar":[]
                 }, {
                     "xtype": "panel",
@@ -164,7 +164,7 @@
                             
                     "border": false,
                     "flex":1,
-                    "width": 400,
+                    "width": 420,
                     "id": "qrypnl",
                     "layout": "fit",
                     "header": true
@@ -290,8 +290,7 @@
               "id": "grissegnalazioni",
               "header":false
           },
-         "outputTarget": "listasegnalazioni",
-          "exportFormats": ["CSV","shape-zip"]
+         "outputTarget": "listasegnalazioni"
         }, 
           {  
             "ptype": "gxp_gcfeatureeditor",
