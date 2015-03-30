@@ -452,7 +452,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 			params, Ext.apply({
 				attribution: ("attribution" in config) ? (config.attribution ? layer.attribution : '') : layer.attribution,
 				maxExtent: maxCachedExtent,
-				restrictedExtent: maxExtent,
+				restrictedExtent: ("restrictedExtent" in config) ? new OpenLayers.Bounds(config.restrictedExtent) : maxExtent,
 				displayInLayerSwitcher: ("displayInLayerSwitcher" in config) ? config.displayInLayerSwitcher :true,
 				singleTile: ("tiled" in config) ? !config.tiled : false,
 				ratio: config.ratio || 1,

@@ -245,7 +245,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	/**  
 	 * api: method[addLayerRecord]
      */
-	addLayerRecord: function(options, source){		
+	addLayerRecord: function(options, source, callback){		
 		var msLayerTitle = options.msLayerTitle;
 		var msLayerName = options.msLayerName;
 		var gnUrl = options.gnUrl;
@@ -328,7 +328,11 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				id: source.id
 			};
 			
-			this.records.push({record: record, report: report});			
+			this.records.push({record: record, report: report});	
+
+			if(callback){
+				callback.call(this, record);
+			}
 		}else{
 			var report = {
 				name: msLayerName,
@@ -399,7 +403,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	/**  
 	 * api: method[addLayer]
      */
-	addLayer: function(resources){
+	addLayer: function(resources, callback){
 		//
 		// We check the type of the argument for retrocompatibility
 		//
@@ -411,22 +415,22 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				var resource = resources[i];
 				
 				if(resource){
-					this._addLayer(resource);
+					this._addLayer(resource, callback);
 				}			
 			}
 		}else{
-			this._addLayer(resources);
+			this._addLayer(resources, callback);
 		}
 	},
 	
-	_addLayer: function(resource){
+	_addLayer: function(resource, callback){
 		var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
 		
 		if(this.directAddLayer === true){
 			//
 			// Direct add layer to the map without WMS GetCapabilities
 			// 
-			this.addToMap(resource);
+			this.addToMap(resource, callback);
 		}else{
 			//
 			// Adding layer to the map with WMS GetCapabilities (the standard moded)
@@ -449,7 +453,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					source.on('ready', function(s){
 						mask.hide();
 						this.target.layerSources[s.id].loaded = true; 
-						this.addLayerRecord(resource, s);
+						this.addLayerRecord(resource, s, callback);
 					}, this);
 					// add listener if layer source fail to append the layer source error information
 					if(this.useEvents){
@@ -482,11 +486,11 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					// ///////////////////////////////////////////////////////////////
 					source.store.reload();
 				}else{
-					this.addLayerRecord(resource, source);
+					this.addLayerRecord(resource, source, callback);
 				}
 			}else{
 				mask.show();
-				this.addSource(resource.wmsURL, true, resource);
+				this.addSource(resource.wmsURL, true, resource, callback);
 			}
 		}
 	},
@@ -545,7 +549,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	/**  
 	 * api: method[addSource]
      */
-	addSource: function(wmsURL, showLayer, options){			
+	addSource: function(wmsURL, showLayer, options, callback){			
 		var source = this.checkLayerSource(wmsURL);
 
 		if(!source){
@@ -629,7 +633,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					
 					this.target.layerSources[source.id].loaded = true;
 					if(showLayer && options){						
-						this.addLayerRecord(options, source);
+						this.addLayerRecord(options, source, callback);
 					}else{
 						//
 						// Here only if we add only the WMS source.

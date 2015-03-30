@@ -70,12 +70,15 @@
     <!-- common data  -->
     <script type="text/javascript" src="config/common/localConfig.js"></script>
     
-	<!-- translation data  -->
+	<!-- translation data  
     <script type="text/javascript" src="translations/en.js"></script>
     <script type="text/javascript" src="translations/fr.js"></script>
-    <script type="text/javascript" src="translations/it.js"></script>
-    <script type="text/javascript" src="translations/de.js"></script>
     <script type="text/javascript" src="translations/es.js"></script>
+    <script type="text/javascript" src="translations/de.js"></script> -->
+    <script type="text/javascript" src="translations/it.js"></script>
+	
+	<script type="text/javascript" src="AddLayer.js"></script>
+	<script type="text/javascript" src="WMSSource.js"></script>
 	
 	<!-- uncomment to have  welcome screen
 	<script type="text/javascript">
@@ -521,6 +524,40 @@
 				    if(bbox){
 						app.mapPanel.map.zoomToExtent(bbox, true);
 					}
+					
+					//
+					// Override Timemanager behavior
+					//
+					OpenLayers.Control.TimeManager.prototype.nowtime = function(looped) {
+						this.clearTimer();
+						//this.clearTooltipTimer();
+						
+						var d = new Date();        
+						var UTC = d.getUTCFullYear() + '-'
+									+ this.pad(d.getUTCMonth() + 1) + '-'
+									+ this.pad(d.getUTCDate()) + 'T'
+									
+									+ this.pad(d.getUTCHours()) + ':'
+									+ "00" + ':'
+									+ "00" + 'Z';
+									//+ this.pad(d.getUTCMinutes()) + ':'
+									//+ this.pad(d.getUTCSeconds()) + 'Z';
+
+						currentTimeUTC = Date.fromISO( UTC ); 
+						
+						var nowStaz = this.delHours(currentTimeUTC, 2);
+						
+						var newTime = new Date(nowStaz.getTime());
+						this.setNow(newTime,"curTime");
+						this.events.triggerEvent('reset', {
+							'looped' : !!looped
+						});
+						return this.currentTime;
+					}
+					
+					OpenLayers.Control.TimeManager.prototype.delHours = function(data, ore) {
+						return new Date(data.getTime() - ore * 3600000)
+					}
                 }
             });
 			
@@ -532,10 +569,246 @@
 			addMSLayer = function(resources){
 				var addLayer = app.tools["addlayer"];
 				
+				for(var i=0; i<resources.length; i++){
+					var resource = resources[i];
+					var resourceName = resource.msLayerName;
+					
+					var customParams = {};
+					
+					//
+					// Setting the Style
+					//
+					var layerString = resourceName.split(":");
+					var styles;
+					var style;
+					if((resourceName.indexOf("Wind") != -1) && (resourceName.indexOf("gfs") != -1)){
+                        styles = "wind_arrow_palette_gfs";
+                        style = "wind_arrow_palette_raster_gfs"; 
+                    }else if ((resourceName.indexOf("Wind") != -1) && (resourceName.indexOf("arw") != -1)){
+                        styles = "wind_arrow_palette";
+                        style = "wind_arrow_palette_raster";                         
+                    }else if(resource.wmsURL.indexOf('RADAR') != -1){					
+                        styles = layerString[0] + "_" + layerString[1];
+                        style = layerString[0] + "_" + layerString[1];                                                       
+                    }else{
+                        styles = layerString[0].substring(0,layerString[0].lastIndexOf("_")) + "_" + layerString[1];
+                        style = layerString[0].substring(0,layerString[0].lastIndexOf("_")) + "_" + layerString[1];
+                    }
+					
+					//
+					// Setting the Group
+					//
+					if(resource.wmsURL.indexOf("ARW") != -1 || resource.wmsURL.indexOf("GFS") != -1){
+						resource.msGroupName = "MODELLI";
+					}else if(resource.wmsURL.indexOf("MSG") != -1){
+						resource.msGroupName = "SATELLITE";
+					}else if(resource.wmsURL.indexOf("NDVI") != -1){
+						resource.msGroupName = "NDVI";
+					}else{
+						resource.msGroupName = "default";
+					}
+					
+					//
+					// Update the resource basic information
+					//
+                    resource.msLayerName = layerString[0],
+                    resource.msLayerTitle = layerString[1] ? layerString[0] + ":" + layerString[1] : layerString[0],
+                    customParams.elevation = layerString[1] ? layerString[1] : "",
+                    customParams.styles = ((resourceName.indexOf("Wind") != -1) || layerString[1]) ? [styles] : [],
+                    customParams.style = ((resourceName.indexOf("Wind") != -1) || layerString[1]) ? [style] : [],
+                    customParams.format = "image/png8";
+					
+					resource.msLayerName = "arw_12km_downward_long_wave_rad_flux_surface_20150324T120000000Z";
+					
+					resource.customParams = customParams;
+                }				
+				
 				addLayer.addLayer(
-					resources
+					resources,
+					function(record){
+						var layer = record.get('layer');
+						var count = 1;
+                        app.mapPanel.map.setLayerIndex(layer, count+7);
+                    
+						var stazLayer = app.mapPanel.map.getLayersByName("Temperatura oraria")[0];
+                    
+						var valTime =  OpenLayers.Date.parse(layer.metadata.timeInterval[0][0]);
+						var valStep =  layer.metadata.timeInterval[0][2];
+						var r = /\d+/g;
+						var s = valStep;
+						var m;
+						while ((m = r.exec(s)) != null) {
+						  var step = m[0];
+						}                    
+						var timeManagers = app.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');                
+						
+						timeManagers[0].step = step == 2 ? "16" : step;
+						timeManagers[0].fixedRange=true; 
+
+						if (valStep.slice(-1) == 'H'){
+							timeManagers[0].units = "Hours"
+						}else if(valStep.slice(-1) == 'D'){
+							timeManagers[0].units = "Days"
+						}else{
+							timeManagers[0].units = "Minutes"
+						}
+						
+						timeManagers[0].fixedRange=true;
+						
+						timeManagers[0].setEnd(OpenLayers.Date.parse(layer.metadata.timeInterval[0][1]));
+						timeManagers[0].fixedRange=true;
+
+						//timeManagers[0].setStart(OpenLayers.Date.parse(source.url.indexOf("NDVI") != -1 ? layer.metadata.timeInterval[0][0] : stazLayer.metadata.timeInterval[0][0]));
+						timeManagers[0].setStart(OpenLayers.Date.parse(layer.metadata.timeInterval[0][0]));
+						timeManagers[0].fixedRange=true;
+						
+						timeManagers[0].events.triggerEvent("rangemodified");  
+						timeManagers[0].currenttime(valTime,false);
+                    
+						var layerName = record.get('name');
+					    if(layerName.indexOf("NDVI") === -1 && layerName.indexOf("50km") === -1){
+							timeManagers[0].nowtime();
+						} 
+                    
+						var baseLayer1 = app.mapPanel.map.getLayersByName("Stati")[0];
+						var baseLayer2 = app.mapPanel.map.getLayersByName("Regioni")[0];
+						var baseLayer3 = app.mapPanel.map.getLayersByName("Province")[0];
+						var baseLayer4 = app.mapPanel.map.getLayersByName("Comuni Italia")[0];
+						app.mapPanel.map.setLayerIndex(baseLayer1, count+8);
+						app.mapPanel.map.setLayerIndex(baseLayer2, count+9);
+						app.mapPanel.map.setLayerIndex(baseLayer3, count+10);
+						app.mapPanel.map.setLayerIndex(baseLayer4, count+11);
+					}
 				);
 			};
+			
+			/*layerNameParse = function(source, sourceId, msLayerName, msLayerUUID, gnUrl, enableViewTab){
+                  var layerString = msLayerName.split(":");
+                  var styles;
+                  var style;
+                  var groups;
+                  
+                  if((msLayerName.indexOf("Wind") != -1) && (msLayerName.indexOf("gfs") != -1)){
+                        styles = "wind_arrow_palette_gfs";
+                        style = "wind_arrow_palette_raster_gfs"; 
+                  }
+                  else if ((msLayerName.indexOf("Wind") != -1) && (msLayerName.indexOf("arw") != -1)){
+                        styles = "wind_arrow_palette";
+                        style = "wind_arrow_palette_raster";                         
+                  }
+                  else if(source.url.indexOf('RADAR') != -1){
+                        styles = layerString[0] + "_" + layerString[1];
+                        style = layerString[0] + "_" + layerString[1];                                                       
+                  }
+                  else{
+                        styles = layerString[0].substring(0,layerString[0].lastIndexOf("_")) + "_" + layerString[1];
+                        style = layerString[0].substring(0,layerString[0].lastIndexOf("_")) + "_" + layerString[1];
+                  }
+                  
+                  if(source.url.indexOf("ARW") != -1 || source.url.indexOf("GFS") != -1){
+                    groups = "MODELLI";
+                  }else if(source.url.indexOf("MSG") != -1){
+                    groups = "SATELLITE";
+                  }else if(source.url.indexOf("NDVI") != -1){
+                    groups = "NDVI";
+                  }else{
+                    groups = "defauls";
+                  }                
+
+                  var record = source.createLayerRecord({
+                    name: layerString[0], // + ":" + layerString[1],
+                    title: layerString[1] ? layerString[0] + ":" + layerString[1] : layerString[0],
+                    elevation: layerString[1] ? layerString[1] : "",
+                    styles: ((msLayerName.indexOf("Wind") != -1) || layerString[1]) ? [styles] : [],
+                    style: ((msLayerName.indexOf("Wind") != -1) || layerString[1]) ? [style] : [],
+                    uuid : msLayerUUID,
+                    gnURL: gnUrl + "srv/" + gnLangStr + "/",
+                    source: sourceId,
+                    format:"image/png8",
+                    group: groups
+                  });   
+                          
+                  if (record) {
+                    if(enableViewTab){
+                        appTabs.setActiveTab(1);
+                    }
+                    var layerStore = app.mapPanel.layers;  
+                    layerStore.add([record]);
+
+                    //
+                    // Zoom To Layer extent
+                    //
+                    
+                    var layer = record.get('layer');
+                    count = count+1;
+                    app.mapPanel.map.setLayerIndex(layer, count+7);
+                    
+                    var stazLayer = app.mapPanel.map.getLayersByName("Temperatura oraria")[0];
+                    
+                    var valTime =  OpenLayers.Date.parse(layer.metadata.timeInterval[0][0]);
+                    var valStep =  layer.metadata.timeInterval[0][2];
+                    var r = /\d+/g;
+                    var s = valStep;
+                    var m;
+                    while ((m = r.exec(s)) != null) {
+                      var step = m[0];
+                    }                    
+                    var timeManagers = app.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');                
+                    
+                    timeManagers[0].step = step == 2 ? "16" : step;
+                    timeManagers[0].fixedRange=true; 
+
+                    if (valStep.slice(-1) == 'H'){
+                        timeManagers[0].units = "Hours"
+                    }else if(valStep.slice(-1) == 'D'){
+                        timeManagers[0].units = "Days"
+                    }else{
+                        timeManagers[0].units = "Minutes"
+                    }
+                    
+                    timeManagers[0].fixedRange=true;
+                    
+                    timeManagers[0].setEnd(OpenLayers.Date.parse(layer.metadata.timeInterval[0][1]));
+                    timeManagers[0].fixedRange=true;
+
+                    //timeManagers[0].setStart(OpenLayers.Date.parse(source.url.indexOf("NDVI") != -1 ? layer.metadata.timeInterval[0][0] : stazLayer.metadata.timeInterval[0][0]));
+                    timeManagers[0].setStart(OpenLayers.Date.parse(layer.metadata.timeInterval[0][0]));
+                    timeManagers[0].fixedRange=true;
+                    
+                    timeManagers[0].events.triggerEvent("rangemodified");  
+                    timeManagers[0].currenttime(valTime,false);
+                    
+                  if(msLayerName.indexOf("NDVI") === -1 && msLayerName.indexOf("50km") === -1){
+                        timeManagers[0].nowtime();
+                  } 
+                    
+                    var baseLayer1 = app.mapPanel.map.getLayersByName("Stati")[0];
+                    var baseLayer2 = app.mapPanel.map.getLayersByName("Regioni")[0];
+                    var baseLayer3 = app.mapPanel.map.getLayersByName("Province")[0];
+                    var baseLayer4 = app.mapPanel.map.getLayersByName("Comuni Italia")[0];
+                    app.mapPanel.map.setLayerIndex(baseLayer1, count+8);
+                    app.mapPanel.map.setLayerIndex(baseLayer2, count+9);
+                    app.mapPanel.map.setLayerIndex(baseLayer3, count+10);
+                    app.mapPanel.map.setLayerIndex(baseLayer4, count+11);
+
+                    modified = true;                    
+                    var extent = layer.restrictedExtent || layer.maxExtent || app.mapPanel.map.maxExtent;
+                    var map = app.mapPanel.map;
+
+                    // respect map properties
+                    var restricted = map.restrictedExtent || map.maxExtent;
+                    if (restricted) {
+                        extent = new OpenLayers.Bounds(
+                            Math.max(extent.left, restricted.left),
+                            Math.max(extent.bottom, restricted.bottom),
+                            Math.min(extent.right, restricted.right),
+                            Math.min(extent.top, restricted.top)
+                        );
+                    }
+
+                    map.zoomToExtent(extent, true);
+                  }
+            };*/
 	    };
 
 	    // geostore base
