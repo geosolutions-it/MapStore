@@ -3,7 +3,7 @@
         "iconCls": "map-icon"
     },
    "header": {
-	   "html": "<div class='topbanner'><div id='left-banner'><img src='../images/banner/banner_left.png'   height='86' border='0' /> </div><div id='right-banner'><img src='../images/banner/banner_right.png'  style='float:right'  border='0' /></div></div>",
+	   "html": "<div class='topbanner'><div id='left-banner'><img src='images/banner/banner_left.png'   height='86' border='0' /> </div><div id='right-banner'><img src='images/banner/banner_right.png'  style='float:right'  border='0' /></div></div>",
 	   "css": "<style type='text/css'>div.topbanner{background-image: none;background-color:black;background-position:center top;height:100%;}</style>",
 	   "container": {
 			"border": false,
@@ -20,7 +20,7 @@
    },
    
    "footer": {
-		"html": "<div id=\"footer\"><img src=\"../images/banner/logo_footer.png\" > © Hart Energy 2014 &nbsp;</div>",
+		"html": "<div id=\"footer\"><img src=\"images/banner/logo_footer.png\" > © Hart Energy 2014 &nbsp;</div>",
 		"css": "<style type='text/css'>#footer{background-color:black;height:100%;text-align:right;color:white;line-height:30px} #footer img{text-align:left; float:left; margin:5px;}</style>",
 		"container": {
 			"border": false,
