@@ -76,6 +76,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
 	initComponent:function(){
         this.enableBubble('update');
 		var selectFeatureButton = new gxp.widgets.button.SelectFeatureButton({
+                target: this.target,
                 xtype:'gxp_selectFeatureButton',
 				vendorParams:this.vendorParams,
                 singleSelect:true,
@@ -113,6 +114,7 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
 			
 		},this);
 		var selectCombo = new gxp.form.WFSSearchComboBox({
+                target: this.target,
                 name: this.name,
                 clearOnFocus:true,
                 forceAll :'false',
