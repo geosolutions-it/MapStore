@@ -62,7 +62,115 @@ gxp.charts.ChartJsChart = Ext.extend(Ext.Container, {
         animation: true,
         beizerCurve: false,
         maintainAspectRatio: false,
-        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><div><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><div class=\"comm-how\"><%if(segments[i].label){%><%=segments[i].label%><%}%> <%=segments[i].value%></div></div></li><%}%></ul>"
+        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><div><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><div class=\"comm-how\"><%if(segments[i].label){%><%=segments[i].label%><%}%> <%=segments[i].value%></div></div></li><%}%></ul>",
+        tooltipTemplate:"<%if (label){%><%=label%>: <%}%><%= value %>",
+        customTooltips: function(tooltip){
+            
+            // Hide if no tooltip
+            if (!tooltip) {
+                return;
+            }
+            
+            var ctx = this.chart.ctx;
+
+            // The following data was already set
+            //ctx.font = fontString(this.fontSize,this.fontStyle,this.fontFamily);
+            this.xAlign = "center";
+            this.yAlign = "above";
+
+            //Distance between the actual element.y position and the start of the tooltip caret
+            var caretPadding = this.caretPadding = 2;
+
+            var tooltipWidth = ctx.measureText(this.text).width + 2*this.xPadding,
+                tooltipRectHeight = this.fontSize + 2*this.yPadding,
+                tooltipHeight = tooltipRectHeight + this.caretHeight + caretPadding;
+
+            var brokenText;
+            if ((this.x + tooltipWidth/2 >this.chart.width)||(this.x - tooltipWidth/2 < 0)){
+                // Break the tooltip in 2 parts
+                var splitPosition = this.text.lastIndexOf(": ");
+                brokenText = [];
+                brokenText[0] = this.text.substr(0, splitPosition);
+                brokenText[1] = this.text.substr(splitPosition+2, this.text.length);
+                
+                // Recompute values
+                tooltipWidth = Math.max(
+                                    ctx.measureText(brokenText[0]).width + 2*this.xPadding,
+                                    ctx.measureText(brokenText[1]).width + 2*this.xPadding),
+                tooltipRectHeight = 2*this.fontSize + 3*this.yPadding,
+                tooltipHeight = tooltipRectHeight + this.caretHeight + caretPadding;
+            }
+                
+            if (this.x + tooltipWidth/2 >this.chart.width){
+                this.xAlign = "left";
+            } else if (this.x - tooltipWidth/2 < 0){
+                this.xAlign = "right";
+            }
+
+            if (this.y - tooltipHeight < 0){
+                this.yAlign = "below";
+            }
+
+
+            var tooltipX = this.x - tooltipWidth/2,
+                tooltipY = this.y - tooltipHeight;
+            var caretPadding = this.caretPadding;
+            
+            switch(this.yAlign)
+            {
+            case "above":
+                //Draw a caret above the x/y
+                ctx.beginPath();
+                ctx.moveTo(this.x,this.y - caretPadding);
+                ctx.lineTo(this.x + this.caretHeight, this.y - (caretPadding + this.caretHeight));
+                ctx.lineTo(this.x - this.caretHeight, this.y - (caretPadding + this.caretHeight));
+                ctx.closePath();
+                ctx.fill();
+                break;
+            case "below":
+                tooltipY = this.y + caretPadding + this.caretHeight;
+                //Draw a caret below the x/y
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y + caretPadding);
+                ctx.lineTo(this.x + this.caretHeight, this.y + caretPadding + this.caretHeight);
+                ctx.lineTo(this.x - this.caretHeight, this.y + caretPadding + this.caretHeight);
+                ctx.closePath();
+                ctx.fill();
+                break;
+            }
+
+            switch(this.xAlign)
+            {
+            case "left":
+                tooltipX = this.x - tooltipWidth + (this.cornerRadius + this.caretHeight);
+                break;
+            case "right":
+                tooltipX = this.x - (this.cornerRadius + this.caretHeight);
+                break;
+            }
+            
+            // Fix ToolTip horizontal alignment
+            if (tooltipX > this.chart.width - tooltipWidth/2){
+                tooltipX = this.chart.width - tooltipWidth/2 ;
+            }
+            if (tooltipX - tooltipWidth/2 < 0){
+                tooltipX = 0;
+            } 
+                
+            Chart.helpers.drawRoundedRectangle(ctx,tooltipX,tooltipY,tooltipWidth,tooltipRectHeight,this.cornerRadius);
+
+            ctx.fill();
+
+            ctx.fillStyle = this.textColor;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            if(brokenText){
+                ctx.fillText(brokenText[0], tooltipX + tooltipWidth/2, tooltipY + tooltipRectHeight/2 - this.fontSize + this.yPadding/2);
+                ctx.fillText(brokenText[1], tooltipX + tooltipWidth/2, tooltipY + tooltipRectHeight/2 + this.fontSize - this.yPadding/2);
+            }else{
+                ctx.fillText(this.text, tooltipX + tooltipWidth/2, tooltipY + tooltipRectHeight/2);
+            }
+        }
     },
     /* ptype =  gxp_chartpanel */
     xtype: "gxp_ChartJsChart",
