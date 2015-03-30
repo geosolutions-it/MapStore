@@ -134,6 +134,12 @@ nrl.chartbuilder.agromet.composite = {
                 return a.type < b.type ? -1 : 1;
             });
             
+            var chartInfo = '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />' +
+                            '<span style="font-size:10px;">Date: ' + listVar.today + '</span><br />' +
+                            '<span style="font-size:10px;">AOI: ' + (allPakistanRegions ? "Pakistan" : listVar.chartTitle) + '</span><br />' +
+                            '<span style="font-size:10px;">Season: ' + listVar.season.toUpperCase() + '</span><br />' +
+                            '<span style="font-size:10px;">Year' + (listVar.compositevalues == 'abs' ? '' : 's') + ': ' + (listVar.compositevalues == 'abs' ? listVar.toYear : listVar.fromYear + "-" + listVar.toYear) + '</span><br />';
+
 			chart = new Ext.ux.HighChart({
 				animation:false,
 				series: chartOpts.series,
@@ -144,7 +150,7 @@ nrl.chartbuilder.agromet.composite = {
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
-                        spacingBottom: 65           
+                        spacingBottom: 96
 					},
                     exporting: {
                         enabled: true,
@@ -156,11 +162,7 @@ nrl.chartbuilder.agromet.composite = {
 						text: text
 					},
 					subtitle: {
-                        text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />' +
-                              '<span style="font-size:10px;">Date: ' + listVar.today + '</span><br />' +
-                              '<span style="font-size:10px;">AOI: ' + (allPakistanRegions ? "Pakistan" : listVar.chartTitle) + '</span><br />' +
-                              '<span style="font-size:10px;">Season: ' + listVar.season.toUpperCase() + '</span><br />' +
-                              '<span style="font-size:10px;">Years: ' + listVar.fromYear + "-" + listVar.toYear + '</span><br />',
+                        text: chartInfo,
                         align: 'left',
                         verticalAlign: 'bottom',
                         useHTML: true,
@@ -208,7 +210,8 @@ nrl.chartbuilder.agromet.composite = {
 					}
 					
 					
-				}
+				},
+				info: chartInfo
 			});
 			grafici.push(chart);
 		}		
@@ -326,7 +329,7 @@ nrl.chartbuilder.agromet.compareTime = {
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
-                        spacingBottom: 65           
+                        spacingBottom: 96
 					},
                     exporting: {
                         enabled: true,
@@ -347,7 +350,7 @@ nrl.chartbuilder.agromet.compareTime = {
                         verticalAlign: 'bottom',
                         useHTML: true,
                         x: 30,
-                        y: -15
+                        y: 16
 					},					
 					xAxis: [{
 						type: 'linear',

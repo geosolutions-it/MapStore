@@ -324,7 +324,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                     //disabled: true,
                     hidden: true,
                     items:[
-                        {boxLabel: 'Absolute' , name: 'compositevalues', inputValue: 'abs',checked:true},
+                        {boxLabel: 'Reference Year' , name: 'compositevalues', inputValue: 'abs',checked:true},
                         {boxLabel: 'Average' , name: 'compositevalues', inputValue: 'avg'}
                     ],
                     listeners: {
