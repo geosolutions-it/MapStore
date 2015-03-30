@@ -117,7 +117,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
         var data = this.form.output.getForm().getValues();
         var fields = this.form.output.getForm().getFieldValues();
         var regionList = "'" + data.region_list.toLowerCase() +"'" ;
-        var crop = fields.crop;
+        var crop = this.form.output.form.getValues().crop;
         numRegion.push(regionList);
         
         
@@ -146,6 +146,9 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
             }
         }
         
+        var district = this.form.output.singleFeatureSelector.singleSelector.selectButton.store.data.items[0].data.attributes.district;
+        var province = this.form.output.singleFeatureSelector.singleSelector.selectButton.store.data.items[0].data.attributes.province;
+
         var listVar = {
             numRegion: numRegion,
             season: season,
@@ -154,7 +157,11 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
             crop:crop,
             factorValues: factorValues,
             factorStore: factorStore,
-            today:today
+            today:today,
+            place: {
+                district: district,
+                province: province
+            }
         };
         
         var store = new Ext.data.JsonStore({
@@ -279,9 +286,9 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
             var chartTitle = yearInTitle + ' - ' + listVar.factorStore[i].get('label');
             var aoiLabel = listVar.numRegion[0].replace(/[']/g,'');
             if (listVar.granType == 'PROVINCE'){
-                aoiLabel = aoiLabel.toUpperCase();
+                aoiLabel = listVar.place.province;
             }else{
-                aoiLabel = nrl.chartbuilder.util.toTitleCase(aoiLabel);
+                aoiLabel = listVar.place.district + ' (' +listVar.place.province+')';
             }
 			chart = new Ext.ux.HighChart({
 				animation:true,
