@@ -559,10 +559,10 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 		
         this.featureManagerTool.on({
             "beforequery": function() {
-                new Ext.LoadMask(queryForm.getEl(), {
+               if(queryForm.getEl()){ new Ext.LoadMask(queryForm.getEl(), {
                     store: this.featureManagerTool.featureStore,
                     msg: this.queryMsg
-                }).show();
+                }).show();}
             },
             "query": function(tool, store) {
                 if (store) {
