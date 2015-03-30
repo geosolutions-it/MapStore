@@ -78,11 +78,13 @@ gxp.he.ContractsByCategory = Ext.extend(Ext.Container, {
         });
         //ROW 1
         var me = this;
+        var today = new Date();
+        var currentYear = today.getFullYear();
         this.items = [{
                 frame:true,
                 xtype:'panel',
                 header:true,
-                title: 'Transport Customers by Category' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">Valid contracts as of 2014</i>',
+                title: 'Transport Customers by Category' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">Valid contracts as of '+currentYear+'</i>',
                 anchor:'100%',
                 layout:'border',
                 height:250,
