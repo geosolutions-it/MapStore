@@ -67,7 +67,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                     var previous =  nrl.chartbuilder.util.createOptionsFildset("Previous Year",options.series['previous'],'previous');
                     var aggregated =  nrl.chartbuilder.util.createOptionsFildset("Period Mean",options.series['aggregated'],'aggregated');
                     fieldSetList = [current,previous,aggregated]
-                } else if (mode = 'composite') {
+                } else if (mode == 'composite') {
                     var optionsCompare = mainButton.optionsCompareComposite;
                     for (var id in optionsCompare.series){
                         var opt = optionsCompare.series[id];
@@ -166,6 +166,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
         var fromYear = data.startYear;
         var toYear = data.endYear;
         var mode = data.mode;
+        var compositevalues = (mode == 'composite' ? data.compositevalues : undefined);
         //get start and end dekads.
         var months = this.form.output.monthRangeSelector.slider.getValues();
         var start_dec = (months[0])*3;
@@ -230,7 +231,8 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 			factorStore: factorStore,
             startDec: start_dec,
             endDec: end_dec,
-            mode: mode
+            mode: mode,
+            compositevalues: compositevalues
         };
         
         //loading mask
@@ -272,10 +274,10 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 				mapping: 'properties.aggregated'
 			}]			
 		});
-		
+
 		var params =             
 			(fromYear   ? "start_year:"  + fromYear + ";" : "") +
-            (toYear     ? "end_year:"    + toYear + ";" : "") +
+            (toYear     ? "end_year:"    + (compositevalues == 'avg' ? parseInt(toYear)+1+'' : toYear) + ";" : "") +
             (factorList ? "factor_list:" + factorList + ";" : "") +
             (regionList ? "region_list:" + regionList + ";" : "") +
             (start_dec  ? "start_dec:"   + start_dec + ";" : "") +
