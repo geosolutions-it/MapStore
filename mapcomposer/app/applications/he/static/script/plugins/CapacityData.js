@@ -538,7 +538,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
             layers: this.layerName,
             //styles: style ,
             transparent: "true",
-            
+            displayInLayerSwitcher: false,
             vendorParams: {
                 //cql_filter: cql_filter
                 viewparams: viewParams

@@ -92,7 +92,7 @@
 			}]
         
     },
-    "disableLayerChooser":true,
+    "disableLayerChooser":false,
 	"loadingPanel": {
 		"width": 100,
 		"height": 100,
