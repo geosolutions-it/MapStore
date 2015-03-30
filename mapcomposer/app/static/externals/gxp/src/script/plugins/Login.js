@@ -106,6 +106,8 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
 	
 	reloadOnLogin: true,
     
+    authParam: "authkey",
+    
     loginService: null,
 
     /** 
@@ -359,6 +361,7 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
         }
         
         if(this.user){	
+            this.user.authParam = this.authParam;
             var uDetails = {
                 authHeader: this.authHeader,
                 token: this.token,

@@ -176,6 +176,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
         if(userInfo.token) {
             authkey = userInfo.token;
         }
+        if(authkey){
+			this.authParam = userInfo.user.authParam || this.authParam;
+		}
 		return authkey;
 	},
 	
