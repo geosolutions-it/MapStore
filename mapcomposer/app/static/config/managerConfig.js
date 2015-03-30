@@ -88,7 +88,7 @@
 				]
          	},
          	"NAVREF" : {
-         		"description" : "Naval Refuel Risk Map",
+         		"description" : "Small Boat Attack Risk Map",
          		"defaultData": {
 					"maxlon": "26",
 					"maxlat": "60",
@@ -98,9 +98,9 @@
 				"owsBaseURL": "http://karpathos-dev/geoserver/ows",
 				"owsService": "WCS",
 				"owsVersion": "1.0.0",
-				"owsResourceIdentifier": "TDA:NavalRefuelRisk",
+				"owsResourceIdentifier": "TDA:SmallBoatAttack",
 				"requestCRS": "4326",
-				"timeResolution": "3",
+				"timeResolution": "1",
 				"metocs": [
 					{
 						"sourceId": "karpathos-dev",
@@ -299,7 +299,7 @@
 				]
          	},
          	"NAVREF" : {
-         		"description" : "Naval Refuel Risk Map",
+         		"description" : "Small Boat Attack Risk Map",
          		"defaultData": {
 					"maxlon": "26",
 					"maxlat": "60",
@@ -309,9 +309,9 @@
 				"owsBaseURL": "http://karpathos-dev/geoserver/ows",
 				"owsService": "WCS",
 				"owsVersion": "1.0.0",
-				"owsResourceIdentifier": "TDA:NavalRefuelRisk",
+				"owsResourceIdentifier": "TDA:SmallBoatAttack",
 				"requestCRS": "4326",
-				"timeResolution": "3",
+				"timeResolution": "1",
 				"metocs": [
 					{
 						"sourceId": "karpathos-dev",

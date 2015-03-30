@@ -1298,6 +1298,8 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		if (riskMapObj.metocs) {
 			for( var m=0; m<riskMapObj.metocs.length; m++) {
 				serviceRunInputs.metocs[m] = {
+					sourceId: riskMapObj.metocs[m].sourceId,
+					title: riskMapObj.metocs[m].title,
 					owsBaseURL: riskMapObj.metocs[m].owsBaseURL,
 					owsService: riskMapObj.metocs[m].owsService,
 					owsVersion: riskMapObj.metocs[m].owsVersion,
