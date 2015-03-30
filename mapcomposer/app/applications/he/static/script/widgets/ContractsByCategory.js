@@ -104,6 +104,11 @@ gxp.he.ContractsByCategory = Ext.extend(Ext.Container, {
                             var rows = me.createCustomerRows(data);
                             me.add(rows);
                             me.doLayout();
+                        },
+                        animationend: function(){
+                            if(this.chart){
+                                this.chart.draw();
+                            }
                         }
                     }
                 },{

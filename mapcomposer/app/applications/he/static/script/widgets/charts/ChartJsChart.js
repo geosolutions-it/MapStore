@@ -181,8 +181,10 @@ gxp.charts.ChartJsChart = Ext.extend(Ext.Container, {
     otherGroupLabel:'Other',
     initComponent: function () {
         this.addEvents('chartrefresh');
+        this.addEvents('animationend');
         this.on('resize', this.onResize, this);
         this.on('afterlayout', this.afterLayout, this);
+        
         gxp.charts.ChartJsChart.superclass.initComponent.call(this);
     },
     afterLayout: function () {
@@ -193,7 +195,10 @@ gxp.charts.ChartJsChart = Ext.extend(Ext.Container, {
 
         }
 
-
+        var me = this;
+        this.chartOpt.onAnimationComplete =  function(){
+            me.fireEvent('animationend');
+        }
     },
 
     createChart: function (data, options) {
@@ -576,9 +581,6 @@ gxp.charts.ChartJsChart = Ext.extend(Ext.Container, {
             this.getEl().mask("Please wait...","x-mask-loading");
         }
     }
-    
-    
-
 
 });
 Ext.reg(gxp.charts.ChartJsChart.prototype.xtype, gxp.charts.ChartJsChart);
