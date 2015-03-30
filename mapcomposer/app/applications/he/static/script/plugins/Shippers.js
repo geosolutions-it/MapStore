@@ -295,7 +295,13 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                 scope: this,
                 handler: function(){
                      var values = this.output.getForm().getValues()
-                     var pipelineId = this.output.getForm().getValues().pipeline;
+                     var pipelineId = values.pipeline;
+                     var pipelineName = pipelineId;
+                     if ( this.output.refine
+                       && this.output.refine.pipeline
+                       && this.output.refine.pipeline.getRawValue()){
+                          pipelineName = this.output.refine.pipeline.getRawValue() ;
+                       }
                      if(!(values.queryby == 'pipeline' && values.pipeline )){
                         Ext.Msg.show({
                            
@@ -307,7 +313,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                         return 
                     }
                      var canvasWindow = new Ext.Window({
-                        title: pipelineId +' - Transport Customers',
+                        title: pipelineName +' - Transport Customers',
                         layout:'border',
                         autoScroll:false,
                         height:Math.min(Ext.getBody().getViewSize().height,750),
