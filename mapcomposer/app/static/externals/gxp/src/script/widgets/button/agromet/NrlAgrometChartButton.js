@@ -244,35 +244,6 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
         {msg:loadingMsg} );
         
         myMask.show();
-		var store = new Ext.data.JsonStore({
-			url: this.url,
-			 sortInfo: {field: "s_dec", direction: "ASC"},
-			root: 'features',
-			
-			fields: [{
-				name: 'factor',
-				mapping: 'properties.factor'
-			},{
-				name: 'month',
-				mapping: 'properties.month'
-			},{
-				name: 'dec',
-				mapping: 'properties.dec'
-			},{
-				name: 's_dec',
-				mapping: 'properties.order'
-			}, {
-				name: 'current',
-				mapping: 'properties.current'
-			},{
-				name: 'previous',
-				mapping: 'properties.previous'
-			},{
-				name: 'aggregated',
-				mapping: 'properties.aggregated'
-			}]			
-		});
-		
 		var params =             
 			(fromYear   ? "start_year:"  + fromYear + ";" : "") +
             (toYear     ? "end_year:"    + toYear + ";" : "") +
@@ -281,37 +252,110 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
             (start_dec  ? "start_dec:"   + start_dec + ";" : "") +
             (end_dec    ? "end_dec:"     + end_dec + ";" : "") +
             (granType   ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "") ;
-            
-            
-			
+        var allPakistanRegions = (granType == "pakistan");
+		var makeDataStore = function(jsonData){
+			return new Ext.data.JsonStore({
+				data: jsonData,
+				sortInfo: {field: "s_dec", direction: "ASC"},
+				root: 'features',
+				fields: [{
+					name: 'factor',
+					mapping: 'properties.factor'
+				},{
+					name: 'month',
+					mapping: 'properties.month'
+				},{
+					name: 'dec',
+					mapping: 'properties.dec'
+				},{
+					name: 's_dec',
+					mapping: 'properties.order'
+				}, {
+					name: 'current',
+					mapping: 'properties.current'
+				},{
+					name: 'previous',
+					mapping: 'properties.previous'
+				},{
+					name: 'aggregated',
+					mapping: 'properties.aggregated'
+				}]
+			});
+		}
+
 		var viewparams = params;
-					
-		store.load({
-			callback:function(){
-				var allPakistanRegions = (granType == "pakistan");
-				this.createResultPanel(store, listVar, allPakistanRegions);
-                myMask.hide();
-			},
+		// first request
+		Ext.Ajax.request({
 			scope:this,
+			url : this.url,
+			method: 'POST',
 			params :{
 				service: "WFS",
 				version: "1.0.0",
 				request: "GetFeature",
 				typeName: "nrl:agromet_aggregated2",
 				outputFormat: "json",
-				viewparams: viewparams /*season == 'rabi' ? "start_year:"+ fromYear + ";" +
-                    "end_year:"+ toYear + ";" +
-                    "factor_list:"+ factorList + ";" +
-                    "region_list:"+ regionList + ";" +
-                    "gran_type:" + granType + ";" +                            
-                    "season_flag:NOT" :  
-                    "start_year:"+ fromYear + ";" +
-                    "end_year:"+ toYear + ";" +
-                    "factor_list:"+ factorList + ";" +
-                    "region_list:"+ regionList + ";" +
-                    "gran_type:" + granType*/
+				viewparams: params
+			},
+			success: function(reply, opt){
+				var jsonData1 = Ext.util.JSON.decode(reply.responseText);
+				// second request if needed...
+				if (/*in needed (if anomalies mode is selected) */ false){
+					this.jsonData1 = jsonData1;
+
+					var refYear = 2012;
+					var fromYear = refYear - 2;
+					var toYear = refYear;
+					var newParams =
+						(fromYear   ? "start_year:"  + fromYear + ";" : "") +
+						(toYear     ? "end_year:"    + toYear + ";" : "") +
+						(factorList ? "factor_list:" + factorList + ";" : "") +
+						(regionList ? "region_list:" + regionList + ";" : "") +
+						(start_dec  ? "start_dec:"   + start_dec + ";" : "") +
+						(end_dec    ? "end_dec:"     + end_dec + ";" : "") +
+						(granType   ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "") ;
+					var allPakistanRegions = (granType == "pakistan");
+
+						Ext.Ajax.request({
+							scope:this,
+							url : this.url,
+							method: 'POST',
+							params :{
+								service: "WFS",
+								version: "1.0.0",
+								request: "GetFeature",
+								typeName: "nrl:agromet_aggregated2",
+								outputFormat: "json",
+								viewparams: newParams
+							},
+							success: function(reply, opt){
+								var jsonData2 = Ext.util.JSON.decode(reply.responseText);
+								// change current data in anomalies (abs or %)
+								for (var i=0; i<this.jsonData1.features.length; i++){
+									var feature1 = this.jsonData1.features[i];
+									var feature2 = jsonData2.features[i];
+
+									feature1.properties.current = (/* if anomalies is abs */ false
+										? feature2.properties.current - feature1.properties.aggregated
+										: 100 * (feature2.properties.current/feature1.properties.aggregated - 1)
+									);
+								}
+								this.createResultPanel(makeDataStore(this.jsonData1), listVar, allPakistanRegions);
+								myMask.hide();
+							},
+							failure: function(){
+
+							}
+						});
+				}else{
+					this.createResultPanel(makeDataStore(jsonData1), listVar, allPakistanRegions);
+					myMask.hide();
+				}
+			},
+			failure: function(){
+
 			}
-		});         
+		});
     },
 	
 	createResultPanel:function(store, listVar, allPakistanRegions){

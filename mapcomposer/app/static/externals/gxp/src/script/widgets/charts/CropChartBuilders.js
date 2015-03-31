@@ -333,10 +333,14 @@ nrl.chartbuilder.crop.composite = {
 				}
 			}
 			for (var item in maximums){
+				//the max is the max distance from zero.
 				maximums[item] = Math.max(
 					Math.abs(Math.max.apply(null, maximums[item])),
 					Math.abs(Math.min.apply(null, maximums[item]))
 				);
+
+				//approx value to the next integer.
+				maximums[item] = Math.round(maximums[item]+0.5);
 			}
 			return maximums;
 		};
@@ -843,6 +847,7 @@ nrl.chartbuilder.crop.compareRegion = {
         }];
 		
 		ret.yAxis = [{ // AREA
+			endOnTick: false,
 			title: {
 				text: stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : opt.name
 			},                    
