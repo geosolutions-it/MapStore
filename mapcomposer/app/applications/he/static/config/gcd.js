@@ -208,6 +208,7 @@
             "shipperNamesLayer":"gascapacity:ioc_v_shippernames",
             "qryByPipelineLayerName":"gascapacity:gcd_v_shippers_by_pipeline",
             "qryByShipperLayerName":"gascapacity:gcd_v_shippers_by_shipper",
+            "qryByPipelineListShippers":"gascapacity:gcd_v_list_shippers_by_pipeline",
             "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
             "titleText": "Contracts",
             "pipelineLayerConfig": {
