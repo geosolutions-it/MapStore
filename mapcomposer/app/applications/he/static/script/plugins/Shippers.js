@@ -112,7 +112,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                             inputValue: 'shipper'
                         }
 
-                        ],
+                    ],
                     listeners: {
                         change: function (c, checked) {
                             var value = c.getValue().inputValue;
@@ -122,6 +122,12 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                                     item.setVisible(value == item.filter);
                                 }
                             });
+                            
+                            if(value == 'pipeline'){
+                                c.refOwner.refOwner.buttonsContainer.contractbyCategoryButton.show();
+                            }else{
+                                c.refOwner.refOwner.buttonsContainer.contractbyCategoryButton.hide();
+                            }
                         }
                     }
                     }]
@@ -333,7 +339,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                 xtype: 'button',
                 text: 'Chart Contracts By Shipper Type',
                 iconCls: 'chart-pie-icon',
-                disabled: false,
+                disabled: true,
                 ref: 'contractbyCategoryButton',
                 scope: this,
                 handler: function(){
@@ -348,7 +354,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                      if(!(values.queryby == 'pipeline' && values.pipeline )){
                         Ext.Msg.show({
                            
-                           msg: 'This feature is not implemented yet. Please select "Query by Pipeline/Storage Facility" and select a pipeline in the "Refine Query" box',
+                           msg: 'Please select a Pipeline in the "Refine Query" box',
                            buttons: Ext.Msg.OK,
                            animEl: 'elId',
                            icon: Ext.MessageBox.INFO
