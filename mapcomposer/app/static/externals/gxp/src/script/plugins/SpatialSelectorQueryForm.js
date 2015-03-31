@@ -52,7 +52,15 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
     
     invalidRegexFieldMsgTitle: "Invalid Fields",
     
-    invalidRegexFieldMsgText: "One or more fields are incorrect!",    
+    invalidRegexFieldMsgText: "One or more fields are incorrect!",
+    
+    unknownErrorMsgTitle: 'Error',
+    
+    unknownErrorMsgText: 'Unknown error occurred',
+    
+    errorCode: 'Error Code',
+    
+    errorText: 'Error Text',
     
     /** api: config[spatialSelectorsConfig]
      * ``Object``
@@ -457,7 +465,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         
         this.exceptionCallback = function(errorResponse) {
             var errMsgTemplate = new Ext.Template(
-            '<b>Error Code</b>: {exceptionCode}<br><b>Error Text</b>: {exceptionText}',
+            '<b>' + me.errorCode + '</b>: {exceptionCode}<br><b>' + me.errorText + '</b>: {exceptionText}',
             {
             	compiled: true,
             	disableFormats: true
@@ -475,8 +483,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             	}
             
             Ext.Msg.show({
-            	title: 'Error',
-            	msg: errMsgText || 'Unknown error occurred',
+            	title: me.unknownErrorMsgTitle,
+            	msg: errMsgText || me.unknownErrorMsgText,
             	buttons: Ext.Msg.OK,
             	icon: Ext.Msg.ERROR
             });

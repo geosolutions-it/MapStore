@@ -854,7 +854,11 @@ GeoExt.Lang.add("de", {
         noFilterSelectedMsgTitle: "Keinen Filter ausgewählt",    
         noFilterSelectedMsgText: "Sie müssen mindestens einen Filter auswählen",    
         invalidRegexFieldMsgTitle: "Ungültige Domänen",    
-        invalidRegexFieldMsgText: "Eine oder mehrere Domänen sind falsch!"
+        invalidRegexFieldMsgText: "Eine oder mehrere Domänen sind falsch!",
+        unknownErrorMsgTitle: 'Fehler',
+        unknownErrorMsgText: 'Unbekannter Fehler aufgetreten',
+        errorCode: 'Fehlercode',
+        errorText: 'Fehlermeldung'
     },
 	
 	"gxp.plugins.FeatureManager.prototype":{
