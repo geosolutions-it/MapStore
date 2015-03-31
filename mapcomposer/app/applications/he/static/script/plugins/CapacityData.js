@@ -75,7 +75,6 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
     addOutput: function (config) {
         var source = this.target.layerSources[this.source];
         var today = new Date();
-        var me = this;
         var form = {
             xtype: 'form',
             labelAlign: 'top',
@@ -220,6 +219,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                         mapping: "properties.pl_FERC"
                     }],
                     listeners: {
+                        scope: this,
                         select: function (combo, record, index) {
                             combo.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(false);
                             combo.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.setDisabled(false);
@@ -227,27 +227,27 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                             var cql_filter_string = "FERC = '"+record.get('pl_FERC')+"'";
                                 
                             // add or update layer
-                            if(!me.pipelineLayer){
+                            if(!this.pipelineLayer){
                                 
-                                var layerProps = Ext.apply(me.pipelineLayerConfig, {
+                                var layerProps = Ext.apply(this.pipelineLayerConfig, {
                                     vendorParams: {
                                         cql_filter: cql_filter_string
                                     }
                                 });
 
                                 // Create and add layer to map
-                                var source = me.target.tools.addlayer.checkLayerSource(me.geoServerUrl);
+                                var source = this.target.tools.addlayer.checkLayerSource(this.geoServerUrl);
                                 var layerRecord = source.createLayerRecord(layerProps);
-                                me.pipelineLayer = layerRecord.getLayer();
-                                me.target.mapPanel.layers.add([layerRecord]);
+                                this.pipelineLayer = layerRecord.getLayer();
+                                this.target.mapPanel.layers.add([layerRecord]);
                                 
                             }else{
                                 // merge params to layer
-                                me.pipelineLayer.vendorParams = Ext.apply(me.pipelineLayer.vendorParams,{
+                                this.pipelineLayer.vendorParams = Ext.apply(this.pipelineLayer.vendorParams,{
                                     cql_filter: cql_filter_string
                                 });
 
-                                me.pipelineLayer.mergeNewParams({
+                                this.pipelineLayer.mergeNewParams({
                                     cql_filter: cql_filter_string
                                 });
                             }
@@ -312,9 +312,10 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                                         country.setDisabled(false);
                                         country.vendorParams = {
                                             //cql_filter: "cnty_StateFIPS = '" + record.get(combo.valueField) + "'"
-                                            viewparams : me.createViewParams()
+                                            viewparams : this.createViewParams()
                                         };
-                                    }
+                                    },
+                                    scope: this
                                 }
                             }
                         }]
@@ -537,16 +538,16 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         
         // Event handlers to react to tab changes
         this.output.on('tabhide', function(){
-            if(me.pipelineLayer){
-                me.pipelineLayer.setVisibility(false);
+            if(this.pipelineLayer){
+                this.pipelineLayer.setVisibility(false);
             }
-        });
+        }, this);
         
         this.output.on('tabshow', function(){
-            if(me.pipelineLayer){
-                me.pipelineLayer.setVisibility(true);
+            if(this.pipelineLayer){
+                this.pipelineLayer.setVisibility(true);
             }
-        });
+        }, this);
         
         return this.output;
     },

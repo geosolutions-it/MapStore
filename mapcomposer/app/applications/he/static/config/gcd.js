@@ -228,22 +228,30 @@
             "featureGridContainer":"results_panel",
             "resultsGridCardPanel":"shippers_results_panel",
             "outputTarget":"gcd"
-	  },{
-	    "ptype":"he_gcd_statistics",
-        "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"},
-        "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
-        "source": "gs",
-        "countryLayer":"gascapacity:gcd_lst_USCounties",
-        "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
-        "layerName":"gascapacity:test_capacity_point",
-        "layerSource":"gs",
-		"titleText": "Statistics",
-		  "outputConfig":{
-			 "id":"MapperaForm",
-			 "cardId": 2
-		  },
-		  "outputTarget":"gcd"
-	  }, {
+        },{
+            "ptype":"he_gcd_statistics",
+            "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"},
+            "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
+            "source": "gs",
+            "countryLayer":"gascapacity:gcd_lst_USCounties",
+            "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
+            "layerName":"gascapacity:test_capacity_point",
+            "layerSource":"gs",
+            "titleText": "Statistics",
+            "pipelineLayerConfig": {
+                    "title": "Pipeline",
+                    "name": "GCD_Users_Z0:GCD_INTER_PL",
+                    "layers": "GCD_Users_Z0:GCD_INTER_PL",
+                    "styles": "NG_PIPE" ,
+                    "transparent": true,
+                    "displayInLayerSwitcher": false
+            },
+            "outputConfig":{
+                "id":"MapperaForm",
+                "cardId": 2
+            },
+            "outputTarget":"gcd"
+        }, {
 		  "ptype": "gxp_featuremanager",
           "remoteSort":true,
           "pagingType": 1,

@@ -72,7 +72,6 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
      */
     addOutput: function (config) {
         var today = new Date();
-        var me = this;
         var form = {
             xtype: 'form',
             labelAlign: 'top',
@@ -113,17 +112,18 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                         }
                     ],
                     listeners: {
+                        scope: this,
                         change: function (c, checked) {
                             var value = c.getValue().inputValue;
-                            var refineFieldset = this.refOwner.refOwner.refine;
+                            var refineFieldset = c.refOwner.refOwner.refine;
                             refineFieldset.items.each(function (item) {
                                 if (item.filter) {
                                     item.setVisible(value == item.filter);
                                     if(item.inputValue && item.inputValue == 'all' && value == item.filter){
-                                        me.enableDisableDates(item, !item.checked);
+                                        this.enableDisableDates(item, !item.checked);
                                     }
                                 }
-                            });
+                            }, this);
                             
                             if(value == 'pipeline'){
                                 c.refOwner.refOwner.buttonsContainer.contractbyCategoryButton.show();
@@ -147,7 +147,6 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                     ref: 'pipeline',
                     filter: 'pipeline',
                     xtype: 'gxp_searchboxcombo',
-                    avoidSelectEvent: true,
                     emptyText: 'Select a pipeline',
                     fieldLabel: ' Pipeline Name',
                     anchor: '100%',
@@ -186,6 +185,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                         }
                     ],
                     listeners: {
+                        scope: this,
                         select: function (combo, record, index) {
                             combo.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(false);
                             combo.refOwner.refOwner.buttonsContainer.contractbyCategoryButton.setDisabled(false);
@@ -193,27 +193,27 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                             var cql_filter_string = "FERC = '"+record.get('pl_FERC')+"'";
                                 
                             // add or update layer
-                            if(!me.pipelineLayer){
+                            if(!this.pipelineLayer){
                                 
-                                var layerProps = Ext.apply(me.pipelineLayerConfig, {
+                                var layerProps = Ext.apply(this.pipelineLayerConfig, {
                                     vendorParams: {
                                         cql_filter: cql_filter_string
                                     }
                                 });
 
                                 // Create and add layer to map
-                                var source = me.target.tools.addlayer.checkLayerSource(me.geoServerUrl);
+                                var source = this.target.tools.addlayer.checkLayerSource(this.geoServerUrl);
                                 var layerRecord = source.createLayerRecord(layerProps);
-                                me.pipelineLayer = layerRecord.getLayer();
-                                me.target.mapPanel.layers.add([layerRecord]);
+                                this.pipelineLayer = layerRecord.getLayer();
+                                this.target.mapPanel.layers.add([layerRecord]);
                                 
                             }else{
                                 // merge params to layer
-                                me.pipelineLayer.vendorParams = Ext.apply(me.pipelineLayer.vendorParams,{
+                                this.pipelineLayer.vendorParams = Ext.apply(this.pipelineLayer.vendorParams,{
                                     cql_filter: cql_filter_string
                                 });
 
-                                me.pipelineLayer.mergeNewParams({
+                                this.pipelineLayer.mergeNewParams({
                                     cql_filter: cql_filter_string
                                 });
                             }
@@ -397,16 +397,16 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
 
         // Event handlers to react to tab changes
         this.output.on('tabhide', function(){
-            if(me.pipelineLayer){
-                me.pipelineLayer.setVisibility(false);
+            if(this.pipelineLayer){
+                this.pipelineLayer.setVisibility(false);
             }
-        });
+        }, this);
         
         this.output.on('tabshow', function(){
-            if(me.pipelineLayer){
-                me.pipelineLayer.setVisibility(true);
+            if(this.pipelineLayer){
+                this.pipelineLayer.setVisibility(true);
             }
-        });
+        }, this);
 
         return this.output;
     },

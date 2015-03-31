@@ -58,24 +58,22 @@ gxp.plugins.he.Statistics = Ext.extend(gxp.plugins.Tool, {
      *  :arg config: ``Object``
      */
     addOutput: function(config) {
-	   
         var today = new Date();
-		this.form  = {
-			xtype:'form',
+        this.form  = {
+            xtype:'form',
             labelAlign:'top',
-			title: this.titleText,
-			layout: "form",
-			minWidth:180,
-			autoScroll:true,
-			frame:true,
+            title: this.titleText,
+            layout: "form",
+            minWidth:180,
+            autoScroll:true,
+            frame:true,
             
-			items:[{
+            items:[{
                         
                     ref:'pipeline',
                     hiddenName:'pipeline',
                     filter:'pipeline',
                     xtype:'gxp_searchboxcombo',
-                    avoidSelectEvent:true,
                     emptyText: 'Select a pipeline',
                     fieldLabel:' Select A Pipeline To Begin',
                     anchor:'100%',
@@ -98,24 +96,24 @@ gxp.plugins.he.Statistics = Ext.extend(gxp.plugins.Tool, {
                     sortBy: 'pl_PipelineName',
                     queriableAttributes:[
                         "pl_PipelineName"
-                     ],
+                    ],
                     tpl:"<tpl for=\".\"><div class=\"search-item\">{pl_PipelineName}</div></tpl>",
                     recordModel:[
-                        {name:'id',
-                         mapping:'id'
+                        {
+                            name:'id',
+                            mapping:'id'
                         },{
                            name:"pl_PipelineName",
                            mapping:"properties.pl_PipelineName"
-                        },
-                        {
-                           name:"pl_FERC",
-                           mapping:"properties.pl_FERC"
-                        },
-                        {
+                        },{
                            name:"pl_FERC",
                            mapping:"properties.pl_FERC"
                         }
-                     ]
+                    ],
+                    listeners: {
+                        scope: this,
+                        select: this.pipelineSelectionListener
+                    }
                 },{
                     layout:'hbox',
                     xtype: 'buttongroup',
@@ -186,10 +184,52 @@ gxp.plugins.he.Statistics = Ext.extend(gxp.plugins.Tool, {
 		
 		this.output = gxp.plugins.he.Statistics.superclass.addOutput.call(this, config);
 		
-		
-		
+		// Event handlers to react to tab changes
+        this.output.on('tabhide', function(){
+            if(this.pipelineLayer){
+                this.pipelineLayer.setVisibility(false);
+            }
+        }, this);
+        
+        this.output.on('tabshow', function(){
+            if(this.pipelineLayer){
+                this.pipelineLayer.setVisibility(true);
+            }
+        }, this);
+        
 		return this.output;
-	}
+	},
+    
+    pipelineSelectionListener: function (combo, record, index) {
+        
+        var cql_filter_string = "FERC = '"+record.get('pl_FERC')+"'";
+            
+        // add or update layer
+        if(!this.pipelineLayer){
+            
+            var layerProps = Ext.apply(this.pipelineLayerConfig, {
+                vendorParams: {
+                    cql_filter: cql_filter_string
+                }
+            });
+
+            // Create and add layer to map
+            var source = this.target.tools.addlayer.checkLayerSource(this.geoServerUrl);
+            var layerRecord = source.createLayerRecord(layerProps);
+            this.pipelineLayer = layerRecord.getLayer();
+            this.target.mapPanel.layers.add([layerRecord]);
+            
+        }else{
+            // merge params to layer
+            this.pipelineLayer.vendorParams = Ext.apply(this.pipelineLayer.vendorParams,{
+                cql_filter: cql_filter_string
+            });
+
+            this.pipelineLayer.mergeNewParams({
+                cql_filter: cql_filter_string
+            });
+        }
+    }
     
  });
  Ext.preg(gxp.plugins.he.Statistics.prototype.ptype, gxp.plugins.he.Statistics);
