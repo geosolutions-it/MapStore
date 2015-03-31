@@ -56,13 +56,26 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         //,["'W'", "Withdrawal"]
     ],
     layerName: "gascapacity:test_capacity_point",
+    
+    /** api: Configuration of the layer to display on the map 
+             and to filter with the select FERC 
+    **/
+    pipelineLayerConfig: {
+        title: "Some fancy title",
+        name: "GCD_Users_Z0:GCD_INTER_PL",
+        layers: "GCD_Users_Z0:GCD_INTER_PL",
+        styles: "NG_PIPE" ,
+        transparent: true,
+        displayInLayerSwitcher: false
+    },
+    
     /*
      *  :arg config: ``Object``
      */
     addOutput: function (config) {
         var source = this.target.layerSources[this.source];
         var today = new Date();
-        var me =this;
+        var me = this;
         var form = {
             xtype: 'form',
             labelAlign: 'top',
@@ -205,14 +218,39 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     }, {
                         name: "pl_FERC",
                         mapping: "properties.pl_FERC"
-                    }, {
-                        name: "pl_FERC",
-                        mapping: "properties.pl_FERC"
                     }],
                     listeners: {
                         select: function (combo, record, index) {
-                            this.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(false);
-                            this.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.setDisabled(false);
+                            combo.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(false);
+                            combo.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.setDisabled(false);
+                            
+                            var cql_filter_string = "FERC = '"+record.get('pl_FERC')+"'";
+                                
+                            // add or update layer
+                            if(!me.pipelineLayer){
+                                
+                                var layerProps = Ext.apply(me.pipelineLayerConfig, {
+                                    vendorParams: {
+                                        cql_filter: cql_filter_string
+                                    }
+                                });
+
+                                // Create and add layer to map
+                                var source = me.target.tools.addlayer.checkLayerSource(me.geoServerUrl);
+                                var layerRecord = source.createLayerRecord(layerProps);
+                                me.pipelineLayer = layerRecord.getLayer();
+                                me.target.mapPanel.layers.add([layerRecord]);
+                                
+                            }else{
+                                // merge params to layer
+                                me.pipelineLayer.vendorParams = Ext.apply(me.pipelineLayer.vendorParams,{
+                                    cql_filter: cql_filter_string
+                                });
+
+                                me.pipelineLayer.mergeNewParams({
+                                    cql_filter: cql_filter_string
+                                });
+                            }
                         }
                     }
                 }, {
@@ -493,7 +531,23 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
             buttons: []
         };
         config = Ext.apply(form, config || {});
+        
+
         this.output = gxp.plugins.he.CapacityData.superclass.addOutput.call(this, config);
+        
+        // Event handlers to react to tab changes
+        this.output.on('tabhide', function(){
+            if(me.pipelineLayer){
+                me.pipelineLayer.setVisibility(false);
+            }
+        });
+        
+        this.output.on('tabshow', function(){
+            if(me.pipelineLayer){
+                me.pipelineLayer.setVisibility(true);
+            }
+        });
+        
         return this.output;
     },
     
@@ -530,10 +584,8 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         }
         
         var viewParams=this.createViewParams();
-        var filter// = this.createFilter(values);
-        //var cql_filter = filter.toString();
         var layerProps = {
-            title: this.layerName,
+            title: "Query Result",
             name: this.layerName,
             layers: this.layerName,
             //styles: style ,
@@ -557,7 +609,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
             var wms = record.getLayer();
 
             var data = {
-                title: this.layerName,
+                title: "Query Results",
                 source: this.source,
                 name: this.layerName,
                 group: "data",
@@ -593,6 +645,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
             });
             
         }
+        
         var layer =this.layerRecord.getLayer();
         //target.mapPanel.map.addLayers([wms]);
         layer.vendorParams = Ext.apply(layer.vendorParams,{
@@ -607,7 +660,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         featureManager.clearFeatureStore();
         featureManager.layerRecord = undefined;
         featureManager.setLayer(this.layerRecord);
-        featureManager.loadFeatures(filter);
+        featureManager.loadFeatures();
         var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
         if(container){
             container.expand();
@@ -634,7 +687,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         var aggregation = "AGGREGATION:" + values.aggregation;
         var viewParams = [startDate,endDate,aggregation];
         
-        if(values.ferc && values.ferc != ''){
+        if(values.pipeline && values.pipeline != ''){
             var ferc = "FERC:" + values.pipeline;
             viewParams.push(ferc);
         }

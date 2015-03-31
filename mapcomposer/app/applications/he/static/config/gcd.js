@@ -172,26 +172,34 @@
 		  },
           "resultsCardPanel":"results_panel",
 		  "outputTarget":"west"
-	   }, {
-        "id": "capacity_data",
-	    "ptype":"he_capacity_data",
-        "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
-		"titleText": "Flows & Statistics",
-        "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
-        "source": "gs",
-        "bypipelineLayerName":"gascapacity:gcd_v_capacity_by_pipeline_agg",
-        "bypointLayerName":"gascapacity:gcd_v_capacity_by_point_agg",
-        "statesLayer":"gascapacity:gcd_lst_States",
-        "countryLayer":"gascapacity:gcd_lst_USCounties",
-        "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
-        "featureManager": "featuremanager",
-        "featureGridContainer":"results_panel",
-		"outputConfig":{
-			 "id":"CapacityDataForm",
-			 "cardId": 0
-        },
-		"outputTarget":"gcd"
-	  },{
+        }, {
+            "id": "capacity_data",
+            "ptype":"he_capacity_data",
+            "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
+            "titleText": "Flows & Statistics",
+            "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
+            "source": "gs",
+            "bypipelineLayerName":"gascapacity:gcd_v_capacity_by_pipeline_agg",
+            "bypointLayerName":"gascapacity:gcd_v_capacity_by_point_agg",
+            "statesLayer":"gascapacity:gcd_lst_States",
+            "countryLayer":"gascapacity:gcd_lst_USCounties",
+            "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
+            "pipelineLayerConfig": {
+                "title": "Pipeline",
+                "name": "GCD_Users_Z0:GCD_INTER_PL",
+                "layers": "GCD_Users_Z0:GCD_INTER_PL",
+                "styles": "NG_PIPE" ,
+                "transparent": true,
+                "displayInLayerSwitcher": false
+            },
+            "featureManager": "featuremanager",
+            "featureGridContainer":"results_panel",
+            "outputConfig":{
+                 "id":"CapacityDataForm",
+                 "cardId": 0
+            },
+            "outputTarget":"gcd"
+        },{
 	    "ptype":"he_shippers",
         "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
         "source": "gs",

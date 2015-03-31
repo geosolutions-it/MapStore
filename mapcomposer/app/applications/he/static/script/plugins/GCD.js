@@ -94,6 +94,14 @@ gxp.plugins.he.GCD = Ext.extend(gxp.plugins.Tool, {
                         [...]
                       }
                 **/
+                beforetabchange: function(tabPanel, newTab, currentTab){                    
+                    if(currentTab){
+                        currentTab.fireEvent('tabhide');
+                    }
+                    if(newTab){
+                        newTab.fireEvent('tabshow');
+                    }
+                },
                 tabchange: function(tabPanel, tab){
                     var cardPanel = me.resultsCardPanel ? Ext.getCmp(me.resultsCardPanel) : null;
                     if(cardPanel){
