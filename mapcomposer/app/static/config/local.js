@@ -280,6 +280,14 @@
             "group": ["Limiti","Limiti","Limiti"," Limiti"],
             "visibility": false
         },{
+            "source": "destinationtiled",
+            "title": "Comuni",
+            "name": "siig_geo_pl_comuni",
+            "displayInLayerSwitcher": true,
+            "tiled": true,
+            "group": ["Limiti","Limiti","Limiti"," Limiti"],
+            "visibility": false
+        },{
 			"source": "destinationtiled",
 			"title": "Gate",
 			"name": "gate_geo",

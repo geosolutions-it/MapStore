@@ -45,7 +45,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     seriousnessLabel: "Entità",
     resetButton: "Reimposta",
     cancelButton: "Annulla",
-    viewMapButton: "Visualizza Mappa",
+    viewMapButton: "Avvia Elaborazione",
     formLabel: "Impostazioni di Elaborazione",
     bboxValidationTitle: "Selezione Area di Interesse",
     requiredMaterial: "Questa formula richiede di specificare la sostanza",
@@ -115,8 +115,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     selectionLayerTitle: "ElaborazioneStd", 
     selectionLayerBaseURL: "http://localhost:8080/geoserver/wms",
     selectionLayerProjection: "EPSG:32632",    
-    
-    maxROIArea: null,
     
     urlEPSG: null,
     epsgWinHeight: null,
@@ -1504,93 +1502,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 
         var containerTab = Ext.getCmp(this.outputTarget);
         
-        /*################
-        ##################
-        this.sliderFiledRischioSociale=new gxp.form.SliderRangesFieldSet({
-            title: this.humanRiskLabel,
-            id:"rischio_sociale",    
-            labels: true,
-            multiSliderConf:{
-                vertical : false,
-                ranges: [
-                {
-                    maxValue: 100, 
-                    name:this.lowRiskLabel, 
-                    id:"range_low_sociale"
-                },
-                {
-                    maxValue: 500, 
-                    name:this.mediumRiskLabel, 
-                    id:"range_medium_sociale"
-                },
-                {
-                    maxValue: 1000, 
-                    name:this.highRiskLabel
-                }
-                ],                                        
-                width   : 330,
-                minValue: 0,
-                maxValue: 1000
-            }
-        });
-        
-        
-        this.sliderFiledRischioAmbientale=new gxp.form.SliderRangesFieldSet({
-            title: this.notHumanRiskLabel,
-            id:"rischio_ambientale",    
-            labels: true,
-            multiSliderConf:{
-                vertical : false,
-                ranges: [
-                {
-                    maxValue: 100, 
-                    name:this.lowRiskLabel, 
-                    id:"range_low_ambientale"
-                },
-
-                {
-                    maxValue: 500, 
-                    name:this.mediumRiskLabel, 
-                    id:"range_medium_ambientale"
-                },
-                {
-                    maxValue: 1000, 
-                    name:this.highRiskLabel
-                }
-                ],                                        
-                width   : 330,
-                minValue: 0,
-                maxValue: 1000
-            }
-        });
-        
-        this.temasPanel = new Ext.TabPanel({
-            autoTabs:true,
-            activeTab:0,
-            deferredRender:false,
-            border:false,
-            items:[{   
-                title: this.humanRiskLabel,
-                listeners: {
-                    activate: function(p){
-                       me.sliderFiledRischioSociale.render(Ext.get('rischio_sociale_slider'));
-                    }
-                },
-                html: "<div id='rischio_sociale_slider'/>"
-            },{   
-                title: this.notHumanRiskLabel,
-                listeners: {
-                    activate: function(p){
-                       me.sliderFiledRischioAmbientale.render(Ext.get('rischio_ambientale_slider'));
-                    }
-                },
-                html: "<div id='rischio_ambientale_slider'/>"
-            } 
-            ]
-        });
-        ################
-        ################*/
-        
         this.panel = new Ext.FormPanel({
             border: false,
             layout: "fit",
@@ -1621,7 +1532,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 iconCls: 'visualizzation-button',
                 scope: this,
                 handler: function(){                    
-                    var params = this.viewMap();
+                    var params = this.startProcessing();
                 }
             }]
         });
@@ -1672,21 +1583,19 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *     executes the processing using given parameters
      */
     doProcess: function(){
-        var status = this.getStatus(this.panel.getForm());                
+        var status = this.getStatus();                
         
         //
         // Remove the AOI box
         //
         this.aoiFieldset.removeAOILayer();
-        // this.selectAOI.deactivate();
         
+        // remove Damage Calculus drawn area
         this.selDamage.clearDrawFeature();
         
         this.switchToSyntheticView();
+        
         var syntView = this.appTarget.tools[this.syntheticView];
-        
-        //  syntView.getControlPanel().enable();
-        
         syntView.setStatus(status);
         
         Ext.getCmp("south").collapse();
@@ -1725,40 +1634,15 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }              
     },
     
-    /** private: method[makeParams]
+    /** private: method[validateForm]
      *  :arg form: ``Object``     
      *  :arg roi: ``Object``     
-     *     builds processing params with form values and selected roi
+     *     validate forms parameters. If there is no error, processing is started.
      */
-    makeParams: function(form, roi){
+    validateForm: function(form, roi){
         var error = null;
         
         var map = this.appTarget.mapPanel.map;
-        
-        if(!roi){
-            return;
-        }
-        /*var bbox, fromPrj, selectionPrj;
-        if(roi instanceof OpenLayers.Bounds) {
-            bbox = new OpenLayers.Bounds.fromString(roi.toBBOX());
-            fromPrj = map.getProjectionObject();
-            selectionPrj = new OpenLayers.Projection(this.selectionLayerProjection);
-        } else {
-            bbox = roi.geometry.getBounds();
-            fromPrj = new OpenLayers.Projection("EPSG:4326");
-            selectionPrj = map.getProjectionObject();
-        }
-        
-        //
-        // Check about the projection (this could needs Proj4JS definitions inside the mapstore config)
-        //
-        if(!fromPrj.equals(selectionPrj)){
-            bbox = this.reproject(
-                bbox,
-                fromPrj,    
-                selectionPrj
-            );
-        }*/
         
         var formula = this.formula.getValue();
         var sostanza = parseInt(this.getComboRecord(this.sostanze).data.value, 10);
@@ -1797,7 +1681,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             if(roi instanceof OpenLayers.Bounds) {
                 var ambitoTerritoriale = formulaRec.get('ambito_territoriale')
                 var area = (roi.right - roi.left) * (roi.top - roi.bottom);
-                
+                // TODO: relax this
                 if(ambitoTerritoriale && area > this.maxProcessingArea && visibleOnArcs) {
                     error = this.areaTooBigMessage;
                 }
@@ -1829,41 +1713,20 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return combo.store.getAt(combo.store.findExact(field || 'name', combo.getValue()));
     },
     
-    /** private: method[viewMap]    
-     *     handler of the "View Map" button, checks input data and proceed to process
-     *     if everything is ok
+    
+    
+    /** private: method[startProcessing]    
      */
-    viewMap: function(){
-        if(! this.aoiFieldset.isValid()){            
+    startProcessing: function(){
+        if(!this.aoiFieldset.isValid()){            
             Ext.Msg.show({
                 title: this.bboxValidationTitle,
                 buttons: Ext.Msg.OK,
                 msg: this.invalidAOI,
                 icon: Ext.MessageBox.WARNING
             });        
-                        
-            this.makeParams(this.panel.getForm(), null);
-        }else{
-            var selbbox =  this.aoiFieldset.getAOIMapBounds();
-            
-            if(selbbox instanceof OpenLayers.Bounds && this.maxROIArea ? selbbox.toGeometry().getArea() > this.maxROIArea : false){
-                
-                var useROI = function(buttonId, text, opt){
-                    this.makeParams(this.panel.getForm(), buttonId === 'ok' ? selbbox : null);
-                };
-                
-                Ext.Msg.show({
-                    title: this.bboxValidationTitle,
-                    buttons: Ext.Msg.OKCANCEL,
-                    fn: useROI,
-                    msg: this.bboxTooBig,
-                    icon: Ext.MessageBox.WARNING,
-                    scope: this
-                });                
-            }else{     
-            
-                this.makeParams(this.panel.getForm(), selbbox);
-            }
+        } else {
+            this.validateForm(this.panel.getForm(), this.aoiFieldset.getAOIMapBounds());
         }
     },
     
@@ -1976,7 +1839,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *  :arg form: ``Object``        
      *     extract processing parameters (status) from the compiled form
      */
-    getStatus: function(form){
+    getStatus: function(){
         var obj = {};
     
         obj.processing = this.elaborazione.getValue();        
@@ -2073,8 +1936,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             id = roi.id;
         }
         if(this.aoiFieldset.isDirty()){
-            label = this.selectionAreaLabel;
-               
+            label = this.selectionAreaLabel;    
         }else{
             label = "Regione Piemonte"; 
         }

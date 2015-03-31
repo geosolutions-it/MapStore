@@ -642,7 +642,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                 bbox: bbox,
                 type: type,
                 id: id
-            }
+            };
         }
     },
     

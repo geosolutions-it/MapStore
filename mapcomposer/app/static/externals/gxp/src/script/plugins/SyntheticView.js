@@ -394,9 +394,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             bounds = '0,1,0,1'.replace(/,/g, "\\\,");
             wkt = this.status.damageArea.replace(/,/g, "\\\,");            
         } else {
-            wkt = 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'.replace(/,/g, "\\\,");
+            wkt = 'GEOMETRYCOLLECTION EMPTY';
         }
-        var targetViewParams = "bounds:" + bounds + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman + ';wkt:' + wkt;
+        var targetViewParams = this.getRoiViewParams(this.status, bounds, this.status.processing !== 4) 
+            + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman + ';wkt:' + wkt;
         
         this.analyticViewLayers.push(name);
         this.analyticViewLayers.push(this.selectedTargetLayer);
@@ -849,7 +850,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                 var status;
                                 var jsonStatus;
                                 if(this.processingPane.panel){
-                                    status = this.processingPane.getStatus(this.processingPane.panel.getForm());
+                                    status = this.processingPane.getStatus();
                                     jsonStatus = Ext.util.JSON.encode(status);
                                 }else{
                                     status = this.processingPane.getInitialStatus();
@@ -1852,17 +1853,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         var wfsGrid = Ext.getCmp("featuregrid");
                         wfsGrid.setCurrentPanel('roads');
                         this.loadRoadsGrid();
-                        /*var wfsGrid = Ext.getCmp("featuregrid");
-                        var viewParams;
-                        wfsGrid.setCurrentPanel(this.simulationEnabled ? 'roads_edit' : 'roads');
-                        
-                        if(this.simulationEnabled) {
-                            var map = this.target.mapPanel.map;        
-                            var status = this.getStatus();        
-                            var bounds = this.getBounds(null, map);
-                            viewParams = "bounds:" + bounds;                        
-                        }
-                        this.loadRoadsGrid(viewParams);            */
                     }
                 }];        
         
@@ -2375,8 +2365,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 if(!sostanzaObj) {
                     sostanzaObj = {};
                     this.radiusData[idSostanza] = sostanzaObj;
-                }
-               
+                }               
                 var scenarioObj = sostanzaObj[idScenario];
                 if(!scenarioObj) {
                     scenarioObj = {
@@ -2398,16 +2387,57 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
        }, this);
     },
     
-    loadRoadsGrid: function(viewParams) {
-        if(!viewParams) {
-            var map = this.target.mapPanel.map;        
-            var status = this.getStatus();        
-            var bounds = this.getBounds(status, map);
-            
-            viewParams = "bounds:" + bounds;
+    getRoiViewParams: function(status, bounds, useLimiti) {
+        status = status || this.status;
+        var viewParams = "bounds:" + bounds;
+        if(!this.isRoiFromAoi() && useLimiti) {
+            viewParams += ';' + status.roi.type + ':' + status.roi.id;
         }
+        return viewParams;
+    },
+    
+    loadRoadsGrid: function() {
+        var map = this.target.mapPanel.map;        
+        var status = this.getStatus();        
+        var bounds = this.getBoundsForViewParams(status, map);
+        var viewParams = this.getRoiViewParams(status, bounds, true);
+            
         var wfsGrid = Ext.getCmp("featuregrid");
         wfsGrid.loadGrids(null, null, this.selectionLayerProjection, viewParams);                                
+    },
+    
+    getSpatialFilter: function(bounds) {
+        return new OpenLayers.Filter.Spatial({ 
+          type: OpenLayers.Filter.Spatial.BBOX,
+          property: 'geometria',
+          value: bounds, 
+          projection: map.getProjection() 
+        });
+    },
+    
+    getLimitiFilter: function(type, id) {
+        return new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            property: this.destinationNS + ":" + ({
+                'comune': 'cod_comune',
+                'provincia': 'cod_provincia'
+            }[type]),
+            value: id
+        });
+        
+    },
+    
+    getRoadsFilter: function(status) {
+        status = status || this.status;
+        if(status && status.roi) {
+            if(this.isRoiFromAoi()) {
+                return this.getSpatialFilter(new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX()));
+            } else {
+                return this.getLimitiFilter(status.roi.type, status.roi.id);
+            }
+        } else {
+            return this.getSpatialFilter(map.getExtent());
+        }   
     },
     
     loadDamageGrid: function() {       
@@ -2438,13 +2468,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         } else {
             var riskProcess = this.wpsClient.getProcess('destination', 'ds:MultipleBuffer');  
         
-            var bounds;
-            if(status && status.roi) {
-                bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
-            } else {
-                bounds = map.getExtent();
-            }   
-            
             var radius = this.getRadius();
 			var unorderedDistances = [];
 			if(radius.radiusNotHum) {
@@ -2471,12 +2494,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			}
             
             
-            var filter = new OpenLayers.Filter.Spatial({ 
-              type: OpenLayers.Filter.Spatial.BBOX,
-              property: 'geometria',
-              value: bounds, 
-              projection: map.getProjection() 
-            });
 			wfsGrid.distances = unorderedDistances;
             wfsGrid.getEl().mask(this.loadMsg);
             
@@ -2492,7 +2509,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                             wfs: {
                                 featureType: 'destination:siig_geo_ln_arco_1', 
                                 version: '1.1.0',
-                                filter: filter
+                                filter: this.getRoadsFilter()
                             }
                         }
                     }),
@@ -2564,25 +2581,34 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
     },
     
-    getBounds: function(status, map, buffer) {
-        if(status && status.roi && status.roi.type === 'aoi') {
-            // bounds: current map extent or roi saved in the status
-            var bounds = this.getRoi(status, map, buffer);
-            
-            var mapPrj = map.getProjectionObject();
-            var selectionPrj = new OpenLayers.Projection(this.selectionLayerProjection);
-            if(!mapPrj.equals(selectionPrj)){
-                bounds = this.reproject(
-                    bounds,
-                    mapPrj,    
-                    selectionPrj
-                );
-            }
-        
-            return bounds.toBBOX().replace(/,/g, "\\\,");
+    isRoiFromAoi: function(status) {
+        status = status || this.status;
+        return status && status.roi && status.roi.type === 'aoi';
+    },
+    
+    getBoundsForViewParams: function(status, map, buffer) {
+        if(this.isRoiFromAoi()) {
+            return this.getBounds(status, map, buffer);
         } else {
             return '0,1,0,1'.replace(/,/g, "\\\,");
         }
+    },
+    
+    getBounds: function(status, map, buffer) {
+        // bounds: current map extent or roi saved in the status
+        var bounds = this.getRoi(status, map, buffer);
+        
+        var mapPrj = map.getProjectionObject();
+        var selectionPrj = new OpenLayers.Projection(this.selectionLayerProjection);
+        if(!mapPrj.equals(selectionPrj)){
+            bounds = this.reproject(
+                bounds,
+                mapPrj,    
+                selectionPrj
+            );
+        }
+    
+        return bounds.toBBOX().replace(/,/g, "\\\,");
     },
     
         
@@ -2606,9 +2632,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 bounds = '0,1,0,1'.replace(/,/g, "\\\,");
                 wkt = this.status.damageArea.replace(/,/g, "\\\,");            
             } else {
-                wkt = 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))'.replace(/,/g, "\\\,");
+                wkt = 'GEOMETRYCOLLECTION EMPTY';
             }
-            viewParams = "bounds:" + bounds + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman + ';wkt:' + wkt;
+            viewParams = this.getRoiViewParams(this.status, bounds, true) + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman + ';wkt:' + wkt;
         }
         if(!extraTargets && this.status) {
             extraTargets = this.status.simulation.targetsInfo;
@@ -2643,8 +2669,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             roi = this.getRoi();
             layers.push(this.addDamageBuffer(bufferLayerTitle, bufferArea, roi));
         } else {
-            var viewParams = "bounds:" + bounds;
-            
+            var viewParams = this.getRoiViewParams(this.status, bounds, true);
             //var buffer = this.getBufferSizeInPixels(radius.max);
             roi = this.getRoi(null, null, radius.max)
             if(!this.status || this.isMixedTargets()) {
@@ -2723,7 +2748,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, formulaUdm, env, roi, visible) {
         this.currentRiskLayers.push(layer);
-        var viewParams = "bounds:" + bounds 
+        var viewParams = this.getRoiViewParams(status, bounds, true)
             + ';residenti:' + (this.status.target.id.indexOf(1) === -1 ? 0 : 1) 
             + ';turistica:' + (this.status.target.id.indexOf(2) === -1 ? 0 : 1) 
             + ';industria:' + (this.status.target.id.indexOf(4) === -1 ? 0 : 1) 
@@ -2740,9 +2765,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             + ';sostanze:' + this.status.sostanza.id.join('\\,')
             + ';scenari:' + this.status.accident.id.join('\\,')
             + ';gravita:' + this.status.seriousness.id.join('\\,');
-        if(status && status.roi && status.roi.type !== 'aoi') {
-            viewParams += ';' + status.roi.type + ':' + status.roi.id;
-        }
+        
         if(formulaUdm) {
             formulaDesc = formulaDesc + ' ' + formulaUdm;
         }
@@ -2873,7 +2896,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             status = this.status;
         }
         
-        var bounds = this.getBounds(status, map);
+        var bounds = this.getBoundsForViewParams(status, map);
         
         var radius = this.getRadius();
         
@@ -3066,10 +3089,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         //enable save processing button for all processing type except for standard type
         var saveProcMenuButtons = this.fieldSet.getBottomToolbar().items.items[0].menu.items.items[0];
+        saveProcMenuButtons.enable();
         
-            saveProcMenuButtons.enable();
-        
-        var bounds = this.getBounds(status, map);
+        var bounds = this.getBoundsForViewParams(status, map);
         
         if(this.originalRiskLayers === null) {
             this.storeOriginalRiskLayers();
@@ -3382,7 +3404,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.elab.setValue(this.status.processingDesc);
         this.form.setValue(this.status.formulaDesc);
         
-        //this.weather.setValue(this.status.weather);
         this.temporal.setValue(this.status.temporal.name);
         
         this.extent.setValue(this.status.roi.label);
