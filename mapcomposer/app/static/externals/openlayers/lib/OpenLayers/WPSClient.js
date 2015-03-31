@@ -62,6 +62,8 @@ OpenLayers.WPSClient = OpenLayers.Class({
      */
     events: null,
     
+    authToken: null,
+    
     /**
      * Constructor: OpenLayers.WPSClient
      *
@@ -91,6 +93,7 @@ OpenLayers.WPSClient = OpenLayers.Class({
         OpenLayers.Util.extend(this, options);
         this.events = new OpenLayers.Events(this);
         this.servers = {};
+        this.authToken = options.authToken || null;
         for (var s in options.servers) {
             this.servers[s] = typeof options.servers[s] == 'string' ? {
                 url: options.servers[s],
@@ -154,7 +157,8 @@ OpenLayers.WPSClient = OpenLayers.Class({
         var process = new OpenLayers.WPSProcess({
             client: this,
             server: serverID,
-            identifier: processID
+            identifier: processID,
+            authToken: this.authToken
         });
         if (!this.lazy) {
             process.describe();

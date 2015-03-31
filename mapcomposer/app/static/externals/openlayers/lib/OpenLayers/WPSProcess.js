@@ -80,6 +80,8 @@ OpenLayers.WPSProcess = OpenLayers.Class({
      */
     executeCallbacks: null,
     
+    authToken: null,
+    
     /**
      * Constructor: OpenLayers.WPSProcess
      *
@@ -218,7 +220,7 @@ OpenLayers.WPSProcess = OpenLayers.Class({
                     // all chained processes are added as references now, so
                     // let's proceed.
                     OpenLayers.Request.POST({
-                        url: me.client.servers[me.server].url,
+                        url: me.client.servers[me.server].url + (me.authToken ? '?authkey=' + me.authToken : ''),
                         headers: options.headers || undefined,
                         data: new OpenLayers.Format.WPSExecute().write(me.description),
                         success: function(response) {

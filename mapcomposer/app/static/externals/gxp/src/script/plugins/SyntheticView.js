@@ -323,6 +323,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.target.on('portalready', function() {
             this.layerSource = this.target.layerSources[this.layerSourceName];
             this.wpsClient =  new OpenLayers.WPSClient({
+                authToken: this.getAuthKey(),
                 servers: {
                     destination: this.wpsURL
                 }
