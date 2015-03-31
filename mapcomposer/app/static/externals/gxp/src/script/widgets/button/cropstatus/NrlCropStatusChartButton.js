@@ -117,7 +117,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
         var data = this.form.output.getForm().getValues();
         var fields = this.form.output.getForm().getFieldValues();
         var regionList = "'" + data.region_list.toLowerCase() +"'" ;
-        var crop = fields.crop;
+        var crop = this.form.output.form.getValues().crop;
         numRegion.push(regionList);
         
         
@@ -146,6 +146,9 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
             }
         }
         
+        var district = this.form.output.singleFeatureSelector.singleSelector.selectButton.store.data.items[0].data.attributes.district;
+        var province = this.form.output.singleFeatureSelector.singleSelector.selectButton.store.data.items[0].data.attributes.province;
+
         var listVar = {
             numRegion: numRegion,
             season: season,
@@ -154,7 +157,11 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
             crop:crop,
             factorValues: factorValues,
             factorStore: factorStore,
-            today:today
+            today:today,
+            place: {
+                district: district,
+                province: province
+            }
         };
         
         var store = new Ext.data.JsonStore({
@@ -270,6 +277,19 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
             factorStore[i].sort("s_dec", "ASC");    
 			var chart;
 			var unit =listVar.factorStore[i].get('unit');
+            var refYear = parseInt(listVar.year);
+            if (listVar.season == 'rabi'){
+                var yearInTitle = refYear-1 + "-" + (refYear+"").substr(2,2);
+            }else{
+                var yearInTitle = refYear;
+            }
+            var chartTitle = yearInTitle + ' - ' + listVar.factorStore[i].get('label');
+            var aoiLabel = listVar.numRegion[0].replace(/[']/g,'');
+            if (listVar.granType == 'PROVINCE'){
+                aoiLabel = listVar.place.province;
+            }else{
+                aoiLabel = listVar.place.district + ' (' +listVar.place.province+')';
+            }
 			chart = new Ext.ux.HighChart({
 				animation:true,
 				series: [
@@ -292,16 +312,15 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                             
                             "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
                             "<li><p><em> Date: </em>" +  listVar.today +   "</p></li>" +
-                            "<li><p><em> AOI: </em>" + listVar.numRegion[0] +"</p></li>" + 
+                            "<li><p><em> AOI: </em>" + aoiLabel +"</p></li>" +
                             "<li><p><em> Commodity: </em>" + listVar.crop  + "</p></li>" +
 							"<li><p><em> Season: </em>" + listVar.season.toUpperCase() + "</p></li>" +
-							"<li><p><em> Year: </em>" + listVar.year+"</p></li>" +
 						"</ol>" +                                        
 						"</div>",
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
-                        spacingBottom: 65                
+                        spacingBottom: 96
 					},
                     exporting: {
                         enabled: true,
@@ -309,7 +328,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                         url: this.highChartExportUrl
                     },
 					title: {
-						text: listVar.factorStore[i].get('label')		
+						text: chartTitle
 					},					
 					xAxis: [{
 						type: 'datetime',
@@ -370,15 +389,14 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                     subtitle: {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
                               '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
-                              '<span style="font-size:10px;">AOI: '+listVar.numRegion[0]+'</span><br />'+
+                              '<span style="font-size:10px;">AOI: '+ aoiLabel +'</span><br />'+
                               '<span style="font-size:10px;">Commodity: '+listVar.crop+'</span><br />'+
-                              '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
-                              '<span style="font-size:10px;">Year: '+ listVar.year +'</span><br />',
+                              '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />',
                         align: 'left',
                         verticalAlign: 'bottom',
                         useHTML: true,
                         x: 30,
-                        y: -15
+                        y: 16
 					}                    
 				}
 			});

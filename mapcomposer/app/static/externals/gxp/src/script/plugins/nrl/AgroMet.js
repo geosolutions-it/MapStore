@@ -60,7 +60,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 	outputTypeText:'Output Type',
     radioQtipTooltip: "You have to be logged in to use this method",
 	
-    factorsurl:"http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
+    factorsurl:"http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&outputFormat=json",
     
     dataUrl: null, //'http://84.33.2.24/geoserver/ows',
 	startYear: 2000,
@@ -300,6 +300,32 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                     items:[
                         {boxLabel: 'Single factor' , name: 'mode', inputValue: 'compareTime',checked:true},
                         {boxLabel: 'Composite' , name: 'mode', inputValue: 'composite'}
+                    ],
+                    listeners: {
+                        change: function(c,checked){
+                            if (checked.inputValue == 'composite'){
+                                c.ownerCt.compositevalues.show();
+                                c.ownerCt.doLayout();
+                            }else{
+                                c.ownerCt.compositevalues.hide();
+                            }
+                        }
+                    }
+                },
+                {
+                    fieldLabel: '',
+                    xtype: 'radiogroup',
+                    anchor:'100%',
+                    autoHeight:true,
+                    ref: 'compositevalues',
+                    title: this.outputTypeText,
+                    defaultType: 'radio',
+                    columns: 2,
+                    //disabled: true,
+                    hidden: true,
+                    items:[
+                        {boxLabel: 'Reference Year' , name: 'compositevalues', inputValue: 'abs',checked:true},
+                        {boxLabel: 'Average' , name: 'compositevalues', inputValue: 'avg'}
                     ],
                     listeners: {
                         change: function(c,checked){
