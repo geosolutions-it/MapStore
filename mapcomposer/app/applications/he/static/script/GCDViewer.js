@@ -1,20 +1,21 @@
 /**
- * Copyright (c) 2009-2010 The Open Planning Project
+ * Copyright (c) 2014-2015 GoeSolutions
  *
  * 
  */
 
 /** api: (define)
  *  module = GeoExplorer
- *  class = GeoExplorer.Composer(config)
- *  extends = GeoExplorer
+ *  class = GeoExplorer.GCDViewer(config)
+ *  extends = GeoExplorer.Composer
  */
 
 /** api: constructor
- *  .. class:: GeoExplorer.Composer(config)
+ *  .. class:: GeoExplorer.GCDViewer(config)
  *
  *      Create a Composer for GCD
  */
+if(typeof GeoExplorer !== 'undefined')
 GeoExplorer.GCDViewer = Ext.extend(GeoExplorer.Composer, {
     
     /**
