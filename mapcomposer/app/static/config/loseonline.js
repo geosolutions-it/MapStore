@@ -1,5 +1,5 @@
     {
-    "geoStoreBase":"http://lose.geo-solutions.it/geostore/rest/",
+    "geoStoreBase":"http://lose.geo-solutions.it/geostore-ingestion/rest/",
     "proxy":"/http_proxy/proxy/?url=",
     "defaultLanguage": "it",
     "embedding": false,
@@ -589,7 +589,7 @@
         "wfsVersion" : "1.1.0",
         "destinationNS": "lose",
         "index": 28,
-        "geoStoreBase":"http://lose.geo-solutions.it/geostore/rest/",
+        "geoStoreBase":"http://lose.geo-solutions.it/geostore-ingestion/rest/",
         "proxy":"/proxy/?url="
     },	
 	{
