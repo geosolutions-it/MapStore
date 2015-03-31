@@ -119,6 +119,9 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                             refineFieldset.items.each(function (item) {
                                 if (item.filter) {
                                     item.setVisible(value == item.filter);
+                                    if(item.inputValue && item.inputValue == 'all' && value == item.filter){
+                                        me.enableDisableDates(item, !item.checked);
+                                    }
                                 }
                             });
                             
@@ -263,15 +266,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                     name: 'pipelinelist',
                     checked: true,
                     listeners:{
-                        check: function(checkbox , checked){
-                            // Navigate the form to find alla the datefields and enable or disable them
-                            Ext.each(
-                                checkbox.refOwner.refOwner.refine.dateHolder.findByType('datefield'),
-                                function(obj){
-                                    obj.setDisabled(!checked)
-                                    }
-                                )
-                        }  
+                        check: this.enableDisableDates
                     }
                 }, {
                     xtype: 'radio',
@@ -281,7 +276,10 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                     inputValue: 'contractsexpiring',
                     name: 'shipperlist',
                     hidden: true,
-                    checked: true
+                    checked: true,
+                    listeners:{
+                        check: this.enableDisableDates
+                    }
                 }, {
                     layout: 'column',
                     ref: 'dateHolder',
@@ -413,116 +411,146 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
         return this.output;
     },
     
-    lookupButtonHandler : function () {        
-                    var values = this.output.getForm().getValues();
-                    if(!(values.queryby == 'pipeline' && values.pipeline )
-                    && !(values.queryby == 'shipper' && values.shipper ) ){
-                        Ext.Msg.show({
-                           
-                           msg: 'Please select a pipeline name or a shipper name in the "Refine Query By" box',
-                           buttons: Ext.Msg.OK,
-                           animEl: 'elId',
-                           icon: Ext.MessageBox.INFO
-                        });
-                        return 
-                    }
+    lookupButtonHandler : function () {
+                var values = this.output.getForm().getValues();
+                if(!(values.queryby == 'pipeline' && values.pipeline )
+                && !(values.queryby == 'shipper' && values.shipper ) ){
+                    Ext.Msg.show({
+                       
+                       msg: 'Please select a pipeline name or a shipper name in the "Refine Query By" box',
+                       buttons: Ext.Msg.OK,
+                       animEl: 'elId',
+                       icon: Ext.MessageBox.INFO
+                    });
+                    return 
+                }
+                
+                // This is the card panel that will hold the results
+                var resultsGridPanel = this.resultsGridCardPanel ? Ext.getCmp(this.resultsGridCardPanel) : null;
+                if(resultsGridPanel){
                     
-                    // This is the card panel that will hold the results
-                    var resultsGridPanel = this.resultsGridCardPanel ? Ext.getCmp(this.resultsGridCardPanel) : null;
-                    if(resultsGridPanel){
+                    // Remove previously added grid panels
+                    resultsGridPanel.removeAll();
+                    
+                    var fields, columns, qryLayer,
+                    sortinfo = {
+                            field: 'contract_number',
+                            direction: 'ASC' // or 'DESC' (case sensitive for local sorting)
+                        };
                         
-                        // Remove previously added grid panels
-                        resultsGridPanel.removeAll();
+                    if ( values.queryby == 'pipeline' ) {
                         
-                        var fields, columns, qryLayer,
-                        sortinfo = {
-                                field: 'contract_number',
-                                direction: 'ASC' // or 'DESC' (case sensitive for local sorting)
-                            };
+                        if ( values.pipelinelist == 'all' ){
+                            qryLayer = this.qryByPipelineListShippers;
+                            fields =  [
+                               {name: 'shippers',  type: Ext.data.Types.STRING , mapping: 'properties.Shippers'}
+                            ];
                             
-                        if ( values.queryby == 'pipeline' ) {
-                            
-                            if ( values.pipelinelist == 'all' ){
-                                qryLayer = this.qryByPipelineListShippers;
-                                fields =  [
-                                   {name: 'shippers',  type: Ext.data.Types.STRING , mapping: 'properties.Shippers'}
-                                ];
-                                
-                                columns = [
-                                    {
-                                        id       :'shippers',
-                                        header   : 'Shippers', 
-                                        width    : 50,
-                                        sortable : true, 
-                                        dataIndex: 'shippers'
-                                    }
-                                ];
-                                sortinfo = {
-                                    field: 'shippers',
-                                    direction: 'ASC' // or 'DESC' (case sensitive for local sorting)
+                            columns = [
+                                {
+                                    id       :'shippers',
+                                    header   : 'Shippers', 
+                                    width    : 50,
+                                    sortable : true, 
+                                    dataIndex: 'shippers'
                                 }
-                            }else{
-                            
-                                qryLayer = this.qryByPipelineLayerName;
-                                fields =  [
-                                   {name: 'shipper',  type: Ext.data.Types.STRING , mapping: 'properties.Shipper'},
-                                   {name: 'expiration_date', type: Ext.data.Types.DATE, mapping: 'properties.Expiration_Date', dateFormat: 'Y-m-d\\Z'},
-                                   {name: 'contract_number', type: Ext.data.Types.STRING, mapping: 'properties.Contract_Number'},
-                                   {name: 'rate_schedule', type: Ext.data.Types.STRING, mapping: 'properties.Rate_Schedule'},
-                                   {name: 'transportation_qty', type: Ext.data.Types.INT, mapping: 'properties.Transportation_Qty'}
-                                ];
-                                
-                                columns = [
-                                    {
-                                        id       :'shipper',
-                                        header   : 'Shipper', 
-                                        width    : 50,
-                                        sortable : true, 
-                                        dataIndex: 'shipper'
-                                    },
-                                    {
-                                        id       : 'expiration_date',
-                                        header   : 'Expiration Date', 
-                                        width    : 75, 
-                                        sortable : true, 
-                                        xtype    : 'datecolumn',
-                                        //renderer : 'usMoney', 
-                                        dataIndex: 'expiration_date'
-                                    },
-                                    {
-                                        id       : 'contract_number',
-                                        header   : 'Contract Number', 
-                                        width    : 75, 
-                                        sortable : true, 
-                                        //renderer : 'usMoney', 
-                                        dataIndex: 'contract_number'
-                                    },
-                                    {
-                                        id       : 'rate_schedule',
-                                        header   : 'Rate Schedule', 
-                                        width    : 75, 
-                                        sortable : true, 
-                                        //renderer : 'usMoney', 
-                                        dataIndex: 'rate_schedule'
-                                    },
-                                    {
-                                        id       : 'transportation_qty',
-                                        header   : 'Transportation Qty', 
-                                        width    : 75, 
-                                        sortable : true, 
-                                        xtype    : "numbercolumn",
-                                        format   : "0,000",
-                                        align    : "right",
-                                        //renderer : 'usMoney', 
-                                        dataIndex: 'transportation_qty'
-                                    }
-
-                                ];
-                            
+                            ];
+                            sortinfo = {
+                                field: 'shippers',
+                                direction: 'ASC' // or 'DESC' (case sensitive for local sorting)
                             }
+                        }else{
+                        
+                            qryLayer = this.qryByPipelineLayerName;
+                            fields =  [
+                               {name: 'shipper',  type: Ext.data.Types.STRING , mapping: 'properties.Shipper'},
+                               {name: 'expiration_date', type: Ext.data.Types.DATE, mapping: 'properties.Expiration_Date', dateFormat: 'Y-m-d\\Z'},
+                               {name: 'contract_number', type: Ext.data.Types.STRING, mapping: 'properties.Contract_Number'},
+                               {name: 'rate_schedule', type: Ext.data.Types.STRING, mapping: 'properties.Rate_Schedule'},
+                               {name: 'transportation_qty', type: Ext.data.Types.INT, mapping: 'properties.Transportation_Qty'}
+                            ];
                             
-                        } else {
-                            // values.queryby == 'shipper'
+                            columns = [
+                                {
+                                    id       :'shipper',
+                                    header   : 'Shipper', 
+                                    width    : 50,
+                                    sortable : true, 
+                                    dataIndex: 'shipper'
+                                },
+                                {
+                                    id       : 'expiration_date',
+                                    header   : 'Expiration Date', 
+                                    width    : 75, 
+                                    sortable : true, 
+                                    xtype    : 'datecolumn',
+                                    //renderer : 'usMoney', 
+                                    dataIndex: 'expiration_date'
+                                },
+                                {
+                                    id       : 'contract_number',
+                                    header   : 'Contract Number', 
+                                    width    : 75, 
+                                    sortable : true, 
+                                    //renderer : 'usMoney', 
+                                    dataIndex: 'contract_number'
+                                },
+                                {
+                                    id       : 'rate_schedule',
+                                    header   : 'Rate Schedule', 
+                                    width    : 75, 
+                                    sortable : true, 
+                                    //renderer : 'usMoney', 
+                                    dataIndex: 'rate_schedule'
+                                },
+                                {
+                                    id       : 'transportation_qty',
+                                    header   : 'Transportation Qty', 
+                                    width    : 75, 
+                                    sortable : true, 
+                                    xtype    : "numbercolumn",
+                                    format   : "0,000",
+                                    align    : "right",
+                                    //renderer : 'usMoney', 
+                                    dataIndex: 'transportation_qty'
+                                }
+
+                            ];
+                        
+                        }
+                        
+                    } else {
+                        // values.queryby == 'shipper'
+                        
+                        if ( values.shipperlist == 'all' ){
+                            qryLayer = this.qryByShipperListPipelines;
+                            fields =  [
+                               {name: 'facility',  type: Ext.data.Types.STRING , mapping: 'properties.Facility'},
+                               {name: 'ferc',  type: Ext.data.Types.STRING , mapping: 'properties.FERC'}
+                            ];
+                            
+                            columns = [
+                                {
+                                    id       :'facility',
+                                    header   : 'Facility', 
+                                    width    : 50,
+                                    sortable : true, 
+                                    dataIndex: 'facility'
+                                },
+                                {
+                                    id       :'ferc',
+                                    header   : 'FERC', 
+                                    width    : 50,
+                                    sortable : true, 
+                                    dataIndex: 'ferc'
+                                }
+                            ];
+                            sortinfo = {
+                                field: 'facility',
+                                direction: 'ASC' // or 'DESC' (case sensitive for local sorting)
+                            }
+                        }else{
+                        
                             qryLayer = this.qryByShipperLayerName;
                             fields =  [
                                {name: 'shipper',  type: Ext.data.Types.STRING , mapping: 'properties.Shipper'},
@@ -586,51 +614,52 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
 
                             ];
                         }
-                    
-                        var storeShippers = new Ext.data.JsonStore({
-                            root: 'features',
-                            //messageProperty: 'crs',
-                            autoLoad: true,
-                            sortInfo: sortinfo,
-                            fields: fields,
-                            url: this.geoServerUrl,
-                            baseParams:{
-                                service:'WFS',
-                                version:'1.1.0',
-                                request:'GetFeature',
-                                typeName:qryLayer,
-                                outputFormat: 'application/json',
-                                viewParams: this.createViewParams()
-                            }
-                        });
-                        
-                        var shippers_grid = new Ext.grid.GridPanel({
-                            
-                            store:storeShippers,
-                            viewConfig: {
-                                forceFit: true
-                            },
-                            loadMask:true,
-                            layout:'fit',
-                            autoExpandColumn:'shipper',
-                            columns: columns
-                        });
-                        
-                        
-                        // Add our panel
-                        resultsGridPanel.add(shippers_grid);
-                        
-                        
-                        // Display the parent cardlayout panel
-                        var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
-                        if(container){
-                            container.expand();
-                        }
-                        
-                        resultsGridPanel.doLayout();
                     }
+                
+                    var storeShippers = new Ext.data.JsonStore({
+                        root: 'features',
+                        //messageProperty: 'crs',
+                        autoLoad: true,
+                        sortInfo: sortinfo,
+                        fields: fields,
+                        url: this.geoServerUrl,
+                        baseParams:{
+                            service:'WFS',
+                            version:'1.1.0',
+                            request:'GetFeature',
+                            typeName:qryLayer,
+                            outputFormat: 'application/json',
+                            viewParams: this.createViewParams()
+                        }
+                    });
+                    
+                    var shippers_grid = new Ext.grid.GridPanel({
+                        
+                        store:storeShippers,
+                        viewConfig: {
+                            forceFit: true
+                        },
+                        loadMask:true,
+                        layout:'fit',
+                        autoExpandColumn:'shipper',
+                        columns: columns
+                    });
+                    
+                    
+                    // Add our panel
+                    resultsGridPanel.add(shippers_grid);
+                    
+                    
+                    // Display the parent cardlayout panel
+                    var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
+                    if(container){
+                        container.expand();
+                    }
+                    
+                    resultsGridPanel.doLayout();
+                }
 
-                },
+            },
     
     createViewParams: function(){
         var values = this.output.getForm().getValues();
@@ -668,7 +697,17 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
         
         return   viewParams.join(";");
         
-    }
+    },
+    
+    enableDisableDates: function(checkbox , checked){
+        // Navigate the form to find alla the datefields and enable or disable them
+        Ext.each(
+            checkbox.refOwner.refOwner.refine.dateHolder.findByType('datefield'),
+            function(obj){
+                obj.setDisabled(!checked)
+                }
+            )
+    }  
 
 });
 Ext.preg(gxp.plugins.he.Shippers.prototype.ptype, gxp.plugins.he.Shippers);
