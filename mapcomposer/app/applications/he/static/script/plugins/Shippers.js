@@ -55,12 +55,24 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
         ["W", "Withdrawal"]
     ],
     
- 
+     /** api: Configuration of the layer to display on the map 
+             and to filter with the select FERC 
+    **/
+    pipelineLayerConfig: {
+        title: "Some fancy title",
+        name: "GCD_Users_Z0:GCD_INTER_PL",
+        layers: "GCD_Users_Z0:GCD_INTER_PL",
+        styles: "NG_PIPE" ,
+        transparent: true,
+        displayInLayerSwitcher: false
+    },
+
     /*
      *  :arg config: ``Object``
      */
     addOutput: function (config) {
         var today = new Date();
+        var me = this;
         var form = {
             xtype: 'form',
             labelAlign: 'top',
@@ -69,7 +81,6 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
             minWidth: 180,
             autoScroll: true,
             frame: true,
-            
             items: [{
                 xtype: 'fieldset',
                 title: 'Query by:',
@@ -158,20 +169,50 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                         {
                             name: 'id',
                             mapping: 'id'
-                            }, {
+                        }, {
                             name: "pl_PipelineName",
                             mapping: "properties.pl_PipelineName"
-                            },
-                        {
+                        }, {
                             name: "pl_FERC",
                             mapping: "properties.pl_FERC"
-                            },
-                        {
-                            name: "pl_FERC",
-                            mapping: "properties.pl_FERC"
+                        }
+                    ],
+                    listeners: {
+                        select: function (combo, record, index) {
+                            combo.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(false);
+                            combo.refOwner.refOwner.buttonsContainer.contractbyCategoryButton.setDisabled(false);
+                            
+                            var cql_filter_string = "FERC = '"+record.get('pl_FERC')+"'";
+                                
+                            // add or update layer
+                            if(!me.pipelineLayer){
+                                
+                                var layerProps = Ext.apply(me.pipelineLayerConfig, {
+                                    vendorParams: {
+                                        cql_filter: cql_filter_string
+                                    }
+                                });
+
+                                // Create and add layer to map
+                                var source = me.target.tools.addlayer.checkLayerSource(me.geoServerUrl);
+                                var layerRecord = source.createLayerRecord(layerProps);
+                                me.pipelineLayer = layerRecord.getLayer();
+                                me.target.mapPanel.layers.add([layerRecord]);
+                                
+                            }else{
+                                // merge params to layer
+                                me.pipelineLayer.vendorParams = Ext.apply(me.pipelineLayer.vendorParams,{
+                                    cql_filter: cql_filter_string
+                                });
+
+                                me.pipelineLayer.mergeNewParams({
+                                    cql_filter: cql_filter_string
+                                });
                             }
-                         ]
-                    },{
+                        }
+                    }
+                    
+                },{
 
                     ref: 'shipper',
                     filter: 'shipper',
@@ -275,9 +316,11 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                 {
                     layout: 'hbox',
                     pack: 'end',
+                    ref: 'buttonsContainer',
                     items:[
                 {
                     xtype: 'button',
+                    ref: 'btnLookup',
                     text: 'Look Up',
                     iconCls: 'gxp-icon-find',
                     disabled: false,
@@ -340,7 +383,18 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
 
         this.output = gxp.plugins.he.Shippers.superclass.addOutput.call(this, config);
 
-
+        // Event handlers to react to tab changes
+        this.output.on('tabhide', function(){
+            if(me.pipelineLayer){
+                me.pipelineLayer.setVisibility(false);
+            }
+        });
+        
+        this.output.on('tabshow', function(){
+            if(me.pipelineLayer){
+                me.pipelineLayer.setVisibility(true);
+            }
+        });
 
         return this.output;
     },

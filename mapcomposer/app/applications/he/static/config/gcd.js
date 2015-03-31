@@ -200,24 +200,32 @@
             },
             "outputTarget":"gcd"
         },{
-	    "ptype":"he_shippers",
-        "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
-        "source": "gs",
-        "countryLayer":"gascapacity:gcd_lst_USCounties",
-        "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
-        "shipperNamesLayer":"gascapacity:ioc_v_shippernames",
-        "qryByPipelineLayerName":"gascapacity:gcd_v_shippers_by_pipeline",
-        "qryByShipperLayerName":"gascapacity:gcd_v_shippers_by_shipper",
-        "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
-		"titleText": "Contracts",
-		  "outputConfig":{
-			 "id":"ShippersForm",
-			 "cardId": 1
-		  },
-        "featureManager": "featuremanager",
-        "featureGridContainer":"results_panel",
-        "resultsGridCardPanel":"shippers_results_panel",
-		"outputTarget":"gcd"
+            "ptype":"he_shippers",
+            "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
+            "source": "gs",
+            "countryLayer":"gascapacity:gcd_lst_USCounties",
+            "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
+            "shipperNamesLayer":"gascapacity:ioc_v_shippernames",
+            "qryByPipelineLayerName":"gascapacity:gcd_v_shippers_by_pipeline",
+            "qryByShipperLayerName":"gascapacity:gcd_v_shippers_by_shipper",
+            "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
+            "titleText": "Contracts",
+            "pipelineLayerConfig": {
+                    "title": "Pipeline",
+                    "name": "GCD_Users_Z0:GCD_INTER_PL",
+                    "layers": "GCD_Users_Z0:GCD_INTER_PL",
+                    "styles": "NG_PIPE" ,
+                    "transparent": true,
+                    "displayInLayerSwitcher": false
+            },
+            "outputConfig":{
+                "id":"ShippersForm",
+                "cardId": 1
+            },
+            "featureManager": "featuremanager",
+            "featureGridContainer":"results_panel",
+            "resultsGridCardPanel":"shippers_results_panel",
+            "outputTarget":"gcd"
 	  },{
 	    "ptype":"he_gcd_statistics",
         "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"},
