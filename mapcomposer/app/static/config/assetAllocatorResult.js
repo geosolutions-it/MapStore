@@ -133,6 +133,9 @@
             }]
 			
 		}, {
+		  "ptype": "gxp_featuremanager",
+		  "id": "featuremanager"
+	    }, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,

@@ -57,8 +57,9 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
      * 
      */
     updateFilter: function() {
-    	
+    	debugger
     	var me = this;
+    	me.featureManagerTool = this.target.tools['featuremanager'];
     	
     	var callBack = function(filter) {
 	        if (!filter)
@@ -85,6 +86,22 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 	            layerRecord.getLayer().mergeNewParams({
 	                cql_filter:filter
 	            });
+
+    			debugger
+	            var rec = layerRecord.getLayer();
+	            me.featureManagerTool.setLayer(rec);
+	            
+	            var prefix = me.featureManagerTool.layerRecord.get("prefix");
+		        var namespace = (prefix && prefix !="")  ?  me.featureManagerTool.layerRecord.get("prefix") + ":" : "";
+		        url += "service=WFS" +
+		                (this.filterPropertyNames ? "&" + propertyNamesString : "") +
+		                "&version=" + protocol.version +
+		                "&request=GetFeature" +
+		                "&typeName=" + namespace + protocol.featureType +
+		                "&exceptions=application/json" +
+		                "&outputFormat="+ outputFormat;
+		        this.url =  url;
+		        
 	        }
 	        
 	        me.storeFilterByUser();    		
