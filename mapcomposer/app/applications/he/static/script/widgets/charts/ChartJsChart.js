@@ -59,7 +59,7 @@ gxp.charts.ChartJsChart = Ext.extend(Ext.Container, {
     chartOpt: {
         //this.chart = new Chart(ctx).Line(this.lineData,{
         responsive: false,
-        animation: true,
+        animation: false,
         beizerCurve: false,
         maintainAspectRatio: false,
         legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><div><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><div class=\"comm-how\"><%if(segments[i].label){%><%=segments[i].label%><%}%> <%=segments[i].value%></div></div></li><%}%></ul>",
@@ -184,7 +184,9 @@ gxp.charts.ChartJsChart = Ext.extend(Ext.Container, {
         this.addEvents('animationend');
         this.on('resize', this.onResize, this);
         this.on('afterlayout', this.afterLayout, this);
-        
+        if(this.initialConfig && this.initialConfig.chartOpt){
+            this.chartOpt = Ext.apply(this.chartOpt, this.initialConfig.chartOpt);
+        }
         gxp.charts.ChartJsChart.superclass.initComponent.call(this);
     },
     afterLayout: function () {
