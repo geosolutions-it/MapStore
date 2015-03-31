@@ -337,7 +337,7 @@
               '<div align="center" style="background-image:url(theme/app/img/banner/lose/Destination-bg.png);background-repeat: repeat;width:100%;height:100%">',
               '<img src="theme/app/img/banner/lose/BannerDestination.png" style="float:left"/>',
 			  '<img src="theme/app/img/banner/lose/BannerDestination1.png" style="float:right;position:absolute;top:0px;right:0px;"/>',
-              '<div id="logout" style="position:absolute;bottom:0;right:0"></div>',
+              '<div id="logout" style="position:absolute;bottom:5px;right:10px"></div>',
               '</div>',
               //'<td>',
               //'<img src="theme/app/img/logos/banner4.gif"/>',
@@ -454,6 +454,7 @@
                         new Ext.Button({
                             renderTo: 'logout',
                             text: messages.logoutButtonText,
+                            iconCls: "logout",
                             handler: function() {
                                 var logoutFunction = function(buttonId, text,opt){        
                                 if(buttonId === 'ok'){ 						
