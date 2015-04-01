@@ -172,24 +172,13 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 	getAuthParam: function(){
 		var userInfo = this.target.userDetails;
 		var authkey;
-		
-		if(userInfo.user.attribute instanceof Array){
-			for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
-				if( userInfo.user.attribute[i].name == "UUID" ){
-					authkey = userInfo.user.attribute[i].value;
-				}
-			}
-		}else{
-			if(userInfo.user.attribute && userInfo.user.attribute.name == "UUID"){
-			   authkey = userInfo.user.attribute.value;
-			}
+        
+        if(userInfo.token) {
+            authkey = userInfo.token;
+        }
+        if(authkey){
+			this.authParam = userInfo.user.authParam || this.authParam;
 		}
-
-		if(authkey){
-			var authParam = userInfo.user.authParam;
-			this.authParam = authParam ? authParam : this.authParam;
-		}
-		
 		return authkey;
 	},
 	
