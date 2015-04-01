@@ -69,6 +69,9 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         displayInLayerSwitcher: false
     },
     
+    /* Status of the results grid panel (if any)*/
+    resultsGridStatus: "collapsed",
+
     /*
      *  :arg config: ``Object``
      */
@@ -547,8 +550,32 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
             if(this.pipelineLayer){
                 this.pipelineLayer.setVisibility(true);
             }
+            // Restore the ResultsGrid panel status
+            var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
+            if(container && this.resultsGridStatus){
+                if(this.resultsGridStatus == "collapsed"){
+                    container.collapse();
+                }else if(this.resultsGridStatus == "expanded"){
+                    container.expand();
+                }
+            }
         }, this);
         
+        var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
+        if(container){
+            
+            container.on({
+                'collapse' : {
+                    fn: this.resultsGridCollapseHandler,
+                    scope: this
+                },
+                'expand' : {
+                    fn: this.resultsGridExpandHandler,
+                    scope: this
+                }
+            });
+        }
+
         return this.output;
     },
     
@@ -665,6 +692,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
         if(container){
             container.expand();
+            this.resultsGridStatus = "expanded";
         }
 
     },
@@ -704,6 +732,16 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         }
         
         return viewParams.join(";");
+    },
+    resultsGridCollapseHandler: function(cpanel){
+        if(this.output.ownerCt.getActiveTab() == this.output){
+            this.resultsGridStatus = "collapsed";
+        }
+    },
+    resultsGridExpandHandler: function(cpanel){
+        if(this.output.ownerCt.getActiveTab() == this.output){
+            this.resultsGridStatus = "expanded";
+        }
     }
 
 });

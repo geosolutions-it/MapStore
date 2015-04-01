@@ -66,7 +66,9 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
         transparent: true,
         displayInLayerSwitcher: false
     },
-
+    
+    /* Status of the results grid panel (if any)*/
+    resultsGridStatus: "collapsed",
     /*
      *  :arg config: ``Object``
      */
@@ -406,8 +408,32 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
             if(this.pipelineLayer){
                 this.pipelineLayer.setVisibility(true);
             }
+            // Restore the ResultsGrid panel status
+            var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
+            if(container && this.resultsGridStatus){
+                if(this.resultsGridStatus == "collapsed"){
+                    container.collapse();
+                }else if(this.resultsGridStatus == "expanded"){
+                    container.expand();
+                }
+            }
         }, this);
 
+        var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
+        if(container){
+            
+            container.on({
+                'collapse' : {
+                    fn: this.resultsGridCollapseHandler,
+                    scope: this
+                },
+                'expand' : {
+                    fn: this.resultsGridExpandHandler,
+                    scope: this
+                }
+            });
+        }
+        
         return this.output;
     },
     
@@ -654,6 +680,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                     var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
                     if(container){
                         container.expand();
+                        this.resultsGridStatus = "expanded";
                     }
                     
                     resultsGridPanel.doLayout();
@@ -707,7 +734,17 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                 obj.setDisabled(!checked)
                 }
             )
-    }  
+    },
+    resultsGridCollapseHandler: function(cpanel){
+        if(this.output.ownerCt.getActiveTab() == this.output){
+            this.resultsGridStatus = "collapsed";
+        }
+    },
+    resultsGridExpandHandler: function(cpanel){
+        if(this.output.ownerCt.getActiveTab() == this.output){
+            this.resultsGridStatus = "expanded";
+        }
+    }
 
 });
 Ext.preg(gxp.plugins.he.Shippers.prototype.ptype, gxp.plugins.he.Shippers);

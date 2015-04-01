@@ -195,10 +195,15 @@ gxp.plugins.he.Statistics = Ext.extend(gxp.plugins.Tool, {
             if(this.pipelineLayer){
                 this.pipelineLayer.setVisibility(true);
             }
+            // The Results Panel is not used in this plugin
+            var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
+            if(container){
+                container.collapse();
+            }
         }, this);
         
-		return this.output;
-	},
+        return this.output;
+    },
     
     pipelineSelectionListener: function (combo, record, index) {
         

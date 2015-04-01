@@ -116,29 +116,31 @@
           "header": true
       }
     ],
-        "mapPanelContainerPanels":[{
-          "xtype": "panel",
-          "title": "Results",
-          "border": true,
-          "id": "results_panel",
-          "region": "south",
-          "layout": "card",
-          "activeItem":0,
-          "items": [{
-              "xtype": "panel",
-            "id": "capacity_results_panel",
-            "layout": "fit"
-          },{
+    "mapPanelContainerPanels":[
+        {
             "xtype": "panel",
-            "id": "shippers_results_panel",
-            "layout": "fit"
-          }],
-          "height": 280,
-          "collapsed": true,
-          "collapsible": true,
-          "collapseMode":"mini",
-          "header": true
-      }],
+            "title": "Results",
+            "border": true,
+            "id": "results_panel",
+            "region": "south",
+            "layout": "card",
+            "activeItem":0,
+            "items": [{
+                "xtype": "panel",
+                "id": "capacity_results_panel",
+                "layout": "fit"
+            },{
+                "xtype": "panel",
+                "id": "shippers_results_panel",
+                "layout": "fit"
+            }],
+            "height": 280,
+            "collapsed": true,
+            "collapsible": true,
+            "collapseMode":"mini",
+            "header": true
+        }
+    ],
     "removeTools":["gxp_wmsgetfeatureinfo_menu"],
 	"customTools":[
 		{
@@ -246,6 +248,7 @@
                     "transparent": true,
                     "displayInLayerSwitcher": false
             },
+            "featureGridContainer":"results_panel",
             "outputConfig":{
                 "id":"MapperaForm",
                 "cardId": 2
