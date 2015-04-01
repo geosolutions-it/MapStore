@@ -76,13 +76,22 @@ gxp.data.WPSUniqueValuesProxy = Ext.extend(Ext.data.DataProxy, {
         if (!params.inputs) {
             return;
         }
+        var me = this;
         var execOptions = {
             inputs: {},
             outputs: params.output,
             type: "raw",
             success: function(outputs) {
-                var records = reader.read({responseText: outputs});
-                cb.call(scope, records, arg);
+            	if (outputs.trim().charAt(0) === "<") {
+            		// response contains XML data: exception occurred!
+            		var wpsExecuteFormat = new OpenLayers.Format.WPSExecute();
+            		var errorResponse = wpsExecuteFormat.read(outputs).executeResponse.status.exception;
+            		
+            		me.fireEvent("exception", me, 'remote', action, params, errorResponse, arg);
+            	} else {
+            		var records = reader.read({responseText: outputs});
+            		cb.call(scope, records, arg);
+            	}
             }
         };
         

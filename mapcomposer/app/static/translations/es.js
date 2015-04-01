@@ -819,7 +819,11 @@ GeoExt.Lang.add("es", {
         noFilterSelectedMsgTitle: "No hay filtros seleccionados",    
         noFilterSelectedMsgText: "Debe seleccionar al menos un filtro",    
         invalidRegexFieldMsgTitle: "Dominios no válidoss",    
-        invalidRegexFieldMsgText: "Uno o más dominios están rellenados correctamente!"
+        invalidRegexFieldMsgText: "Uno o más dominios están rellenados correctamente!",
+        unknownErrorMsgTitle: 'Error',
+        unknownErrorMsgText: 'Error desconocido',
+        errorCode: 'Código de error',
+        errorText: 'Texto de error'
     },
 	
 	"gxp.plugins.FeatureManager.prototype":{

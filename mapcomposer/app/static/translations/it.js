@@ -841,7 +841,11 @@ GeoExt.Lang.add("it", {
         noFilterSelectedMsgTitle: "Nessun filtro selezionato",    
         noFilterSelectedMsgText: "Devi selezionare almeno un filtro",    
         invalidRegexFieldMsgTitle: "Campo non valido",    
-        invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!"
+        invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!",
+        unknownErrorMsgTitle: 'Errore',
+        unknownErrorMsgText: 'Errore sconosciuto',
+        errorCode: 'Condice errore',
+        errorText: 'Testo errore'
     },
 	
 	"gxp.plugins.FeatureManager.prototype":{
