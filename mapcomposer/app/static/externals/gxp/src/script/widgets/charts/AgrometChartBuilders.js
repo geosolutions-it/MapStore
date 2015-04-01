@@ -79,11 +79,24 @@ nrl.chartbuilder.agromet.composite = {
 			var chart;
 			
 			var text = "";
+            if (listVar.compositevalues == 'anomalies'){
+                text = listVar.refYear + " Anomalies";
+            }else{
+                switch (listVar.compositevalues){
+                    case 'avg': {
+                        text = listVar.fromYear + '-' + listVar.toYear;
+                    }break;
+                    case 'abs': {
+                        text = listVar.refYear;
+                    }break;
+                }
+                text = text + ' Composite';
+            }
+
 			if(allPakistanRegions){
-                text = listVar.toYear + " Composite - Pakistan";
+                text += " - Pakistan";
 			}else{
-                var textYearPrefix = (listVar.compositevalues == 'avg' ? listVar.fromYear + '-' + listVar.toYear : listVar.toYear);
-                text = textYearPrefix + " Composite - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION");
+                text += " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION");
 			}
 			
             //SORT charts layers to follow the rule (area,bar,line)
@@ -105,9 +118,11 @@ nrl.chartbuilder.agromet.composite = {
                 serie = Ext.apply(serie,chartOpt.series[factorRecord.get('factor')]);
                 chartOpts.series.push(serie);
                 if(!unitMap[serie.unit]){
+                    var axisUomLabel = (listVar.compositevalues == 'anomalies' && listVar.anomaliesoutput == 'rel') ? '%' : factorRecord.get('unit');
+                    var axisLabel = factorRecord.get('label').replace(/(Min |Max )/g,'');
                     var yAx = { 
                         title: {
-                            text: factorRecord.get('label').replace(/(Min |Max )/g,'')	+ " " + factorRecord.get('unit'),
+                            text: axisLabel + ' ' + axisUomLabel,
                             style: { 
                                 backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
                             }							
@@ -137,8 +152,16 @@ nrl.chartbuilder.agromet.composite = {
             var chartInfo = '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />' +
                             '<span style="font-size:10px;">Date: ' + listVar.today + '</span><br />' +
                             '<span style="font-size:10px;">AOI: ' + (allPakistanRegions ? "Pakistan" : listVar.chartTitle) + '</span><br />' +
-                            '<span style="font-size:10px;">Season: ' + listVar.season.toUpperCase() + '</span><br />' +
-                            '<span style="font-size:10px;">Year' + (listVar.compositevalues == 'abs' ? '' : 's') + ': ' + (listVar.compositevalues == 'abs' ? listVar.toYear : listVar.fromYear + "-" + listVar.toYear) + '</span><br />';
+                            '<span style="font-size:10px;">Season: ' + listVar.season.toUpperCase() + '</span><br />';
+
+            switch (listVar.compositevalues){
+                case 'abs': chartInfo += '<span style="font-size:10px;">Year: ' + listVar.refYear  + '</span><br />'; break;
+                case 'avg': chartInfo += '<span style="font-size:10px;">Years: ' + listVar.fromYear + '-' + listVar.toYear  + '</span><br />'; break;
+                case 'anomalies':{
+                    chartInfo += '<span style="font-size:10px;">Average on: ' + listVar.fromYear + '-' + listVar.toYear  + '</span><br />';
+                    chartInfo += '<span style="font-size:10px;">Reference year: ' + listVar.refYear + '</span><br />';
+                } break;
+            }
 
 			chart = new Ext.ux.HighChart({
 				animation:false,
@@ -147,6 +170,7 @@ nrl.chartbuilder.agromet.composite = {
 				//width: 900,
 				store: dataStore,
 				animShift: true,				
+                alignYAxisZero: (listVar.compositevalues == 'anomalies'),
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
@@ -200,8 +224,9 @@ nrl.chartbuilder.agromet.composite = {
                             var s = '<b>'+data.month + "-" + data.dec+'</b>';
                             
                             Ext.each(this.points, function(i, point) {
+                                var uom = (listVar.compositevalues == 'anomalies' && listVar.anomaliesoutput == 'rel') ? '%' : i.series.options.unit;
                                 s += '<br/><span style="color:'+i.series.color+'">' +  i.series.name + (listVar.compositevalues == 'avg' ? ' (avg)' : '') + ': </span>'+
-                                    '<span style="font-size:12px;">'+ i.y.toFixed(2) + " " + i.series.options.unit + '</span>';
+                                    '<span style="font-size:12px;">'+ i.y.toFixed(2) + " " + uom + '</span>';
                             });                            
                             return s;
                         },

@@ -441,7 +441,7 @@ nrl.chartbuilder.crop.composite = {
 			var commoditiesListStr = nrl.chartbuilder.util.toTitleCase(listVar.commodity.replace(/[']/g, '').replace(/\\,/g,', ').toUpperCase());
 			chart = new Ext.ux.HighChart({
 				series: chartConfig.series,				
-				
+				alignYAxisZero: (customOpt.compositeMode != 'abs'),
 				height: opt.height,
 				//width: 900,
 				store: store,

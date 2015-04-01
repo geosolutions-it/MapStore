@@ -271,6 +271,15 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					text:currentYear, //TODO conf
 					ref: 'referenceYear'
 				},{
+                    name:'year',
+                    fieldLabel: 'Reference Year',
+                    disabled: true,
+                    hidden: true,
+                    xtype: 'singleyearcombobox',
+                    anchor:'100%',
+                    ref:'refYearSelector',
+                    editable: false
+                },{
 					ref: 'yearRangeSelector',
 					xtype: 'yearrangeselector',
 					anchor:'100%',
@@ -305,33 +314,91 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                         change: function(c,checked){
                             if (checked.inputValue == 'composite'){
                                 c.ownerCt.compositevalues.show();
-                                c.ownerCt.doLayout();
                             }else{
+                                c.ownerCt.referenceYear.show();
+                                c.ownerCt.yearRangeSelector.show();
+                                c.ownerCt.refYearSelector.hide();
                                 c.ownerCt.compositevalues.hide();
+                                c.ownerCt.anomaliesoutput.hide();
                             }
+                            c.ownerCt.doLayout();
                         }
                     }
                 },
                 {
-                    fieldLabel: '',
+                    hideLabel: false,
                     xtype: 'radiogroup',
                     anchor:'100%',
                     autoHeight:true,
                     ref: 'compositevalues',
                     title: this.outputTypeText,
                     defaultType: 'radio',
-                    columns: 2,
+                    columns: 1,
                     //disabled: true,
                     hidden: true,
                     items:[
                         {boxLabel: 'Reference Year' , name: 'compositevalues', inputValue: 'abs',checked:true},
-                        {boxLabel: 'Average' , name: 'compositevalues', inputValue: 'avg'}
+                        {boxLabel: 'Average' , name: 'compositevalues', inputValue: 'avg'},
+                        {boxLabel: 'Anomalies', name: 'compositevalues', inputValue: 'anomalies'}
                     ],
                     listeners: {
                         change: function(c,checked){
-                            
+                            var checkedVal = checked.inputValue;
+                            if(checkedVal == 'avg'){
+                                c.ownerCt.referenceYear.show();
+                                c.ownerCt.refYearSelector.hide();
+                                c.ownerCt.yearRangeSelector.show();
+                                c.ownerCt.anomaliesoutput.hide();
+                            } else if(checkedVal == 'abs'){
+                                c.ownerCt.referenceYear.hide();
+                                c.ownerCt.refYearSelector.show();
+                                c.ownerCt.yearRangeSelector.hide();
+                                c.ownerCt.anomaliesoutput.hide();
+                            } else {
+                                c.ownerCt.referenceYear.hide();
+                                c.ownerCt.refYearSelector.show();
+                                c.ownerCt.yearRangeSelector.show();
+                                c.ownerCt.anomaliesoutput.show();
+                            }
+                            c.ownerCt.doLayout()
+                        },
+                        show: function(c){
+                            var selectedRadio = c.getValue();
+                            var checkedVal = selectedRadio.inputValue;
+                            if (checkedVal == 'avg'){
+                                c.ownerCt.referenceYear.show();
+                                c.ownerCt.refYearSelector.hide();
+                                c.ownerCt.yearRangeSelector.show();
+                                c.ownerCt.anomaliesoutput.hide();
+                            } else if(checkedVal == 'abs'){
+                                c.ownerCt.referenceYear.hide();
+                                c.ownerCt.refYearSelector.show();
+                                c.ownerCt.yearRangeSelector.hide();
+                                c.ownerCt.anomaliesoutput.hide();
+                            } else {
+                                c.ownerCt.referenceYear.hide();
+                                c.ownerCt.refYearSelector.show();
+                                c.ownerCt.yearRangeSelector.show();
+                                c.ownerCt.anomaliesoutput.show();
+                            }
+                            c.ownerCt.doLayout();
                         }
                     }
+                },{
+                    fieldLabel: 'Anomalies Output',
+                    xtype: 'radiogroup',
+                    anchor:'100%',
+                    autoHeight:true,
+                    ref: 'anomaliesoutput',
+                    title: this.outputTypeText,
+                    defaultType: 'radio',
+                    columns: 1,
+                    disabled:false,
+                    hidden: true,
+                    items:[
+                        {boxLabel: 'Absolute' , name: 'anomaliesoutput', inputValue: 'abs',checked:true},
+                        {boxLabel: 'Relative (%)' , name: 'anomaliesoutput', inputValue: 'rel'}
+                    ]
                 },
                 new Ext.ux.grid.CheckboxSelectionGrid({
                     title: 'Factors',
@@ -373,8 +440,10 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                     listeners:{
                         selectionchange:function(records){
                             var yearRangeSelector =this.refOwner.yearRangeSelector;
+                            var refYearSelector = this.refOwner.refYearSelector;
                             if(records.length<=0){
-                               yearRangeSelector.setDisabled(true); 
+                               yearRangeSelector.setDisabled(true);
+                               refYearSelector.setDisabled(true);
                             }else{
                                 var max=-99999,min=99999;
                                 for(var i=0;i<records.length ;i++){
@@ -390,10 +459,23 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                 }
                                 if(max==99999|| min == -99999){
                                      yearRangeSelector.setDisabled(true);
+                                     refYearSelector.setDisabled(true);
                                 }else{
                                     yearRangeSelector.setDisabled(false);
                                     yearRangeSelector.setMaxValue(max);
                                     yearRangeSelector.setMinValue(min);
+                                    refYearSelector.setDisabled(false);
+                                    // adds new year value in combobox if not already present.
+                                    var comboStore = refYearSelector.getStore();
+                                    if (comboStore.query('year', max).length == 0){
+                                        comboStore.add(new Ext.data.Record({
+                                            year: max
+                                        }));
+                                        comboStore.sort('year', 'ASC');
+                                    }
+                                    // set combobox value.
+                                    if (!refYearSelector.getValue())
+                                        refYearSelector.setValue(max);
                                 }
                             }
                             //Create options for charts
