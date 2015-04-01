@@ -544,12 +544,28 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
             if(this.pipelineLayer){
                 this.pipelineLayer.setVisibility(false);
             }
+            
+            if(this.layerRecord){
+                var layer =this.layerRecord.getLayer();
+                if(layer){
+                    layer.setVisibility(false);
+                }
+            }
+
         }, this);
         
         this.output.on('tabshow', function(){
             if(this.pipelineLayer){
                 this.pipelineLayer.setVisibility(true);
             }
+            
+            if(this.layerRecord){
+                var layer =this.layerRecord.getLayer();
+                if(layer){
+                    layer.setVisibility(true);
+                }
+            }
+            
             // Restore the ResultsGrid panel status
             var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
             if(container && this.resultsGridStatus){
