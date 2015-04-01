@@ -53,7 +53,7 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
     textErrorPasswordChange: 'Error Changing Password',
     //config
     geoStoreBase: null,
-    auth: null,
+    authHeader: null,
     scrollable:true,
     /** api: config[displayPanels]
      *  ``boolean`` use panels to see attributes instead of template
@@ -331,14 +331,16 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
                         var pass = form.getValues().password;
                         Ext.Ajax.request({
                           headers : {
-                                'Authorization' : me.auth,
+                                'Authorization' : me.authHeader,
                                 'Content-Type' : 'text/xml'
                           },
                           url: me.geoStoreBase + 'users/user/' + userObj.id,
                           method: 'PUT',
                           params: '<User><newPassword>'+pass+'</newPassword></User>',
                           success: function(response, opts){
-                            me.auth  = 'Basic ' + Base64.encode(user + ':' + pass);
+                            if(me.authHeader.substring('Basic ') === 0) {
+                                me.authHeader  = 'Basic ' + Base64.encode(user + ':' + pass);
+                            }
                             //TODO notify tools
                             win.close();
                             Ext.MessageBox.show({

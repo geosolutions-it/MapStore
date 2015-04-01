@@ -167,7 +167,13 @@ GeoExt.Lang.add("fr", {
         infoActionTip: "Obtenir des infos sur l’entité",
         popupTitle: "Info sur l’entité",
 		noDataMsg: "Aucune donnée n'a été renvoyée par le serveur",
-		maskMessage: "Obtenir des infos sur l’entité..."
+		maskMessage: "Obtenir des infos sur l’entité...",
+		firstFtTip: "Premièr Feature",
+        previousPageTip: "Feature Précédente",
+        nextPageTip: "Feature Suivante",
+        lastPageTip: "Derinèr Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "sur"
     }, 
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
@@ -175,7 +181,13 @@ GeoExt.Lang.add("fr", {
         popupTitle: "Info sur l’entité",
 		noDataMsg: "Aucune donnée n'a été renvoyée par le serveur",
 		maskMessage: "Obtenir des infos sur l’entité...",
-		activeActionTip:"Obtenir des infos sur l’entité sélectionnée"
+		activeActionTip:"Obtenir des infos sur l’entité sélectionnée",
+		firstFtTip: "Premièr Feature",
+		previousPageTip: "Feature Précédente",
+        nextPageTip: "Feature Suivante",
+        lastPageTip: "Derinèr Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "sur", 
     }, 	
 
     "gxp.plugins.Zoom.prototype": {
@@ -304,6 +316,7 @@ GeoExt.Lang.add("fr", {
 	
 	"gxp.plugins.WMSSource.prototype": {
 		noCompatibleProjectionError: "Couche ne est pas disponible dans la projection cartographique",
+		wfsDescribeFeatureTypeError: "Erreur d'obtention des attributs de type d'entité",
 		errorTitle: "Erreur"
 	},
 	
@@ -805,7 +818,11 @@ GeoExt.Lang.add("fr", {
         noFilterSelectedMsgTitle: "Aucun filtre sélectionné",    
         noFilterSelectedMsgText: "Vous devez sélectionner au moins un filtre",    
         invalidRegexFieldMsgTitle: "Domaines invalides",    
-        invalidRegexFieldMsgText: "Un ou plusieurs domaines sont incorrects!"
+        invalidRegexFieldMsgText: "Un ou plusieurs domaines sont incorrects!",
+        unknownErrorMsgTitle: 'Erreur',
+        unknownErrorMsgText: 'Une erreur inconnue se est produite',
+        errorCode: "Code d'erreur",
+        errorText: "Message d'erreur"
     },
 
 	"gxp.plugins.FeatureManager.prototype":{

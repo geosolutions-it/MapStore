@@ -163,8 +163,14 @@ GeoExt.Lang.add("it", {
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
         infoActionTip: "Recupera Feature Info",
         popupTitle: "Feature Info",
-		noDataMsg: "Nessun dato è stato ritornato dal server",
-		maskMessage: "Recupero Feature Info..."
+        noDataMsg: "Nessun dato è stato ritornato dal server",
+        maskMessage: "Recupero Feature Info...",
+		firstFtTip: "Prima Feature",
+        previousPageTip: "Feature Precedente",
+        nextPageTip: "Prossima Feature",
+        lastPageTip: "Ultima Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "di" 
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
@@ -172,7 +178,13 @@ GeoExt.Lang.add("it", {
         popupTitle: "Feature Info",
 		noDataMsg: "Nessun dato è stato ritornato dal server",
 		maskMessage: "Recupero Feature Info...",
-		activeActionTip:"Feature Info sul layer selezionato"
+		activeActionTip:"Feature Info sul layer selezionato",
+		firstFtTip: "Prima Feature",
+		previousPageTip: "Feature Precedente",
+        nextPageTip: "Prossima Feature",
+        lastPageTip: "Ultima Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "di",  
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -330,6 +342,7 @@ GeoExt.Lang.add("it", {
 	
 	"gxp.plugins.WMSSource.prototype": {
 		noCompatibleProjectionError: "Il layer non è disponibile nella proiezione della mappa",
+		wfsDescribeFeatureTypeError: "Errore nel recupero degli attributi per il tipo di oggetto",
 		errorTitle: "Errore"
 	},
 
@@ -828,7 +841,11 @@ GeoExt.Lang.add("it", {
         noFilterSelectedMsgTitle: "Nessun filtro selezionato",    
         noFilterSelectedMsgText: "Devi selezionare almeno un filtro",    
         invalidRegexFieldMsgTitle: "Campo non valido",    
-        invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!"
+        invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!",
+        unknownErrorMsgTitle: 'Errore',
+        unknownErrorMsgText: 'Errore sconosciuto',
+        errorCode: 'Condice errore',
+        errorText: 'Testo errore'
     },
 	
 	"gxp.plugins.FeatureManager.prototype":{

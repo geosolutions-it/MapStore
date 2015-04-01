@@ -163,14 +163,26 @@ GeoExt.Lang.add("de", {
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
         infoActionTip: "Feature Info erhalten",
         popupTitle: "Feature Info",
-		noDataMsg: "Keine Daten vom Server erhalten"
+		noDataMsg: "Keine Daten vom Server erhalten",
+		firstFtTip: "Erste Feature",
+        previousPageTip: "Vorheriges Feature",
+        nextPageTip: "Nächste Feature",
+        lastPageTip: "LetzteFeature",
+        ftLabel: "Feature",
+        ftOfLabel: "von" 
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
         infoActionTip: "Feature Info erhalten",
         popupTitle: "Feature Info",
 		noDataMsg: "Keine Daten vom Server erhalten",
-		activeActionTip: "Informationen über ausgewählte Schicht"
+		activeActionTip: "Informationen über ausgewählte Schicht",
+		firstFtTip: "Erste Feature",
+        previousPageTip: "Vorheriges Feature",
+        nextPageTip: "Nächste Feature",
+        lastPageTip: "LetzteFeature",
+        ftLabel: "Feature",
+        ftOfLabel: "von", 
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -328,6 +340,7 @@ GeoExt.Lang.add("de", {
 	
 	"gxp.plugins.WMSSource.prototype": {
 		noCompatibleProjectionError: "Schicht ist nicht in der Kartenprojektion",
+		wfsDescribeFeatureTypeError: "Fehler beim Abrufen der Eigenschaften von Feature-Typ",
 		errorTitle: "Fehler"
 	},
 
@@ -841,7 +854,11 @@ GeoExt.Lang.add("de", {
         noFilterSelectedMsgTitle: "Keinen Filter ausgewählt",    
         noFilterSelectedMsgText: "Sie müssen mindestens einen Filter auswählen",    
         invalidRegexFieldMsgTitle: "Ungültige Domänen",    
-        invalidRegexFieldMsgText: "Eine oder mehrere Domänen sind falsch!"
+        invalidRegexFieldMsgText: "Eine oder mehrere Domänen sind falsch!",
+        unknownErrorMsgTitle: 'Fehler',
+        unknownErrorMsgText: 'Unbekannter Fehler aufgetreten',
+        errorCode: 'Fehlercode',
+        errorText: 'Fehlermeldung'
     },
 	
 	"gxp.plugins.FeatureManager.prototype":{

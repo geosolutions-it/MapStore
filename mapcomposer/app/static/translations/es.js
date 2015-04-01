@@ -168,7 +168,13 @@ GeoExt.Lang.add("es", {
         infoActionTip: "Obtener Feature Info",
         popupTitle: "Feature Info",
 		noDataMsg: "El servidor no devolvió datos",
-		maskMessage: "Recuperando el Feature Info..."
+		maskMessage: "Recuperando el Feature Info...",
+		firstFtTip: "Primera Feature",
+        previousPageTip: "Feature Anterior",
+        nextPageTip: "Siguiente Feature",
+        lastPageTip: "Ultima Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "de"
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
@@ -176,7 +182,13 @@ GeoExt.Lang.add("es", {
         popupTitle: "Feature Info",
 		noDataMsg: "El servidor no devolvió datos",
 		maskMessage: "Recuperando Feature Info...",
-		activeActionTip:"Activar información de la capa seleccionada"
+		activeActionTip:"Activar información de la capa seleccionada",
+		firstFtTip: "Primera Feature",
+        previousPageTip: "Feature Anterior",
+        nextPageTip: "Siguiente Feature",
+        lastPageTip: "Ultima Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "de", 
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -307,6 +319,7 @@ GeoExt.Lang.add("es", {
 	
 	"gxp.plugins.WMSSource.prototype": {
 		noCompatibleProjectionError: "Capa no está disponible en la proyección cartográfica",
+		wfsDescribeFeatureTypeError: "Error al obtener los atributos de tipo de entidad",
 		errorTitle: "Error"
 	},
 	
@@ -806,7 +819,11 @@ GeoExt.Lang.add("es", {
         noFilterSelectedMsgTitle: "No hay filtros seleccionados",    
         noFilterSelectedMsgText: "Debe seleccionar al menos un filtro",    
         invalidRegexFieldMsgTitle: "Dominios no válidoss",    
-        invalidRegexFieldMsgText: "Uno o más dominios están rellenados correctamente!"
+        invalidRegexFieldMsgText: "Uno o más dominios están rellenados correctamente!",
+        unknownErrorMsgTitle: 'Error',
+        unknownErrorMsgText: 'Error desconocido',
+        errorCode: 'Código de error',
+        errorText: 'Texto de error'
     },
 	
 	"gxp.plugins.FeatureManager.prototype":{

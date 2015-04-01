@@ -91,6 +91,7 @@ gxp.plugins.CategoriesInitializer = Ext.extend(gxp.plugins.Tool,{
             url: this.geostoreUrl,
             user: (this.geostoreUser) ? this.geostoreUser : this.target.geostoreUser,
             password: (this.geostorePassword) ? this.geostorePassword : this.target.geostorePassword,
+            authHeader: this.target.authHeader,
             proxy: (this.geostoreProxy) ? this.geostoreProxy:this.target.proxy,
             listeners: {
                 "geostorefailure": function(tool, msg){
