@@ -48,6 +48,25 @@
 			"ptype": "gxp_geolocationmenu",
 			"actionTarget": {"target": "paneltbar", "index": 18},
 			"toggleGroup": "toolGroup"
+		}, {
+				"ptype": "gxp_playback",
+				"id": "playback",
+				"outputTarget": "map",
+				"playbackMode": "range",
+				"showIntervals": false,
+				"labelButtons": false,
+				"settingsButton": false,
+				"rateAdjuster": false,
+				"dynamicRange": false,
+				"timeFormat": "l, F d, Y g:i:s A",
+				"outputConfig": {
+						"controlConfig": {
+								"step": 60,
+								"startEnd": true,
+								"units": "Minutes",
+								"frameRate": 1
+						}
+				}
 		}
 	],
 	

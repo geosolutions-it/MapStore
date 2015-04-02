@@ -61,6 +61,28 @@ gxp.plugins.Graticule = Ext.extend(gxp.plugins.Tool, {
     constructor: function(config) {
         gxp.plugins.ZoomBox.superclass.constructor.apply(this, arguments);
     },
+    
+    pressedOnStart : false,
+	/** private: method[init]
+     *  :arg target: ``Object``
+	 * 
+	 *  Provide the initialization code defining necessary listeners and controls.
+     */
+	init: function(target) {
+		target.on({
+		    scope: this,
+			'ready' : function(){           
+                if(this.pressedOnStart){
+                    var ctrl = this.target.mapPanel.map.getControlsByClass("OpenLayers.Control.Graticule");
+                    if(ctrl < 1)
+                        this.target.mapPanel.map.addControl(this.graticule); 
+                    
+                    this.graticule.activate();
+                }
+			}
+		});
+		return gxp.plugins.Graticule.superclass.init.apply(this, arguments);
+	},    
 
     /** api: method[addActions]
      */
@@ -82,6 +104,7 @@ gxp.plugins.Graticule = Ext.extend(gxp.plugins.Tool, {
             tooltip: this.graticuleTooltip,
             enableToggle: true,
             allowDepress: true,
+            pressed: this.pressedOnStart,
             listeners: {
 			    scope: this,
                 toggle: function(button, pressed) {
@@ -97,6 +120,8 @@ gxp.plugins.Graticule = Ext.extend(gxp.plugins.Tool, {
                 }
             }
         });
+        
+        this.graticule = graticule
         
         var actions = ['-',graticuleButton];
         return gxp.plugins.Graticule.superclass.addActions.apply(this, [actions]);

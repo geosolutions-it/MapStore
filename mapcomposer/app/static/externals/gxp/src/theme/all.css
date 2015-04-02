@@ -407,8 +407,8 @@ div.map-overlay div.overlay-element {
 div.olMap div.gx-overlay-playback {
     position: absolute;
     z-index: 1000;
-    top: 22px;
-    left: 80px;
+    top: 60px;
+    left: 120px;
 }
 .gx-overlay-playback.x-toolbar {
     background: none;
@@ -481,6 +481,14 @@ div.olMap div.gx-overlay-playback {
     background-image:url('img/time/control_fastforward.png')
 }
 
+.playback-save{
+	background-image: url(img/accept.png) !important;
+}
+
+.playback-cancel{
+	background-image: url(img/decline.png) !important;
+}
+
 .gx_timeslider div.x-slider-thumb{
     background-position:1;
     cursor: pointer;
@@ -500,6 +508,31 @@ div.olMap div.gx-overlay-playback {
     left:-14px;
 }
 
+/* gxp_synchronizer */
+.x-btn .gxp-icon-real-time, .x-menu-item .gxp-icon-real-time, .x-tree-node .gxp-icon-real-time, .x-menu-item-checked .x-menu-group-item .x-menu-item-icon.gxp-icon-real-time, .gxp-icon-real-time {
+    background-image: url(img/time/clock.png); !important;
+}
+
+.x-btn .gxp-icon-real-time-enable, .x-menu-item .gxp-icon-real-time-enable, .x-tree-node .gxp-icon-real-time-enable, .x-menu-item-checked .x-menu-group-item .x-menu-item-icon.gxp-icon-real-time-enable, .gxp-icon-real-time-enable {
+    background-image: url(img/time/clock_go.png); !important;
+}
+
+.x-btn .gxp-icon-real-time-disable, .x-menu-item .gxp-icon-real-time-disable, .x-tree-node .gxp-icon-real-time-disable, .x-menu-item-checked .x-menu-group-item .x-menu-item-icon.gxp-icon-real-time-disable, .gxp-icon-real-time-disable {
+    background-image: url(img/time/clock_delete.png); !important;
+}
+
+.x-btn .gxp-icon-sync-configuration, .x-menu-item .gxp-icon-sync-configuration, .x-tree-node .gxp-icon-sync-configuration, .x-menu-item-checked .x-menu-group-item .x-menu-item-icon.gxp-icon-sync-configuration, .gxp-icon-sync-configuration  {
+    background-image: url(img/silk/wrench.png);
+}
+
+.x-btn .gx-tree-synchlayer-icon, .x-menu-item .gx-tree-synchlayer-icon, .x-tree-node .gx-tree-synchlayer-icon, .x-menu-item-checked .x-menu-group-item .x-menu-item-icon.gx-tree-synchlayer-icon, .gx-tree-synchlayer-icon  {
+    background-image: url(img/silk/bullet_go.png);
+}
+
+.x-btn .gx-tree-synchlayer-loading-icon, .x-menu-item .gx-tree-synchlayer-loading-icon, .x-tree-node .gx-tree-synchlayer-loading-icon, .x-menu-item-checked .x-menu-group-item .x-menu-item-icon.gx-tree-synchlayer-loading-icon, .gx-tree-synchlayer-loading-icon  {
+    background-image: url(img/loading.gif);
+}
+
 /* csv_export */
 .x-btn .gxp-icon-csvexport, .x-menu-item .gxp-icon-csvexport {
     background-image: url(img/geosilk/disk.png) !important;
@@ -517,4 +550,27 @@ div.olMap div.gx-overlay-playback {
 	background-image: url(img/silk/magnifier.png) !important;
 	width:16px;
 	height:16px;
+}
+
+/* gxp_wfsgetgraphs */
+.x-btn .gxp-icon-graph-wfs, .x-menu-item .gxp-icon-graph-wfs, .x-tree-node .gxp-icon-graph-wfs {
+    background-image: url(img/silk/chart_curve.png);
+}
+
+/* areeallerta_icons */
+
+/*.x-btn .gxp-icon-areeallerta-chartmenu, .x-menu-item .gxp-icon-areeallerta-chartmenu {
+    background-image: url(img/silk/chart_organisation.png) !important;
+}*/
+
+.x-btn .gxp-icon-areeallerta-boxplot, .x-menu-item .gxp-icon-areeallerta-boxplot {
+    background-image: url(img/silk/boxplot.png) !important;
+}
+
+.x-btn .gxp-icon-areeallerta-barchart, .x-menu-item .gxp-icon-areeallerta-barchart {
+    background-image: url(img/silk/chart_bar.png) !important;
+}
+
+.x-btn .gxp-icon-areeallerta-curvacum, .x-menu-item .gxp-icon-areeallerta-curvacum {
+    background-image: url(img/silk/chart_line.png) !important;
 }

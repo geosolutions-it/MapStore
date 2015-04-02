@@ -65,7 +65,7 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
 	
     labelButtons:false,
 	
-    settingsButton:true,
+    settingsButton:false,
 	
     rateAdjuster:false,
 	
@@ -139,7 +139,7 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
      */
     initComponent: function() {
         if(!this.playbackActions){
-            this.playbackActions = ["settings","slider","reset","currenttime","back","next","play","fastforward","loop"]; 
+            this.playbackActions = ["currenttime","slider","reset","back","next","play","fastforward","loop"]; 
         }
         if(!this.control){
             this.control = this.buildTimeManager();
@@ -274,8 +274,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
 		this.btnFastforward.disable();
 		this.slider.disable();
         this.slider.sliderTip.hide();
-        this.btnSettings.disable();
-        this.btnCurrentTime.disable();
+        //this.btnSettings.disable();
+        //this.btnCurrentTime.disable();
         this.btnBack.disable();
 	},
 	
@@ -288,8 +288,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
         }
 		this.slider.enable();
         this.slider.sliderTip.show();
-        this.btnSettings.enable();
-        this.btnCurrentTime.enable();
+        //this.btnSettings.enable();
+        //this.btnCurrentTime.enable();
         this.btnBack.enable();
 	},
 
@@ -458,16 +458,18 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
             }
         }
         else {
+            //debugger;
+            var rangedPlayInterval = this.rangedPlayInterval || this.buildRangedPlayInterval();
             if(this.playbackMode == "range") {
                 Ext.apply(this.controlConfig, {
                     agentOptions : {
                         'WMS' : {
                             rangeMode : 'range',
-                            rangeInterval : this.rangedPlayInterval
+                            rangeInterval : rangedPlayInterval
                         },
                         'Vector' : {
                             rangeMode : 'range',
-                            rangeInterval : this.rangedPlayInterval
+                            rangeInterval : rangedPlayInterval
                         }
                     }
                 });
@@ -498,6 +500,35 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
             this.fireEvent('rangemodified', this, ctl.range);
         }
         return ctl;
+    },
+    
+    buildRangedPlayInterval: function() {
+        return this.controlConfig.step; //this.controlConfig.rangeStep;// * this.getRangeMultiplier(this.controlConfig.units);
+    },
+    
+    getRangeMultiplier: function(units) {
+        var multiplier = 1;
+        switch (units) {
+            case OpenLayers.TimeUnit.SECONDS:
+                multiplier = 1000;
+                break;
+            case OpenLayers.TimeUnit.MINUTES:
+                multiplier = 60000;
+                break;
+            case OpenLayers.TimeUnit.HOURS:
+                multiplier = 3600000;
+                break;
+            case OpenLayers.TimeUnit.DAYS:
+                multiplier = 86400000;
+                break;
+            case OpenLayers.TimeUnit.MONTHS:
+                multiplier = 2592000000;
+                break;
+            case OpenLayers.TimeUnit.YEARS:
+                multiplier = 31104000000;
+                break;
+        }
+        return multiplier;
     },
     
 /** BUTTON HANDLERS **/    
@@ -532,8 +563,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
                 this.btnLoop.disable();
                 this.btnFastforward.disable();
                 this.slider.disable();
-                this.btnSettings.disable();
-                this.btnCurrentTime.disable();
+                //this.btnSettings.disable();
+                //this.btnCurrentTime.disable();
                 this.btnBack.disable();                
                 // Don't start playing again if it is already playing
                 this.control.stepType = "next";
@@ -544,14 +575,13 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
             btn.btnEl.addClass('gxp-icon-pause');
             btn.setTooltip(this.pauseTooltip);
         } else {
-			this.btnNext.enable();
-			this.btnLoop.enable();
-			this.btnFastforward.enable();
-			this.slider.enable();
-			this.btnSettings.enable();
-			this.btnCurrentTime.enable();
-			this.btnBack.enable();      
-			
+                this.btnNext.enable();
+                this.btnLoop.enable();
+                this.btnFastforward.enable();
+                this.slider.enable();
+                //this.btnSettings.enable();
+                //this.btnCurrentTime.enable();
+                this.btnBack.enable();             
             //if(this.control.timer){
                 // Don't stop playing again if it is already stopped
                 this.control.stop();                

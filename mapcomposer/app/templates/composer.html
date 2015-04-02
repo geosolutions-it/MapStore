@@ -1,5 +1,9 @@
 <% extends ./base.html %>
 <% subskin extrahead %>
+
+    <!-- HighStock resources -->
+    <script type="text/javascript" src="script/HighStockExt.js"></script> 
+
     <!-- OpenLayers resources -->
     <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
 
@@ -26,9 +30,9 @@
 	
 	<script type="text/javascript" src="script/GeoExtExt.js"></script>
 	
-	<!-- PrintPreview resources  	
+	<!-- PrintPreview resources -->
     <link rel="stylesheet" type="text/css" href="externals/PrintPreview/resources/css/printpreview.css">
-    <script type="text/javascript" src="script/PrintPreview.js"></script>-->
+    <script type="text/javascript" src="script/PrintPreview.js"></script>
 	
     <!-- canvg-1.2 resources -->
 	<script type="text/javascript" src="script/canvg-1.2.js"></script> 
@@ -38,16 +42,16 @@
 
     <script type="text/javascript" src="script/gxp.js"></script> 
 
-    <!--script type="text/javascript" src="script/proj4js.js"></script-->
-	<!--script type="text/javascript" src="script/projCodes.js"></script-->
+    <script type="text/javascript" src="script/proj4js.js"></script>
+	<script type="text/javascript" src="script/projCodes.js"></script>
 
     <!-- GeoExplorer resources -->
     <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
     <link rel="stylesheet" type="text/css" href="theme/app/mapstore.css" />
 	
 	<!-- Advanced Scalebar CSS -->
-	<!--link rel="stylesheet" type="text/css" href="theme/app/scalebar-fat.css" /-->
-    <link rel="stylesheet" type="text/css" href="theme/app/scalebar-thin.css" />
+	<link rel="stylesheet" type="text/css" href="theme/app/scalebar-fat.css" />
+    <!-- link rel="stylesheet" type="text/css" href="theme/app/scalebar-thin.css" /-->
 	
     <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->        
 
@@ -66,12 +70,12 @@
     <!-- common data  -->
     <script type="text/javascript" src="config/common/localConfig.js"></script>
     
-	<!-- translation data  -->
-    <script type="text/javascript" src="translations/en.js"></script>
+	<!-- translation data  
     <script type="text/javascript" src="translations/fr.js"></script>
-    <script type="text/javascript" src="translations/it.js"></script>
-    <script type="text/javascript" src="translations/de.js"></script>
     <script type="text/javascript" src="translations/es.js"></script>
+    <script type="text/javascript" src="translations/de.js"></script> -->
+	<script type="text/javascript" src="translations/en.js"></script>
+    <script type="text/javascript" src="translations/it.js"></script>
 	
 	<!-- uncomment to have  welcome screen
 	<script type="text/javascript">
@@ -432,10 +436,18 @@
                         westPanel.setActiveTab('legend');
                         westPanel.hideTabStripItem('tree');
                     }
+					/////////////////////
+					// Fractional Zoom //
+					/////////////////////
+                    if(app.mapPanel.map.restrictedExtent && app.mapPanel.map.fractionalZoom){
+                        app.mapPanel.map.zoomToExtent(app.mapPanel.map.restrictedExtent);
+                    }
                 }, 
                 'ready' : function(){
                     app.modified = false;
-					
+                    if(app.mapPanel.map.restrictedExtent && app.mapPanel.map.fractionalZoom){
+                        app.mapPanel.map.zoomToExtent(app.mapPanel.map.restrictedExtent);
+                    }
 					// ///////////////////////////////////////////////////
 					// Visualizing metadata tab and layers at startup 
 					// ///////////////////////////////////////////////////
@@ -509,6 +521,40 @@
 				    if(bbox){
 						app.mapPanel.map.zoomToExtent(bbox, true);
 					}
+					
+					//
+					// Override TimeManager behavior
+					//
+					OpenLayers.Control.TimeManager.prototype.nowtime = function(looped) {
+						this.clearTimer();
+						//this.clearTooltipTimer();
+						
+						var d = new Date();        
+						var UTC = d.getUTCFullYear() + '-'
+									+ this.pad(d.getUTCMonth() + 1) + '-'
+									+ this.pad(d.getUTCDate()) + 'T'
+									
+									+ this.pad(d.getUTCHours()) + ':'
+									+ "00" + ':'
+									+ "00" + 'Z';
+									//+ this.pad(d.getUTCMinutes()) + ':'
+									//+ this.pad(d.getUTCSeconds()) + 'Z';
+
+						currentTimeUTC = Date.fromISO( UTC ); 
+						
+						var nowStaz = this.delHours(currentTimeUTC, 2);
+						
+						var newTime = new Date(nowStaz.getTime());
+						this.setNow(newTime,"curTime");
+						this.events.triggerEvent('reset', {
+							'looped' : !!looped
+						});
+						return this.currentTime;
+					}
+					
+					OpenLayers.Control.TimeManager.prototype.delHours = function(data, ore) {
+						return new Date(data.getTime() - ore * 3600000)
+					}
                 }
             });
 			
@@ -520,11 +566,223 @@
 			addMSLayer = function(resources){
 				var addLayer = app.tools["addlayer"];
 				
-				addLayer.addLayer(
-					resources
-				);
+				for(var i=0; i<resources.length; i++){
+					var resource = resources[i];
+					var resourceName = resource.msLayerName;
+					
+					var customParams = {};
+					
+					//
+					// Setting the Style
+					//
+					var layerString = resourceName.split(":");
+					var styles;
+					var style;
+					if((resourceName.indexOf("Wind") != -1) && (resourceName.indexOf("gfs") != -1)){
+                        styles = "wind_arrow_palette_gfs";
+                        style = "wind_arrow_palette_raster_gfs"; 
+                    }else if ((resourceName.indexOf("Wind") != -1) && (resourceName.indexOf("arw") != -1)){
+                        styles = "wind_arrow_palette";
+                        style = "wind_arrow_palette_raster";                         
+                    }else if(resource.wmsURL.indexOf('RADAR') != -1){					
+                        styles = layerString[0] + "_" + layerString[1];
+                        style = layerString[0] + "_" + layerString[1];                                                       
+                    }else{
+                        styles = layerString[0].substring(0,layerString[0].lastIndexOf("_")) + "_" + layerString[1];
+                        style = layerString[0].substring(0,layerString[0].lastIndexOf("_")) + "_" + layerString[1];
+                    }
+					
+					//
+					// Setting the Group
+					//
+					if(resource.wmsURL.indexOf("ARW") != -1 || resource.wmsURL.indexOf("GFS") != -1){
+						resource.msGroupName = "MODELLI";
+					}else if(resource.wmsURL.indexOf("MSG") != -1){
+						resource.msGroupName = "SATELLITE";
+					}else if(resource.wmsURL.indexOf("NDVI") != -1){
+						resource.msGroupName = "NDVI";
+					}else{
+						resource.msGroupName = "default";
+					}
+					
+					//
+					// Update the resource basic information
+					//
+                    resource.msLayerName = layerString[0],
+                    resource.msLayerTitle = layerString[1] ? layerString[0] + ":" + layerString[1] : layerString[0],
+                    customParams.elevation = layerString[1] ? layerString[1] : "",
+                    customParams.styles = ((resourceName.indexOf("Wind") != -1) || layerString[1]) ? [styles] : [],
+                    customParams.style = ((resourceName.indexOf("Wind") != -1) || layerString[1]) ? [style] : [],
+                    customParams.format = "image/png8";					
+					
+					resource.customParams = customParams;
+					
+					resource.sourceOptions = {
+						layerBaseParams:{
+							FORMAT: "image/png8",
+							TILED: true,
+							TILESORIGIN:"-20037508.34, -20037508.34"
+						}
+					};
+                }				
+							
+				addLayer.on({
+					'ready': function(records){
+						
+						// ///////////////////////////////////////////////////////////////////
+						// Calculate the time values related to the whole set of added layers 
+						// ///////////////////////////////////////////////////////////////////
+						var startDate;
+						var endDate;
+						var timeStep;
+						var timeUnits;
+						
+						var setNowTime = false						
+						
+						for(var i=0; i<records.length; i++){
+							var record = records[i].record;
+							
+							var layer = record.get('layer');
+							
+							// /////////////////
+							// Time Intervall
+							// /////////////////
+							var layerStartTime =  OpenLayers.Date.parse(layer.metadata.timeInterval[0][0]);
+							if(!startDate){
+								startDate = layerStartTime;
+							}else if(layerStartTime.getTime() < startDate.getTime()){
+								startDate = layerStartTime;
+							}
+							
+							var layerEndTime =  OpenLayers.Date.parse(layer.metadata.timeInterval[0][1]);
+							if(!endDate){
+								endDate = layerEndTime;
+							}else if(layerEndTime.getTime() > endDate.getTime()){
+								endDate = layerEndTime;
+							}
+							
+							// ////////////
+							// Time Step
+							// ////////////
+							var valStep = layer.metadata.timeInterval[0][2];
+							var r = /\d+/g;
+							var s = valStep;
+							var step, m;
+							while ((m = r.exec(s)) != null) {
+							  step = m[0];
+							}                                   
+							
+							step = step == 2 ? "16" : step;
+							if(!timeStep || (step < timeStep)){
+								timeStep = step;
+							}
+							
+							// ////////////
+							// Time Units
+							// ////////////
+							valStep = valStep.slice(-1);
+							if(!timeUnits){
+								timeUnits = valStep;
+							}else if(timeUnits != valStep){
+								if((timeUnits == 'D' && valStep ==  'H') || (timeUnits == 'H' && valStep ==  'M')){
+									timeUnits = valStep;
+								}
+							}	
+
+							timeUnits = timeUnits == 'H' ? timeUnits = 'Hours' : (timeUnits == 'D' ? timeUnits = 'Days' : timeUnits = 'Minutes');		
+
+							var layerName = record.get('name');
+							if(layerName.indexOf("NDVI") === -1 && layerName.indexOf("50km") === -1){
+								setNowTime = true;
+							}							
+						}
+						
+						var timeManagers = app.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');
+						
+						timeManagers[0].step = timeStep;
+						timeManagers[0].setEnd(endDate);
+						timeManagers[0].setStart(startDate);
+						timeManagers[0].units = timeUnits;
+						timeManagers[0].fixedRange = true;
+						
+						timeManagers[0].events.triggerEvent("rangemodified"); 						
+						timeManagers[0].currenttime(startDate, false);
+						
+					    if(setNowTime === true){
+							timeManagers[0].nowtime();
+						}
+						
+						var baseLayer1 = app.mapPanel.map.getLayersByName("Stati")[0];
+						var baseLayer2 = app.mapPanel.map.getLayersByName("Regioni")[0];
+						var baseLayer3 = app.mapPanel.map.getLayersByName("Province")[0];
+						var baseLayer4 = app.mapPanel.map.getLayersByName("Comuni Italia")[0];
+						app.mapPanel.map.setLayerIndex(baseLayer1, 200);
+						app.mapPanel.map.setLayerIndex(baseLayer2, 201);
+						app.mapPanel.map.setLayerIndex(baseLayer3, 202);
+						app.mapPanel.map.setLayerIndex(baseLayer4, 203);
+					}
+				});
+				
+				addLayer.addLayer(resources);
 			};
 	    };
+		
+		
+		/*		
+			var layer = record.get('layer');
+			var count = 1;
+			app.mapPanel.map.setLayerIndex(layer, count+7);
+		
+			var stazLayer = app.mapPanel.map.getLayersByName("Temperatura oraria")[0];
+		
+			var valTime =  OpenLayers.Date.parse(layer.metadata.timeInterval[0][0]);
+			var valStep =  layer.metadata.timeInterval[0][2];
+			var r = /\d+/g;
+			var s = valStep;
+			var m;
+			while ((m = r.exec(s)) != null) {
+			  var step = m[0];
+			}                    
+			var timeManagers = app.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');                
+			
+			timeManagers[0].step = step == 2 ? "16" : step;
+			timeManagers[0].fixedRange=true; 
+
+			if (valStep.slice(-1) == 'H'){
+				timeManagers[0].units = "Hours";
+			}else if(valStep.slice(-1) == 'D'){
+				timeManagers[0].units = "Days";
+			}else{
+				timeManagers[0].units = "Minutes";
+			}
+			
+			timeManagers[0].fixedRange=true;
+			
+			timeManagers[0].setEnd(OpenLayers.Date.parse(layer.metadata.timeInterval[0][1]));
+			timeManagers[0].fixedRange=true;
+
+			//timeManagers[0].setStart(OpenLayers.Date.parse(source.url.indexOf("NDVI") != -1 ? layer.metadata.timeInterval[0][0] : stazLayer.metadata.timeInterval[0][0]));
+			timeManagers[0].setStart(OpenLayers.Date.parse(layer.metadata.timeInterval[0][0]));
+			timeManagers[0].fixedRange=true;
+			
+			timeManagers[0].events.triggerEvent("rangemodified");  
+			timeManagers[0].currenttime(valTime,false);
+		
+			var layerName = record.get('name');
+			if(layerName.indexOf("NDVI") === -1 && layerName.indexOf("50km") === -1){
+				timeManagers[0].nowtime();
+			} 
+		
+			var baseLayer1 = app.mapPanel.map.getLayersByName("Stati")[0];
+			var baseLayer2 = app.mapPanel.map.getLayersByName("Regioni")[0];
+			var baseLayer3 = app.mapPanel.map.getLayersByName("Province")[0];
+			var baseLayer4 = app.mapPanel.map.getLayersByName("Comuni Italia")[0];
+			app.mapPanel.map.setLayerIndex(baseLayer1, count+8);
+			app.mapPanel.map.setLayerIndex(baseLayer2, count+9);
+			app.mapPanel.map.setLayerIndex(baseLayer3, count+10);
+			app.mapPanel.map.setLayerIndex(baseLayer4, count+11);		
+		*/
+		
 
 	    // geostore base
 	    if(!serverConfig){

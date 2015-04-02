@@ -45,7 +45,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		                id: "layertree"
 		            },
 		            outputTarget: "tree"
-		        }, {
+		        },{
 		            ptype: "gxp_legend",
                     id: "legend_plugin",
 		            outputTarget: 'legend',
@@ -135,7 +135,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     actionTarget: "paneltbar"
 		        }, {
 		            ptype: "gxp_wmsgetfeatureinfo_menu", 
-                    id: "wmsgetfeatureinfo_plugin",
+                    id: "wmsgetfeatureinfo_menu_plugin",
 					toggleGroup: this.toggleGroup,
 					useTabPanel: true,
 		            actionTarget: {target: "paneltbar", index: 20}
@@ -178,7 +178,11 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 					}
 				
 					if(!toolIsDefined){
-                        config.tools.push(config.customTools[c])
+                        if(config.customTools[c]['unshift']){
+                            config.tools.unshift(config.customTools[c])
+                        }else{
+                            config.tools.push(config.customTools[c])
+                        }
                     }
 				}
 			}
@@ -271,6 +275,15 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 							button.saveState(south);
 							south.collapse(true);
 						}
+
+                        var tree = Ext.getCmp('tree');
+                        if(tree){
+                            var panel = tree.findParentByType('panel');
+                            if(panel && !panel.collapsed){
+                                panel.collapse();
+                            }							
+                        }
+
                     } else {
 						for(var tool in button.tools){
 							button.restoreState(button.tools[tool]);

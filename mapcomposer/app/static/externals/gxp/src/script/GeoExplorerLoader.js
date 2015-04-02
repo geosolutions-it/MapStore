@@ -122,11 +122,13 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
      */
     loadCustomConfigs: function(){
         var config = this.config;
+        if(config.skipCustomConfigs){
+            this.adminConfigLoad();
+            return
+        }        
         var me = this;
         var url = this.geoStoreBaseURL + 'extjs/search/category/MAPSTORECONFIG';
-        /*if(url.indexOf("http") == 0){
-            url = this.proxy + url;
-        }*/
+
         var h = {
             'Accept': 'application/json'
         };

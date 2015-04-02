@@ -206,6 +206,8 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
              **/
             if(groupNames.length > 0){
                 groupConfig.title= groupNames[locIndex] ? groupNames[locIndex] : groupNames[0];
+                groupConfig.expanded = this.groups[group].expanded == false ? false : true;
+                groupConfig.checked = this.groups[group].checked == false ? null : false;
             }
             
             //
@@ -214,12 +216,12 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
             var text = groupConfig.title;
             /*if(groupConfig.title.indexOf("_") != -1)        
                 text = text.replace(/_+/g, " ");   */
-                
+            
             treeRoot.appendChild(new GeoExt.tree.LayerContainer({
                 text: text,
                 iconCls: "gxp-folder",
-                checked: false,
-                expanded: true,
+                checked: groupConfig.checked,
+                expanded: groupConfig.expanded,
                 group: group == defaultGroup ? undefined : group,
                 loader: new GeoExt.tree.LayerLoader({
                     baseAttrs: groupConfig.exclusive ?
@@ -432,6 +434,9 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                     //modified = true;
                 
                     if(!node.isLeaf()){
+
+                        if(node.childNodes.length === 0)node.expand();                        
+                        
                         var childs = node.childNodes;
                         var size = childs.length;
 
@@ -454,6 +459,17 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                         }
                     }else{
                         var parent = node.parentNode;
+                        
+                        //Fix the temporal layer enablement.
+                        //Layer is not showed in the map if we select time interval and then check the layer from the layer tree.
+                        if(checked){
+                            var timeManager = this.target.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');
+                            var lyr = node.layer;
+                            if ((lyr.dimensions && lyr.dimensions.time) || (lyr.metadata.timeInterval && lyr.metadata.timeInterval.length)){
+                                timeManager[0].timeAgents[0].applyTime(lyr,timeManager[0].currentTime);
+                            }
+                        }
+                        
                         if(checked && !parent.getUI().isChecked()){
                             parent.getUI().toggleCheck(checked);
                         }else if(!checked && parent.getUI().isChecked()){

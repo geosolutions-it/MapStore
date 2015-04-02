@@ -124,7 +124,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
     },
     
     createValueWidget: function(type, value) {
-        if(this.autoComplete && this.fieldType === 'string') {
+        if(this.autoComplete && (this.fieldType === 'string' || this.fieldType === 'boolean')) {
             return Ext.apply({value:value}, this.addAutocompleteStore(this.autoCompleteDefault[type]));
         } else {
             return Ext.apply({value:value}, this.fieldDefault[type][this.fieldType]);
