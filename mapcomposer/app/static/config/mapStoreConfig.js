@@ -482,7 +482,7 @@
 				"step": 60,
 				"startEnd": true,
 				"units": "Minutes",
-				"frameRate": 1
+				"frameRate": 5
 			}
 		}
 	}, 

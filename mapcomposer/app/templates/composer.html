@@ -616,6 +616,14 @@
                     customParams.format = "image/png8";					
 					
 					resource.customParams = customParams;
+					
+					resource.sourceOptions = {
+						layerBaseParams:{
+							FORMAT: "image/png8",
+							TILED: true,
+							TILESORIGIN:"-20037508.34, -20037508.34"
+						}
+					};
                 }				
 							
 				addLayer.on({
@@ -628,6 +636,8 @@
 						var endDate;
 						var timeStep;
 						var timeUnits;
+						
+						var setNowTime = false						
 						
 						for(var i=0; i<records.length; i++){
 							var record = records[i].record;
@@ -677,7 +687,14 @@
 								if((timeUnits == 'D' && valStep ==  'H') || (timeUnits == 'H' && valStep ==  'M')){
 									timeUnits = valStep;
 								}
-							}					
+							}	
+
+							timeUnits = timeUnits == 'H' ? timeUnits = 'Hours' : (timeUnits == 'D' ? timeUnits = 'Days' : timeUnits = 'Minutes');		
+
+							var layerName = record.get('name');
+							if(layerName.indexOf("NDVI") === -1 && layerName.indexOf("50km") === -1){
+								setNowTime = true;
+							}							
 						}
 						
 						var timeManagers = app.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');
@@ -691,21 +708,18 @@
 						timeManagers[0].events.triggerEvent("rangemodified"); 						
 						timeManagers[0].currenttime(startDate, false);
 						
-						/*
-						var layerName = record.get('name');
-					    if(layerName.indexOf("NDVI") === -1 && layerName.indexOf("50km") === -1){
+					    if(setNowTime === true){
 							timeManagers[0].nowtime();
 						}
-												
+						
 						var baseLayer1 = app.mapPanel.map.getLayersByName("Stati")[0];
 						var baseLayer2 = app.mapPanel.map.getLayersByName("Regioni")[0];
 						var baseLayer3 = app.mapPanel.map.getLayersByName("Province")[0];
 						var baseLayer4 = app.mapPanel.map.getLayersByName("Comuni Italia")[0];
-						app.mapPanel.map.setLayerIndex(baseLayer1, count+8);
-						app.mapPanel.map.setLayerIndex(baseLayer2, count+9);
-						app.mapPanel.map.setLayerIndex(baseLayer3, count+10);
-						app.mapPanel.map.setLayerIndex(baseLayer4, count+11);
-						*/
+						app.mapPanel.map.setLayerIndex(baseLayer1, 200);
+						app.mapPanel.map.setLayerIndex(baseLayer2, 201);
+						app.mapPanel.map.setLayerIndex(baseLayer3, 202);
+						app.mapPanel.map.setLayerIndex(baseLayer4, 203);
 					}
 				});
 				

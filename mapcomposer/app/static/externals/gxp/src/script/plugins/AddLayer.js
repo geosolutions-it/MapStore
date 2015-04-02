@@ -447,8 +447,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					
 			var source = this.checkLayerSource(resource.wmsURL);
 
-			if(source){
-			
+			if(source){			
 				if(!source.loaded){
 					source.on('ready', function(s){
 						mask.hide();
@@ -490,7 +489,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				}
 			}else{
 				mask.show();
-				this.addSource(resource.wmsURL, true, resource, callback);
+				this.addSource(true, resource, callback);
 			}
 		}
 	},
@@ -549,17 +548,22 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	/**  
 	 * api: method[addSource]
      */
-	addSource: function(wmsURL, showLayer, options, callback){			
-		var source = this.checkLayerSource(wmsURL);
+	addSource: function(showLayer, options, callback){			
+		var source = this.checkLayerSource(options.wmsURL);
 
 		if(!source){
 			var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
 			mask.show();
 			
 			var sourceOptions = {
-				url: wmsURL,
+				url: options.wmsURL,
 				ptype: options.format == "wmts" ? "gxp_wmtssource" : "gxp_wmssource"
 			};
+			
+			//
+			// Setting additional source options
+			//
+			Ext.applyIf(sourceOptions, options.sourceOptions);
 			
 			source = this.target.addLayerSource({
 				config: sourceOptions, // assumes default of gx_wmssource
