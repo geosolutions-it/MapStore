@@ -214,7 +214,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 				name: 'Production (000 tons)',
 				color: '#89A54E',
 				lcolor: 'rgb(207,235,148)',                    
-				type: 'line',
+				type: 'column',
 				yAxis: 1,
 				dataIndex: 'prod',
 				unit:'(000 tons)'
@@ -222,7 +222,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 			yield:{
 				name: 'Yield (kg/ha)',
 				dashStyle: 'shortdot',
-				type: 'line',
+				type: 'column',
 				color: '#4572A7',
 				lcolor: 'rgb(139,184,237)',
 				yAxis: 2,
@@ -233,7 +233,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 				name: 'Area (000 hectares)',
 				color: '#AA4643',
 				lcolor: 'rgb(240,140,137)',                    
-				type: 'line',
+				type: 'column',
 				dataIndex: 'area',
 				unit:'(000 ha)'
 			}
@@ -275,6 +275,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         var fromYear = data.startYear;
         var toYear = data.endYear;
 
+        var compositeMode = data.outputmode;
 		/* START COMPARE SECTION*/
 		
 		this.mode = data.mode;		
@@ -342,14 +343,23 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         
 		
         //set labels for chart opts
-        this.chartOpt.series.prod.unit  = '('+prodRec.get('shortname')+')';
-        this.chartOpt.series.area.unit = '('+areaRec.get('shortname')+')';
-        this.chartOpt.series.yield.unit = '('+yieldRec.get('shortname')+')';
-        
-        this.chartOpt.series.prod.name  = 'Production ('+prodRec.get('name')+')';
-        this.chartOpt.series.area.name = 'Area ('+areaRec.get('name')+')';
-        this.chartOpt.series.yield.name = 'Yield ('+yieldRec.get('name')+')';
-		
+        if (compositeMode == 'percent'){
+        	this.chartOpt.series.prod.unit  = '(%)';
+	        this.chartOpt.series.area.unit = '(%)';
+	        this.chartOpt.series.yield.unit = '(%)';
+	        
+	        this.chartOpt.series.prod.name  = 'Production (%)';
+	        this.chartOpt.series.area.name = 'Area (%)';
+	        this.chartOpt.series.yield.name = 'Yield (%)';
+		}else{
+	        this.chartOpt.series.prod.unit  = '('+prodRec.get('shortname')+')';
+	        this.chartOpt.series.area.unit = '('+areaRec.get('shortname')+')';
+	        this.chartOpt.series.yield.unit = '('+yieldRec.get('shortname')+')';
+	        
+	        this.chartOpt.series.prod.name  = 'Production ('+prodRec.get('name')+')';
+	        this.chartOpt.series.area.name = 'Area ('+areaRec.get('name')+')';
+	        this.chartOpt.series.yield.name = 'Yield ('+yieldRec.get('name')+')';
+		}
 		for (var compareRegion in this.chartOptCompare.series){
 			switch (this.variableCompare) {
 				case ('prod'):
@@ -445,7 +455,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 				var customOpt = {
                     stackedCharts: this.stackedCharts,
                     highChartExportUrl: this.target.highChartExportUrl,
-                    variableCompare: this.variableCompare
+                    variableCompare: this.variableCompare,
+                    compositeMode: compositeMode
                 }
 				
 				if (this.mode === 'composite'){

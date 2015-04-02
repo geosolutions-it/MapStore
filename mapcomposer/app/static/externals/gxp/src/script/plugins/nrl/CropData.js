@@ -383,12 +383,19 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     listeners: {
                         change: function(c,checked){
                             this.ownerCt.changeMode(checked.inputValue);
+                            if(checked.inputValue == 'composite' && !c.ownerCt.outputmode.isVisible()){
+                            	c.ownerCt.outputmode.show();
+                            	c.ownerCt.doLayout();
+                            }else if (c.ownerCt.outputmode.isVisible()){
+                            	c.ownerCt.outputmode.hide();
+                            }
                         }
                     }
                 //
                 // UNIT OF MEASURE
                 //
                 },
+                
                 
                 //COMMODITY GRID
                  new Ext.ux.grid.CheckboxSelectionGrid({
@@ -488,6 +495,21 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 //REFERENCE YEAR
                 //
                 },{
+					fieldLabel: 'Chart Type',
+					xtype: 'radiogroup',
+					anchor: '100%',
+					autoHeight: true,
+					ref: 'outputmode',
+					title: this.outputTypeText,
+					defaultType: 'radio',
+					columns: 1,
+					hidden: false,
+					items: [
+						{boxLabel: 'Values' , name: 'outputmode', inputValue: 'abs',checked:true},
+						{boxLabel: 'Anomalies' , name: 'outputmode', inputValue: 'diff'},
+						{boxLabel: 'Anomalies (%)' , name: 'outputmode', inputValue: 'percent'},
+					]
+				},{
                     xtype: 'label',
                     anchor:'100%',
                     fieldLabel:'Reference Year',

@@ -50,6 +50,12 @@ Ext.ux.HighChart = Ext.extend(Ext.BoxComponent, {
     animShift: false,
 
     /**
+     * @cfg {Boolean} alignYAxisZero
+     * True to align all y axis zero.
+     */
+    alignYAxisZero: false,
+
+    /**
     * Add one or more series to the chart
     * @param {Array} series An array of series
     * @param {Boolean} append the serie. Defaults to true
@@ -219,6 +225,7 @@ Ext.ux.HighChart = Ext.extend(Ext.BoxComponent, {
         */
         if (this.chart && this.rendered) {
             if (this.resizable) {
+
                 for (var i = 0; i < this.series.length; i++) {
                     this.series[i].visible = this.chart.series[i].visible;
                 }
@@ -228,6 +235,7 @@ Ext.ux.HighChart = Ext.extend(Ext.BoxComponent, {
                 delete this.chart;
 
                 // Create a new chart
+                if (this.alignYAxisZero) this.alignYAxisZeros();
                 this.chart = new Highcharts.Chart(this.chartConfig);
             }
 
@@ -285,7 +293,8 @@ Ext.ux.HighChart = Ext.extend(Ext.BoxComponent, {
 			    }
 
 			 }
-			this.chart = new Highcharts.Chart(this.chartConfig);
+            if (this.alignYAxisZero) this.alignYAxisZeros();
+            this.chart = new Highcharts.Chart(this.chartConfig);
                         if (this.xField)
                           this.updatexAxisData();
                 }, 
@@ -293,6 +302,7 @@ Ext.ux.HighChart = Ext.extend(Ext.BoxComponent, {
               });
               return; 
             } else {
+                if (this.alignYAxisZero) this.alignYAxisZeros();
                 this.chart = new Highcharts.Chart(this.chartConfig);
             }
         }
@@ -309,6 +319,27 @@ Ext.ux.HighChart = Ext.extend(Ext.BoxComponent, {
     //@deprecated
     onContainerResize: function() {
         this.draw();
+    },
+
+    //private
+    alignYAxisZeros: function() {
+        // compute the yTickPixelInterval value.
+        // if it is greater then half the height of the container of the chart,
+        // the resulting effect if there will be three only horizontal ticks
+        // with centered zero.
+        var tmpVal = this.container.dom.clientHeight / 2;
+        var exponent = Math.floor(Math.log10(tmpVal));
+        tmpVal = tmpVal/Math.pow(10, exponent);
+        // 3,5 e 1,5 are empiric values that avoid the disalignament of zero-tick
+        tmpVal += (this.container.dom.clientHeight >= 500 ? 3.5 : 1.5 );
+        tmpVal = Math.round(tmpVal);
+
+        var yTickPixelInterval = tmpVal * Math.pow(10, exponent);
+
+        // set yTickPixelInterval option for all yAxis.
+        for (var i=0; i<this.chartConfig.yAxis.length; i++){
+            this.chartConfig.yAxis[i].tickPixelInterval = yTickPixelInterval;
+        }
     },
 
     //private

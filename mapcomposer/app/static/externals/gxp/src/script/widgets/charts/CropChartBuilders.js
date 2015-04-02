@@ -163,7 +163,55 @@ nrl.chartbuilder.crop.composite = {
 				chartData[i].rows.sort(CompareForSort);        
 			}
 		}
-        
+
+		var getAvg = function(array){
+			var sum = 0;
+			for(var i=0; i<array.length; i++){
+				sum += array[i];
+			}
+			return sum/array.length;
+		};
+
+		/*
+		 * edits data for dif chart
+		 */
+		if (customOpt.compositeMode != 'abs'){
+			var chartMeanValues = [];
+			/*
+			 * for each chart it builds an object that
+			 * keep mean values for each data (not for time)
+			 */
+			for(var i=0; i<chartData.length; i++){
+				var chartMeanValue = {};
+				for(var r=0; r<chartData[i].rows.length; r++){
+					for(var data in chartData[i].rows[r]){
+						if (data != 'time')
+							chartMeanValue[data] = (chartMeanValue[data] ? chartMeanValue[data] : 0 ) + chartData[i].rows[r][data];
+					}
+				}
+				for(var data in chartMeanValue){
+					if (data != 'time')
+						chartMeanValue[data] = chartMeanValue[data]/chartData[i].rows.length;
+				}
+				chartMeanValues[i] = chartMeanValue;
+			}
+			/*
+			 * compute new data values
+			 */
+			for(var i=0; i<chartData.length; i++){
+				var chartValue = chartData[i];
+				var chartAVGs = chartMeanValues[i];
+				for(var r=0; r<chartValue.rows.length; r++){
+					var chartRow = chartValue.rows[r];
+					/*
+					 * replace data with the difference (absolute or percent) from the average
+					 */
+					for(var data in chartAVGs){
+						chartRow[data] = parseFloat(( customOpt.compositeMode == 'diff' ? chartRow[data] - chartAVGs[data] : 100*(chartRow[data]/chartAVGs[data] -1)).toFixed(2));
+					}
+				}
+			}
+		}
 		return chartData;
 	},
 	
@@ -198,7 +246,7 @@ nrl.chartbuilder.crop.composite = {
         for (var k in opt.series){
             for(var i = 0; i < ret.series.length; i++){
                 if(ret.series[i]===opt.series[k]){
-                    ret.avgs[i] = avgs[k];
+                    ret.avgs[i] = (avgs ? avgs[k] : undefined);
                     
                 }
             }
@@ -222,8 +270,6 @@ nrl.chartbuilder.crop.composite = {
             if(yAxisIndex>0){
                 var yAxis = ret.yAxis[yAxisIndex];
                 yAxis.opposite = true;
-                //yAxis.rotation = 90;
-                
             }
         }
         return ret;
@@ -254,12 +300,12 @@ nrl.chartbuilder.crop.composite = {
                     color: opt.color
                 }
             },
-            plotLines: [{ //mid values
-                value: avg,
-                color: opt.color,//opt.series.area.lcolor,
-                dashStyle: 'LongDash',
-                width: 1                       
-            }]
+            plotLines: ( avg ? [{ //mid values
+                	value: avg,
+                	color: opt.color,//opt.series.area.lcolor,
+                	dashStyle: 'LongDash',
+                	width: 1                       
+            	}] : undefined)
 
         }
     
@@ -275,7 +321,44 @@ nrl.chartbuilder.crop.composite = {
 			}
 			return sum/len;
 		};
-		
+		var getAbsMaximums = function(chartRows){
+			var maximums = {};
+			for (var r=0; r<chartRows.length; r++){
+				var row = chartRows[r];
+				for(var item in row){
+					if (item != 'time'){
+						if (!maximums[item]) maximums[item] = [];
+						maximums[item].push(row[item]);
+					}
+				}
+			}
+			for (var item in maximums){
+				//the max is the max distance from zero.
+				maximums[item] = Math.max(
+					Math.abs(Math.max.apply(null, maximums[item])),
+					Math.abs(Math.min.apply(null, maximums[item]))
+				);
+
+				//approx value to the next integer.
+				maximums[item] = Math.round(maximums[item]+0.5);
+			}
+			return maximums;
+		};
+		var addMaxMinConfig = function(chartConfig, maximums){
+			var yAxisDataIdIndexMap = {};
+			for(var i=0; i<chartConfig.series.length; i++){
+				for(var j=0; j<chartConfig.yAxis.length; j++){
+					if (chartConfig.series[i].name == chartConfig.yAxis[j].title.text){
+						yAxisDataIdIndexMap[chartConfig.series[i].dataIndex] = j;
+					}
+				}
+			}
+
+			for(var item in maximums){
+				chartConfig.yAxis[yAxisDataIdIndexMap[item]].max =  maximums[item];
+				chartConfig.yAxis[yAxisDataIdIndexMap[item]].min = -maximums[item];
+			}
+		};
 		for (var r=0; r<data.length; r++){
             //calculate avg
             var prodavg = getAvg(data[r].rows,'prod');
@@ -287,7 +370,11 @@ nrl.chartbuilder.crop.composite = {
                 area:areaavg
             }
             //get chart configs (sorting them properly)
-            var chartConfig = this.getOrderedChartConfigs(opt,avgs);
+            var chartConfig = this.getOrderedChartConfigs(opt,(customOpt.compositeMode == 'abs' ? avgs : undefined));
+            if (customOpt.compositeMode != 'abs'){
+				var maxes = getAbsMaximums(data[r].rows);
+				addMaxMinConfig(chartConfig, maxes);
+			}
             //console.log(chartConfig);
 			// Store for random data
 			var fields = [{
@@ -335,6 +422,7 @@ nrl.chartbuilder.crop.composite = {
 					text += commodity + " - " + chartTitle;
 				}
 			}
+			text += (customOpt.compositeMode != 'abs' ? '<br /><span style="font-size: 12px;">Anomalies</span>' : '');
 			
 			//
 			// AOI Subtitle customization
@@ -353,7 +441,7 @@ nrl.chartbuilder.crop.composite = {
 			var commoditiesListStr = nrl.chartbuilder.util.toTitleCase(listVar.commodity.replace(/[']/g, '').replace(/\\,/g,', ').toUpperCase());
 			chart = new Ext.ux.HighChart({
 				series: chartConfig.series,				
-				
+				alignYAxisZero: (customOpt.compositeMode != 'abs'),
 				height: opt.height,
 				//width: 900,
 				store: store,
@@ -362,7 +450,7 @@ nrl.chartbuilder.crop.composite = {
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
-                        spacingBottom: 145                       
+                        spacingBottom: (customOpt.compositeMode == 'abs' ? 158 :96)
 					},
                     exporting: {
                         enabled: true,
@@ -371,7 +459,9 @@ nrl.chartbuilder.crop.composite = {
                     },
 					title: {
 						//text: (data[r].title.toUpperCase()=="AGGREGATED DATA" ? data[r].title.toUpperCase() + " - " + listVar.commodity.toUpperCase() : listVar.commodity.toUpperCase() +" - "+listVar.chartTitle.split(',')[r]) // + " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : listVar.chartTitle.split(',')[r])
-						text: text
+						text: text,
+						useHTML: true,
+						margin: 32
 					},
 					subtitle: {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
@@ -380,14 +470,18 @@ nrl.chartbuilder.crop.composite = {
                               '<span style="font-size:10px;">Commodity: '+commoditiesListStr+'</span><br />'+
                               '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
                               '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />'+ 
-                              '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
-                              '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+opt.series.prod.unit+'</span><br />'+
-                              '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+opt.series.yield.unit+'</span>',
+                              (customOpt.compositeMode == 'abs'
+                              	?
+	                            	'<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
+	                            	'<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+opt.series.prod.unit+'</span><br />'+
+	                            	'<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+opt.series.yield.unit+'</span>'
+                              	:
+                              		''),
                         align: 'left',
                         verticalAlign: 'bottom',
                         useHTML: true,
                         x: 30,
-                        y: 10
+                        y: 16
 					},
 					xAxis: [{
 						type: 'datetime',
@@ -427,9 +521,13 @@ nrl.chartbuilder.crop.composite = {
                       '<span style="font-size:10px;">Commodity: '+commoditiesListStr+'</span><br />'+
                       '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
                       '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />'+ 
-                      '<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
-                      '<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+opt.series.prod.unit+'</span><br />'+
-                      '<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+opt.series.yield.unit+'</span>'
+                      (customOpt.compositeMode == 'abs'
+                      	?
+                        	'<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
+                        	'<span style="font-size:10px; color: '+opt.series.prod.color+'">Prod mean: '+ prodavg.toFixed(2)+' '+opt.series.prod.unit+'</span><br />'+
+                        	'<span style="font-size:10px; color: '+opt.series.yield.color+'">Yield mean: '+ yieldavg.toFixed(2)+' '+opt.series.yield.unit+'</span>'
+                      	:
+                      		'')
 			});
 			charts.push(chart);
 		}
@@ -749,6 +847,7 @@ nrl.chartbuilder.crop.compareRegion = {
         }];
 		
 		ret.yAxis = [{ // AREA
+			endOnTick: false,
 			title: {
 				text: stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : opt.name
 			},                    

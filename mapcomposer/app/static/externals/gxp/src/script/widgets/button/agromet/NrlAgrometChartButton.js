@@ -165,6 +165,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
         var granType = data.areatype;
         var fromYear = data.startYear;
         var toYear = data.endYear;
+        var referenceYear = data.mode == 'composite' && (data.compositevalues == 'abs'|| data.compositevalues == 'anomalies') ? data.year : data.endYear;
         var mode = data.mode;
         var compositevalues = (mode == 'composite' ? data.compositevalues : undefined);
         //get start and end dekads.
@@ -192,7 +193,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 
         var chartTitle = "";
         var splitRegion;
-        
+        var doAnomalies;
         /*if (listVar.numRegion.length == 1){
             if (listVar.granType == "province"){
                 chartTitle = listVar.numRegion[0].slice(0,1).toUpperCase() + listVar.numRegion[0].slice(1);
@@ -227,12 +228,14 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
             granType: granType,
             fromYear: fromYear,
             toYear: toYear,
+            refYear: referenceYear,
             factorValues: factorValues,
 			factorStore: factorStore,
             startDec: start_dec,
             endDec: end_dec,
             mode: mode,
-            compositevalues: compositevalues
+            compositevalues: compositevalues,
+            anomaliesoutput: data.anomaliesoutput
         };
         
         //loading mask
@@ -245,75 +248,143 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
         var myMask = new Ext.LoadMask(this.findParentByType('form').getEl(),
         {msg:loadingMsg} );
         
-        myMask.show();
-		var store = new Ext.data.JsonStore({
-			url: this.url,
-			 sortInfo: {field: "s_dec", direction: "ASC"},
-			root: 'features',
-			
-			fields: [{
-				name: 'factor',
-				mapping: 'properties.factor'
-			},{
-				name: 'month',
-				mapping: 'properties.month'
-			},{
-				name: 'dec',
-				mapping: 'properties.dec'
-			},{
-				name: 's_dec',
-				mapping: 'properties.order'
-			}, {
-				name: 'current',
-				mapping: 'properties.current'
-			},{
-				name: 'previous',
-				mapping: 'properties.previous'
-			},{
-				name: 'aggregated',
-				mapping: 'properties.aggregated'
-			}]			
-		});
+        myMask.show();		
+		var makeDataStore = function(jsonData){
+			return new Ext.data.JsonStore({
+				data: jsonData,
+				sortInfo: {field: "s_dec", direction: "ASC"},
+				root: 'features',
+				fields: [{
+					name: 'factor',
+					mapping: 'properties.factor'
+				},{
+					name: 'month',
+					mapping: 'properties.month'
+				},{
+					name: 'dec',
+					mapping: 'properties.dec'
+				},{
+					name: 's_dec',
+					mapping: 'properties.order'
+				}, {
+					name: 'current',
+					mapping: 'properties.current'
+				},{
+					name: 'previous',
+					mapping: 'properties.previous'
+				},{
+					name: 'aggregated',
+					mapping: 'properties.aggregated'
+				}]
+			});
+		};
 
-		var params =             
-			(fromYear   ? "start_year:"  + fromYear + ";" : "") +
-            (toYear     ? "end_year:"    + (compositevalues == 'avg' ? parseInt(toYear)+1+'' : toYear) + ";" : "") +
+        // sort features to simplify the computing of the anomalies
+        var sortFeatures = function (f){
+            f.sort(function(f1, f2){
+                if (f1.properties.factor < f2.properties.factor)
+                    return -1;
+                else if (f1.properties.factor > f2.properties.factor)
+                    return 1;
+                else
+                    return f1.properties.dek_in_year - f2.properties.dek_in_year;
+            });
+            return f;
+        }
+
+        var params =
+            (fromYear   ? "start_year:"  + fromYear + ";" : "") +
+            (toYear     ? "end_year:"    + (compositevalues == 'avg' ? parseInt(toYear)+1+'' : (compositevalues == 'abs' ? referenceYear : toYear )) + ";" : "") +
             (factorList ? "factor_list:" + factorList + ";" : "") +
             (regionList ? "region_list:" + regionList + ";" : "") +
             (start_dec  ? "start_dec:"   + start_dec + ";" : "") +
             (end_dec    ? "end_dec:"     + end_dec + ";" : "") +
             (granType   ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "") ;
-            
-            
-			
+        var allPakistanRegions = (granType == "pakistan");
+        this.allPakistanRegions = allPakistanRegions;
 		var viewparams = params;
-					
-		store.load({
-			callback:function(){
-				var allPakistanRegions = (granType == "pakistan");
-				this.createResultPanel(store, listVar, allPakistanRegions);
-                myMask.hide();
-			},
+		// first request
+		Ext.Ajax.request({
 			scope:this,
+			url : this.url,
+			method: 'POST',
 			params :{
 				service: "WFS",
 				version: "1.0.0",
 				request: "GetFeature",
 				typeName: "nrl:agromet_aggregated2",
 				outputFormat: "json",
-				viewparams: viewparams /*season == 'rabi' ? "start_year:"+ fromYear + ";" +
-                    "end_year:"+ toYear + ";" +
-                    "factor_list:"+ factorList + ";" +
-                    "region_list:"+ regionList + ";" +
-                    "gran_type:" + granType + ";" +                            
-                    "season_flag:NOT" :  
-                    "start_year:"+ fromYear + ";" +
-                    "end_year:"+ toYear + ";" +
-                    "factor_list:"+ factorList + ";" +
-                    "region_list:"+ regionList + ";" +
-                    "gran_type:" + granType*/
+				viewparams: params
+			},
+			success: function(reply, opt){
+				var jsonData1 = Ext.util.JSON.decode(reply.responseText);
+				// second request if needed...
+				if (data.mode == 'composite' && data.compositevalues == 'anomalies'){
+					this.jsonData1 = jsonData1;
+                    sortFeatures(jsonData1.features);
+
+					var refYear = data.year;
+					var fromYear = refYear - 2;
+					var toYear = refYear;
+					var newParams =
+						(fromYear   ? "start_year:"  + fromYear + ";" : "") +
+						(toYear     ? "end_year:"    + toYear + ";" : "") +
+						(factorList ? "factor_list:" + factorList + ";" : "") +
+						(regionList ? "region_list:" + regionList + ";" : "") +
+						(start_dec  ? "start_dec:"   + start_dec + ";" : "") +
+						(end_dec    ? "end_dec:"     + end_dec + ";" : "") +
+						(granType   ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "") ;
+					var allPakistanRegions = (granType == "pakistan");
+
+						Ext.Ajax.request({
+							scope:this,
+							url : this.url,
+							method: 'POST',
+							params :{
+								service: "WFS",
+								version: "1.0.0",
+								request: "GetFeature",
+								typeName: "nrl:agromet_aggregated2",
+								outputFormat: "json",
+								viewparams: newParams
+							},
+							success: function(reply, opt){
+								var jsonData2 = Ext.util.JSON.decode(reply.responseText);
+                                sortFeatures(jsonData2.features);
+
+                                var isAbsAnomalies = data.anomaliesoutput == 'abs';
+								// transform current data in anomalies (abs or %)
+								for (var i=0; i<this.jsonData1.features.length; i++){
+									var feature1 = this.jsonData1.features[i];
+									var feature2 = jsonData2.features[i];
+
+                                    if (feature1.properties.current && feature2.properties.aggregated){
+                                        feature1.properties.current = ( isAbsAnomalies
+                                            ? feature2.properties.current - feature1.properties.aggregated
+                                            : 100 * (feature2.properties.current/feature1.properties.aggregated - 1)
+                                        );
+                                    }else{
+                                        feature1.properties.current = null;
+                                    }
+								}
+								this.createResultPanel(makeDataStore(this.jsonData1), listVar, allPakistanRegions);
+								myMask.hide();
+							},
+							failure: function(){
+                                Ext.Msg.alert('Server error', 'server-side failure with status code: ' + response.status);
+                                myMask.hide();
+							}
+						});
+				}else{
+					this.createResultPanel(makeDataStore(jsonData1), listVar, this.allPakistanRegions);
+					myMask.hide();
+				}
+			},
+			failure: function(){
+                Ext.Msg.alert('Server error', 'server-side failure with status code: ' + response.status);
+                myMask.hide();
 			}
-		});         
+		});
     },
 	
 	createResultPanel:function(store, listVar, allPakistanRegions){
