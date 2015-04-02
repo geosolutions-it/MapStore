@@ -1,6 +1,6 @@
 {
 	"scaleOverlayMode": "advanced",
-	"actionToolScale": "medium",
+	"actionToolScale": "small",
 	"tab": true,
 	"gsSources": {
 		"mapquest": {
@@ -428,18 +428,41 @@
 			"id": "addlayer"
 	},
 	{
-		"ptype": "gxp_nominatimgeocoder",
-		"outputConfig": {
-			"emptyText": "Nominatim GeoCoder",
-			"vendorOptions": {
-				"bounded": 1,
-				"countrycodes": "",
-				"addressdetails": 0
+			"ptype": "gxp_geolocationmenu",
+			"actionTarget": "paneltbar",
+			"geolocate": {
+				"geolocateMenuText": "Geolocate",
+				"trackMenuText": "Track Position",
+				"geolocateTooltip": "Locate my position",
+				"enableTracking" : false,
+				"layerName": "Position",
+				"bind": true,
+				"zoom": true,
+				"displayInLayerSwitcher": false,
+				"geolocationStyles": {
+					"pointStyle": {
+							"graphicName": "circle",
+							"strokeColor": "#aaa",
+							"fillColor": "#11f",
+							"strokeWidth": 2,
+							"fillOpacity": 0.7,
+							"strokeOpacity": 0.6,
+							"pointRadius": 5                          
+					},
+					"auraStyle": { 
+							"fillOpacity": 0.3,
+							"fillColor": "#55b",
+							"strokeColor": "#00f",
+							"strokeOpacity": 0.6
+					},
+					"geolocationOptions": {
+						"enableHighAccuracy": true,
+						"maximumAge": 0,
+						"timeout": 7000
+					}
+				}
 			},
-			"boundOption": "max"
-		},
-		"outputTarget": "paneltbar",
-		"index": 26
+			"index": 26
 	},
 	{
 		"ptype": "gxp_about",
