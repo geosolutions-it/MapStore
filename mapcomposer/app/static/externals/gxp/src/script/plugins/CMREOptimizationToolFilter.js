@@ -111,6 +111,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 	                    if(request.status == 200){
 	                        try
 	                          {
+	                          	//TODO
 	                                var featureCollection = Ext.util.JSON.decode(request.responseText);
 	                                Ext.Msg.show({
 	                                    title: "featureCollection",
@@ -122,7 +123,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 	                        catch(err)
 	                          {
 	                            // submit filter in a standard form (before check)
-	                            this.doDownloadPost(this.url, this.xml,outputFormat);
+	                            //this.doDownloadPost(this.url, this.xml,outputFormat);
 	                          }
 	                          
 	                    }else{
