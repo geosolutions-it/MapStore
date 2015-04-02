@@ -52,14 +52,100 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
  	decimalPrecision: 3,
  	
  	optToolCategory: "OPT_TOOL_CONFIGS",
-    
+
+    /**
+     * 
+     */
+    getFeatures: function(layerName) {
+    	var me = this;
+
+    	var callBack = function(filter) {
+	        if (!filter)
+	        	return;
+
+        	var optimizationToolLayers = me.target.customData.optimizationToolLayers;
+	        var layers = me.target.mapPanel.layers.queryBy(function(a) {
+	            var name = a.get('name');
+	            var source = a.get('source') ;
+	            for(var i = 0 ; i <optimizationToolLayers.length; i++) {
+	            	if(name == optimizationToolLayers[i]){
+	            		if (layerName) {
+	            			if(name.indexOf(layerName)>0) return true;
+	            			else return false;
+	            		} else {
+	            			return true;            			
+	            		}
+	            	}
+	            }
+	            return false;
+	        }, me).getRange(); 
+	        for(var i=0;i<layers.length; i++){
+	            var layerRecord  = layers[i];
+	            if(!filter || filter == "" || filter =="()"){
+	                filter ="INCLUDE";
+	            }
+	            
+	            layerRecord.getLayer().mergeNewParams({
+	                cql_filter:filter
+	            });
+
+	            var rec = layerRecord.getLayer();
+		        var url = rec.url;
+		        url += "?service=WFS" +
+		                "&version=1.0.0" +
+		                "&request=GetFeature" +
+		                "&typeName=" + rec.params.LAYERS +
+		                "&exceptions=application/json" +
+		                "&outputFormat=application/json" + 
+		                "&CQL_FILTER=(" + encodeURIComponent(rec.params.CQL_FILTER) + ")";
+	
+	            //show mask
+	            var myMask = new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."});
+	            myMask.show();
+	            OpenLayers.Request.POST({
+	                //add the maxFeatures attribute if present to the test request
+	                url: url ,
+	                callback: function(request) {
+	                    myMask.hide();
+	
+	                    if(request.status == 200){
+	                        try
+	                          {
+	                                var featureCollection = Ext.util.JSON.decode(request.responseText);
+	                                Ext.Msg.show({
+	                                    title: "featureCollection",
+	                                    msg: request.responseText,
+	                                    buttons: Ext.Msg.OK,
+	                                    icon: Ext.MessageBox.OK
+	                                });                        
+	                          }
+	                        catch(err)
+	                          {
+	                            // submit filter in a standard form (before check)
+	                            this.doDownloadPost(this.url, this.xml,outputFormat);
+	                          }
+	                          
+	                    }else{
+	                        Ext.Msg.show({
+	                            title: "failedExport",
+	                            msg: request.statusText,
+	                            buttons: Ext.Msg.OK,
+	                            icon: Ext.MessageBox.ERROR
+	                        });
+	                    }
+	                },
+	                scope: this
+	            });  
+	        };
+	  	};
+    	
+    	this.generateFilter(callBack);
+    },
     /**
      * 
      */
     updateFilter: function() {
-    	debugger
     	var me = this;
-    	me.featureManagerTool = this.target.tools['featuremanager'];
     	
     	var callBack = function(filter) {
 	        if (!filter)
@@ -86,22 +172,6 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 	            layerRecord.getLayer().mergeNewParams({
 	                cql_filter:filter
 	            });
-
-    			debugger
-	            var rec = layerRecord.getLayer();
-	            me.featureManagerTool.setLayer(rec);
-	            
-	            var prefix = me.featureManagerTool.layerRecord.get("prefix");
-		        var namespace = (prefix && prefix !="")  ?  me.featureManagerTool.layerRecord.get("prefix") + ":" : "";
-		        url += "service=WFS" +
-		                (this.filterPropertyNames ? "&" + propertyNamesString : "") +
-		                "&version=" + protocol.version +
-		                "&request=GetFeature" +
-		                "&typeName=" + namespace + protocol.featureType +
-		                "&exceptions=application/json" +
-		                "&outputFormat="+ outputFormat;
-		        this.url =  url;
-		        
 	        }
 	        
 	        me.storeFilterByUser();    		
@@ -279,6 +349,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
         return filter ||"";   
     
     },
+    
     initCheckBoxes: function(){
     	var group = [];
     	this.data = this.target.customData && this.target.customData.optimizationTool;
@@ -311,7 +382,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
     		
             lazyRender:false,
             items:group,
-             onCheckClick : function(){
+            onCheckClick : function(){
                 this[this.checkbox.dom.checked ? 'expand' : 'collapse']();
                 me.updateFilter();
             }               
@@ -321,9 +392,23 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
         filterFieldsets.push(fieldset);
         filterFieldsets.push({xtype:'label',html: '<span style="color:red;font-size:11px;float:right;" >The sum of all the weights must be 1.0</span>'});
         
+        //TODO
+        var btn_PIM_track = {
+            xtype: 'button',
+            text: "Get PIM Track",
+            width: 150,
+            handler: function(){
+            	me.getFeatures("tracks");
+           	},
+            scope: this
+        };
+        filterFieldsets.push(btn_PIM_track);
+        //TODO
+        
     	return {xtype:'container',ref:'filterFieldsets',items:filterFieldsets};
     	
     },
+    
     findOptimalSolutions: function(coeff){
     	var costs = this.data.costs;
     	if(!costs){
@@ -343,6 +428,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
     	}
     	return solutionId;
     },
+    
     getCoefficients: function (callBack){
     	// search values on GeoStore - by User -
     	var mapId = this.target.mapId;
@@ -422,6 +508,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 			callBack(coeff);
 		}
     },
+    
     validateCoefficients: function(coeff){
     	try {
 	    	var sum = 0;
@@ -434,6 +521,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 	   		return false;
 	   	}
     },
+    
     calculateCost: function (costObj, coeff){
     	var cost = 0;
     	for(var i = 0; i< coeff.length;i++){
@@ -441,6 +529,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
     	}
     	return cost;
     },
+    
     markValid: function(valid){
     	var fieldsets = [this.form.filterFieldsets.coefficients];
     	for(var fieldsetIndex =0;fieldsetIndex<fieldsets.length;fieldsetIndex++) {
