@@ -100,39 +100,52 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         }
         return fieldSet;
     },
-    createStackChartsOptions: function(stackedCharts){
+    createStackChartsOptions: function(stackedCharts, cmpVar){
 		
+        var stackFielSetContent;
+        if (cmpVar != 'yield'){
+            stackFielSetContent = [{
+                xtype: 'radiogroup',
+                columns:1,
+                fieldLabel: "Stack charts",
+                hideLabel: true,
+                items:[{
+                    checked: stackedCharts.series.stacking == null,
+                    boxLabel: 'Do not stack',
+                    name: 'stackcharts',
+                    inputValue: null
+                }, {
+                    checked: stackedCharts.series.stacking == "normal",
+                    boxLabel: 'Stack',
+                    name: 'stackcharts',
+                    inputValue: 'normal'
+                }, {
+                    checked: stackedCharts.series.stacking == "percent",
+                    boxLabel: 'Stack as percent of the total',
+                    labelSeparator: '',
+                    name: 'stackcharts',
+                    inputValue: 'percent'
+                }],
+                listeners: {
+                    change: function(c,checked){
+                        stackedCharts.series.stacking = checked.inputValue;
+                    }
+                }
+            }];
+        }else{
+            stackFielSetContent = [{
+                xtype: 'label',
+                html: '<h3>No options available</h3>' +
+                      '<p>The stacking plot style is not available for <b>yield</b> variable.</p>'
+            }];
+            // avoid stacking for yield if previously selected for other variables.
+            stackedCharts.series.stacking = null;
+        }
+
 		var fieldSet = {
 			xtype: 'fieldset',
 			title: 'Stack charts of the same type',
-			items: [{
-				xtype: 'radiogroup',
-				columns:1,			
-				fieldLabel: "Stack charts",
-				hideLabel: true,
-				items:[{
-					checked: stackedCharts.series.stacking == null,
-					boxLabel: 'Do not stack',
-					name: 'stackcharts',
-					inputValue: null
-				}, {
-					checked: stackedCharts.series.stacking == "normal",
-					boxLabel: 'Stack',
-					name: 'stackcharts',
-					inputValue: 'normal'
-				}, {
-					checked: stackedCharts.series.stacking == "percent",
-					boxLabel: 'Stack as percent of the total',
-					labelSeparator: '',
-					name: 'stackcharts',
-					inputValue: 'percent'
-				}],
-				listeners: {
-					change: function(c,checked){
-						stackedCharts.series.stacking = checked.inputValue;
-					}
-				}
-			}]
+			items: stackFielSetContent
 		};
 		return fieldSet;
 		
@@ -168,12 +181,12 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 					for (var compareRegion in optionsCompare.series){
 						fieldSetList.push(mainButton.createOptionsFildset(compareRegion,optionsCompare.series[compareRegion],compareRegion));
 					}
-					fieldSetList.push(mainButton.createStackChartsOptions(stackedCharts));
+					fieldSetList.push(mainButton.createStackChartsOptions(stackedCharts, data.compare_variable));
 				}else if(mode === 'compareCommodity'){
                     for (var compareRegion in optionsCompare.series){
 						fieldSetList.push(mainButton.createOptionsFildset(compareRegion,optionsCompare.series[compareRegion],compareRegion));
 					}
-					fieldSetList.push(mainButton.createStackChartsOptions(stackedCharts));
+					fieldSetList.push(mainButton.createStackChartsOptions(stackedCharts, data.compare_variable));
                 }
                 var win = new Ext.Window({
                     iconCls:'ic_wrench',

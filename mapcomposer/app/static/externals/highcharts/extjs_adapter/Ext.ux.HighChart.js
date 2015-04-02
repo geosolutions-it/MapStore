@@ -323,12 +323,16 @@ Ext.ux.HighChart = Ext.extend(Ext.BoxComponent, {
 
     //private
     alignYAxisZeros: function() {
+        // redefine log10 function to support IE9
+        var log10 = function(num){
+            return Math.log(num)/Math.log(10);
+        }
         // compute the yTickPixelInterval value.
         // if it is greater then half the height of the container of the chart,
         // the resulting effect if there will be three only horizontal ticks
         // with centered zero.
         var tmpVal = this.container.dom.clientHeight / 2;
-        var exponent = Math.floor(Math.log10(tmpVal));
+        var exponent = Math.floor(log10(tmpVal));
         tmpVal = tmpVal/Math.pow(10, exponent);
         // 3,5 e 1,5 are empiric values that avoid the disalignament of zero-tick
         tmpVal += (this.container.dom.clientHeight >= 500 ? 3.5 : 1.5 );

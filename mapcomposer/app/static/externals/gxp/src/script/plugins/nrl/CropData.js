@@ -214,6 +214,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 							this.output.changeMode('composite');
                             this.output.mode.setValue('composite',true);
                             if(outputValue == 'data'){
+                                this.output.outputmode.setVisible(false);
                                 this.output.mode.setVisible(false);
                                 variable.setVisible(false);
                                 areaSelector.enable();
@@ -240,6 +241,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 this.output.syncSize();
 
                             }else if(outputValue == 'map'){
+                                this.output.outputmode.setVisible(false);
                                 this.output.mode.setVisible(false);
                                 variable.setVisible(true);
                                 //set area selector constraints and status
@@ -270,6 +272,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                                 this.output.syncSize();
                                 
                             }else{
+                                this.output.outputmode.setVisible(true);
                                 this.output.mode.setVisible(true);
                                 this.output.units.setDisabled(false);
                                 variable.setVisible(false);
@@ -378,7 +381,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     items:[
                         {boxLabel: 'Composite' , name: 'mode', inputValue: 'composite',checked:true},
                         {boxLabel: 'Comparison by Region' , name: 'mode', inputValue: 'compareRegion'},
-						{boxLabel: 'Comparison by Commodity' , name: 'mode', inputValue: 'compareCommodity'},
+						{boxLabel: 'Comparison by Commodity' , name: 'mode', inputValue: 'compareCommodity'}
                     ],
                     listeners: {
                         change: function(c,checked){
@@ -507,7 +510,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 					items: [
 						{boxLabel: 'Values' , name: 'outputmode', inputValue: 'abs',checked:true},
 						{boxLabel: 'Anomalies' , name: 'outputmode', inputValue: 'diff'},
-						{boxLabel: 'Anomalies (%)' , name: 'outputmode', inputValue: 'percent'},
+						{boxLabel: 'Anomalies (%)' , name: 'outputmode', inputValue: 'percent'}
 					]
 				},{
                     xtype: 'label',

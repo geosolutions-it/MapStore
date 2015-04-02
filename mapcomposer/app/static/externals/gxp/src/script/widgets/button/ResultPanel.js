@@ -235,10 +235,10 @@ gxp.WindowManagerPanel.Util = {
             var info =charts[i].info,
             panel = new Ext.Window({
                 iconCls: "gxp-icon-nrl-chart",
-                title: charts[i].chartConfig.title.text.replace('<br>',' - '),
+                title: charts[i].chartConfig.title.text.replace(/(<br>|<br\/>|<br \/>)/g,' - '),
                 layout: 'fit',
                 width:700,
-                height:400,
+                height:500,
                 //x: oldPosition[0] + 20*(i+1), 
                 //y: oldPosition[1] + 20*(i+1),
                 autoScroll: false,
