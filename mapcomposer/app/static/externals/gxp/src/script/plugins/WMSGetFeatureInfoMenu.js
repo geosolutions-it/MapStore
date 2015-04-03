@@ -260,12 +260,13 @@ if(this.infoAction=='click'){
                     }
                 }
            },
-           scope: this  
+           scope: this
     }
     }),new Ext.menu.CheckItem({
             tooltip: this.activeActionTip,
             text: this.activeActionTip,
             iconCls: "gxp-icon-mouse-map",
+			
             toggleGroup: this.toggleGroup,
             group: this.toggleGroup,
             allowDepress:false,
@@ -339,6 +340,7 @@ if(this.infoAction=='click'){
             // click position, in lat/lon coordinates (issue #422)
             var startLatLon = null;
             this.masking = false;
+
             queryableLayers.each(function(x){                
                 var l = x.getLayer();
 
@@ -862,6 +864,7 @@ if(this.infoAction=='click'){
      * :arg parentTitle: ``String`` Title of parent tab.
      */
     obtainFeatureInfoFromData: function(text, features, parentTitle) {
+
         var featureGrids = [];
 
         if (features) {
@@ -893,6 +896,7 @@ if(this.infoAction=='click'){
         var propertyNames=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].propertyNames)?this.outputGridConfig[lname].propertyNames:null;
         var extraFields=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].extraFields)?this.outputGridConfig[lname].extraFields:null;
         Ext.iterate(feature.data,function(fieldName,fieldValue) {
+            // We add the field.
             fields.push(fieldName);
         });
              var  customRenderers={};

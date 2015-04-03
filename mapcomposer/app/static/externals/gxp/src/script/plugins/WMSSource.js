@@ -172,24 +172,13 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 	getAuthParam: function(){
 		var userInfo = this.target.userDetails;
 		var authkey;
-		
-		if(userInfo.user.attribute instanceof Array){
-			for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
-				if( userInfo.user.attribute[i].name == "UUID" ){
-					authkey = userInfo.user.attribute[i].value;
-				}
-			}
-		}else{
-			if(userInfo.user.attribute && userInfo.user.attribute.name == "UUID"){
-			   authkey = userInfo.user.attribute.value;
-			}
+        
+        if(userInfo.token) {
+            authkey = userInfo.token;
+        }
+        if(authkey){
+			this.authParam = userInfo.user.authParam || this.authParam;
 		}
-
-		if(authkey){
-			var authParam = userInfo.user.authParam;
-			this.authParam = authParam ? authParam : this.authParam;
-		}
-		
 		return authkey;
 	},
 	
@@ -327,7 +316,6 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		var defProp = this.getDefaultProps(original, config);            
 		
 		config = Ext.applyIf(defProp, config);
-		
 		// If the layer is not available in the map projection, find a
 		// compatible projection that equals the map projection. This helps
 		// us in dealing with the different EPSG codes for web mercator.
@@ -395,7 +383,6 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		
 		// use all params from original
 		params = Ext.applyIf(params, layer.params);
-
 		// /////////////////////////////////////////////////////////
 		// Checking if the OpenLayers transition should be 
 		// disabled (transitionEffect: null).
