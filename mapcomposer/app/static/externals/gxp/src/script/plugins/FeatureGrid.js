@@ -1016,10 +1016,12 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         form.setAttribute("action", iframeURL );
         form.setAttribute("target",this.downloadIframeId);
         
-        var hiddenField = document.createElement("input");      
-        hiddenField.setAttribute("name", "filter");
-        hiddenField.value= data;
-        form.appendChild(hiddenField);
+        if(data){
+            var hiddenField = document.createElement("input");      
+            hiddenField.setAttribute("name", "filter");
+            hiddenField.value= data;
+            form.appendChild(hiddenField);
+        }
         document.body.appendChild(form);
         form.submit(); 
     } 

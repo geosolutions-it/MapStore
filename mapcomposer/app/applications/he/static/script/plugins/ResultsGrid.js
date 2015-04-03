@@ -330,20 +330,22 @@ gxp.plugins.he.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
            featureManager.featureStore.each(function(r){
                fidsA.push(r.get("fid"));
            });
-            var filter= new OpenLayers.Filter.FeatureId({fids: fidsA});
+            var filter= (single ? new OpenLayers.Filter.FeatureId({fids: fidsA}): null);
            }
        else{
          var filter = featureManager.setPageFilter(single ? featureManager.page : allPage);
         
         }
-        
-        var node = new OpenLayers.Format.Filter({
-            version: protocol.version,
-            srsName: protocol.srsName
-        }).write(filter);
-        
-        this.xml = new OpenLayers.Format.XML().write(node);
-        
+        if(filter){
+            var node = new OpenLayers.Format.Filter({
+                version: protocol.version,
+                srsName: protocol.srsName
+            }).write(filter);
+            
+            this.xml = new OpenLayers.Format.XML().write(node);
+        }else{
+            this.xml = null;
+        }
         var colModel = grid.getColumnModel();
         //get all columns and see if they are visible
         var numColumns = colModel.getColumnCount(false);
@@ -434,74 +436,6 @@ gxp.plugins.he.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
 
     },
 
-    /** api: method[doDownloadPost]
-     * create a dummy iframe and a form. Submit the form 
-     */    
-     
-    doDownloadPost: function(url, data,outputFormat){
-        //        
-        //delete other iframes appended
-        //
-        if(document.getElementById(this.downloadFormId)) {
-            document.body.removeChild(document.getElementById(this.downloadFormId)); 
-        }
-        if(document.getElementById(this.downloadIframeId)) {
-            document.body.removeChild(document.getElementById(this.downloadIframeId));
-        }
-        // create iframe
-        var iframe = document.createElement("iframe");
-        iframe.setAttribute("style","visiblity:hidden;width:0px;height:0px;");
-        this.downloadIframeId = Ext.id();
-        iframe.setAttribute("id",this.downloadIframeId);
-        iframe.setAttribute("name",this.downloadIframeId);
-        document.body.appendChild(iframe);
-        iframe.onload = function(){
-            if(!iframe.contentWindow) return;
-            
-            var error ="";
-            var body = iframe.contentWindow.document.getElementsByTagName('body')[0];
-            var content ="";
-            if (body.textContent){
-              content = body.textContent;
-            }else{
-              content = body.innerText;
-            }
-            try{
-                var serverError = Ext.util.JSON.decode(content);
-                error = serverError.exceptions[0].text
-            }catch(err){
-                error = body.innerHTML || content;
-            }
-             Ext.Msg.show({
-                title: me.invalidParameterValueErrorText,
-                msg: "outputFormat: " + outputFormat + "</br></br>" +
-                      "</br></br>" +
-                     "Error: " + error,
-                buttons: Ext.Msg.OK,
-                icon: Ext.MessageBox.ERROR
-            });   
-        }
-        var me = this;
-        
-        // submit form with enctype = application/xml
-        var form = document.createElement("form");
-        this.downloadFormId = Ext.id();
-        form.setAttribute("id", this.downloadFormId);
-        form.setAttribute("method", "POST");
-        //this is to skip cross domain exception notifying the response body
-        var urlregex =/^https?:\/\//i;
-        //if absoulte url and do not contain the local host
-        var iframeURL = (!urlregex.test(url) || url.indexOf(location.host)>0) ? url :  proxy + encodeURIComponent(url);
-        form.setAttribute("action", iframeURL );
-        form.setAttribute("target",this.downloadIframeId);
-        
-        var hiddenField = document.createElement("input");      
-        hiddenField.setAttribute("name", "filter");
-        hiddenField.value= data;
-        form.appendChild(hiddenField);
-        document.body.appendChild(form);
-        form.submit(); 
-    } ,
     /** api: method[getCustomActions]
      * find the custom actions if a customActionsProvider option is defined.
      * The provider is a plugin that have a method getCustomActions
@@ -511,29 +445,6 @@ gxp.plugins.he.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
             return this.target.tools[this.customActionsProvider].getCustomActions();
         } else return []
     }
-    /** api: method[doDownloadPost]
-     */   
-/*     
-    doDownloadPost: function(url, data){
-        //        
-        //delete other iframes appended
-        //
-        if(document.getElementById(this.downloadFormId)) {
-            document.body.removeChild(document.getElementById(this.downloadFormId)); 
-        }
-        // submit form with filter
-        var form = document.createElement("form");
-        form.setAttribute("id", this.downloadFormId);
-        form.setAttribute("method", "POST");
-        form.setAttribute("action", url);
-        var hiddenField = document.createElement("input");      
-        hiddenField.setAttribute("name", "filter");
-        hiddenField.setAttribute("value", data);
-        form.appendChild(hiddenField);
-        document.body.appendChild(form);
-        form.submit(); 
-    }
-    */
 });
 
 Ext.preg(gxp.plugins.he.ResultsGrid .prototype.ptype, gxp.plugins.he.ResultsGrid);

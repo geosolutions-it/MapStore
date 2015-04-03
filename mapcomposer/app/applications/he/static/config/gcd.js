@@ -267,7 +267,7 @@
 		  "featureManager": "featuremanager",
           "customActionsProvider":"gcd",
           "customColumnsProvider": "gcd",
-          "ignoreFields": ["count","FERC", "cpcty_RID"],
+          "ignoreFields": ["count","FERC", "cpcty_RID", "cpcty_RID_t"],
 		  "outputConfig": {
 			  "id": "capacity_grid",
               "region":"south",
@@ -279,7 +279,8 @@
 			  
 		  },
 		  "outputTarget": "capacity_results_panel",
-		  "showExportCSV": true
+          "showExportCSV": true,
+          "exportDoubleCheck": false
 	    }
 	]
 }
