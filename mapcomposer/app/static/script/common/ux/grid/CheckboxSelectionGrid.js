@@ -22,6 +22,7 @@
  */
 Ext.namespace("Ext.ux.grid");
 Ext.ux.grid.CheckboxSelectionGrid = Ext.extend(Ext.grid.GridPanel,{
+    xtype: 'nrl_checkboxcelectiongrid',
     viewConfig: {forceFit: true},
     initComponent: function() {
         this.addEvents('selectionchange');
@@ -39,9 +40,13 @@ Ext.ux.grid.CheckboxSelectionGrid = Ext.extend(Ext.grid.GridPanel,{
             
             this.fireEvent('selectionchange',sm.getSelections());
         },this);
+        this.getSelections = function(){
+            return this.selModel.getSelections();
+        }
         return Ext.ux.grid.CheckboxSelectionGrid.superclass.initComponent.apply(this, arguments);
     
     }
 
 });
 
+Ext.reg('nrl_checkboxcelectiongrid', Ext.ux.grid.CheckboxSelectionGrid);
