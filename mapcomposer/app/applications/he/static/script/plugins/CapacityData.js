@@ -590,6 +590,17 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     scope: this
                 }
             });
+            // Add another listener to force the display of the 
+            // bottombar when the panel is open for the first time
+            container.on({
+                'expand' : {
+                    fn: function(c){
+                            c.doLayout()
+                        },
+                    scope: this,
+                    single: true
+                }
+            });
         }
 
         return this.output;
