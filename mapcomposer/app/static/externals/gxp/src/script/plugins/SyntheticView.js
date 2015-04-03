@@ -243,7 +243,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 selectionLayerProjection: this.selectionLayerProjection,
                 wfsURL: this.wfsURL,
                 wfsVersion: this.wfsVersion,
-                destinationNS: this.destinationNS                
+                destinationNS: this.destinationNS,
+                appTarget: this.target
             });
         },this);
         var authkey = this.getAuthKey();
@@ -1044,7 +1045,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                         me.processingPane.geostoreElab = status.processing;
                                         me.processingPane.geostoreFormula = status.formula;
                                         
-                                        me.processingPane.show(me.target);
+                                        me.processingPane.show();
                                         
                                         if(status.temporal == 0){
                                             me.processingPane.loadUserElab = false;
@@ -1705,7 +1706,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     */
                     
                     if(! this.processingPane.aoiFieldset)
-                        this.processingPane.show(this.target);
+                        this.processingPane.show();
                     else{
                         var containerTab = Ext.getCmp(this.outputTarget);
                         var active = containerTab.getActiveTab();
@@ -2338,6 +2339,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               },{
                         "name": "fk_distanza",              
                         "mapping": "fk_distanza"
+              },{
+                        "name": "valid",              
+                        "mapping": "valid",
+                        "type": "boolean"
               }],
              proxy: new GeoExt.data.ProtocolProxy({ 
                 protocol: new OpenLayers.Protocol.WFS({ 
@@ -2354,33 +2359,35 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
        var idSostanza, idScenario, flgLieve, idGravita, idBersaglio, distanza;
        radiusStore.on('load', function(str, records) {
             Ext.each(records, function(record) {
-                idSostanza = record.get('id_sostanza') + '';
-                idScenario = record.get('id_scenario') + '';
-                flgLieve = parseInt(record.get('flg_lieve'), 10) === 0 ? 'L' : 'G'; 
-                idGravita = parseInt(record.get('id_gravita'), 10);
-                idBersaglio = parseInt(record.get('id_bersaglio'), 10);
-                distanza = parseInt(record.get('fk_distanza'), 10);
-                
-                var sostanzaObj = this.radiusData[idSostanza];
-                if(!sostanzaObj) {
-                    sostanzaObj = {};
-                    this.radiusData[idSostanza] = sostanzaObj;
-                }               
-                var scenarioObj = sostanzaObj[idScenario];
-                if(!scenarioObj) {
-                    scenarioObj = {
-                        "L": { "humans": [0,0,0,0],        "notHumans": [null,null,null,null,null,null,null]},
-                        "G": { "humans": [0,0,0,0],      "notHumans": [null,null,null,null,null,null,null]}
-                    };
-                    sostanzaObj[idScenario] = scenarioObj;
+                if(record.get('valid')) {
+                    idSostanza = record.get('id_sostanza') + '';
+                    idScenario = record.get('id_scenario') + '';
+                    flgLieve = parseInt(record.get('flg_lieve'), 10) === 0 ? 'L' : 'G'; 
+                    idGravita = parseInt(record.get('id_gravita'), 10);
+                    idBersaglio = parseInt(record.get('id_bersaglio'), 10);
+                    distanza = parseInt(record.get('fk_distanza'), 10);
+                    
+                    var sostanzaObj = this.radiusData[idSostanza];
+                    if(!sostanzaObj) {
+                        sostanzaObj = {};
+                        this.radiusData[idSostanza] = sostanzaObj;
+                    }               
+                    var scenarioObj = sostanzaObj[idScenario];
+                    if(!scenarioObj) {
+                        scenarioObj = {
+                            "L": { "humans": [0,0,0,0],        "notHumans": [null,null,null,null,null,null,null]},
+                            "G": { "humans": [0,0,0,0],      "notHumans": [null,null,null,null,null,null,null]}
+                        };
+                        sostanzaObj[idScenario] = scenarioObj;
+                    }
+                    
+                    var entityObj = scenarioObj[flgLieve];
+                    var distanceArr = (idGravita === 5 ? entityObj["notHumans"] : entityObj["humans"]);
+                    
+                    var distancePos = (idGravita === 5 ? idBersaglio - 10 : (idGravita - 1));
+                    
+                    distanceArr[distancePos] = distanza;
                 }
-                
-                var entityObj = scenarioObj[flgLieve];
-                var distanceArr = (idGravita === 5 ? entityObj["notHumans"] : entityObj["humans"]);
-                
-                var distancePos = (idGravita === 5 ? idBersaglio - 10 : (idGravita - 1));
-                
-                distanceArr[distancePos] = distanza;
             }, this);
             
             

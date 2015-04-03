@@ -86,7 +86,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     // End i18n.
         
     cellViewScale: 500010,
-    maxProcessingArea: 10000000,
+    maxProcessingArea: 100000000,
         
     // TODO: bbox piemonte    
     spatialFilterOptions: {
@@ -128,96 +128,27 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     wfsURL: "http://84.33.2.23/geoserver/wfs",
     wfsVersion: "1.1.0",
     destinationNS: "destinationprod",
-    temporalFeature: "siig_t_variabile",
-    //weatherFeature: "siig_t_variabile",
-    bersFeature: "siig_t_bersaglio",
-    elabFeature: "siig_mtd_d_elaborazione",
-    formulaFeature: "formule",
-    classFeature: "siig_d_classe_adr",
-    sostFeature: "siig_t_sostanza",
-    scenFeature: "siig_t_scenario",
-    sostAccFeature: "siig_r_scenario_sostanza",        
-
     
     /** private: method[constructor]
      *  :arg config: ``Object``
      */
     constructor: function(config) {
-        /* this.epsgWinHeight= Ext.getBody().getHeight()*.7;
-       this.epsgWinWidth= Ext.getBody().getWidth()*.8;*/
-        gxp.plugins.StandardProcessing.superclass.constructor.apply(this, arguments);
+       gxp.plugins.StandardProcessing.superclass.constructor.apply(this, arguments);
+       this.createStores();
     },
     
-    
-    /** public: method[show]
-     *  :arg appTarget: ``Object``
-     */
-    show: function(appTarget) {
-       
-        if(!this.appTarget)
-            this.appTarget = appTarget;
-            
-        var map = this.appTarget.mapPanel.map;    
-        
-        this.aoiFieldset=this.appTarget.tools[this.aoi].getAOI();
-        
-        this.selDamage=this.appTarget.tools[this.seldamage].getSelDamage();
-        this.selDamage.hide();
-            
-        var processing = this.buildForm(map);
-     
-        map.enebaleMapEvent = true;
-        return processing;
+    createStores: function() {
+        this.createElaborazioneStores();
+        this.createConditionsStores();
+        this.createTargetStores();
+        this.createAccidentStores();
     },
     
-	reproject: function(coll, sourceProjection, destProjection) {
-		// workaround to make transform consider towgs84 params
-		var epsg4326 = new OpenLayers.Projection('EPSG:4326');
-		coll = coll.transform(
-			sourceProjection,
-			epsg4326
-		);
-		return coll.transform(
-			epsg4326,
-			destProjection													
-		);	
-	},
-	
-    getLayerGeometry: function(map, geometry, destSRS) {
-        if(geometry && destSRS) {
-            if(destSRS != map.getProjection()){
-                var coll=new OpenLayers.Geometry.Collection(new Array(geometry.clone()));
-				var targetColl=this.reproject(
-					coll,
-					map.getProjectionObject(),
-					new OpenLayers.Projection(destSRS)
-				);
-                geometry = targetColl.components[0];   
-                delete targetColl;
-            }
-        }
-        return geometry;
-    },
-    
-    /** private: method[resetForm]
-     *     resets the form with initial values
-     */
-    resetForm: function(){
-                
-        this.panel.getForm().reset();
-        this.aoiFieldset.removeAOILayer();
-        this.selDamage.clearDrawFeature();
-        this.resetBBOX(true);
-    },
-    
-    /** private: method[buildElaborazioneForm]
-     *    builds the form for processing and formula choosing
-     */
-    buildElaborazioneForm: function() {        
+    createElaborazioneStores: function() {
         //
         // Tipo Elaborazione
         //                
-        var elaborazioneStore= new GeoExt.data.FeatureStore({ 
+        this.elaborazioneStore = new GeoExt.data.FeatureStore({ 
              id: "elaborazioneStore",
              fields: [{
                         "name": "id",              
@@ -226,83 +157,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         "name": "name",              
                         "mapping": "descrizione_elaborazione_" + GeoExt.Lang.locale
               }],
-             proxy: this.getWFSStoreProxy(this.elabFeature) , 
-             autoLoad: true 
-       });
-        
-        
-        
-        this.elaborazione = new Ext.form.ComboBox({
-            fieldLabel: this.elaborazioneLabel,
-            id: "elabcb",
-            width: 150,
-            hideLabel : false,
-            store: elaborazioneStore, 
-            valueField: 'id',
-            displayField: 'name',   
-            lastQuery: '',
-            typeAhead: true,
-            //mode: 'local',
-            forceSelection: true,
-            triggerAction: 'all',
-            selectOnFocus:true,            
-            //editable: true,
-            resizable: true,    
-            //value: "Elaborazione Standard" ,
-            listeners: {
-                scope: this,                
-                expand: function(combo) {
-                    this.loadUserElab = false;
-                    combo.list.setWidth( 'auto' );
-                    combo.innerList.setWidth( 'auto' );
-                },
-                select: function(combo, record, index) {
-                    /*this.formula.getStore().filter('id_elaborazione', record.get('id'));
-                    this.formula.setValue(this.formula.getStore().getAt(0).get('id_formula'));*/
-                    
-                    // to change formula according to scale
-                    var store = this.formula.getStore();
-                    this.filterComboFormulaScale(this.formula);
-                    this.formula.setValue(store.data.items[0].get('id_formula'));
-                    
-                    this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
-                    this.enableDisableSimulation(record.get('id') === 3);
-                }
-            }          
+             proxy: this.getWFSStoreProxy("siig_mtd_d_elaborazione")
         });
-        
-        elaborazioneStore.on('load', function(store, records, options) {
-            if(!this.loadUserElab){
-                this.elaborazione.setValue(records[0].get('id'));
-            }else{
-                this.elaborazione.setValue(this.geostoreElab);
-            }
-        }, this);
+        this.elaborazioneStore.load(); 
         
         //
         // Formula
         //        
-        var formulaVisibleFilter= new OpenLayers.Filter.Comparison({
-            type: OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO,
-            property: 'flg_visibile',
-            value: 1
-        });
-        
-         var elaborazioneFilter= new OpenLayers.Filter.Comparison({
-            type: OpenLayers.Filter.Comparison.EQUAL_TO,
-            property: "id_elaborazione",
-            value: 1
-         });
-         
-        var formulaFilter = new OpenLayers.Filter.Logical({
-                type: OpenLayers.Filter.Logical.AND,
-                filters: [
-                    formulaVisibleFilter,
-                    elaborazioneFilter
-                ]
-        });
-        
-        var formulaStore= new GeoExt.data.FeatureStore({ 
+        this.formulaStore = new GeoExt.data.FeatureStore({ 
              id: "formulaStore",
              fields: [{
                         "name": "id_formula",              
@@ -380,35 +242,381 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         "name": "tema_max_env",              
                         "mapping": "tema_max_env"
               }],
-             proxy: this.getWFSStoreProxy(this.formulaFeature, null, 'ordine_visibilita') , 
-             autoLoad: true 
-       });
-       
-       //formulaStore.filter('id_elaborazione', 1);
+             proxy: this.getWFSStoreProxy('formule' , null, 'ordine_visibilita')
+        });
+        this.formulaStore.load();
+    },
+    
+    createConditionsStores: function() {
+        //
+        // Temporal
+        //
+        var temporalFilter= new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            property: "fk_tipo_variabile",
+            value: 1
+        });
         
+        this.temporalStore= new GeoExt.data.FeatureStore({ 
+             id: "temporalStore",
+             fields: [{
+                        "name": "name",              
+                        "mapping": "descrizione_" + GeoExt.Lang.locale
+              },{
+                        "name": "value",        
+                        "mapping": "campo_fp"
+              }],
+             proxy: this.getWFSStoreProxy("siig_t_variabile", temporalFilter, 'id_variabile')
+        });
+        this.temporalStore.load();
+    },
+    
+    createTargetStores: function() {
+        //
+        // Target
+        //
+        this.targetStore = new GeoExt.data.FeatureStore({ 
+             id: "targetStore",
+             fields: [{
+                        "name": "id_bersaglio",              
+                        "mapping": "id_bersaglio"
+              },{
+                        "name": "name",              
+                        "mapping": "descrizione_" + GeoExt.Lang.locale
+              },{
+                        "name": "flg_umano",        
+                        "mapping": "flg_umano"
+              },{
+                        "name": "description",        
+                        "mapping": "descrizione_" + GeoExt.Lang.locale
+              },{
+                        "name": "severeness",        
+                        "mapping": "id_bersaglio"
+              }],
+             proxy: this.getWFSStoreProxy("siig_t_bersaglio", undefined, "id_bersaglio")
+        });
+        
+        this.targetMacroStore = new Ext.data.ArrayStore({
+            fields: ['layer', 'name', 'property', 'humans', 'code', 'macro', 'id', 'id_bersaglio', 'description', 'severeness'],
+            data :  []
+        });
+        
+        var layers= [null,'popolazione_residente','popolazione_turistica','popolazione_turistica',
+            'industria_servizi','strutture_sanitarie','strutture_scolastiche',
+            'centri_commerciali','utenti_coinvolti','utenti_territoriali','zone_urbanizzate','aree_boscate',
+            'aree_protette','aree_agricole','acque_sotterranee',
+            'acque_superficiali','beni_culturali'];
+        
+        this.targetStore.on('load', function(str, records) {
+            var allIDsArray= []; 
+            var code=0;
+            var humanIDsArray= [];
+            var notHumanIDsArray= [];
+            var allDescsMap = {};
+            var humanDescsMap = {};
+            var notHumanDescsMap = {};
+            Ext.each(records,function(record) {
+                var flg_umano = parseInt(record.get("flg_umano"), 10);
+                var id = parseInt(record.get("id_bersaglio"), 10);
+                allIDsArray.push(id);
+                allDescsMap[id] = record.get("name");
+                record.set( "layer", layers[parseInt(id, 10)]);
+                record.set( "property", 'calc_formula_tot');
+                record.set( "humans", flg_umano === 1);
+                
+                // TODO: mah!?!
+                var code = {
+                    10: '0',
+                    11: '1',
+                    12: '2',
+                    13: '3',
+                    14: '4',
+                    15: '5',
+                    16: '6'
+                }[id] || '-1';
+                
+                record.set( "code", code);
+
+                record.set( "macro", false);
+                record.set( "description", {id: record.get("name")});
+                record.set( "severeness", flg_umano ? '1,2,3,4' : '5');
+                  
+                record.set( "id", [record.get("id_bersaglio")]);
+                if(flg_umano!= 1){
+                    notHumanIDsArray.push(id);
+                    notHumanDescsMap[id] = record.get("name");
+                } else {
+                    humanIDsArray.push(id); 
+                    humanDescsMap[id] = record.get("name");
+                }
+            }, this);
+            this.macroBersData = [
+                ['bersagli_all', this.allTargetOption, 'calc_formula_tot', null, '-2', true, allIDsArray, -1, allDescsMap, '1,2,3,4,5'],
+                ['bersagli_umani', this.allHumanTargetOption, 'calc_formula_tot', true, '-1', true, humanIDsArray, -2, humanDescsMap, '1,2,3,4'],
+                ['bersagli_ambientali', this.allNotHumanTargetOption, 'calc_formula_tot', false, '-2', true, notHumanIDsArray, -3, notHumanDescsMap, '5']
+            ];
+            this.targetMacroStore.loadData(this.macroBersData, true);
+        }, this);
+        this.targetStore.load();
+    },
+    
+    createAccidentStores: function() {
+        //
+        // Classi ADR
+        //
+        var filterDest = new OpenLayers.Filter.FeatureId({
+            fids: ["siig_d_classe_adr.2","siig_d_classe_adr.3","siig_d_classe_adr.9"]
+        });
+      
+        this.classiADRStore = new GeoExt.data.FeatureStore({ 
+             id: "classiStore",
+             fields: [{
+                        "name": "name",              
+                        "mapping": "descrizione_" + GeoExt.Lang.locale
+              },{
+                        "name": "value",        
+                        "mapping": "id_classe_adr"
+              }],
+             proxy: this.getWFSStoreProxy("siig_d_classe_adr", filterDest, "id_classe_adr")
+        });
+        
+        this.classiADRStore.on('load', function(str, records) {
+            str.insert(0, new str.recordType({name: this.allClassOption, value:'0'}, 1000));
+        }, this);
+        this.classiADRStore.load();
+       
+        //
+        // Sostanze
+        //
+        this.sostanzeStore= new GeoExt.data.FeatureStore({ 
+            id: "sostStore",
+            fields: [{
+                "name": "name",              
+                "mapping": "nome_sostanza_" + GeoExt.Lang.locale
+            },{
+                "name": "value",        
+                "mapping": "id_sostanza"
+            },{
+                "name": "class",        
+                "mapping": "fk_classe_adr"
+            }],
+            proxy: this.getWFSStoreProxy("siig_t_sostanza")
+        });
+                    
+        this.sostanzeStore.on('load', function(str, records) {
+            var allIDsArray= new Array(); 
+            Ext.each(records,function(record){
+                var id = parseInt(record.get("value"), 10);
+                allIDsArray.push(id);
+                record.set( "id", [id]);
+            },this);
+            str.insert(0, new str.recordType({name: this.allSostOption, value:'0', id: allIDsArray}, 1000));
+        }, this);
+        this.sostanzeStore.load();
+        
+        this.sostanzeToAccidentStore = new GeoExt.data.FeatureStore({ 
+            id: "sostaccStore",
+            fields: [{
+                "name": "sostanza",              
+                "mapping": "id_sostanza"
+            }, {
+                "name": "scenario",              
+                "mapping": "id_scenario"
+            }, {
+                name: 'psc',
+                mapping: 'psc'
+            }],
+            proxy: this.getWFSStoreProxy("siig_r_scenario_sostanza")
+        });
+        this.sostanzeToAccidentStore.load();
+        
+        //
+        // Scenari
+        //
+        this.accidentStore = new GeoExt.data.FeatureStore({ 
+            id: "accStore",
+            fields: [{
+                "name": "name",              
+                "mapping": "tipologia_" + GeoExt.Lang.locale
+            },{
+                "name": "value",        
+                "mapping": "codice"
+            },{
+                "name": "id",        
+                "mapping": "id_scenario"
+            },{
+                "name": "description",        
+                "mapping": "tipologia_" + GeoExt.Lang.locale
+            }],
+            proxy: this.getWFSStoreProxy("siig_t_scenario")
+        });       
+
+        this.accidentStore.on('load', function(str, records) {
+            var allIDsArray= []; 
+            var allDescsMap = {};
+            Ext.each(records,function(record){
+                var id= parseInt(record.get("id"));
+                allIDsArray.push(id);
+                record.set( "id", [id]);
+                allDescsMap[id] = record.get("name");
+                record.set( "description",  {id: record.get("name")});
+            }, this);
+            str.insert(0, new str.recordType({name: this.allScenOption, value:'0', id:allIDsArray, "description": allDescsMap }, 1000));
+        }, this);
+        
+        this.accidentStore.load();
+        
+        //
+        // Entità
+        //
+        this.seriousnessStore = new Ext.data.ArrayStore({
+            fields: ['name', 'value', 'id'],
+            data :  [
+            [this.allEntOption, '0', [0,1]],
+            [this.entLieve, 'L', [0]],
+            [this.entGrave, 'G', [1]]
+            ]
+        });
+    },
+    
+    /** public: method[show]
+     *  
+     */
+    show: function() {
+        this.map = this.appTarget.mapPanel.map;    
+        
+        // init tools
+        this.aoiFieldset = this.appTarget.tools[this.aoi].getAOI();
+        this.syntView = this.appTarget.tools[this.syntheticView];
+        this.selDamage=this.appTarget.tools[this.seldamage].getSelDamage();
+        this.selDamage.hide();
+            
+        this.buildForm(this.map);
+    },
+    
+    /** private: method[buildForm]
+     *  :arg map: ``Object``
+     *    builds the standard processing main (all including) form
+     */
+    buildForm: function(map){        
+      
+        // updates the AOI on map pan / zoom
+        this.aoiUpdater = function() {            
+            var extent=map.getExtent().clone();
+            this.aoiFieldset.setAOI(extent);                    
+            this.aoiFieldset.removeAOILayer(map);            
+        };
+        map.events.register("move", this, this.aoiUpdater);
+        
+        this.syntView.getControlPanel().disable();
+
+        var containerTab = Ext.getCmp(this.outputTarget);
+        
+        this.panel = new Ext.FormPanel({
+            border: false,
+            layout: "fit",
+            title: this.title,
+            autoScroll: true,
+            items:[
+                this.buildElaborazioneForm(),  
+                this.buildConditionsForm(),
+                this.selDamage,
+                this.aoiFieldset, 
+                this.buildTargetForm(),
+                this.buildAccidentForm()
+
+            ],
+            buttons: [{
+                text: this.cancelButton,
+                iconCls: 'cancel-button',
+                scope: this,
+                handler: this.cancelProcessing
+            },{
+                text: this.resetButton,
+                iconCls: 'reset-button',
+                scope: this,
+                handler: this.resetForm
+            }, {
+                text: this.viewMapButton,
+                iconCls: 'visualizzation-button',
+                scope: this,
+                handler: function(){                    
+                    var params = this.startProcessing();
+                }
+            }]
+        });
+        containerTab.insert(1,this.panel);
+        containerTab.setActiveTab(this.panel);
+
+        
+        if(!this.status){
+            this.resetBBOX();
+        }    
+    },
+    
+    /** private: method[buildElaborazioneForm]
+     *    builds the form for processing and formula choosing
+     */
+    buildElaborazioneForm: function() {        
+        
+        this.elaborazione = new Ext.form.ComboBox({
+            fieldLabel: this.elaborazioneLabel,
+            id: "elabcb",
+            width: 150,
+            hideLabel : false,
+            store: this.elaborazioneStore, 
+            valueField: 'id',
+            displayField: 'name',   
+            lastQuery: '',
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,            
+            editable: false,
+            resizable: true,    
+            listeners: {
+                scope: this,                
+                expand: function(combo) {
+                    this.loadUserElab = false;
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                },
+                select: function(combo, record, index) {
+                    // to change formula according to scale
+                    var store = this.formula.getStore();
+                    this.filterComboFormulaScale(this.formula);
+                    this.formula.setValue(store.getAt(0).get('id_formula'));
+                    
+                    this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
+                    this.enableDisableSimulation(record.get('id') === 3);
+                }
+            }          
+        });
+        
+        this.elaborazione.setValue(this.elaborazioneStore.getAt(0).get('id'));
+              
         this.formula = new Ext.form.ComboBox({
             fieldLabel: this.formulaLabel,
             id: "elabfr",
             width: 150,
             hideLabel : false,
-            store: formulaStore, 
+            store: this.formulaStore, 
             valueField: 'id_formula',            
             displayField: 'name',    
             lastQuery: '',
             typeAhead: true,
-            //mode: 'local',
-            //forceSelection: true,
+            mode: 'local',
+            forceSelection: true,
             triggerAction: 'all',
             selectOnFocus:true,
-            //editable: true,
+            editable: false,
             resizable: true,    
-            //value: 26,
             listeners: {
                 scope: this,                
                 expand: function(combo) {
                     this.loadUserElab = false;
                     
-                    // to change formula according to scale
+                    // change formula according to scale
                     this.filterComboFormulaScale(combo);
                     
                     combo.list.setWidth( 'auto' );
@@ -420,21 +628,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             } 
         });
         
-        formulaStore.on('load', function(store, records, options) {
-            //this.formula.getStore().filter('id_elaborazione', this.elaborazione.getValue());
-            
-            // to change formula according to scale
-            this.filterComboFormulaScale(this.formula);
-            if(!this.loadUserElab){
-                //this.formula.setValue(records[0].get('id_formula'));
-                this.formula.setValue(store.data.items[0].get('id_formula'));
-            }else{
-                this.formula.setValue(this.geostoreFormula);
-            }
-            
-            //fire select formula combo to update target combo
-            this.formula.fireEvent('select',this.formula,store.data.items[0]);
-        }, this);
+        this.filterComboFormulaScale(this.formula);
+        this.formula.setValue(this.formulaStore.getAt(0).get('id_formula'));
        
         this.elabSet = new Ext.form.FieldSet({
             title: this.formLabel,
@@ -453,17 +648,298 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return this.elabSet;
     },
     
-    filterComboFormulaScale: function(combo){
+    /** private: method[buildConditionsForm]
+     *    builds the form for temporal and weather choosing
+     */
+    buildConditionsForm: function() {        
+        this.temporal = new Ext.form.ComboBox({
+            fieldLabel: this.temporalLabel,
+            id: "time",
+            width: 150,
+            hideLabel : false,
+            store: this.temporalStore,    
+            displayField: 'name', 
+            valueField: 'value',
+            mode: 'local',
+            lastQuery: '',
+            forceSelection: true,
+            disabled: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: false,
+            resizable: true,    
+            listeners: {                
+                scope: this
+            }              
+        });
+        
+        this.temporal.setValue(this.temporalStore.getAt(0).get('value'));
+       
+        this.conditionsSet = new Ext.form.FieldSet({
+            title: this.conditionsFielSetLabel,
+            id: 'conditionStoreSet',
+            autoHeight: true,
+            defaults: {
+                // applied to each contained panel
+                bodyStyle:'padding:5px;'
+            },
+            items: [
+            this.temporal/*,    
+            this.weather*/
+            ]
+        });
+        
+        return this.conditionsSet;
+    },
+    
+    /** private: method[buildTargetForm]
+     *    builds the form for target type choosing
+     */
+    buildTargetForm: function() {
+        
+        this.macrobers = new Ext.form.ComboBox({
+            fieldLabel: this.macroTargetLabel,
+            id: "macrobers",
+            width: 150,
+            hideLabel : false,
+            store: this.targetMacroStore,    
+            displayField: 'name',    
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: false,
+            resizable: true,    
+            value: this.allTargetOption,
+            listeners: {
+                scope: this,
+                select: function(cb, record, index) {
+                    var type = record.get('humans');
+                    var startValue = cb.startValue;
+                    this.updateTargetCombo(type);
+                    var processingCombo = this.elaborazione.getValue();
+                    this.enableDisableSimulation(processingCombo === 3,type,startValue);
+                }
+            }              
+        });
+       
+
+        this.bers = new Ext.form.ComboBox({
+            fieldLabel: this.targetLabel,
+            id: "bers",
+            width: 150,
+            hideLabel : false,
+            store: this.targetStore,    
+            clearFilterOnReset: false,
+            displayField: 'name',    
+            mode: 'local',
+            lastQuery: '',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,            
+            editable: false,
+            resizable: true,
+            listeners: {
+                scope: this,
+                select: function(cb, record, index) {
+                    var type = 'bers';
+                    var startValue = cb.startValue;
+                    var processingCombo = this.elaborazione.getValue();
+                    this.enableDisableSimulation(processingCombo === 3,type,startValue);                    
+                },
+                expand: function(combo) {
+                    this.loadUserElab = false;
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                } 
+            } 
+        });
+        
+        this.bersSet = new Ext.form.FieldSet({
+            title: this.targetSetLabel,
+            id: 'bersfset',
+            autoHeight: true,
+            defaults: {
+                // applied to each contained panel
+                bodyStyle:'padding:5px;'
+            },
+            items: [
+            this.macrobers,
+            this.bers
+            ]
+        });
+        return this.bersSet;
+    },
+    
+    /** private: method[buildAccidentForm]
+     *    builds the form for accidents choosing (with 4 cascading combos)
+     */
+    buildAccidentForm: function(map){
+        
+        this.classi = new Ext.form.ComboBox({
+            fieldLabel: this.adrLabel,
+            id: "classicb",
+            width: 150,
+            hideLabel : false,
+            store: this.classiADRStore,    
+            displayField: 'name',    
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: false,
+            resizable: true,
+            value: this.allClassOption,
+            lazyInit: false,
+            listeners: {
+                "expand": function(combo) {
+                    this.loadUserElab = false;
+                    var store=combo.getStore();
+                    delete store.baseParams.filter;
+                    combo.getStore().reload();
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                },                
+                select: function(cb, record, index) {                    
+                    // filtra solo la combo delle sostanze in base alla classe scelta, resetta gli altri filtri
+                    var classe = record.get('value'); 
+
+                    var store=this.sostanzeStore;
+                    delete store.baseParams.filter;
+                    store.proxy.protocol.filter.filters= new Array();
+
+                    if(classe != "0"){
+                       var filter= new OpenLayers.Filter.Comparison({
+                            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                            property: "fk_classe_adr",
+                            value: classe
+                        });
+                        
+                        store.proxy.protocol.filter.filters.push(filter);                        
+                    }       
+                    this.resetCombos([this.sostanze]);
+                },
+                scope: this
+            }              
+        });            
+        
+        this.sostanze = new Ext.form.ComboBox({
+            fieldLabel: this.sostanzeLabel,
+            id: "sostanzecb",
+            width: 150,
+            hideLabel : false,
+            store: this.sostanzeStore, 
+            displayField: 'name',    
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: false,
+            resizable: true,    
+            lazyInit: false,            
+            value: this.allSostOption,
+            listeners: {
+                "expand": function(combo) {
+                    this.loadUserElab = false;
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                },
+                
+                select: function(cb, record, index) {
+                    var sost = record.get('value');
+                    if(sost != "0") {
+                        this.sostanzeToAccidentStore.filter('sostanza', sost);
+                        var fids = {};
+                        
+                        this.sostanzeToAccidentStore.each(function(record){
+                            if(record.get("psc") > 0.0) {
+                                fids[record.get("scenario")] = true;
+                            }
+                        }, this);
+                        this.accidentStore.filterBy(function(record, id) {
+                            return id === 1000 || fids[record.get('id')[0]];
+                        }, this);
+                    } else {
+                        this.accidentStore.clearFilter();
+                    }
+
+                    this.resetCombos([this.accident]);
+                },
+                scope: this
+            }              
+        });
+        
+        this.accident = new Ext.form.ComboBox({
+            fieldLabel: this.accidentLabel,
+            id: "accidentcb",
+            width: 150,
+            hideLabel : false,
+            store: this.accidentStore,   
+            lastQuery:'',
+            displayField: 'name',    
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: false,
+            resizable: true,
+            lazyInit: false,
+            value: this.allScenOption,
+            listeners: {
+                "expand": function(combo) {
+                    this.loadUserElab = false;
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                },
+                select: function(cb, record, index) {
+                    this.resetCombos([this.seriousness]);                           
+                },
+                scope: this
+            }              
+        });
+        
+        this.seriousness = new Ext.form.ComboBox({
+            fieldLabel: this.seriousnessLabel,
+            id: "seriousnesscb",
+            width: 150,
+            hideLabel : false,
+            store: this.seriousnessStore,    
+            displayField: 'name',    
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: false,
+            resizable: true,
+            value: this.allEntOption,
+            lazyInit: false          
+        });
+        
+        this.accidentSet = new Ext.form.FieldSet({
+            title: this.accidentSetLabel,
+            id: 'accidentfset',
+            autoHeight: true,
+            defaults: {
+                // applied to each contained panel
+                bodyStyle:'padding:5px;'
+            },
+            items: [
+                this.classi,
+                this.sostanze,
+                this.accident,
+                this.seriousness
+            ]
+        });
+        
+        return this.accidentSet;
+    },
+    
+    filterComboFormulaScale: function(combo) {
         var store = combo.getStore();
         
-        var syntView = this.appTarget.tools[this.syntheticView];
-        var map = app.mapPanel.map;
-        var scale = Math.round(map.getScale());
+        var scale = Math.round(this.map.getScale());
         
-        /*analiticViewScale: 17070,
-        cellViewScale: 500010,*/
-        
-        if(scale>=syntView.cellViewScale){
+        if(scale>=this.syntView.cellViewScale){
             store.filter([
               {
                 fn   : function(record) {
@@ -494,6 +970,30 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
     },
     
+	reproject: function(coll, sourceProjection, destProjection) {
+		// workaround to make transform consider towgs84 params
+		var epsg4326 = new OpenLayers.Projection('EPSG:4326');
+		coll = coll.transform(
+			sourceProjection,
+			epsg4326
+		);
+		return coll.transform(
+			epsg4326,
+			destProjection													
+		);	
+	},
+    
+    /** private: method[resetForm]
+     *     resets the form with initial values
+     */
+    resetForm: function(){                
+        this.panel.getForm().reset();
+        this.aoiFieldset.removeAOILayer();
+        this.selDamage.clearDrawFeature();
+        this.resetBBOX(true);
+    },
+    
+    
     enableDisableForm: function(formula, elaborazione) {
         this.enableDisableAOI(formula, elaborazione);
         this.enableDisableSelAreaDamage(formula, elaborazione);
@@ -519,34 +1019,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             }
         }
     },
-    /*
-    expandCollapse: function(condition, widget) {
-        if(condition) {
-            if(widget.collapsed) {
-                widget.expand();
-            }
-            Ext.getCmp("featuregrid").removeAllGrids();
-            mapPanelContainerBbar.removeAll(true);
-            mapPanelContainerBbar.add(syntView.simulationViewBbar);
-            mapPanelContainer.doLayout(false,true);
-        } else if(!widget.collapsed) {
-            widget.collapse();
-            mapPanelContainerBbar.removeAll(true);
-            mapPanelContainerBbar.add(syntView.analyticViewBbar);
-            mapPanelContainer.doLayout(false,true);
-        }
-    },*/
-    isAllHumanTargets: function(status) {
-        return status.target['id_bersaglio'] === -2;
-    },
     
-    isAllNotHumanTargets: function(status) {
-        return status.target['id_bersaglio'] === -3;
-    },
-    
-    isSingleTarget: function(status) {
-        return parseInt(status.target['id_bersaglio'],10) > 0;
-    },
     
     // apply simulation grid reload
     updateSimulationTabPabelConfirm: function(wfsGrid,syntView,map,type,startValue){
@@ -791,7 +1264,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     //disable combo formula if elaboration method is Damage Assessment
     enableDisableFormula: function(formula, elaborazione) {
         this.enableDisable(elaborazione.get('id') !== 4, this.formula);
-   },
+    },
     
     enableDisableSelAreaDamage: function(formula, elaborazione) {
         this.enableDisable(elaborazione.get('id') === 4, this.selDamage);        
@@ -829,6 +1302,19 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
     },
     
+    isAllHumanTargets: function(status) {
+        return status.target['id_bersaglio'] === -2;
+    },
+    
+    isAllNotHumanTargets: function(status) {
+        return status.target['id_bersaglio'] === -3;
+    },
+    
+    isSingleTarget: function(status) {
+        return parseInt(status.target['id_bersaglio'], 10) > 0;
+    },
+    
+    
     updateTargetCombo: function(type) {        
                     
         var store=this.bers.getStore();
@@ -838,7 +1324,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         } else {
             store.clearFilter();
         }
-        //this.updateTemaSliders(type);
         
         this.bers.setValue(null);
     },
@@ -860,692 +1345,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             }
         }
     },
-    
-    /** private: method[buildConditionsForm]
-     *    builds the form for temporal and weather choosing
-     */
-    buildConditionsForm: function() {        
-       
-       /*var filter= new OpenLayers.Filter.Comparison({
-            type: OpenLayers.Filter.Comparison.EQUAL_TO,
-            property: this.destinationNS + ":fk_tipo_variabile",
-            value: 2
-        });
-       
-       var weatherStore= new GeoExt.data.FeatureStore({ 
-             id: "weatherStore",
-             fields: [{
-                        "name": "name",              
-                        "mapping": "descrizione_" + GeoExt.Lang.locale
-              },{
-                        "name": "value",        
-                        "mapping": "id_variabile"
-              }],
-             proxy: this.getWFSStoreProxy(this.temporalFeature, filter) , 
-             autoLoad: true 
-       });
-    
-        
-        this.weather = new Ext.form.ComboBox({
-            fieldLabel: this.weatherLabel,
-            id: "meteo",
-            width: 150,
-            hideLabel : false,
-            store: weatherStore,    
-            displayField: 'name',    
-            typeAhead: true,
-            //mode: 'local',
-            lastQuery: '',
-            forceSelection: true,
-            triggerAction: 'all',
-            selectOnFocus:true,
-            editable: true,
-            resizable: true,    
-            listeners: {
-                beforeselect: function(cb, record, index){
-                    
-                },
-                select: function(cb, record, index) {
-                      
-                },
-                scope: this
-            }              
-        });*/
-        
-        var filter= new OpenLayers.Filter.Comparison({
-            type: OpenLayers.Filter.Comparison.EQUAL_TO,
-            property: "fk_tipo_variabile",
-            value: 1
-        });
-        
-        var temporalStore= new GeoExt.data.FeatureStore({ 
-             id: "temporalStore",
-             fields: [{
-                        "name": "name",              
-                        "mapping": "descrizione_" + GeoExt.Lang.locale
-              },{
-                        "name": "value",        
-                        "mapping": "campo_fp"
-              }],
-             proxy: this.getWFSStoreProxy(this.temporalFeature, filter, 'id_variabile') , 
-             autoLoad: true 
-       });
-       
-       temporalStore.on('load', function(store, records, options) {
-            if(!this.loadUserElab){       
-                this.temporal.setValue(records[0].get('value'));
-            }else{
-                this.temporal.setValue(this.geostoreTemporal);
-            }
-       }, this);
-        
-                
-        this.temporal = new Ext.form.ComboBox({
-            fieldLabel: this.temporalLabel,
-            id: "time",
-            width: 150,
-            hideLabel : false,
-            store: temporalStore,    
-            displayField: 'name', 
-            valueField: 'value',
-            typeAhead: true,            
-            //mode: 'local',
-            lastQuery: '',
-            forceSelection: true,
-            disabled: true,
-            triggerAction: 'all',
-            selectOnFocus:true,
-            //editable: true,
-            resizable: true,    
-            listeners: {                
-                scope: this
-            }              
-        });
-        
-       
-        this.conditionsSet = new Ext.form.FieldSet({
-            title: this.conditionsFielSetLabel,
-            id: 'conditionStoreSet',
-            autoHeight: true,
-            defaults: {
-                // applied to each contained panel
-                bodyStyle:'padding:5px;'
-            },
-            items: [
-            this.temporal/*,    
-            this.weather*/
-            ]
-        });
-        
-        return this.conditionsSet;
-    },
-    
-    /** private: method[buildTargetForm]
-     *    builds the form for target type choosing
-     */
-    buildTargetForm: function() {
-        //
-        // Bersaglio
-        //
-        var me= this;
-        var layers= [null,'popolazione_residente','popolazione_turistica','popolazione_turistica',
-            'industria_servizi','strutture_sanitarie','strutture_scolastiche',
-            'centri_commerciali','utenti_coinvolti','utenti_territoriali','zone_urbanizzate','aree_boscate',
-            'aree_protette','aree_agricole','acque_sotterranee',
-            'acque_superficiali','beni_culturali'];
-        
-        
-        var targetStore= new GeoExt.data.FeatureStore({ 
-             id: "targetStore",
-             fields: [{
-                        "name": "id_bersaglio",              
-                        "mapping": "id_bersaglio"
-              },{
-                        "name": "name",              
-                        "mapping": "descrizione_" + GeoExt.Lang.locale
-              },{
-                        "name": "flg_umano",        
-                        "mapping": "flg_umano"
-              },{
-                        "name": "description",        
-                        "mapping": "descrizione_" + GeoExt.Lang.locale
-              },{
-                        "name": "severeness",        
-                        "mapping": "id_bersaglio"
-              }],
-             proxy: this.getWFSStoreProxy(this.bersFeature, undefined, "id_bersaglio") , 
-             autoLoad: true 
-       });
-       
-       targetStore.on('load', function(str, records) {
-                var allIDsArray= []; 
-                var code=0;
-                var humanIDsArray= [];
-                var notHumanIDsArray= [];
-                var allDescsMap = {};
-                var humanDescsMap = {};
-                var notHumanDescsMap = {};
-                Ext.each(records,function(record){
-                          var flg_umano= parseInt(record.get("flg_umano"));
-                          var id= parseInt(record.get("id_bersaglio"));
-                          allIDsArray.push(id);
-                          allDescsMap[id] = record.get("name");
-                          record.set( "layer", layers[parseInt(id)]);
-                          record.set( "property", 'calc_formula_tot');
-                          record.set( "humans", flg_umano == 1 ? true: false);
-                          
-                          var code="-1";
-                          
-                          switch(id){
-                              case 10:
-                                   code='0';
-                                  break;
-                              case 11:
-                                   code='1';
-                                  break;    
-                              case 12:
-                                   code='2';
-                                  break;
-                              case 13:
-                                   code='3';
-                                  break;
-                              case 14:
-                                   code='4';
-                                  break;    
-                              case 15:
-                                   code='5';
-                                  break;
-                              case 16:
-                                   code='6';
-                                  break;    
-                          }
-                          record.set( "code", code);
-
-                          record.set( "macro", false);
-                          record.set( "description", {id: record.get("name")});
-                          record.set( "severeness", flg_umano ? '1,2,3,4' : '5');
-                          
-                          record.set( "id", [record.get("id_bersaglio")]);
-                          if(flg_umano!= 1){
-                             notHumanIDsArray.push(id);
-                             notHumanDescsMap[id] = record.get("name");
-                          }else{
-                             humanIDsArray.push(id); 
-                             humanDescsMap[id] = record.get("name");
-                          }
-                 });
-               me.macroBersData = [
-                ['bersagli_all', me.allTargetOption, 'calc_formula_tot', null, '-2', true, allIDsArray, -1, allDescsMap, '1,2,3,4,5'],
-                ['bersagli_umani', me.allHumanTargetOption, 'calc_formula_tot', true, '-1', true, humanIDsArray, -2, humanDescsMap, '1,2,3,4'],
-                ['bersagli_ambientali', me.allNotHumanTargetOption, 'calc_formula_tot', false, '-2', true, notHumanIDsArray, -3, notHumanDescsMap, '5']
-                ];
-               me.macrobers.getStore().loadData(me.macroBersData, true);
-      });
-        
-       var targetMacroStore = new Ext.data.ArrayStore({
-            fields: ['layer', 'name', 'property', 'humans', 'code', 'macro', 'id', 'id_bersaglio', 'description', 'severeness'],
-            data :  []
-        });
-        
-        
-        
-        this.macrobers = new Ext.form.ComboBox({
-            fieldLabel: this.macroTargetLabel,
-            id: "macrobers",
-            width: 150,
-            hideLabel : false,
-            store: targetMacroStore,    
-            displayField: 'name',    
-            typeAhead: true,
-            mode: 'local',
-            forceSelection: true,
-            triggerAction: 'all',
-            selectOnFocus:true,
-            editable: true,
-            resizable: true,    
-            value: this.allTargetOption,
-            listeners: {
-                scope: this,
-                select: function(cb, record, index) {
-                    var type = record.get('humans');
-                    var startValue = cb.startValue;
-                    this.updateTargetCombo(type);
-                    var processingCombo = this.elaborazione.getValue();
-                    this.enableDisableSimulation(processingCombo === 3,type,startValue);
-                }
-            }              
-        });
-       
-
-        this.bers = new Ext.form.ComboBox({
-            fieldLabel: this.targetLabel,
-            id: "bers",
-            width: 150,
-            hideLabel : false,
-            store: targetStore,    
-            clearFilterOnReset: false,
-            displayField: 'name',    
-            typeAhead: true,
-            mode: 'local',
-            lastQuery: '',
-            forceSelection: true,
-            triggerAction: 'all',
-            selectOnFocus:true,
-            
-            editable: true,
-            resizable: true,
-            listeners: {
-                scope: this,
-                select: function(cb, record, index) {
-                    var type = 'bers';
-                     var startValue = cb.startValue;
-                    var processingCombo = this.elaborazione.getValue();
-                    this.enableDisableSimulation(processingCombo === 3,type,startValue);                    
-                },
-                expand: function(combo) {
-                    this.loadUserElab = false;
-                    combo.list.setWidth( 'auto' );
-                    combo.innerList.setWidth( 'auto' );
-                } 
-            } 
-        });
-        
-        this.bersSet = new Ext.form.FieldSet({
-            title: this.targetSetLabel,
-            id: 'bersfset',
-            autoHeight: true,
-            defaults: {
-                // applied to each contained panel
-                bodyStyle:'padding:5px;'
-            },
-            items: [
-            this.macrobers,
-            this.bers
-            ]
-        });
-        
-        return this.bersSet;
-    },
-    
-    updateTemaSliders: function(type) {
-        if(type === null) {
-            this.temasPanel.unhideTabStripItem(0);
-            this.temasPanel.unhideTabStripItem(1);
-        } else if(type === true) {
-            this.temasPanel.unhideTabStripItem(0);
-            this.temasPanel.hideTabStripItem(1);
-            this.temasPanel.setActiveTab(0);
-        } else {
-            this.temasPanel.unhideTabStripItem(1);
-            this.temasPanel.hideTabStripItem(0);
-            this.temasPanel.setActiveTab(1);
-        }            
-    },
-    
-    /** private: method[buildAccidentForm]
-     *    builds the form for accidents choosing (with 4 cascading combos)
-     */
-    buildAccidentForm: function(map){
-        //
-        // Classi ADR
-        //
-        
-      var me= this;
-      
-      //Set filter with Destination ADR Class
-      var filterDest=new OpenLayers.Filter.FeatureId({
-          fids: ["siig_d_classe_adr.2","siig_d_classe_adr.3","siig_d_classe_adr.9"]
-      });
-      
-      var classiADRStore= new GeoExt.data.FeatureStore({ 
-             id: "calssiStore",
-             fields: [{
-                        "name": "name",              
-                        "mapping": "descrizione_" + GeoExt.Lang.locale
-              },{
-                        "name": "value",        
-                        "mapping": "id_classe_adr"
-              }],
-             proxy: this.getWFSStoreProxy(this.classFeature, filterDest, "id_classe_adr") , 
-             autoLoad: true 
-       });
-       
-      classiADRStore.on('load', function(str, records) {
-        str.insert(0, new str.recordType({name: me.allClassOption, value:'0'}, 1000));
-      });
-                
-        
-        this.classi = new Ext.form.ComboBox({
-            fieldLabel: this.adrLabel,
-            id: "classicb",
-            width: 150,
-            hideLabel : false,
-            store: classiADRStore,    
-            displayField: 'name',    
-            typeAhead: true,
-            mode: 'local',
-         //   queryParam: 'remoteStore',
-            forceSelection: true,
-            triggerAction: 'all',
-            selectOnFocus:true,
-            editable: true,
-            resizable: true,
-            value: this.allClassOption,
-            lazyInit: false,
-            listeners: {
-                "expand": function(combo) {
-                    this.loadUserElab = false;
-                    var store=combo.getStore();
-                    delete store.baseParams.filter;
-                    combo.getStore().reload();
-                    combo.list.setWidth( 'auto' );
-                    combo.innerList.setWidth( 'auto' );
-                },                
-                select: function(cb, record, index) {                    
-                    // filtra solo la combo delle sostanze in base alla classe scelta, resetta gli altri filtri
-                    var classe = record.get('value'); 
-
-                    var store=me.sostanze.getStore();
-                    delete store.baseParams.filter;
-                    store.proxy.protocol.filter.filters= new Array();
-
-                    if(classe != "0"){
-                       var filter= new OpenLayers.Filter.Comparison({
-                            type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                            property: "fk_classe_adr",
-                            value: classe
-                        });
-                        
-                        store.proxy.protocol.filter.filters.push(filter);                        
-                    }       
-                    me.resetCombos([me.sostanze]);
-                },
-                scope: this
-            }              
-        });            
-        
-    
-      var sostanzeStore= new GeoExt.data.FeatureStore({ 
-             id: "sostStore",
-             fields: [{
-                        "name": "name",              
-                        "mapping": "nome_sostanza_" + GeoExt.Lang.locale
-              },{
-                        "name": "value",        
-                        "mapping": "id_sostanza"
-              },{
-                         "name": "class",        
-                         "mapping": "fk_classe_adr"
-                  }],
-             proxy: this.getWFSStoreProxy(this.sostFeature) , 
-             autoLoad: true 
-       });
-                    
-      sostanzeStore.on('load', function(str, records) {
-            var allIDsArray= new Array(); 
-            Ext.each(records,function(record){
-                  var id= parseInt(record.get("value"));
-                  allIDsArray.push(id);
-                  record.set( "id", [id]);
-            });
-            str.insert(0, new str.recordType({name: me.allSostOption, value:'0', id: allIDsArray}, 1000));
-      });
-      
-
-    
-      this.sostanze = new Ext.form.ComboBox({
-            fieldLabel: this.sostanzeLabel,
-            id: "sostanzecb",
-            width: 150,
-            hideLabel : false,
-            store: sostanzeStore, 
-            displayField: 'name',    
-            typeAhead: true,
-            mode: 'local',
-            forceSelection: true,
-            triggerAction: 'all',
-            selectOnFocus:true,
-            editable: true,
-            resizable: true,    
-            lazyInit: false,            
-            value: this.allSostOption,
-            listeners: {
-                "expand": function(combo) {
-                    this.loadUserElab = false;
-                    combo.getStore().reload();
-                    combo.list.setWidth( 'auto' );
-                    combo.innerList.setWidth( 'auto' );
-                },
-                
-                select: function(cb, record, index) {
-                    var sost=record.get('value');
-
-                    var filter= new OpenLayers.Filter.Comparison({
-                        type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                        property: "id_sostanza",
-                        value: sost
-                    });
-                    me.resetCombos([me.accident]);
-                    new GeoExt.data.FeatureStore({ 
-                        id: "sostaccStore",
-                        fields: [{
-                            "name": "scen",              
-                            "mapping": "id_scenario"
-                        }],
-                        proxy: me.getWFSStoreProxy(me.sostAccFeature, filter), 
-                        listeners:{
-                            load : function(str, records) {
-                                var fids= new Array();
-                                var fid=null;
-                                
-                                var store=me.accident.getStore();
-                                var len
-                                while(store.proxy.protocol.filter.fids.length > 0) {
-                                     store.proxy.protocol.filter.fids.pop();
-                                }
-                                
-                                if(sost != "0") {
-
-                                    Ext.each(records,function(record){
-                                        fid="siig_t_scenario."+record.get("scen");
-                                        if(fids.indexOf(fid) == -1){
-                                            store.proxy.protocol.filter.fids.push("siig_t_scenario."+record.get("scen"));
-                                        }
-
-                                    });
-                                 
-                                }
-                                
-                                
-                            }
-                        },
-                        autoLoad: true 
-                    });            
-                },
-                scope: this
-            }              
-        });
-        
-         var accidentStore= new GeoExt.data.FeatureStore({ 
-             id: "sostStore",
-             fields: [{
-                        "name": "name",              
-                        "mapping": "tipologia_" + GeoExt.Lang.locale
-              },{
-                        "name": "value",        
-                        "mapping": "codice"
-              },{
-                        "name": "id",        
-                        "mapping": "id_scenario"
-              },{
-                        "name": "description",        
-                        "mapping": "tipologia_" + GeoExt.Lang.locale
-              }],
-             proxy: this.getWFSStoreProxy(this.scenFeature, new OpenLayers.Filter.FeatureId({
-                fids: []
-             })) , 
-             autoLoad: true 
-          });       
-
-          accidentStore.on('load', function(str, records) {
-              var allIDsArray= []; 
-              var allDescsMap = {};
-              Ext.each(records,function(record){
-                      var id= parseInt(record.get("id"));
-                      allIDsArray.push(id);
-                      record.set( "id", [id]);
-                      allDescsMap[id] = record.get("name");
-                      record.set( "description",  {id: record.get("name")});
-              });
-              str.insert(0, new str.recordType({name: me.allScenOption, value:'0', id:allIDsArray, "description": allDescsMap }, 1000));
-          });
-                
-        
-        this.accident = new Ext.form.ComboBox({
-            fieldLabel: this.accidentLabel,
-            id: "accidentcb",
-            width: 150,
-            hideLabel : false,
-            store:  accidentStore,   
-            lastQuery:'',
-            displayField: 'name',    
-            typeAhead: true,
-            mode: 'local',
-            forceSelection: true,
-            triggerAction: 'all',
-            selectOnFocus:true,
-            editable: true,
-            resizable: true,
-            lazyInit: false,
-            value: this.allScenOption,
-            listeners: {
-                "expand": function(combo) {
-                    this.loadUserElab = false;
-                    combo.getStore().reload();
-                    combo.list.setWidth( 'auto' );
-                    combo.innerList.setWidth( 'auto' );
-                },
-                select: function(cb, record, index) {
-                    this.resetCombos([this.seriousness]);                           
-                },
-                scope: this
-            }              
-        });
-        
-        //
-        // Entità
-        //
-        var seriousnessStore = new Ext.data.ArrayStore({
-            fields: ['name', 'value', 'id'],
-            data :  [
-            [this.allEntOption, '0', [0,1]],
-            [this.entLieve, 'L', [0]],
-            [this.entGrave, 'G', [1]]
-            ]
-        });
-        
-        this.seriousness = new Ext.form.ComboBox({
-            fieldLabel: this.seriousnessLabel,
-            id: "seriousnesscb",
-            width: 150,
-            hideLabel : false,
-            store: seriousnessStore,    
-            displayField: 'name',    
-            typeAhead: true,
-            mode: 'local',
-            forceSelection: true,
-            triggerAction: 'all',
-            selectOnFocus:true,
-            editable: true,
-            resizable: true,
-            value: this.allEntOption,
-            lazyInit: false          
-        });
-        
-        this.accidentSet = new Ext.form.FieldSet({
-            title: this.accidentSetLabel,
-            id: 'accidentfset',
-            autoHeight: true,
-            defaults: {
-                // applied to each contained panel
-                bodyStyle:'padding:5px;'
-            },
-            items: [
-            this.classi,
-            this.sostanze,
-            this.accident,
-            this.seriousness
-            ]
-        });
-        
-        return this.accidentSet;
-    },
-    
-    /** private: method[buildForm]
-     *  :arg map: ``Object``
-     *    builds the standard processing main (all including) form
-     */
-    buildForm: function(map){        
-        // disable synthetic view tab: why do we have tabs if we can't switch from one tab to the other?
-        var syntView = this.appTarget.tools[this.syntheticView];
-        var me= this;
-      
-        // updates the AOI on map pan / zoom
-        this.aoiUpdater = function() {            
-            var extent=map.getExtent().clone();
-            me.aoiFieldset.setAOI(extent);                    
-            me.aoiFieldset.removeAOILayer(map);            
-        };
-        map.events.register("move", this, this.aoiUpdater);
-        
-        syntView.getControlPanel().disable();
-
-        var containerTab = Ext.getCmp(this.outputTarget);
-        
-        this.panel = new Ext.FormPanel({
-            border: false,
-            layout: "fit",
-            title: this.title,
-            autoScroll: true,
-            items:[
-                this.buildElaborazioneForm(),  
-                //this.temasPanel,
-                this.buildConditionsForm(),
-                this.selDamage,
-                this.aoiFieldset, 
-                this.buildTargetForm(),
-                this.buildAccidentForm()
-
-            ],
-            buttons: [{
-                text: this.cancelButton,
-                iconCls: 'cancel-button',
-                scope: this,
-                handler: this.cancelProcessing
-            },{
-                text: this.resetButton,
-                iconCls: 'reset-button',
-                scope: this,
-                handler: this.resetForm
-            }, {
-                text: this.viewMapButton,
-                iconCls: 'visualizzation-button',
-                scope: this,
-                handler: function(){                    
-                    var params = this.startProcessing();
-                }
-            }]
-        });
-        
-        //containerTab.add(this.panel);
-        containerTab.insert(1,this.panel);
-        containerTab.setActiveTab(this.panel);
-
-        
-        if(!this.status){
-            this.resetBBOX();
-        }    
-    },
         
     
     /** private: method[resetCombos]
@@ -1560,86 +1359,28 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         });
     },
     
-    /** private: method[filterCombos]
-     *  :arg combos: ``Array``
-     *    sets the filter options on the given combos; each element
-     *    of the array is an object with 2 properties, combo and filter,
-     *    the filter is the function to filter the combo via filterBy.
+    /** private: method[startProcessing]    
      */
-    filterCombos: function(combos) {
-        Ext.each(combos, function(comboInfo) {
-            var store=comboInfo.combo.getStore(); 
-            store.clearFilter();
-            if(comboInfo.filter) {
-                store.filterBy(comboInfo.filter);                
-            }
-        });
+    startProcessing: function(){
+        if(!this.aoiFieldset.isValid()){            
+            Ext.Msg.show({
+                title: this.bboxValidationTitle,
+                buttons: Ext.Msg.OK,
+                msg: this.invalidAOI,
+                icon: Ext.MessageBox.WARNING
+            });        
+        } else {
+            this.validateForm(this.panel.getForm(), this.aoiFieldset.getAOIMapBounds());
+        }
     },
     
-    
-    
-    /** private: method[doProcess]
-     *  :arg params: ``Object``     
-     *     executes the processing using given parameters
-     */
-    doProcess: function(){
-        var status = this.getStatus();                
-        
-        //
-        // Remove the AOI box
-        //
-        this.aoiFieldset.removeAOILayer();
-        
-        // remove Damage Calculus drawn area
-        this.selDamage.clearDrawFeature();
-        
-        this.switchToSyntheticView();
-        
-        var syntView = this.appTarget.tools[this.syntheticView];
-        syntView.setStatus(status);
-        
-        Ext.getCmp("south").collapse();
-        
-        syntView.doProcess();
-        this.appTarget.mapPanel.map.events.unregister("move", this, this.aoiUpdater);
-    },
-    
-    cancelProcessing: function() {
-        this.enableDisableSimulation(false);
-        this.switchToSyntheticView();
-        this.selDamage.clearDrawFeature();
-    },
-    
-    switchToSyntheticView: function(){
-        var containerTab = Ext.getCmp(this.outputTarget);
-        var active = containerTab.getActiveTab();
-        active.disable();
-            
-        containerTab.setActiveTab(0);
-        active = containerTab.getActiveTab();
-        active.enable(); 
-    },
-    
-    
-    /** private: method[resetBBOX]
-     *  :arg extent: ``Boolean``     
-     *     reset bbox to current extent (if asked esplicitly or no status is defined) or saved status
-     */
-    resetBBOX: function(extent){    
-   
-        if(this.status && !extent){
-            this.aoiFieldset.setAOI(this.status.roi.bbox/*, true*/);
-        }else{
-            this.aoiFieldset.setAOI(this.appTarget.mapPanel.map.getExtent());
-        }              
-    },
     
     /** private: method[validateForm]
      *  :arg form: ``Object``     
      *  :arg roi: ``Object``     
      *     validate forms parameters. If there is no error, processing is started.
      */
-    validateForm: function(form, roi){
+    validateForm: function(form, roi) {
         var error = null;
         
         var map = this.appTarget.mapPanel.map;
@@ -1701,138 +1442,45 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
     },
     
-    /** private: method[getSelectedTarget]    
-     *     gets the currently selected target (or macro target) record
+    /** private: method[doProcess]
+     *  :arg params: ``Object``     
+     *     executes the processing using given parameters
      */
-    getSelectedTarget: function() {
-        var combo = this.bers.getValue() ? this.bers : this.macrobers;
-        return combo.store.getAt(combo.store.findExact('name', combo.getValue()));        
-    },
-    
-    getComboRecord: function(combo, field) {    
-        return combo.store.getAt(combo.store.findExact(field || 'name', combo.getValue()));
-    },
-    
-    
-    
-    /** private: method[startProcessing]    
-     */
-    startProcessing: function(){
-        if(!this.aoiFieldset.isValid()){            
-            Ext.Msg.show({
-                title: this.bboxValidationTitle,
-                buttons: Ext.Msg.OK,
-                msg: this.invalidAOI,
-                icon: Ext.MessageBox.WARNING
-            });        
-        } else {
-            this.validateForm(this.panel.getForm(), this.aoiFieldset.getAOIMapBounds());
-        }
-    },
-    
-    /** private: method[viewMap]   
-     *  :arg params: ``Object``        
-     *     updates the risk thema on the map with the given processing parameters
-    
-    showLayer: function(params){
-       
-        var map = this.appTarget.mapPanel.map;
+    doProcess: function(){
+        var status = this.getStatus();                
         
-        var filter = new OpenLayers.Filter.Logical({
-            type: OpenLayers.Filter.Logical.AND,
-            filters: params.filters
-        });
-        
-        var filterFormat = new OpenLayers.Format.Filter();
-        var ogcFilterString = filterFormat.write(filter);  
-        
-        var xmlFormat = new OpenLayers.Format.XML();                  
-        ogcFilterString = xmlFormat.write(ogcFilterString);
-           
         //
-        // Check if the selection layer already exists
+        // Remove the AOI box
         //
-        var stdElabLayer = map.getLayersByName(this.selectionLayerTitle)[0];
-     
-        if(!stdElabLayer){
+        this.aoiFieldset.removeAOILayer();
         
-        }else{                        
-            stdElabLayer.mergeNewParams({
-                filter: ogcFilterString 
-            });
-            
-            if(params.roi){
-                map.zoomToExtent(params.roi);
-            }            
-        }
-    }, */
+        // remove Damage Calculus drawn area
+        this.selDamage.clearDrawFeature();
+        
+        this.switchToSyntheticView();
+        
+        this.syntView.setStatus(status);
+        
+        Ext.getCmp("south").collapse();
+        
+        this.syntView.doProcess();
+        this.map.events.unregister("move", this, this.aoiUpdater);
+    },
     
-	updateAOI: function() {
-		this.aoiFieldset.setAOI(this.appTarget.mapPanel.map.getExtent());
-	},
-	
-    /** private: method[setStatus]   
-     *  :arg status: ``Object``        
-     *     set current processing parameter when the form is open
-     */
-    setStatus: function(status){        
-        var store;
-        
-        this.status = status;
-        this.elaborazione.setValue(this.status.processing);
-        
-        var formulaPos = this.formula.getStore().findExact("id_formula", this.status.formula);
-        if(formulaPos !== -1) {
-            this.formula.setValue(this.status.formula);
-            
-            if(!this.loadUserElab){
-                this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(formulaPos));
-            }
-        }
-        this.updateAOI();
-                
-        store=this.macrobers.getStore(); 
-        this.macrobers.setValue(this.status.macroTarget);
-        if(store.findExact("name", this.status.macroTarget) !== -1) {
-            this.macrobers.fireEvent('select',this.macrobers, store.getAt(store.findExact("name", this.status.macroTarget)));
-        }
-        
-        store=this.bers.getStore(); 
-        if(this.status.target['macro']) {
-            this.bers.setValue(null);
-        } else {
-            var value = this.status.target['name'];
-            this.bers.setValue(value);
-            this.bers.fireEvent('select',this.bers, store.getAt(store.findExact("name", value)));
-        }
-                
-        //this.setComboStatus(this.weather, 'weather');
-        this.setComboStatus(this.temporal, 'temporal', 'value');
-        
-        this.setComboStatus(this.classi, 'classe');
-        this.setComboStatus(this.sostanze, 'sostanza');
-        this.setComboStatus(this.accident, 'accident');
-        this.setComboStatus(this.seriousness, 'seriousness');   
-
-        // simulation
-        if(this.status.processing === 3) {
-            this.enableDisableSimulation(true);
-        }
-    },        
+    cancelProcessing: function() {
+        this.enableDisableSimulation(false);
+        this.switchToSyntheticView();
+        this.selDamage.clearDrawFeature();
+    },
     
-    /** private: method[setComboStatus]   
-     *  :arg combo: ``Object``        
-     *  :arg statusName: ``String``        
-     *     Updates the given combo value from the status object
-     */
-    setComboStatus: function(combo, statusName, field) {
-        field = field || 'name';
-        var store = combo.getStore();      
-        var value = this.status[statusName][field];
-        combo.setValue(value);
-        if(store.findExact(field, value) !== -1) {
-            combo.fireEvent('select',combo, store.getAt(store.findExact(field, value)));
-        }
+    switchToSyntheticView: function(){
+        var containerTab = Ext.getCmp(this.outputTarget);
+        var active = containerTab.getActiveTab();
+        active.disable();
+            
+        containerTab.setActiveTab(0);
+        active = containerTab.getActiveTab();
+        active.enable(); 
     },
     
     /** private: method[getStatus]   
@@ -1983,6 +1631,99 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return obj;
     },
     
+    /** private: method[resetBBOX]
+     *  :arg extent: ``Boolean``     
+     *     reset bbox to current extent (if asked esplicitly or no status is defined) or saved status
+     */
+    resetBBOX: function(extent){    
+        if(this.status && !extent){
+            this.aoiFieldset.setAOI(this.status.roi.bbox/*, true*/);
+        }else{
+            this.aoiFieldset.setAOI(this.map.getExtent());
+        }              
+    },
+    
+    
+    /** private: method[getSelectedTarget]    
+     *     gets the currently selected target (or macro target) record
+     */
+    getSelectedTarget: function() {
+        var combo = this.bers.getValue() ? this.bers : this.macrobers;
+        return combo.store.getAt(combo.store.findExact('name', combo.getValue()));        
+    },
+    
+    getComboRecord: function(combo, field) {    
+        return combo.store.getAt(combo.store.findExact(field || 'name', combo.getValue()));
+    },
+    
+	updateAOI: function() {
+		this.aoiFieldset.setAOI(this.appTarget.mapPanel.map.getExtent());
+	},
+	
+    /** private: method[setStatus]   
+     *  :arg status: ``Object``        
+     *     set current processing parameter when the form is open
+     */
+    setStatus: function(status){        
+        var store;
+        
+        this.status = status;
+        this.elaborazione.setValue(this.status.processing);
+        
+        var formulaPos = this.formula.getStore().findExact("id_formula", this.status.formula);
+        if(formulaPos !== -1) {
+            this.formula.setValue(this.status.formula);
+            
+            if(!this.loadUserElab){
+                this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(formulaPos));
+            }
+        }
+        this.updateAOI();
+                
+        store=this.macrobers.getStore(); 
+        this.macrobers.setValue(this.status.macroTarget);
+        if(store.findExact("name", this.status.macroTarget) !== -1) {
+            this.macrobers.fireEvent('select',this.macrobers, store.getAt(store.findExact("name", this.status.macroTarget)));
+        }
+        
+        store=this.bers.getStore(); 
+        if(this.status.target['macro']) {
+            this.bers.setValue(null);
+        } else {
+            var value = this.status.target['name'];
+            this.bers.setValue(value);
+            this.bers.fireEvent('select',this.bers, store.getAt(store.findExact("name", value)));
+        }
+                
+        //this.setComboStatus(this.weather, 'weather');
+        this.setComboStatus(this.temporal, 'temporal', 'value');
+        
+        this.setComboStatus(this.classi, 'classe');
+        this.setComboStatus(this.sostanze, 'sostanza');
+        this.setComboStatus(this.accident, 'accident');
+        this.setComboStatus(this.seriousness, 'seriousness');   
+
+        // simulation
+        if(this.status.processing === 3) {
+            this.enableDisableSimulation(true);
+        }
+    },        
+    
+    /** private: method[setComboStatus]   
+     *  :arg combo: ``Object``        
+     *  :arg statusName: ``String``        
+     *     Updates the given combo value from the status object
+     */
+    setComboStatus: function(combo, statusName, field) {
+        field = field || 'name';
+        var store = combo.getStore();      
+        var value = this.status[statusName][field];
+        combo.setValue(value);
+        if(store.findExact(field, value) !== -1) {
+            combo.fireEvent('select',combo, store.getAt(store.findExact(field, value)));
+        }
+    },
+    
     getInitialStatus: function() {
         var obj = {};
     
@@ -2072,6 +1813,22 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         });
         return proxy;         
         
+    },
+    
+    getLayerGeometry: function(map, geometry, destSRS) {
+        if(geometry && destSRS) {
+            if(destSRS != map.getProjection()){
+                var coll=new OpenLayers.Geometry.Collection(new Array(geometry.clone()));
+				var targetColl=this.reproject(
+					coll,
+					map.getProjectionObject(),
+					new OpenLayers.Projection(destSRS)
+				);
+                geometry = targetColl.components[0];   
+                delete targetColl;
+            }
+        }
+        return geometry;
     }
 
     
