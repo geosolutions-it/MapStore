@@ -293,5 +293,9 @@ OpenLayers.Format.WFST.v1_1_0.prototype.writers.wfs.SortOrder = function(obj){
             }
 //Fix min zoom level probems
 OpenLayers.Map.prototype.adjustZoom = function(zoom) {
-    return zoom;
+ if(zoom >= 2){
+       return zoom;
+    }else{
+        return 2;
+    }
 };
