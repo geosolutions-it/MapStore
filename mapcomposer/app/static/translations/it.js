@@ -29,7 +29,7 @@ GeoExt.Lang.add("it", {
         humanTitle:'Sociale',    
         resultsLabel: "Risultato Elaborazione", 
         notHumanTitle:'Ambientale', 
-        defaultExtentLabel: "Regione Piemonte",
+        defaultExtentLabel: "Tutto il territorio",
         targetsTextBotton: "Bersagli",
         areaDamageTextBotton: "Aree di danno",
         roadGraphTextBotton: "Grafo stradale" , 

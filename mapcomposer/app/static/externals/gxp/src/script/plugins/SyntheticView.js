@@ -90,7 +90,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     temporalLabel: "Condizioni Temporali",
     elabStandardLabel: "Elaborazione Standard",
     totalRiskLabel: "Rischio totale",
-    defaultExtentLabel: "Regione Piemonte",
+    defaultExtentLabel: "Tutto il territorio",
     targetsTextBotton: "Bersagli",
     areaDamageTextBotton: "Aree di danno",
     roadGraphTextBotton: "Grafo stradale",    
@@ -508,7 +508,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
      *   :arg layers: ``Array``
      *    add modified features in simulation type
      */
-    addModifiedFeatures: function(map,layers) {
+    addModifiedFeatures: function(map) {
         var layer;
         var modifiedLayer = this.modifiedLayer[0];        
         var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
@@ -519,15 +519,25 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             renderers: renderer
         });
         map.addLayer(targetLayer);
-        for(var i = 0, layerName; layerName = layers[i]; i++) {
-            layer = this.getLayerByName(map, layerName);
-            //layer=map.getLayersByName(layerName)[0];
-            if(layer && layer.features.length > 0) {
-                for(var x = 0;x<layer.features.length;x++){
-                    targetLayer.addFeatures(layer.features[x]);
-                }
+        
+        var sourceProjection = new OpenLayers.Projection(this.selectionLayerProjection);
+        var destProjection = map.getProjectionObject();
+        
+        for(var i = 0, info; info = this.status.simulation.targetsInfo[i]; i++) {
+            var styleName;
+            if(info.newfeature) {
+                styleName = "simulation_added";
+            } else if(info.removed) {
+                styleName = "simulation_removed";
+            } else {
+                styleName = "simulation_chaned";
             }
-        }  
+            var geometry = this.reproject(info.geometry.clone(), sourceProjection, destProjection);
+            var feature = new OpenLayers.Feature.Vector(geometry, {
+                "id": info.id
+            }, this.targetStyles[styleName]);
+            targetLayer.addFeatures([feature]);
+        }
     },    
     
     getLayerByName: function(map, layerName) {
@@ -547,6 +557,430 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             "Authorization":  "Basic " + Base64.encode(this.geoStoreUser + ":" + this.geoStorePassword)
         } : undefined);
     },
+    
+    cleanAndEncodeStatus: function(status) {
+        var geometries = [];
+        Ext.each(status.simulation.targetsInfo, function(info) {
+            geometries.push(info.geometry);
+            info.geometry = info.geometry.toString();
+        }, this);
+        if(status.damageAreaGeometry) {
+            geometries.push(status.damageAreaGeometry);
+            delete status.damageAreaGeometry;
+        }
+        var result = Ext.util.JSON.encode(status);
+        Ext.each(status.simulation.targetsInfo, function(info) {
+            info.geometry = geometries.shift();
+        }, this);
+        if(status.damageArea) {
+            status.damageAreaGeometry = geometries[0];
+        }
+        return result;
+    },
+    
+    onSaveSubmit: function() {
+        var fields = this.savePanel.getForm().getValues();
+        
+        var status = this.getStatus() || this.processingPane.getInitialStatus();
+        var jsonStatus = this.cleanAndEncodeStatus(status);
+        
+        //Assegno il nome alla risorsa (elaborazione)
+        var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
+            type: "resource",
+            name: fields.elab_uuid,
+            description: fields.elab_name,
+            attributes: [{
+                name: fields.elab_description,
+                type:"STRING",
+                value:fields.elab_description
+            },{
+                name: "valid",
+                type:"STRING",
+                value:"true"
+            }],
+            category: 'processing',
+            store: jsonStatus
+        });                    
+        
+        this.geoStore.createEntity(geostoreEntityResource,function() {
+            Ext.Msg.show({
+                title: this.saveProcessingSuccessTitle,
+                buttons: Ext.Msg.OK,
+                msg: this.saveProcessingSuccessMsg,
+                fn: function(){
+                    this.saveWin.close();
+                },
+                icon: Ext.MessageBox.INFO,
+                scope: this
+            });                                         
+        },function(){
+            Ext.Msg.show({
+                title: this.saveProcessingErrorTitle,
+                buttons: Ext.Msg.OK,
+                msg: this.saveProcessingErrorMsg,
+                icon: Ext.MessageBox.ERROR,
+                scope: this
+            });                     
+        }, this);
+    },
+    
+    createSavePanel: function(uuid) {
+        this.savePanel = new Ext.form.FormPanel({
+            frame: true,
+            labelWidth: 80,
+            width: 400,
+            height: 150,
+            layout: "form",
+            defaultType: "textfield",
+            items: [{
+                xtype: 'fieldset',
+                id: 'name-field-set',
+                title: this.saveProcessingNameFieldsetTitle,
+                items: [
+                    {
+                        xtype: 'textfield',
+                        width: 120,
+                        fieldLabel: this.saveProcessingNameLabel,
+                        id: 'diag-text-field',
+                        anchor:'100%',
+                        name: "elab_name",
+                        listeners: {
+                            render: function(f){
+                                f.el.on('keydown', function(){
+                                    if(this.getValue() != "")
+                                        Ext.getCmp("elab-savebutton").enable();
+                                    else
+                                        Ext.getCmp("elab-savebutton").disable();
+                                }, f, {buffer: 350});
+                            },
+                            scope: this
+                        }
+                    },{
+                        xtype: 'textarea',
+                        width: 200,
+                        id: 'diag-text-description',
+                        fieldLabel: this.saveProcessingDescriptionLabel,
+                        name: "elab_description",
+                        readOnly: false,
+                        hideLabel : false
+                    },{
+                        xtype: 'hidden',
+                        name: "elab_uuid",
+                        id:'diag-save-uuid',
+                        value: uuid
+                    }
+                ]
+            }],
+            buttons: [{
+                text: this.saveProcessingButtonText,
+                iconCls: 'save-button',
+                id: "elab-savebutton",
+                disabled: true,
+                formBind: true,
+                handler: this.onSaveSubmit,
+                scope: this
+            }],
+            keys: [{ 
+                key: [Ext.EventObject.ENTER], 
+                handler: this.onSaveSubmit,
+                scope: this
+            }]
+        });
+        return this.savePanel;
+    },
+    
+    saveProcessing: function() {       
+        this.saveWin = new Ext.Window({
+            title: this.saveProcessingWinTitle,
+            iconCls: 'save-button',
+            layout: "fit",
+            width: 450,
+            height: 250,
+            closeAction: 'close',
+            resizable: false,
+            plain: true,
+            border: false,
+            modal: true,
+            items: [
+                this.createSavePanel(this.UUID.uuid4())
+            ]
+        });
+        this.saveWin.show(); 
+    },
+    
+    removeProcessing: function(gpanel, rowIndex, colIndex) {
+        var deleteRecord = function(btn, text){
+            if (btn == 'yes'){
+                var store = gpanel.getStore();
+                var record = store.getAt(rowIndex);
+                var id = record.get("id");
+                var removeResource = {
+                    type: 'resource',
+                    id: id
+                };
+                store.remove(record);
+                gpanel.getSelectionModel().clearSelections(true);
+                this.geoStore.deleteEntity(removeResource);
+            }
+        }
+        
+        Ext.Msg.show({
+            title: this.removeProcessingMsgTitle,
+            buttons: Ext.Msg.YESNO,
+            msg: this.removeProcessingMsg,
+            fn: deleteRecord,
+            icon: Ext.MessageBox.WARNING,
+            scope: this
+        });
+       
+    },
+    
+    decodeGeostoreStatus : function(status) {
+        var tipologia = "tipologia_" + GeoExt.Lang.locale;
+        var descrizione = "descrizione_" + GeoExt.Lang.locale;
+        var nome_sostanza = "nome_sostanza_" + GeoExt.Lang.locale;
+        
+        if(status.accident.feature){
+            status.accident.name = status.accident.feature.attributes[tipologia];
+        }else{
+            status.accident.name = this.processingPane.allScenOption;
+        }
+        
+        if(status.classe.feature){
+            status.classe.name = status.classe.feature.attributes[descrizione];
+        }else{
+            status.classe.name = this.processingPane.allClassOption;
+        }
+        
+        if(status.sostanza.feature){
+            status.sostanza.name = status.sostanza.feature.attributes[nome_sostanza];
+        }else{
+            status.sostanza.name = this.processingPane.allSostOption;
+        }
+        
+        if(status.target.feature){
+            status.target.name = status.target.feature.attributes[descrizione];
+        }
+        
+        if(status.target.macro){
+            switch(status.target.id_bersaglio)
+            {
+                case -1:
+                    status.macroTarget = this.processingPane.allTargetOption;
+                    break;
+                case -2:
+                    status.macroTarget = this.processingPane.allHumanTargetOption;
+                    break;
+                case -3:
+                    status.macroTarget = this.processingPane.allNotHumanTargetOption;
+                    break;
+            }
+        }else{
+            if(status.target.flg_umano!= 1){
+                status.macroTarget = this.processingPane.allNotHumanTargetOption;
+            }else{
+                status.macroTarget = this.processingPane.allHumanTargetOption;
+            }
+        }
+        
+        switch(status.seriousness.value)
+        {
+            case "L":
+                status.seriousness.name = this.processingPane.entLieve;
+                break;
+            case "G":
+                status.seriousness.name = this.processingPane.entGrave;
+                break;
+            case "0":
+                status.seriousness.name = this.processingPane.allEntOption;
+                break;
+        }
+        
+        if(status.roi && status.roi.bbox) {
+            if(!status.roi.type) {
+                status.roi.type = 'aoi';
+            }
+            status.roi.bbox = new OpenLayers.Bounds(
+                status.roi.bbox.left,
+                status.roi.bbox.bottom,
+                status.roi.bbox.right,
+                status.roi.bbox.top
+            );
+        }
+        
+        var wktParser = new OpenLayers.Format.WKT();
+        Ext.each(status.simulation.targetsInfo, function(info) {
+            info.geometry = wktParser.read(info.geometry).geometry;
+        }, this);
+        if(status.damageArea) {
+            status.damageAreaGeometry = wktParser.read(status.damageArea).geometry;
+        }
+        this.setStatus(status);
+        Ext.getCmp("south").collapse();
+        this.doProcess();
+    },
+    
+    loadSelectedProcessing: function(){
+        var sm = Ext.getCmp('id_processing_grid').getSelectionModel()
+        if(sm.getCount() > 0) {
+            //Assegno il nome alla risorsa (elaborazione)
+            var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
+                type: "resource",
+                category: "processing",
+                id: sm.getSelected().get('id')
+            });  
+            
+            this.geoStore.getEntityByID(geostoreEntityResource,function(data) {
+                var newStatus = Ext.util.JSON.decode(data.Resource.data.data);
+                
+                if (typeof newStatus === "string"){
+                    newStatus = Ext.util.JSON.decode(newStatus);
+                }
+                
+                this.loadWin.close();
+                this.decodeGeostoreStatus(newStatus);
+            }, Ext.emptyFn, this);
+            
+        }else{
+        
+            Ext.Msg.show({
+                title: this.selectProcessingMsgTitle,
+                buttons: Ext.Msg.OK,
+                msg: this.selectProcessingMsg,
+                icon: Ext.MessageBox.INFO,
+                scope: this
+            });
+            
+        }
+    },
+    
+    showLoadedProcessings: function(resourceList) {
+        
+        var resourceDataReader = new Ext.data.ArrayReader({}, [
+           {name: 'id', type: 'int', mapping: 'id'},
+           {name: 'name', type: 'string', mapping: 'description'},
+           {name: 'descrizione', type: 'string', mapping: 'attributeDesc'},
+           {name: 'creazione', type: 'date', mapping: 'creation'},
+           {name: 'valido', type: 'bool', mapping: 'valid'}
+        ]);
+        
+        var resourceDataStore = new Ext.data.Store({
+            reader: resourceDataReader,
+            data: resourceList
+        });
+                
+        var processingGrid = new Ext.grid.GridPanel({
+            id: 'id_processing_grid',
+            store: resourceDataStore,
+            header: false,
+            sm: new Ext.grid.RowSelectionModel({
+                singleSelect:true,
+                scope: this
+            }),
+            cm: new Ext.grid.ColumnModel({
+                columns: [
+                    {
+                        header: this.loadProcessingNameHeader,
+                        width : 60,
+                        sortable : true,
+                        dataIndex: 'name'
+                    },{
+                        header: this.loadProcessingDescriptionHeader,
+                        width : 120,
+                        sortable : true,
+                        dataIndex: 'descrizione'
+                    },{
+                        header: this.loadProcessingCreationHeader,
+                        width : 120,
+                        sortable : true,
+                        dataIndex: 'creazione',
+                        xtype: 'datecolumn',
+                        format: 'd/m/Y H:i:s'
+                    },{
+                        header: this.loadProcessingValidHeader,
+                        width : 50,
+                        sortable : true,
+                        dataIndex: 'valido',
+                        trueText: 'v',
+                        falseText:' ',
+                        xtype: 'booleancolumn'
+                    },{
+                        xtype: 'actioncolumn',
+                        width: 20,
+                        header: '',
+                        listeners: {
+                            scope: this,
+                            click: function(column, grd, row, e){
+                                grd.getSelectionModel().selectRow(row);
+                            }
+                        },
+                        items: [
+                            {
+                                tooltip: this.removeProcessingTooltip,
+                                icon: this.deleteIconPath,
+                                scope: this,
+                                handler: this.removeProcessing
+                            }
+                        ]
+                    }
+                  ]                
+            }),
+            viewConfig: {
+                forceFit: true
+            }            
+        });
+        
+
+        var loadPanel = new Ext.FormPanel({
+            frame: true,
+            labelWidth: 80,
+            layout: "fit",
+            defaultType: "textfield",
+            scope: this,
+            items: [processingGrid],
+            buttons: [{
+                text: this.loadProcessingButtonText,
+                formBind: true,
+                iconCls: 'load-button',
+                handler: this.loadSelectedProcessing,
+                scope: this
+            }],
+            keys: [{ 
+                key: [Ext.EventObject.ENTER], 
+                handler: this.loadSelectedProcessing,                                 
+                scope: this
+            }]
+        });
+                
+        this.loadWin = new Ext.Window({
+            title: this.loadProcessingWinTitle,
+            iconCls: 'load-button',
+            layout: "fit",
+            width: 450,
+            closeAction: 'close',
+            height: 250,
+            resizable: false,
+            plain: true,
+            border: false,
+            modal: true,
+            autoScroll: true,
+            items: [loadPanel]
+        });
+        this.loadWin.show();
+    },
+
+    loadProcessing: function() {         
+        this.geoStore.getCategoryResources("processing",this.searchAttributesSuccess.createDelegate(this, "processing", 0), function(){
+            Ext.Msg.show({
+                title: this.failureAchieveResourceTitle,
+                buttons: Ext.Msg.OK,
+                msg: this.failureAchieveResourceMsg,
+                icon: Ext.MessageBox.INFO,
+                scope: this
+            });
+        }, this);
+    },
+    
     deleteDownload: function(downloadUrl, removeResource, callback) {
         var me = this;
         var deleteDownloadProcess = this.wpsClient.getProcess('destination', 'gs:DestinationRemoveDownload');                                  
@@ -579,11 +1013,76 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
     },
     
+    
+    searchAttributesSuccess : function(category,resourceList) {
+        var coll = new Ext.util.MixedCollection();
+        coll.addAll(resourceList);
+        resourceList = coll.filter('canEdit', true).getRange();
+        var asyncForEach = function () {
+            function processOne(count) {
+                var item = resourceList[count];
+                var geostoreAttribute = new OpenLayers.GeoStore.Resource({
+                    type: "attribute",
+                    category: category,
+                    id: item.id
+                });                                            
+                this.geoStore.getEntityByID(geostoreAttribute, function(result) {
+                    var attributes = Ext.isArray(result.AttributeList.Attribute) ? result.AttributeList.Attribute : [result.AttributeList.Attribute];
+                    Ext.each(attributes, function(attribute) {
+                        if(attribute.name === 'valid') {
+                            resourceList[count].valid = attribute.value;
+                        } else {
+                            resourceList[count].attributeDesc = attribute.value;
+                        }
+                    });
+                    if((count + 1) < resourceList.length) {
+                        processOne.call(this, count + 1);
+                    } else {
+                        category === 'processing' ? this.showLoadedProcessings(resourceList) : this.downloadSuccess(resourceList); // Done!
+                    }
+                }, undefined, this);
+            }
+            if(resourceList.length  > 0) {
+                processOne.call(this, 0);
+            } else {
+                category === 'processing' ? this.showLoadedProcessings(resourceList) : this.downloadSuccess(resourceList); // Done!
+            }
+        };
+        
+        asyncForEach.call(this);
+    },
+    
     /** private: method[addOutput]
      *  :arg config: ``Object``
      *     builds the SyntheticView form
      */
     addOutput: function(config) {
+        // array filter in IE7 and IE8
+        /*if (!Array.prototype.filter) {
+          Array.prototype.filter = function (fn, context) {
+            var i,
+                value,
+                result = [],
+                length;
+
+                if (!this || typeof fn !== 'function' || (fn instanceof RegExp)) {
+                  throw new TypeError();
+                }
+
+                length = this.length;
+
+                for (i = 0; i < length; i++) {
+                  if (this.hasOwnProperty(i)) {
+                    value = this[i];
+                    if (fn.call(context, value, i, this)) {
+                      result.push(value);
+                    }
+                  }
+                }
+            return result;
+          };
+        }   */     
+        
         var me= this;
         this.elab = new Ext.form.TextField({
               fieldLabel: this.elaborazioneLabel,
@@ -727,79 +1226,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
         };
         
-        // method to filter users resource
-        var userFilter = function (element) {
-            return element.canEdit == true;
-        };
         
-        // method to search and push attribute resource inside resourceList
-        this.searchAttributesSuccess = function(category,resourceList){
-            
-            // array filter in IE7 and IE8
-            if (!Array.prototype.filter) {
-              Array.prototype.filter = function (fn, context) {
-                var i,
-                    value,
-                    result = [],
-                    length;
-
-                    if (!this || typeof fn !== 'function' || (fn instanceof RegExp)) {
-                      throw new TypeError();
-                    }
-
-                    length = this.length;
-
-                    for (i = 0; i < length; i++) {
-                      if (this.hasOwnProperty(i)) {
-                        value = this[i];
-                        if (fn.call(context, value, i, this)) {
-                          result.push(value);
-                        }
-                      }
-                    }
-                return result;
-              };
-            }        
-            
-            this.resourceList = resourceList.filter(userFilter);
-
-            var asyncForEach = function (array) {
-                count = array.length;
-                newarray = array.slice(0);
-                function processOne() {
-                    var item = newarray.pop();
-                    var geostoreAttribute = new OpenLayers.GeoStore.Resource({
-                        type: "attribute",
-                        category: category,
-                        id: item.id
-                    });                                            
-                    me.geoStore.getEntityByID(geostoreAttribute, function(result) {
-                        var attributes = Ext.isArray(result.AttributeList.Attribute) ? result.AttributeList.Attribute : [result.AttributeList.Attribute];
-                        Ext.each(attributes, function(attribute) {
-                            if(attribute.name === 'valid') {
-                                me.resourceList[count].valid = attribute.value;
-                            } else {
-                                me.resourceList[count].attributeDesc = attribute.value;
-                            }
-                        });
-                        count--;
-                        if(newarray.length > 0) {
-                            processOne();
-                        } else {
-                            category === 'processing' ? me.saveCreateGridProcess(me.resourceList) : me.downloadSuccess(me.resourceList); // Done!
-                        }
-                    });
-                }
-                if(newarray.length > 0) {
-                    count--;
-                    processOne();
-                } else {
-                    category === 'processing' ? me.saveCreateGridProcess(me.resourceList) : me.downloadSuccess(me.resourceList); // Done!
-                }
-            };
-            
-            asyncForEach(this.resourceList);
-        };        
+             
         
         this.fieldSet = new Ext.form.FieldSet({
             title: this.fieldSetTitle,
@@ -834,198 +1262,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     items:[{
                         text: this.saveButton,
                         iconCls: 'save-button',
-                        name: "save-proc-geostore",
+                        id: "save-proc-geostore",
                         scope: this,
                         disabled: true,
-                        handler: function(){
-                        
-                            var me=this;
-                            
-                            this.saveUserUUID = this.UUID.uuid4();
-                            
-                            var submitElab = function(){
-                            
-                                var form = this.savePanel.getForm();
-                                var fields = form.getValues();
-                                
-                                var status;
-                                var jsonStatus;
-                                if(this.processingPane.panel){
-                                    status = this.processingPane.getStatus();
-                                    jsonStatus = Ext.util.JSON.encode(status);
-                                }else{
-                                    status = this.processingPane.getInitialStatus();
-                                    jsonStatus = Ext.util.JSON.encode(status);
-                                }
-                                
-                                var updateResource = function(btn, text){
-                                    if (btn == 'yes'){
-                                        geostoreEntityResource.regName = geostoreEntityResource.name;
-                                        me.geoStore.getLikeName(geostoreEntityResource,successResUpdate,failureRes);
-                                    }
-                                };
-                                
-                                //Verifico se la categoria esiste. Se esiste chiedo all'utente se vuole sovrascrivere l'ìelaborazione
-                                var checkEntitiesResSucc = function(check){
-                                    if(!check){
-                                        me.geoStore.createEntity(geostoreEntityResource,successRes,failureRes);
-                                    }else{
-                                        Ext.Msg.show({
-                                            title: me.saveProcessingTitle,
-                                            buttons: Ext.Msg.YESNO,                
-                                            msg: me.saveProcessingMsg,
-                                            fn: updateResource,
-                                            icon: Ext.MessageBox.QUESTION,
-                                            scope: this
-                                        });                               
-                                    }
-                                };
-                                
-                                //Errore "existsEntity" function
-                                var checkEntitiesResFail = function(){
-                                    Ext.Msg.show({
-                                        title: me.saveProcessingErrorTitle,
-                                        buttons: Ext.Msg.OK,
-                                        msg: me.saveProcessingErrorMsg,
-                                        icon: Ext.MessageBox.ERROR,
-                                        scope: this
-                                    });                     
-                                };
-                                
-                                // Effettuo l'update della risorsa in seguito alla conferma dell'utente
-                                var successResUpdate = function(elabID){
-                                    var updateResource1 = geostoreEntityResource;
-                                    updateResource1.id = elabID[0].id;
-                                    me.geoStore.updateEntity(updateResource1,successRes,failureRes);
-                                        
-                                };                            
-                                
-                                var closeSaveWin = function(){
-                                    me.saveWin.close();
-                                };
-                                
-                                // Elaborazione salvata con successo
-                                var successRes = function(){
-                                    Ext.Msg.show({
-                                        title: me.saveProcessingSuccessTitle,
-                                        buttons: Ext.Msg.OK,
-                                        msg: me.saveProcessingSuccessMsg,
-                                        fn: closeSaveWin,
-                                        icon: Ext.MessageBox.INFO,
-                                        scope: this
-                                    });                                         
-                                };                    
-                                
-                                // Errore salvataggio elaborazione
-                                var failureRes = function(){
-                                    Ext.Msg.show({
-                                        title: me.saveProcessingErrorTitle,
-                                        buttons: Ext.Msg.OK,
-                                        msg: me.saveProcessingErrorMsg,
-                                        icon: Ext.MessageBox.ERROR,
-                                        scope: this
-                                    });                     
-                                };
-
-                                //Assegno il nome alla risorsa (elaborazione)
-                                var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
-                                    type: "resource",
-                                    name: this.saveUserUUID,
-                                    description: fields.elab_name,
-                                    attributes: [{
-                                        name: fields.elab_description,
-                                        type:"STRING",
-                                        value:fields.elab_description
-                                    },{
-                                        name: "valid",
-                                        type:"STRING",
-                                        value:"true"
-                                    }],
-                                    category: 'processing',
-                                    store: jsonStatus
-                                });                    
-                                
-                                me.geoStore.createEntity(geostoreEntityResource,successRes,failureRes);
-                            };
-                            
-                            var enableBtnFunction = function(){
-                                if(this.getValue() != "")
-                                    Ext.getCmp("elab-savebutton").enable();
-                                else
-                                    Ext.getCmp("elab-savebutton").disable();
-                            };
-                            
-                            this.savePanel = new Ext.form.FormPanel({
-                                //url: this.loginService,
-                                frame: true,
-                                labelWidth: 80,
-                                width: 400,
-                                height: 150,
-                                layout: "form",
-                                defaultType: "textfield",
-                                items: [
-                                    {
-                                        xtype: 'fieldset',
-                                        id: 'name-field-set',
-                                        title: me.saveProcessingNameFieldsetTitle,
-                                        items: [
-                                            {
-                                                xtype: 'textfield',
-                                                width: 120,
-                                                fieldLabel: me.saveProcessingNameLabel,
-                                                id: 'diag-text-field',
-                                                anchor:'100%',
-                                                name: "elab_name",
-                                                listeners: {
-                                                    render: function(f){
-                                                        f.el.on('keydown', enableBtnFunction, f, {buffer: 350});
-                                                    }
-                                                }
-                                            },{
-                                                xtype: 'textarea',
-                                                width: 200,
-                                                id: 'diag-text-description',
-                                                fieldLabel: me.saveProcessingDescriptionLabel,
-                                                name: "elab_description",
-                                                readOnly: false,
-                                                hideLabel : false
-                                            }
-                                        ]
-                                    }
-                                ],
-                                buttons: [{
-                                    text: me.saveProcessingButtonText,
-                                    iconCls: 'save-button',
-                                    id: "elab-savebutton",
-                                    disabled: true,
-                                    formBind: true,
-                                    handler: submitElab,
-                                    scope: this
-                                }],
-                                keys: [{ 
-                                    key: [Ext.EventObject.ENTER], 
-                                    handler: submitElab,
-                                    scope: this
-                                }]
-                            });
-                                    
-                            this.saveWin = new Ext.Window({
-                                title: me.saveProcessingWinTitle,
-                                iconCls: 'save-button',
-                                layout: "fit",
-                                width: 450,
-                                height: 250,
-                                closeAction: 'close',
-                                resizable: false,
-                                plain: true,
-                                border: false,
-                                modal: true,
-                                items: [
-                                    this.savePanel
-                                ]
-                            });
-                            this.saveWin.show(); 
-                        }
+                        handler: this.saveProcessing
                     },{
                         text: this.loadButton,
                         iconCls: 'load-button',
@@ -1033,339 +1273,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         name: "load-proc-geostore",
                         scope: this,
                         disabled: false,
-                        handler: function(){
-                                var me = this;
-                                
-                                this.newStatus;
-                                
-                                var loadGeostoreStatus = function(status){
-                                    if(! me.processingPane.aoiFieldset){
-                                        me.processingPane.loadUserElab = true;
-                                        
-                                        me.processingPane.geostoreElab = status.processing;
-                                        me.processingPane.geostoreFormula = status.formula;
-                                        
-                                        me.processingPane.show();
-                                        
-                                        if(status.temporal == 0){
-                                            me.processingPane.loadUserElab = false;
-                                            // Temporali
-                                            me.processingPane.temporal.setValue("fp_scen_centrale");
-                                            me.processingPane.temporal.disable();
-                                        }else {
-                                            me.processingPane.geostoreTemporal = status.temporal.value;
-                                        }
-                                        
-                                    }else{
-                                        var containerTab = Ext.getCmp(me.outputTarget);
-                                        var active = containerTab.getActiveTab();
-                                        map.events.register("move", me.processingPane, me.processingPane.aoiUpdater);
-                                        active.disable();
-                                        containerTab.setActiveTab(1);
-                                        active = containerTab.getActiveTab();
-                                        active.enable();
-                                    }    
-                                    
-                                    var tipologia = "tipologia_" + GeoExt.Lang.locale;
-                                    var descrizione = "descrizione_" + GeoExt.Lang.locale;
-                                    var nome_sostanza = "nome_sostanza_" + GeoExt.Lang.locale;
-                                    
-                                    if(status.accident.feature){
-                                        status.accident.name = status.accident.feature.attributes[tipologia];
-                                    }else{
-                                        status.accident.name = me.processingPane.allScenOption;
-                                    }
-                                    
-                                    if(status.classe.feature){
-                                        status.classe.name = status.classe.feature.attributes[descrizione];
-                                    }else{
-                                        status.classe.name = me.processingPane.allClassOption;
-                                    }
-                                    
-                                    if(status.sostanza.feature){
-                                        status.sostanza.name = status.sostanza.feature.attributes[nome_sostanza];
-                                    }else{
-                                        status.sostanza.name = me.processingPane.allSostOption;
-                                    }
-                                    
-                                    if(status.target.feature){
-                                        status.target.name = status.target.feature.attributes[descrizione];
-                                    }
-                                    
-                                    if(status.target.macro){
-                                        switch(status.target.id_bersaglio)
-                                        {
-                                            case -1:
-                                                status.macroTarget = me.processingPane.allTargetOption;
-                                                break;
-                                            case -2:
-                                                status.macroTarget = me.processingPane.allHumanTargetOption;
-                                                break;
-                                            case -3:
-                                                status.macroTarget = me.processingPane.allNotHumanTargetOption;
-                                                break;
-                                        }
-                                    }else{
-                                        if(status.target.flg_umano!= 1){
-                                            status.macroTarget = me.processingPane.allNotHumanTargetOption;
-                                        }else{
-                                            status.macroTarget = me.processingPane.allHumanTargetOption;
-                                        }
-                                    }
-                                    
-                                    switch(status.seriousness.value)
-                                    {
-                                        case "L":
-                                            status.seriousness.name = me.processingPane.entLieve;
-                                            break;
-                                        case "G":
-                                            status.seriousness.name = me.processingPane.entGrave;
-                                            break;
-                                        case "0":
-                                            status.seriousness.name = me.processingPane.allEntOption;
-                                            break;
-                                    }
-                                    
-                                    me.processingPane.setStatus(status);
-                                    
-                                    if(status.processing == 2){
-                                        me.processingPane.temporal.enable();
-                                    }
-                                };
-                                
-                                this.saveCreateGridProcess = function(resourceList){
-                                    
-                                    if (!resourceList){
-                                        failureSave();
-                                        return;
-                                    }
-                                    
-                                    var resourceDataReader = new Ext.data.ArrayReader({}, [
-                                           {name: 'id', type: 'int', mapping: 'id'},
-                                           {name: 'name', type: 'string', mapping: 'description'},
-                                           {name: 'descrizione', type: 'string', mapping: 'attributeDesc'},
-                                           {name: 'creazione', type: 'date', mapping: 'creation'},
-                                           {name: 'valido', type: 'bool', mapping: 'valid'}
-                                    ]);
-                                    
-                                    this.resourceDataStore = new Ext.data.Store({
-                                        reader: resourceDataReader,
-                                        data: resourceList
-                                    });
-                                    
-                                    var xg = Ext.grid;
-                                    
-                                    this.processingGrid = new xg.GridPanel({
-                                        id: 'id_processing_grid',
-                                        store: this.resourceDataStore,
-                                        header: false,
-                                        sm: new xg.RowSelectionModel({
-                                            singleSelect:true,
-                                            scope: this,
-                                            listeners: {
-                                                rowselect: function (grid,rowIndex,record) {
-                                                
-                                                    var success = function(data){
-
-                                                        me.newStatus = Ext.util.JSON.decode(data.Resource.data.data);
-                                                        
-                                                        if (typeof me.newStatus == "string"){
-                                                            me.newStatus = Ext.util.JSON.decode(me.newStatus);
-                                                        }else{
-                                                            if (typeof me.newStatus == "object"){
-                                                                me.newStatus
-                                                            }
-                                                        }
-                                                        return me.newStatus;
-                                                    };
-                                                    
-                                                    var failure = function(){};
-                                                    var newRecord = record.get('id');
-                                                    
-                                                    //Assegno il nome alla risorsa (elaborazione)
-                                                    var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
-                                                        type: "resource",
-                                                        category: "processing",
-                                                        id: newRecord
-                                                    });  
-                                                    
-                                                    me.geoStore.getEntityByID(geostoreEntityResource,success,failure);
-                                                },
-                                                scope:this
-                                            }
-                                        }),
-                                        cm: new xg.ColumnModel({
-                                            columns: [
-                                                {
-                                                    header: me.loadProcessingNameHeader,
-                                                    width : 60,
-                                                    sortable : true,
-                                                    dataIndex: 'name'
-                                                },{
-                                                    header: me.loadProcessingDescriptionHeader,
-                                                    width : 120,
-                                                    sortable : true,
-                                                    dataIndex: 'descrizione'
-                                                },{
-                                                    header: me.loadProcessingCreationHeader,
-                                                    width : 120,
-                                                    sortable : true,
-                                                    dataIndex: 'creazione',
-                                                    xtype: 'datecolumn',
-                                                    format: 'd/m/Y H:i:s'
-                                                },{
-                                                    header: me.loadProcessingValidHeader,
-                                                    width : 50,
-                                                    sortable : true,
-                                                    dataIndex: 'valido',
-                                                    trueText: 'v',
-                                                    falseText:' ',
-                                                    xtype: 'booleancolumn'
-                                                },{
-                                                    xtype: 'actioncolumn',
-                                                    width: 20,
-                                                    header: '',
-                                                    listeners: {
-                                                        scope: this,
-                                                        click: function(column, grd, row, e){
-                                                            grd.getSelectionModel().selectRow(row);
-                                                        }
-                                                    },
-                                                    items: [
-                                                        {
-                                                        tooltip: me.removeProcessingTooltip,
-                                                        icon: me.deleteIconPath,
-                                                        scope: this,
-                                                        handler: function(gpanel, rowIndex, colIndex) {
-
-                                                                var deleteRecord = function(btn, text){
-                                                                    if (btn == 'yes'){
-                                                                        var store = gpanel.getStore();
-                                                                        var record = store.getAt(rowIndex);
-                                                                        var id = record.get("id");
-                                                                        var removeResource = {
-                                                                            type: 'resource',
-                                                                            id: id
-                                                                        };
-                                                                        store.remove(record);
-                                                                        gpanel.getSelectionModel().clearSelections(true);
-                                                                        me.newStatus = null;
-                                                                        me.geoStore.deleteEntity(removeResource);
-                                                                    }
-                                                                }
-                                                                
-                                                                Ext.Msg.show({
-                                                                    title: me.removeProcessingMsgTitle,
-                                                                    buttons: Ext.Msg.YESNO,
-                                                                    msg: me.removeProcessingMsg,
-                                                                    fn: deleteRecord,
-                                                                    icon: Ext.MessageBox.WARNING,
-                                                                    scope: this
-                                                                });
-                                                               
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                              ]                
-                                        }),
-                                        viewConfig: {
-                                            forceFit: true
-                                        }            
-                                    });
-                                    
-
-                                    this.loadPanel = new Ext.FormPanel({
-                                        frame: true,
-                                        labelWidth: 80,
-                                        layout: "fit",
-                                        defaultType: "textfield",
-                                        scope: this,
-                                        items: [this.processingGrid],
-                                        buttons: [{
-                                            text: me.loadProcessingButtonText,
-                                            formBind: true,
-                                            iconCls: 'load-button',
-                                            handler: function(){
-                                                if(me.newStatus){
-                                                
-                                                    loadGeostoreStatus(me.newStatus);
-                                                    
-                                                    var map = me.target.mapPanel.map;
-                                                    var bbox = me.newStatus.roi.bbox;
-                                                    
-                                                    map.zoomToExtent(
-                                                        new OpenLayers.Bounds(
-                                                            bbox.left,
-                                                            bbox.bottom,
-                                                            bbox.right,
-                                                            bbox.top
-                                                        )
-                                                    )
-                                                    
-                                                    me.newStatus = null;
-                                                    
-                                                }else{
-                                                
-                                                    Ext.Msg.show({
-                                                        title: me.selectProcessingMsgTitle,
-                                                        buttons: Ext.Msg.OK,
-                                                        msg: me.selectProcessingMsg,
-                                                        icon: Ext.MessageBox.INFO,
-                                                        scope: this
-                                                    });
-                                                    
-                                                }
-                                            },
-                                            listeners:{
-                                                'click': function( button, e ){
-                                                    if(button.initialConfig.scope.newStatus){
-                                                        this.scope.loadWin.close();
-                                                    }
-                                                }
-                                            },
-                                            scope: this
-                                        }],
-                                        keys: [{ 
-                                            key: [Ext.EventObject.ENTER], 
-                                            handler: function(){
-                                                if(me.newStatus){
-                                                    loadGeostoreStatus(me.newStatus);
-                                                }
-                                            },                                 
-                                            scope: this
-                                        }]
-                                    });
-                                            
-                                    this.loadWin = new Ext.Window({
-                                        title: me.loadProcessingWinTitle,
-                                        iconCls: 'load-button',
-                                        layout: "fit",
-                                        width: 450,
-                                        closeAction: 'close',
-                                        height: 250,
-                                        resizable: false,
-                                        plain: true,
-                                        border: false,
-                                        modal: true,
-                                        autoScroll: true,
-                                        items: [this.loadPanel]
-                                    });
-                                    this.loadWin.show();
-                                }
- 
-                                var failureSave = function(){
-                                    Ext.Msg.show({
-                                        title: me.failureAchieveResourceTitle,
-                                        buttons: Ext.Msg.OK,
-                                        msg: me.failureAchieveResourceMsg,
-                                        icon: Ext.MessageBox.INFO,
-                                        scope: this
-                                    });
-                                };
-                                    
-                                me.geoStore.getCategoryResources("processing",this.searchAttributesSuccess.createDelegate(this, "processing", 0),failureSave);
-                        }
+                        handler: this.loadProcessing
                     }]
                 }
             },{
@@ -1378,7 +1286,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     items:[{
                         text: this.saveDownloadMenuButton,
                         iconCls: 'save-download-button',
-                        name: "save-download-proc-geostore",
+                        id: "save-download-proc-geostore",
                         scope: this,
                         disabled: true,
                         handler: function(){
@@ -1708,13 +1616,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     if(! this.processingPane.aoiFieldset)
                         this.processingPane.show();
                     else{
-                        var containerTab = Ext.getCmp(this.outputTarget);
-                        var active = containerTab.getActiveTab();
-                        map.events.register("move", this.processingPane, this.processingPane.aoiUpdater);
-                        active.disable();
-                        containerTab.setActiveTab(1);
-                        active = containerTab.getActiveTab();
-                        active.enable();
+                        this.processingPane.reshow(Ext.getCmp(this.outputTarget));
 
                         if(this.status){
                             if(this.status.processing == 2){
@@ -3091,24 +2993,22 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         var status = this.getStatus();
         
         //enable download processing button at first run process for all processing type
-        var saveDownloadProcMenuButtons = this.fieldSet.getBottomToolbar().items.items[1].menu.items.items[0];
-        saveDownloadProcMenuButtons.enable();
+        Ext.getCmp('save-download-proc-geostore').enable();
         
         //enable save processing button for all processing type except for standard type
-        var saveProcMenuButtons = this.fieldSet.getBottomToolbar().items.items[0].menu.items.items[0];
-        saveProcMenuButtons.enable();
+        Ext.getCmp('save-proc-geostore').enable();
         
         var bounds = this.getBoundsForViewParams(status, map);
         
-        if(this.originalRiskLayers === null) {
+        /*if(this.originalRiskLayers === null) {
             this.storeOriginalRiskLayers();
-        }
+        }*/
         
         this.enableDisableRoads(!status.formulaInfo.dependsOnArcs);
         
         this.removeModifiedLayer(map);
         if(status.processing === 3) {
-            this.addModifiedFeatures(map,this.vectorLayers);
+            this.addModifiedFeatures(map);//,[this.simulationAddedLayer, this.simulationChangedLayer, this.simulationRemovedLayer]);
         }
         
         this.removeRiskLayers(map);

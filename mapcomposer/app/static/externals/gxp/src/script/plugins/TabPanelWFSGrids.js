@@ -89,6 +89,10 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
             return new gxp.plugins.WFSGrid(cfg);
     },    
     
+    reprojectRecords: function(records) {
+        return records;
+    },
+    
     /** api: method[addOutput]
      */
     addOutput: function(config) {
@@ -244,7 +248,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                 for(var i=0; i<grids.length;i++){
                     grids[i].target= me.target;
                     grids[i].viewParams= viewParams;
-                    grids[i].extraRecords = extraRecords;
+                    grids[i].extraRecords = me.reprojectRecords(extraRecords);
                     grids[i].addOutput({},i === 0);
                     grids[i].tplData = tplData;
                     grids[i].save = {};

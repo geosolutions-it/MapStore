@@ -409,6 +409,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     getCheckDisplayAction: function(actionConf){
         var me= this;
         var checkConf = {
+            checkOnly: true,
             listeners: {
                 scope: this,				
                 rowdeselect: function (selMod, rowIndex, record){
@@ -1768,7 +1769,11 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             },
                             load : function(store){
                                  if(me.loadMask)
-                                 me.loadMask.hide(); 
+                                 me.loadMask.hide();
+                                 if(me.allowEdit) {
+                                    // enable add button
+                                    me.tbar.findByType('button')[0].enable();
+                                 }
                             },
                             
                             exception : function(store){
@@ -1997,6 +2002,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     toggleGroup: "toolGroup",
                     enableToggle: true,
                     allowDepress: false,
+                    disabled: true,
                     scope: this,
                     toggleHandler: function(button, pressed) {
                         if (pressed) {
@@ -2245,7 +2251,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         this.wfsGrid = gxp.plugins.WFSGrid.superclass.addOutput.call(this, config);
         
         
-        this.wfsGrid.on('activate', function() {            
+        this.wfsGrid.on('activate', function() {  
             if(this.data) {
                 this.loadData();
             } else {
@@ -2290,7 +2296,11 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         }
         
         store.loadData(new OpenLayers.Format.GeoJSON().read(this.data));
-
+        if(this.allowEdit) {
+            // enable add button
+            this.tbar.findByType('button')[0].enable();
+        }
+        
     },
 
 	/**

@@ -76,10 +76,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     notVisibleOnGridMessage: "Formula non visibile a questa scala",
     areaTooBigMessage: "Area selezionata troppo grande per questa formula",
     
-    loadUserElab: false,
-    geostoreElab: null,
-    geostoreFormula: null,
-    geostoreTemporal: null,    
+    //loadUserElab: false,
+    //geostoreElab: null,
+    //geostoreFormula: null,
+    //geostoreTemporal: null,    
     selectionAreaLabel: "Area Selezionata",
     alertSimGridReloadTitle: "Aggiornamento Bersagli",
     alertSimGridReloadMsg: "Vuoi aggiornare i Bersagli? - Tutte le modifica andranno perse!",    
@@ -483,6 +483,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *  
      */
     show: function() {
+        this.initialized = true;
         this.map = this.appTarget.mapPanel.map;    
         
         // init tools
@@ -492,6 +493,15 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.selDamage.hide();
             
         this.buildForm(this.map);
+    },
+    
+    reshow: function(containerTab) {
+        var active = containerTab.getActiveTab();
+        this.map.events.register("move", this, this.aoiUpdater);
+        active.disable();
+        containerTab.setActiveTab(1);
+        active = containerTab.getActiveTab();
+        active.enable();
     },
     
     /** private: method[buildForm]
@@ -524,7 +534,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 this.aoiFieldset, 
                 this.buildTargetForm(),
                 this.buildAccidentForm()
-
             ],
             buttons: [{
                 text: this.cancelButton,
@@ -577,7 +586,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 scope: this,                
                 expand: function(combo) {
-                    this.loadUserElab = false;
+                    //this.loadUserElab = false;
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
                 },
@@ -614,7 +623,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 scope: this,                
                 expand: function(combo) {
-                    this.loadUserElab = false;
+                    //this.loadUserElab = false;
                     
                     // change formula according to scale
                     this.filterComboFormulaScale(combo);
@@ -748,7 +757,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     this.enableDisableSimulation(processingCombo === 3,type,startValue);                    
                 },
                 expand: function(combo) {
-                    this.loadUserElab = false;
+                    //this.loadUserElab = false;
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
                 } 
@@ -793,7 +802,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             lazyInit: false,
             listeners: {
                 "expand": function(combo) {
-                    this.loadUserElab = false;
+                    //this.loadUserElab = false;
                     var store=combo.getStore();
                     delete store.baseParams.filter;
                     combo.getStore().reload();
@@ -840,7 +849,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             value: this.allSostOption,
             listeners: {
                 "expand": function(combo) {
-                    this.loadUserElab = false;
+                    //this.loadUserElab = false;
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
                 },
@@ -887,7 +896,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             value: this.allScenOption,
             listeners: {
                 "expand": function(combo) {
-                    this.loadUserElab = false;
+                    //this.loadUserElab = false;
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
                 },
@@ -998,10 +1007,55 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.enableDisableAOI(formula, elaborazione);
         this.enableDisableSelAreaDamage(formula, elaborazione);
         this.enableDisableTemporali(formula, elaborazione);
-        //this.enableDisableMeteo(record);
         this.enableDisableTargets(formula, elaborazione);
         this.enableDisableScenario(formula, elaborazione);        
-        //this.enableDisableFormula(formula, elaborazione);        
+    },
+    
+    enableDisableTemporali: function(formula, elaborazione) {
+        if(formula){
+            this.enableDisable(formula.get('condizioni_temporali') && elaborazione.get('id') === 2, this.temporal);        
+        }else{
+            this.enableDisable(elaborazione.get('id') !== 4, this.temporal);
+        }
+    },
+    
+    enableDisableAOI: function(formula, elaborazione) {
+        if(formula){
+            this.enableDisable(formula.get('ambito_territoriale') || elaborazione.get('id') !== 4, this.aoiFieldset);
+        }else{
+            this.enableDisable(elaborazione.get('id') !== 4, this.aoiFieldset);      
+        }
+    },
+    
+    enableDisableSelAreaDamage: function(formula, elaborazione) {
+        this.enableDisable(elaborazione.get('id') === 4, this.selDamage);        
+    },
+    
+    enableDisableTargets: function(record) {
+        if(record){
+            var hasTargets = record.get('bersagli_tutti') || record.get('bersagli_umani') || record.get('bersagli_ambientali');
+            this.enableDisable(hasTargets, this.macrobers);
+            this.enableDisable(hasTargets, this.bers);
+            
+            if(hasTargets) {
+                var data;
+                var type;            
+                
+                if(record.get('bersagli_tutti')) {
+                    data = this.macroBersData;
+                    type = null;
+                } else if(record.get('bersagli_umani')) {
+                    data = [this.macroBersData[1]];
+                    type = true;
+                } else if(record.get('bersagli_ambientali')) {
+                    data = [this.macroBersData[2]];
+                    type = false;
+                }
+                this.targetMacroStore.loadData(data);
+                this.macrobers.setValue(data[0][1]);
+                this.updateTargetCombo(type);
+            }
+        }
     },
     
     enableDisable: function(condition, widget) {
@@ -1024,12 +1078,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     // apply simulation grid reload
     updateSimulationTabPabelConfirm: function(wfsGrid,syntView,map,type,startValue){
 
-        if(type !== 'bers' && type !== 'reload')
+        if(type !== 'bers' && type !== 'reload' && type !== 'init')
             this.updateTargetCombo(type);
             
         var viewParams;                
         var status = this.getStatus();        
-        var bounds = syntView.getBounds(null, map);
+        var bounds = syntView.getBounds(status, map);
         viewParams = "bounds:" + bounds;
         
         if(this.isSingleTarget(status)) {
@@ -1146,7 +1200,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     },    
     
     enableDisableSimulation: function(enable,type,startValue) {
-        var syntView = this.appTarget.tools[this.syntheticView];
         var southPanel = Ext.getCmp("south");        
         var wfsGrid = Ext.getCmp("featuregrid");
         var map = this.appTarget.mapPanel.map;
@@ -1154,11 +1207,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var scale = Math.round(map.getScale()); 
         
         // nothing to do!!! Set target panels according to target combo selection
-        if((enable && syntView.simulationEnabled) || (!enable && !syntView.simulationEnabled)) {
+        if((enable && this.syntView.simulationEnabled) || (!enable && !this.syntView.simulationEnabled)) {
 
-            syntView.simulationLoaded = true;
+            this.syntView.simulationLoaded = true;
             if(enable) {
-                this.updateSimulationTabPabel(wfsGrid,syntView,map,type,startValue);
+                this.updateSimulationTabPabel(wfsGrid,this.syntView,map,type,startValue);
             }
                 
             return;
@@ -1166,7 +1219,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
   
         
         if(enable) {
-            syntView.simulationRestore = {
+            this.syntView.simulationRestore = {
                 collapsed: southPanel.collapsed,
                 buttons: {
                     'roadGraph_view': Ext.getCmp('roadGraph_view').pressed,
@@ -1178,26 +1231,23 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             if(southPanel.collapsed) {
                 southPanel.expand();
             } else {
-                syntView.simulationRestore.grids = wfsGrid.currentGrids;
+                this.syntView.simulationRestore.grids = wfsGrid.currentGrids;
             }
             
             wfsGrid.removeAllGrids();
             
-            syntView.simulationLoaded = false;
+            this.syntView.simulationLoaded = false;
             
             var wfsGrid = Ext.getCmp("featuregrid");
             wfsGrid.setCurrentPanel('simulation');
             
-            if(scale <= syntView.analiticViewScale) {
+            if(scale <= this.syntView.analiticViewScale) {
             
-                syntView.simulationLoaded = true;
-                this.updateSimulationTabPabel(wfsGrid,syntView,map,type,startValue);
+                this.syntView.simulationLoaded = true;
+                this.updateSimulationTabPabel(wfsGrid,this.syntView,map,type,startValue);
                 
             } 
-/*            else {
-                Ext.getCmp("targets_view").disable();
-                Ext.getCmp("roadGraph_view").disable(); 
-            }*/
+
             Ext.getCmp("analytic_view").disable();
             Ext.getCmp("targets_view").disable();
             Ext.getCmp("roadGraph_view").disable(); 
@@ -1209,10 +1259,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             Ext.getCmp("roadGraph_view").toggle(false, true);               
             Ext.getCmp("areaDamage_view").toggle(false, true);
             
-            syntView.simulationEnabled = true;
+            this.syntView.simulationEnabled = true;
         } else {
-            if(syntView.simulationRestore) {
-                if(syntView.simulationRestore.collapsed) {
+            if(this.syntView.simulationRestore) {
+                if(this.syntView.simulationRestore.collapsed) {
                     southPanel.collapse();
 					Ext.getCmp("refresh_grid").hide();
                 } else {
@@ -1224,83 +1274,26 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 					Ext.getCmp("refresh_grid").disable();
 					var mapPanelContainer = Ext.getCmp("mapPanelContainer_id");
                     mapPanelContainer.doLayout(false,true);  
-                    if(syntView.simulationRestore.grids && syntView.simulationRestore.grids.length > 0) {
+                    if(this.syntView.simulationRestore.grids && this.syntView.simulationRestore.grids.length > 0) {
                         wfsGrid.removeAllGrids();
-                        wfsGrid.restoreGrids(syntView.simulationRestore.grids);
+                        wfsGrid.restoreGrids(this.syntView.simulationRestore.grids);
                     }
                 }
-                for(var buttonId in syntView.simulationRestore.buttons) {
-                    if(syntView.simulationRestore.buttons.hasOwnProperty(buttonId)) {
+                for(var buttonId in this.syntView.simulationRestore.buttons) {
+                    if(this.syntView.simulationRestore.buttons.hasOwnProperty(buttonId)) {
                         var button = Ext.getCmp(buttonId);
-                        var status = syntView.simulationRestore.buttons[buttonId];
+                        var status = this.syntView.simulationRestore.buttons[buttonId];
                         button.toggle(status, true);
                     }
                 }
             }            
-            syntView.removeLayersByName(map, syntView.vectorLayers);
-            syntView.simulationRestore = null;
-            syntView.simulationEnabled = false;
-        }
-        
-        //this.expandCollapse(enable ,southPanel);
-    },
-    
-    enableDisableTemporali: function(formula, elaborazione) {
-        if(formula){
-            this.enableDisable(formula.get('condizioni_temporali') && elaborazione.get('id') === 2, this.temporal);        
-        }else{
-            this.enableDisable(elaborazione.get('id') !== 4, this.temporal);
+            this.syntView.removeLayersByName(map, this.syntView.vectorLayers);
+            this.syntView.simulationRestore = null;
+            this.syntView.simulationEnabled = false;
         }
     },
     
-    enableDisableAOI: function(formula, elaborazione) {
-        if(formula){
-            this.enableDisable(formula.get('ambito_territoriale') || elaborazione.get('id') !== 4, this.aoiFieldset);
-        }else{
-            this.enableDisable(elaborazione.get('id') !== 4, this.aoiFieldset);      
-        }
-    },
     
-    //disable combo formula if elaboration method is Damage Assessment
-    enableDisableFormula: function(formula, elaborazione) {
-        this.enableDisable(elaborazione.get('id') !== 4, this.formula);
-    },
-    
-    enableDisableSelAreaDamage: function(formula, elaborazione) {
-        this.enableDisable(elaborazione.get('id') === 4, this.selDamage);        
-    },
-    
-    /*enableDisableMeteo: function(record) {
-        this.enableDisable(record.get('condizioni_meteo'), this.weather);
-    },*/
-    
-    enableDisableTargets: function(record) {
-        if(record){
-            var hasTargets = record.get('bersagli_tutti') || record.get('bersagli_umani') || record.get('bersagli_ambientali');
-            this.enableDisable(hasTargets, this.macrobers);
-            this.enableDisable(hasTargets, this.bers);
-            //this.enableDisable(hasTargets, this.temasPanel);
-            
-            if(hasTargets) {
-                var data;
-                var type;            
-                
-                if(record.get('bersagli_tutti')) {
-                    data = this.macroBersData;
-                    type = null;
-                } else if(record.get('bersagli_umani')) {
-                    data = [this.macroBersData[1]];
-                    type = true;
-                } else if(record.get('bersagli_ambientali')) {
-                    data = [this.macroBersData[2]];
-                    type = false;
-                }
-                this.macrobers.getStore().loadData(data);
-                this.macrobers.setValue(data[0][1]);
-                this.updateTargetCombo(type);
-            }
-        }
-    },
     
     isAllHumanTargets: function(status) {
         return status.target['id_bersaglio'] === -2;
@@ -1316,13 +1309,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     
     
     updateTargetCombo: function(type) {        
-                    
-        var store=this.bers.getStore();
-        
         if(type !== null) {
-            store.filter('humans', type);
+            this.targetStore.filter('humans', type);
         } else {
-            store.clearFilter();
+            this.targetStore.clearFilter();
         }
         
         this.bers.setValue(null);
@@ -1483,49 +1473,114 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         active.enable(); 
     },
     
+    getRoiObject: function() {
+        var bbox, roiType, roiId;
+        
+        var roi = this.aoiFieldset.getAOIMapBounds();
+        if(roi instanceof OpenLayers.Bounds) {
+            roiType = 'aoi';
+            bbox = roi;
+        } else {
+            roiType = roi.type;
+            bbox = roi.bbox;
+            roiId = roi.id;
+        }
+        
+        return {
+            label: this.selectionAreaLabel,
+            bbox : bbox,
+            type: roiType,
+            id: roiId
+        };
+    },
+    
+    getDamageArea: function(processing) {
+        var damageAreaGeometry;
+        if(processing === 4) {
+            damageAreaGeometry = this.getLayerGeometry(
+                this.map,
+                this.selDamage.getDamageArea(),
+                this.selectionLayerProjection
+            );
+        }
+        return damageAreaGeometry;
+    },
+    
+    getThemasObj: function(processing, formulaRec) {
+        if(formulaRec) {
+            var low_soc = parseFloat(formulaRec.get('tema_low_soc') || formulaRec.get('tema_low'));
+            var medium_soc = parseFloat(formulaRec.get('tema_medium_soc') || formulaRec.get('tema_medium'));
+            var max_soc = parseFloat(formulaRec.get('tema_max_soc') || formulaRec.get('tema_max'));
+            
+            var low_env = parseFloat(formulaRec.get('tema_low_env') || formulaRec.get('tema_low'));
+            var medium_env = parseFloat(formulaRec.get('tema_medium_env') || formulaRec.get('tema_medium'));
+            var max_env = parseFloat(formulaRec.get('tema_max_env') || formulaRec.get('tema_max'));
+            
+            return {
+                'sociale': [low_soc,medium_soc,max_soc], //Ext.getCmp('rischio_sociale_multislider').getValues(),
+                'ambientale': [low_env,medium_env,max_env] //Ext.getCmp('rischio_ambientale_multislider').getValues()
+            };
+        } else if(processing === 4) {
+            // damage calculus
+            return {
+                'sociale': [100,500,1000], 
+                'ambientale': [100,500,1000]
+            };
+        }
+    },
+    
     /** private: method[getStatus]   
      *  :arg form: ``Object``        
      *     extract processing parameters (status) from the compiled form
      */
-    getStatus: function(){
-        var obj = {};
-    
-        obj.processing = this.elaborazione.getValue();        
-        obj.processingDesc = this.elaborazione.getEl().getValue();
-        obj.formula = this.formula.getValue();
-        obj.formulaDesc = this.formula.getEl().getValue();
-        var formulaRec = this.formula.store.getAt(this.formula.store.findExact("id_formula",obj.formula));
+    getStatus: function() {
+        var processingRec = this.getComboRecord(this.elaborazione, "id");
+        var formulaRec = this.getComboRecord(this.formula, "id_formula");
         
-        obj.formulaUdm = [formulaRec.get('udm'), formulaRec.get('udm_soc'), formulaRec.get('udm_env')];
+        var damageAreaGeometry = this.getDamageArea(processingRec.get('id'));
         
-        obj.formulaInfo = {
-            dependsOnTarget: formulaRec.get('bersagli_tutti') > 0 || formulaRec.get('bersagli_umani') > 0 || formulaRec.get('bersagli_ambientali') > 0,
-            dependsOnArcs: formulaRec.get('ambito_territoriale'),
-            visibleOnArcs: formulaRec.get('visibile') === 1 || formulaRec.get('visibile') === 3,
-            visibleOnGrid: formulaRec.get('visibile') === 2 || formulaRec.get('visibile') === 3
-        };
-        if(obj.processing === 4) {
+        var obj = {
+            processing: processingRec.get('id'),
+            processingDesc: processingRec.get('name'),
             
-            var geometry = this.getLayerGeometry(
-                map,
-                this.selDamage.getDamageArea(),
-                this.selectionLayerProjection
-            );
+            formula: formulaRec.get('id_formula'),
+            formulaDesc: formulaRec.get('name'),
+            formulaUdm: [formulaRec.get('udm'), formulaRec.get('udm_soc'), formulaRec.get('udm_env')],
+            formulaInfo: {
+                dependsOnTarget: formulaRec.get('bersagli_tutti') > 0 || formulaRec.get('bersagli_umani') > 0 || formulaRec.get('bersagli_ambientali') > 0,
+                dependsOnArcs: formulaRec.get('ambito_territoriale'),
+                visibleOnArcs: formulaRec.get('visibile') === 1 || formulaRec.get('visibile') === 3,
+                visibleOnGrid: formulaRec.get('visibile') === 2 || formulaRec.get('visibile') === 3
+            },
             
-            obj.damageAreaGeometry = geometry;
-            obj.damageArea = geometry.toString();
-        }
-        
-        obj.simulation = {
-            cff:[],
-            padr:[],
-            pis:[],
-            targets:[],
-            targetsInfo:[],
-            exportInfo:[]
+            themas: this.getThemasObj(processingRec.get('id'), formulaRec),
+            
+            roi : this.getRoiObject(),
+            
+            temporal : this.getComboRecord(this.temporal, 'value').data,
+            
+            target : this.getSelectedTarget().data,
+            macroTarget : this.macrobers.getValue(),
+            
+            classe : this.getComboRecord(this.classi).data,
+            sostanza : this.getComboRecord(this.sostanze).data,
+            accident : this.getComboRecord(this.accident).data,
+            seriousness : this.getComboRecord(this.seriousness).data,
+            
+            damageAreaGeometry:  damageAreaGeometry,
+            damageArea: damageAreaGeometry ? damageAreaGeometry.toString() : undefined,
+            simulation : {
+                cff:[],
+                padr:[],
+                pis:[],
+                targets:[],
+                targetsInfo:[],
+                exportInfo:[]
+            }
         };
-        
-        if(obj.processing === 3) {
+
+        // simulation
+        if(processingRec.get('id') === 3) {
             var wfsGrid = Ext.getCmp("featuregrid");
             
             Ext.each(wfsGrid.currentGrids, function(grid) {
@@ -1573,61 +1628,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 }
             },this);
         }
-        var roi = this.aoiFieldset.getAOIMapBounds();
-        var bbox, type, label, id;
-        if(roi instanceof OpenLayers.Bounds) {
-            type = 'aoi';
-            bbox = roi;
-        } else {
-            type = roi.type;
-            bbox = roi.bbox;
-            id = roi.id;
-        }
-        if(this.aoiFieldset.isDirty()){
-            label = this.selectionAreaLabel;    
-        }else{
-            label = "Regione Piemonte"; 
-        }
         
-        obj.roi = {
-            label: label,
-            bbox : bbox,
-            type: type,
-            id: id
-        }; 
-        
-        obj.target = this.getSelectedTarget().data; 
-        obj.macroTarget = this.macrobers.getValue();
-        
-        //obj.weather = this.weather.getValue();
-        obj.temporal = this.getComboRecord(this.temporal, 'value').data;
-        
-        obj.classe = this.getComboRecord(this.classi).data; //this.classi.getValue();
-        obj.sostanza = this.getComboRecord(this.sostanze).data; //this.sostanze.getValue();
-        obj.accident = this.getComboRecord(this.accident).data; //this.accident.getValue();
-        obj.seriousness = this.getComboRecord(this.seriousness).data; //this.seriousness.getValue();
-        
-        if(formulaRec) {
-            var low_soc = parseFloat(formulaRec.get('tema_low_soc') || formulaRec.get('tema_low'));
-            var medium_soc = parseFloat(formulaRec.get('tema_medium_soc') || formulaRec.get('tema_medium'));
-            var max_soc = parseFloat(formulaRec.get('tema_max_soc') || formulaRec.get('tema_max'));
-            
-            var low_env = parseFloat(formulaRec.get('tema_low_env') || formulaRec.get('tema_low'));
-            var medium_env = parseFloat(formulaRec.get('tema_medium_env') || formulaRec.get('tema_medium'));
-            var max_env = parseFloat(formulaRec.get('tema_max_env') || formulaRec.get('tema_max'));
-            
-            obj.themas = {
-                'sociale': [low_soc,medium_soc,max_soc], //Ext.getCmp('rischio_sociale_multislider').getValues(),
-                'ambientale': [low_env,medium_env,max_env] //Ext.getCmp('rischio_ambientale_multislider').getValues()
-            };
-        } else if(obj.processing === 4) {
-            // damage calculus
-            obj.themas = {
-                'sociale': [100,500,1000], //Ext.getCmp('rischio_sociale_multislider').getValues(),
-                'ambientale': [100,500,1000] //Ext.getCmp('rischio_ambientale_multislider').getValues()
-            };
-        }
-            
         return obj;
     },
     
@@ -1674,9 +1675,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         if(formulaPos !== -1) {
             this.formula.setValue(this.status.formula);
             
-            if(!this.loadUserElab){
+            /*if(!this.loadUserElab){
                 this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(formulaPos));
-            }
+            }*/
         }
         this.updateAOI();
                 
@@ -1705,7 +1706,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 
         // simulation
         if(this.status.processing === 3) {
-            this.enableDisableSimulation(true);
+            this.enableDisableSimulation(true, 'init');
         }
     },        
     
