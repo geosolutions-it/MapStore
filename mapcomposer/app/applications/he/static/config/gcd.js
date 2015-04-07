@@ -8,7 +8,7 @@
 			"title": "GeoServer Hart Energy",
             "version":"1.1.1",
 			"projection":"EPSG:900913",
-			"url": "http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
+			"url": "http://he.geo-solutions.it/geoserver/ows",
 			"layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
 			"authParam":"authkey",
 			"layerBaseParams": {
@@ -179,7 +179,7 @@
             "ptype":"he_capacity_data",
             "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
             "titleText": "Flows & Statistics",
-            "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
+            "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows",
             "source": "gs",
             "bypipelineLayerName":"gascapacity:gcd_v_capacity_by_pipeline_agg",
             "bypointLayerName":"gascapacity:gcd_v_capacity_by_point_agg",
@@ -203,7 +203,7 @@
             "outputTarget":"gcd"
         },{
             "ptype":"he_shippers",
-            "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
+            "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows",
             "source": "gs",
             "countryLayer":"gascapacity:gcd_lst_USCounties",
             "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
@@ -233,7 +233,7 @@
         },{
             "ptype":"he_gcd_statistics",
             "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"},
-            "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows?&authkey=2ce78958-821e-4f4c-a677-67e3224862e9",
+            "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows",
             "source": "gs",
             "countryLayer":"gascapacity:gcd_lst_USCounties",
             "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
@@ -245,6 +245,13 @@
                     "name": "GCD_Users_Z0:GCD_INTER_PL",
                     "layers": "GCD_Users_Z0:GCD_INTER_PL",
                     "styles": "NG_PIPE" ,
+                    "transparent": true,
+                    "displayInLayerSwitcher": false
+            },
+            "pointLayerConfig": {
+                    "title": "Points",
+                    "name": "GCD_Users_Z0:GCD_PNTS",
+                    "layers": "GCD_Users_Z0:GCD_PNTS",
                     "transparent": true,
                     "displayInLayerSwitcher": false
             },
@@ -263,7 +270,7 @@
           "autoSetLayer":false
 	    }, {
 		  "ptype": "he_results_grid",
-          
+          "source": "gs",
 		  "featureManager": "featuremanager",
           "customActionsProvider":"gcd",
           "customColumnsProvider": "gcd",

@@ -77,6 +77,10 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
      */
     addOutput: function (config) {
         var source = this.target.layerSources[this.source];
+        var vendorParams = {};
+        if(source && source.authParam){
+            vendorParams[source.authParam] = source.getAuthParam();
+        }
         var today = new Date();
         var form = {
             xtype: 'form',
@@ -199,7 +203,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     clearOnFocus: false,
                     allowBlank: false,
                     typeAhead: false,
-
+                    vendorParams: vendorParams,
                     //data
                     url: this.geoServerUrl,
                     typeName: this.pipelineNameLayer,
@@ -523,9 +527,15 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                             width: 900,
                             items:[{
                                 xtype: 'he_pipeline_statistics',
-                                region:'center',
-                                ferc:pipelineId,
-                                border:false
+                                region: 'center',
+                                baseParams: Ext.apply({
+                                    service:'WFS',
+                                    version:'1.1.0',
+                                    request:'GetFeature',
+                                    outputFormat: 'application/json'
+                                }, vendorParams ),
+                                ferc: pipelineId,
+                                border: false
                             }]
                         }).show();
 

@@ -138,9 +138,17 @@ gxp.plugins.he.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
     /** api: method[addOutput]
      */
     addOutput: function(config) {
+        var vendorParams = {};
+        if(this.source && this.target.layerSources){
+            var source = this.target.layerSources[this.source];
+            if(source && source.authParam){
+                vendorParams[source.authParam] = source.getAuthParam();
+            }
+        }
         config = Ext.apply({
             xtype: "he_scheduled_capacities_grid",
-            loadMask:true
+            loadMask:true,
+            vendorParams : vendorParams
         }, config || {});
         var featureGrid = gxp.plugins.he.ResultsGrid.superclass.addOutput.call(this, config);
         

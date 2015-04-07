@@ -32,11 +32,11 @@ Ext.namespace('gxp.he');
  */
 gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
     url : "http://he.geo-solutions.it/geoserver/gascapacity/ows",
-    params:{
-        service:"WFS",
-        version:"1.0.0",
-        request:"GetFeature",
-        outputFormat: "application/json"
+    baseParams:{
+        service:'WFS',
+        version:'1.1.0',
+        request:'GetFeature',
+        outputFormat: 'application/json'
     },
     generic_typeName:"gascapacity:gcd_v_pipeline_statistics",
     genInfoTemplates:{
@@ -121,17 +121,13 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
             },
             url: this.url,
             limit:5,
-            baseParams:{
-                service:'WFS',
-                version:'1.1.0',
-                request:'GetFeature',
+            baseParams: Ext.apply({
                 typeName:this.transportcustomerslayer ,
-                outputFormat: 'application/json',
                 viewParams: 'FERC:'+this.ferc,
                 maxFeatures:10,
                 startIndex:0,
                 sortBy:'Transp_Capacity'
-            },
+            }, this.baseParams ),
             listeners:{
                 load:function(store,rec,opt){
                     var i = 0;
@@ -156,18 +152,13 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
             ],
             limit:5,
             url: this.url,
-            baseParams:{
-                service:'WFS',
-                version:'1.1.0',
-                request:'GetFeature',
+            baseParams: Ext.apply({
                 typeName:this.transportcustomerslayer ,
-                outputFormat: 'application/json',
                 viewParams: 'FERC:'+this.ferc,
                 maxFeatures:10,
                 startIndex:0,
-                sortBy:'Transp_Capacity',
-                
-            },
+                sortBy:'Transp_Capacity'
+            }, this.baseParams),
             listeners:{
                 load:function(store,rec,opt){
                     var i = 0;
@@ -193,14 +184,10 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                {name: 'capacity', type: 'float', mapping: 'properties.Storage_Capacity'}
             ],
             url: this.url,
-            baseParams:{
-                service:'WFS',
-                version:'1.1.0',
-                request:'GetFeature',
+            baseParams: Ext.apply({
                 typeName:this.storagecustomerslayer ,
-                outputFormat: 'application/json',
                 viewParams: 'FERC:'+this.ferc
-            }
+            }, this.baseParams)
         });
         
         var TSDataTest = [
@@ -228,14 +215,10 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                {name: 'storage', type: Ext.data.Types.INT , mapping: 'properties.Storage_Quantity'}
             ],
             url: this.url,
-            baseParams:{
-                service:'WFS',
-                version:'1.1.0',
-                request:'GetFeature',
+            baseParams: Ext.apply({
                 typeName:this.tslayer ,
-                outputFormat: 'application/json',
                 viewParams: 'FERC:'+this.ferc
-            }
+            }, this.baseParams)
         });
          var finDataTest = [
            /* ['Conocophillips Co',"FT1",  280],
@@ -272,14 +255,10 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                {name: 'netincome', type: 'string', mapping: 'properties.Net_Income'}
             ],
             url: this.url,
-            baseParams:{
-                service:'WFS',
-                version:'1.1.0',
-                request:'GetFeature',
+            baseParams: Ext.apply({
                 typeName:this.fin_layer ,
-                outputFormat: 'application/json',
                 viewParams: 'FERC:'+this.ferc
-            }
+            }, this.baseParams)
         });
         
         var expirationStorage = new Ext.data.JsonStore({
@@ -296,14 +275,10 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                {name: 'storage', type: Ext.data.Types.INT , mapping: 'properties.Storage'}
             ],
             url: this.url,
-            baseParams:{
-                service:'WFS',
-                version:'1.1.0',
-                request:'GetFeature',
+            baseParams: Ext.apply({
                 typeName:this.contractexpirationlayer ,
-                outputFormat: 'application/json',
                 viewParams: 'FERC:'+this.ferc
-            }
+            }, this.baseParams)
         });
         //TRANSPORT Customer CAPACITY GRID
          var grid = 
@@ -331,7 +306,7 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                             var params = Ext.apply({
                                 typeName:this.generic_typeName,
                                 cql_filter: "FERC = '"+this.ferc+"'",
-                            },this.params);
+                            }, this.baseParams);
                             Ext.Ajax.request({
                                 url: url,
                                 params:params,
