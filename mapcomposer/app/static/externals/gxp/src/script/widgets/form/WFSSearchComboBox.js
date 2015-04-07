@@ -191,7 +191,7 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 					for (var name in this.vendorParams ) {
 					    if(this.vendorParams.hasOwnProperty(name)){
     						if(name!='cql_filter' && name != "startindex" && name != "maxfeatures" && name != 'outputFormat' ){
-    							store.setBaseParam(store, this.vendorParams[name]);
+    							store.setBaseParam(name, this.vendorParams[name]);
     						}
 						}
 					}
