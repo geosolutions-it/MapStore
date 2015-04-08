@@ -73,6 +73,11 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
      *  :arg config: ``Object``
      */
     addOutput: function (config) {
+        var source = this.target.layerSources[this.source];
+        this.vendorParams = {};
+        if(source && source.authParam){
+            this.vendorParams[source.authParam] = source.getAuthParam();
+        }
         var today = new Date();
         var form = {
             xtype: 'form',
@@ -161,7 +166,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                     clearOnFocus: false,
                     allowBlank: false,
                     typeAhead: false,
-
+                    vendorParams: this.vendorParams,
                     //data
                     url: this.geoServerUrl,
                     typeName: this.pipelineNameLayer,
@@ -193,14 +198,12 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                             combo.refOwner.refOwner.buttonsContainer.contractbyCategoryButton.setDisabled(false);
                             
                             var cql_filter_string = "FERC = '"+record.get('pl_FERC')+"'";
-                                
+                            var new_vendorParams = Ext.apply({ cql_filter: cql_filter_string }, this.vendorParams || {});
                             // add or update layer
                             if(!this.pipelineLayer){
                                 
                                 var layerProps = Ext.apply(this.pipelineLayerConfig, {
-                                    vendorParams: {
-                                        cql_filter: cql_filter_string
-                                    }
+                                    vendorParams: new_vendorParams
                                 });
 
                                 // Create and add layer to map
@@ -211,9 +214,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                                 
                             }else{
                                 // merge params to layer
-                                this.pipelineLayer.vendorParams = Ext.apply(this.pipelineLayer.vendorParams,{
-                                    cql_filter: cql_filter_string
-                                });
+                                this.pipelineLayer.vendorParams = Ext.apply(this.pipelineLayer.vendorParams, new_vendorParams);
 
                                 this.pipelineLayer.mergeNewParams({
                                     cql_filter: cql_filter_string
@@ -240,7 +241,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                     clearOnFocus: false,
                     allowBlank: false,
                     typeAhead: false,
-
+                    vendorParams: this.vendorParams,
                     //data
                     url: this.geoServerUrl,
                     typeName: this.shipperNamesLayer,
@@ -383,7 +384,13 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                                     ferc: pipelineId,
                                     url: this.geoServerUrl,
                                     region:'center',
-                                    border:false
+                                    border:false,
+                                    baseParams:Ext.apply({
+                                        service:'WFS',
+                                        version:'1.1.0',
+                                        request:'GetFeature',
+                                        outputFormat: 'application/json',
+                                    }, this.vendorParams || {})
                                 }]
                         }).show();
                     }
@@ -649,14 +656,14 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                         sortInfo: sortinfo,
                         fields: fields,
                         url: this.geoServerUrl,
-                        baseParams:{
+                        baseParams: Ext.apply ({
                             service:'WFS',
                             version:'1.1.0',
                             request:'GetFeature',
                             typeName:qryLayer,
                             outputFormat: 'application/json',
                             viewParams: this.createViewParams()
-                        }
+                        }, this.vendorParams || {})
                     });
                     
                     var shippers_grid = new Ext.grid.GridPanel({

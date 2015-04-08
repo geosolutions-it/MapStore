@@ -32,7 +32,6 @@ Ext.namespace('gxp.he');
  */
 gxp.he.ContractsByCategory = Ext.extend(Ext.Container, {
     
-    
     /* ptype =  gxp_chartpanel */
     xtype: "he_contractsbycategory",
     updateDelay: 0,
@@ -41,6 +40,12 @@ gxp.he.ContractsByCategory = Ext.extend(Ext.Container, {
     style:'padding:10px',
     contractbycategorylayer: 'gascapacity:gcd_v_contract_by_category',
     contractbycustomerlayer: 'gascapacity:gcd_v_contract_by_customer',
+    baseParams:{
+        service:'WFS',
+        version:'1.1.0',
+        request:'GetFeature',
+        outputFormat: 'application/json',
+    },
     initComponent: function () {
         this.byCategoryStore = new Ext.data.JsonStore({
             root: 'features',
@@ -55,14 +60,10 @@ gxp.he.ContractsByCategory = Ext.extend(Ext.Container, {
                 direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
             },
             url: this.url,
-            baseParams:{
-                service:'WFS',
-                version:'1.1.0',
-                request:'GetFeature',
+            baseParams: Ext.apply({
                 typeName:this.contractbycategorylayer ,
-                outputFormat: 'application/json',
                 viewParams: 'FERC:'+this.ferc
-            },
+            }, this.baseParams),
             listeners:{
                 scope:this,
                 beforeload:function(){
@@ -140,14 +141,10 @@ gxp.he.ContractsByCategory = Ext.extend(Ext.Container, {
                     direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
                 },
                 url: this.url,
-                baseParams:{
-                    service:'WFS',
-                    version:'1.1.0',
-                    request:'GetFeature',
+                baseParams: Ext.apply({
                     typeName:this.contractbycustomerlayer ,
-                    outputFormat: 'application/json',
                     viewParams: 'FERC:'+this.ferc+";CATEGORY:"+column1.label
-                }
+                }, this.baseParams)
             });
             var row = {
                 xtype: 'container',
@@ -194,14 +191,10 @@ gxp.he.ContractsByCategory = Ext.extend(Ext.Container, {
                         direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
                     },
                     url: this.url,
-                    baseParams:{
-                        service:'WFS',
-                        version:'1.1.0',
-                        request:'GetFeature',
+                    baseParams: Ext.apply({
                         typeName:this.contractbycustomerlayer ,
-                        outputFormat: 'application/json',
                         viewParams: 'FERC:'+this.ferc+";CATEGORY:"+column2.label
-                    }
+                    }, this.baseParams)
                 });
                 row.items.push({
                         columnWidth:.5,
