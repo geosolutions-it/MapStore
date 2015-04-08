@@ -18,7 +18,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @author Lorenzo Natali
+ * @author Lorenzo Natali (lorenzo.natali@geo-solutions.it)
+ * @author Lorenzo Pini (lorenzo.pini@geo-solutions.it)
  */
 
 /**
@@ -71,15 +72,18 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
     
     /* Status of the results grid panel (if any)*/
     resultsGridStatus: "collapsed",
-
+    
+    /* Flag to enable the automatic updates of the min/max dates on Pipeline change */
+    canUpdateDates: true ,
+    
     /*
      *  :arg config: ``Object``
      */
     addOutput: function (config) {
         var source = this.target.layerSources[this.source];
-        var vendorParams = {};
+        this.vendorParams = {};
         if(source && source.authParam){
-            vendorParams[source.authParam] = source.getAuthParam();
+            this.vendorParams[source.authParam] = source.getAuthParam();
         }
         var today = new Date();
         var form = {
@@ -203,7 +207,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     clearOnFocus: false,
                     allowBlank: false,
                     typeAhead: false,
-                    vendorParams: vendorParams,
+                    vendorParams: this.vendorParams,
                     //data
                     url: this.geoServerUrl,
                     typeName: this.pipelineNameLayer,
@@ -231,8 +235,9 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                             combo.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(false);
                             combo.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.setDisabled(false);
                             
-                            var cql_filter_string = "FERC = '"+record.get('pl_FERC')+"'";
-                                
+                            var ferc_string = record.get('pl_FERC');
+                            var cql_filter_string = "FERC = '"+ferc_string+"'";
+                            
                             // add or update layer
                             if(!this.pipelineLayer){
                                 
@@ -258,6 +263,45 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                                     cql_filter: cql_filter_string
                                 });
                             }
+                            
+                            // Update the Date fields
+                            if(this.canUpdateDates){
+                                
+                                var form_reference = combo.refOwner.refOwner.getForm();
+                                
+                                // Get values from WFS  
+                                var statsStore = new Ext.data.JsonStore({
+                                    root: 'features',
+                                    autoLoad: true,
+                                    fields: [
+                                       {name: 'min_eff', type: 'date', mapping: 'properties.min_eff'},
+                                       {name: 'max_eff', type: 'date', mapping: 'properties.max_eff'}
+                                    ],
+                                    url: this.geoServerUrl,
+                                    baseParams: Ext.apply({
+                                        service: 'WFS',
+                                        version: '1.1.0',
+                                        request: 'GetFeature',
+                                        outputFormat: 'application/json',
+                                        typeName: 'gascapacity:gcd_v_capacities_stats' ,
+                                        viewParams: 'FERC:'+ferc_string,
+                                        maxFeatures: 1
+                                    }, this.vendorParams),
+                                    listeners:{
+                                        scope: form_reference,
+                                        load:function(){
+                                            var stats_record = statsStore.getAt(0);
+                                            // Update UI
+                                            if(stats_record){
+                                                this.findField('start').setValue(stats_record.data.min_eff);
+                                                this.findField('end').setValue(stats_record.data.max_eff);
+                                            }
+                                            
+                                        }
+                                    }
+                                });
+                            }
+                            
                         }
                     }
                 }, {
@@ -394,7 +438,23 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                             value: today,
                             fieldLabel: 'From Date',
                             name: 'start',
-                            anchor: '100%'
+                            anchor: '100%',
+                            listeners :{
+                                'change' : {
+                                    fn: function() {
+                                        // User action, disable automatic date updates
+                                        this.canUpdateDates = false;
+                                    },
+                                    scope: this
+                                },
+                                'select' : {
+                                    fn: function() {
+                                        // User action, disable automatic date updates
+                                        this.canUpdateDates = false;
+                                    },
+                                    scope: this
+                                }
+                            }
                         }]
                     }, {
                         columnWidth: .5,
@@ -404,7 +464,23 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                             value: today,
                             fieldLabel: 'To Date',
                             name: 'end',
-                            anchor: '100%'
+                            anchor: '100%',
+                            listeners :{
+                                'change' : {
+                                    fn: function() {
+                                        // User action, disable automatic date updates
+                                        this.canUpdateDates = false;
+                                    },
+                                    scope: this
+                                },
+                                'select' : {
+                                    fn: function() {
+                                        // User action, disable automatic date updates
+                                        this.canUpdateDates = false;
+                                    },
+                                    scope: this
+                                }
+                            }
                         }]
                     }]
                 }, {
@@ -500,10 +576,11 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     text: 'Pipeline Statistics',
                     iconCls:'gxp-icon-csvexport-single',
                     disabled:true,
-                    handler: function(){
-                        var values = this.refOwner.refOwner.getForm().getValues();
+                    scope: this, 
+                    handler: function(btn, evt){
+                        var values = btn.refOwner.refOwner.getForm().getValues();
                         var pipelineId = values.pipeline;
-                        var combobox = this.refOwner.refOwner.getForm().findField('pipeline');
+                        var combobox = btn.refOwner.refOwner.getForm().findField('pipeline');
                         if(!( pipelineId )){
                             Ext.Msg.show({
                                msg: 'Please select a pipeline in the "Refine Query" box',
@@ -533,7 +610,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                                     version:'1.1.0',
                                     request:'GetFeature',
                                     outputFormat: 'application/json'
-                                }, vendorParams ),
+                                }, this.vendorParams ),
                                 ferc: pipelineId,
                                 border: false
                             }]

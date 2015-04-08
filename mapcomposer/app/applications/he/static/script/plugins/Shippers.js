@@ -18,7 +18,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * @author Lorenzo Natali
+ * @author Lorenzo Natali (lorenzo.natali@geo-solutions.it)
+ * @author Lorenzo Pini (lorenzo.pini@geo-solutions.it)
  */
 
 /**
@@ -69,6 +70,10 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
     
     /* Status of the results grid panel (if any)*/
     resultsGridStatus: "collapsed",
+    
+    /* Flag to enable the automatic updates of the min/max dates on Pipeline change */
+    canUpdateDates: true ,
+    
     /*
      *  :arg config: ``Object``
      */
@@ -197,7 +202,8 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                             combo.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(false);
                             combo.refOwner.refOwner.buttonsContainer.contractbyCategoryButton.setDisabled(false);
                             
-                            var cql_filter_string = "FERC = '"+record.get('pl_FERC')+"'";
+                            var ferc_string = record.get('pl_FERC');
+                            var cql_filter_string = "FERC = '"+ferc_string+"'";
                             var new_vendorParams = Ext.apply({ cql_filter: cql_filter_string }, this.vendorParams || {});
                             // add or update layer
                             if(!this.pipelineLayer){
@@ -218,6 +224,44 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
 
                                 this.pipelineLayer.mergeNewParams({
                                     cql_filter: cql_filter_string
+                                });
+                            }
+                            
+                            // Update the Date fields
+                            if(this.canUpdateDates){
+                                
+                                var form_reference = combo.refOwner.refOwner.getForm();
+                                
+                                // Get values from WFS  
+                                var statsStore = new Ext.data.JsonStore({
+                                    root: 'features',
+                                    autoLoad: true,
+                                    fields: [
+                                       {name: 'min_exp', type: 'date', mapping: 'properties.min_exp'},
+                                       {name: 'max_exp', type: 'date', mapping: 'properties.max_exp'}
+                                    ],
+                                    url: this.geoServerUrl,
+                                    baseParams: Ext.apply({
+                                        service: 'WFS',
+                                        version: '1.1.0',
+                                        request: 'GetFeature',
+                                        outputFormat: 'application/json',
+                                        typeName: 'gascapacity:gcd_v_iocsections_stats' ,
+                                        viewParams: 'FERC:'+ferc_string,
+                                        maxFeatures: 1
+                                    }, this.vendorParams),
+                                    listeners:{
+                                        scope: form_reference,
+                                        load:function(){
+                                            var stats_record = statsStore.getAt(0);
+                                            // Update UI
+                                            if(stats_record){
+                                                this.findField('start').setValue(stats_record.data.min_exp);
+                                                this.findField('end').setValue(stats_record.data.max_exp);
+                                            }
+                                            
+                                        }
+                                    }
                                 });
                             }
                         }
@@ -294,8 +338,24 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                             value: today,
                             fieldLabel: 'Between',
                             name: 'start',
-                            anchor: '100%'
-                            }]
+                            anchor: '100%',
+                            listeners :{
+                                'change' : {
+                                    fn: function() {
+                                        // User action, disable automatic date updates
+                                        this.canUpdateDates = false;
+                                    },
+                                    scope: this
+                                },
+                                'select' : {
+                                    fn: function() {
+                                        // User action, disable automatic date updates
+                                        this.canUpdateDates = false;
+                                    },
+                                    scope: this
+                                }
+                            }
+                        }]
                     }, {
                         columnWidth: .5,
                         layout: 'form',
@@ -304,8 +364,24 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                             value: today,
                             fieldLabel: 'And',
                             name: 'end',
-                            anchor: '100%'
-                            }]
+                            anchor: '100%',
+                            listeners :{
+                                'change' : {
+                                    fn: function() {
+                                        // User action, disable automatic date updates
+                                        this.canUpdateDates = false;
+                                    },
+                                    scope: this
+                                },
+                                'select' : {
+                                    fn: function() {
+                                        // User action, disable automatic date updates
+                                        this.canUpdateDates = false;
+                                    },
+                                    scope: this
+                                }
+                            }
+                        }]
                     }, {
                         xtype: 'box',
                         ref: 'separator',
