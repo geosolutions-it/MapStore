@@ -104,7 +104,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  ``Object`` Optional object with non-default properties to set on the
      *  OpenLayers.Layer.Vector used to render features
      *  i.e. to have zindex use  "vecLayerOptions": {"rendererOptions":{"zIndexing": true}}
-     *  in composre configuration
+     *  in composer configuration
      */
     
     /** api: config[format]
