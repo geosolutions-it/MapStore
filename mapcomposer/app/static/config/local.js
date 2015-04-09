@@ -39,7 +39,9 @@
                 "TILED": true,                
                 "format": "image/png8"
             },
-			"loadingProgress": true
+            "prependPrefix": "destination:",
+			"loadingProgress": true,
+			"useCapabilities": false
         },
         "externalstiled": {
             "ptype": "gxp_wmscsource",
@@ -159,6 +161,7 @@
             "env":"low:100;medium:500;max:1000",
             "riskPanel":true,
             "exclusive":"SIIG",
+			"queryable": true,
 			
 			"forceOneVisible": false
         },{
@@ -170,6 +173,7 @@
             "env":"lowsociale:100;mediumsociale:500;maxsociale:1000;lowambientale:100;mediumambientale:500;maxambientale:1000",
             "riskPanel":true,
             "exclusive":"SIIG",
+			"queryable": true,
 			
 			"forceOneVisible": false
         },
@@ -177,91 +181,128 @@
             "source": "destinationtiled",
             "title": "Beni culturali",
             "name": "beni_culturali_all",
+            "queryLayers":"v_geo_beni_culturali_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Zone urbanizzate",
             "name": "zone_urbanizzate_all",
+            "queryLayers":"v_geo_zone_urbanizzate_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Acque sotterranee",
             "name": "acque_sotterranee_all",
+            "queryLayers":"v_geo_acque_sotterranee_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Acque superficiali",
             "name": "acque_superficiali_all",
+            "queryLayers":"v_geo_acque_superficiali_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Aree protette",
             "name": "aree_protette_all",
+            "queryLayers":"v_geo_aree_protette_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Aree boscate",
             "name": "aree_boscate_all",
+            "queryLayers":"v_geo_aree_boscate_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Aree agricole",
             "name": "aree_agricole_all",
+            "queryLayers":"v_geo_aree_agricole_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Addetti/utenti centri commerciali",
             "name": "centri_commerciali_all",
+            "queryLayers":"v_geo_commercio_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Addetti/utenti strutture scolastiche",
             "name": "strutture_scolastiche_all",
+            "queryLayers":"v_geo_scuola_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Addetti/utenti strutture sanitarie",
             "name": "strutture_sanitarie_all",
+            "queryLayers":"v_geo_ospedale_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Addetti industria e servizi",
             "name": "industria_servizi_all",
+            "queryLayers":"v_geo_industria_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Popolazione turistica",
             "name": "popolazione_turistica_all",
+            "queryLayers":"v_geo_popolazione_turistica_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Popolazione residente",
             "name": "popolazione_residente_all",
+            "queryLayers":"v_geo_popolazione_residente_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
             "visibility": false
         },{
             "source": "destinationtiled",
@@ -270,6 +311,7 @@
             "displayInLayerSwitcher": true,
             "tiled": true,
             "group": ["Roads","Strade","Routes"," Straßen"],
+            "queryable": true,
             "visibility": false
         },{
             "source": "destinationtiled",
@@ -278,6 +320,8 @@
             "displayInLayerSwitcher": true,
             "tiled": true,
             "group": ["Limiti","Limiti","Limiti"," Limiti"],
+            "queryable": true,
+			
             "visibility": false
         },{
             "source": "destinationtiled",
@@ -286,6 +330,8 @@
             "displayInLayerSwitcher": true,
             "tiled": true,
             "group": ["Limiti","Limiti","Limiti"," Limiti"],
+            "queryable": true,
+			
             "visibility": false
         },{
 			"source": "destinationtiled",
@@ -294,6 +340,8 @@
 			"displayInLayerSwitcher": true,
 			"tiled": true,
             "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
+            "queryable": true,
+			
 			"visibility": false
         },{
 			"source": "destination",
@@ -304,6 +352,8 @@
 			"tiled": false,
             "time" : "2014-01-31T14:50:10.229Z",
             "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
+            "queryable": true,
+			
 			"visibility": false
         }
         ]
@@ -504,6 +554,11 @@
             "user": "super",
             "password": "super"
         },
+        "layerParams": [
+            "TIME",
+            "ELEVATION",
+            "QUERY_LAYERS"
+        ],
         "toggleGroup":"toolGroup",
         "actionTarget":{
             "target":"paneltbar",

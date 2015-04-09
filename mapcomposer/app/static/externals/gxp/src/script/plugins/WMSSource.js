@@ -169,6 +169,11 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      */
 	useCapabilities: true,
     
+    /** api: config[prependPrefix]
+     *  ``String`` prefix to append to layer name (to be used for automatic namespace prefix prepending).
+     */
+	prependPrefix: null,
+    
     /** private: method[constructor]
      */
     constructor: function(config) {
@@ -444,7 +449,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      
 	createLayerRecordFromOriginal: function(original, config) {
 		var layer = original.getLayer().clone();
-
+        
 		/**
 		 * TODO: The WMSCapabilitiesReader should allow for creation
 		 * of layers in different SRS.
@@ -488,9 +493,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 				ENV: config.env,
 				TIME: config.time,
 				RISKPANEL: config.riskPanel,
+				QUERY_LAYERS: config.queryLayers || undefined,
 				DEFAULTENV: config.env                    
 			}, this.layerBaseParams);
-		
 		
 		
 		
@@ -498,7 +503,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		
 		// update params from config
 		layer.mergeNewParams(params);
-		
+		if(this.prependPrefix && layer.params.LAYERS) {
+            layer.params.LAYERS = this.prependPrefix + layer.params.LAYERS;
+        }
 		/*layer.mergeNewParams({
 			STYLES: config.styles,
 			FORMAT: config.format,

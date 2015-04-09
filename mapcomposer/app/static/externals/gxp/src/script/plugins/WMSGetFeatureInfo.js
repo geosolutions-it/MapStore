@@ -140,7 +140,9 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                 if (this.layerParams) {
                     for (var i=this.layerParams.length-1; i>=0; --i) {
                         param = this.layerParams[i].toUpperCase();
-                        vendorParams[param] = layer.params[param];
+                        if(layer.params[param]) {
+                            vendorParams[param] = layer.params[param];
+                        }
                     }
                 }
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
