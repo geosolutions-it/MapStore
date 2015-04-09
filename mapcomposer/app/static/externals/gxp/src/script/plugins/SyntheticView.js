@@ -546,7 +546,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
         for(var i = 0; i < map.layers.length; i++) {
             var layer = map.layers[i];
-            if(layer.params && layer.params.LAYERS == layerName) {
+            if(layer.params && (layer.params.LAYERS == layerName || layer.params.LAYERS == this.destinationNS + ':' + layerName)) {
                 return layer;
             }
         }
@@ -1632,7 +1632,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     if(this.status && !this.status.initial && !this.reset){
                         this.processingPane.setStatus(this.status);
                     } else {
-						this.processingPane.updateAOI();
+						this.processingPane.updateAOI({
+                            type: 'aoi',
+                            bbox: map.getExtent().clone()
+                        });
 					}
                     
                     if(this.status && !this.status.initial && this.reset){

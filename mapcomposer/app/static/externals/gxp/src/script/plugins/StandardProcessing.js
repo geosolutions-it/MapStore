@@ -1477,17 +1477,20 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var bbox, roiType, roiId;
         
         var roi = this.aoiFieldset.getAOIMapBounds();
+        var label;
         if(roi instanceof OpenLayers.Bounds) {
             roiType = 'aoi';
             bbox = roi;
+            label = this.selectionAreaLabel;
         } else {
             roiType = roi.type;
             bbox = roi.bbox;
             roiId = roi.id;
+            label = roi.name;
         }
         
         return {
-            label: this.selectionAreaLabel,
+            label: label,
             bbox : bbox,
             type: roiType,
             id: roiId
@@ -1657,8 +1660,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         return combo.store.getAt(combo.store.findExact(field || 'name', combo.getValue()));
     },
     
-	updateAOI: function() {
-		this.aoiFieldset.setAOI(this.appTarget.mapPanel.map.getExtent());
+	updateAOI: function(roi) {
+		this.aoiFieldset.setAOI(roi.bbox);
+        this.aoiFieldset.setType(roi.type === 'aoi' ? 'byrect' : 'byfeature');
+        if(roi.type !== 'aoi') {
+            this.aoiFieldset.selectFeature(roi.type, roi.id);
+        }
 	},
 	
     /** private: method[setStatus]   
@@ -1674,12 +1681,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var formulaPos = this.formula.getStore().findExact("id_formula", this.status.formula);
         if(formulaPos !== -1) {
             this.formula.setValue(this.status.formula);
-            
+            this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(formulaPos));
             /*if(!this.loadUserElab){
                 this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(formulaPos));
             }*/
         }
-        this.updateAOI();
+        this.updateAOI(status.roi);
                 
         store=this.macrobers.getStore(); 
         this.macrobers.setValue(this.status.macroTarget);
