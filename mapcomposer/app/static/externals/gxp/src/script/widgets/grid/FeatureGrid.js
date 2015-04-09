@@ -62,12 +62,19 @@ gxp.grid.FeatureGrid = Ext.extend(Ext.grid.GridPanel, {
     layer: null,
 	
 	actionTooltip: "Zoom To Feature",
-    
+	
+	/** api: config[emptyText]
+     *  ``String`` 
+     *  Default text (html tags are accepted) to display in the grid body when no rows are available 
+     */
+     emptyText:'No data to display',
     /** api: method[initComponent]
      *  Initializes the FeatureGrid.
      */
     initComponent: function(){
-        this.ignoreFields = ["feature", "state", "fid"].concat(this.ignoreFields);
+        
+       this.viewConfig=Ext.apply({emptyText:this.emptyText },this.viewConfig||{});
+       this.ignoreFields = ["feature", "state", "fid"].concat(this.ignoreFields);
         if(this.store) {
             this.cm = this.createColumnModel(this.store);
             // layer automatically added if map provided, otherwise check for
