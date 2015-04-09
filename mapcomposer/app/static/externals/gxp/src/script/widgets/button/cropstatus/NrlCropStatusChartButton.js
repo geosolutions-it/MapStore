@@ -320,7 +320,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
-                        spacingBottom: 96
+                        spacingBottom: 128
 					},
                     exporting: {
                         enabled: true,
