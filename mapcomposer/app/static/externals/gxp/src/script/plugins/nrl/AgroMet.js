@@ -196,6 +196,14 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                 var store = areaSelector.store;
                                 this.output.fireEvent('update',store);
                                 this.output.fireEvent('show');                                
+
+                                c.ownerCt.referenceYear.show();
+                                c.ownerCt.yearRangeSelector.show();
+                                c.ownerCt.refYearSelector.hide();
+                                c.ownerCt.compositevalues.hide();
+                                c.ownerCt.anomaliesoutput.hide();
+                                c.ownerCt.mode.hide();
+
                                 this.output.doLayout();
                                 this.output.syncSize();
 
@@ -213,6 +221,9 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                 var store = areaSelector.store;
                                 this.output.fireEvent('update',store);
                                 this.output.fireEvent('show');
+
+                                c.ownerCt.mode.show();
+
                                 this.output.doLayout();
                                 this.output.syncSize();
                             } 
@@ -322,6 +333,19 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                 c.ownerCt.anomaliesoutput.hide();
                             }
                             c.ownerCt.doLayout();
+                        },
+                        show: function(c){
+                            var checked = c.getValue();
+                            if (checked.inputValue == 'composite'){
+                                c.ownerCt.compositevalues.show();
+                            }else{
+                                c.ownerCt.referenceYear.show();
+                                c.ownerCt.yearRangeSelector.show();
+                                c.ownerCt.refYearSelector.hide();
+                                c.ownerCt.compositevalues.hide();
+                                c.ownerCt.anomaliesoutput.hide();
+                            }
+                            c.ownerCt.doLayout();
                         }
                     }
                 },
@@ -385,7 +409,8 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                         }
                     }
                 },{
-                    fieldLabel: 'Anomalies Output',
+                    fieldLabel: '',
+                    hideLabel: false,
                     xtype: 'radiogroup',
                     anchor:'100%',
                     autoHeight:true,
@@ -398,7 +423,10 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                     items:[
                         {boxLabel: 'Absolute' , name: 'anomaliesoutput', inputValue: 'abs',checked:true},
                         {boxLabel: 'Relative (%)' , name: 'anomaliesoutput', inputValue: 'rel'}
-                    ]
+                    ],
+                    style: {
+                        paddingLeft: '15px'
+                    }
                 },
                 new Ext.ux.grid.CheckboxSelectionGrid({
                     title: 'Factors',

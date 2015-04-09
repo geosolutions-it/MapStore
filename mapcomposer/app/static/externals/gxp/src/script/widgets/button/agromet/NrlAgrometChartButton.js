@@ -370,7 +370,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 								this.createResultPanel(makeDataStore(this.jsonData1), listVar, allPakistanRegions);
 								myMask.hide();
 							},
-							failure: function(){
+							failure: function(response){
                                 Ext.Msg.alert('Server error', 'server-side failure with status code: ' + response.status);
                                 myMask.hide();
 							}
@@ -380,7 +380,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 					myMask.hide();
 				}
 			},
-			failure: function(){
+			failure: function(response){
                 Ext.Msg.alert('Server error', 'server-side failure with status code: ' + response.status);
                 myMask.hide();
 			}

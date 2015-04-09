@@ -77,31 +77,30 @@ nrl.chartbuilder.agromet.composite = {
 			
             dataStore.sort("s_dec", "ASC");    
 			var chart;
-			
-			var text = "";
-            if (listVar.compositevalues == 'anomalies'){
-                text = listVar.refYear + " Anomalies";
-            }else{
+
+            var getChartTitle = function(multiline){
+                var title = "Agromet analysis: Composite";
+                if(allPakistanRegions){
+                    title += " - Pakistan";
+                }else{
+                    title += " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION");
+                }
+                title += '<br/>';
                 switch (listVar.compositevalues){
-                    case 'avg': {
-                        text = listVar.fromYear + '-' + listVar.toYear;
-                    }break;
                     case 'abs': {
-                        text = listVar.refYear;
+                        title += listVar.refYear;
+                    }break;
+                    case 'avg': {
+                        title += 'Factors mean ' + listVar.fromYear + '-' + listVar.toYear;
+                    }break;
+                    case 'anomalies': {
+                        title += 'Factor anomalies ' + listVar.refYear + ' - (' + listVar.fromYear + '-' + listVar.toYear +')'
                     }break;
                 }
-                text = text + ' Composite';
+                return (multiline ? title : title.replace('<br/>', ' - '));
             }
 
-			if(allPakistanRegions){
-                text += " - Pakistan";
-			}else{
-                text += " - " + (listVar.numRegion.length == 1 ? listVar.chartTitle : "REGION");
-			}
-			
-            //SORT charts layers to follow the rule (area,bar,line)
-            
-            
+            var text = getChartTitle(true);
 
             var chartOpts = {
                 series:[],
@@ -149,18 +148,31 @@ nrl.chartbuilder.agromet.composite = {
                 return a.type < b.type ? -1 : 1;
             });
             
-            var chartInfo = '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />' +
-                            '<span style="font-size:10px;">Date: ' + listVar.today + '</span><br />' +
-                            '<span style="font-size:10px;">AOI: ' + (allPakistanRegions ? "Pakistan" : listVar.chartTitle) + '</span><br />' +
-                            '<span style="font-size:10px;">Season: ' + listVar.season.toUpperCase() + '</span><br />';
+            var getFactorList = function(){
+                var list = [];
+                for(var factor in chartOpt.series)
+                    list.push(chartOpt.series[factor].name);
 
-            switch (listVar.compositevalues){
-                case 'abs': chartInfo += '<span style="font-size:10px;">Year: ' + listVar.refYear  + '</span><br />'; break;
-                case 'avg': chartInfo += '<span style="font-size:10px;">Years: ' + listVar.fromYear + '-' + listVar.toYear  + '</span><br />'; break;
-                case 'anomalies':{
-                    chartInfo += '<span style="font-size:10px;">Average on: ' + listVar.fromYear + '-' + listVar.toYear  + '</span><br />';
-                    chartInfo += '<span style="font-size:10px;">Reference year: ' + listVar.refYear + '</span><br />';
-                } break;
+                return list.join(', ');
+            }
+
+            var getChartDetails = function(usedInChartInfoWin){
+                var details = '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />' +
+                              '<span style="font-size:10px;">Date: ' + listVar.today + '</span><br />' +
+                              (usedInChartInfoWin ? '<span style="font-size:10px;">Title: ' + getChartTitle(false) + '</span><br />' : '') +
+                              '<span style="font-size:10px;">AOI: ' + (allPakistanRegions ? "Pakistan" : listVar.chartTitle) + '</span><br />' +
+                              (usedInChartInfoWin ? '<span style="font-size:10px;">Factors: ' + getFactorList() + '</span><br />' : '') +
+                              '<span style="font-size:10px;">Season: ' + listVar.season.toUpperCase() + '</span><br />';
+
+                switch (listVar.compositevalues){
+                    case 'abs': details += '<span style="font-size:10px;">Year: ' + listVar.refYear  + '</span><br />'; break;
+                    case 'avg': details += '<span style="font-size:10px;">Years: ' + listVar.fromYear + '-' + listVar.toYear  + '</span><br />'; break;
+                    case 'anomalies':{
+                        details += '<span style="font-size:10px;">Average on: ' + listVar.fromYear + '-' + listVar.toYear  + '</span><br />';
+                        details += '<span style="font-size:10px;">Reference year: ' + listVar.refYear + '</span><br />';
+                    } break;
+                }
+                return details;
             }
 
 			chart = new Ext.ux.HighChart({
@@ -174,7 +186,8 @@ nrl.chartbuilder.agromet.composite = {
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
-                        spacingBottom: 96
+                        spacingBottom: 144,
+                        marginTop: 64
 					},
                     exporting: {
                         enabled: true,
@@ -186,7 +199,7 @@ nrl.chartbuilder.agromet.composite = {
 						text: text
 					},
 					subtitle: {
-                        text: chartInfo,
+                        text: getChartDetails(false),
                         align: 'left',
                         verticalAlign: 'bottom',
                         useHTML: true,
@@ -226,7 +239,7 @@ nrl.chartbuilder.agromet.composite = {
                             Ext.each(this.points, function(i, point) {
                                 var uom = (listVar.compositevalues == 'anomalies' && listVar.anomaliesoutput == 'rel') ? '%' : i.series.options.unit;
                                 s += '<br/><span style="color:'+i.series.color+'">' +  i.series.name + (listVar.compositevalues == 'avg' ? ' (avg)' : '') + ': </span>'+
-                                    '<span style="font-size:12px;">'+ i.y.toFixed(2) + " " + uom + '</span>';
+                                    '<span style="font-size:12px;">'+ (i.y ? i.y.toFixed(2) : 'n/a') + " " + uom + '</span>';
                             });                            
                             return s;
                         },
@@ -236,7 +249,7 @@ nrl.chartbuilder.agromet.composite = {
 					
 					
 				},
-				info: chartInfo
+				info: getChartDetails(true)
 			});
 			grafici.push(chart);
 		}		
