@@ -86,7 +86,7 @@
     <geostore.version>1.1.0</geostore.version>
     <gs-manager.version>1.7-SNAPSHOT</gs-manager.version>
 
-    <gt.version>10-SNAPSHOT</gt.version>
+    <gt.version>14-SNAPSHOT</gt.version>
     <imageio-ext.version>1.2-M102011</imageio-ext.version>
     <spring.version>3.0.3.RELEASE</spring.version>
     <spring.security.version>3.0.3.RELEASE</spring.security.version>

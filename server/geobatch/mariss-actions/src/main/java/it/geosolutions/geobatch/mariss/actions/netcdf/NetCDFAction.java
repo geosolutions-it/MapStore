@@ -52,18 +52,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.geotools.coverage.io.netcdf.NetCDFFormat;
 import org.geotools.data.DataStore;
-import org.geotools.gce.imagemosaic.ImageMosaicFormat;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.jdbc.JDBCDataStore;
-import org.geotools.referencing.CRS;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import com.vividsolutions.jts.geom.Geometry;
 
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
@@ -72,6 +66,8 @@ import ucar.nc2.Dimension;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 public abstract class NetCDFAction extends BaseAction<EventObject> {
 

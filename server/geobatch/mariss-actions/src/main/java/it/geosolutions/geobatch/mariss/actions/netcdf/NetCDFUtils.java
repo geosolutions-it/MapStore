@@ -1,5 +1,7 @@
 package it.geosolutions.geobatch.mariss.actions.netcdf;
 
+//import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+//import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.global.CatalogHolder;
 import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;

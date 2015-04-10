@@ -69,6 +69,13 @@
         <version>${gt.version}</version>
       </dependency>        
 
+      <!-- GeoServer REST Manager ==================================== -->
+      <dependency>
+        <groupId>it.geosolutions</groupId>
+        <artifactId>geoserver-manager</artifactId>
+        <version>${gs-manager.version}</version>
+      </dependency>
+      
         <!-- =========================================================== -->
         <!-- GeoBatch -->
         <!-- =========================================================== -->
@@ -91,6 +98,11 @@
             <artifactId>gb-fsm-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>it.geosolutions.geobatch</groupId>
+            <artifactId>gb-fs-catalog</artifactId>
+        </dependency>
+        
         <dependency>
             <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-action-taskexecutor</artifactId>
