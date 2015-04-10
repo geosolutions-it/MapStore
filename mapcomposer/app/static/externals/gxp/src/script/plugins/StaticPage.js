@@ -76,7 +76,7 @@ gxp.plugins.StaticPage = Ext.extend(gxp.plugins.Tool, {
 			});	
 		}
 
-        return gxp.plugins.StaticPage.superclass.addOutput.apply(this, config);
+        return gxp.plugins.StaticPage.superclass.addOutput.apply(this, []);
     } 
 });
 
