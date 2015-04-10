@@ -144,7 +144,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 
     /** api: config[format]
      *  ``String``
-     *  Format to show feature info ('grid' | 'html'). Default it's 'html'.
+     *  Format to show feature info ('grid' | 'html' | 'text'). Default it's 'html'.
      */
     format: "html",
      /** api: config[maxFeatures]
@@ -840,13 +840,39 @@ if(this.infoAction=='click'){
 
     getInfoFormat: function(layer){
 
-    	var infoFormat;
-    	if(layer){
-    		infoFormat = layer.get("infoFormat");
-    	}
-        if (infoFormat === undefined) {
-            infoFormat = (this.format == "grid") ? "application/vnd.ogc.gml" : "text/html";
+        var infoFormat;
+        var tempInfoFormat;
+        if(layer){
+            infoFormat = layer.get("infoFormat");
         }
+        if (infoFormat === undefined) {
+            switch(this.format){
+                case 'grid' : 
+                    tempInfoFormat = "application/vnd.ogc.gml";
+                    break;
+                case 'html' :
+                    tempInfoFormat = "text/html"
+                    break;
+                case 'text':
+                    tempInfoFormat = "text/plain";
+                    break;
+            }
+            var formats = layer.get('infoFormats');
+            if(formats){//check info format present
+                for(var i = 0 ; i < formats.length; i++){
+                    var f = formats[i];
+                    if(f == tempInfoFormat){
+                        return tempInfoFormat;
+                    }
+                }
+                //infoFormat not supported, autoreconfigure to proper format
+                if(formats.length>0){
+                    infoFormat = formats[0];
+                    
+                }
+            }
+        }
+
         return infoFormat;
     },
     /** private: method[clearPopups]
