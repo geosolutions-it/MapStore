@@ -301,11 +301,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             data :  []
         });
         
-        var layers= [null,'popolazione_residente','popolazione_turistica','popolazione_turistica',
-            'industria_servizi','strutture_sanitarie','strutture_scolastiche',
-            'centri_commerciali','utenti_coinvolti','utenti_territoriali','zone_urbanizzate','aree_boscate',
-            'aree_protette','aree_agricole','acque_sotterranee',
-            'acque_superficiali','beni_culturali'];
+        var layers= [null,'popolazione_residente_pl','popolazione_turistica','popolazione_turistica',
+            'industria_servizi_pl','strutture_sanitarie_pl','strutture_scolastiche_pl',
+            'centri_commerciali_pl','utenti_coinvolti','utenti_territoriali','zone_urbanizzate','aree_boscate',
+            'aree_protette','aree_agricole','acque_sotterranee_pl',
+            'acque_superficiali','beni_culturali_pl'];
         
         this.targetStore.on('load', function(str, records) {
             var allIDsArray= []; 
