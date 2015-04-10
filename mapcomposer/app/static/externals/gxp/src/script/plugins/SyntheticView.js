@@ -1630,6 +1630,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     }    
                 
                     if(this.status && !this.status.initial && !this.reset){
+                        if(this.status.roi) {
+                            this.target.mapPanel.map.zoomToExtent(this.status.roi.bbox);
+                        }
                         this.processingPane.setStatus(this.status);
                     } else {
 						this.processingPane.updateAOI({
