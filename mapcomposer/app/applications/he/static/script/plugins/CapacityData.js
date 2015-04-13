@@ -74,7 +74,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
     resultsGridStatus: "collapsed",
     
     /* Flag to enable the automatic updates of the min/max dates on Pipeline change */
-    canUpdateDates: true ,
+    //canUpdateDates: true ,
     
     /*
      *  :arg config: ``Object``
@@ -86,6 +86,9 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
             this.vendorParams[source.authParam] = source.getAuthParam();
         }
         var today = new Date();
+        var lastweek = new Date();
+        lastweek.setDate(lastweek.getDate() -7 );
+        
         var form = {
             xtype: 'form',
             labelAlign: 'top',
@@ -264,6 +267,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                                 });
                             }
                             
+                            /* Dates will not be updated in this tab
                             // Update the Date fields
                             if(this.canUpdateDates){
                                 
@@ -301,6 +305,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                                     }
                                 });
                             }
+                            */
                             
                         }
                     }
@@ -435,10 +440,11 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                         layout: 'form',
                         items: [{
                             xtype: 'datefield',
-                            value: today,
+                            value: lastweek,
                             fieldLabel: 'From Date',
                             name: 'start',
-                            anchor: '100%',
+                            anchor: '100%'
+                            /*,
                             listeners :{
                                 'change' : {
                                     fn: function() {
@@ -454,7 +460,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                                     },
                                     scope: this
                                 }
-                            }
+                            }*/
                         }]
                     }, {
                         columnWidth: .5,
@@ -464,7 +470,8 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                             value: today,
                             fieldLabel: 'To Date',
                             name: 'end',
-                            anchor: '100%',
+                            anchor: '100%'
+                            /*,
                             listeners :{
                                 'change' : {
                                     fn: function() {
@@ -480,7 +487,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                                     },
                                     scope: this
                                 }
-                            }
+                            }*/
                         }]
                     }]
                 }, {
