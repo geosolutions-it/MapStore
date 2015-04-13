@@ -75,7 +75,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
 
     private static final String PATHSEPARATOR = File.separator;
 
-    protected NetCDFActionConfiguration configuration;
+    protected IngestionActionConfiguration configuration;
 
     protected Map<String, Variable> foundVariables = new HashMap<String, Variable>();
 
@@ -95,7 +95,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
 
     private String sha1;
 
-    public NetCDFAction(NetCDFActionConfiguration actionConfiguration) {
+    public NetCDFAction(IngestionActionConfiguration actionConfiguration) {
         super(actionConfiguration);
         configuration = actionConfiguration;
     }

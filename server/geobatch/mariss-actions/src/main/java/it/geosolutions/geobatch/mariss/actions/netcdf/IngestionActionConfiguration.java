@@ -3,9 +3,9 @@ package it.geosolutions.geobatch.mariss.actions.netcdf;
 import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
 import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
-public class NetCDFActionConfiguration extends GeoServerActionConfiguration {
+public class IngestionActionConfiguration extends GeoServerActionConfiguration {
 
-    public NetCDFActionConfiguration(String id, String name, String description) {
+    public IngestionActionConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
     
@@ -19,7 +19,7 @@ public class NetCDFActionConfiguration extends GeoServerActionConfiguration {
     
     private String productsTableName;
     
-    private String pattern;
+    private ConfigurationContainer container;
 
     public FeatureConfiguration getOutputFeature() {
         return outputFeature;
@@ -62,10 +62,20 @@ public class NetCDFActionConfiguration extends GeoServerActionConfiguration {
     }
 
     public String getPattern() {
-        return pattern;
+        return container != null ? container.getPattern() : null;
     }
 
     public void setPattern(String pattern) {
-        this.pattern = pattern;
+        if(container != null){
+            container.setPattern(pattern);
+        }
+    }
+
+    public ConfigurationContainer getContainer() {
+        return container;
+    }
+
+    public void setContainer(ConfigurationContainer container) {
+        this.container = container;
     }
 }

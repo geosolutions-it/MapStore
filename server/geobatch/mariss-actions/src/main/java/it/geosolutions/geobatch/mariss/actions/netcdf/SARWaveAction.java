@@ -37,10 +37,10 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
 
-@Action(configurationClass = SARWaveActionConfiguration.class)
+@Action(configurationClass = IngestionActionConfiguration.class)
 public class SARWaveAction extends NetCDFAction {
 
-    public SARWaveAction(SARWaveActionConfiguration actionConfiguration) {
+    public SARWaveAction(IngestionActionConfiguration actionConfiguration) {
         super(actionConfiguration);
     }
 

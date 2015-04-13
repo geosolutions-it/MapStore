@@ -35,10 +35,10 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
 
-@Action(configurationClass=SARWnfActionConfiguration.class)
+@Action(configurationClass=IngestionActionConfiguration.class)
 public class SARWnfAction extends NetCDFAction {
 
-    public SARWnfAction(SARWnfActionConfiguration actionConfiguration) {
+    public SARWnfAction(IngestionActionConfiguration actionConfiguration) {
         super(actionConfiguration);
     }
 
