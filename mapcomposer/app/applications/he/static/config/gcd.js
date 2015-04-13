@@ -149,11 +149,51 @@
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
 		}, {
 			"ptype": "gxp_wmsgetfeatureinfo_menu", 
-			"useTabPanel": true,
+			"paginate": true,
 			"toggleGroup": "toolGroup",
 			"actionTarget": {"target": "paneltbar", "index": 24},
             "infoAction": "click",
-            "regex":"<table[^>]*>([\\s\\S]*)<\\/table>"
+            "regex":"<table[^>]*>([\\s\\S]*)<\\/table>",
+            "useTabPanel": true,
+            "format" : "grid",
+            "outputGridConfig":{
+                "gascapacity:gcd_v_capacity_by_pipeline_agg":{
+                    "propertyNames":{
+                        "Point_Type":"Point Type",
+                        "Prop_Name":"Location Name",
+                        "Descriptive_Name":"Descriptive Name",
+                        "Design_Capacity":"Design Capacity",
+                        "Operational_Capacity":"Operational Capacity",
+                        "Avg_Cap_Sched_2008":"Avg Cap Sched 2008",
+                        "Avg_Cap_Sched_2009":"Avg Cap Sched 2009",
+                        "Avg_Cap_Sched_2010":"Avg Cap Sched 2010",
+                        "Avg_Cap_Sched_2011":"Avg Cap Sched 2011",
+                        "Avg_Cap_Sched_2012":"Avg Cap Sched 2012",
+                        "Avg_Cap_Sched_2013":"Avg Cap Sched 2013",
+                        "Avg_Cap_Sched_2014":"Avg Cap Sched 2014",
+                        "Proprietary_Loc_Num":"Proprietary Loc Num"
+                        },
+                    "ignoreFields":["FERC", "cpcty_RID", "cpcty_RID_t", "Available_Capacity", "Scheduled_Capacity"]
+                },
+                "gascapacity:gcd_v_capacity_by_point_agg":{
+                    "propertyNames":{
+                        "Point_Type":"Point Type",
+                        "Prop_Name":"Location Name",
+                        "Descriptive_Name":"Descriptive Name",
+                        "Design_Capacity":"Design Capacity",
+                        "Operational_Capacity":"Operational Capacity",
+                        "Avg_Cap_Sched_2008":"Avg Cap Sched 2008",
+                        "Avg_Cap_Sched_2009":"Avg Cap Sched 2009",
+                        "Avg_Cap_Sched_2010":"Avg Cap Sched 2010",
+                        "Avg_Cap_Sched_2011":"Avg Cap Sched 2011",
+                        "Avg_Cap_Sched_2012":"Avg Cap Sched 2012",
+                        "Avg_Cap_Sched_2013":"Avg Cap Sched 2013",
+                        "Avg_Cap_Sched_2014":"Avg Cap Sched 2014",
+                        "Proprietary_Loc_Num":"Proprietary Loc Num"
+                        },
+                    "ignoreFields":["FERC", "cpcty_RID", "cpcty_RID_t", "Available_Capacity", "Scheduled_Capacity"]
+                }
+            }
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
@@ -274,7 +314,7 @@
 		  "featureManager": "featuremanager",
           "customActionsProvider":"gcd",
           "customColumnsProvider": "gcd",
-          "ignoreFields": ["count","FERC", "cpcty_RID", "cpcty_RID_t"],
+          "ignoreFields": ["count","FERC", "cpcty_RID", "cpcty_RID_t", "Pipeline", "Facility", "Operational_Capacity", "Avg_Cap_Sched_2008", "Avg_Cap_Sched_2009", "Avg_Cap_Sched_2010", "Avg_Cap_Sched_2011", "Avg_Cap_Sched_2012", "Avg_Cap_Sched_2013", "Avg_Cap_Sched_2014", "Proprietary_Loc_Num" ],
 		  "outputConfig": {
 			  "id": "capacity_grid",
               "region":"south",
