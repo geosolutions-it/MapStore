@@ -136,9 +136,10 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                         disabled: true
                     }],
                     listeners: {
+                        scope: this,
                         change: function (c, checked) {
                             var value = c.getValue().inputValue;
-                            var refineFieldset = this.refOwner.refOwner.refine;
+                            var refineFieldset = c.refOwner.refOwner.refine;
                             refineFieldset.items.each(function (item) {
                                 if (item.filter) {
                                     item.setVisible(value == item.filter);
@@ -146,7 +147,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
 
                             });
 
-                            var values = this.refOwner.refOwner.getForm().getValues();
+                            var values = c.refOwner.refOwner.getForm().getValues();
                             //show aggregate
                             var showAggregate = value != 'point';
                             //var summarize = this.refOwner.refOwner.summarize;
@@ -154,19 +155,21 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                             //summarize.aggregate.setVisible(showAggregate);
                             if(!showAggregate){
                                 // value == 'point'
-                                this.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(false);
-                                this.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.hide();
-                                this.refOwner.refOwner.refine.pointtype.hide();
+                                c.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(false);
+                                c.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.hide();
+                                c.refOwner.refOwner.refine.pointtype.hide();
+                                this.pipelineLayer.setVisibility(this.pipelineLayerVisible);
                             }else{
 
-                                this.refOwner.refOwner.refine.pointtype.show();
-                                this.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.show();
+                                c.refOwner.refOwner.refine.pointtype.show();
+                                c.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.show();
                                 if(!values.pipeline){
-                                    this.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(true);
-                                    this.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.setDisabled(true);
+                                    c.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(true);
+                                    c.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.setDisabled(true);
                                 }else{
-                                    this.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.setDisabled(false);
+                                    c.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.setDisabled(false);
                                 }
+                                this.pipelineLayer.setVisibility(true);
                             }
                         }
 
@@ -267,6 +270,9 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                                 });
                             }
                             
+                            this.pipelineLayer.setVisibility(true);
+                            this.pipelineLayerVisible = true;
+                                
                             /* Dates will not be updated in this tab
                             // Update the Date fields
                             if(this.canUpdateDates){
@@ -636,6 +642,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         // Event handlers to react to tab changes
         this.output.on('tabhide', function(){
             if(this.pipelineLayer){
+                this.pipelineLayerVisible = this.pipelineLayer.getVisibility();
                 this.pipelineLayer.setVisibility(false);
             }
             
@@ -650,7 +657,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
         
         this.output.on('tabshow', function(){
             if(this.pipelineLayer){
-                this.pipelineLayer.setVisibility(true);
+                this.pipelineLayer.setVisibility(this.pipelineLayerVisible);
             }
             
             if(this.layerRecord){
@@ -714,6 +721,11 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                 return 
             }
             
+            if(this.pipelineLayer){
+                this.pipelineLayer.setVisibility(true);
+                this.pipelineLayerVisible = true;
+            }
+            
             this.layerName = this.bypipelineLayerName;
         }
         
@@ -727,6 +739,11 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                    icon: Ext.MessageBox.INFO
                 });
                 return
+            }
+            
+            if(this.pipelineLayer){
+                this.pipelineLayer.setVisibility(false);
+                this.pipelineLayerVisible = false;
             }
             
             this.layerName = this.bypointLayerName;
