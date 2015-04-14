@@ -31,6 +31,7 @@ import it.geosolutions.geobatch.destination.common.utils.RemoteBrowserUtils;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
+import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationUtils;
 import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfiguration;
 import it.geosolutions.geobatch.mariss.dao.ServiceDAO;
 import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
@@ -50,6 +51,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
@@ -89,6 +91,8 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
      * 
      */
     private ServiceDAO serviceDAO;
+    
+    private Map<String, BaseAction<EventObject>> actionMap = new HashMap<String, BaseAction<EventObject>>();
 
     /**
      * @param serviceDAO the serviceDAO to set
@@ -620,6 +624,20 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                 }
             }
             // Post process.
+            if(!actionMap.isEmpty()){
+                for(String key : actionMap.keySet()){
+                    Queue<EventObject> events = new ArrayBlockingQueue<EventObject>(1);
+                    events.add(new FileSystemEvent(inputFile, FileSystemEventType.FILE_ADDED));
+                    BaseAction<EventObject> action = actionMap.get(key);
+                    try {
+                        resultList.addAll(action.execute(events));
+                    } catch (ActionException e) {
+                        LOGGER.error(e.getMessage(), e);
+                    }
+                }
+            }
+            
+            
             /*
                colelctPostProcessingFiles(inputFile, error, relativeFolder,
                     // result remote
@@ -809,6 +827,9 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                     config.setGeoserverPWD(configuration.getGeoserverPWD());
                     config.setGeoserverUID(configuration.getGeoserverUID());
                     config.setGeoserverURL(configuration.getGeoserverURL());
+                    config.setContainer(container);
+                    config.setUid(user);
+                    config.setServiceName(service.getServiceId());
                     // Getting the action
                     BaseAction<EventObject> action = null;
                     // Using reflection
@@ -824,7 +845,10 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                     } catch (Exception e) {
                         LOGGER.debug(e.getMessage());
                     }
-
+                    if(action != null){
+                        action.setTempDir(getTempDir());
+                        actionMap.put(key, action);
+                    }
                 }
             }
             
