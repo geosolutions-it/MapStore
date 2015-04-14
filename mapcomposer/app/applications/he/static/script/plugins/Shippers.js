@@ -56,7 +56,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
         ["W", "Withdrawal"]
     ],
     
-     /** api: Configuration of the layer to display on the map 
+    /** api: Configuration of the layer to display on the map 
              and to filter with the select FERC 
     **/
     pipelineLayerConfig: {
@@ -73,6 +73,15 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
     
     /* Flag to enable the automatic updates of the min/max dates on Pipeline change */
     canUpdateDates: true ,
+    
+    /* Service for SnapShot feature*/
+    service : "http://he.geo-solutions.it/servicebox/",
+    
+    /** api: config[fileName]
+     *  ``String``
+     *  The name of the file to download
+     */
+    fileName: "chart-snapshot.png",
     
     /*
      *  :arg config: ``Object``
@@ -429,47 +438,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                     disabled: true,
                     ref: 'contractbyCategoryButton',
                     scope: this,
-                    handler: function(){
-                         var values = this.output.getForm().getValues()
-                         var pipelineId = values.pipeline;
-                         var pipelineName = pipelineId;
-                         if ( this.output.refine
-                           && this.output.refine.pipeline
-                           && this.output.refine.pipeline.getRawValue()){
-                              pipelineName = this.output.refine.pipeline.getRawValue() ;
-                           }
-                         if(!(values.queryby == 'pipeline' && values.pipeline )){
-                            Ext.Msg.show({
-                               
-                               msg: 'Please select a Pipeline in the "Refine Query" box',
-                               buttons: Ext.Msg.OK,
-                               animEl: 'elId',
-                               icon: Ext.MessageBox.INFO
-                            });
-                            return 
-                        }
-                         var canvasWindow = new Ext.Window({
-                            title: pipelineName +' - Transport Customers',
-                            layout:'border',
-                            autoScroll:false,
-                            height:Math.min(Ext.getBody().getViewSize().height,750),
-                            width:900,
-                            maximizable:true,
-                            items:[{
-                                    xtype: 'he_contractsbycategory',
-                                    ferc: pipelineId,
-                                    url: this.geoServerUrl,
-                                    region:'center',
-                                    border:false,
-                                    baseParams:Ext.apply({
-                                        service:'WFS',
-                                        version:'1.1.0',
-                                        request:'GetFeature',
-                                        outputFormat: 'application/json',
-                                    }, this.vendorParams || {})
-                                }]
-                        }).show();
-                    }
+                    handler: this.contractByCategoryHandler
                 }
                 ]
             }
@@ -770,6 +739,162 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                 }
 
             },
+    
+    /**
+     * Open a Window with the currently selected Pipeline statistics Charts
+     */
+    contractByCategoryHandler : function(){
+    
+         var values = this.output.getForm().getValues()
+         var pipelineId = values.pipeline;
+         var pipelineName = pipelineId;
+         if ( this.output.refine
+           && this.output.refine.pipeline
+           && this.output.refine.pipeline.getRawValue()){
+              pipelineName = this.output.refine.pipeline.getRawValue() ;
+           }
+         if(!(values.queryby == 'pipeline' && values.pipeline )){
+            Ext.Msg.show({
+               
+               msg: 'Please select a Pipeline in the "Refine Query" box',
+               buttons: Ext.Msg.OK,
+               animEl: 'elId',
+               icon: Ext.MessageBox.INFO
+            });
+            return 
+        }
+         var canvasWindow = new Ext.Window({
+            title: pipelineName +' - Transport Customers',
+            layout:'border',
+            autoScroll:false,
+            height:Math.min(Ext.getBody().getViewSize().height,750),
+            width:900,
+            maximizable:true,
+            items:[{
+                    xtype: 'he_contractsbycategory',
+                    ferc: pipelineId,
+                    url: this.geoServerUrl,
+                    region:'center',
+                    border:false,
+                    baseParams:Ext.apply({
+                        service:'WFS',
+                        version:'1.1.0',
+                        request:'GetFeature',
+                        outputFormat: 'application/json',
+                    }, this.vendorParams || {})
+                }],
+            tools:[{
+                id:'print',
+                scope: this,
+                handler: function(event, toolEl, panel){
+                    var me = this;
+                    var visible_items = $(panel.header.dom)
+                                        .children([".x-tool"])
+                                        .filter(function (index) {
+                                              return $(this).css("display") === "block";
+                                          });
+                    $.each(visible_items, function(i, item){$(item).hide()})
+                    html2canvas( panel.getEl().dom, {
+                            proxy: proxy,
+                           // allowTaint:true,  
+                            //CORS errors not managed with ie11, so disable
+                            useCORS: !Ext.isIE11,
+                            //logging:true,
+                            onrendered: function(c) {
+                                
+                                var canvasData = c.toDataURL("image/png;base64");
+                                if(Ext.isIE || Ext.isIE11){
+                                    me.uploadCanvas(canvasData);
+                                }else{
+                                    me.localDownload(canvasData);
+                                }
+                                $.each(visible_items, function(i, item){$(item).show()})
+
+                            }
+                    });
+                    
+                }
+            }]
+        }).show();
+    },
+    
+    /**
+     * private method[localDownload]
+     * Use a link and emulate click to download the data:image in the canvasData argument. 
+     * Works for Chrome and Firefox
+     */
+    localDownload: function(canvasData){
+        var img = new Image();
+        img.src= canvasData;
+        var url = img.src.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+        var downloadLink = document.createElement("a");
+        downloadLink.href = url;
+        downloadLink.download = this.fileName;
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    
+    },
+    
+    /** api: method[uploadCanvas]
+     * upload base64 ecoded canvas data to servicebox and finalize with download response.
+     * A service that forces download is needed for Internet Explorer (now IE11 download attribute in link is not supported)
+     */
+    uploadCanvas: function (canvasData){
+        var mHost = this.service.split("/");
+
+        var mUrl = this.service + "UploadCanvas";
+            mUrl = mHost[2] == location.host ? mUrl : proxy + mUrl;
+
+        Ext.Ajax.request({
+            url: mUrl,
+            method: "POST",
+            headers:{
+                  'Content-Type' : 'application/upload'
+            },
+            params: canvasData,
+            scope: this,
+            success: function(response, opts){
+                if (response.readyState == 4 && response.status == 200){
+                    if(response.responseText && response.responseText.indexOf("\"success\":false") < 0){
+                        var fname = this.fileName;
+
+                        var mUrl = this.service + "UploadCanvas";
+                            mUrl = mHost[2] == location.host ? mUrl + "?ID=" + response.responseText + 
+                                "&fn=" + fname : proxy + encodeURIComponent(mUrl + "?ID=" + response.responseText + "&fn=" + fname);
+
+                        this.target.safeLeaving =true;
+                        window.location.assign(mUrl);
+
+                    }else{
+                        // this error should go to failure
+                        Ext.Msg.show({
+                             title: this.printStapshotTitle,
+                             msg: this.generatingErrorMsg + " " + gxp.util.getResponseFailureServiceBoxMessage(response),
+                             width: 300,
+                             icon: Ext.MessageBox.ERROR
+                        });
+                    }
+                }else if (response.status != 200){
+                    Ext.Msg.show({
+                         title: 'Print Snapshot',
+                         msg: this.serverErrorMsg,
+                         width: 300,
+                         icon: Ext.MessageBox.ERROR
+                    });
+                }	
+            },
+            failure:  function(response, opts){
+                Ext.Msg.show({
+                     title: this.printStapshotTitle,
+                     msg: this.generatingErrorMsg + " " + gxp.util.getResponseFailureServiceBoxMessage(response),
+                     width: 300,
+                     icon: Ext.MessageBox.ERROR
+                });
+            }
+        });
+    },
     
     createViewParams: function(){
         var values = this.output.getForm().getValues();
