@@ -248,7 +248,17 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             var maxExtent = 
             (nativeExtent && OpenLayers.Bounds.fromArray(nativeExtent.bbox, swapAxis)) || 
             OpenLayers.Bounds.fromArray(original.get("llbbox")).transform(new OpenLayers.Projection("EPSG:4326"), projection);
-            
+			
+			// ///////////////////////////////////////////////////////////////////////////////////////////
+			// 'layersCachedExtent' property can be defined for source and/or a single 
+			// layer configuration when we use GeoWebCache integration in GeoServer. 
+			// GeoServer getCapabilities request return only bounds in 4326 and natice CRS so, if the 
+			// map CRS is 900913 the transformed bounds is not aligned with the google standard 
+			// gridset defined in GeoServer.
+			// //////////////////////////////////////////////////////////////////////////////////////////
+			var maxCachedExtent = config.layersCachedExtent ? OpenLayers.Bounds.fromArray(config.layersCachedExtent) :
+				this.layersCachedExtent ? OpenLayers.Bounds.fromArray(this.layersCachedExtent) : maxExtent;
+			
             // make sure maxExtent is valid (transfzorm does not succeed for all llbbox)
             if (!(1 / maxExtent.getHeight() > 0) || !(1 / maxExtent.getWidth() > 0)) {
                 // maxExtent has infinite or non-numeric width or height
@@ -275,7 +285,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 layer.url, 
                 params, {
                     attribution: layer.attribution,
-                    maxExtent: maxExtent,
+                    maxExtent: maxCachedExtent,
                     restrictedExtent: maxExtent,
                     displayInLayerSwitcher: ("displayInLayerSwitcher" in config) ? config.displayInLayerSwitcher :true,
                     singleTile: ("tiled" in config) ? !config.tiled : false,
@@ -293,8 +303,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 title: config.title, 
                 name: config.name,
                 group: config.group,
-                uuid: config.uuid,
-                gnURL: config.gnURL,
+				uuid: config.uuid,
+				wcs: config.wcs, // boolean to know if is a raster layer 
+				gnURL: config.gnURL,
                 source: config.source,
                 properties: "gxp_wmslayerpanel",
                 fixed: config.fixed,
@@ -308,6 +319,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 {name: "name", type: "string"}, 
                 {name: "group", type: "string"},
 				{name: "uuid", type: "string"},
+				{name: "wcs", type: "boolean"},
 				{name: "gnURL", type: "string"},
 				{name: "title", type: "string"},
                 {name: "properties", type: "string"},
@@ -639,7 +651,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 if(keyword.indexOf("uuid") != -1){
                     props.uuid = keyword.substring(keyword.indexOf("uuid="));
                     props.uuid = keyword.split("=")[1];
-                }  
+                } else if(keyword.indexOf("WCS") != -1){
+					props.wcs = true;
+				}   
                 
 				// ///////////////////////////////////////////////////////////////
 				// Use 'enableLang' set to 'true' in order to not enable i18n 

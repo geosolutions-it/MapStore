@@ -44,102 +44,600 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
     
     /** api: ptype = gxp_querybboxform */
     ptype: "gxp_bboxqueryform",
+	
+	/** api: config[selectionMethodFieldSetComboTitle]
+     * ``String``
+     * Text for FieldSet Combo Selection Method (i18n).
+     */    
+    selectionMethodFieldSetComboTitle: "Set Selection Method",
+	
+    /** api: config[comboEmptyText]
+     * ``String``
+     * Text for empty Combo Selection Method (i18n).
+     */    
+    comboEmptyText: "Select a method..",
 
-     
+	/** api: config[comboSelectionMethodLabel]
+     * ``String``
+     * Text for Label Combo Selection Method (i18n).
+     */    
+    comboSelectionMethodLabel: "Selection",
+
+    /** api: config[comboPolygonSelection]
+     * ``String``
+     * Text for Label Polygon (i18n).
+     */        
+    comboPolygonSelection: 'Polygon',
+    
+    /** api: config[comboCircleSelection]
+     * ``String``
+     * Text for Label Circle (i18n).
+     */        
+    comboCircleSelection: 'Circle',
+    
+    /** api: config[comboBBOXSelection]
+     * ``String``
+     * Text for Label BBOX (i18n).
+     */        
+    comboBBOXSelection: 'BBOX',
+	
+	/** api: config[comboBufferSelection]
+     * ``String``
+     * Text for Label comboBufferSelection (i18n).
+     */  
+	comboBufferSelection: "Buffer",
+
+    /** api: config[errorDrawPolygonText]
+     * ``String``
+     * Text for Query Error Draw Polygon (i18n).
+     */            
+    errorDrawPolygonText: "You have to draw a Polygon",    
+    
+    /** api: config[errorDrawCircleText]
+     * ``String``
+     * Text for Query Error Draw Circle (i18n).
+     */            
+    errorDrawCircleText: "You have to draw a Circle",        
+
+    /** api: config[errorDrawTitle]
+     * ``String``
+     * Text for Draw Query Error Title (i18n).
+     */            
+    errorDrawTitle: "Query error",
+	
+	/** api: config[errorDrawTitle]
+     * ``String``
+     * Text for BBOx Error Msg (i18n).
+     */  
+	errorBBOXText: "BBOX invalid",         
+	
+	/** api: config[errorBufferTitle]
+     * ``String``
+     * Text for buffer error title.
+     */ 
+	errorBufferTitle: "Buffer Error",
+
+	/** api: config[errorBufferText]
+     * ``String``
+     * Text for buffer error text.
+     */ 
+	errorBufferText: "The selected buffer is invalid!",
+	
+	/** private
+	 *  OpenLayers.Style
+	 *  default style for temporary layers
+	 */
+	style : null,
+	
+	useDefinedExtent: false,
+    
     init: function(target) {
         
-        var me=this;
+        var me = this;
       
-        var confbbox=Ext.apply({
+        if(!this.style){
+            this.style = new OpenLayers.Style();
+            if(this.outputConfig){
+                Ext.apply(this.style.defaultStyle, this.outputConfig.selectStyle);
+            }
+        }
+        
+        var confbbox = Ext.apply({
             map: target.mapPanel.map,
-            checkboxToggle: true,
+            checkboxToggle: false,
             ref: "spatialFieldset",
             title: this.queryByLocationText,
-            id: me.id+"_bbox"
-        },this.outputConfig);
+            id: me.id + "_bbox"
+        }, this.outputConfig); 
+		
         this.bboxFielset = new gxp.form.BBOXFieldset(confbbox);
+
+		this.bufferFieldSet = new gxp.widgets.form.BufferFieldset({
+			anchor: '100%',
+			ref: "bufferFieldset",
+			collapsed : false,
+			hidden: true,
+			map: target.mapPanel.map,
+			toggleGroup: target.toggleGroup,
+			minValue: this.outputConfig.bufferOptions.minValue,
+            maxValue: this.outputConfig.bufferOptions.maxValue,
+		    decimalPrecision: this.outputConfig.bufferOptions.decimalPrecision,
+			outputSRS: this.outputConfig.outputSRS,
+			selectStyle: this.outputConfig.selectStyle,
+			listeners: {
+				disable: function(){
+					this.hide();
+				},
+				enable: function(){
+					this.show();
+				}
+			}
+		});
+		
+        this.filterCircle;
+        this.filterPolygon;
+        this.drawings;
+        this.draw;
         
+        this.id = this.id ? this.id : new Date().getTime(); 
+	
+		target.on("ready", function(){	
+            var container = this.outputTarget ? Ext.getCmp(this.outputTarget) : null;		
+			
+			if(container){
+				container.on("expand", function(){
+					if(this.featureManagerTool && this.featureManagerTool.layerRecord && this.featureManagerTool.schema){
+						this.addFilterBuilder(this.featureManagerTool, this.featureManagerTool.layerRecord, this.featureManagerTool.schema);
+					}
+				}, this);
+			}
+		}, this);
        
-        
-       this.id= this.id ? this.id : new Date().getTime(); 
-       
-       return gxp.plugins.BBOXQueryForm.superclass.init.apply(this, arguments);
+        return gxp.plugins.BBOXQueryForm.superclass.init.apply(this, arguments);
     },
     
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-        var featureManager = this.target.tools[this.featureManager];
-        var me= this;
+        this.featureManagerTool = this.target.tools[this.featureManager];
+		
+		var me = this;
+		
         config = Ext.apply({
             border: false,
             bodyStyle: "padding: 10px",
             layout: "form",
             autoScroll: true,
             items: [
+            {
+                xtype: "fieldset",
+                anchor: '100%',
+                title : this.selectionMethodFieldSetComboTitle,
+                collapsed : false,
+                items : [{ 
+					xtype: 'combo',
+					anchor:'100%',
+                    id:'selectionMethod_id',
+					ref:'../outputType',
+                    fieldLabel: this.comboSelectionMethodLabel,
+                    typeAhead: true,
+                    triggerAction: 'all',
+                    lazyRender:false,
+                    mode: 'local',
+                    name:'selection_method',
+                    forceSelected:true,
+                    emptyText: this.comboEmptyText,
+                    allowBlank:false,
+                    autoLoad:true,
+                    displayField: 'label',
+                    valueField:'value',
+                    value:'bbox',
+					editable: false,
+                    readOnly: false,
+                    store: new Ext.data.JsonStore({
+                        fields:[
+                                {name:'name', dataIndex:'name'},
+                                {name:'label', dataIndex:'label'},
+                                {name:'value', dataIndex:'value'}
+                        ],
+                        data:[
+                            {name: 'Polygon', label: this.comboPolygonSelection, value: 'polygon'},
+                            {name: 'Circle', label: this.comboCircleSelection, value: 'circle'},
+							{name: 'Buffer', label: this.comboBufferSelection, value: 'buffer'},
+                            {name: 'BBOX', label: this.comboBBOXSelection, value: 'bbox'}
+                        ]
+                    }), 
+                    listeners: {
+                        select: function(c,record, index ){
+                            me.resetFeatureManager();     
+							
+                            me.bboxFielset.removeBBOXLayer();
+							me.bufferFieldSet.resetPointSelection();
+							me.bufferFieldSet.coordinatePicker.toggleButton(false);
+							
+                            var disabledItems = [];
+                            this.target.toolbar.items.each(function(item) {
+                                if (!item.disabled) {
+                                    disabledItems.push(item);
+                                }
+                            });
+                            
+                            // For every enabled tool in the toolbar, toggle the button off (deactivating the tool)
+                            // Then add a listener on 'click' and 'menushow' to reset the BBoxQueryForm to disable all active tools
+                            for (var i = 0;i<disabledItems.length;i++){
+                                if(disabledItems[i].toggleGroup){
+                                    if(disabledItems[i].scope && disabledItems[i].scope.actions){
+                                        for(var a = 0;a<disabledItems[i].scope.actions.length;a++){
+                                            disabledItems[i].scope.actions[a].toggle(false);
+                                            
+                                            if (disabledItems[i].scope.actions[a].menu){
+                                                for(var b = 0;b<disabledItems[i].scope.actions[a].menu.items.items.length;b++){
+                                                    disabledItems[i].scope.actions[a].menu.items.items[b].disable();
+                                                }
+                                            }
+
+                                            disabledItems[i].scope.actions[a].on({
+                                                "click": function(evt) {
+                                                     if (me.draw) {me.draw.deactivate();};
+                                                     // TODO 'Circle' and 'Poligon' tool have no other visual way to display
+                                                     // their statuses (active, not active), apart from the combobox
+                                                     // The clearValue() is intended to tell user that the tool is not enabled
+                                                     //me.output[0].outputType.clearValue();
+
+                                                },
+                                                "menushow": function(evt) {
+                                                    var menuItems = evt.menu.items.items;
+                                                    for (var i = 0;i<menuItems.length;i++){
+                                                        menuItems[i].enable();
+                                                    }
+                                                     if (me.draw) {me.draw.deactivate();};
+                                                     //me.output[0].outputType.clearValue();
+                                                },
+                                                scope: this
+                                            });
+                                        }
+                                    }                    
+                                }
+                            }
+            
+                            var outputValue = c.getValue();
+                            if (me.draw) {me.draw.deactivate();};
+                            if (me.drawings) {me.drawings.destroyFeatures();};
+                            if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
+                            if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};
+                            
+                            if(outputValue == 'circle'){
+                                queryForm.spatialFieldset.hide();
+                                queryForm.spatialFieldset.disable();
+								
+								queryForm.bufferFieldset.disable();
+                                
+                                me.drawings = new OpenLayers.Layer.Vector(
+                                                                {},
+                                                                {
+                                                                    displayInLayerSwitcher:false,
+                                                                    styleMap: new OpenLayers.StyleMap({
+                                                                                    "default": this.style
+                                                                                    })
+                                                                });
+                                
+                                this.target.mapPanel.map.addLayer(me.drawings);
+                                var polyOptions = {sides: 100};
+                                
+                                me.draw = new OpenLayers.Control.DrawFeature(
+                                    me.drawings,
+                                    OpenLayers.Handler.RegularPolygon,
+                                    {
+                                        handlerOptions: polyOptions
+                                    }
+                                );
+                                
+                                this.target.mapPanel.map.addControl(me.draw);
+                                me.draw.activate();
+
+                                me.drawings.events.on({
+                                    "featureadded": function(event) {
+                                        me.filterCircle = new OpenLayers.Filter.Spatial({
+											type: OpenLayers.Filter.Spatial.INTERSECTS,
+											property: me.featureManagerTool.featureStore.geometryName,
+											value: event.feature.geometry
+										});                                                        
+                                    },                                
+                                    "beforefeatureadded": function(event) {
+                                        me.drawings.destroyFeatures();
+                                    }
+                                });                                 
+
+                            }else if(outputValue == 'bbox'){                            
+                                queryForm.spatialFieldset.show();
+                                queryForm.spatialFieldset.enable();
+								
+                                queryForm.bufferFieldset.disable();
+								
+                                me.bboxFielset.removeBBOXLayer();
+                                me.bboxFielset.setBBOX(me.target.mapPanel.map.getExtent());
+                                
+                            }else if(outputValue == 'polygon'){                            
+                                queryForm.spatialFieldset.hide();
+                                queryForm.spatialFieldset.disable();
+								
+                                queryForm.bufferFieldset.disable();
+                                
+                                // Disable current active tool
+                                var currently_pressed = Ext.ButtonToggleMgr.getPressed(me.bufferFieldSet.toggleGroup);
+                                if(currently_pressed){
+                                    currently_pressed.toggle(false);
+                                    currently_pressed.on( "menushow"
+                                                    ,function(evt) {
+                                                        var menuItems = evt.menu.items.items;
+                                                        for (var i = 0;i<menuItems.length;i++){
+                                                            menuItems[i].enable();
+                                                        }
+                                                         if (this.draw) {this.draw.deactivate();};
+                                                    },
+                                                    me,
+                                                    {single : true});
+                                    currently_pressed.on("click",
+                                                    function(evt) {
+                                                         if (this.draw) {this.draw.deactivate();};
+                                                    },
+                                                    me,
+                                                    {single : true}
+                                                );
+                                }
+                                me.drawings = new OpenLayers.Layer.Vector(
+                                                                {},
+                                                                {
+                                                                    displayInLayerSwitcher:false,
+                                                                    styleMap: new OpenLayers.StyleMap({
+                                                                                    "default": this.style
+                                                                                    })
+                                                                });
+
+                                this.target.mapPanel.map.addLayer(me.drawings);
+                                
+                                me.draw = new OpenLayers.Control.DrawFeature(
+                                    me.drawings,
+                                    OpenLayers.Handler.Polygon
+                                );
+                                
+                                // disable pan while drawing
+                                // TODO: make it configurable
+                                me.draw.handler.stopDown = true;
+                                me.draw.handler.stopUp = true;
+                                
+                                this.target.mapPanel.map.addControl(me.draw);
+                                me.draw.activate();
+
+                                me.drawings.events.on({
+                                    "featureadded": function(event) {
+                                        me.filterPolygon = new OpenLayers.Filter.Spatial({
+											type: OpenLayers.Filter.Spatial.INTERSECTS,
+											property: me.featureManagerTool.featureStore.geometryName,
+											value: event.feature.geometry
+										});
+                                    },                                
+                                    "beforefeatureadded": function(event) {
+                                        me.drawings.destroyFeatures();
+                                    }
+                                });
+                                
+                            }else{
+							    queryForm.spatialFieldset.hide();
+                                queryForm.spatialFieldset.disable();
+								
+                                queryForm.bufferFieldset.enable();	
+								
+								if(Ext.isIE){
+									queryForm.bufferFieldset.doLayout();
+								}
+							}                           
+                        },                        
+                        scope: this                        
+                    }
+				}]
+            },
+			this.bufferFieldSet,     
             this.bboxFielset,
             {
                 xtype: "fieldset",
                 ref: "attributeFieldset",
                 title: this.queryByAttributesText,
-                checkboxToggle: true
+                checkboxToggle: true,
+                collapsed : true
             }],
             bbar: ["->", {   
                 scope: this,    
                 text: this.cancelButtonText,
                 iconCls: "cancel",
-                handler: function() {
+                handler: function() {                
                     this.resetFeatureManager();
+					
                     this.bboxFielset.removeBBOXLayer();
                     this.bboxFielset.setBBOX(this.target.mapPanel.map.getExtent());
+					
+					this.bufferFieldSet.resetPointSelection();
+					this.bufferFieldSet.coordinatePicker.toggleButton(false);
+					
+                    var methodSelection = this.output[0].outputType;
+                    methodSelection.setValue('bbox');
+					
+                    if (me.draw) {me.draw.deactivate();};
+                    if (me.drawings) {me.drawings.destroyFeatures();};
+                    if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
+                    if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};    
+					
                     var ownerCt = this.outputTarget ? queryForm.ownerCt :
                         queryForm.ownerCt.ownerCt;
                     if (ownerCt && ownerCt instanceof Ext.Window) {
                         ownerCt.hide();
                     } else {
-                        addFilterBuilder(
-                            featureManager, featureManager.layerRecord,
-                            featureManager.schema
+                        this.addFilterBuilder(
+                            this.featureManagerTool, this.featureManagerTool.layerRecord,
+                            this.featureManagerTool.schema
                         ); 
-                    }
-                    
+                    }                    
                 }
             }, {
                 text: this.queryActionText,
                 iconCls: "gxp-icon-find",
                 handler: function() {
-                    if(this.bboxFielset.isValid()){
-                       var filters = new Array();
-                        if (queryForm.spatialFieldset.collapsed !== true) {
-                            filters.push(new OpenLayers.Filter.Spatial({
-                                type: OpenLayers.Filter.Spatial.BBOX,
-                                property: featureManager.featureStore.geometryName,
-                                value: me.bboxFielset.getBBOXBounds()
-                            }));
+					var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
+					if(container){
+						container.expand();
+					}
+					
+                    var methodSelection = this.output[0].outputType.getValue();
+                    var filters = new Array();
+					if(queryForm.spatialFieldset.hidden === false){
+						if(this.bboxFielset.isValid()){
+
+							filters.push(new OpenLayers.Filter.Spatial({
+								type: OpenLayers.Filter.Spatial.BBOX,
+								property: this.featureManagerTool.featureStore.geometryName,
+								value: me.bboxFielset.getBBOXBounds()
+							}));
+								
+							if (queryForm.attributeFieldset.collapsed !== true) {
+								var attributeFilter = queryForm.filterBuilder.getFilter();
+								attributeFilter && filters.push(attributeFilter);
+							}
+							this.featureManagerTool.loadFeatures(filters.length > 1 ?
+								new OpenLayers.Filter.Logical({
+									type: OpenLayers.Filter.Logical.AND,
+									filters: filters
+								}) :
+								filters[0]
+								);                                  
+							
+						}else{
+							Ext.Msg.show({
+								title: this.errorDrawTitle,
+								msg: this.errorBBOXText,
+								buttons: Ext.Msg.OK,
+								icon: Ext.MessageBox.INFO
+							});
+						}
+					}else if(queryForm.bufferFieldset.hidden === false){
+						if(queryForm.bufferFieldset.isValid()){	
+
+							var radius = queryForm.bufferFieldset.bufferField.getValue(); 
+							
+							//
+							// create point from your lat and lon of your selected feature
+							//
+							var coordinates = queryForm.bufferFieldset.coordinatePicker.getCoordinate();
+							var radiusPoint = new OpenLayers.Geometry.Point(coordinates[0], coordinates[1]);
+							
+							/*var units = this.target.mapPanel.map.getUnits();
+							
+							var radiusFilter = new OpenLayers.Filter.Spatial({
+								 type: OpenLayers.Filter.Spatial.DWITHIN,
+								 value: radiusPoint,
+								 distanceUnits: units, //me.outputConfig.bufferOptions.distanceUnits || "m",
+								 distance: radius
+							});*/
+							
+							var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+								radiusPoint,
+								radius,
+								100, 
+								null
+							);
+							
+							var bounds = regularPolygon.getBounds();							
+							regularPolygon.bounds = bounds;
+																
+						    var radiusFilter = new OpenLayers.Filter.Spatial({
+								type: OpenLayers.Filter.Spatial.INTERSECTS,
+								property: this.featureManagerTool.featureStore.geometryName,
+								value: regularPolygon
+							});
+			 
+							filters.push(radiusFilter);
+							
+							if (queryForm.attributeFieldset.collapsed !== true) {
+								var attributeFilter = queryForm.filterBuilder.getFilter();
+								attributeFilter && filters.push(attributeFilter);
+							}
+							
+							this.featureManagerTool.loadFeatures(filters.length > 1 ?
+								new OpenLayers.Filter.Logical({
+									type: OpenLayers.Filter.Logical.AND,
+									filters: filters
+								}) :
+								filters[0]
+								);                                  
+							
+						}else{
+							Ext.Msg.show({
+								title: this.errorBufferTitle,
+								msg: this.errorBufferText,
+								buttons: Ext.Msg.OK,
+								icon: Ext.MessageBox.INFO
+							});
+						}
+					}else{
+                        if (methodSelection === 'circle'){
+                            if(me.filterCircle && me.filterCircle.value ){
+                                if (queryForm.attributeFieldset.collapsed !== true) {
+                                    var attributeFilter = queryForm.filterBuilder.getFilter();
+                                    attributeFilter && filters.push(attributeFilter);
+                                }
+                                filters.push(me.filterCircle);
+                                this.featureManagerTool.loadFeatures(filters.length > 1 ?
+                                    new OpenLayers.Filter.Logical({
+                                        type: OpenLayers.Filter.Logical.AND,
+                                        filters: filters
+                                    }) :
+                                    filters[0]
+                                    );                                  
+                                
+                            }else{
+                                Ext.Msg.show({
+                                    title: this.errorDrawTitle,
+                                    msg: this.errorDrawCircleText,
+                                    buttons: Ext.Msg.OK,
+                                    icon: Ext.MessageBox.INFO
+                                });
+                            }
+                        }else{
+                            if(me.filterPolygon && me.filterPolygon.value ){
+                                if (queryForm.attributeFieldset.collapsed !== true) {
+                                    var attributeFilter = queryForm.filterBuilder.getFilter();
+                                    attributeFilter && filters.push(attributeFilter);
+                                }
+                                filters.push(me.filterPolygon);
+                                this.featureManagerTool.loadFeatures(filters.length > 1 ?
+                                    new OpenLayers.Filter.Logical({
+                                        type: OpenLayers.Filter.Logical.AND,
+                                        filters: filters
+                                    }) :
+                                    filters[0]
+                                    );                                  
+                            }else{
+                                Ext.Msg.show({
+                                    title: this.errorDrawTitle,
+                                    msg: this.errorDrawPolygonText,
+                                    buttons: Ext.Msg.OK,
+                                    icon: Ext.MessageBox.INFO
+                                });
+                            }
                         }
-                        if (queryForm.attributeFieldset.collapsed !== true) {
-                            var attributeFilter = queryForm.filterBuilder.getFilter();
-                            attributeFilter && filters.push(attributeFilter);
-                        }
-              
-                        featureManager.loadFeatures(filters.length > 1 ?
-                            new OpenLayers.Filter.Logical({
-                                type: OpenLayers.Filter.Logical.AND,
-                                filters: filters
-                            }) :
-                            filters[0]
-                            ); 
                     }
-                    
                 },
                 scope: this
             }]
         }, config || {});
+		
         var queryForm = gxp.plugins.QueryForm.superclass.addOutput.call(this, config);
         
-        var addFilterBuilder = function(mgr, rec, schema) {
+        var methodSelection = this.output[0].outputType;
+        
+        this.addFilterBuilder = function(mgr, rec, schema) {			
             queryForm.attributeFieldset.removeAll();
             queryForm.setDisabled(!schema);
+			
             if (schema) {
                 queryForm.attributeFieldset.add({
                     xtype: "gxp_filterbuilder",
@@ -148,28 +646,76 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     allowBlank: true,
                     allowGroups: false
                 });
-                queryForm.spatialFieldset.expand();
-                queryForm.attributeFieldset.expand();
+				
+			   /**
+				* Overriding the removeCondition method in order to manage the 
+				* single filterfield reset.
+				*/
+				 queryForm.filterBuilder.removeCondition = function(item, filter) {
+					var parent = this.filter.filters[0].filters;
+					if(parent.length > 1) {
+						parent.remove(filter);
+						this.childFilterContainer.remove(item, true);
+					}else{
+						var items = item.findByType("gxp_filterfield");
+						
+						var i = 0;
+						while(items[i]){
+							items[i].reset();
+							
+							items[i].items.get(1).disable();
+							items[i].items.get(2).disable();
+
+							filter.value = null;
+							i++;
+						}
+					}
+					
+					this.fireEvent("change", this);
+				};
+				
+                queryForm.spatialFieldset.enable();
+                queryForm.spatialFieldset.show();
+				
+				queryForm.bufferFieldset.disable();
+				queryForm.bufferFieldset.resetPointSelection();
+				
+                //queryForm.attributeFieldset.expand();			
+				methodSelection.setValue('bbox');
+				
+				if (me.draw) {me.draw.deactivate();};
+				if (me.drawings) {me.drawings.destroyFeatures();};
+				if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
+				if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};   
             } else {
                 queryForm.attributeFieldset.rendered && queryForm.attributeFieldset.collapse();
-                queryForm.spatialFieldset.rendered && queryForm.spatialFieldset.collapse();
+                queryForm.spatialFieldset.rendered && queryForm.spatialFieldset.hide();
+                methodSelection.setValue('bbox');
+				
+				if (me.draw) {me.draw.deactivate();};
+				if (me.drawings) {me.drawings.destroyFeatures();};
+				if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
+				if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};  
             }
+			
             queryForm.attributeFieldset.doLayout();
         };
-        featureManager.on("layerchange", addFilterBuilder);
-        addFilterBuilder(featureManager,
-            featureManager.layerRecord, featureManager.schema
+		
+        this.featureManagerTool.on("layerchange", this.addFilterBuilder);
+		
+        this.addFilterBuilder(this.featureManagerTool,
+            this.featureManagerTool.layerRecord, this.featureManagerTool.schema
         );
-        
+        /*
         this.target.mapPanel.map.events.register("moveend", this, function() {
             this.bboxFielset.removeBBOXLayer();
             this.bboxFielset.setBBOX(this.target.mapPanel.map.getExtent())
         });
-        
-        featureManager.on({
+        */
+        this.featureManagerTool.on({
             "beforequery": function() {
                 new Ext.LoadMask(queryForm.getEl(), {
-                    store: featureManager.featureStore,
+                    store: this.featureManagerTool.featureStore,
                     msg: this.queryMsg
                 }).show();
             },
@@ -193,8 +739,6 @@ gxp.plugins.BBOXQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         
         return queryForm;
     }
-    
-        
 });
 
 Ext.preg(gxp.plugins.BBOXQueryForm.prototype.ptype, gxp.plugins.BBOXQueryForm);

@@ -242,6 +242,11 @@ font-family: tahoma, arial, helvetica, sans-serif;
 .gx-layer-visibility {
     background-image: url(img/silk/eye.png);
 }
+
+.gx-buffer{
+    background-image: url(img/silk/map_add.png);
+}
+
 .gx-cursor{
     background-image: url(img/silk/cursor.png);
 }
@@ -263,6 +268,30 @@ font-family: tahoma, arial, helvetica, sans-serif;
 	background-image: url(img/silk/delete.png) !important;
 	width:16px;
 	height:16px;
+}
+
+.x-action-col-cell  .accept {
+    background-image: url(img/silk/accept.png) !important;
+    width:16px;
+    height:16px;
+}
+
+.x-action-col-cell  .decline {
+    background-image: url(img/silk/decline.png) !important;
+    width:16px;
+    height:16px;
+}
+
+.x-action-col-cell  .download, .x-btn .download{
+    background-image: url(img/download.png) !important;
+    width:16px;
+    height:16px;
+}
+
+.x-action-col-cell  .loading{
+    background-image: url(img/loadingbar.gif) !important;
+    width:16px;
+    height:16px;
 }
 
 .gx-field-label {

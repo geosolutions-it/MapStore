@@ -63,8 +63,24 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
      *     
      */
     selectStyle:{
-        pointRadius: 4, // sized according to type attribute
+        pointRadius: 4,
         graphicName: "circle",
+        fillColor: "#0000FF",
+        strokeColor: "#0000FF",
+        fillOpacity:0.5,
+        strokeWidth:2
+    },
+
+    /**
+     * Private 
+     * Property: defaultSelectStyle
+     * {Object} Configuration of OpenLayer.Style.
+     * used to fill "selectStyle" missing fields
+     *     
+     */
+    defaultSelectStyle:{
+        pointRadius: 4, // sized according to type attribute
+        graphicName: "cross",
         fillColor: "#0000FF",
         strokeColor: "#0000FF",
         fillOpacity:0.5,
@@ -89,10 +105,14 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
     
     initComponent:function(){
         
-        map= this.map;
+        map = this.map;
+		
         var compositeField = this;
+		
+		Ext.applyIf(this.selectStyle, this.defaultSelectStyle);
+		
         //create the click control
-        var ClickControl= OpenLayers.Class(OpenLayers.Control, {                
+        var ClickControl = OpenLayers.Class(OpenLayers.Control, {                
             defaultHandlerOptions: {
                 'single': true,
                 'double': false,
@@ -116,27 +136,25 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
             }, 
             trigger: this.clickHandler,
             map:map
-        });
+        });       
         
-        
-        
-         this.selectLonLat = new ClickControl();
-         map.addControl(this.selectLonLat);
+        this.selectLonLat = new ClickControl();
+        map.addControl(this.selectLonLat);
          
-         this.items= [
-                {
+        this.items= [
+				{
                     xtype     : 'numberfield',
-                    emptyText : this.latitudeEmptyText,
-                    ref: 'latitudeField',
-                    flex      : 1,
+                    emptyText : this.longitudeEmptyText,
+                    ref:'longitudeField',
                     decimalPrecision:this.decimalPrecision,
+                    flex      : 1,
                     allowBlank:false,
-                    name: 'lat',
+                    name: 'lon',
 					listeners: {
 						scope:this,
 						change: this.updatePoint
 					}
-                },{
+                }, {
                     xtype: 'button',
 					ref:'clickToggle',
                     tooltip: this.pointSelectionButtionTip,
@@ -149,9 +167,7 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                       toggle: function(button, pressed) {  
                          if(pressed){
                               this.selectLonLat.activate();
-                              this.updatePoint();
-                             
-                              
+                              //this.updatePoint();                            
                           }else{
                               this.selectLonLat.deactivate();
                              
@@ -164,74 +180,101 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
                           }
                       }
                     }
-                },{
+                }, {
                     xtype     : 'numberfield',
-                    emptyText : this.longitudeEmptyText,
-                    ref:'longitudeField',
-                    decimalPrecision:this.decimalPrecision,
+                    emptyText : this.latitudeEmptyText,
+                    ref: 'latitudeField',
                     flex      : 1,
+                    decimalPrecision: this.decimalPrecision,
                     allowBlank:false,
-                    name: 'lon',
+                    name: 'lat',
 					listeners: {
 						scope:this,
 						change: this.updatePoint
 					}
                 }
-            ]
+            ];
         
-         return  gxp.widgets.form.CoordinatePicker.superclass.initComponent.apply(this, arguments);
+        return  gxp.widgets.form.CoordinatePicker.superclass.initComponent.apply(this, arguments);
     },
-	/** event handler for the button click */
+	
+	/** event handler for the ClickControl click event*/
     clickHandler: function(e){
         //get lon lat
         var map = this.map;
         var lonlat = map.getLonLatFromPixel(e.xy);
+        //
+        var geoJsonPoint = lonlat.clone();
+        geoJsonPoint.transform(map.getProjectionObject(),new OpenLayers.Projection(this.outputSRS));
+        this.latitudeField.setValue(geoJsonPoint.lat);
+        this.longitudeField.setValue(geoJsonPoint.lon);
         //update point on the map
         this.updateMapPoint(lonlat);
-        //
-        lonlat.transform(map.getProjectionObject(),new OpenLayers.Projection(this.outputSRS) );
-        this.latitudeField.setValue(lonlat.lat);
-        this.longitudeField.setValue(lonlat.lon);
-		this.clickToggle.toggle();
-        
-       
+		this.clickToggle.toggle();      
     },
+	
 	/** gets values from the fields and drow it on the map */
     updatePoint: function(){
         var lat = this.latitudeField.getValue();
-      var lon = this.longitudeField.getValue();
-      if( lon && lat ){
-        //add point
-        var lonlat = new OpenLayers.LonLat(lon,lat);
-        lonlat.transform(new OpenLayers.Projection(this.outputSRS),map.getProjectionObject() );
-        this.updateMapPoint(lonlat);
-      }
+		var lon = this.longitudeField.getValue();
+		if( lon && lat ){
+			//add point
+			var lonlat = new OpenLayers.LonLat(lon,lat);
+			lonlat.transform(new OpenLayers.Projection(this.outputSRS),map.getProjectionObject() );
+			this.updateMapPoint(lonlat);
+		}
     },
-	resetPoint:function(){
+	
+	/**
+	 * Remove the point displayed in the map 
+	 */
+    resetMapPoint:function(){
 		if(this.selectStyle){
 			var layer = map.getLayersByName(this.selectLayerName)[0];
             if(layer){
                 map.removeLayer(layer);
             }
 		}
+		
+        this.fireEvent("reset");
+    },
+
+    /**
+     * Reset the fields and remove the point from the map
+     */
+    resetPoint:function(){
+        this.resetMapPoint();
+        
+		this.latitudeField.reset();
+        this.longitudeField.reset();
+		
+		this.fireEvent("reset");
 	},
+	
+	toggleButton: function(toggle){
+		this.clickToggle.toggle(toggle);
+	},
+	
 	/** private point update */
     updateMapPoint:function(lonlat){
         if(this.selectStyle){
-            this.resetPoint();
+            this.resetMapPoint();
             var style = new OpenLayers.Style(this.selectStyle);
-            layer = new OpenLayers.Layer.Vector(this.selectLayerName,{
-                styleMap: style
-                
+            this.layer = new OpenLayers.Layer.Vector(this.selectLayerName,{
+                styleMap: style                
             });
             var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
             var pointFeature = new OpenLayers.Feature.Vector(point);
-            layer.addFeatures([pointFeature]);
-            layer.displayInLayerSwitcher = this.displayInLayerSwitcher;
-            map.addLayer(layer);
-        
-        }
-    
-    }
+            this.layer.addFeatures([pointFeature]);
+            this.layer.displayInLayerSwitcher = this.displayInLayerSwitcher;
+            map.addLayer(this.layer);  
+
+			this.fireEvent("update");
+        }    
+    },
+	 
+	getCoordinate: function(){
+		return [this.longitudeField.getValue(), this.latitudeField.getValue()];
+	}
 });
 Ext.reg(gxp.widgets.form.CoordinatePicker.prototype.xtype,gxp.widgets.form.CoordinatePicker);         

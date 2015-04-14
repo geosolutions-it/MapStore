@@ -39,7 +39,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     */
     cswMsg: 'Loading...',
     // End i18n.
-
+	
     constructor: function(config) {
 
 		if(!config.tools)
@@ -70,8 +70,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		        }, {
 		            ptype: "gxp_addlayers",
 		            actionTarget: "tree.tbar",
-					id: "addlayers",
-		            upload: true
+					id: "addlayers"
 		        }, {
 		            ptype: "gxp_removelayer",
 		            actionTarget: ["tree.tbar", "layertree.contextMenu"]
@@ -134,10 +133,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            actionTarget: {target: "paneltbar", index: 25}
 		        }, {
 		            actions: ["-"], actionTarget: "paneltbar"
-		        }, {
-		            ptype: "gxp_saveDefaultContext",
-		            actionTarget: {target: "paneltbar", index: 24},
-					needsAuthorization: true
 		        }
 		    ];
 
@@ -146,17 +141,24 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				for(var c=0; c < config.customTools.length; c++)
 				{
 					var toolIsDefined = false;
-					for(var t=0; t < config.tools.length; t++)
+                    var t=0;
+					for(t=0; t < config.tools.length; t++)
 					{
 						//plugin already defined
 						if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {
-							toolIsDefined = true;
-							break;
+                            toolIsDefined = true;
+                            if(config.customTools[c].forceMultiple){
+                                config.tools.push(config.customTools[c])
+                            }else{
+                                config.tools[t]=config.customTools[c];
+                            }
+                            break;
 						}
 					}
 				
-					if(!toolIsDefined)
-						config.tools.push(config.customTools[c]);
+					if(!toolIsDefined){
+                        config.tools.push(config.customTools[c])
+                    }
 				}
 			}
 			
@@ -168,6 +170,14 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "paneltbar", index: 22}
             })
         }
+		
+		config.tools.push({
+			actions: ["-"], actionTarget: "paneltbar"
+		}, {
+			ptype: "gxp_saveDefaultContext",
+			actionTarget: {target: "paneltbar", index: 24},
+			needsAuthorization: true
+		});
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },
@@ -271,7 +281,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     /** private: method[showEmbedWindow]
      */
     showEmbedWindow: function() {        
-	    if (this.mapId == -1 || (this.modified == true && authorization == true)){
+	    if (this.mapId == -1 || (this.modified == true && this.auth == true)){
             Ext.MessageBox.show({
                 title: this.alertEmbedTitle,
                 msg: this.alertEmbedText,

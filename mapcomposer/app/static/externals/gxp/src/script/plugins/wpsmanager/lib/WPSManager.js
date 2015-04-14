@@ -19,7 +19,7 @@
  */
 
 /**
- * requires GeoStoreClient/lib/GeoStoreClient.js 
+ * @requires plugins/client/lib/GeoStoreClient.js 
  */
 
 /** api: (define)
@@ -368,7 +368,9 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
      *				};
      *  
      */
-    execute: function(processName, executeRequest, callback) {
+    execute: function(processName, executeRequest, callback, scope) {
+        if(!scope)
+            scope = this;
 		var process = this.wpsClient.getProcess('opengeo', processName);    
         var instanceName=null;
         var executeOptions;
@@ -385,7 +387,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
         executeOptions.scope= this;
         executeOptions.success= function(response, processInstance){
             me.responseManager(response, processInstance);
-            callback.call(this, response);
+            callback.call(scope, response);
         };
        
         executeOptions.processInstance=instanceName;

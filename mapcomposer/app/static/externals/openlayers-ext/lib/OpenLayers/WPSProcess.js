@@ -13,7 +13,7 @@
  * requires OpenLayers/Format/WKT.js
  * requires OpenLayers/Format/GeoJSON.js
  * requires OpenLayers/Format/WPSExecute.js
- * requires OpenLayers/RequestExt.js
+ * requires OpenLayers/Request.js
  */
 
 /**
@@ -254,7 +254,7 @@ OpenLayers.WPSProcess = OpenLayers.Class({
                     // all chained processes are added as references now, so
                     // let's proceed.
                     
-                    OpenLayers.RequestExt.POST({
+                    OpenLayers.Request.POST({
                         url: me.client.servers[me.server].url,
                         data: new OpenLayers.Format.WPSExecute().write(me.description),
                         success: function(response) {
@@ -338,7 +338,7 @@ OpenLayers.WPSProcess = OpenLayers.Class({
      */
     parseDescription: function(description) {
         var server = this.client.servers[this.server];
-        console.log(server);
+        //console.log(server);
         this.description = new OpenLayers.Format.WPSDescribeProcess().read(server.processDescription[this.identifier]).processDescriptions[this.identifier];
     },
     
@@ -446,7 +446,8 @@ OpenLayers.WPSProcess = OpenLayers.Class({
             output = this.description.processOutputs[opt.outputIndex || 0];
             this.description.responseForm.rawDataOutput= {
                 identifier: output.identifier,
-                mimeType: output.mimeType/*this.findMimeType(output.complexOutput.supported.formats, opt.supportedFormats)*/
+                //mimeType: output.mimeType/*this.findMimeType(output.complexOutput.supported.formats, opt.supportedFormats)*/
+                mimeType: opt.mimeType/*this.findMimeType(output.complexOutput.supported.formats, opt.supportedFormats)*/
             }  
         }else{
             this.description.responseForm.responseDocument= {

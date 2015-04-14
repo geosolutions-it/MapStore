@@ -24,6 +24,13 @@ Ext.namespace("gxp.form");
  */
 gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
     
+	     
+    /** api: config[caseInsensitiveMatch]
+	* ``Boolean``
+	* Should Comparison Filters for Strings do case insensitive matching? Default is ``"false"``.
+	*/
+    caseInsensitiveMatch: false,
+	
     /**
      * Property: filter
      * {OpenLayers.Filter} Optional non-logical filter provided in the initial
@@ -79,6 +86,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             allowBlank: this.allowBlank,
             displayField: "name",
             valueField: "name",
+			resizable: true,
             value: this.filter.property,
             listeners: {
                 select: function(combo, record) {
@@ -98,7 +106,8 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                 },
                 scope: this
             },
-            width: 120
+            width: 100,
+			listWidth: 120
         };
         this.attributesComboConfig = this.attributesComboConfig || {};
         Ext.applyIf(this.attributesComboConfig, defAttributesComboConfig);
@@ -127,7 +136,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
      * {OpenLayers.Filter} By default, returns a comarison filter.
      */
     createDefaultFilter: function() {
-        return new OpenLayers.Filter.Comparison();
+        return new OpenLayers.Filter.Comparison({matchCase: !this.caseInsensitiveMatch});
     },
     
     /**
@@ -136,6 +145,13 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
      */
     createFilterItems: function() {
         
+		matchCaseData = [
+			[true, "match case"],
+			[false, "ignore case"]			
+		];
+		
+		//this.filter.matchCase = matchCaseData[0][0];
+		
         return [
             this.attributesComboConfig, {
                 xtype: "gxp_comparisoncombo",
@@ -144,13 +160,49 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                 value: this.filter.type,
                 listeners: {
                     select: function(combo, record) {
-                        this.items.get(2).enable();
-                        this.filter.type = record.get("value");
+						var typeValue = record.get("value");
+						
+						if(typeValue == OpenLayers.Filter.Comparison.LIKE || 
+							typeValue == OpenLayers.Filter.Comparison.NOT_EQUAL_TO || 
+							typeValue == OpenLayers.Filter.Comparison.EQUAL_TO){
+							this.items.get(2).enable();
+						}else{
+							this.items.get(2).disable();
+						}
+                        
+						this.items.get(3).enable();
+						
+                        this.filter.type = typeValue;
                         this.fireEvent("change", this.filter);
                     },
                     scope: this
                 }
             }, {
+				xtype: "combo",
+				displayField: "name",
+				valueField: "value",
+				width: 60,
+				listWidth: 100,
+				allowBlank: false,
+				disabled: true,
+				mode: "local",
+				forceSelection: true,
+				resizable: true,
+				triggerAction: "all",
+				editable: false,
+				store: new Ext.data.SimpleStore({
+					data: matchCaseData,
+					fields: ["value", "name"]
+				}),
+				value: matchCaseData[0][0],
+				listeners: {
+					scope: this,
+					select: function(combo, record, index){
+						var matchCase = record.get("value");
+						this.filter.matchCase = matchCase;
+					}
+				}
+			}, {
                 xtype: "textfield",
                 disabled: true,
                 value: this.filter.value,

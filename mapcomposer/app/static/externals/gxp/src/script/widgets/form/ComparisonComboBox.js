@@ -41,7 +41,7 @@ gxp.form.ComparisonComboBox = Ext.extend(Ext.form.ComboBox, {
 
     triggerAction: "all",
 
-    width: 50,
+    width: 45,
 
     editable: true,
   

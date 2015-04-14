@@ -80,7 +80,10 @@
         "title":"Marker Editor",
         "index": 26,
 		"showOnStartup":true,
-        "description": "<a href='http://www.geo-solutions.it/' target='_blank'><div class='geosolutions_logo'></div></a>This sample contains many panels added in configuration. You can add custom panels wherever you want (also nesting) cointaining:<ul style='list-style:disc;margin-left:10px;'><li>put plugins</li><li> custom html</li><li>iframes for documentation</li><li>and many other things</li></ul>"
+        "description": "<a href='http://www.geo-solutions.it/' target='_blank'><div class='geosolutions_logo'></div></a>This sample contains many panels added in configuration. You can add custom panels wherever you want (also nesting) cointaining:<ul style='list-style:disc;margin-left:10px;'><li>put plugins</li><li> custom html</li><li>iframes for documentation</li><li>and many other things</li></ul>",
+        "windowOptions":{
+            "constrain":true
+            }
 	
         },{
 			"actions": ["->"], 

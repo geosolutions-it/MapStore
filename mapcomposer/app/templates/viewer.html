@@ -1,7 +1,7 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=8" />
+        <!--meta http-equiv="X-UA-Compatible" content="IE=8" /-->
         <title>Map Viewer</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="shortcut icon" href="theme/app/img/favicon.ico">
@@ -15,6 +15,9 @@
 		<!-- OpenLayers resources -->
         <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
         <script type="text/javascript" src="script/OpenLayers.js"></script>
+		
+		<!-- Externatls OpenLayers libraries to manage other extensions -->
+		<script type="text/javascript" src="script/OpenLayersExt.js"></script> 
 
         <!-- GeoExt resources -->
         <link rel="stylesheet" type="text/css" href="externals/GeoExt/resources/css/popup.css">
@@ -24,6 +27,8 @@
 
         <!-- gxp resources -->
         <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
+		<link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/fileuploadfield.css">
+		
         <script type="text/javascript" src="script/gxp.js"></script> 
 
         <!-- GeoExplorer resources -->
@@ -222,7 +227,7 @@
                     iconCls: "icon-geosol",
                     width : 150,
                     handler: function(btn){
-                        window.open('http://geo-solutions.it/contact/', '_blank');
+                        window.open('http://www.geo-solutions.it/contact/', '_blank');
                     }
                 });    
                 

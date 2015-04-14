@@ -403,6 +403,12 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
         
         var config = Ext.apply({}, this.initialConfig.map);
         var mapConfig = {};
+        var baseLayerConfig = {
+            wrapDateLine: config.wrapDateLine !== undefined ? config.wrapDateLine : true,
+            maxResolution: config.maxResolution,
+            numZoomLevels: config.numZoomLevels,
+            displayInLayerSwitcher: false
+        };
         
         // split initial map configuration into map and panel config
         if (this.initialConfig.map) {
@@ -421,22 +427,32 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
             map: Ext.applyIf({
                 theme: mapConfig.theme || null,
                 controls: mapConfig.controls || [
-                    new OpenLayers.Control.Navigation({zoomWheelOptions: {interval: 250}}),
+                    new OpenLayers.Control.Navigation({
+                        zoomWheelOptions: {interval: 250},
+                        dragPanOptions: {enableKinetic: true}
+                    }),
                     new OpenLayers.Control.PanPanel(),
                     new OpenLayers.Control.ZoomPanel(),
                     new OpenLayers.Control.Attribution(),
                     new OpenLayers.Control.LoadingPanel()
                 ],
-                maxExtent: mapConfig.maxExtent && OpenLayers.Bounds.fromArray(mapConfig.maxExtent),
-                restrictedExtent: mapConfig.restrictedExtent && OpenLayers.Bounds.fromArray(mapConfig.restrictedExtent),
+                maxExtent: mapConfig.maxExtent ? OpenLayers.Bounds.fromArray(mapConfig.maxExtent) : undefined,
+                restrictedExtent: mapConfig.restrictedExtent ? OpenLayers.Bounds.fromArray(mapConfig.restrictedExtent) : undefined,
                 numZoomLevels: mapConfig.numZoomLevels || 20
             }, mapConfig),
             center: config.center && new OpenLayers.LonLat(config.center[0], config.center[1]),
             resolutions: config.resolutions,
-            layers: null,
+            layers: [new OpenLayers.Layer(null, baseLayerConfig)],
             items: this.mapItems,
             tbar: config.tbar || {hidden: true}
         }, config));
+
+        this.mapPanel.getTopToolbar().on({
+            afterlayout: this.mapPanel.map.updateSize,
+            show: this.mapPanel.map.updateSize,
+            hide: this.mapPanel.map.updateSize,
+            scope: this.mapPanel.map
+        });
         
         this.mapPanel.layers.on({
             "add": function(store, records) {

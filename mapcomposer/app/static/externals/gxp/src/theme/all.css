@@ -6,6 +6,12 @@
     background-image: url(img/silk/map.png);
 }
 
+/* Override the original ExtJs css in order to remove dirty.gif 
+   image from grid records */
+.x-grid3-dirty-cell {
+    background-image:url();
+}
+
 /* position the zoom slider within map panel */
 .gx-zoomslider {
     top: 90px;
@@ -26,6 +32,13 @@
     background-image: url(img/silk/shape_square.png) !important;
 }
 
+.execution-cls{
+	background-image: url(img/silk/add.png) !important;
+}
+
+.execution-cls-delete{
+	background-image: url(img/geosilk/erase.png) !important;
+}
 
 /* Pan- and Zoom- Panel Styles*/
 
@@ -161,7 +174,7 @@
 
 /* gxp_importexport */
 .x-btn .gxp-icon-importexport, .x-menu-item .gxp-icon-importexport, .x-tree-node .gxp-icon-importexport {
-    background-image: url(img/geosilk/disk.png) !important;
+    background-image: url(img/geosilk/page_white_map.png) !important;
 }
 
 /* gxp-icon-import-map */
@@ -351,31 +364,6 @@
     background-image: url(img/silk/folder.png);
 }
 
-/* ux.FileUploadField */
-.x-form-file-wrap {
-    position: relative;
-    height: 22px;
-}
-.x-form-file-wrap .x-form-file {
-    position: absolute;
-    right: 0;
-    -moz-opacity: 0;
-    filter:alpha(opacity: 0);
-    opacity: 0;
-    z-index: 2;
-    height: 22px;
-}
-.x-form-file-wrap .x-form-file-btn {
-    position: absolute;
-    right: 0;
-    z-index: 1;
-}
-.x-form-file-wrap .x-form-file-text {
-    position: absolute;
-    left: 0;
-    z-index: 3;
-    color: #777;
-}
 /* gxp_scaleoverlay */
 div.map-overlay {
     z-index: 1000;
@@ -392,4 +380,33 @@ div.map-overlay div.overlay-element {
     bottom: 0px;
     left: 0px;
     margin-top: 0px;
+}
+
+.gxp-icon-addtomap{
+	background-image: url(img/geosilk/vector_add.png) !important;
+}
+
+/* csv_export */
+.x-btn .gxp-icon-csvexport, .x-menu-item .gxp-icon-csvexport {
+    background-image: url(img/geosilk/disk.png) !important;
+}
+
+.x-btn .gxp-icon-csvexport-single, .x-menu-item .gxp-icon-csvexport-single {
+    background-image: url(img/silk/table.png) !important;
+}
+
+.x-btn .gxp-icon-csvexport-multiple, .x-menu-item .gxp-icon-csvexport-multiple {
+    background-image: url(img/silk/table_multiple.png) !important;
+}
+
+.labelField{
+	font-style: normal; 
+	color: #918E8F; 
+	font-variant: normal; 
+	font-weight: normal; 
+	font-size: 11px; 
+	line-height: normal; 
+	font-family: tahoma, arial, helvetica, sans-serif;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }

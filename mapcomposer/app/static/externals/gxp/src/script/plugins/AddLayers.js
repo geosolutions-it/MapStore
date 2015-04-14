@@ -233,7 +233,6 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         var addLayers = function() {
             
             var apptarget = this.target;
-           // var locCode= GeoExt.Lang.locale;
             var key = this.sourceComboBox.getValue();
             var layerStore = this.target.mapPanel.layers;
             var source = this.target.layerSources[key];
@@ -258,23 +257,23 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                         layerStore.add([record]);
 
                         if(records.length == 1){
-				var layer = record.get('layer');
-				var extent = layer.restrictedExtent || layer.maxExtent || this.target.mapPanel.map.maxExtent;
-				var map = this.target.mapPanel.map;
+							var layer = record.get('layer');
+							var extent = layer.restrictedExtent || layer.maxExtent || this.target.mapPanel.map.maxExtent;
+							var map = this.target.mapPanel.map;
 
-				// respect map properties
-				var restricted = map.restrictedExtent || map.maxExtent;
-				if (restricted) {
-				    extent = new OpenLayers.Bounds(
-				        Math.max(extent.left, restricted.left),
-				        Math.max(extent.bottom, restricted.bottom),
-				        Math.min(extent.right, restricted.right),
-				        Math.min(extent.top, restricted.top)
-				    );
-				}
+							// respect map properties
+							var restricted = map.restrictedExtent || map.maxExtent;
+							if (restricted) {
+								extent = new OpenLayers.Bounds(
+									Math.max(extent.left, restricted.left),
+									Math.max(extent.bottom, restricted.bottom),
+									Math.min(extent.right, restricted.right),
+									Math.min(extent.top, restricted.top)
+								);
+							}
 
-				map.zoomToExtent(extent, true);
-			}
+							map.zoomToExtent(extent, true);
+						}
                     }
                 }
             }
@@ -301,7 +300,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 expander,
                 {id: "title", header: this.panelTitleText, dataIndex: "title", sortable: true},
                 {header: "Id", dataIndex: "name", width: 150, sortable: true},
-                {header: "uuid", dataIndex: "keywords", width: 150, sortable: true, hidden: true}
+                {header: "keywords", dataIndex: "keywords", width: 150, sortable: true, hidden: true}
             ]),
             listeners: {
                 rowdblclick: addLayers,
@@ -448,6 +447,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             }),
             new Ext.Button({
                 text: this.doneText,
+                iconCls: "save",
                 handler: function() {
                     this.capGrid.hide();
                 },

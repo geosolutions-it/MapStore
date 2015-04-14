@@ -6,7 +6,7 @@
 	<!-- Basic OpenLayers libs -->
     <script type="text/javascript" src="script/OpenLayers.js"></script>		
 	
-	<!-- Externatls OpenLayers libraries to manage WPS processes -->
+	<!-- Externatls OpenLayers libraries to manage other extensions -->
 	<script type="text/javascript" src="script/OpenLayersExt.js"></script> 
 	
 	<!-- colorpicker resources 
@@ -25,6 +25,7 @@
 	
     <!-- gxp resources -->
     <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
+	<link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/fileuploadfield.css">
 
     <script type="text/javascript" src="script/gxp.js"></script> 
 
@@ -456,9 +457,10 @@
 						);
 					}
  							
-					if(layName && gnBaseUrl && uuid){
-						app.viewMetadata(gnBaseUrl + "srv/" + code + "/", uuid, title);
-						appTabs.setActiveTab(2);
+					if(/*layName &&*/ gnBaseUrl && uuid){
+                        var metadataTitle = title ? title : uuid;
+						app.viewMetadata(gnBaseUrl + "srv/" + code + "/", uuid, metadataTitle);
+						//appTabs.setActiveTab(2);
 					}
                 }
             });

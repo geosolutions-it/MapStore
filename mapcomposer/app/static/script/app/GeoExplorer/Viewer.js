@@ -55,16 +55,22 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
 			for(var c=0; c < config.customTools.length; c++)
 			{
 				var toolIsDefined = false;
-				for(var t=0; t < config.tools.length; t++)
-				{
-					if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {	//plugin already defined
-						toolIsDefined = true;
-						break;
-					}
-				}
-			
-				if(!toolIsDefined)
-					config.tools.push(config.customTools[c]);
+				for(t=0; t < config.tools.length; t++){
+                    //plugin already defined
+                    if( config.tools[t]['ptype'] && config.tools[t]['ptype'] == config.customTools[c]['ptype'] ) {
+                        toolIsDefined = true;
+                        if(config.customTools[c].forceMultiple){
+                            config.tools.push(config.customTools[c])
+                        }else{
+                            config.tools[t]=config.customTools[c];
+                        }
+                        break;
+                    }
+                }
+            
+                if(!toolIsDefined){
+                    config.tools.push(config.customTools[c])
+                }
 			}
 		}
 		

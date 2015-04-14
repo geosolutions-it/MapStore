@@ -5,7 +5,7 @@
 GeoExt.Lang.add("it", {
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Livello di Zoom: {zoom}</div><div>Scala: 1:{scale}</div>",
-        loadConfigErrorText: "Impossibile leggerre la configurazione salvata : <br />",
+        loadConfigErrorText: "Impossibile leggere la configurazione salvata : <br />",
         loadConfigErrorDefaultText: "Errore del Server.",
         xhrTroubleText: "Problemi di comunicazione: Stato ",
         layersText: "Livelli",
@@ -20,9 +20,9 @@ GeoExt.Lang.add("it", {
         mapInfoText: "Informazioni Mappa",
         descriptionText: "Descrizione",
         contactText: "Contatto",
-        aboutThisMapText: "Approposito di questa Mappa",
-        searchTabTitle : "Portale",
-        viewTabTitle : "Vista",
+        aboutThisMapText: "Informazioni",
+        searchTabTitle : "Catalogo",
+        viewTabTitle : "Mappa e Download",
 		markerPopupTitle: "Dettagli",
 		mainLoadingMask: "Attendere prego ..."
     },
@@ -35,12 +35,12 @@ GeoExt.Lang.add("it", {
         backText: "Precedente",
         nextText: "Prossimo",
         loginText: "Login",
-        loginErrorText: "Username o password invalidi.",
+        loginErrorText: "Username o password non validi.",
         userFieldText: "Utente",
         passwordFieldText: "Password",
         fullScreenText: "Schermo Intero",
         cswMsg: 'Caricamento...',
-		cswFailureAddLayer: ' Il layer n on può essere aggiunto alla mappa',
+		cswFailureAddLayer: ' Il layer non può essere aggiunto alla mappa',
         alertEmbedTitle: 'Attenzione',
         alertEmbedText: "Salvare la mappa prima di utilizzare il tool 'Pubblicazione Mappa'",
 	    cswZoomToExtentMsg: "BBOX non disponibile",
@@ -127,10 +127,10 @@ GeoExt.Lang.add("it", {
     },
 
     "gxp.plugins.NavigationHistory.prototype": {
-        previousMenuText: "Zoom alla precedente estenzione",
-        nextMenuText: "Zoom alla prossima estenzione",
-        previousTooltip: "Zoom alla precedente estenzione",
-        nextTooltip: "Zoom alla prossima estenzione"
+        previousMenuText: "Zoom alla precedente estensione",
+        nextMenuText: "Zoom alla prossima estensione",
+        previousTooltip: "Zoom alla precedente estensione",
+        nextTooltip: "Zoom alla prossima estensione"
     },
 
     "gxp.plugins.OSMSource.prototype": {
@@ -184,8 +184,8 @@ GeoExt.Lang.add("it", {
     },
     
     "gxp.plugins.ZoomToExtent.prototype": {
-        menuText: "Zoom massima estenzione",
-        tooltip: "Zoom massima estenzione"
+        menuText: "Zoom massima estensione",
+        tooltip: "Zoom massima estensione"
     },
     
     "gxp.plugins.ZoomToDataExtent.prototype": {
@@ -206,7 +206,7 @@ GeoExt.Lang.add("it", {
         displayText: "Display",
         opacityText: "Opacità",
         formatText: "Formato",
-        transparentText: "Transparenza",
+        transparentText: "Trasparenza",
         cacheText: "Cache",
         cacheFieldText: "Usa versione in cache",
         stylesText: "Stile"
@@ -273,13 +273,21 @@ GeoExt.Lang.add("it", {
 	    saveDefaultContextActionTip: "Salva il contesto della Mappa",
 	    contextSaveSuccessString: "Contesto salvato con successo",
 	    contextSaveFailString: "Contesto non salvato con successo",
-	    contextMsg: "Caricamento..."
+	    contextMsg: "Caricamento...",
+		userLabel: "Utente",	
+		passwordLabel: "Password", 	
+		loginLabel: "Accesso",	
+		mapMetadataTitle: "Inserimento dei metadati",	
+		mapMedatataSetTitle: "Metadati della Mappa",	
+		mapNameLabel: "Nome",	
+		mapDescriptionLabel: "Descrizione",
+		addResourceButtonText: "Salva Mappa"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Seleziona un'area",
-        menuText: "Geo Referimenti",
-        tooltip: "Geo Referimenti"
+        menuText: "Geo Riferimenti",
+        tooltip: "Geo Riferimenti"
     },
 
     "gxp.plugins.ZoomBox.prototype":{
@@ -290,7 +298,7 @@ GeoExt.Lang.add("it", {
     },
 
     "GeoExt.ux.PrintPreview.prototype":{
-	    paperSizeText: "Dimesioni del foglio:",
+	    paperSizeText: "Dimensioni del foglio:",
 	    resolutionText: "Risoluzione:",
 	    printText: "Stampa",
 	    emptyTitleText: "Inserisci qui il titolo della mappa.",
@@ -310,26 +318,19 @@ GeoExt.Lang.add("it", {
         groupPropertiesMenuText:  "Proprietà del gruppo",
         groupPropertiesActionTip:  "Proprietà del gruppo",
         groupPropertiesDialogTitle: "Proprietà del gruppo - ",
-        groupPropertiesFieldSetText: "Nome del Gruppo",
-        groupPropertiesFieldLabel: "Nuovo nome del Gruppo",
+        groupPropertiesFieldSetText: "Nome del gruppo",
+        groupPropertiesFieldLabel: "Nuovo nome del gruppo",
         groupPropertiesButtonText: "Fatto",
         groupPropertiesMsg: "Si prega di inserire il nome del gruppo."
     },
 
     "gxp.plugins.Login.prototype":{
         loginText: "Login",
-        loginErrorText: "Username o password invalidi.",
+        loginErrorText: "Username o password non validi.",
         userFieldText: "Utente",
         passwordFieldText: "Password"
     },
 
-    "gxp.plugins.Login.prototype":{
-      loginText: "Se connecter",
-          loginErrorText: "Nom d`utilisateur ou mot de passe incorrect",
-          userFieldText: "Utilisateur",
-          passwordFieldText: "Mot de passe"
-    },
-	
     "gxp.plugins.FeatureGrid.prototype": {
         displayFeatureText: "Visualizza in mappa",
         firstPageTip: "Prima pagina",
@@ -338,19 +339,24 @@ GeoExt.Lang.add("it", {
         nextPageTip: "Prossima pagina",
         lastPageTip: "Ultima pagina",
         title: "Entità",
-        totalMsg: "Totale: {0} entità"
+        totalMsg: "Totale: {0} entità",
+        displayExportCSVText: "Esporta nel formato CSV",
+        exportCSVSingleText: "Singola pagina",
+        exportCSVMultipleText: "Tutte le pagine",
+        failedExportCSV: "Impossibile esportare nel formato CSV",
+        invalidParameterValueErrorText: "Valore parametro non valido"            
     },
 	
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Interrogazione",
         queryMenuText: "Interrogazione livello",
-        queryActionTip: "Interrogazione il livello selezionato",
+        queryActionTip: "Interrogazione del livello selezionato",
         queryByLocationText: "Regione di Interesse",
         currentTextText: "Estensione corrente",
         queryByAttributesText: "Interrogazione per attributo",
         queryMsg: "Interrogazione in corso...",
         cancelButtonText: "Reimposta",
-        noFeaturesTitle: "Nessun Risultato",
+        noFeaturesTitle: "Nessun risultato",
         noFeaturesMessage: "La tua ricerca non ha prodotto risultati.",
         title: "Ricerca",
         attributeEnablement: "Interrogazione per Attributo",
@@ -360,16 +366,37 @@ GeoExt.Lang.add("it", {
         featureLabel: "Max Features"
     },
     
-    
-     "gxp.form.BBOXFieldset.prototype":{
+    "gxp.plugins.BBOXQueryForm.prototype": {
+        selectionMethodFieldSetComboTitle: "Metodo di Selezione",
+        comboEmptyText: "Seleziona un metodo..",
+        comboSelectionMethodLabel: "Selezione",
+        comboPolygonSelection: 'Poligono',
+        comboCircleSelection: 'Cerchio',
+        comboBBOXSelection: 'Bounding Box',
+		errorBBOXText: "Il BBox selezionato è invalido!",
+        errorDrawPolygonText: "Si deve disegnare il Poligono",
+        errorDrawCircleText: "Si deve disegnare il Cerchio",     
+        errorDrawTitle: "Errore nella richiesta",
+		errorBufferTitle: "Il Buffer è errato",
+		errorBufferText: "Il buffer selezionato è invalido!"
+    },
+	
+	"gxp.widgets.form.BufferFieldset.prototype": {
+		bufferFieldLabel: "Raggio",
+		bufferFieldSetTitle: "Buffer",
+		coordinatePickerLabel: "Coordinate",
+		draweBufferTooltip: "Disegna il Buffer"
+	},
+	
+    "gxp.form.BBOXFieldset.prototype":{
         northLabel:"Nord",
         westLabel:"Ovest",
         eastLabel:"Est",
         southLabel:"Sud",
         setAoiText: "ImpostaROI",
         waitEPSGMsg: "Caricamento in corso... Attendere",
-        setAoiTooltip: "Abilita il controllo SetBox per disegnare una ROI (BBOX) sulla mappa",
-        title: "Regione di Interesse"
+        setAoiTooltip: "Abilita il controllo SetBox per disegnare una ROI (BBox) sulla mappa",
+        title: "Bounding Box"
     },
     
     "gxp.FilterBuilder.prototype":{
@@ -472,8 +499,8 @@ GeoExt.Lang.add("it", {
 	
 	"gxp.plugins.GeoLocationMenu.prototype": {
         initialText: "Seleziona un'area",
-        menuText: "Geo Referimenti",
-        tooltip: "Geo Referimenti",
+        menuText: "Geo Riferimenti",
+        tooltip: "Geo Riferimenti",
         addMarkerTooltip: "Resetta Marker",
         emptyText: "Geocoder...",
         buttonText: "Indirizzo",
@@ -498,8 +525,8 @@ GeoExt.Lang.add("it", {
 			"map": {
 				"saveText" : "Esportazione Mappa",
 				"loadText" : "Importazione Mappa",
-				"uploadWindowTitle" : "Importa file di contesta di mappa",
-				"downloadWindowTitle" : "Esporta file di contesta di mappa"
+				"uploadWindowTitle" : "Importa file di contesto di mappa",
+				"downloadWindowTitle" : "Esporta file di contesto di mappa"
 			},
 			"kml/kmz": {
 				"saveText" : "Esportazione KML",
@@ -528,7 +555,7 @@ GeoExt.Lang.add("it", {
 		filenameLabel: "Nome del file di mappa",
 		waitMsgText: "In corso la generazione del file di mappa ...",
 		resetText: "Reset",
-		failedUploadingTitle: "Impossibile generara il file di mappa",
+		failedUploadingTitle: "Impossibile generare il file di mappa",
 		saveErrorText: "Errori riscontrati: "
 	},
    
@@ -550,6 +577,104 @@ GeoExt.Lang.add("it", {
 		resetText: "Reset",
 		failedUploadingTitle: "Impossibile completare l'upload del file",
 		layerNameLabel: "Nome del Layer"
-	}
+	},
+    
+    "gxp.plugins.DownloadPanel.prototype":{
+	    initialText: "Seleziona elemento ...",
+        tabTitle: "Download Interattivo",    
+        dselTitle: "Selezione Dati",
+        dselLayer: "Layer",
+        dselCRS: "Sistema di Riferimento",
+        dselFormat: "Formato",        
+        infoBtnTooltip: "Info sul sistema di riferimento",
+        settingTitle: "Impostazioni Avanzate",
+        settingSel: "Metodo di Selezione",
+        settingCut: "Metodo di Ritaglio",        
+        optTitle: "Impostazioni Opzionali",
+        optEmail: "Filtro",
+        optEmail: "Email",    
+        resTitle: "Risultati",
+        resID: "ID",
+        resExecID: "execID",
+        resProcStatus: "Stato",
+        resGet: "Vedi",
+        resDelete: "Cancella",
+        resPhase: "Fase",
+        resProgress: "Avanzamento",
+        resResult: "Risultato",        
+        btnRefreshTxt: "Ricarica",
+        btnResetTxt: "Pulisci",
+        btnDownloadTxt: "Avvia",        
+        errMissParamsTitle: "Parametri mancanti" ,
+        errMissParamsMsg: "Compila tutti i campi obbligatori" ,        
+        errMissGeomTitle: "Geometrie mancanti" ,
+        errMissGeomMsg: "Disegnare una geometria prima di inviare la richiesta ?" ,    
+        msgRemRunningTitle:"Rimuovi istanza in corso",
+        msgRemRunningMsg:  "Stai per cancellare una istanza in corso, non sarai in grado di recuperare il risultato<br/>Vuoi continuare ?",
+        msgRemTitle: "Rimuovi istanza",
+        msgRemMsg: "Vuoi rimuovere l\'istanza ?",
+        msgRemDone: "Istanza rimossa.",        
+        errWPSTitle: "DownloadProcess non supportato",
+        errWPSMsg: "Questo server WPS non supporta il processo gs:Download",
+		wpsErrorMsg: "Il WPS riporta il seguente errore",        
+        emailNotificationTitle: "Notifica Via Email",
+        emailFieldLabel: "Email",
+        vectorFilterTitle: "Filtro",        
+        placeSearchLabel: "Località",        
+        errBufferTitle: "Buffer fallito",
+        errBufferMsg: "Errore nel buffering della geometria",        
+        errUnknownLayerTypeTitle: "Tipo layer sconosciuto",
+        errUnknownLayerTypeMsg: "Impossibile stabilire il tipo di layer. Selezionare un altro layer",        
+        errLayerGroupTypeTitle: "Layergroup selezionato",   
+        errLayerGroupTypeMsg: "I Layergroup non possono essere scaricati. Selezionare un altro layer",
+        msgEmptyEmailTitle: "Campo email vuoto",
+        msgEmptyEmailMsg: "La notifica via email è abilitata, ma il campo è vuoto. Continuare senza la notifica?",        
+        msgEmptyFilterTitle: "Campo filtro vuoto",
+        msgEmptyFilterMsg: "Il filtro è abilitato, ma non è stato specificato alcun filtro. Continuare senza filtro?",    
+        msgWrongCRSTitle: "Differenza di Proiezione",
+        msgWrongCRSMsg: "La proiezione selezionata non è compatibile con il formato di output scelto. La proiezione sarà EPSG:4326. Continuare?",
+        msgTooltipPending: "In attesa",
+        msgTooltipSuccess: "Completa",
+        msgTooltipExecuting: "In esecuzione",
+        msgTooltipFailed: "Fallita",
+        msgTooltipAccepted: "Accettata",        
+        msgGeostoreException: "Eccezione Geostore",  
+        msgNone: "Nessuno",		
+        msgBox: "Box",
+        msgPolygon: "Poligono",
+        msgCircle: "Cerchio",
+        msgPlace: "Località",        
+        msgIntersection: "Intersezione",
+        msgClip: "Taglio",        
+        msgInstance: "Istanza",        
+        msgName: "Nome",
+        msgCreation: "Creazione",
+        msgDescription: "Descrizione",       
+        msgCategory: "Categoria",          
+        msgMetadata: "Metadata",
+        msgAttributes: "Attributi",        
+        errWrongResponseMsg: "Il server ha risposto in modo inatteso",
+		executionIdField: "ID Esecuzione",	
+		executionIdFieldEmptyText: "Inserire un ID esecuzione",	
+		executionIdFieldTooltip: "Inserire un ID di esecuzione per seguire lo stato del processo nella Griglia",
+		executionIdFieldTooltipDelete: "Cancella il campo relativo all'execution ID",		
+		executionIdPresentErrorMsg: "L'Id esecuzione specificato è già presente nella Griglia",	
+		executionIdEmptyErrorMsg: "Il server ha ritornato un ID esecuzione vuoto",	
+		executionIdInvalidErrorMsg: "ID esecuzione non valido!",	
+		processExecutions: "Esecuzione Processi",	
+		processResponseErrorTitle: "Errore nella Risposta del Processo",	
+		processResponseErrorMsg: "Il Processo non risponde correttamente",	
+		describeProcessErrorMsg: "Non si può leggere la risposta del server",	
+		bufferFieldLabel: "Buffer (m)",
+		downloadFormFieldSetTitle: "Form di Download",
+		loadMaskMsg: "Attendere prego...",
+		requiredFieldsLabel: "* Dati necessari per il processo di download.",
+		btnDeleteTxt: "Cancella i processi selezionati",
+		selectionSummary: "Sommario Selezione",	
+		areaLabel: "Area",
+		perimeterLabel: "Perimetro",	
+		radiusLabel: "Raggio",
+		centroidLabel: "Centro"
+    }
 	
 });
