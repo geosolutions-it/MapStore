@@ -442,9 +442,13 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
 			}
 		}
 		var loadingPanelOptions = {};
+        var attributionOptions = {};
 		if(this.initialConfig.loadingPanel) {
 			loadingPanelOptions = this.initialConfig.loadingPanel;
 		}
+        if(this.initialConfig.attributionOptions){
+            attributionOptions = this.initialConfig.attributionOptions;
+        }
         this.mapPanel = new GeoExt.MapPanel(Ext.applyIf({
             map: Ext.applyIf({
                 theme: mapConfig.theme || null,
@@ -455,7 +459,7 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                     }),
                     new OpenLayers.Control.PanPanel(),
                     new OpenLayers.Control.ZoomPanel(),
-                    new OpenLayers.Control.Attribution(),
+                    new OpenLayers.Control.Attribution(attributionOptions),
                     new OpenLayers.Control.LoadingPanel(loadingPanelOptions)
                 ],
                 maxExtent: mapConfig.maxExtent ? OpenLayers.Bounds.fromArray(mapConfig.maxExtent) : undefined,
