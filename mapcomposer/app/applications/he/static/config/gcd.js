@@ -278,25 +278,27 @@
 		  "id": "featuremanager",
           "autoSetLayer":false
 	    }, {
-		  "ptype": "he_results_grid",
-          "source": "gs",
-		  "featureManager": "featuremanager",
-          "customActionsProvider":"gcd",
-          "customColumnsProvider": "gcd",
-          "ignoreFields": ["count","FERC", "cpcty_RID", "cpcty_RID_t", "Pipeline", "Facility", "Operational_Capacity", "Avg_Cap_Sched_2008", "Avg_Cap_Sched_2009", "Avg_Cap_Sched_2010", "Avg_Cap_Sched_2011", "Avg_Cap_Sched_2012", "Avg_Cap_Sched_2013", "Avg_Cap_Sched_2014", "Proprietary_Loc_Num" ],
-		  "outputConfig": {
-			  "id": "capacity_grid",
+            "ptype": "he_results_grid",
+            "source": "gs",
+            "featureManager": "featuremanager",
+            "customActionsProvider":"gcd",
+            "customColumnsProvider": "gcd",
+            "ignoreFields": ["count","FERC", "cpcty_RID", "cpcty_RID_t", "Pipeline", "Facility", "Operational_Capacity", "Avg_Cap_Sched_2008", "Avg_Cap_Sched_2009", "Avg_Cap_Sched_2010", "Avg_Cap_Sched_2011", "Avg_Cap_Sched_2012", "Avg_Cap_Sched_2013", "Avg_Cap_Sched_2014", "Proprietary_Loc_Num" ],
+            "outputConfig": {
+              "id": "capacity_grid",
               "region":"south",
               "height":300,
               "collapsible":true,
               "collapsed":false,
               "header":false,
               "mask": {"msg":"Please wait..."}
-			  
-		  },
-		  "outputTarget": "capacity_results_panel",
-          "showExportCSV": true,
-          "exportDoubleCheck": false
-	    }
-	]
+            },
+            "outputTarget": "capacity_results_panel",
+            "showExportCSV": true,
+            "exportDoubleCheck": false,
+            "exportCSVMultipleText": "Export Results",
+            "exportCSVRangeText": "Export Range",
+            "resultsToRangeSuffix" : {"_agg" : "_detail"}
+        }
+    ]
 }

@@ -121,6 +121,15 @@ gxp.plugins.he.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
     
     filterPropertyNames: true,
 
+    /** api: exportCSVRangeText **/
+    exportCSVRangeText: "Export Range",
+    
+    /** api: resultsToRangeSuffix{sting: string} 
+     *  This mapping will be applied to the featureType to get the correct
+     *  featureType to query when exporting non aggregated data
+     **/
+    resultsToRangeSuffix : {"_agg" : "_detail"},
+    
     /** private: method[displayTotalResults]
      */
     displayTotalResults: function() {
@@ -297,7 +306,9 @@ gxp.plugins.he.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
             menu:{
                 xtype: "menu",
                 showSeparator: true, 
-                items: [{
+                items: [
+                /** HartEnergy Customization
+                {
                     iconCls: "gxp-icon-csvexport-single",
                     text: this.exportCSVSingleText,
                     handler: function() {                    
@@ -307,7 +318,9 @@ gxp.plugins.he.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
                         me: this,
                         format: format
                     }
-                },{
+                },
+                **/
+                {
                     iconCls: "gxp-icon-csvexport-multiple",
                     text: this.exportCSVMultipleText,
                     handler: function() {                    
@@ -317,18 +330,39 @@ gxp.plugins.he.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
                         me: this,
                         format: format
                     }
-                }]
+                },
+                {
+                    iconCls: "gxp-icon-csvexport-multiple",
+                    text: this.exportCSVRangeText,
+                    handler: function() {  
+                        
+                        var grid = this.me.output[0];
+                        var newProtocol = jQuery.extend(true, {}, grid.getStore().proxy.protocol);
+                        // Apply the mapping on the layer name
+                        for (var property in this.me.resultsToRangeSuffix) {
+                            if (this.me.resultsToRangeSuffix.hasOwnProperty(property)) {
+                                newProtocol.featureType = newProtocol.featureType.replace(property, this.me.resultsToRangeSuffix[property]);
+                            }
+                        }
+                        this.me.doExport(false, this.format, newProtocol);
+                    },
+                    scope: {
+                        me: this,
+                        format: format
+                    }
+                }
+                ]
             }
         };
     },
 
     /** api: method[doExport]
      */    
-    doExport: function(single, outputFormat){
+    doExport: function(single, outputFormat, prm_protocol){
     
         var featureManager = this.target.tools[this.featureManager];
         var grid = this.output[0];
-        var protocol = grid.getStore().proxy.protocol;
+        var protocol = prm_protocol ? prm_protocol : grid.getStore().proxy.protocol;
         var allPage = {};
         
         allPage.extent = featureManager.getPagingExtent("getMaxExtent");
