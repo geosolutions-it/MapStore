@@ -31,7 +31,38 @@
  *  plugins/Tool.js
  */
 Ext.namespace("gxp.plugins");
+//WORKAROUND FOR NOT TO INCLUDE DUPLICATED ELEMENTS
+//TODO remove it and move in a common class
+if(!Ext.IframeWindow){
+    Ext.IframeWindow = Ext.extend(Ext.Window, {
 
+    waitMsg: null,
+    onRender: function() {
+        this.iframeId= Ext.id();
+        this.bodyCfg = {
+            tag: 'iframe',
+            id:this.iframeId,
+            src: this.src,
+            cls: this.bodyCls,
+            style: {
+                border: '0px none'
+            }
+        };
+        Ext.IframeWindow.superclass.onRender.apply(this, arguments);
+        var myMask;
+        if(this.waitMsg){
+            myMask = new Ext.LoadMask(Ext.getBody(),    {msg:this.waitMsg});
+            myMask.show();
+        }
+        this.body.on('load',function(){
+            if(myMask){
+                myMask.hide();
+            }
+        });
+    }
+});
+
+}
 /** api: constructor
  *  .. class:: HelpButton(config)
  *
@@ -51,13 +82,24 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
     iconCls:'gx-help',
     tooltip:'Open the Help Window',
 	
-	fileDocURL: null,
+	/** api: config[keyShowAgain]
+     *  ``String`` key of the localStorage to store and retrieve the 
+     *   "don't show again this message" flag
+     */
+	keyShowAgain:"showAgainManagerHelp",
+    fileDocURL: null,
 	
     /** end of i18n */
     /** api: config[description]
      *  ``String`` Html to show in the window
      */
     description: '<h2> Help window</h2><p>This is a sample help window</p>',
+    dontShowThisMessageAgainText: "Don't show this message again",
+    
+   // width and height are not configurable at the moment
+   // TODO investigate why this happens.
+   windowHeight: 600,
+   windowWidth: 600,
     /** api: config[showOnStartup]
      *  ``Boolean`` Show the window on startup if true
      */
@@ -84,29 +126,86 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
             },
             scope: this
         }];
-        if(this.showOnStartup){
-            this.target.on('ready', this.showHelp,this);
+        if(this.showOnStartup && this.isShowAllowed()){
+            this.showHelp();
         
         }
         return gxp.plugins.HelpButton.superclass.addActions.apply(this, [actions]);
     },
 	
     showHelp:function(){
-		if (!this.fileDocURL) {
-			new Ext.Window(Ext.apply({
-			   layout:'fit',
-			   title: this.title,
-			   border:false,
-			   autoScroll:false,
-			   items:{html: this.description, autoScroll:true, bodyStyle:'padding:10px'},
-			   modal:true,
-			   height:200
-			},this.windowOptions)).show();
-		} else{
-			//var url = 'http://' + window.location.host + '/' + this.fileDocURL;
-			window.open(this.fileDocURL);
-		}
-    }    
+        
+        var me = this;        
+        var iframeconfig = {
+            waitMsg: this.loadingMessage,
+            collapsible:false,
+            viewConfig: {
+                forceFit: true
+            },
+            bodyCls:'iframe',
+            maskEmpty: true,
+            src: this.fileDocURL,
+            onEsc: Ext.emptyFn,
+            waitMsg: null,
+               onRender: function(ct) {
+
+                this.iframeId= Ext.id();
+                this.bodyCfg = {
+                    tag: 'iframe',
+                    id:this.iframeId,
+                    src: me.fileDocURL,
+                    cls: this.bodyCls,
+                    style: {
+                        border: '0px none'
+                    }
+                };
+                Ext.IframeWindow.superclass.onRender.apply(this, arguments);
+                var myMask;
+                if(this.waitMsg){
+                    myMask = new Ext.LoadMask(this.getEl(), {msg:this.waitMsg});
+                    myMask.show();
+                }
+                this.body.on('load',function(){
+                    if(myMask){
+                        myMask.hide();
+                    }
+                });
+            }
+            
+
+        };
+
+        new Ext.Window(Ext.apply({
+           layout:'fit',
+           iconCls:this.iconCls,
+           title: this.title,
+           border:false,
+           autoScroll:false,
+           items: this.fileDocURL ? iframeconfig : {html: this.description, autoScroll:true, bodyStyle:'padding:10px'},
+            bbar:[{
+                xtype: 'checkbox',
+                boxLabel: this.dontShowThisMessageAgainText,
+                checked: ! this.isShowAllowed(),
+                listeners:{
+                    check: function(box,checked){
+                        localStorage[me.keyShowAgain] = ! checked;
+
+                    }
+                }
+            }],
+           modal:true
+        },{
+            height:this.windowHeight,width:this.windowWidth
+        })).show();
+		
+    },
+    isShowAllowed: function(){
+        var deny = localStorage[this.keyShowAgain];
+        if(deny === "false"){
+            return false;
+        }
+        return true;
+    }
 });
 
 Ext.preg(gxp.plugins.HelpButton.prototype.ptype, gxp.plugins.HelpButton);
