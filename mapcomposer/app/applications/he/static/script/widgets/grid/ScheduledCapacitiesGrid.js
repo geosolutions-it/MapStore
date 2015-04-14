@@ -164,6 +164,11 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
 
                             }
                         };
+                        var headerClass = "x-window-header";
+                        if(feature.data.Point_Type && feature.data.Point_Type != ""){
+                            headerClass = headerClass + " headerptype"+feature.data.Point_Type;
+                        }
+                        
                         var canvasWindow = new Ext.Window({
                             title: "Scheduled Capacities",
                             maximizable:true,
@@ -174,6 +179,9 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                             height: 350,
                             width: 950,
                             items: [chart]
+                            , headerCfg : {
+                                cls : headerClass
+                            }
                         }).show();
 
                     }

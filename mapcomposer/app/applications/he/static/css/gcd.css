@@ -113,3 +113,19 @@ span.icon_span{
 .chart-pie-icon {
   background-image: url(../images/chart_pie.png);
 }
+
+.headerptypeR {
+  color: #254D25 !important;
+}
+
+.headerptypeD {
+  color: #681316 !important;
+}
+
+.headerptypeT {
+  color: #FEE65C !important;
+}
+
+.headerptypeU {
+  color: #3B4EAB !important;
+}
