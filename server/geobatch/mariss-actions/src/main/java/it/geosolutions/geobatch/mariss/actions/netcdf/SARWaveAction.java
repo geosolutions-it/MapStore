@@ -14,13 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
-import java.util.regex.Matcher;
 
 import javax.xml.bind.JAXBException;
 
@@ -37,10 +33,10 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
 
-@Action(configurationClass = SARWaveActionConfiguration.class)
+@Action(configurationClass = IngestionActionConfiguration.class)
 public class SARWaveAction extends NetCDFAction {
 
-    public SARWaveAction(SARWaveActionConfiguration actionConfiguration) {
+    public SARWaveAction(IngestionActionConfiguration actionConfiguration) {
         super(actionConfiguration);
     }
 

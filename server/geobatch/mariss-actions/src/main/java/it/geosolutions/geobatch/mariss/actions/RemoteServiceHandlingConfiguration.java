@@ -23,7 +23,10 @@ package it.geosolutions.geobatch.mariss.actions;
 
 import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
+import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
 import it.geosolutions.geobatch.remoteBrowser.configuration.RemoteBrowserConfiguration;
+
+import java.util.Map;
 
 /**
  * Gate file handling configuration. Not use input ds (input data it's read from xml). Includes ftp connection parameters for the remote file browsing
@@ -87,6 +90,41 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
      * Output for fail files
      */
     private String failPath;
+
+    /**
+     * Name of the products table
+     */
+    private String productsTableName;
+
+    /**
+     * Absolute path to the GeoServerDataDirectory
+     */
+    private String geoserverDataDirectory;
+
+    /**
+     * Path to the Metoc-Dictionary file
+     */
+    private String metocDictionaryPath;
+
+    /**
+     * Password for the GeoServer instance
+     */
+    private String geoserverPWD;
+
+    /**
+     * User ID for the GeoServer instance
+     */
+    private String geoserverUID;
+
+    /**
+     * URL for the GeoServer instance
+     */
+    private String geoserverURL;
+
+    /**
+     * {@link ConfigurationContainer} map to assign to the NetCDF actions to launch after processing input data
+     */
+    private Map<String, ConfigurationContainer> subconfigurations;
 
     public RemoteServiceHandlingConfiguration(String id, String name, String description) {
         super(id, name, description);
@@ -245,6 +283,104 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
      */
     public void setTimeFormatConfiguration(TimeFormatConfiguration timeFormatConfiguration) {
         this.timeFormatConfiguration = timeFormatConfiguration;
+    }
+
+    /**
+     * @return the Products Table name
+     */
+    public String getProductsTableName() {
+        return productsTableName;
+    }
+
+    /**
+     * @param productsTableName the name of the Products Table to set
+     */
+    public void setProductsTableName(String productsTableName) {
+        this.productsTableName = productsTableName;
+    }
+
+    /**
+     * @return the GeoServerDataDirectory path
+     */
+    public String getGeoserverDataDirectory() {
+        return geoserverDataDirectory;
+    }
+
+    /**
+     * @param geoserverDataDirectory the path to the GeoserverDataDirectory
+     */
+    public void setGeoserverDataDirectory(String geoserverDataDirectory) {
+        this.geoserverDataDirectory = geoserverDataDirectory;
+    }
+
+    /**
+     * @return the Metoc-Dictionary path
+     */
+    public String getMetocDictionaryPath() {
+        return metocDictionaryPath;
+    }
+
+    /**
+     * @param metocDictionaryPath the path of the Metoc Dictionary File
+     */
+    public void setMetocDictionaryPath(String metocDictionaryPath) {
+        this.metocDictionaryPath = metocDictionaryPath;
+    }
+
+    /**
+     * @return the GeoServer password
+     */
+    public String getGeoserverPWD() {
+        return geoserverPWD;
+    }
+
+    /**
+     * @param geoserverPWD the password for the current GeoServer instance
+     */
+    public void setGeoserverPWD(String geoserverPWD) {
+        this.geoserverPWD = geoserverPWD;
+    }
+
+    /**
+     * @return the GeoServer User ID
+     */
+    public String getGeoserverUID() {
+        return geoserverUID;
+    }
+
+    /**
+     * @param geoserverUID the User ID for the current GeoServer instance
+     */
+    public void setGeoserverUID(String geoserverUID) {
+        this.geoserverUID = geoserverUID;
+    }
+
+    /**
+     * @return the GeoServer URL
+     */
+    public String getGeoserverURL() {
+        return geoserverURL;
+    }
+
+    /**
+     * @param geoserverURL the URL of the current GeoServer instance
+     */
+    public void setGeoserverURL(String geoserverURL) {
+        this.geoserverURL = geoserverURL;
+    }
+
+    /**
+     * @return the various SubConfiguration map
+     */
+    public Map<String, ConfigurationContainer> getSubconfigurations() {
+        return subconfigurations;
+    }
+
+    /**
+     * @param subconfigurations the various SubConfiguration map
+     */
+    public void setSubconfigurations(Map<String, ConfigurationContainer> subconfigurations) {
+        this.subconfigurations = subconfigurations;
     }
 
 }

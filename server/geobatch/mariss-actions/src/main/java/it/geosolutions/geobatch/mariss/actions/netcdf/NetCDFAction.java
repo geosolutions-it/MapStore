@@ -72,10 +72,12 @@ import com.vividsolutions.jts.geom.Geometry;
 public abstract class NetCDFAction extends BaseAction<EventObject> {
 
     private static final String SEPARATOR = "___";
+    
+    private static final String SERVICE_SEPARATOR = "_s_";
 
     private static final String PATHSEPARATOR = File.separator;
 
-    protected NetCDFActionConfiguration configuration;
+    protected IngestionActionConfiguration configuration;
 
     protected Map<String, Variable> foundVariables = new HashMap<String, Variable>();
 
@@ -93,11 +95,20 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
 
     protected GeneralEnvelope env;
 
-    private String sha1;
+    private String absolutePath;
 
-    public NetCDFAction(NetCDFActionConfiguration actionConfiguration) {
+    private ConfigurationContainer container;
+
+    public NetCDFAction(IngestionActionConfiguration actionConfiguration) {
         super(actionConfiguration);
         configuration = actionConfiguration;
+        ConfigurationContainer container = actionConfiguration.getContainer();
+        if (container == null || container.getParams() == null
+                || container.getParams().containsKey(ConfigurationUtils.NETCDF_DIRECTORY_KEY)) {
+            throw new RuntimeException("Wrong configuration defined");
+        } else {
+            this.container = container;
+        }
     }
 
     public enum SARType {
@@ -143,7 +154,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                         if (canProcess(fileEvent)) {
                             // Getting file name
                             File inputFile = fileEvent.getSource();
-                            
+                            absolutePath = inputFile.getAbsolutePath();
                             // Unzipping the tar.gz file
                             File netcdfDir = untarFile(inputFile);
 
@@ -160,8 +171,8 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                 if (files != null && files.length > 0) {
                                     netcdfFile = files[0];
                                     // Getting Time dimension if present
-                                    Pattern pattern = Pattern.compile(configuration.getPattern());
-                                    Matcher m = pattern.matcher(inputFile.getAbsolutePath());
+                                    Pattern pattern = Pattern.compile(container.getPattern());
+                                    Matcher m = pattern.matcher(absolutePath);
                                     if (m.matches()) {
                                         // Getting dates
                                         String date = m.group(1);
@@ -179,8 +190,6 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                 }
                             }
                             if (canProcessFile(netcdfFile)) {
-                                // Generate SHA1 of the input file 
-                                sha1 = DigestUtils.shaHex(inputFile.getAbsolutePath());
 
                                 // Getting SARType
                                 type = SARType.getType(getActionName());
@@ -217,11 +226,12 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                         File properties = new File(files[0].getParentFile(), "netcdf.properties");
                                         properties.createNewFile();
                                         // Append Useful properties
-                                        FileUtils.write(properties, "uid=" + sha1 + "\n");
+                                        FileUtils.write(properties, "uid=" + configuration.getUid() + "\n");
                                         FileUtils.write(properties, "time=" + new Timestamp(timedim.getTime()) + "\n", true);
                                         FileUtils.write(properties, "originalFileName=" + netcdfFile.getName() + "\n", true);
                                         FileUtils.write(properties, "sartype=" + type + "\n", true);
                                         FileUtils.write(properties, "envelope=" + new ReferencedEnvelope(env) + "\n", true);
+                                        FileUtils.write(properties, "service=" + configuration.getServiceName() + "\n", true);
                                         File[] filesUpdated = new File[numFiles + 1];
                                         System.arraycopy(files, 0, filesUpdated, 0, numFiles);
                                         filesUpdated[numFiles] = properties;
@@ -293,10 +303,13 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                 reader = new GeoServerRESTReader(configuration.getGeoserverURL(),
                         configuration.getGeoserverUID(), configuration.getGeoserverPWD());
 
-                if (!reader.existsWorkspace(configuration.getDefaultNamespace())) {
+                String namespace = container.getDefaultNameSpace();
+                String namespaceURI = container.getDefaultNameSpace();
+                
+                if (!reader.existsWorkspace(namespace)) {
                     WorkspaceUtils.createWorkspace(reader, publisher,
-                            configuration.getDefaultNamespace(),
-                            configuration.getDefaultNamespaceUri());
+                            namespace,
+                            namespaceURI);
                 }
             } catch (MalformedURLException e) {
                 throw new ActionException(NetCDFAction.class, e.getLocalizedMessage());
@@ -313,24 +326,9 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             // Move the original netCDF File in the netcdf directory
             
             // Creating a subdirectory of the NetCDF directory
-            File netcdfDir = new File(configuration.getNetcdfDirectory());
+            File netcdfDir = new File(container.getParams().get(ConfigurationUtils.NETCDF_DIRECTORY_KEY));
             if(!netcdfDir.exists() || !netcdfDir.canWrite()){
                 throw new ActionException(NetCDFAction.class, "Unable to find NetCDF directory");
-            }
-            // Create the subdirectory
-            File original = new File(netcdfDir, "original");
-            // Creating the directory
-            try {
-                FileUtils.forceMkdir(original);
-            } catch (IOException e) {
-                throw new ActionException(NetCDFAction.class, e.getMessage());
-            }
-            // Move the original file in the "netcdf/original" directory
-            File newFile = new File(original, netcdfFile.getName());
-            try {
-                FileUtils.moveFile(netcdfFile, newFile);
-            } catch (IOException e) {
-                throw new ActionException(NetCDFAction.class, e.getMessage());
             }
             
             if (sent) {
@@ -338,7 +336,6 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                     LOGGER.info("Coverage SUCCESSFULLY sent to GeoServer!");
                 }
                 int index = 0;
-                String absolutePath = newFile.getAbsolutePath();
                 // Create a Geometry for the NetCDF envelope
                 Geometry geo = JTS.toGeometry(new ReferencedEnvelope(env));
                 CoordinateReferenceSystem crs = env.getCoordinateReferenceSystem();
@@ -384,7 +381,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             try {
                 // Getting Variable Name
                 String file = FilenameUtils.getBaseName(f.getAbsolutePath());
-                String variableName = getActionName() + "_"
+                String variableName = getActionName() + SERVICE_SEPARATOR + configuration.getServiceName() + SERVICE_SEPARATOR 
                         + file.substring(file.lastIndexOf(SEPARATOR) + SEPARATOR.length());
                 // Create the mosaic directory in the temporary geobatch directory
                 File temp = getTempDir();
@@ -393,7 +390,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                 // Check if the mosaic is present
                 if (isMosaicConfigured(reader, variableName)) {
                     // After the first file, other mosaic files will be stored inside the netcdf directory
-                    mosaicDir = new File(configuration.getNetcdfDirectory(), variableName);
+                    mosaicDir = new File(container.getParams().get(ConfigurationUtils.NETCDF_DIRECTORY_KEY), variableName);
                     if (!mosaicDir.exists()) {
                         FileUtils.forceMkdir(mosaicDir);
                         mosaicDir.createNewFile();
@@ -410,7 +407,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                     // Copy the final file location
                     finalFiles[index] = newFile;
                     // Harvest the Mosaic with a new NetCDF file
-                    published &= publisher.harvestExternal(configuration.getDefaultNamespace(),
+                    published &= publisher.harvestExternal(container.getDefaultNameSpace(),
                             variableName, "netcdf", newFile.getAbsolutePath());
                     // Adding layername
                     layerNames[index] = variableName;
@@ -427,17 +424,18 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                     // Copy the final file location
                     String geoserverDataDirectory = configuration.getGeoserverDataDirectory();
                     geoserverDataDirectory = geoserverDataDirectory.endsWith(PATHSEPARATOR) ? geoserverDataDirectory.substring(0, geoserverDataDirectory.length() - 1) : geoserverDataDirectory;
-                    finalFiles[index] = new File(geoserverDataDirectory + PATHSEPARATOR + "data"+ PATHSEPARATOR + configuration.getDefaultNamespace() + PATHSEPARATOR +
+                    finalFiles[index] = new File(geoserverDataDirectory + PATHSEPARATOR + "data"+ PATHSEPARATOR + container.getDefaultNameSpace() + PATHSEPARATOR +
                             variableName + PATHSEPARATOR + newFile.getName());
                     // Create the Mosaic elements
-                    createIndexerFile(mosaicDir, variableName);
+                    createIndexerFile(mosaicDir, variableName, configuration.getServiceName());
                     createDatastoreFile(mosaicDir, variableName);
+                    createServiceRegexFile(mosaicDir, variableName);
 
                     // Zip all the elements
                     File zipped = zipAll(temp, mosaicDir.listFiles(), mosaicDir.getName());
 
                     // Publish the ImageMosaic
-                    published &= publisher.publishImageMosaic(configuration.getDefaultNamespace(),
+                    published &= publisher.publishImageMosaic(container.getDefaultNameSpace(),
                             variableName, zipped, ParameterConfigure.FIRST, new NameValuePair(
                                     "coverageName", variableName));
                     // Adding layername
@@ -600,11 +598,19 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         return zippedFile;
     }
 
-    protected void createIndexerFile(File mosaicDir, String varName) throws IOException {
+    protected void createIndexerFile(File mosaicDir, String varName, String serviceName) throws IOException {
         File indexer = new File(mosaicDir, "indexer.properties");
         indexer.createNewFile();
         String properties = "TimeAttribute=time\n"
-                + "Schema=*the_geom:Polygon,location:String,time:java.util.Date";
+                + "Schema=*the_geom:Polygon,location:String,time:java.util.Date,service:String\n"
+                + "PropertyCollectors=StringFileNameExtractorSPI[serviceregex](service)";
+        FileUtils.write(indexer, properties);
+    }
+    
+    protected void createServiceRegexFile(File mosaicDir, String varName) throws IOException {
+        File indexer = new File(mosaicDir, "serviceregex.properties");
+        indexer.createNewFile();
+        String properties = "regex=" + SERVICE_SEPARATOR + "([a-zA-Z]{*})" + SERVICE_SEPARATOR;
         FileUtils.write(indexer, properties);
     }
 
@@ -626,7 +632,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
      */
     protected boolean isMosaicConfigured(GeoServerRESTReader reader, String storename) {
         String coveragename = storename;// .replace("_", "-");
-        return reader.existsCoverage(configuration.getDefaultNamespace(), storename, coveragename);
+        return reader.existsCoverage(container.getDefaultNameSpace(), storename, coveragename);
     }
 
     protected abstract File[] writeNetCDF(File tempDir, String inputFileName, List<String> cfNames) throws IOException,
@@ -635,7 +641,9 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
     @Override
     public boolean checkConfiguration() {
         // Checking if the NetCDF directory is defined
-        String dir = configuration.getNetcdfDirectory();
+        Map<String, String> params = container.getParams();
+        String dir = (params != null && params.containsKey(ConfigurationUtils.NETCDF_DIRECTORY_KEY)) ? params
+                .get(ConfigurationUtils.NETCDF_DIRECTORY_KEY) : null;
         // Initial check
         boolean exists = dir != null && !dir.isEmpty();
         if (exists) {
@@ -757,7 +765,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         try {
             conn = dataStore.getDataSource().getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, sha1);
+            ps.setString(1, configuration.getUid());
             ps.setDate(2, new java.sql.Date(timedim.getTime()));
             ps.setString(3, cfName);
             ps.setString(4, type.name());
