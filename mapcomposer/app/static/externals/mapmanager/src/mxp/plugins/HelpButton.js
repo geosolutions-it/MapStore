@@ -72,9 +72,19 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
     
    // width and height are not configurable at the moment
    // TODO investigate why this happens.
-   windowHeight: 600,
-   windowWidth: 600,
-    
+    windowHeight: 600,
+    windowWidth: 600,
+    /** api: config[showOnStartup]
+     *  ``Boolean`` Show the window on startup if true
+     */
+    showOnStartup:false,
+    /** api: config[windowOptions]
+     *  ``Object`` Options for override the window configuration
+     */
+    windowOptions:{
+        height:200,
+        width:500
+    },
     /** api: method[addActions]
      */
     addActions: function() {
@@ -98,8 +108,6 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
 	
     showHelp:function(){
 
-			//var url = 'http://' + window.location.host + '/' + this.fileDocURL;
-			//use an Iframe
         var me = this;        
         var iframeconfig = {
             waitMsg: this.loadingMessage,
