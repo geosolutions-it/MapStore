@@ -754,7 +754,6 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
             title: "Query Result",
             name: this.layerName,
             layers: this.layerName,
-            //styles: style ,
             transparent: "true",
             displayInLayerSwitcher: false,
             vendorParams: {
@@ -781,9 +780,10 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                 group: "data",
                 layer: wms,
                 queryable: true,
-                selected: true
-
+                selected: true,
+                styles: record.get("styles")
             };
+
             var fields = [{
                 name: "name",
                 type: "string"

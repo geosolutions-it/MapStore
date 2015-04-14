@@ -194,7 +194,11 @@
                     "ignoreFields":["FERC", "cpcty_RID", "cpcty_RID_t", "Available_Capacity", "Scheduled_Capacity"]
                 }
             }
-		}, {
+        }, {
+            "ptype": "gxp_enablelabel",
+            "strWithLabels": "_with_labels",
+            "actionTarget": {"target": "paneltbar", "index": 25}
+        }, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,
