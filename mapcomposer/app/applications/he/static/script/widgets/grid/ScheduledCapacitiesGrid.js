@@ -168,7 +168,7 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                             title: "Scheduled Capacities",
                             maximizable:true,
                             collapsible:true,
-                            title: 'Capacities' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">MDth/d</i>',
+                            title: 'Capacities' + (feature.data.Prop_Name? ' - ' + feature.data.Prop_Name : "") +'<i  style="font-size:.8em;color:#C47A02; float:right; ">MDth/d</i>',
                             layout: 'border',
                             autoScroll: false,
                             height: 350,
