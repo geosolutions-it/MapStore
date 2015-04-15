@@ -85,7 +85,7 @@ gxp.he.ContractsByCategory = Ext.extend(Ext.Container, {
                 frame:true,
                 xtype:'panel',
                 header:true,
-                title: (this.pipelineName?this.pipelineName + ' - ' : '')+'Transport Customers by Category' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">Valid contracts as of '+currentYear+'</i>',
+                title: (this.pipelineName?this.pipelineName + ' - ' : '')+'Transport Customers by Category' + '<i style="font-size:.8em;color:#C47A02; float:right; padding-right:5px; ">Valid contracts as of '+currentYear+'</i>',
                 anchor:'100%',
                 layout:'border',
                 height:250,
@@ -159,7 +159,7 @@ gxp.he.ContractsByCategory = Ext.extend(Ext.Container, {
                     items: [{
                         xtype:'gxp_chart_panel',
                         height: 200,
-                        title: column1.label + '<i  style="font-size:.8em;color:#C47A02; float:right; ">MDth/d</i>',
+                        title: column1.label + '<i  style="font-size:.8em;color:#C47A02; float:right; padding-right:5px; ">MDth/d</i>',
                         store:column1Store,
                         chartOptions:{
                             store:column1Store,
@@ -205,7 +205,7 @@ gxp.he.ContractsByCategory = Ext.extend(Ext.Container, {
                             xtype:'gxp_chart_panel',
                             header:true,
                             height:200,
-                            title: column2.label + '<i  style="font-size:.8em;color:#C47A02; float:right; ">MDth/d</i>',
+                            title: column2.label + '<i  style="font-size:.8em;color:#C47A02; float:right; padding-right:5px; ">MDth/d</i>',
                             chartOptions:{
                                 store:column2Store,
                                 valueField:'capacity',
