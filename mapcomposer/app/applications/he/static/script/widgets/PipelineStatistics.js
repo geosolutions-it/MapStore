@@ -1,5 +1,5 @@
 /**
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2015 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -59,7 +59,7 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
         '<table style="width:100%">',
           '<tr>',
             '<th>Owner: </th><td>{Owner}</td>',
-            '<th>Peak njection</th><td>{Peak_Injection}</td>',
+            '<th>Peak Injection:</th><td>{Peak_Injection}</td>',
           '</tr>',
           '<tr>',
             '<th>Storage Type:</th><td>{Storage_Type}</td>',
@@ -83,29 +83,7 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
     autoScroll: true,
     style:'padding:10px',
     initComponent: function () {
-        var transportDataTest = [
-           /* ['Conocophillips Co',"FT1",  280],
-            ['Conocophillips Co',"FT1",  270],
-            ['Conocophillips Co',"FT1",  250], */
-            ['Conocophillips Co',"FT1",  250],
-            ['Iberdrola Energy Svcs.',"FT1",  240],
-            ['Canadian Nat Rsrcs. Ltd',"FT1",  205],
-            ['Conocophillips Co',"FT1",  201],
-            ['Iberdrola Energy Svcs.',"FT1",  10],
-            
-            
-        ];
-        var storageDataTest = [
-           /* ['Conocophillips Co',"FT1",  280],
-            ['Conocophillips Co',"FT1",  270],
-            ['Conocophillips Co',"FT1",  250], */
-            ['Company 1',"FT1",  200],
-            ['Company 2',"FT1",  100],
-            ['Company 3',"FT1",  100],
-            ['Company 4',"FT1",  90],
-            ['Company 5',"FT1",  50]
-            
-        ];
+        
         var storeTransport1 = new Ext.data.JsonStore({
             root: 'features',
             messageProperty: 'crs',
@@ -169,7 +147,6 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
             }
         });
         
-        
         var storeStorage = new Ext.data.JsonStore({
             root: 'features',
             messageProperty: 'crs',
@@ -190,24 +167,13 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
             }, this.baseParams)
         });
         
-        var TSDataTest = [
-           /* ['Conocophillips Co',"FT1",  280],
-            ['Conocophillips Co',"FT1",  270],
-            ['Conocophillips Co',"FT1",  250], */
-            [2012, 1809,  200],
-            [2011, 1756,  200],
-            [2010, 1767,  200],
-            [2009, 1728,  200],
-            [2008, 1728,  200]
-            
-        ];
         var storetTS = new Ext.data.JsonStore({
             root: 'features',
             messageProperty: 'crs',
             autoLoad: true,
             sortInfo: {
                 field: 'year',
-                direction: 'DESC' // or 'DESC' (case sensitive for local sorting)
+                direction: 'DESC' // (case sensitive for local sorting)
             },
             fields: [
                {name: 'year', type: Ext.data.Types.INT , mapping: 'properties.Year'},
@@ -220,24 +186,6 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                 viewParams: 'FERC:'+this.ferc
             }, this.baseParams)
         });
-         var finDataTest = [
-           /* ['Conocophillips Co',"FT1",  280],
-            ['Conocophillips Co',"FT1",  270],
-            ['Conocophillips Co',"FT1",  250], */
-            [2012, 288,  0,288,62],
-            [2011, 296,  0,296,65],
-            [2010, 286,  0,286,68],
-            [2009, 287,  0,287,63]
-             
-        ];
-        /* 
-          "pop_tbl_Sect0607_FinancialHL"."pops0607_Year" AS "Year", 
-          "pop_tbl_Sect0607_FinancialHL"."pops06_TranspRev" AS "Transport_Rev", 
-          "pop_tbl_Sect0607_FinancialHL"."pops06_StorageRev" AS "Storage_Rev", 
-          "pop_tbl_Sect0607_FinancialHL"."pops06_TotalOperRev" AS "Total_Op_Rev", 
-          "pop_tbl_Sect0607_FinancialHL"."pops06_NetIncome" AS "Net_Income"
-          */
-        
             
         var storefin = new Ext.data.JsonStore({
             root: 'features',
@@ -281,19 +229,18 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
             }, this.baseParams)
         });
         //TRANSPORT Customer CAPACITY GRID
-         var grid = 
         //ROW 1
         this.items = [{
                 
                 frame:true,
                 xtype:'panel',
                 header:true,
-                title: 'General Information' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">FERC Code:' + this.ferc + '</i>',
+                title: (this.pipelineName ? this.pipelineName + ' - ' : '' ) +'General Information' + '<i style="font-size:.8em;color:#C47A02; float:right; padding-right:5px; ">FERC Code:' + this.ferc + '</i>',
                 anchor:'100%',
                 items:[{
-                    frame:true,
+                    frame:false,
                     height:60,
-                    border:false,
+                    border:true,
                     ref:'../generalInfo',
                     listeners:{
                         scope: this,
@@ -305,7 +252,7 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                             var templates = this.genInfoTemplates;
                             var params = Ext.apply({
                                 typeName:this.generic_typeName,
-                                cql_filter: "FERC = '"+this.ferc+"'",
+                                cql_filter: "FERC = '"+this.ferc+"'"
                             }, this.baseParams);
                             Ext.Ajax.request({
                                 url: url,
@@ -346,7 +293,7 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                 layout:'column',
                 style:'padding-top:10px',
                 header:true,
-                title: 'Top 10 Transport Customers' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">Capacity(MDth/d)</i>',
+                title: 'Top 10 Transport Customers' + '<i style="font-size:.8em;color:#C47A02; float:right; padding-right:5px; ">Capacity(MDth/d)</i>',
                 border:true,
                 items:[{
                     columnWidth:.5,
@@ -393,7 +340,7 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                         frame:true,
                         header:true,
                         layout:'fit',
-                        title: 'Top 5 Storage Customers' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">Capacity (Bcf)</i>',
+                        title: 'Top 5 Storage Customers' + '<i style="font-size:.8em;color:#C47A02; float:right; padding-right:5px; ">Capacity (Bcf)</i>',
                         height:200,
                         items:[new gxp.he.grid.CustomerCapacityGrid({store:storeStorage,viewConfig: {forceFit: true},loadMask:true})]
                     }]
@@ -409,7 +356,7 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                         frame:true,
                         header:true,
                         height:200,
-                        title:'Contract Expirations'+ '<i  style="font-size:.8em;color:#C47A02; float:right; ">*Agg. Cap. (Transport - MDth/d, Storage - Bcf)</i>',
+                        title:'Contract Expirations'+ '<i style="font-size:.8em;color:#C47A02; float:right; padding-right:5px; ">*Agg. Cap. (Transport - MDth/d, Storage - Bcf)</i>',
                         layout:'fit',
                         items:[new gxp.he.grid.ContractExpirationsGrid({
                             ref:'../../../cegrid',
@@ -438,7 +385,7 @@ gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
                         frame:true,
                         header:true,
                         layout:'fit',
-                        title: 'Financial Highlights (Revenue/Net Income)' + '<i  style="font-size:.8em;color:#C47A02; float:right; ">$ Millions</i>',
+                        title: 'Financial Highlights (Revenue/Net Income)' + '<i style="font-size:.8em;color:#C47A02; float:right; padding-right:5px; ">$ Millions</i>',
                         height:200,
                         items:[new gxp.he.grid.FinancialHighlightsGrid({store:storefin,viewConfig: {forceFit: true},loadMask:true})]
                     }]

@@ -58,6 +58,15 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
     ],
     layerName: "gascapacity:test_capacity_point",
     
+    /* Service for SnapShot feature*/
+    service : "http://he.geo-solutions.it/servicebox/",
+    
+    /** api: config[fileName]
+     *  ``String``
+     *  The name of the file to download
+     */
+    fileName: "statistics-snapshot.png",
+
     /** api: Configuration of the layer to display on the map 
              and to filter with the select FERC 
     **/
@@ -617,6 +626,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                             width: 900,
                             items:[{
                                 xtype: 'he_pipeline_statistics',
+                                ref: 'chartsPanel', 
                                 region: 'center',
                                 baseParams: Ext.apply({
                                     service:'WFS',
@@ -625,7 +635,42 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                                     outputFormat: 'application/json'
                                 }, this.vendorParams ),
                                 ferc: pipelineId,
+                                pipelineName: pipelineName,
                                 border: false
+                            }],
+                            tools:[{
+                                id:'print',
+                                scope: this,
+                                handler: function(event, toolEl, panel){
+                                    //regex is for IE11 so we have to use a servlet
+                                    if(Ext.isIE11 === undefined){
+                                        Ext.isIE11 = !!navigator.userAgent.match(/Trident.*rv[ :]*11\./);
+                                    }
+                                    var me = this;
+                                    var target = panel.chartsPanel.getEl().dom;
+                                    var tgtparent = target.parentElement;
+                                    var data = target.className;
+                                    target.className += " html2canvasreset";//set className - Jquery: $(target).addClass("html2canvasreset");
+                                    $(target).appendTo(document.body)
+                                    html2canvas( target , {
+                                            proxy: proxy,
+                                           // allowTaint:true,  
+                                            //CORS errors not managed with ie11, so disable
+                                            useCORS: !Ext.isIE11,
+                                            //logging:true,
+                                            onrendered: function(c) {
+                                                target.className = data;
+                                                var canvasData = c.toDataURL("image/png;base64");
+                                                if(Ext.isIE || Ext.isIE11){
+                                                    me.uploadCanvas(canvasData);
+                                                }else{
+                                                    me.localDownload(canvasData);
+                                                }
+                                                $(target).appendTo(tgtparent)
+                                            }
+                                    });
+                                    
+                                }
                             }]
                         }).show();
 
@@ -833,6 +878,84 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
             this.resultsGridStatus = "expanded";
         }
 
+    },
+    
+    /**
+     * private method[localDownload]
+     * Use a link and emulate click to download the data:image in the canvasData argument. 
+     * Works for Chrome and Firefox
+     */
+    localDownload: function(canvasData){
+        var img = new Image();
+        img.src= canvasData;
+        var url = img.src.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+        var downloadLink = document.createElement("a");
+        downloadLink.href = url;
+        downloadLink.download = this.fileName;
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    
+    },
+    
+    /** api: method[uploadCanvas]
+     * upload base64 ecoded canvas data to servicebox and finalize with download response.
+     * A service that forces download is needed for Internet Explorer (now IE11 download attribute in link is not supported)
+     */
+    uploadCanvas: function (canvasData){
+        var mHost = this.service.split("/");
+
+        var mUrl = this.service + "UploadCanvas";
+            mUrl = mHost[2] == location.host ? mUrl : proxy + mUrl;
+
+        Ext.Ajax.request({
+            url: mUrl,
+            method: "POST",
+            headers:{
+                  'Content-Type' : 'application/upload'
+            },
+            params: canvasData,
+            scope: this,
+            success: function(response, opts){
+                if (response.readyState == 4 && response.status == 200){
+                    if(response.responseText && response.responseText.indexOf("\"success\":false") < 0){
+                        var fname = this.fileName;
+
+                        var mUrl = this.service + "UploadCanvas";
+                            mUrl = mHost[2] == location.host ? mUrl + "?ID=" + response.responseText + 
+                                "&fn=" + fname : proxy + encodeURIComponent(mUrl + "?ID=" + response.responseText + "&fn=" + fname);
+
+                        this.target.safeLeaving =true;
+                        window.location.assign(mUrl);
+
+                    }else{
+                        // this error should go to failure
+                        Ext.Msg.show({
+                             title: this.printStapshotTitle,
+                             msg: this.generatingErrorMsg + " " + gxp.util.getResponseFailureServiceBoxMessage(response),
+                             width: 300,
+                             icon: Ext.MessageBox.ERROR
+                        });
+                    }
+                }else if (response.status != 200){
+                    Ext.Msg.show({
+                         title: 'Print Snapshot',
+                         msg: this.serverErrorMsg,
+                         width: 300,
+                         icon: Ext.MessageBox.ERROR
+                    });
+                }	
+            },
+            failure:  function(response, opts){
+                Ext.Msg.show({
+                     title: this.printStapshotTitle,
+                     msg: this.generatingErrorMsg + " " + gxp.util.getResponseFailureServiceBoxMessage(response),
+                     width: 300,
+                     icon: Ext.MessageBox.ERROR
+                });
+            }
+        });
     },
     
     createFilter: function (values) {
