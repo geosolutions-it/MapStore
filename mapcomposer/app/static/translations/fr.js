@@ -22,16 +22,15 @@ GeoExt.Lang.add("fr", {
         seriousnessLabel: "Entité",
         severenessLabel: "Gravità",
         buffersLabel: "Distances des Zones de dommages",
+        resultsLabel: "Résultat de traitement", 
         fieldSetTitle: "Traitement",
         cancelButton: "Annulez le traitement",
         processButton: "Exécuter le traitement",
         analyticViewButton: "Visualisation analytique ",
-        weatherLabel: "Conditions météorologiques",  
         temporalLabel: "Conditions temporelles",
         elabStandardLabel: "Processing Standard",
         totalRiskLabel: "Le risque total",
-        humanTitle:'social',    
-        resultsLabel: "Résultat de traitement", 
+        humanTitle:'social',            
         notHumanTitle:'l\'environnement', 
         defaultExtentLabel: "L'ensemble du territoire",
         targetsTextBotton: "Cibles",
@@ -57,16 +56,7 @@ GeoExt.Lang.add("fr", {
         saveProcessingButtonText: "Enregistrer Processing",
         saveProcessingWinTitle: "Nouveau traitemente",
         saveProcessingAggregationLabel: "Agrégation",
-		saveDownloadTitle: "Exporter",
-		saveDownloadNameFieldsetTitle: "Exporter",
-		saveDownloadErrorTitle: "Export Processing",
-		saveDownloadWinTitle: "nouveau Export",
-		saveDownloadErrorMsg: "Impossible d'exporter traitement",
-		saveDownloadSuccessTitle: "Export Processing",
-		saveDownloadSuccessMsg: "Traitement exporté avec succès",
-		
-		saveDownloadLoadingMsg: "Exportation ... se il vous plaît attendre",
-		
+        
         loadButton: "Téléchargez traitement",
         loadProcessingNameHeader: 'Nom',
         loadProcessingDescriptionHeader: 'Description',
@@ -77,6 +67,17 @@ GeoExt.Lang.add("fr", {
         selectProcessingMsgTitle: "Sélectionnez l'option Traitement",
         selectProcessingMsg: "Vous devez sélectionner un traitement",
         loadProcessingWinTitle: "Téléchargez traitement",
+        
+        saveDownloadMenuButton: "Décharge",    
+		saveDownloadTitle: "Exporter",
+		saveDownloadNameFieldsetTitle: "Exporter",
+		saveDownloadErrorTitle: "Export Processing",
+		saveDownloadWinTitle: "nouveau Export",
+		saveDownloadErrorMsg: "Impossible d'exporter traitement",
+		saveDownloadSuccessTitle: "Export Processing",
+		saveDownloadSuccessMsg: "Traitement exporté avec succès",
+		
+		saveDownloadLoadingMsg: "Exportation ... se il vous plaît attendre",
                  
         loadDownloadButton: "Historique",
         loadDownloadProcessingWinTitle: "Téléchargez traitement",
@@ -92,12 +93,15 @@ GeoExt.Lang.add("fr", {
         GrigliaText: 'Réseau',
 		exportDisclaimerTitle: 'mise en garde',
 		agreeDisclaimerText: 'j\'accepte',
-		notAgreeDisclaimerText: 'je ne suis pas d\'accord'
+		notAgreeDisclaimerText: 'je ne suis pas d\'accord',
+        
+        resolutionLabel: "Résolution"
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Traitement",
         elaborazioneLabel: "traitement de type",
         formulaLabel: "Formule",                
+        resolutionLabel: "Résolution",                        
         northLabel:"Nord",
         westLabel:"Ouest",
         eastLabel:"Est",
@@ -126,7 +130,6 @@ GeoExt.Lang.add("fr", {
         validationTitle: "Erreur de paramètre",
         invalidAOI: "Les coordonnées de la zone d'intérêt ne sont pas valides.",
         bboxTooBig: "La zone sélectionnée est trop grand et le serveur peut prendre un certain temps à réagir Si vous voulez quand même continuer, appuyez sur OK.",
-        weatherLabel: "Météo",  
         temporalLabel: "orages",
         conditionsFielSetLabel: "termes",   
         allClassOption: "Toutes les classes",
@@ -145,6 +148,13 @@ GeoExt.Lang.add("fr", {
         highRiskLabel: "risque élevé",
         notVisibleOnArcsMessage: "Formula pas visible à cette échelle",
         notVisibleOnGridMessage: "Formula pas visible à cette échellee",
+        areaTooBigMessage: "zone sélectionnée trop grand pour cette formule / résolution",
+        resolutionNotAllowedMessage: "La résolution choisie ne est pas compatible avec la portée territoriale",
+        resolutionLevel1: "100m sectorielle",
+        resolutionLevel2: "500m sectorielle",
+        resolutionLevel3: "Grille",
+        resolutionLevel4: "Représentation administrative municipale",
+        resolutionLevel5: "Représentation provinciale administratif",
         selectionAreaLabel: "Zone sélectionnée",
         alertSimGridReloadTitle: "Mise à jour des objectifs",
         alertSimGridReloadMsg: "Voulez-vous mettre à jour les données de simulation? - Toutes les éditions sera perdu!"   
@@ -589,7 +599,12 @@ GeoExt.Lang.add("fr", {
         title: "Territorial",
         setAoiText: "Sélectionner une zone",        
         setAoiTooltip: "Permettre la sélection de la région d'intérêt sur ​​la carte",
-        waitEPSGMsg: "Attendez ... Chargement"
+        waitEPSGMsg: "Attendez ... Chargement",
+        aoiMethodLabel: "Mode",
+        aoiByRectLabel: "Rectangle",
+        aoiByFeatureLabel: "Limite administrative",
+        provinceLabel: "Province",
+        comuniLabel: "Municipalité"
     },
     "gxp.form.SelDamageArea.prototype":{
         selAreaDamageTitle: "Sélection de la région",

@@ -40,8 +40,7 @@
                 "format": "image/png8"
             },
             "prependPrefix": "destination:",
-			"loadingProgress": true,
-			"useCapabilities": false
+			"loadingProgress": true
         },
         "externalstiled": {
             "ptype": "gxp_wmscsource",
@@ -319,7 +318,7 @@
             "name": "siig_geo_pl_province",
             "displayInLayerSwitcher": true,
             "tiled": true,
-            "group": ["Limiti","Limiti","Limiti"," Limiti"],
+            "group": ["Limiti Amministrativi","Administrative limits","Limites administratives"," Verwaltungsgrenzen"],
             "queryable": true,
 			
             "visibility": false
@@ -329,7 +328,7 @@
             "name": "siig_geo_pl_comuni",
             "displayInLayerSwitcher": true,
             "tiled": true,
-            "group": ["Limiti","Limiti","Limiti"," Limiti"],
+            "group": ["Limiti Amministrativi","Administrative limits","Limites administratives"," Verwaltungsgrenzen"],
             "queryable": true,
 			
             "visibility": false
@@ -670,8 +669,6 @@
                         "seldamage": "seldamage",
         "selectionLayerName": "aggregated_data_selection",
         "selectionLayerTitle": "Rischio Totale",             
-        "bufferLayerNameHuman": "buffer_human",
-        "bufferLayerNameNotHuman": "buffer_not_human",
         "selectionLayerBaseURL": "http://localhost:8080/geoserver/destination/wms",
         "selectionLayerProjection": "EPSG:32632",
         "geometryName": "geometria",

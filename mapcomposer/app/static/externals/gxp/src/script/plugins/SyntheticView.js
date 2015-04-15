@@ -36,7 +36,24 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     resultsLabel: "Risultato Elaborazione",
     fieldSetTitle: "Elaborazione",
     cancelButton: "Annulla Elaborazione",
-    
+    processButton: "Esegui Elaborazione",
+    analyticViewButton: "Visualizzazione Analitica:",
+    temporalLabel: "Condizioni Temporali",
+    elabStandardLabel: "Elaborazione Standard",
+    totalRiskLabel: "Rischio totale",
+    humanTitle:'Sociale',    
+    notHumanTitle:'Ambientale',    
+    defaultExtentLabel: "Tutto il territorio",
+    targetsTextBotton: "Bersagli",
+    areaDamageTextBotton: "Aree di danno",
+    roadGraphTextBotton: "Grafo stradale",    
+    wpsTitle: "Errore",
+    wpsError: "Errore nella richiesta al servizio WPS",
+    loadMsg: "Caricamento in corso...",
+    notVisibleOnArcsMessage: "Formula non visibile a questa scala",
+    notVisibleOnGridMessage: "Formula non visibile a questa scala",
+    refreshGridButton: "Aggiorna la griglia",
+    simMsg: 'Modifica dei parametri di simulazione non possibile a questa scala. Zoomare fino a scala 1:17061',
     saveButton: "Salva Elaborazione",
     saveProcessingTitle: "Salvataggio Elaborazione",
     saveProcessingMsg: "Elaborazione già salvata con questo nome, vuoi sostituirla?",
@@ -50,8 +67,19 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     saveProcessingAggregationLabel: "Aggregazione",
     saveProcessingButtonText: "Salva Elaborazione",
     saveProcessingWinTitle: "Nuova Elaborazione",
-	
-	saveDownloadMenuButton: "Scarica",    
+    
+	loadButton: "Carica Elaborazione",
+    loadProcessingNameHeader: 'Name',
+    loadProcessingDescriptionHeader: 'Descrizione',
+    removeProcessingTooltip: 'Rimuovi Elaborazione',
+    removeProcessingMsgTitle: "Eliminazione Elaborazione",
+    removeProcessingMsg: "Vuoi eliminare l'elaborazione? L'azione è irreversibile!",
+    loadProcessingButtonText: "Carica Elaborazione",
+    selectProcessingMsgTitle: "Seleziona Elaborazione",
+    selectProcessingMsg: "Devi selezionare una elaborazione",
+    loadProcessingWinTitle: "Carica Elaborazione",   
+    
+    saveDownloadMenuButton: "Scarica",    
     saveDownloadTitle: "Esportazione",
 	saveDownloadNameFieldsetTitle: "Esportazione",
 	saveDownloadErrorTitle: "Esportazione Elaborazione",
@@ -62,44 +90,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	
 	saveDownloadLoadingMsg: "Sto esportando... attendere prego",
 
-    loadButton: "Carica Elaborazione",
-    loadProcessingNameHeader: 'Name',
-    loadProcessingDescriptionHeader: 'Descrizione',
-    loadProcessingCreationHeader: 'Creato',
-    loadProcessingValidHeader: 'Rigenerabile',
-    removeProcessingTooltip: 'Rimuovi Elaborazione',
-    removeProcessingMsgTitle: "Eliminazione Elaborazione",
-    removeProcessingMsg: "Vuoi eliminare l'elaborazione? L'azione è irreversibile!",
-    loadProcessingButtonText: "Carica Elaborazione",
-    selectProcessingMsgTitle: "Seleziona Elaborazione",
-    selectProcessingMsg: "Devi selezionare una elaborazione",
-    loadProcessingWinTitle: "Carica Elaborazione",    
-    
-    
     loadDownloadButton: "Storico",
     loadDownloadProcessingWinTitle: "Download Elaborazione",
     loadDownloadProcessingButtonText: "Download Elaborazione",
-    
     failureAchieveResourceTitle: "Errore",
-    failureAchieveResourceMsg: "Non ci sono elaborazioni salvate per questo utente",    
-    
-    processButton: "Esegui Elaborazione",
-    analyticViewButton: "Visualizzazione Analitica:",
-    refreshGridButton: "Aggiorna la griglia",
-    //weatherLabel: "Condizioni Meteo",  
-    temporalLabel: "Condizioni Temporali",
-    elabStandardLabel: "Elaborazione Standard",
-    totalRiskLabel: "Rischio totale",
-    defaultExtentLabel: "Tutto il territorio",
-    targetsTextBotton: "Bersagli",
-    areaDamageTextBotton: "Aree di danno",
-    roadGraphTextBotton: "Grafo stradale",    
-    wpsTitle: "Errore",
-    wpsError: "Errore nella richiesta al servizio WPS",
-    loadMsg: "Caricamento in corso...",
-    notVisibleOnArcsMessage: "Formula non visibile a questa scala",
-    notVisibleOnGridMessage: "Formula non visibile a questa scala",
-    simMsg: 'Modifica dei parametri di simulazione non possibile a questa scala. Zoomare fino a scala 1:17061',
+    failureAchieveResourceMsg: "Non ci sono elaborazioni salvate per questo utente",   
+    loadProcessingValidHeader: 'Rigenerabile',
+    loadProcessingCreationHeader: 'Creato',
     downloadFileLabel: 'Scarica il file',
     deleteDownloadError: 'Il download non può essere cancellato. Rimuoverlo ugualmente?',
     meter100Text: '100 metri',
@@ -108,6 +105,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	exportDisclaimerTitle: 'Disclaimer',
 	agreeDisclaimerText: 'Accetto',
 	notAgreeDisclaimerText: 'Non Accetto',
+    
+    resolutionLabel: "Risoluzione",
     // End i18n.
         
     id: "syntheticview",
@@ -119,8 +118,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     //selectionLayerBaseURL: "http://localhost:8080/geoserver/wms",
     selectionLayerProjection: "EPSG:32632",
     
-    bufferLayerNameHuman: "buffer_human",    
-    bufferLayerNameNotHuman: "buffer_not_human",    
+    bufferLayerNameHuman: {
+        1:"buffer_human",    
+        2:"buffer_human"
+    },
+    bufferLayerNameNotHuman: {
+        1:"buffer_not_human",
+        2:"buffer_not_human"
+    },
     damageBufferLayer: "damage_buffer",
     
     bufferLayerTitle: ["Buffer Areas", "Aree di danno", "Domaines de dommages", "Schadensbereich"],    
@@ -134,10 +139,15 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     notHumanRiskLayer: "rischio_totale_ambientale",    
     combinedRiskLayer: "rischio_totale",    
     currentRiskLayers: ["rischio_totale_ambientale", "rischio_totale_sociale", "rischio_totale"],
-    formulaRiskLayer: "rischio",
-    mixedFormulaRiskLayer: "mixed_rischio",
-    humanTitle:'Sociale',    
-    notHumanTitle:'Ambientale',    
+    formulaRiskLayer: {
+        1:"rischio",
+        2:"rischio",
+    },
+    mixedFormulaRiskLayer: {
+        1:"mixed_rischio",
+        2:"mixed_rischio",
+    },
+    
     originalRiskLayers: null,    
     severeness: [["High mortality","Starting lethality","IRREVERSIBLE INJURIES","REVERSIBLE INJURIES","Environmental"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","Ambientale"],     ["MORTALITÉ ÉLEVÉE","DÉBUT DE MORTALITÉ","LÉSIONS IRRÉVERSIBLES","LÉSIONS RÉVERSIBLES","Environmental"], ["Hohe Letalität","Beginn Letalität","Irreversible Verletzungen","Reversiblie Verletzungen","Umweltschäden"]],
     
@@ -387,7 +397,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return this.status.target.humans === null;
     },
     
-    addTargets: function(layers, bounds, radius, extraTargets, roi) { 
+    addTargets: function(layers, bounds, radius, extraTargets, roi, resolution) { 
         
         var name = this.status.target ? this.status.target.layer : 'bersagli_all';
         var wkt;
@@ -398,7 +408,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             wkt = 'GEOMETRYCOLLECTION EMPTY';
         }
         var targetViewParams = this.getRoiViewParams(this.status, bounds, this.status.processing !== 4) 
-            + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman + ';wkt:' + wkt;
+            + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman + ';wkt:' + wkt
+            + ';resolution:' + resolution;
         
         this.analyticViewLayers.push(name);
         this.analyticViewLayers.push(this.selectedTargetLayer);
@@ -446,11 +457,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
      *   :arg title: ``String``
      *     adds a new layer buffer for human targets
      */
-    addHumanTargetBuffer: function(distances, title, viewParams, buffer, roi) {           
-        this.analyticViewLayers.push(this.bufferLayerNameHuman);
+    addHumanTargetBuffer: function(distances, title, viewParams, buffer, roi, resolution) {           
+        this.analyticViewLayers.push(this.bufferLayerNameHuman[resolution]);
         distances = this.normalizeRadius(distances, true);
         return this.createLayerRecord({
-            name: this.bufferLayerNameHuman,
+            name: this.bufferLayerNameHuman[resolution],
             title: title,
             params: {                                
                 env:'elevata:'+distances[0]+';inizio:'+distances[1]+';irreversibili:'+distances[2]+';reversibili:'+distances[3],
@@ -469,11 +480,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
      *   :arg title: ``String``
      *     adds a new layer buffer for not human targets
      */
-    addNotHumanTargetBuffer: function(distance, title, viewParams, buffer, roi) {                   
-        this.analyticViewLayers.push(this.bufferLayerNameNotHuman);
+    addNotHumanTargetBuffer: function(distance, title, viewParams, buffer, roi, resolution) {                   
+        this.analyticViewLayers.push(this.bufferLayerNameNotHuman[resolution]);
              
         return this.createLayerRecord({
-            name: this.bufferLayerNameNotHuman,
+            name: this.bufferLayerNameNotHuman[resolution],
             title: title,
             params: {                                
                 env:'distance:'+distance,
@@ -1084,95 +1095,75 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }   */     
         
         var me= this;
-        this.elab = new Ext.form.TextField({
+        this.elab = new Ext.form.DisplayField({
               fieldLabel: this.elaborazioneLabel,
               id: "elab",
               width: 150,
-              readOnly: true,
-              value: this.elabStandardLabel,
-              hideLabel : false                    
+              value: this.elabStandardLabel       
         });
         
-        this.form = new Ext.form.TextField({
+        this.form = new Ext.form.DisplayField({
               fieldLabel: this.formulaLabel,
               id: "form",
               width: 150,
-              readOnly: true,
-              value: this.totalRiskLabel,
-              hideLabel : false                    
+              value: this.totalRiskLabel           
         });
         
-        this.extent = new Ext.form.TextField({
+        this.resolution = new Ext.form.DisplayField({
+              fieldLabel: this.resolutionLabel,
+              id: "resolution",
+              width: 150,
+              value: ""           
+        });
+        
+        this.extent = new Ext.form.DisplayField({
               fieldLabel: this.extentLabel,
               id: "extent",
               width: 150,
-              readOnly: true,
-              value: this.defaultExtentLabel,
-              hideLabel : false                    
+              value: this.defaultExtentLabel       
         });
         
-        this.temporal = new Ext.form.TextField({
+        this.temporal = new Ext.form.DisplayField({
               fieldLabel: this.temporalLabel,
               id: "temporalCond",
               width: 150,
-              readOnly: true,
-              value: "",
-              hideLabel : false                    
+              value: ""
         });
-        
-        /*this.weather = new Ext.form.TextField({
-              fieldLabel: this.weatherLabel,
-              id: "weatherCond",
-              width: 150,
-              readOnly: true,
-              value: "",
-              hideLabel : false                    
-        });*/
-              
-        this.trg = new Ext.form.TextField({
+         
+        this.trg = new Ext.form.DisplayField({
               fieldLabel: this.targetLabel,
               id: "target",
               width: 150,
-              readOnly: true,
-              value: gxp.plugins.StandardProcessing.prototype.allTargetOption,
-              hideLabel : false                    
+              value: gxp.plugins.StandardProcessing.prototype.allTargetOption
         });
         
-        this.adrClass = new Ext.form.TextField({
+        this.adrClass = new Ext.form.DisplayField({
               fieldLabel: this.adrClassLabel,
               id: "adrClass",
               width: 200,
-              readOnly: true,
-              value: gxp.plugins.StandardProcessing.prototype.allClassOption,
-              hideLabel : false                    
+              value: gxp.plugins.StandardProcessing.prototype.allClassOption
         });
         
-        this.substance = new Ext.form.TextField({
+        this.substance = new Ext.form.DisplayField({
               fieldLabel: this.substanceLabel,
               id: "substance",
               width: 200,
-              readOnly: true,
-              value: gxp.plugins.StandardProcessing.prototype.allSostOption,
-              hideLabel : false                    
+              value: gxp.plugins.StandardProcessing.prototype.allSostOption
         });
         
 
-        this.accident = new Ext.form.TextField({
+        this.accident = new Ext.form.DisplayField({
               fieldLabel: this.accidentLabel,
               id: "accedent",
               width: 150,
-              readOnly: true,
-              value: gxp.plugins.StandardProcessing.prototype.allScenOption,
-              hideLabel : false                    
+              value: gxp.plugins.StandardProcessing.prototype.allScenOption
         });
         
-        this.seriousness = new Ext.form.TextField({
+        this.seriousness = new Ext.form.DisplayField({
               fieldLabel: this.seriousnessLabel,
               id: "seriousness",
               width: 200,
-              readOnly: true,
-              value: gxp.plugins.StandardProcessing.prototype.allEntOption,
-              hideLabel : false                    
+              value: gxp.plugins.StandardProcessing.prototype.allEntOption
         });                        
         
         
@@ -1180,9 +1171,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               fieldLabel: this.resultsLabel,
               id: "results",
               width: 200,
-              readOnly: true,
-              value: "",
-              hideLabel : false                    
+              value: ""
         });
                       
         this.resultsContainer = new Ext.Container({layout:'fit'});
@@ -1234,6 +1223,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             buttonAlign: 'left',
             id: 'fset',
             autoHeight: true,
+            labelWidth: 150,
             defaults: {
                 // applied to each contained panel
                 bodyStyle:'padding:5px;'
@@ -1241,9 +1231,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             items: [
                  this.elab,
                  this.form,
+                 this.resolution,
                  this.extent,
                  this.temporal,
-                 //this.weather,
                  this.trg,
                  this.adrClass,
                  this.substance,
@@ -1647,6 +1637,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         this.processingPane.elaborazione.setValue(1);                        
                         // Formula
                         this.processingPane.formula.setValue(this.processingPane.formula.getStore().data.items[0].get('id_formula'));                        
+                        // Resolution
+                        this.processingPane.resolution.setValue(this.processingPane.resolution.getStore().data.items[0].get('id_resolution'));                        
                         // Temporali
                         this.processingPane.temporal.setValue("fp_scen_centrale");                        
                         this.processingPane.temporal.disable();   
@@ -1707,6 +1699,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     id: "analytic_view",
                     iconCls: 'analytic-view-button',
                     text: this.analyticViewButton,
+                    disabled: true,
                     scope: this,
                     listeners: {
                         enable: function(){
@@ -1802,15 +1795,15 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     Ext.getCmp("refresh_grid").disable();
                     Ext.getCmp('warning_message').setValue(simMsg);
                 }
-            } else {
-                if(scale <= this.analiticViewScale && this.processingDone) {
+            } else if(!this.status && this.processingDone) {
+                if(scale <= this.analiticViewScale) {
                     Ext.getCmp("analytic_view").enable();  
                 } else {
                     Ext.getCmp("analytic_view").disable();
                 }
             }
             var msg = '';
-            if(this.status && this.status.formulaInfo) {
+            /*if(this.status && this.status.formulaInfo) {
                 if(scale <= this.cellViewScale && this.status.formulaInfo.dependsOnArcs && !this.status.formulaInfo.visibleOnArcs) {
                     msg = this.notVisibleOnArcsMessage;
                 } else if(scale > this.cellViewScale && this.status.formulaInfo.dependsOnArcs && !this.status.formulaInfo.visibleOnGrid) {
@@ -1819,7 +1812,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
             if(Ext.getCmp("analytic_view") && !this.simulationEnabled){
                 Ext.getCmp('warning_message').setValue(msg);
-            }
+            }*/
             
             // to change formula according to scale
             var processingPane = this.processingPane;
@@ -2315,7 +2308,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         var map = this.target.mapPanel.map;        
         var status = this.getStatus();        
         var bounds = this.getBoundsForViewParams(status, map);
-        var viewParams = this.getRoiViewParams(status, bounds, true);
+        var viewParams = this.getRoiViewParams(status, bounds, true)+
+            ';resolution:'+(status.resolution || 1);
             
         var wfsGrid = Ext.getCmp("featuregrid");
         wfsGrid.loadGrids(null, null, this.selectionLayerProjection, viewParams);                                
@@ -2422,7 +2416,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         method:'POST', mimeType: 'text/xml', 
                         body: {
                             wfs: {
-                                featureType: 'destination:siig_geo_ln_arco_1', 
+                                featureType: 'destination:siig_geo_ln_arco_' + (status.resolution || 1), 
                                 version: '1.1.0',
                                 filter: this.getRoadsFilter()
                             }
@@ -2498,7 +2492,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     isRoiFromAoi: function(status) {
         status = status || this.status;
-        return status && status.roi && status.roi.type === 'aoi';
+        return (status && status.roi && status.roi.type === 'aoi') || !status || !status.roi;
     },
     
     getBoundsForViewParams: function(status, map, buffer) {
@@ -2577,30 +2571,31 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return Math.round(bufferInMeter / this.getMetersToPixelsRatio());
     },
     
-    addBuffers: function(layers, bounds, radius, bufferArea) {        
+    addBuffers: function(layers, bounds, radius, bufferArea, resolution) {        
         var bufferLayerTitle =this.bufferLayerTitle[GeoExt.Lang.getLocaleIndex()];
         var roi;
         if(bufferArea) {
             roi = this.getRoi();
             layers.push(this.addDamageBuffer(bufferLayerTitle, bufferArea, roi));
         } else {
-            var viewParams = this.getRoiViewParams(this.status, bounds, true);
+            var viewParams = this.getRoiViewParams(this.status, bounds, true) +
+                ';resolution:' + resolution;
             //var buffer = this.getBufferSizeInPixels(radius.max);
             roi = this.getRoi(null, null, radius.max)
             if(!this.status || this.isMixedTargets()) {
                 if(radius.radiusHum.length > 0) {
-                    layers.push(this.addHumanTargetBuffer(radius.radiusHum,bufferLayerTitle+' (' +this.humanTargets[GeoExt.Lang.getLocaleIndex()]+ ')', viewParams, radius.max, roi));
+                    layers.push(this.addHumanTargetBuffer(radius.radiusHum,bufferLayerTitle+' (' +this.humanTargets[GeoExt.Lang.getLocaleIndex()]+ ')', viewParams, radius.max, roi, resolution));
                 }
                 if(radius.radiusNotHum > 0) {
-                    layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,bufferLayerTitle+' (' +this.notHumanTargets[GeoExt.Lang.getLocaleIndex()]+ ')', viewParams, radius.max, roi));
+                    layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,bufferLayerTitle+' (' +this.notHumanTargets[GeoExt.Lang.getLocaleIndex()]+ ')', viewParams, radius.max, roi, resolution));
                 }
             } else if(this.isHumanTarget()) {
                 if(radius.radiusHum.length > 0) {
-                    layers.push(this.addHumanTargetBuffer(radius.radiusHum,bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max, roi));                                
+                    layers.push(this.addHumanTargetBuffer(radius.radiusHum,bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max, roi, resolution));                                
                 }
             } else if(this.isNotHumanTarget()) {
                 if(radius.radiusNotHum > 0) {
-                    layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max, roi));
+                    layers.push(this.addNotHumanTargetBuffer(radius.radiusNotHum,bufferLayerTitle+' ('+this.status.target.name+')', viewParams, radius.max, roi, resolution));
                 }
             }
         }
@@ -2679,7 +2674,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             + ';culturali:' + (this.status.target.id.indexOf(16) === -1 ? 0 : 1)             
             + ';sostanze:' + this.status.sostanza.id.join('\\,')
             + ';scenari:' + this.status.accident.id.join('\\,')
-            + ';gravita:' + this.status.seriousness.id.join('\\,');
+            + ';gravita:' + this.status.seriousness.id.join('\\,')
+            + ';resolution:' + this.status.resolution || 1;
         
         if(formulaUdm) {
             formulaDesc = formulaDesc + ' ' + formulaUdm;
@@ -2706,7 +2702,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     getFormulaEnv: function(status, targetId) {
-        var env = "formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing;
+        var env = "formula:"+status.formula+";resolution:"+(status.resolution || 1)+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing;
         if(status.processing === 3) {
             var simulation = status.simulation;            
             env += ';pis:'+simulation.pis.join('_') + ';padr:'+simulation.padr.join('_') + ';cff:'+simulation.cff.join('_');
@@ -2721,7 +2717,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     addRisk: function(layers, bounds, status) {                
         var env, envhum, envamb;
-        
+        var resolution = status.resolution || 1;
         if(this.isHumanTarget() || this.isAllHumanTargets() || this.isMixedTargets()) {
             env = "low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1]+";max:"+this.status.themas['sociale'][2];
             envhum = env;
@@ -2739,18 +2735,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         if(status.formulaInfo.dependsOnTarget) {
             if(this.isSingleTarget()) {
-                this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc + ' ' + (this.isHumanTarget() ? this.humanTitle : this.notHumanTitle), this.isHumanTarget() ? formulaUdmSoc : formulaUdmEnv, env, roi, true);
+                this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer[resolution], status.formulaDesc + ' ' + (this.isHumanTarget() ? this.humanTitle : this.notHumanTitle), this.isHumanTarget() ? formulaUdmSoc : formulaUdmEnv, env, roi, true);
             } else if(this.isAllHumanTargets()) {
-                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, env, roi, true);
+                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer[resolution], status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, env, roi, true);
             } else if(this.isAllNotHumanTargets()) {
-                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, env, roi, true);
+                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer[resolution], status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, env, roi, true);
             } else {
-                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, envhum, roi, false);
-                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, envamb, roi, false);                    
-                this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, formulaUdm, mixedenv, roi, true);
+                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer[resolution], status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, envhum, roi, false);
+                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer[resolution], status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, envamb, roi, false);                    
+                this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer[resolution], status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, formulaUdm, mixedenv, roi, true);
             }
         } else {
-            this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, formulaUdm, env, roi, true);   
+            this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer[resolution], status.formulaDesc, formulaUdm, env, roi, true);   
         }         
     },
     
@@ -2822,10 +2818,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.removeAnalyticViewLayers(map);                                
         
         // add the buffers layers
-        var roi = this.addBuffers(newLayers, bounds, radius, status.processing === 4 ? status.damageArea : null);
+        var roi = this.addBuffers(newLayers, bounds, radius, status.processing === 4 ? status.damageArea : null, status.resolution || 1);
         
         // add the target layer
-        this.addTargets(newLayers, bounds, radius, status.simulation.targetsInfo, roi);                
+        this.addTargets(newLayers, bounds, radius, status.simulation.targetsInfo, roi, status.resolution || 1);
             
         if(Ext.getCmp('roadGraph_view').pressed) {
             Ext.getCmp('featuregrid').setCurrentPanel('roads');
@@ -3028,9 +3024,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         Ext.getCmp('warning_message').setValue('');
         
         var scale = this.getMapScale();
-        if(scale <= this.analiticViewScale) {
+        if(status.resolution <= 2 && status.formulaInfo.dependsOnTarget && status.formulaInfo.dependsOnArcs) {
             Ext.getCmp("analytic_view").enable();
+        } else {
+            Ext.getCmp("analytic_view").disable();
         }
+        /*if(scale <= this.analiticViewScale) {
+            Ext.getCmp("analytic_view").enable();
+        }*/
         
         if(status.formulaInfo.dependsOnArcs) {
         
@@ -3316,7 +3317,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.status = s;
         this.elab.setValue(this.status.processingDesc);
         this.form.setValue(this.status.formulaDesc);
-        
+        this.resolution.setValue(this.status.resolutionDesc);
         this.temporal.setValue(this.status.temporal.name);
         
         this.extent.setValue(this.status.roi.label);

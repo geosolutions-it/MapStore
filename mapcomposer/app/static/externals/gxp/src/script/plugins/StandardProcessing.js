@@ -27,6 +27,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     title: "Elaborazione",
     elaborazioneLabel: "Tipo elaborazione",
     formulaLabel: "Formula",                
+    resolutionLabel: "Risoluzione",                
     northLabel:"Nord",
     westLabel:"Ovest",
     eastLabel:"Est",
@@ -55,7 +56,6 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     validationTitle: "Errore nei parametri",
     invalidAOI: "Le coordinate dell'area di interesse non sono valide.",
     bboxTooBig: "L'area selezionata e' troppo grande e il server potrebbe impiegare molto tempo a rispondere. Se si desidera continuare ugualmente premere OK.",
-    //weatherLabel: "Meteo",  
     temporalLabel: "Temporali",
     conditionsFielSetLabel: "Condizioni",   
     allClassOption: "Tutte le classi",
@@ -74,19 +74,26 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     highRiskLabel: "Alto Rischio",
     notVisibleOnArcsMessage: "Formula non visibile a questa scala",
     notVisibleOnGridMessage: "Formula non visibile a questa scala",
-    areaTooBigMessage: "Area selezionata troppo grande per questa formula",
-    
-    //loadUserElab: false,
-    //geostoreElab: null,
-    //geostoreFormula: null,
-    //geostoreTemporal: null,    
+    areaTooBigMessage: "Area selezionata troppo grande per questa formula / risoluzione",
+    resolutionNotAllowedMessage: "La risoluzione selezionata non è compatibile con l'ambito territoriale",
+    resolutionLevel1: "Segmento 100m",
+    resolutionLevel2: "Segmento 500m",
+    resolutionLevel3: "Griglia",
+    resolutionLevel4: "Rappr. Amministrativa Comunale",
+    resolutionLevel5: "Rappr. Amministrativa Provinciale",
     selectionAreaLabel: "Area Selezionata",
     alertSimGridReloadTitle: "Aggiornamento Bersagli",
     alertSimGridReloadMsg: "Vuoi aggiornare i Bersagli? - Tutte le modifica andranno perse!",    
     // End i18n.
         
     cellViewScale: 500010,
-    maxProcessingArea: 100000000,
+    maxProcessingArea: {
+        1: 100000000,
+        2: 100000000,
+        3: 100000000,
+        4: 100000000,
+        5: 100000000
+    },
         
     // TODO: bbox piemonte    
     spatialFilterOptions: {
@@ -245,6 +252,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
              proxy: this.getWFSStoreProxy('formule' , null, 'ordine_visibilita')
         });
         this.formulaStore.load();
+        
+        this.resolutionStore = new Ext.data.ArrayStore({
+            fields: ['id_resolution', 'name'],
+            data :  [[1,this.resolutionLevel1], [2,this.resolutionLevel2], [3,this.resolutionLevel3], [4,this.resolutionLevel4], [5,this.resolutionLevel5]]
+        });
     },
     
     createConditionsStores: function() {
@@ -640,6 +652,36 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.filterComboFormulaScale(this.formula);
         this.formula.setValue(this.formulaStore.getAt(0).get('id_formula'));
        
+        this.resolution = new Ext.form.ComboBox({
+            fieldLabel: this.resolutionLabel,
+            id: "elabres",
+            width: 150,
+            hideLabel : false,
+            store: this.resolutionStore, 
+            valueField: 'id_resolution',            
+            displayField: 'name',    
+            lastQuery: '',
+            typeAhead: true,
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: false,
+            resizable: true,    
+            listeners: {
+                scope: this,                
+                expand: function(combo) {
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                },
+                select: function(combo, record, index) {
+                    //this.enableDisableForm(record, this.getComboRecord(this.elaborazione, 'id'));
+                }
+            } 
+        });
+        
+        this.resolution.setValue(this.resolutionStore.getAt(0).get('id_resolution'));
+       
         this.elabSet = new Ext.form.FieldSet({
             title: this.formLabel,
             id: 'elabfset',
@@ -650,7 +692,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             },
             items: [
             this.elaborazione,
-            this.formula
+            this.formula,
+            this.resolution
             ]
         });
         
@@ -945,7 +988,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     
     filterComboFormulaScale: function(combo) {
         var store = combo.getStore();
-        
+        /**
+        TODO: do we need scale based formula filter also with resolutions?
         var scale = Math.round(this.map.getScale());
         
         if(scale>=this.syntView.cellViewScale){
@@ -962,21 +1006,21 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 scope: this
               }                      
             ]);
-        }else{
-            store.filter([
-              {
-                fn   : function(record) {
-                  return ((record.get('visibile') == 1) || (record.get('visibile') == 3));
-                },
-                scope: this
-              },{
-                fn   : function(record) {
-                  return (record.get('id_elaborazione') == this.elaborazione.getValue());
-                },
-                scope: this
-              }                          
-            ]);
-        }
+        }else{**/
+        store.filter([
+          {
+            fn   : function(record) {
+              return ((record.get('visibile') == 1) || (record.get('visibile') == 3));
+            },
+            scope: this
+          },{
+            fn   : function(record) {
+              return (record.get('id_elaborazione') == this.elaborazione.getValue());
+            },
+            scope: this
+          }                          
+        ]);
+        /*}*/
     },
     
 	reproject: function(coll, sourceProjection, destProjection) {
@@ -1365,6 +1409,28 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     },
     
     
+    matchRoiAndResolution: function(formulaRec, resolutionRec, roi) {
+        var resolutionId = resolutionRec.get('id_resolution');
+        
+        var bbox;
+        if(roi instanceof OpenLayers.Bounds) {
+            bbox = roi;
+        } else {
+            if((resolutionId >= 4 && roi.type === 'comune') || 
+                (resolutionId === 5 && roi.type === 'provincia')) {
+                return this.resolutionNotAllowedMessage;
+            }
+            bbox = roi.bbox;
+        }
+        var area = (bbox.right - bbox.left) * (bbox.top - bbox.bottom);
+        if(area && area > this.maxProcessingArea[resolutionId]) {
+            return this.areaTooBigMessage;
+        }
+        
+        
+        return null;
+    },
+    
     /** private: method[validateForm]
      *  :arg form: ``Object``     
      *  :arg roi: ``Object``     
@@ -1380,7 +1446,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var incidente = parseInt(this.getComboRecord(this.accident).data.value, 10);
         var entita = this.getComboRecord(this.seriousness).data.value;
         
-        var formulaRec = this.formula.store.getAt(this.formula.store.findExact("id_formula",this.formula.getValue()));                
+        var formulaRec = this.formulaStore.getAt(this.formulaStore.findExact("id_formula",this.formula.getValue()));                
         
         if(formulaRec.get('sostanze') === 2 && sostanza === 0) {
             error = this.requiredMaterial;
@@ -1397,9 +1463,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 error = this.requiredDamageArea;
             }
         }
-        if(!error) {
         
-            var scale = Math.round(map.getScale());   
+        var resolutionRec = this.resolutionStore.getAt(this.resolutionStore.findExact("id_resolution", this.resolution.getValue()));
+        
+        if(!error && formulaRec.get('ambito_territoriale')) {
+            error = this.matchRoiAndResolution(formulaRec, resolutionRec, roi); 
+            /*var scale = Math.round(map.getScale());   
             
             var visibleOnArcs = formulaRec.get('visibile') === 1 || formulaRec.get('visibile') === 3;
             var visibleOnGrid = formulaRec.get('visibile') === 2 || formulaRec.get('visibile') === 3;
@@ -1416,7 +1485,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 if(ambitoTerritoriale && area > this.maxProcessingArea && visibleOnArcs) {
                     error = this.areaTooBigMessage;
                 }
-            }
+            }*/
         }
         
         if(!error) {
@@ -1532,6 +1601,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
     },
     
+    
     /** private: method[getStatus]   
      *  :arg form: ``Object``        
      *     extract processing parameters (status) from the compiled form
@@ -1539,6 +1609,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     getStatus: function() {
         var processingRec = this.getComboRecord(this.elaborazione, "id");
         var formulaRec = this.getComboRecord(this.formula, "id_formula");
+        var resolutionRec = this.getComboRecord(this.resolution, "id_resolution");
         
         var damageAreaGeometry = this.getDamageArea(processingRec.get('id'));
         
@@ -1555,7 +1626,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 visibleOnArcs: formulaRec.get('visibile') === 1 || formulaRec.get('visibile') === 3,
                 visibleOnGrid: formulaRec.get('visibile') === 2 || formulaRec.get('visibile') === 3
             },
-            
+            resolution: resolutionRec.get('id_resolution'),
+            resolutionDesc: resolutionRec.get('name'),
             themas: this.getThemasObj(processingRec.get('id'), formulaRec),
             
             roi : this.getRoiObject(),
@@ -1661,7 +1733,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     },
     
 	updateAOI: function(roi) {
-		this.aoiFieldset.setAOI(roi.bbox);
+		this.aoiFieldset.setAOI(roi.bbox.clone());
         this.aoiFieldset.setType(roi.type === 'aoi' ? 'byrect' : 'byfeature');
         if(roi.type !== 'aoi') {
             this.aoiFieldset.selectFeature(roi.type, roi.id);
@@ -1677,7 +1749,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         this.status = status;
         this.elaborazione.setValue(this.status.processing);
-        
+        // TODO: migrate ongrid formulas to standard ones
         var formulaPos = this.formula.getStore().findExact("id_formula", this.status.formula);
         if(formulaPos !== -1) {
             this.formula.setValue(this.status.formula);
@@ -1686,6 +1758,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(formulaPos));
             }*/
         }
+        this.resolution.setValue(this.status.resolution || 1);
         this.updateAOI(status.roi);
                 
         store=this.macrobers.getStore(); 
@@ -1747,7 +1820,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             visibleOnArcs: true,
             visibleOnGrid: true
         };                
-        
+        obj.resolution = 1;
         obj.simulation = {
             cff:[],
             padr:[],
