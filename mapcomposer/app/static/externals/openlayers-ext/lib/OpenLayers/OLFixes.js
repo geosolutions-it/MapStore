@@ -262,7 +262,7 @@ OpenLayers.Format.WFST.v1_1_0.prototype.writers.wfs.Query = function(options) {
                             sortProperty.appendChild(me.createElementNSPlus("ogc:PropertyName", {value: sortBy.property}));
                             sortProperty.appendChild(me.createElementNSPlus("ogc:SortOrder", {value: sortBy.order}));
                         }
-                    }
+                    };
                     var sortByNode = this.createElementNSPlus("ogc:SortBy", {});
                     
                     if(Object.prototype.toString.call(options.sortBy) == '[object Array]'){
@@ -290,13 +290,8 @@ OpenLayers.Format.WFST.v1_1_0.prototype.writers.wfs.SortOrder = function(obj){
                 return this.createElementNSPlus("wfs:SortOrder", {
                     value: obj.property
                 });
-            }
+        };
 //Fix min zoom level probems
 OpenLayers.Map.prototype.adjustZoom = function(zoom) {
-    if(zoom === undefined) return zoom;
-    if(zoom >= 2){
-       return zoom;
-    }else{
-        return 2;
-    }
+    return zoom;
 };
