@@ -349,7 +349,6 @@ if(this.infoAction=='click'){
                 if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
                     vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
                 }
-
                 // Obtain info format
             	var infoFormat = this.getInfoFormat(x);
 
@@ -397,7 +396,7 @@ if(this.infoAction=='click'){
                                 }                                
 							}
 
-                            var title = x.get("title") || x.get("name");
+                            var title = x.get("infoTitle") || x.get("title") || x.get("name");
                             if (infoFormat == "text/html") {
                                 var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
                                 if (match && match[1].match(this.regex)) {
@@ -817,7 +816,7 @@ if(this.infoAction=='click'){
                         }, 300);
 
                         // Issue #91
-                        var title = x.get("title") || x.get("name");
+                        var title = x.get("infoTitle") || x.get("title") || x.get("name");
                         if (infoFormat == "text/html") {
                             var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
                             if (match && !match[1].match(/^\s*$/)) {
