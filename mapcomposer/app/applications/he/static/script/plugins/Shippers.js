@@ -246,8 +246,8 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                                     root: 'features',
                                     autoLoad: true,
                                     fields: [
-                                       {name: 'min_exp', type: 'date', mapping: 'properties.min_exp'},
-                                       {name: 'max_exp', type: 'date', mapping: 'properties.max_exp'}
+                                       {name: 'min_exp', type: 'date', mapping: 'properties.min_exp', dateFormat: 'Y-m-d\\Z'},
+                                       {name: 'max_exp', type: 'date', mapping: 'properties.max_exp', dateFormat: 'Y-m-d\\Z'}
                                     ],
                                     url: this.geoServerUrl,
                                     baseParams: Ext.apply({
