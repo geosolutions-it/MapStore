@@ -25,13 +25,11 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
 import it.geosolutions.geobatch.annotations.Action;
-import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.destination.common.utils.RemoteBrowserProtocol;
 import it.geosolutions.geobatch.destination.common.utils.RemoteBrowserUtils;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
-import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationUtils;
 import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfiguration;
 import it.geosolutions.geobatch.mariss.dao.ServiceDAO;
 import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
@@ -41,7 +39,6 @@ import it.geosolutions.geobatch.mariss.model.Service;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -482,15 +479,15 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                                     }
 
                                     // check if it's a CSV file
-                                    boolean packageReady = false;
-                                    boolean error = true;
+                                    Boolean packageReady = false;
+                                    Boolean error = true;
                                     try {
                                         String msg = "Processing events for user: " + user
                                                 + ", service: " + service;
                                         
                                         // Package Ready Event added as first element of the queue...
-                                        resultList.addAll(getProcessEvents(dataStore, user,
-                                                service, inputFile, folder, packageReady));
+                                        packageReady = getProcessEvents(dataStore, user,
+                                                service, inputFile, folder, resultList);
                                         
                                         error = msg == null;
                                         updateProgress(usersSize, userIndex, serviceSize,
@@ -740,13 +737,13 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
      * @param service
      * @param inputFile
      * @param folder
-     * @param packageReady 
+     * @param resultList 
      * @return
      */
-    private Collection<? extends EventObject> getProcessEvents(DataStore dataStore, String user,
-            Service service, File inputFile, String folder, boolean packageReady) {
-
-        Queue<EventObject> resultList = new LinkedList<EventObject>();
+    private Boolean getProcessEvents(DataStore dataStore, String user,
+            Service service, File inputFile, String folder, Queue<EventObject> resultList) {
+        
+        Boolean packageReady = Boolean.FALSE;
         String msg = null;
 
         if ("AOI".equals(service.getStatus()) && ACQ_LIST_FOLDER.equals(folder)) {
@@ -801,8 +798,8 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                     FileSystemEvent event = new FileSystemEvent(targetFile, FileSystemEventType.FILE_ADDED);
                     
                     // update the service status
-                    this.serviceDAO.updateServiceStatus(service, "PRODUCTS");
-                    packageReady = true;
+//                    this.serviceDAO.updateServiceStatus(service, "PRODUCTS");
+                    packageReady = Boolean.TRUE;
                     resultList.add(event);
                 } catch (IOException e) {
                     msg = "Error processing MARISS product ingestion";
@@ -837,7 +834,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                         Class<?> clazz = Class.forName(container.getActionClass());
                         if (clazz != null) {
                             Constructor<?> constructor = clazz
-                                    .getConstructor(ActionConfiguration.class);
+                                    .getConstructor(IngestionActionConfiguration.class);
                             if (constructor != null) {
                                 action = (BaseAction<EventObject>) constructor.newInstance(config);
                             }
@@ -884,8 +881,9 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
             
             */
             
+            this.serviceDAO.updateServiceStatus(service, "PRODUCTS");
         }
-        return resultList;
+        return packageReady;
     }
 
     /**

@@ -1,10 +1,7 @@
 package it.geosolutions.geobatch.mariss.actions.netcdf;
 
-import java.util.Map;
-
 import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
 import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
-import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
 
 public class IngestionActionConfiguration extends Ds2dsConfiguration {
 

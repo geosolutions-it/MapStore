@@ -34,5 +34,11 @@
 	<bean id="geoBatchMARISSServiceDAO" class="it.geosolutions.geobatch.mariss.dao.impl.JdbcServiceDAO">
 		<property name="dataSource" ref="geoBatchMARISSDataSource" />
 	</bean>
-	
+
+	<!-- Environment Initialization -->
+    
+    <bean id="geoBatchMARISSAliasRegistrar" class="it.geosolutions.geobatch.mariss.actions.RemoteServiceHandlingAliasRegistrar" lazy-init="false">
+        <constructor-arg ref="aliasRegistry" />
+    </bean>
+    
 </beans>

@@ -42,7 +42,6 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.httpclient.NameValuePair;
@@ -104,7 +103,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         configuration = actionConfiguration;
         ConfigurationContainer container = actionConfiguration.getContainer();
         if (container == null || container.getParams() == null
-                || container.getParams().containsKey(ConfigurationUtils.NETCDF_DIRECTORY_KEY)) {
+                || !container.getParams().containsKey(ConfigurationUtils.NETCDF_DIRECTORY_KEY)) {
             throw new RuntimeException("Wrong configuration defined");
         } else {
             this.container = container;

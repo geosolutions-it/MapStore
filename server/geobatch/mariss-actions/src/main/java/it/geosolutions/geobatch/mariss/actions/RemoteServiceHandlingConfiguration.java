@@ -28,11 +28,17 @@ import it.geosolutions.geobatch.remoteBrowser.configuration.RemoteBrowserConfigu
 
 import java.util.Map;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
+
 /**
  * Gate file handling configuration. Not use input ds (input data it's read from xml). Includes ftp connection parameters for the remote file browsing
  * 
  * @author adiaz
  */
+@XStreamAlias("RemoteServiceHandlingConfiguration")
+@XStreamInclude({
+    ConfigurationContainer.class})
 public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
 
     /**
@@ -124,6 +130,7 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
     /**
      * {@link ConfigurationContainer} map to assign to the NetCDF actions to launch after processing input data
      */
+    @XStreamAlias("subconfigurations")
     private Map<String, ConfigurationContainer> subconfigurations;
 
     public RemoteServiceHandlingConfiguration(String id, String name, String description) {

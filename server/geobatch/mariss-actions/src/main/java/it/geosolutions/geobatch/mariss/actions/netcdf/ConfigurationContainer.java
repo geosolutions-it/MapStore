@@ -2,8 +2,10 @@ package it.geosolutions.geobatch.mariss.actions.netcdf;
 
 import java.util.Map;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-public abstract class ConfigurationContainer {
+@XStreamAlias("container")
+public class ConfigurationContainer {
     
     protected ConfigurationContainer() {
     }
