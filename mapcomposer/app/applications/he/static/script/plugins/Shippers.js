@@ -772,7 +772,9 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
             maximizable:true,
             items:[{
                     xtype: 'he_contractsbycategory',
+                    ref: 'chartsPanel', 
                     ferc: pipelineId,
+                    pipelineName : pipelineName,
                     url: this.geoServerUrl,
                     region:'center',
                     border:false,
@@ -787,29 +789,40 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                 id:'print',
                 scope: this,
                 handler: function(event, toolEl, panel){
+                    //regex is for IE11 so we have to use a servlet
+                    if(Ext.isIE11 === undefined){
+                        Ext.isIE11 = !!navigator.userAgent.match(/Trident.*rv[ :]*11\./);
+                    }
                     var me = this;
+                    /*
                     var visible_items = $(panel.header.dom)
                                         .children([".x-tool"])
                                         .filter(function (index) {
                                               return $(this).css("display") === "block";
                                           });
-                    $.each(visible_items, function(i, item){$(item).hide()})
-                    html2canvas( panel.getEl().dom, {
+                    $.each(visible_items, function(i, item){$(item).hide()});
+                    */
+                    var target = panel.chartsPanel.getEl().dom;
+                    var tgtparent = target.parentElement;
+                    var data = target.className;
+                    target.className += " html2canvasreset";//set className - Jquery: $(target).addClass("html2canvasreset");
+                    $(target).appendTo(document.body)
+                    html2canvas( target , {
                             proxy: proxy,
                            // allowTaint:true,  
                             //CORS errors not managed with ie11, so disable
                             useCORS: !Ext.isIE11,
                             //logging:true,
                             onrendered: function(c) {
-                                
+                                target.className = data;
                                 var canvasData = c.toDataURL("image/png;base64");
                                 if(Ext.isIE || Ext.isIE11){
                                     me.uploadCanvas(canvasData);
                                 }else{
                                     me.localDownload(canvasData);
                                 }
-                                $.each(visible_items, function(i, item){$(item).show()})
-
+                                //$.each(visible_items, function(i, item){$(item).show()})
+                                $(target).appendTo(tgtparent)
                             }
                     });
                     
