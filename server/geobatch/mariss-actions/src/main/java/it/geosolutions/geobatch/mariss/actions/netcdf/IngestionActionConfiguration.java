@@ -19,8 +19,6 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
     
     private String serviceName;
     
-    private String uid;
-    
     /**
      * Password for the GeoServer instance
      */
@@ -84,14 +82,6 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
     }
 
     public String getGeoserverPWD() {

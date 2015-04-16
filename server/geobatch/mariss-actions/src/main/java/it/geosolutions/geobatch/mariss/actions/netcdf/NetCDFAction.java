@@ -70,31 +70,33 @@ import com.vividsolutions.jts.geom.Geometry;
 
 public abstract class NetCDFAction extends BaseAction<EventObject> {
 
-    private static final String SEPARATOR = "___";
+    private static final String SEPARATOR = "_Var_";
     
     private static final String SERVICE_SEPARATOR = "_s_";
+    
+    private static final String IDENTIFIER_SEPARATOR = "_I_";
 
     private static final String PATHSEPARATOR = File.separator;
 
     protected IngestionActionConfiguration configuration;
 
-    protected Map<String, Variable> foundVariables = new HashMap<String, Variable>();
+    //protected Map<String, Variable> foundVariables = new HashMap<String, Variable>();
 
-    protected Map<String, String> foundVariableLongNames = new HashMap<String, String>();
+    //protected Map<String, String> foundVariableLongNames = new HashMap<String, String>();
 
-    protected Map<String, String> foundVariableBriefNames = new HashMap<String, String>();
+    //protected Map<String, String> foundVariableBriefNames = new HashMap<String, String>();
 
-    protected Map<String, String> foundVariableUoM = new HashMap<String, String>();
+    //protected Map<String, String> foundVariableUoM = new HashMap<String, String>();
 
     protected JDBCDataStore dataStore;
 
-    protected Date timedim;
+    //protected Date timedim;
 
-    protected SARType type;
+    //protected SARType type;
 
-    protected GeneralEnvelope env;
+    //protected GeneralEnvelope env;
 
-    private String absolutePath;
+    //private String absolutePath;
 
     private ConfigurationContainer container;
 
@@ -189,7 +191,8 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                 }
                             }
                             if (canProcessFile(netcdfFile)) {
-
+                                // Getting the File identifier
+                                String identifier = absolutePath.substring(0, absolutePath.length() - 8);
                                 // Getting SARType
                                 type = SARType.getType(getActionName());
                                 // Don't read configuration for the file, just
@@ -207,7 +210,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                     dataStore = (JDBCDataStore) ds;
                                     dataStore.setExposePrimaryKeyColumns(true);
                                     // return next events configurations
-                                    Collection<EventObject> resultEvents = doProcess(netcdfFile);
+                                    Collection<EventObject> resultEvents = doProcess(netcdfFile, identifier);
                                     ret.addAll(resultEvents);
                                     
                                     // Prepare a Zip file containing the ShipDetection XML files
@@ -225,7 +228,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                         File properties = new File(files[0].getParentFile(), "netcdf.properties");
                                         properties.createNewFile();
                                         // Append Useful properties
-                                        FileUtils.write(properties, "uid=" + configuration.getUid() + "\n");
+                                        FileUtils.write(properties, "identifier=" + identifier + "\n");
                                         FileUtils.write(properties, "time=" + new Timestamp(timedim.getTime()) + "\n", true);
                                         FileUtils.write(properties, "originalFileName=" + netcdfFile.getName() + "\n", true);
                                         FileUtils.write(properties, "sartype=" + type + "\n", true);
@@ -270,7 +273,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
 
     protected abstract boolean canProcessFile(File netcdfFile);
 
-    private Collection<EventObject> doProcess(File netcdfFile) throws ActionException {
+    private Collection<EventObject> doProcess(File netcdfFile, String identifier) throws ActionException {
         // Creation of the Output Event Queue
         List<EventObject> events = new ArrayList<EventObject>();
 
@@ -320,7 +323,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             File[] finalFiles = new File[createdFiles.length];
             String[] layerNames = new String[createdFiles.length];
             // Boolean indicating if the operation has gone
-            boolean sent = handleMosaic(reader, publisher, createdFiles, finalFiles, layerNames);
+            boolean sent = handleMosaic(reader, publisher, createdFiles, finalFiles, layerNames, identifier);
 
             // Move the original netCDF File in the netcdf directory
             
@@ -343,7 +346,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                     // ... setting up the appropriate event for the next action
                     events.add(new FileSystemEvent(f, FileSystemEventType.FILE_ADDED));
                     // Update DataStore
-                    insertDb(f.getAbsolutePath(), absolutePath, layerNames[index], cfNames.get(index), geo);
+                    insertDb(identifier, f.getAbsolutePath(), absolutePath, layerNames[index], cfNames.get(index), geo);
                     // Updating array index
                     index++;
                 }
@@ -370,7 +373,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
      * @throws ActionException
      */
     protected boolean handleMosaic(GeoServerRESTReader reader, GeoServerRESTPublisher publisher,
-            File[] outputFiles, File[] finalFiles, String[] layerNames) throws ActionException {
+            File[] outputFiles, File[] finalFiles, String[] layerNames, String identifier) throws ActionException {
         // Initialization of the result
         boolean published = true;
         // File array index
@@ -380,11 +383,14 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             try {
                 // Getting Variable Name
                 String file = FilenameUtils.getBaseName(f.getAbsolutePath());
-                String variableName = getActionName() + SERVICE_SEPARATOR + configuration.getServiceName() + SERVICE_SEPARATOR 
+                String variableName = getActionName() 
                         + file.substring(file.lastIndexOf(SEPARATOR) + SEPARATOR.length());
                 // Create the mosaic directory in the temporary geobatch directory
-                File temp = getTempDir();
+                File temp = new File(getTempDir(), "temp" + file);
+                FileUtils.forceMkdir(temp);
                 File mosaicDir = new File(temp, variableName);
+                String newFileName = IDENTIFIER_SEPARATOR + identifier + IDENTIFIER_SEPARATOR 
+                        + SERVICE_SEPARATOR + configuration.getServiceName() + SERVICE_SEPARATOR + f.getName();
 
                 // Check if the mosaic is present
                 if (isMosaicConfigured(reader, variableName)) {
@@ -395,7 +401,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                         mosaicDir.createNewFile();
                     }
                     // Create the new NetCDF file
-                    File newFile = new File(mosaicDir, f.getName());
+                    File newFile = new File(mosaicDir, newFileName);
 
                     // Copy the file
                     try {
@@ -412,7 +418,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                     layerNames[index] = variableName;
                 } else {
                     // Create the new NetCDF file
-                    File newFile = new File(mosaicDir, f.getName());
+                    File newFile = new File(mosaicDir, newFileName);
 
                     // Copy the file
                     try {
@@ -428,7 +434,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                     // Create the Mosaic elements
                     createIndexerFile(mosaicDir, variableName, configuration.getServiceName());
                     createDatastoreFile(mosaicDir, variableName);
-                    createServiceRegexFile(mosaicDir, variableName);
+                    createRegexFiles(mosaicDir, variableName);
 
                     // Zip all the elements
                     File zipped = zipAll(temp, mosaicDir.listFiles(), mosaicDir.getName());
@@ -601,16 +607,23 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         File indexer = new File(mosaicDir, "indexer.properties");
         indexer.createNewFile();
         String properties = "TimeAttribute=time\n"
-                + "Schema=*the_geom:Polygon,location:String,time:java.util.Date,service:String\n"
-                + "PropertyCollectors=StringFileNameExtractorSPI[serviceregex](service)";
+                + "Schema=*the_geom:Polygon,location:String,time:java.util.Date,service:String,identifier:String\n"
+                + "PropertyCollectors=StringFileNameExtractorSPI[serviceregex](service),"
+                + "StringFileNameExtractorSPI[identifierregex](identifier)";
         FileUtils.write(indexer, properties);
     }
     
-    protected void createServiceRegexFile(File mosaicDir, String varName) throws IOException {
-        File indexer = new File(mosaicDir, "serviceregex.properties");
-        indexer.createNewFile();
-        String properties = "regex=" + SERVICE_SEPARATOR + "([a-zA-Z]{*})" + SERVICE_SEPARATOR;
-        FileUtils.write(indexer, properties);
+    protected void createRegexFiles(File mosaicDir, String varName) throws IOException {
+        // REGEX for Service Name
+        File serviceRegex = new File(mosaicDir, "serviceregex.properties");
+        serviceRegex.createNewFile();
+        String properties = "regex=" + SERVICE_SEPARATOR + "([a-zA-Z]*)" + SERVICE_SEPARATOR;
+        FileUtils.write(serviceRegex, properties);
+        // REGEX for Identifier
+        File identifierRegex = new File(mosaicDir, "identifierregex.properties");
+        identifierRegex.createNewFile();
+        String identifierProperties = "regex=" + IDENTIFIER_SEPARATOR + "(.*)" + IDENTIFIER_SEPARATOR;
+        FileUtils.write(identifierRegex, identifierProperties);
     }
 
     protected void createDatastoreFile(File mosaicDir, String varName) throws IOException {
@@ -753,10 +766,10 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         }
     }
 
-    public boolean insertDb(String location, String originalFilePath, String layerName, String cfName, Geometry geo) throws ActionException {
+    public boolean insertDb(String identifier, String outFileLocation, String originalFilePath, String layerName, String cfName, Geometry geo) throws ActionException {
         boolean result = false;
 
-        String sql = "INSERT INTO " + configuration.getProductsTableName() + " VALUES (?,?,?,?,?,?,?,ST_GeomFromText(?))";
+        String sql = "INSERT INTO " + configuration.getProductsTableName() + " VALUES (?,?,ST_GeomFromText(?),?,?,?,?,?,?)";
 
         
         Connection conn = null;
@@ -764,14 +777,16 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         try {
             conn = dataStore.getDataSource().getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, configuration.getUid());
-            ps.setDate(2, new java.sql.Date(timedim.getTime()));
-            ps.setString(3, cfName);
-            ps.setString(4, type.name());
-            ps.setString(5, location);
-            ps.setString(6, layerName);
-            ps.setString(7, originalFilePath);
-            ps.setString(8, geo.toText());
+            ps.setString(1, configuration.getServiceName());
+            ps.setString(2, identifier);
+            ps.setString(3, geo.toText());
+            ps.setDate(4, new java.sql.Date(timedim.getTime()));
+            ps.setString(5, cfName);
+            ps.setString(6, type.name());
+            ps.setString(7, outFileLocation);
+            ps.setString(8, originalFilePath);
+            ps.setString(9, layerName);
+
             result = ps.execute() && ps.getUpdateCount() > 0;
             ps.close();
         } catch (SQLException e) {

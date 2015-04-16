@@ -103,7 +103,7 @@
             <geoserverPWD>geoserver</geoserverPWD>
             <geoserverUID>admin</geoserverUID>
             <geoserverURL>http://localhost:8085/geoserver</geoserverURL>
-            <productsTableName>ingestionproducts</productsTableName>
+            <productsTableName>ingestionProducts</productsTableName>
             <geoserverDataDirectory>/home/geosolutions/Nicola/DLR/test_data_dir</geoserverDataDirectory>
             
             <!-- PRODUCTS INGESTION -->
@@ -122,7 +122,37 @@
                             </entry>
                          </params>
                      </container>
+                   </entry>
+                   <entry>
+                     <string>SARWnfAction</string>
+                     <container>
+                         <pattern>.*([0-9]{8})_([0-9]{6})_.*</pattern>
+                         <defaultNameSpace>sde</defaultNameSpace>
+                         <defaultNameSpaceURI></defaultNameSpaceURI>
+                         <actionClass>it.geosolutions.geobatch.mariss.actions.netcdf.SARWnfAction</actionClass>
+                         <params>
+                            <entry>
+                                <string>NetCDFDir.key</string>
+                                <string>/home/geosolutions/work/data/netcdfdatadir</string>
+                            </entry>
+                         </params>
+                     </container>
                    </entry> 
+                   <entry>
+                     <string>SARWindAction</string>
+                     <container>
+                         <pattern>.*([0-9]{8})_([0-9]{6})_.*</pattern>
+                         <defaultNameSpace>sde</defaultNameSpace>
+                         <defaultNameSpaceURI></defaultNameSpaceURI>
+                         <actionClass>it.geosolutions.geobatch.mariss.actions.netcdf.SARWindAction</actionClass>
+                         <params>
+                            <entry>
+                                <string>NetCDFDir.key</string>
+                                <string>/home/geosolutions/work/data/netcdfdatadir</string>
+                            </entry>
+                         </params>
+                     </container>
+                   </entry>  
             </subconfigurations>
 
         </RemoteServiceHandlingConfiguration>
