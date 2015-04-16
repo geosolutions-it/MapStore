@@ -146,7 +146,19 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
             }
 
         };
-
+        var bbar= [];
+        if(this.showAgainTool){
+            bbar.push({
+                xtype: 'checkbox',
+                boxLabel: this.dontShowThisMessageAgainText,
+                checked: ! this.isShowAllowed(),
+                listeners:{
+                    check: function(box,checked){
+                        localStorage[me.keyShowAgain] = ! checked;
+                    }
+                }
+            });
+        }
         new Ext.Window(Ext.apply({
            layout:'fit',
            iconCls:this.iconCls,
@@ -154,20 +166,11 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
            border:false,
            autoScroll:false,
            items: this.fileDocURL ? iframeconfig : {html: this.description, autoScroll:true, bodyStyle:'padding:10px'},
-            bbar:[{
-                xtype: 'checkbox',
-                boxLabel: this.dontShowThisMessageAgainText,
-                checked: ! this.isShowAllowed(),
-                listeners:{
-                    check: function(box,checked){
-                        localStorage[me.keyShowAgain] = ! checked;
-
-                    }
-                }
-            }],
+            bbar:bbar,
            modal:true
         },{
-            height:this.windowHeight,width:this.windowWidth
+            height:this.windowHeight,
+            width:this.windowWidth
         })).show();
 		
     },

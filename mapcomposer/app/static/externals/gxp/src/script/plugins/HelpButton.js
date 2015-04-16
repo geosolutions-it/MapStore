@@ -186,6 +186,7 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
                 xtype: 'checkbox',
                 boxLabel: this.dontShowThisMessageAgainText,
                 checked: ! this.isShowAllowed(),
+                hidden:!this.showAgainTool,
                 listeners:{
                     check: function(box,checked){
                         localStorage[me.keyShowAgain] = ! checked;
