@@ -107,6 +107,14 @@ gxp.plugins.he.GCD = Ext.extend(gxp.plugins.Tool, {
                     if(cardPanel){
                         cardPanel.getLayout().setActiveItem(tab.cardId);
                     }
+                    for(var propname in app.tools) {
+                        var obj = app.tools[propname];
+                        if(obj.hasOwnProperty("ptype") && obj.removeAllPopups != undefined) {
+                            if(obj.ptype.indexOf("gxp_wmsgetfeatureinfo") > -1 ) {
+                                obj.removeAllPopups();
+                            }
+                        }
+                    }
                 }
             }
 
