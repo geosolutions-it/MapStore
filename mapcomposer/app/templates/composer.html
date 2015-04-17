@@ -453,7 +453,10 @@
 					// ///////////////////////////////////////////////////
 					var addLayer = app.tools["addlayer"];
 					
-					if(addLayer){							
+					if(addLayer){
+
+                        addLayer.useEvents = true;
+                        
 						if(useCookies || content.data){
 							var layersList;
 							
@@ -509,6 +512,17 @@
 								format: urlformat
 							}]);
 						}
+                        
+                        /*resources = [{
+                            format: "wms",
+                            msGroupName: "MODELLO WRF-ARW a 3km - Energia Potenziale Convettiva Disponibile (CAPE) (J/Kg) - (2015-04-14 ore 00 UTC).",
+                            msLayerName: "arw_3km_Temperature_surface_20150416T000000000Z:0.0",
+                            msLayerTitle: "arw_3km_Temperature_surface_20150416T000000000Z:0.0",
+                            wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/ARW_3KM_RUN00/ows?&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0"
+                        }];
+                        
+                        addMSLayer(resources);*/
+                        
 					}else{
 						Ext.Msg.show({
 							 title: "Add Layer",
@@ -521,40 +535,7 @@
 				    if(bbox){
 						app.mapPanel.map.zoomToExtent(bbox, true);
 					}
-					
-					//
-					// Override TimeManager behavior
-					//
-					OpenLayers.Control.TimeManager.prototype.nowtime = function(looped) {
-						this.clearTimer();
-						//this.clearTooltipTimer();
-						
-						var d = new Date();        
-						var UTC = d.getUTCFullYear() + '-'
-									+ this.pad(d.getUTCMonth() + 1) + '-'
-									+ this.pad(d.getUTCDate()) + 'T'
-									
-									+ this.pad(d.getUTCHours()) + ':'
-									+ "00" + ':'
-									+ "00" + 'Z';
-									//+ this.pad(d.getUTCMinutes()) + ':'
-									//+ this.pad(d.getUTCSeconds()) + 'Z';
 
-						currentTimeUTC = Date.fromISO( UTC ); 
-						
-						var nowStaz = this.delHours(currentTimeUTC, 2);
-						
-						var newTime = new Date(nowStaz.getTime());
-						this.setNow(newTime,"curTime");
-						this.events.triggerEvent('reset', {
-							'looped' : !!looped
-						});
-						return this.currentTime;
-					}
-					
-					OpenLayers.Control.TimeManager.prototype.delHours = function(data, ore) {
-						return new Date(data.getTime() - ore * 3600000)
-					}
                 }
             });
 			
@@ -613,7 +594,8 @@
                     customParams.elevation = layerString[1] ? layerString[1] : "",
                     customParams.styles = ((resourceName.indexOf("Wind") != -1) || layerString[1]) ? [styles] : [],
                     customParams.style = ((resourceName.indexOf("Wind") != -1) || layerString[1]) ? [style] : [],
-                    customParams.format = "image/png8";					
+                    customParams.format = "image/png8";
+                    customParams.loadingProgress = true;
 					
 					resource.customParams = customParams;
 					
@@ -698,20 +680,35 @@
 						}
 						
 						var timeManagers = app.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');
+                        
+                        //adjust tipeStep to manage only Minutes
+                        switch (timeUnits){
+                            case 'Hours':
+                                timeStep = timeStep * 60;
+                                break;
+                            case 'Days':
+                                timeStep = timeStep * 1440;
+                                break;                                
+                            default:
+                                timeStep = timeStep;
+                        }
 						
 						timeManagers[0].step = timeStep;
 						timeManagers[0].setEnd(endDate);
 						timeManagers[0].setStart(startDate);
-						timeManagers[0].units = timeUnits;
+						timeManagers[0].units = "Minutes"; //timeUnits;
 						timeManagers[0].fixedRange = true;
 						
 						timeManagers[0].events.triggerEvent("rangemodified"); 						
-						timeManagers[0].currenttime(startDate, false);
 						
 					    if(setNowTime === true){
-							timeManagers[0].nowtime();
+							timeManagers[0].currenttime(false,false);
 						}
-						
+                        
+                        //set startDate and endDate of playbackOptionsPanel
+                        var areeallerta_playback = app.tools["areeallerta_playback"];
+                        areeallerta_playback.populateTimeOptionsPanel();
+                        
 						var baseLayer1 = app.mapPanel.map.getLayersByName("Stati")[0];
 						var baseLayer2 = app.mapPanel.map.getLayersByName("Regioni")[0];
 						var baseLayer3 = app.mapPanel.map.getLayersByName("Province")[0];
