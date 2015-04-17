@@ -238,13 +238,15 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
                 this.range[0] = OpenLayers.Date.parse(this.range[0]);
                 OpenLayers.Util.getElement('olTime').innerHTML = this.range[0].toGMTString().replace('GMT','UTC'); //OpenLayers.Date.toISOString(this.range[0]); //this.range[0];
                 var tabTimeVisualization = Ext.getCmp('timeVisualizationID');
-
-                tabTimeVisualization.on('afterlayout',function(e){
-                    tabTimeVisualization.body.update(this.range[0].toGMTString().replace('GMT','UTC'));
-                });
-                            
-                if(tabTimeVisualization.body)
-                    tabTimeVisualization.body.update(this.range[0].toGMTString().replace('GMT','UTC'));                
+                
+                if(tabTimeVisualization){
+                    tabTimeVisualization.on('afterlayout',function(e){
+                        tabTimeVisualization.body.update(this.range[0].toGMTString().replace('GMT','UTC'));
+                    });
+                                
+                    if(tabTimeVisualization.body)
+                        tabTimeVisualization.body.update(this.range[0].toGMTString().replace('GMT','UTC'));                
+                }
                 
             }
             if(!(this.range[1] instanceof Date)) {
@@ -324,6 +326,8 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             var lyr = layers[i];
             if(lyr.dimensions && lyr.dimensions.time) {!lyr.metadata && (lyr.metadata = {});
                 lyr.metadata.timeInterval = this.timeExtentsToIntervals(lyr.dimensions.time.values);
+                
+                //Set to false to exclude range playback mode for this layer 
                 lyr.metadata.allowRange = ("allowRange" in lyr) ? lyr.allowRange : false;
             }
             if((lyr.dimensions && lyr.dimensions.time) || (lyr.metadata.timeInterval && lyr.metadata.timeInterval.length)) {
@@ -385,6 +389,8 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
         var lyr = evt.layer;
         if(lyr.dimensions && lyr.dimensions.time) {
             lyr.metadata.timeInterval = this.timeExtentsToIntervals(lyr.dimensions.time.values);
+	    
+	    //Set to false to exclude range playback mode for this layer 
             lyr.metadata.allowRange = ("allowRange" in lyr) ? lyr.allowRange : false;
         }
         //don't do anything if layer is non-temporal
@@ -813,12 +819,14 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             OpenLayers.Util.getElement('olTime').innerHTML =  time.toGMTString().replace('GMT','UTC'); //OpenLayers.Date.toISOString(time); //time;
             var tabTimeVisualization = Ext.getCmp('timeVisualizationID');
 
-            tabTimeVisualization.on('afterlayout',function(e){
-                tabTimeVisualization.body.update(time.toGMTString().replace('GMT','UTC'));
-            });
-                        
-            if(tabTimeVisualization.body)
-                tabTimeVisualization.body.update(time.toGMTString().replace('GMT','UTC'));
+            if(tabTimeVisualization){
+                tabTimeVisualization.on('afterlayout',function(e){
+                    tabTimeVisualization.body.update(time.toGMTString().replace('GMT','UTC'));
+                });
+                            
+                if(tabTimeVisualization.body)
+                    tabTimeVisualization.body.update(time.toGMTString().replace('GMT','UTC'));
+            }
         }
         this.events.triggerEvent('tick', {
             'currentTime' : this.currentTime,
@@ -907,10 +915,11 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
      * Set the time to the animation current UTC time. Fires the 'currenttime' event.
      * 
      * Parameters: {Boolean} looped - trigger reset event with looped = true
+     * {Boolean} lastDataRange - if true setTime to last range data
      * Returns:
      * {Date} the control's currentTime
      */ 
-     currenttime_old:function(looped) {
+     currenttime:function(looped, lastDataRange) {
         this.clearTimer();
         this.clearTooltipTimer();
         
@@ -925,42 +934,12 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
 
         currentTimeUTC = Date.fromISO( UTC ); 
         
-        var newTime = new Date(currentTimeUTC.getTime());
+        var newTime = !lastDataRange ? new Date(currentTimeUTC.getTime()) : this.range[1];
         this.setTime(newTime,"curTime");
         this.events.triggerEvent('reset', {
             'looped' : !!looped
         });
         return this.currentTime;
-    },    
-    /**
-     * APIMethod:currenttime
-     * Set the time to the animation current UTC time. Fires the 'currenttime' event.
-     * 
-     * Parameters: {Boolean} looped - trigger reset event with looped = true
-     * Returns:
-     * {Date} the control's currentTime
-     */ 
-     currenttime:function(looped) {
-        this.clearTimer();
-        this.clearTooltipTimer();
-        
-        var d = new Date();        
-        var UTC = d.getUTCFullYear() + '-'
-		            + this.pad(d.getUTCMonth() + 1) + '-'
-		            + this.pad(d.getUTCDate()) + 'T'
-                    
-		            + this.pad(d.getUTCHours()) + ':'
-		            + this.pad(d.getUTCMinutes()) + ':'
-		            + this.pad(d.getUTCSeconds()) + 'Z';
-
-        currentTimeUTC = Date.fromISO( UTC ); 
-        
-        var newTime = new Date(currentTimeUTC.getTime());
-        this.setTime(this.range[1],"curTime");
-        this.events.triggerEvent('reset', {
-            'looped' : !!looped
-        });
-        //return this.currentTime;
     },
     pad: function (n){
         return n < 10 ? '0' + n : n 
@@ -1056,7 +1035,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
      */ 
      nowtime:function(looped,newRange,start) {
         this.clearTimer();
-        //this.clearTooltipTimer();
+        this.clearTooltipTimer();
         
         var d = new Date();        
         var UTC = d.getUTCFullYear() + '-'
