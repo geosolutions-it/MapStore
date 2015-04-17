@@ -362,6 +362,10 @@ div.map-overlay div.overlay-element {
     background-image: url(img/silk/application_form_edit.png) !important;
 }
 
+.edit-button{
+    background-image: url(img/pencil.png) !important;
+}
+
 .save-button{
     background-image: url(img/silk/script_save.png) !important;
 }

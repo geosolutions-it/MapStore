@@ -21,7 +21,10 @@ GeoExt.Lang.add("de", {
         resultsLabel: "Verarbeitungsergebnis",        
         fieldSetTitle: "Bearbeitung",
         cancelButton: "Abbrechen",
-        processButton: "Neue Bearbeitung",
+        processButton: "Neue",
+        loadButton: "Hochladen",
+        saveButton: "Speichern",
+        editProcessButton: "Änderung",
         analyticViewButton: "Analyse",
         temporalLabel: "Zeitliche Bedingungen",
         elabStandardLabel: "Standardbearbeitung",
@@ -39,7 +42,7 @@ GeoExt.Lang.add("de", {
         notVisibleOnGridMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
         refreshGridButton: "Grid-Aktualisierung",
         simMsg: 'Diese Funktion ist in diesem Maßstab nicht verfügbar',
-        saveButton: "Verarbeitung speichern",
+        
         saveProcessingTitle: "Verarbeitung speichern",
         saveProcessingMsg: "Verarbeitung bereits mit diesem Namen gespeichert wurde, ersetzen?",
         saveProcessingErrorTitle: "Verarbeitung speichern",
@@ -53,7 +56,7 @@ GeoExt.Lang.add("de", {
         saveProcessingWinTitle: "Neue Verarbeitung",
         saveProcessingAggregationLabel: "Aggregierung",
         
-        loadButton: "Verarbeitung hochladen",
+
         loadProcessingNameHeader: 'Name',
         loadProcessingDescriptionHeader: 'Beschreibung',
         removeProcessingTooltip: 'Verarbeitung Entfernen',
@@ -75,7 +78,7 @@ GeoExt.Lang.add("de", {
 		
 		saveDownloadLoadingMsg: "Exportieren ... Bitte warten",
 		
-        loadDownloadButton: "Chronik",
+        loadDownloadButton: "Download-Verlauf",
         loadDownloadProcessingWinTitle: "Verarbeitung herunterladen",
         loadDownloadProcessingButtonText: "Verarbeitung herunterladen",
         failureAchieveResourceTitle: "Fehler",

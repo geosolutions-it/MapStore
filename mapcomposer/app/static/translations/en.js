@@ -23,8 +23,11 @@ GeoExt.Lang.add("en", {
         buffersLabel: "Damage areas distances",
         resultsLabel: "Processing result",         
         fieldSetTitle: "Processing",
-        cancelButton: "Cancel Processing",
-        processButton: "Run processing",
+        cancelButton: "Cancel",
+        processButton: "New",
+        editProcessButton: "Edit",
+        loadButton: "Load",
+        saveButton: "Save",
         analyticViewButton: "Analytic view",
         temporalLabel: "Time conditions",
         elabStandardLabel: "processing Standard",
@@ -42,7 +45,7 @@ GeoExt.Lang.add("en", {
         notVisibleOnGridMessage: "Formula not visible at this scale",
         refreshGridButton: "Refresh the grid",
         simMsg: 'This function is not available at this scale',
-        saveButton: "Save Processing",
+
         saveProcessingTitle: "Saving Processing",
         saveProcessingMsg: "Processing has already been saved with this name, replace it?",
         saveProcessingErrorTitle: "Saving Processing",
@@ -56,7 +59,7 @@ GeoExt.Lang.add("en", {
         saveProcessingWinTitle: "New Processinge",
         saveProcessingAggregationLabel: "Aggregation",
         
-        loadButton: "Upload Processing",
+        
         loadProcessingNameHeader: 'Name',
         loadProcessingDescriptionHeader: 'Description',
         removeProcessingTooltip: 'Remove Processing',
@@ -78,7 +81,7 @@ GeoExt.Lang.add("en", {
         
 		saveDownloadLoadingMsg: "Exporting... please wait",
         
-        loadDownloadButton: "Historical",
+        loadDownloadButton: "Downloads History",
         loadDownloadProcessingWinTitle: "Download Processing",
         loadDownloadProcessingButtonText: "Download Processing",
         failureAchieveResourceTitle: "Error",

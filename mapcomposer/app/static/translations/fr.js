@@ -24,8 +24,11 @@ GeoExt.Lang.add("fr", {
         buffersLabel: "Distances des Zones de dommages",
         resultsLabel: "Résultat de traitement", 
         fieldSetTitle: "Traitement",
-        cancelButton: "Annulez le traitement",
-        processButton: "Exécuter le traitement",
+        cancelButton: "Annulez",
+        processButton: "Nouveau",
+        loadButton: "Téléchargez",
+        saveButton: "Enregistrer",
+        editProcessButton: "Modification",
         analyticViewButton: "Visualisation analytique ",
         temporalLabel: "Conditions temporelles",
         elabStandardLabel: "Processing Standard",
@@ -43,7 +46,7 @@ GeoExt.Lang.add("fr", {
         notVisibleOnGridMessage: "Formula pas visible à cette échelle",
         refreshGridButton: "Actualiser la grille",
         simMsg: "Cette fonction n'est pas disponible à cette échelle",
-        saveButton: "Enregistrer Processing",
+        
         saveProcessingTitle: "Sauver Processing",
         saveProcessingMsg: "Traitement a déjà été enregistré avec ce nom, le remplacer?",
         saveProcessingErrorTitle: "Sauver Processing",
@@ -57,7 +60,7 @@ GeoExt.Lang.add("fr", {
         saveProcessingWinTitle: "Nouveau traitemente",
         saveProcessingAggregationLabel: "Agrégation",
         
-        loadButton: "Téléchargez traitement",
+
         loadProcessingNameHeader: 'Nom',
         loadProcessingDescriptionHeader: 'Description',
         removeProcessingTooltip: 'Retirer traitement',
@@ -68,7 +71,7 @@ GeoExt.Lang.add("fr", {
         selectProcessingMsg: "Vous devez sélectionner un traitement",
         loadProcessingWinTitle: "Téléchargez traitement",
         
-        saveDownloadMenuButton: "Décharge",    
+        saveDownloadMenuButton: "Exporter",    
 		saveDownloadTitle: "Exporter",
 		saveDownloadNameFieldsetTitle: "Exporter",
 		saveDownloadErrorTitle: "Export Processing",
@@ -79,7 +82,7 @@ GeoExt.Lang.add("fr", {
 		
 		saveDownloadLoadingMsg: "Exportation ... se il vous plaît attendre",
                  
-        loadDownloadButton: "Historique",
+        loadDownloadButton: "Exporter historique",
         loadDownloadProcessingWinTitle: "Téléchargez traitement",
         loadDownloadProcessingButtonText: "Téléchargez traitement",
         failureAchieveResourceTitle: "Erreur",

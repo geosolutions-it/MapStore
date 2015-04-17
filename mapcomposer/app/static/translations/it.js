@@ -20,8 +20,11 @@ GeoExt.Lang.add("it", {
         buffersLabel: "Raggi Aree Danno",
         resultsLabel: "Risultato Elaborazione",
         fieldSetTitle: "Elaborazione",
-        cancelButton: "Annulla Elaborazione",
-        processButton: "Esegui Elaborazione",
+        cancelButton: "Annulla",
+        processButton: "Nuova",
+        editProcessButton: "Modifica",
+        loadButton: "Carica",
+        saveButton: "Salva",
         analyticViewButton: "Visualizzazione Analitica",
         temporalLabel: "Condizioni Temporali",
         elabStandardLabel: "Elaborazione Standard",
@@ -39,7 +42,7 @@ GeoExt.Lang.add("it", {
         notVisibleOnGridMessage: "Formula non visibile a questa scala",
         refreshGridButton: "Aggiorna la griglia",
         simMsg: 'Modifica dei parametri di simulazione non possibile a questa scala. Zoomare fino a scala 1:17061',
-        saveButton: "Salva Elaborazione",
+        
         saveProcessingTitle: "Salvataggio Elaborazione",
         saveProcessingMsg: "Elaborazione già salvata con questo nome, vuoi sostituirla?",
         saveProcessingErrorTitle: "Salvataggio Elaborazione",
@@ -53,7 +56,7 @@ GeoExt.Lang.add("it", {
         saveProcessingButtonText: "Salva Elaborazione",
         saveProcessingWinTitle: "Nuova Elaborazione",
         
-        loadButton: "Carica Elaborazione",
+        
         loadProcessingNameHeader: 'Nome',
         loadProcessingDescriptionHeader: 'Descrizione',
         removeProcessingTooltip: 'Rimuovi Elaborazione',
@@ -64,7 +67,7 @@ GeoExt.Lang.add("it", {
         selectProcessingMsg: "Devi selezionare una elaborazione",
         loadProcessingWinTitle: "Carica Elaborazione",
         
-		saveDownloadMenuButton: "Scarica",    
+		saveDownloadMenuButton: "Esporta",    
 		saveDownloadTitle: "Esportazione",
 		saveDownloadNameFieldsetTitle: "Esportazione",
 		saveDownloadErrorTitle: "Esportazione Elaborazione",
@@ -75,7 +78,7 @@ GeoExt.Lang.add("it", {
 		
 		saveDownloadLoadingMsg: "Sto esportando... attendere prego",
 		
-        loadDownloadButton: "Storico",
+        loadDownloadButton: "Storico Esportazioni",
         loadDownloadProcessingWinTitle: "Download Elaborazione",
         loadDownloadProcessingButtonText: "Download Elaborazione",
         failureAchieveResourceTitle: "Errore",
@@ -153,7 +156,7 @@ GeoExt.Lang.add("it", {
         resolutionLevel5: "Rappr. Amministrativa Provinciale",
         selectionAreaLabel: "Area Selezionata",
         alertSimGridReloadTitle: "Aggiornamento Bersagli",
-        alertSimGridReloadMsg: "Vuoi aggiornare i dati di simulazione? - Tutte le modifica andranno perse!"        
+        alertSimGridReloadMsg: "Vuoi aggiornare i dati di simulazione? - Tutte le modifiche andranno perse!"        
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elementi {0} - {1} di {2}",
