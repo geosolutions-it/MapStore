@@ -89,7 +89,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     cellViewScale: 500010,
     maxProcessingArea: {
         1: 100000000,
-        2: 100000000,
+        2: 1000000000,
         3: 100000000,
         4: 100000000,
         5: 100000000
