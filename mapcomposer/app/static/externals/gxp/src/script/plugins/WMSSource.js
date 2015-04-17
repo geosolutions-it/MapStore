@@ -596,6 +596,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      *  Create a layer record given the config.
      */
 	createLayerRecord: function(config) {
+        if(Ext.isArray(config.title)) {
+            config.title = config.title[GeoExt.Lang.getLocaleIndex()];
+        }
 		if(this.useCapabilities) {
 			return this.createLayerRecordCapabilities(config);
 		}
@@ -687,8 +690,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      *  created from this source.
      */
     initDescribeLayerStore: function() {
-        var raw = this.store.reader.raw;
-        if (this.lazy) {
+        var raw = this.store.reader ? this.store.reader.raw : null;
+        if (this.lazy || !raw) {
             // When lazy, we assume that the server supports a DescribeLayer
             // request at the layer's url.
             raw = {
