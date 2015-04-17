@@ -898,6 +898,12 @@ GeoExt.Lang.add("fr", {
 	
 	"gxp.plugins.StaticPage.prototype": {
         tabTitle: "Page Statique"
+    },
+    
+    "gxp.plugins.ZoomToTimeExtent.prototype": {
+        menuText: "Zoom To Time Extent",
+        tooltip: "Zoom To Time Extent",
+        layerTimeAlert: "The selected Layer has no temporal dimension"        
     } 
 });
 

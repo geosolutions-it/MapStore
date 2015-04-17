@@ -574,3 +574,8 @@ div.olMap div.gx-overlay-playback {
 .x-btn .gxp-icon-areeallerta-curvacum, .x-menu-item .gxp-icon-areeallerta-curvacum {
     background-image: url(img/silk/chart_line.png) !important;
 }
+
+/* gxp_zoomtotimeextent */
+.x-btn .gxp-icon-zoomtotimeextent, .x-menu-item .gxp-icon-zoomtotimeextent, .x-tree-node .gxp-icon-zoomtotimeextent {
+    background-image: url(img/time/time_go.png);
+}
