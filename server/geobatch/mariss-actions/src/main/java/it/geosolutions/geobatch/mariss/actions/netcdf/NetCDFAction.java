@@ -78,27 +78,9 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
 
     private static final String PATHSEPARATOR = File.separator;
 
-    protected IngestionActionConfiguration configuration;
+    protected final IngestionActionConfiguration configuration;
 
-    //protected Map<String, Variable> foundVariables = new HashMap<String, Variable>();
-
-    //protected Map<String, String> foundVariableLongNames = new HashMap<String, String>();
-
-    //protected Map<String, String> foundVariableBriefNames = new HashMap<String, String>();
-
-    //protected Map<String, String> foundVariableUoM = new HashMap<String, String>();
-
-    protected JDBCDataStore dataStore;
-
-    //protected Date timedim;
-
-    //protected SARType type;
-
-    //protected GeneralEnvelope env;
-
-    //private String absolutePath;
-
-    private ConfigurationContainer container;
+    private final ConfigurationContainer container;
 
     public NetCDFAction(IngestionActionConfiguration actionConfiguration) {
         super(actionConfiguration);
@@ -153,9 +135,11 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                     if (ev instanceof FileSystemEvent) {
                         FileSystemEvent fileEvent = (FileSystemEvent) ev;
                         if (canProcess(fileEvent)) {
+                            // Create a new Container for all the attributes
+                            AttributeBean attributeBean = new AttributeBean();
                             // Getting file name
                             File inputFile = fileEvent.getSource();
-                            absolutePath = inputFile.getAbsolutePath();
+                            attributeBean.absolutePath = inputFile.getAbsolutePath();
                             // Unzipping the tar.gz file
                             File netcdfDir = untarFile(inputFile);
 
@@ -173,7 +157,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                     netcdfFile = files[0];
                                     // Getting Time dimension if present
                                     Pattern pattern = Pattern.compile(container.getPattern());
-                                    Matcher m = pattern.matcher(absolutePath);
+                                    Matcher m = pattern.matcher(attributeBean.absolutePath);
                                     if (m.matches()) {
                                         // Getting dates
                                         String date = m.group(1);
@@ -182,7 +166,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                                 "yyyyMMddHHmmss");
                                         toSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
                                         try {
-                                            timedim = toSdf.parse(date + time);
+                                            attributeBean.timedim = toSdf.parse(date + time);
                                         } catch (ParseException e) {
                                             LOGGER.error(e.getMessage());
                                         }
@@ -192,9 +176,9 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                             }
                             if (canProcessFile(netcdfFile)) {
                                 // Getting the File identifier
-                                String identifier = absolutePath.substring(0, absolutePath.length() - 8);
+                                String identifier = attributeBean.absolutePath.substring(0, attributeBean.absolutePath.length() - 8);
                                 // Getting SARType
-                                type = SARType.getType(getActionName());
+                                attributeBean.type = SARType.getType(getActionName());
                                 // Don't read configuration for the file, just
                                 // this.outputfeature configuration
                                 DataStore ds = FeatureConfigurationUtil
@@ -207,10 +191,10 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                         throw new ActionException(this, "Bad Datastore type "
                                                 + ds.getClass().getName());
                                     }
-                                    dataStore = (JDBCDataStore) ds;
-                                    dataStore.setExposePrimaryKeyColumns(true);
+                                    attributeBean.dataStore = (JDBCDataStore) ds;
+                                    attributeBean.dataStore.setExposePrimaryKeyColumns(true);
                                     // return next events configurations
-                                    Collection<EventObject> resultEvents = doProcess(netcdfFile, identifier);
+                                    Collection<EventObject> resultEvents = doProcess(netcdfFile, attributeBean);
                                     ret.addAll(resultEvents);
                                     
                                     // Prepare a Zip file containing the ShipDetection XML files
@@ -229,10 +213,12 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                         properties.createNewFile();
                                         // Append Useful properties
                                         FileUtils.write(properties, "identifier=" + identifier + "\n");
-                                        FileUtils.write(properties, "time=" + new Timestamp(timedim.getTime()) + "\n", true);
+                                        if(attributeBean.timedim != null){
+                                            FileUtils.write(properties, "time=" + new Timestamp(attributeBean.timedim.getTime()) + "\n", true);
+                                        }
                                         FileUtils.write(properties, "originalFileName=" + netcdfFile.getName() + "\n", true);
-                                        FileUtils.write(properties, "sartype=" + type + "\n", true);
-                                        FileUtils.write(properties, "envelope=" + new ReferencedEnvelope(env) + "\n", true);
+                                        FileUtils.write(properties, "sartype=" + attributeBean.type + "\n", true);
+                                        FileUtils.write(properties, "envelope=" + new ReferencedEnvelope(attributeBean.env) + "\n", true);
                                         FileUtils.write(properties, "service=" + configuration.getServiceName() + "\n", true);
                                         File[] filesUpdated = new File[numFiles + 1];
                                         System.arraycopy(files, 0, filesUpdated, 0, numFiles);
@@ -273,7 +259,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
 
     protected abstract boolean canProcessFile(File netcdfFile);
 
-    private Collection<EventObject> doProcess(File netcdfFile, String identifier) throws ActionException {
+    private Collection<EventObject> doProcess(File netcdfFile, AttributeBean attributeBean) throws ActionException {
         // Creation of the Output Event Queue
         List<EventObject> events = new ArrayList<EventObject>();
 
@@ -288,7 +274,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         File[] createdFiles = null;
         List<String> cfNames = new ArrayList<String>();
         try {
-            createdFiles = writeNetCDF(tempDir, inputFileName, cfNames);
+            createdFiles = writeNetCDF(tempDir, inputFileName, cfNames, attributeBean);
         } catch (IOException e) {
             throw new ActionException(NetCDFAction.class, e.getLocalizedMessage());
         }
@@ -323,7 +309,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             File[] finalFiles = new File[createdFiles.length];
             String[] layerNames = new String[createdFiles.length];
             // Boolean indicating if the operation has gone
-            boolean sent = handleMosaic(reader, publisher, createdFiles, finalFiles, layerNames, identifier);
+            boolean sent = handleMosaic(reader, publisher, createdFiles, finalFiles, layerNames, attributeBean.identifier);
 
             // Move the original netCDF File in the netcdf directory
             
@@ -339,14 +325,14 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                 }
                 int index = 0;
                 // Create a Geometry for the NetCDF envelope
-                Geometry geo = JTS.toGeometry(new ReferencedEnvelope(env));
-                CoordinateReferenceSystem crs = env.getCoordinateReferenceSystem();
+                Geometry geo = JTS.toGeometry(new ReferencedEnvelope(attributeBean.env));
+                CoordinateReferenceSystem crs = attributeBean.env.getCoordinateReferenceSystem();
                 geo.setUserData(crs);
                 for (File f : finalFiles) {
                     // ... setting up the appropriate event for the next action
                     events.add(new FileSystemEvent(f, FileSystemEventType.FILE_ADDED));
                     // Update DataStore
-                    insertDb(identifier, f.getAbsolutePath(), absolutePath, layerNames[index], cfNames.get(index), geo);
+                    insertDb(attributeBean, f.getAbsolutePath(), layerNames[index], cfNames.get(index), geo);
                     // Updating array index
                     index++;
                 }
@@ -647,7 +633,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         return reader.existsCoverage(container.getDefaultNameSpace(), storename, coveragename);
     }
 
-    protected abstract File[] writeNetCDF(File tempDir, String inputFileName, List<String> cfNames) throws IOException,
+    protected abstract File[] writeNetCDF(File tempDir, String inputFileName, List<String> cfNames, AttributeBean attributeBean) throws IOException,
             ActionException;
 
     @Override
@@ -680,7 +666,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
 
     protected double definingOutputVariables(boolean hasDepth, int nLat, int nLon,
             NetcdfFileWriteable ncFileOut, NetcdfFile ncFileIn, boolean hasTimeDim, int nTime,
-            String varName) {
+            String varName, AttributeBean attributeBean) {
         /**
          * createNetCDFCFGeodeticDimensions( NetcdfFileWriteable ncFileOut, final boolean hasTimeDim, final int tDimLength, final boolean hasZetaDim,
          * final int zDimLength, final String zOrder, final boolean hasLatDim, final int latDimLength, final boolean hasLonDim, final int
@@ -689,7 +675,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         final List<Dimension> outDimensions = NetCDFUtils.createNetCDFCFGeodeticDimensions(
                 ncFileOut, true, nLat, true, nLon, DataType.FLOAT, hasTimeDim, nTime);
         // Adding old dimensions
-        outDimensions.addAll(getOldDimensions(ncFileIn));
+        outDimensions.addAll(getOldDimensions(ncFileIn, attributeBean));
         // Filtering az_size/ra_size dimensions
         List<Dimension> finalDims = new ArrayList<Dimension>(outDimensions);
         for (Dimension dim : outDimensions) {
@@ -705,24 +691,24 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         // defining output variable
         // SIMONE: replaced foundVariables.get(varName).getDataType()
         // with DataType.DOUBLE
-        ncFileOut.addVariable(foundVariableBriefNames.get(varName), foundVariables.get(varName)
+        ncFileOut.addVariable(attributeBean.foundVariableBriefNames.get(varName), attributeBean.foundVariables.get(varName)
                 .getDataType(), finalDims);
-        ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "long_name",
-                foundVariableLongNames.get(varName));
-        ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "units",
-                foundVariableUoM.get(varName));
-        ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName),
+        ncFileOut.addVariableAttribute(attributeBean.foundVariableBriefNames.get(varName), "long_name",
+                attributeBean.foundVariableLongNames.get(varName));
+        ncFileOut.addVariableAttribute(attributeBean.foundVariableBriefNames.get(varName), "units",
+                attributeBean.foundVariableUoM.get(varName));
+        ncFileOut.addVariableAttribute(attributeBean.foundVariableBriefNames.get(varName),
                 NetCDFUtilities.DatasetAttribs.MISSING_VALUE, noData);
 
         return noData;
     }
 
-    protected Collection<? extends Dimension> getOldDimensions(NetcdfFile ncFileIn) {
+    protected Collection<? extends Dimension> getOldDimensions(NetcdfFile ncFileIn, AttributeBean attributeBean) {
         List<Dimension> dimensions = new ArrayList<Dimension>();
         for (Object obj : ncFileIn.getVariables()) {
             final Variable var = (Variable) obj;
             final String varName = var.getName();
-            if (foundVariables.containsKey(varName)) {
+            if (attributeBean.foundVariables.containsKey(varName)) {
                 List<Dimension> dims = var.getDimensions();
                 dimensions.addAll(dims);
             }
@@ -766,25 +752,28 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         }
     }
 
-    public boolean insertDb(String identifier, String outFileLocation, String originalFilePath, String layerName, String cfName, Geometry geo) throws ActionException {
+    public boolean insertDb(AttributeBean attributeBean, String outFileLocation, String layerName, String cfName, Geometry geo) throws ActionException {
         boolean result = false;
 
         String sql = "INSERT INTO " + configuration.getProductsTableName() + " VALUES (?,?,ST_GeomFromText(?),?,?,?,?,?,?)";
 
-        
         Connection conn = null;
 
         try {
-            conn = dataStore.getDataSource().getConnection();
+            conn = attributeBean.dataStore.getDataSource().getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, configuration.getServiceName());
-            ps.setString(2, identifier);
+            ps.setString(2, attributeBean.identifier);
             ps.setString(3, geo.toText());
-            ps.setDate(4, new java.sql.Date(timedim.getTime()));
+            if(attributeBean.timedim != null){
+                ps.setDate(4, new java.sql.Date(attributeBean.timedim.getTime()));
+            } else {
+                ps.setDate(4, new java.sql.Date(1));
+            }
             ps.setString(5, cfName);
-            ps.setString(6, type.name());
+            ps.setString(6, attributeBean.type.name());
             ps.setString(7, outFileLocation);
-            ps.setString(8, originalFilePath);
+            ps.setString(8, attributeBean.absolutePath);
             ps.setString(9, layerName);
 
             result = ps.execute() && ps.getUpdateCount() > 0;
@@ -867,5 +856,28 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                 }
             }
         }
+    }
+    
+    static class AttributeBean{
+        
+        Map<String, Variable> foundVariables = new HashMap<String, Variable>();
+
+        Map<String, String> foundVariableLongNames = new HashMap<String, String>();
+
+        Map<String, String> foundVariableBriefNames = new HashMap<String, String>();
+
+        Map<String, String> foundVariableUoM = new HashMap<String, String>();
+        
+        Date timedim;
+
+        SARType type;
+
+        GeneralEnvelope env;
+
+        String absolutePath;
+        
+        String identifier;
+        
+        JDBCDataStore dataStore;
     }
 }
