@@ -621,19 +621,21 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         var record = this.layerRecord;
         var source = this.target.getSource(record);
         if (source && source instanceof gxp.plugins.WMSSource) {
-            source.getSchema(record, function(schema) {
+            source.getSchema(record, function(schema, owsType) {
                 if (schema === false) {
-                
-                    //information about why selected layers are not queriable.                
-                    var layer = record.get("layer");
-                    var wmsVersion = layer.params.VERSION;
-                    Ext.MessageBox.show({
-                        title: this.noValidWmsVersionMsgTitle,
-                        msg: this.noValidWmsVersionMsgText + wmsVersion,
-                        buttons: Ext.Msg.OK,
-                        animEl: 'elId',
-                        icon: Ext.MessageBox.INFO
-                    });
+					
+					if(owsType == "WFS"){
+						//information about why selected layers are not queriable.                
+						var layer = record.get("layer");
+						var wmsVersion = layer.params.VERSION;
+						Ext.MessageBox.show({
+							title: this.noValidWmsVersionMsgTitle,
+							msg: this.noValidWmsVersionMsgText + wmsVersion,
+							buttons: Ext.Msg.OK,
+							animEl: 'elId',
+							icon: Ext.MessageBox.INFO
+						});
+					}
                     
                     this.clearFeatureStore();
                 } else {
