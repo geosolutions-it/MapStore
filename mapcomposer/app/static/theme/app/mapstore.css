@@ -11,7 +11,7 @@
 	left : 0px;
 	margin-right: 0px;
 	width : 100%;
-background: url(img/fdh/bgimg.gif) repeat-x;
+	background: url(img/fdh/bgimg.gif) repeat-x;
 }
 #right-banner {
 	float : right;
@@ -291,4 +291,37 @@ div#homelogos ul li a:hover {
     height:5px !important;
     padding:0;
     background-color:transparent;
+}
+
+/* gxp_downloadpanel */
+.x-action-col-cell  .loading{
+    background-image: url(img/loadingbar.gif) !important;
+    width:16px;
+    height:16px;
+}
+
+.x-action-col-cell  .accept {
+    background-image: url(img/silk/accept.png) !important;
+    width:16px;
+    height:16px;
+}
+
+.x-action-col-cell  .decline {
+    background-image: url(img/silk/decline.png) !important;
+    width:16px;
+    height:16px;
+}
+
+.x-action-col-cell  .download, .x-btn .download{
+    background-image: url(img/download.png) !important;
+    width:16px;
+    height:16px;
+}
+
+.x-action-col-cell  .exec-id {
+    background-image: url(img/silk/tag_blue.png) !important;
+    width:16px;
+    height:16px;
+	margin-left: 15px;
+	background-repeat: no-repeat;
 }
