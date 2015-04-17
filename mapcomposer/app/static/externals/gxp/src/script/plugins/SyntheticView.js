@@ -35,8 +35,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     buffersLabel: "Raggi Aree Danno",
     resultsLabel: "Risultato Elaborazione",
     fieldSetTitle: "Elaborazione",
-    cancelButton: "Annulla Elaborazione",
-    processButton: "Esegui Elaborazione",
+    cancelButton: "Annulla",
+    processButton: "Nuova",
+    editProcessButton: "Modifica",
     analyticViewButton: "Visualizzazione Analitica:",
     temporalLabel: "Condizioni Temporali",
     elabStandardLabel: "Elaborazione Standard",
@@ -54,7 +55,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     notVisibleOnGridMessage: "Formula non visibile a questa scala",
     refreshGridButton: "Aggiorna la griglia",
     simMsg: 'Modifica dei parametri di simulazione non possibile a questa scala. Zoomare fino a scala 1:17061',
-    saveButton: "Salva Elaborazione",
+    saveButton: "Salva",
     saveProcessingTitle: "Salvataggio Elaborazione",
     saveProcessingMsg: "Elaborazione già salvata con questo nome, vuoi sostituirla?",
     saveProcessingErrorTitle: "Salvataggio Elaborazione",
@@ -68,7 +69,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     saveProcessingButtonText: "Salva Elaborazione",
     saveProcessingWinTitle: "Nuova Elaborazione",
     
-	loadButton: "Carica Elaborazione",
+	loadButton: "Carica",
     loadProcessingNameHeader: 'Name',
     loadProcessingDescriptionHeader: 'Descrizione',
     removeProcessingTooltip: 'Rimuovi Elaborazione',
@@ -79,7 +80,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     selectProcessingMsg: "Devi selezionare una elaborazione",
     loadProcessingWinTitle: "Carica Elaborazione",   
     
-    saveDownloadMenuButton: "Scarica",    
+    saveDownloadMenuButton: "Esporta",    
     saveDownloadTitle: "Esportazione",
 	saveDownloadNameFieldsetTitle: "Esportazione",
 	saveDownloadErrorTitle: "Esportazione Elaborazione",
@@ -90,7 +91,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	
 	saveDownloadLoadingMsg: "Sto esportando... attendere prego",
 
-    loadDownloadButton: "Storico",
+    loadDownloadButton: "Storico Esportazioni",
     loadDownloadProcessingWinTitle: "Download Elaborazione",
     loadDownloadProcessingButtonText: "Download Elaborazione",
     failureAchieveResourceTitle: "Errore",
@@ -111,7 +112,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
     id: "syntheticview",
     
-    layerSourceName: "destination",    
+    layerSourceName: "destinationtiled",    
     
     selectionLayerName: "geosolutions:aggregated_data_selection",
     selectionLayerTitle: "ElaborazioneStd",         
@@ -751,6 +752,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         var descrizione = "descrizione_" + GeoExt.Lang.locale;
         var nome_sostanza = "nome_sostanza_" + GeoExt.Lang.locale;
         
+        if(!status.resolution) {
+            status.resolution = 1;
+        }
+        
         if(status.accident.feature){
             status.accident.name = status.accident.feature.attributes[tipologia];
         }else{
@@ -1049,14 +1054,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                     if((count + 1) < resourceList.length) {
                         processOne.call(this, count + 1);
                     } else {
-                        category === 'processing' ? this.showLoadedProcessings(resourceList) : this.downloadSuccess(resourceList); // Done!
+                        category === 'processing' ? this.showLoadedProcessings(resourceList) : this.showDownloads(resourceList); // Done!
                     }
                 }, undefined, this);
             }
             if(resourceList.length  > 0) {
                 processOne.call(this, 0);
             } else {
-                category === 'processing' ? this.showLoadedProcessings(resourceList) : this.downloadSuccess(resourceList); // Done!
+                category === 'processing' ? this.showLoadedProcessings(resourceList) : this.showDownloads(resourceList); // Done!
             }
         };
         
@@ -1215,7 +1220,92 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
         };
         
+        this.buttonsBar1 = new Ext.Container({
+            layout:'hbox',
+            style: 'margin-left: 8px;margin-top:20px',
+            layoutConfig: {
+                defaultMargins: {top:0, right:6, bottom:0, left:0}
+            },
+            items: [{
+                xtype:'button',
+                text: this.cancelButton,
+                iconCls: 'cancel-button',
+                buttonAlign:'left',
+                scope: this,
+                width: 75,
+                handler: this.onCancelProcessing
+            },{
+                xtype:'button',
+                text: this.processButton,
+                iconCls: 'elab-button',
+                scope: this,
+                width: 75,
+                handler: this.onNewProcessing
+            },{
+                xtype:'button',
+                text: this.loadButton,
+                iconCls: 'load-button',
+                scope: this,
+                name: "load-proc-geostore",
+                scope: this,
+                width: 75,
+                handler: this.loadProcessing
+            },{
+                xtype:'button',
+                text: this.editProcessButton,
+                id: 'edit-processing-button',
+                iconCls: 'edit-button',
+                scope: this,
+                disabled: true,
+                width: 75,
+                handler: this.onEditProcessing
+            }]
+        });
         
+        this.buttonsBar2 = new Ext.Container({
+            layout:'hbox',
+            style: 'margin-left: 8px;margin-top:20px',
+            layoutConfig: {
+                defaultMargins: {top:0, right:6, bottom:0, left:0}
+            },
+            items:[{
+                xtype:'button',
+                text: this.saveButton,
+                iconCls: 'save-button',
+                id: "save-proc-geostore",
+                scope: this,
+                disabled: true,
+                width: 75,
+                handler: this.saveProcessing
+        
+            },{
+                xtype: 'splitbutton',
+                text: this.saveDownloadMenuButton,
+                iconCls: 'save-download-button',
+                id: "save-download-proc-geostore",
+                scope: this,
+                width: 75,
+                disabled: true,
+                menu :{
+                    xtype: "menu",
+                    items: [{
+                        iconCls: 'load-download-button',
+                        text: this.loadDownloadButton,
+                        scope: this,
+                        name: "load-download-proc-geostore",
+                        width: 150,
+                        handler: this.onLoadDownload
+                    }]
+                },
+                handler: function(){
+                    if(this.showDisclaimerBeforeExport) {
+                        this.exportDisclaimer();
+                    } else {
+                        this.exportProcessing();
+                    }                            
+                }
+            }]
+        });
              
         
         this.fieldSet = new Ext.form.FieldSet({
@@ -1240,431 +1330,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                  this.accident,
                  this.seriousness,
                  this.results,
-                 this.resultsContainer
-            ],
-            bbar:[{
-                iconCls: 'save-button',
-                xtype: 'button',
-                text: this.saveProcessingTitle,
-                menu:{
-                    xtype: "menu",
-                    showSeparator: true, 
-                    items:[{
-                        text: this.saveButton,
-                        iconCls: 'save-button',
-                        id: "save-proc-geostore",
-                        scope: this,
-                        disabled: true,
-                        handler: this.saveProcessing
-                    },{
-                        text: this.loadButton,
-                        iconCls: 'load-button',
-                        scope: this,
-                        name: "load-proc-geostore",
-                        scope: this,
-                        disabled: false,
-                        handler: this.loadProcessing
-                    }]
-                }
-            },{
-                iconCls: 'save-download-button',
-                xtype: 'button',
-                text: this.saveDownloadTitle,
-                menu:{
-                    xtype: "menu",
-                    showSeparator: true, 
-                    items:[{
-                        text: this.saveDownloadMenuButton,
-                        iconCls: 'save-download-button',
-                        id: "save-download-proc-geostore",
-                        scope: this,
-                        disabled: true,
-                        handler: function(){
-							if(this.showDisclaimerBeforeExport) {
-								this.exportDisclaimer();
-							} else {
-								this.exportProcessing();
-							}                            
-                        }
-                    },{
-                        text: this.loadDownloadButton,
-                        iconCls: 'load-download-button',
-                        scope: this,
-                        name: "load-download-proc-geostore",
-                        disabled: false,
-                        handler: function(){
-                                var me = this;
-                                this.newDownloadStatus;
-                                
-                                var loadGeostoreStatus = function(status){
-                                    Ext.Msg.show({
-                                        title: "Download",
-                                        buttons: Ext.Msg.OK,
-                                        msg: '<a href='+status+' target="_blank">' + me.downloadFileLabel + '</a>',
-                                        icon: Ext.MessageBox.INFO,
-                                        scope: this
-                                    });
-                                };
-                                
-                                this.downloadSuccess = function(resourceList){
-
-                                    if (!resourceList){
-                                        failureDownload();
-                                        return;
-                                    }
-                                    
-                                    var resourceDataReader = new Ext.data.ArrayReader({}, [
-                                           {name: 'id', type: 'int', mapping: 'id'},
-                                           {name: 'name', type: 'string', mapping: 'description'},
-                                           {name: 'description', type: 'string', mapping: 'attributeDesc'},
-                                           {name: 'creazione', type: 'date', mapping: 'creation'},
-                                           {name: 'valido', type: 'bool', mapping: 'valid'}
-                                    ]);
-                                    
-                                    this.downloadResourceDataStore = new Ext.data.Store({
-                                        reader: resourceDataReader,
-                                        data: resourceList
-                                    });
-                                    
-                                    var xg = Ext.grid;
-                                    
-                                    this.downloadProcessingGrid = new xg.GridPanel({
-                                        id: 'id_processing_grid',
-                                        store: this.downloadResourceDataStore,
-                                        header: false,
-                                        sm: new xg.RowSelectionModel({
-                                            singleSelect:true,
-                                            scope: this,
-                                            listeners: {
-                                                rowselect: function (grid,rowIndex,record) {
-                                                
-                                                    var success = function(data){
-                                                        me.newDownloadStatus = data.Resource.data.data;
-                                                        return me.newDownloadStatus;
-                                                    };
-                                                    
-                                                    var failure = function(){};
-                                                    var newRecord = record.get('id');
-                                                    
-                                                    //Assegno il nome alla risorsa (elaborazione)
-                                                    var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
-                                                        type: "resource",
-                                                        category: "download",
-                                                        id: newRecord
-                                                    });  
-                                                    
-                                                    me.geoStore.getEntityByID(geostoreEntityResource,success,failure);
-                                                },
-                                                scope:this
-                                            }
-                                        }),
-                                        cm: new xg.ColumnModel({
-                                            columns: [
-                                                {
-                                                    header: me.loadProcessingNameHeader,
-                                                    width : 60,
-                                                    sortable : true,
-                                                    dataIndex: 'name'
-                                                },{
-                                                    header: me.loadProcessingDescriptionHeader,
-                                                    width : 120,
-                                                    sortable : true,
-                                                    dataIndex: 'description'
-                                                },{
-                                                    header: me.loadProcessingCreationHeader,
-                                                    width : 120,
-                                                    sortable : true,
-                                                    dataIndex: 'creazione',
-                                                    xtype: 'datecolumn',
-                                                    format: 'd/m/Y H:i:s'
-                                                },{
-                                                    header: me.loadProcessingValidHeader,
-                                                    width : 50,
-                                                    sortable : true,
-                                                    dataIndex: 'valido',
-                                                    trueText: 'v',
-                                                    falseText:' ',
-                                                    xtype: 'booleancolumn'
-                                                },{
-                                                    xtype: 'actioncolumn',
-                                                    width: 20,
-                                                    header: '',
-                                                    listeners: {
-                                                        scope: this,
-                                                        click: function(column, grd, row, e){
-                                                            grd.getSelectionModel().selectRow(row);
-                                                        }
-                                                    },
-                                                    items: [
-                                                        {
-                                                        tooltip: me.removeProcessingTooltip,
-                                                        icon: me.deleteIconPath,
-                                                        scope: this,
-                                                        handler: function(gpanel, rowIndex, colIndex) {
-
-                                                                var deleteRecord = function(btn, text){
-                                                                    if (btn == 'yes'){
-                                                                        var store = gpanel.getStore();
-                                                                        var record = store.getAt(rowIndex);
-                                                                        var id = record.get("id");
-                                                                        var removeResource = {
-                                                                            type: 'resource',
-                                                                            id: id
-                                                                        };
-                                                                        
-                                                                        gpanel.getSelectionModel().clearSelections(true);
-                                                                        var downloadUrl = me.newDownloadStatus;
-                                                                        me.newDownloadStatus = null;
-                                                                        me.deleteDownload.call(me, downloadUrl, removeResource, function(success, errorMsg) {
-                                                                            if(success) {
-                                                                                 me.geoStore.deleteEntity(removeResource);
-                                                                                 store.remove(record);
-                                                                            } else {
-                                                                                Ext.Msg.show({
-                                                                                    title: me.removeProcessingMsgTitle,
-                                                                                    buttons: Ext.Msg.YESNO,
-                                                                                    msg: errorMsg,
-                                                                                    fn: function(btn, text) {
-                                                                                        if(btn == 'yes') {
-                                                                                            me.geoStore.deleteEntity(removeResource);
-                                                                                            store.remove(record);
-                                                                                        }
-                                                                                    },
-                                                                                    icon: Ext.MessageBox.WARNING,
-                                                                                    scope: this
-                                                                                });
-                                                                            }
-                                                                        });
-                                                                        
-                                                                    }
-                                                                }
-                                                                
-                                                                Ext.Msg.show({
-                                                                    title: me.removeProcessingMsgTitle,
-                                                                    buttons: Ext.Msg.YESNO,
-                                                                    msg: me.removeProcessingMsg,
-                                                                    fn: deleteRecord,
-                                                                    icon: Ext.MessageBox.WARNING,
-                                                                    scope: this
-                                                                });
-                                                               
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                              ]                
-                                        }),
-                                        viewConfig: {
-                                            forceFit: true
-                                        }            
-                                    });
-
-                                    this.loadDownloadPanel = new Ext.FormPanel({
-                                        frame: true,
-                                        labelWidth: 80,
-                                        layout: "fit",
-                                        defaultType: "textfield",
-                                        scope: this,
-                                        items: [this.downloadProcessingGrid],
-                                        buttons: [{
-                                            text: me.loadDownloadProcessingButtonText,
-                                            formBind: true,
-                                            iconCls: 'load-download-button',
-                                            handler: function(){
-                                                if(me.newDownloadStatus){
-                                                
-                                                    loadGeostoreStatus(me.newDownloadStatus);
-                                                    me.newDownloadStatus = null;
-                                                    
-                                                }else{
-                                                
-                                                    Ext.Msg.show({
-                                                        title: me.selectProcessingMsgTitle,
-                                                        buttons: Ext.Msg.OK,
-                                                        msg: me.selectProcessingMsg,
-                                                        icon: Ext.MessageBox.INFO,
-                                                        scope: this
-                                                    });
-                                                    
-                                                }
-                                            },
-                                            listeners:{
-                                                'click': function( button, e ){
-                                                    if(button.initialConfig.scope.newDownloadStatus){
-                                                        this.scope.loadDownloadWin.close();
-                                                    }
-                                                }
-                                            },
-                                            scope: this
-                                        }],
-                                        keys: [{ 
-                                            key: [Ext.EventObject.ENTER], 
-                                            handler: function(){
-                                                if(me.newDownloadStatus){
-                                                    loadGeostoreStatus(me.newDownloadStatus);
-                                                }
-                                            },
-                                            scope: this
-                                        }]
-                                    });
-                                            
-                                    this.loadDownloadWin = new Ext.Window({
-                                        title: me.loadDownloadProcessingWinTitle,
-                                        iconCls: 'load-download-button',
-                                        layout: "fit",
-                                        width: 450,
-                                        closeAction: 'close',
-                                        height: 250,
-                                        resizable: false,
-                                        plain: true,
-                                        border: false,
-                                        modal: true,
-                                        autoScroll: true,
-                                        items: [this.loadDownloadPanel]
-                                    });
-                                    this.loadDownloadWin.show();
-                                }
-                                
-                                var failureDownload = function(){
-                                    Ext.Msg.show({
-                                        title: me.failureAchieveResourceTitle,
-                                        buttons: Ext.Msg.OK,
-                                        msg: me.failureAchieveResourceMsg,
-                                        icon: Ext.MessageBox.INFO,
-                                        scope: this
-                                    });
-                                };
-
-                                //RICHIAMO NOME CATEGORIA
-                                //me.geoStore.getCategoryResources("download",this.downloadSuccess,failureDownload);
-                                
-                                me.geoStore.getCategoryResources("download",this.searchAttributesSuccess.createDelegate(this, "download", 0),failureDownload);
-                        }
-                    }]
-                }
-            }],
-            buttons: [{
-                text: this.cancelButton,
-                iconCls: 'cancel-button',
-                buttonAlign:'left',
-                scope: this,
-                handler: function(){        
-                    var map = this.target.mapPanel.map;
-                    
-                    // remove analytic view layers (buffers, targets, selected targets)                    
-                    this.removeAnalyticViewLayers(map);
-                    
-                    // reset risk layers
-                    this.removeRiskLayers(map);     
-
-                    this.removeModifiedLayer(map);
-                    //this.restoreOriginalRiskLayers(map);
-                    this.enableDisableRoads(true);
-                    
-                    this.disableSouthPanel();  
-
-                    this.processingDone = false;
-                    
-                    Ext.getCmp('warning_message').setValue('');
-                    
-                    Ext.getCmp('analytic_view').disable();
-                    
-                    // remove resultContainer on elab cancel
-                    this.resultsContainer.removeAll();
-                    this.resultsContainer.doLayout();
-                    var form = this.fieldSet.ownerCt.getForm();
-                    for (var i=0;i<form.items.items.length;i++){
-                        form.items.items[i].setValue("");
-                    }
-                    this.reset = true;
-                    
-                    //disable save and download processing buttons
-                    this.fieldSet.getBottomToolbar().items.items[1].menu.items.items[0].disable();
-                    this.fieldSet.getBottomToolbar().items.items[0].menu.items.items[0].disable();
-                    
-                    //this.processingPane.enableDisableSimulation(false);
-                }
-            }, {
-                text: this.processButton,
-                iconCls: 'elab-button',
-                scope: this,
-                handler: function(){        
-                    var map = this.target.mapPanel.map;
-                    /*
-                    // remove analytic view layers (buffers, targets, selected targets)
-                    this.removeAnalyticViewLayers(map);                    
-                             
-                    // reset risk layers
-                    if(this.originalRiskLayers !== null) {
-                        this.removeRiskLayers(map);                                       
-                        this.restoreOriginalRiskLayers(map);
-                    }
-                                
-                    var south = Ext.getCmp("south").collapse();
-                    */
-                    
-                    if(! this.processingPane.aoiFieldset)
-                        this.processingPane.show();
-                    else{
-                        this.processingPane.reshow(Ext.getCmp(this.outputTarget));
-
-                        if(this.status){
-                            if(this.status.processing == 2){
-                                me.processingPane.temporal.enable();
-                            }
-                        }else{
-                            if(me.processingPane.elaborazione.value != 2){
-                                me.processingPane.temporal.disable();
-                            }
-                        }
-                    }    
-                
-                    if(this.status && !this.status.initial && !this.reset){
-                        if(this.status.roi) {
-                            this.target.mapPanel.map.zoomToExtent(this.status.roi.bbox);
-                        }
-                        this.processingPane.setStatus(this.status);
-                    } else {
-						this.processingPane.updateAOI({
-                            type: 'aoi',
-                            bbox: map.getExtent().clone()
-                        });
-					}
-                    
-                    if(this.status && !this.status.initial && this.reset){
-
-                        // Tipo elaborazione
-                        this.processingPane.elaborazione.setValue(1);                        
-                        // Formula
-                        this.processingPane.formula.setValue(this.processingPane.formula.getStore().data.items[0].get('id_formula'));                        
-                        // Resolution
-                        this.processingPane.resolution.setValue(this.processingPane.resolution.getStore().data.items[0].get('id_resolution'));                        
-                        // Temporali
-                        this.processingPane.temporal.setValue("fp_scen_centrale");                        
-                        this.processingPane.temporal.disable();   
-                        // Categoria
-                        this.processingPane.macrobers.setValue(this.processingPane.allTargetOption);                        
-                        // Bersaglio
-                        this.processingPane.bers.setValue("");                        
-                        // Classe ADR
-                        this.processingPane.classi.setValue(this.processingPane.allClassOption);                        
-                        // Sostanza
-                        this.processingPane.sostanze.setValue(this.processingPane.allSostOption);
-                        // Incidente
-                        this.processingPane.accident.setValue(this.processingPane.allScenOption);
-                        // Entità
-                        this.processingPane.seriousness.setValue(this.processingPane.allEntOption);                         
-
-                        //this.processingPane.setStatus(this.status);
-                        
-                        this.reset = false;
-                    }
-                }
-            }]
+                 this.resultsContainer,
+                 this.buttonsBar1,
+                 this.buttonsBar2
+            ]
         });
         
-        var fieldSetBottomToolbar = this.fieldSet.getBottomToolbar();
-        fieldSetBottomToolbar.addClass("my-toolbar");
+        /*var fieldSetBottomToolbar = this.fieldSet.getBottomToolbar();
+        fieldSetBottomToolbar.addClass("my-toolbar");*/
         
         var panel = new Ext.FormPanel({
             border: false,
@@ -1845,6 +1518,349 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return this.controlPanel;
         
         
+    },
+    
+    failureDownload : function(){
+        Ext.Msg.show({
+            title: this.failureAchieveResourceTitle,
+            buttons: Ext.Msg.OK,
+            msg: this.failureAchieveResourceMsg,
+            icon: Ext.MessageBox.INFO,
+            scope: this
+        });
+    },
+
+    
+    showDownloads: function(resourceList) {
+        if (!resourceList){
+            this.failureDownload();
+            return;
+        }
+        
+        var resourceDataReader = new Ext.data.ArrayReader({}, [
+               {name: 'id', type: 'int', mapping: 'id'},
+               {name: 'name', type: 'string', mapping: 'description'},
+               {name: 'description', type: 'string', mapping: 'attributeDesc'},
+               {name: 'creazione', type: 'date', mapping: 'creation'},
+               {name: 'valido', type: 'bool', mapping: 'valid'}
+        ]);
+        
+        this.downloadResourceDataStore = new Ext.data.Store({
+            reader: resourceDataReader,
+            data: resourceList
+        });
+               
+        this.downloadProcessingGrid = new Ext.grid.GridPanel({
+            id: 'id_processing_grid',
+            store: this.downloadResourceDataStore,
+            header: false,
+            sm: new Ext.grid.RowSelectionModel({
+                singleSelect:true,
+                scope: this,
+                listeners: {
+                    rowselect: function (grid,rowIndex,record) {
+                    
+                        var success = function(data){
+                            this.newDownloadStatus = data.Resource.data.data;
+                            return this.newDownloadStatus;
+                        };
+                        
+                        var failure = function(){};
+                        var newRecord = record.get('id');
+                        
+                        //Assegno il nome alla risorsa (elaborazione)
+                        var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
+                            type: "resource",
+                            category: "download",
+                            id: newRecord
+                        });  
+                        
+                        this.geoStore.getEntityByID(geostoreEntityResource, success, failure, this);
+                    },
+                    scope:this
+                }
+            }),
+            cm: new Ext.grid.ColumnModel({
+                columns: [
+                    {
+                        header: this.loadProcessingNameHeader,
+                        width : 60,
+                        sortable : true,
+                        dataIndex: 'name'
+                    },{
+                        header: this.loadProcessingDescriptionHeader,
+                        width : 120,
+                        sortable : true,
+                        dataIndex: 'description'
+                    },{
+                        header: this.loadProcessingCreationHeader,
+                        width : 120,
+                        sortable : true,
+                        dataIndex: 'creazione',
+                        xtype: 'datecolumn',
+                        format: 'd/m/Y H:i:s'
+                    },{
+                        header: this.loadProcessingValidHeader,
+                        width : 50,
+                        sortable : true,
+                        dataIndex: 'valido',
+                        trueText: 'v',
+                        falseText:' ',
+                        xtype: 'booleancolumn'
+                    },{
+                        xtype: 'actioncolumn',
+                        width: 20,
+                        header: '',
+                        listeners: {
+                            scope: this,
+                            click: function(column, grd, row, e){
+                                grd.getSelectionModel().selectRow(row);
+                            }
+                        },
+                        items: [
+                            {
+                            tooltip: this.removeProcessingTooltip,
+                            icon: this.deleteIconPath,
+                            scope: this,
+                            handler: function(gpanel, rowIndex, colIndex) {
+
+                                    var deleteRecord = function(btn, text){
+                                        if (btn == 'yes'){
+                                            var store = gpanel.getStore();
+                                            var record = store.getAt(rowIndex);
+                                            var id = record.get("id");
+                                            var removeResource = {
+                                                type: 'resource',
+                                                id: id
+                                            };
+                                            
+                                            gpanel.getSelectionModel().clearSelections(true);
+                                            var downloadUrl = this.newDownloadStatus;
+                                            this.newDownloadStatus = null;
+                                            this.deleteDownload.call(this, downloadUrl, removeResource, function(success, errorMsg) {
+                                                if(success) {
+                                                     this.geoStore.deleteEntity(removeResource);
+                                                     store.remove(record);
+                                                } else {
+                                                    Ext.Msg.show({
+                                                        title: this.removeProcessingMsgTitle,
+                                                        buttons: Ext.Msg.YESNO,
+                                                        msg: errorMsg,
+                                                        fn: function(btn, text) {
+                                                            if(btn == 'yes') {
+                                                                this.geoStore.deleteEntity(removeResource);
+                                                                store.remove(record);
+                                                            }
+                                                        },
+                                                        icon: Ext.MessageBox.WARNING,
+                                                        scope: this
+                                                    });
+                                                }
+                                            });
+                                            
+                                        }
+                                    }
+                                    
+                                    Ext.Msg.show({
+                                        title: this.removeProcessingMsgTitle,
+                                        buttons: Ext.Msg.YESNO,
+                                        msg: this.removeProcessingMsg,
+                                        fn: deleteRecord,
+                                        icon: Ext.MessageBox.WARNING,
+                                        scope: this
+                                    });
+                                   
+                                }
+                            }
+                        ]
+                    }
+                ]                
+            }),
+            viewConfig: {
+                forceFit: true
+            }            
+        });
+
+        this.loadDownloadPanel = new Ext.FormPanel({
+            frame: true,
+            labelWidth: 80,
+            layout: "fit",
+            defaultType: "textfield",
+            scope: this,
+            items: [this.downloadProcessingGrid],
+            buttons: [{
+                text: this.loadDownloadProcessingButtonText,
+                formBind: true,
+                iconCls: 'load-download-button',
+                handler: function(){
+                    if(this.newDownloadStatus){
+                    
+                        this.loadGeostoreStatus(this.newDownloadStatus);
+                        this.newDownloadStatus = null;
+                        
+                    }else{
+                    
+                        Ext.Msg.show({
+                            title: this.selectProcessingMsgTitle,
+                            buttons: Ext.Msg.OK,
+                            msg: this.selectProcessingMsg,
+                            icon: Ext.MessageBox.INFO,
+                            scope: this
+                        });
+                        
+                    }
+                },
+                listeners:{
+                    'click': function( button, e ){
+                        if(button.initialConfig.scope.newDownloadStatus){
+                            this.scope.loadDownloadWin.close();
+                        }
+                    }
+                },
+                scope: this
+            }],
+            keys: [{ 
+                key: [Ext.EventObject.ENTER], 
+                handler: function(){
+                    if(this.newDownloadStatus){
+                        this.loadGeostoreStatus(this.newDownloadStatus);
+                    }
+                },
+                scope: this
+            }]
+        });
+                
+        this.loadDownloadWin = new Ext.Window({
+            title: this.loadDownloadProcessingWinTitle,
+            iconCls: 'load-download-button',
+            layout: "fit",
+            width: 450,
+            closeAction: 'close',
+            height: 250,
+            resizable: false,
+            plain: true,
+            border: false,
+            modal: true,
+            autoScroll: true,
+            items: [this.loadDownloadPanel]
+        });
+        this.loadDownloadWin.show();
+    },
+    
+    loadGeostoreStatus : function(status){
+        Ext.Msg.show({
+            title: "Download",
+            buttons: Ext.Msg.OK,
+            msg: '<a href='+status+' target="_blank">' + this.downloadFileLabel + '</a>',
+            icon: Ext.MessageBox.INFO,
+            scope: this
+        });
+    },
+    
+    onLoadDownload: function() {
+        this.geoStore.getCategoryResources("download",this.searchAttributesSuccess.createDelegate(this, "download", 0), this.failureDownload, this);
+    },
+    
+    onCancelProcessing: function() {
+        var map = this.target.mapPanel.map;
+        
+        // remove analytic view layers (buffers, targets, selected targets)                    
+        this.removeAnalyticViewLayers(map);
+        
+        // reset risk layers
+        this.removeRiskLayers(map);     
+
+        this.removeModifiedLayer(map);
+        //this.restoreOriginalRiskLayers(map);
+        this.enableDisableRoads(true);
+        
+        this.disableSouthPanel();  
+
+        this.processingDone = false;
+        
+        Ext.getCmp('warning_message').setValue('');
+        
+        Ext.getCmp('analytic_view').disable();
+        
+        Ext.getCmp('edit-processing-button').disable();
+        
+        // remove resultContainer on elab cancel
+        this.resultsContainer.removeAll();
+        this.resultsContainer.doLayout();
+        var form = this.fieldSet.ownerCt.getForm();
+        for (var i=0;i<form.items.items.length;i++){
+            form.items.items[i].setValue("");
+        }
+        this.reset = true;
+        
+        //disable save and download processing buttons
+        Ext.getCmp('save-download-proc-geostore').disable();
+        Ext.getCmp('save-proc-geostore').disable();
+    },
+    
+    onNewProcessing: function() {
+        this.reset = true;
+        this.onEditProcessing();
+    },
+    
+    onEditProcessing: function(){        
+        var map = this.target.mapPanel.map;
+        
+        if(!this.processingPane.aoiFieldset)
+            this.processingPane.show();
+        else{
+            this.processingPane.reshow(Ext.getCmp(this.outputTarget));
+
+            if(this.status){
+                if(this.status.processing == 2){
+                    this.processingPane.temporal.enable();
+                }
+            }else{
+                if(this.processingPane.elaborazione.value != 2){
+                    this.processingPane.temporal.disable();
+                }
+            }
+        }    
+    
+        if(this.status && !this.status.initial && !this.reset){
+            if(this.status.roi) {
+                this.target.mapPanel.map.zoomToExtent(this.status.roi.bbox);
+            }
+            this.processingPane.setStatus(this.status);
+        } else {
+            this.processingPane.updateAOI({
+                type: 'aoi',
+                bbox: map.getExtent().clone()
+            });
+        }
+        
+        if(this.status && !this.status.initial && this.reset){
+
+            // Tipo elaborazione
+            this.processingPane.elaborazione.setValue(1);                        
+            // Formula
+            this.processingPane.formula.setValue(this.processingPane.formula.getStore().data.items[0].get('id_formula'));                        
+            // Resolution
+            this.processingPane.resolution.setValue(this.processingPane.resolution.getStore().data.items[0].get('id_resolution'));                        
+            // Temporali
+            this.processingPane.temporal.setValue("fp_scen_centrale");                        
+            this.processingPane.temporal.disable();   
+            // Categoria
+            this.processingPane.macrobers.setValue(this.processingPane.allTargetOption);                        
+            // Bersaglio
+            this.processingPane.bers.setValue("");                        
+            // Classe ADR
+            this.processingPane.classi.setValue(this.processingPane.allClassOption);                        
+            // Sostanza
+            this.processingPane.sostanze.setValue(this.processingPane.allSostOption);
+            // Incidente
+            this.processingPane.accident.setValue(this.processingPane.allScenOption);
+            // Entità
+            this.processingPane.seriousness.setValue(this.processingPane.allEntOption);                         
+
+            //this.processingPane.setStatus(this.status);
+        }
+        this.reset = false;
     },
     
 	exportDisclaimer: function() {
@@ -2309,7 +2325,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         var status = this.getStatus();        
         var bounds = this.getBoundsForViewParams(status, map);
         var viewParams = this.getRoiViewParams(status, bounds, true)+
-            ';resolution:'+(status.resolution || 1);
+            ';resolution:'+status.resolution;
             
         var wfsGrid = Ext.getCmp("featuregrid");
         wfsGrid.loadGrids(null, null, this.selectionLayerProjection, viewParams);                                
@@ -2416,7 +2432,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         method:'POST', mimeType: 'text/xml', 
                         body: {
                             wfs: {
-                                featureType: 'destination:siig_geo_ln_arco_' + (status.resolution || 1), 
+                                featureType: 'destination:siig_geo_ln_arco_' + status.resolution, 
                                 version: '1.1.0',
                                 filter: this.getRoadsFilter()
                             }
@@ -2675,7 +2691,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             + ';sostanze:' + this.status.sostanza.id.join('\\,')
             + ';scenari:' + this.status.accident.id.join('\\,')
             + ';gravita:' + this.status.seriousness.id.join('\\,')
-            + ';resolution:' + this.status.resolution || 1;
+            + ';resolution:' + this.status.resolution;
         
         if(formulaUdm) {
             formulaDesc = formulaDesc + ' ' + formulaUdm;
@@ -2702,7 +2718,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     getFormulaEnv: function(status, targetId) {
-        var env = "formula:"+status.formula+";resolution:"+(status.resolution || 1)+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing;
+        var env = "formula:"+status.formula+";resolution:"+status.resolution+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing;
         if(status.processing === 3) {
             var simulation = status.simulation;            
             env += ';pis:'+simulation.pis.join('_') + ';padr:'+simulation.padr.join('_') + ';cff:'+simulation.cff.join('_');
@@ -2717,7 +2733,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     addRisk: function(layers, bounds, status) {                
         var env, envhum, envamb;
-        var resolution = status.resolution || 1;
+        var resolution = status.resolution;
         if(this.isHumanTarget() || this.isAllHumanTargets() || this.isMixedTargets()) {
             env = "low:"+this.status.themas['sociale'][0]+";medium:"+this.status.themas['sociale'][1]+";max:"+this.status.themas['sociale'][2];
             envhum = env;
@@ -2818,10 +2834,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.removeAnalyticViewLayers(map);                                
         
         // add the buffers layers
-        var roi = this.addBuffers(newLayers, bounds, radius, status.processing === 4 ? status.damageArea : null, status.resolution || 1);
+        var roi = this.addBuffers(newLayers, bounds, radius, status.processing === 4 ? status.damageArea : null, status.resolution);
         
         // add the target layer
-        this.addTargets(newLayers, bounds, radius, status.simulation.targetsInfo, roi, status.resolution || 1);
+        this.addTargets(newLayers, bounds, radius, status.simulation.targetsInfo, roi, status.resolution);
             
         if(Ext.getCmp('roadGraph_view').pressed) {
             Ext.getCmp('featuregrid').setCurrentPanel('roads');
@@ -3121,6 +3137,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 }
             });            
         }
+        
+        Ext.getCmp('edit-processing-button').enable();
     },
     fillFormulaResults: function(formulaTitle, result) {
         
