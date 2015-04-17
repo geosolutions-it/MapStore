@@ -107,6 +107,7 @@ gxp.plugins.he.GCD = Ext.extend(gxp.plugins.Tool, {
                     if(cardPanel){
                         cardPanel.getLayout().setActiveItem(tab.cardId);
                     }
+                    // Closes al the GetFeatureInfo Popups
                     for(var propname in app.tools) {
                         var obj = app.tools[propname];
                         if(obj.hasOwnProperty("ptype") && obj.removeAllPopups != undefined) {
@@ -115,6 +116,10 @@ gxp.plugins.he.GCD = Ext.extend(gxp.plugins.Tool, {
                             }
                         }
                     }
+                    // Remove all the Window from the page
+                    Ext.WindowMgr.each(function (item) {
+                            item.close();
+                    });
                 }
             }
 
