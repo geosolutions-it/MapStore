@@ -139,7 +139,7 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                         "name": "severeness",
                         "mapping": "id_bersaglio"
                     }],
-                    proxy: processingPane.getWFSStoreProxy(processingPane.bersFeature, new OpenLayers.Filter.Comparison({
+                    proxy: processingPane.getWFSStoreProxy("siig_t_bersaglio", new OpenLayers.Filter.Comparison({
                         type: OpenLayers.Filter.Comparison.LESS_THAN,
                         property: 'id_bersaglio',
                         value: 8
@@ -228,7 +228,7 @@ gxp.plugins.SelectVulnElem = Ext.extend(gxp.plugins.Tool, {
                         "name": "severeness",
                         "mapping": "id_bersaglio"
                     }],
-                    proxy: processingPane.getWFSStoreProxy(processingPane.bersFeature, new OpenLayers.Filter.Comparison({
+                    proxy: processingPane.getWFSStoreProxy("siig_t_bersaglio", new OpenLayers.Filter.Comparison({
                         type: OpenLayers.Filter.Comparison.GREATER_THAN,
                         property: 'id_bersaglio',
                         value: 0
