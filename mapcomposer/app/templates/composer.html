@@ -513,16 +513,6 @@
 							}]);
 						}
                         
-                        /*resources = [{
-                            format: "wms",
-                            msGroupName: "MODELLO WRF-ARW a 3km - Energia Potenziale Convettiva Disponibile (CAPE) (J/Kg) - (2015-04-14 ore 00 UTC).",
-                            msLayerName: "arw_3km_Temperature_surface_20150416T000000000Z:0.0",
-                            msLayerTitle: "arw_3km_Temperature_surface_20150416T000000000Z:0.0",
-                            wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/ARW_3KM_RUN00/ows?&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0"
-                        }];
-                        
-                        addMSLayer(resources);*/
-                        
 					}else{
 						Ext.Msg.show({
 							 title: "Add Layer",
@@ -671,7 +661,7 @@
 								}
 							}	
 
-							timeUnits = timeUnits == 'H' ? timeUnits = 'Hours' : (timeUnits == 'D' ? timeUnits = 'Days' : timeUnits = 'Minutes');		
+							timeUnits = (timeUnits == 'H' || timeUnits == 'Hours') ? timeUnits = 'Hours' : ((timeUnits == 'D' || timeUnits == 'Days') ? timeUnits = 'Days' : timeUnits = 'Minutes');
 
 							var layerName = record.get('name');
 							if(layerName.indexOf("NDVI") === -1 && layerName.indexOf("50km") === -1){
