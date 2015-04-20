@@ -113,7 +113,8 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
             /** api: event[regionsChange]
              *  Fires when a region is added or removed.
              */
-            "regionsChange"
+            "regionsChange",
+            'grantypeChange'
         );
     },
 	initComponent: function() {
@@ -180,6 +181,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 							var store = this.AreaSelector.getStore();
 							this.ownerCt.submitButton.setDisabled(store.getCount()<=0);
 						}
+                        this.fireEvent("grantypeChange", checkedarray);
 					},
                     scope: this
 				}
