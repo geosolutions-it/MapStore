@@ -957,6 +957,9 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 r.get("type").indexOf("gml:") == 0 && ignoreFields.push(r.get("name"));
             });
             featureGrid.ignoreFields = ignoreFields;
+            if(this.mainFields){
+                featureGrid.mainFields = this.mainFields;
+            }
             featureGrid.setStore(featureManager.featureStore, schema);
         }, this);
 		

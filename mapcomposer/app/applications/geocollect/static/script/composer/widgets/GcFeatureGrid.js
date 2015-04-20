@@ -68,7 +68,7 @@ gxp.grid.GcFeatureGrid = Ext.extend(Ext.grid.GridPanel, {
      */
     initComponent: function(){
       
-         this.ignoreFields = ["feature", "state", "fid"].concat(this.ignoreFields);
+        this.ignoreFields = ["feature", "state", "fid"].concat(this.ignoreFields);
          
         if(this.store) {
             this.cm = this.createColumnModel(this.store);
@@ -204,9 +204,17 @@ gxp.grid.GcFeatureGrid = Ext.extend(Ext.grid.GridPanel, {
                     format: format,
                     renderer: xtype ? undefined : renderer
             },this.colConfig[name]||{});
-            if (this.ignoreFields.indexOf(name) === -1) {
-               
-                columns.push(col);
+            
+            if (this.mainFields){
+                // White list
+                if(this.mainFields.indexOf(name) > -1) {
+                    columns.push(col);
+                }
+            } else {
+                // Black list
+                if (this.ignoreFields.indexOf(name) === -1) {
+                    columns.push(col);
+                }
             }
         }, this);
         return columns;
