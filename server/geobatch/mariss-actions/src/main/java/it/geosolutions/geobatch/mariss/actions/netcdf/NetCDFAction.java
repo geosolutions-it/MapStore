@@ -604,12 +604,12 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         // REGEX for Service Name
         File serviceRegex = new File(mosaicDir, "serviceregex.properties");
         serviceRegex.createNewFile();
-        String properties = "regex=" + SERVICE_SEPARATOR + "([a-zA-Z]*)" + SERVICE_SEPARATOR;
+        String properties = "regex=" +"(?<=" +  SERVICE_SEPARATOR + ")[a-zA-Z]*" + "(?=" + SERVICE_SEPARATOR + ")";
         FileUtils.write(serviceRegex, properties);
         // REGEX for Identifier
         File identifierRegex = new File(mosaicDir, "identifierregex.properties");
         identifierRegex.createNewFile();
-        String identifierProperties = "regex=" + IDENTIFIER_SEPARATOR + "(.*)" + IDENTIFIER_SEPARATOR;
+        String identifierProperties = "regex=" +"(?<=" +  IDENTIFIER_SEPARATOR + ").*" + "(?=" + IDENTIFIER_SEPARATOR + ")";
         FileUtils.write(identifierRegex, identifierProperties);
     }
 
