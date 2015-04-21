@@ -13,9 +13,10 @@
 
     <property name="httpproxy.version" value="1.1-SNAPSHOT"/>
     <property name="servicebox.version" value="1.5-SNAPSHOT"/>
-    <property name="mapstore.version" value="1.6-SNAPSHOT"/>
-    <property name="geostore.version" value="1.2-SNAPSHOT"/>
+    <property name="mapstore.version" value="1.7-SNAPSHOT"/>
+    <property name="geostore.version" value="1.3-SNAPSHOT"/>
 	<property name="geonetwork.version" value="2.6.5-SNAPSHOT"/>
+	<property name="opensdi2.version" value="1.1-SNAPSHOT"/>
 
     <property name="app.proxy.geoserver" value=""/>
 	<property name="app.debug.proxy" value="true"/>
@@ -47,7 +48,20 @@
         </copy>
     </target>
     
-    <target name="buildjs" depends="init">
+    <target name="buildjs" depends="buildjsdefault,buildjsapp">
+    </target>
+	
+	<target name="buildjsapp" depends="init" if="application">	
+	    <!-- mapcomposer -->
+        <mkdir dir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/script"/>
+        <java jar="${ringojs.run}" fork="true" failonerror="true">
+            <sysproperty key="ringo.home" path="${ringojs.dir}"/>
+            <arg path="externals/buildkit/lib/buildkit/build.js"/>
+            <arg line="-o ${composerbuild}/${ant.project.name}/WEB-INF/app/static/script mapcomposer/app/applications/${application}/buildjs.cfg"/>
+        </java>	
+    </target>
+	
+	<target name="buildjsdefault" depends="init">
 		<delete dir="${composerbuild}"/>
 		
 	    <!-- mapcomposer -->
@@ -59,7 +73,7 @@
         </java>	
     </target>
     
-    <target name="dist" depends="test, buildjs, redist"/>
+    <target name="dist" depends="test, buildjs, redist, redistapp"/>
 	
 	<!--  SITE START  -->	
 	<target name="site" depends="dist">
@@ -116,6 +130,14 @@
     </target>
     <!-- SITE END -->
 	
+	<target name="redistapp" if="application">
+		<copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/applications/${application}">
+            <fileset dir="mapcomposer/app/applications/${application}">
+            </fileset>
+			
+        </copy>
+	</target>
+	
     <target name="redist">
 
         <mkdir dir="${composerbuild}/${ant.project.name}"/>
@@ -131,6 +153,7 @@
             <fileset dir="mapcomposer/app">
                 <exclude name="**/externals/**"/>
                 <exclude name="**/script/**"/>
+				<exclude name="**/applications/**"/>
             </fileset>
         </copy>
 		
@@ -188,6 +211,15 @@
             <fileset dir="mapcomposer/app/static/externals/mapmanager/theme/img"
             />
         </copy>
+		<copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/theme/images/carousel">
+            <fileset dir="mapcomposer/app/static/externals/mapmanager/theme/images/carousel"
+            />
+        </copy>
+        <!-- copy mapmanager media  -->
+        <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/theme/media">
+            <fileset dir="mapcomposer/app/static/externals/mapmanager/theme/media"
+            />
+        </copy>
         <!-- copy ux img  -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/ext/ux/images">
             <fileset dir="mapcomposer/app/static/externals/ext/ux/images"/>
@@ -204,24 +236,54 @@
         </war>
     </target>
 
-    <target name="debug" depends="init">
+    <target name="debug" depends="debugdefault,debugapp">
+    </target>
+	
+	<target name="debugdefault" depends="init" unless="application">
         <java jar="${ringojs.run}" fork="true" classpath="${ringojs.dir}/lib">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
 			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
             <sysproperty key="ringo.home" path="${ringojs.dir}"/>                              
             <!-- <jvmarg value="-XX:+HeapDumpOnOutOfMemoryError"/> -->
             <arg path="mapcomposer/app/main.js"/>
-            <arg line="-p ${app.port}"/>
+			<arg line="-p ${app.port}"/>
         </java>
     </target>
 
-    <target name="debugall" depends="init">
+	<target name="debugapp" depends="init" if="application">
+        <java jar="${ringojs.run}" fork="true" classpath="${ringojs.dir}/lib">
+            <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
+			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
+            <sysproperty key="ringo.home" path="${ringojs.dir}"/>                              
+            <!-- <jvmarg value="-XX:+HeapDumpOnOutOfMemoryError"/> -->
+            <arg path="mapcomposer/app/main.js"/>
+            <arg line="-a ${application}"/>
+			<arg line="-p ${app.port}"/>
+        </java>
+    </target>
+	
+    <target name="debugall" depends="debugalldefault,debugallapp">
+    </target>
+	
+	<target name="debugalldefault" depends="init" unless="application">
         <java jar="${ringojs.run}" fork="true">
             <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
 			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
             <sysproperty key="ringo.home" path="${ringojs.dir}"/>
             <arg value="-d"/>
             <arg path="mapcomposer/app/main.js"/>
+            <arg line="-p ${app.port}"/>
+        </java>
+    </target>
+	
+	<target name="debugallapp" depends="init" if="application">
+        <java jar="${ringojs.run}" fork="true">
+            <sysproperty key="app.proxy.geoserver" value="${app.proxy.geoserver}"/>
+			<sysproperty key="app.debug.proxy" value="${app.debug.proxy}"/>
+            <sysproperty key="ringo.home" path="${ringojs.dir}"/>
+            <arg value="-d"/>
+            <arg path="mapcomposer/app/main.js"/>
+			<arg line="-a ${application}"/>
             <arg line="-p ${app.port}"/>
         </java>
     </target>
@@ -263,7 +325,8 @@
         <get src="http://maven.geo-solutions.it/it/geosolutions/servicebox/${servicebox.version}/servicebox-${servicebox.version}.war" dest="${release.dir}/mapstore/webapps/servicebox.war"/>        
         <get src="http://maven.geo-solutions.it/it/geosolutions/geostore/geostore-webapp/${geostore.version}/geostore-webapp-${geostore.version}.war" dest="${release.dir}/mapstore/webapps/geostore.war"/>        
         <get src="http://maven.geo-solutions.it/proxy/http_proxy/${httpproxy.version}/http_proxy-${httpproxy.version}.war" dest="${release.dir}/mapstore/webapps/http_proxy.war"/>
-        
+        <get src="http://maven.geo-solutions.it/it/geosolutions/opensdi2/opensdi2-web/${opensdi2.version}/opensdi2-web-${opensdi2.version}.war" dest="${release.dir}/mapstore/webapps/opensdi2-manager.war"/>
+		
         <!-- remove datasource configuration file from geostore.war -->
         <zip destfile="${release.dir}/mapstore/webapps/tmp.war"> 
                 <zipfileset src="${release.dir}/mapstore/webapps/geostore.war"> 
@@ -288,12 +351,21 @@
                 </zipfileset> 
         </zip> 
         <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/servicebox.war" /> 
+		
+	    <!-- remove opensdi2-manager configuration file from opensdi2-manager.war -->
+        <zip destfile="${release.dir}/mapstore/webapps/tmp.war"> 
+                <zipfileset src="${release.dir}/mapstore/webapps/opensdi2-manager.war"> 
+                        <exclude name="**/opensdi-config-ovr.properties" /> 
+                </zipfileset> 
+        </zip> 
+        <move file="${release.dir}/mapstore/webapps/tmp.war" tofile="${release.dir}/mapstore/webapps/opensdi2-manager.war" /> 
         
         <echo file="${release.dir}/mapstore/VERSION.txt">
 			MapStore Version: ${mapstore.version}
 			GeoStore Version: ${geostore.version}
 			HttpProxy Version: ${httpproxy.version}
 			servicebox Version: ${servicebox.version}
+			opensdi2-manager Version: ${opensdi2.version}
 		</echo>
     </target>
 	

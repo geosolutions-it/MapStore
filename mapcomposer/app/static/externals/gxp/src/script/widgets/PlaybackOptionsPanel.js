@@ -9,7 +9,7 @@
 /**
  * @requires widgets/PlaybackToolbar.js
  * @requires widgets/form/PlaybackModeComboBox.js
- * requires OpenLayers/Control/TimeManager.js
+ * @requires ../../../../openlayers/lib/OpenLayers/Control/TimeManager.js
  */
 
 /** api: (define)
@@ -189,10 +189,12 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
             listeners:{'show':this.populateForm,scope:this},
             bbar: [{
                 text: 'Save',
+                iconCls:'save',
                 handler: this.saveValues,
                 scope: this
             }, {
                 text: 'Cancel',
+                iconCls:'cancel',
                 handler: this.cancelChanges,
                 scope: this
             }]

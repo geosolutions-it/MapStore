@@ -1518,6 +1518,9 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 
 		var menu = this.getContextMenu(node);
 		menu.node = node;
+        menu.setItemDisabled("open-dwnld", (node.isLeaf()?false:true));
+        menu.setItemDisabled("rename", false);
+        menu.setItemDisabled("delete", false);
 
 		this.applyPermissionOnMenu(node, menu);
 

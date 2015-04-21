@@ -176,10 +176,18 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 scope: this,
                 handler: this.submitLogin
             }]
-        }),
+        });
         
         this.loginButton = new Ext.Button({
-            id: 'id_loginButton'            
+            id: 'id_loginButton',
+            listeners:{
+                scope:this,
+                afterrender: function(){
+                    if(this.forceLogin){
+                        this.showLoginForm();
+                    }
+                }
+            }
         });
         
         this.userLabel = new Ext.form.Label({
@@ -190,12 +198,13 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
 
         if(!this.defaultHeaders){
             this.defaultHeaders = {
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'Authorization': this.token
             };
             
             if(this.token && !this.externalHeaders){
                 this.defaultHeaders['Authorization'] = this.token;
-            }else if(this.externalHeaders && this.target.loggedOut){
+            }else if(this.externalHeaders && this.target && this.target.loggedOut){
                 this.defaultHeaders['Authorization'] = "";
             }
         }
@@ -216,25 +225,37 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
     getLoginInformation: function(){
         Ext.Ajax.request({
             method: 'GET',
-            url: this.geoStoreBase + 'users/user/details/',
+            url: this.geoStoreBase + 'users/user/details?includeattributes=true',
             scope: this,
             headers: this.defaultHeaders,
-            success: function(response, form, action) {
-                
+            success: function(response, form, action) {                
                 var user = Ext.util.JSON.decode(response.responseText);
                 if (user.User) {
                     this.userid = user.User.id;
                     this.username = user.User.name;
                     this.role = user.User.role;
+					
+					// //////////////////////////////////////////////////////////
+					// Save the user's details in session storage in order to 
+					// give these informations to the opened composer.
+					// //////////////////////////////////////////////////////////
+					var userDetails = {
+						token: this.token,
+						user: user.User,
+						provider: "geostore"
+					};
+					
+					sessionStorage.removeItem("userDetails");
+					sessionStorage["userDetails"] = Ext.util.JSON.encode(userDetails);
+					
                     this.showLogout(user.User.name);
-                    this.fireEvent("login", this.username, null, user.User);
+                    this.fireEvent("login", this.username);
                 }else{
                     // invalid user state
                     this.showLogin();
                 }
             },
-            failure: function(response, form, action) {
-        
+            failure: function(response, form, action) {        
                 this.showLogin();
             }
         });
@@ -252,6 +273,8 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
             layout: "fit",
             width: 275,
 			closeAction: 'hide',
+            closable: !this.forceLogin,
+            draggable: !this.forceLogin,
             height: 130,
             plain: true,
             border: false,
@@ -273,7 +296,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      *  Log out the current user from the application.
      */
     logout: function() {
-        if(this.statelessSession || this.externalHeaders){
+        if(this.statelessSession  || this.externalHeaders ){
             this.invalidateLoginState();
         }else{
             // do logout in spring security
@@ -331,13 +354,13 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      * Submits the login.
      */ 
     submitLogin: function () {
-        
+        var mask = new Ext.LoadMask(this.getEl(),{msg:this.loginWaitMessage});
         var form = this.getForm();
         var fields = form.getValues();
         var pass = fields.loginPassword;
         var user = fields.loginUsername;
         var auth= 'Basic ' + Base64.encode(user+':'+pass);
-
+        mask.show();
         Ext.Ajax.request({
             method: 'GET',
             url: this.geoStoreBase + 'users/user/details/',
@@ -346,8 +369,8 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 'Accept': 'application/json',
                 'Authorization' : auth
             },
-            success: function(response, form, action) {
-            
+            success: function(response, form, action) {  
+                mask.hide();
                 this.win.hide();
                 this.getForm().reset();
                 
@@ -364,6 +387,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 this.fireEvent("login", this.username, auth, user.User);
             },
             failure: function(response, form, action) {
+                mask.hide();
                 Ext.MessageBox.show({
                     title: this.loginErrorTitle,
                     msg: this.loginErrorText,
@@ -394,7 +418,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      *  Show the login button.
      */
     showLogin: function() {
-        this.target.loggedOut = true;
+        //this.target.loggedOut = true;
         var text = this.loginText;
         var userLabel = '';
         var handler = this.showLoginForm;
@@ -406,7 +430,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
      *  Show the logout button.
      */
     showLogout: function(user, role) {
-        this.target.loggedOut = false;
+        //this.target.loggedOut = false;
         var text = this.logoutText;
         var userLabel = new Ext.Template(this.ruleText).applyTemplate({user: user});
         var handler = this.logout;

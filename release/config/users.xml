@@ -35,9 +35,4 @@
         <newPassword>user</newPassword>
         <role>USER</role>
     </User>
-    <User>
-        <name>poweruser</name>
-        <newPassword>poweruser</newPassword>
-        <role>USER</role>
-    </User>
 </InitUserList>

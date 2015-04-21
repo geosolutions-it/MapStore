@@ -252,7 +252,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                                     width  : 550,
                                     title: me.defaultPanelTitleText,
                                     id: me.id + "_editor",
-                                    items:[Ext.apply(planFormPanelConfig, {userId: me.target.user.name, serviceId: service})]
+                                    items:[Ext.apply(planFormPanelConfig, {userId: me.target.userDetails.user.name, serviceId: service})]
                                 });
                                 
                                 myWin.on("close", function() {
@@ -459,7 +459,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     *  Get the available services based on current user logged
     */ 
     getServicesUrl: function(){
-        return this.servicesUrl + this.target.user.name;
+        return this.servicesUrl + this.target.userDetails.user.name;
     },
 
    /** private: method[onButtonClicked]
@@ -899,7 +899,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
 
     onSelectService: function(serviceName, panel, loadData){
         // save current serviceName. It's 'user@serviceName' in the WFS layer
-        this.currentServiceName = this.target.user.name +  "@" + serviceName;
+        this.currentServiceName = this.target.userDetails.user.name +  "@" + serviceName;
         // change mode
         this.mode = "aoiEdit";
 
@@ -1447,7 +1447,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
 
         var failedExport = String.format(this.failedExport, outputFormat);
 
-        var user = this.target.user.name;
+        var user = this.target.userDetails.user.name;
         var service = this.currentServiceName.substring(user.length +1);
 
         var cql_filter;

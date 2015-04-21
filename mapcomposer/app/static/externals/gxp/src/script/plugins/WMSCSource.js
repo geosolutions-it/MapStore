@@ -82,9 +82,10 @@ gxp.plugins.WMSCSource = Ext.extend(gxp.plugins.WMSSource, {
      */
     createLayerRecord: function(config) {
         var record = gxp.plugins.WMSCSource.superclass.createLayerRecord.apply(this, arguments);
-        var caps = this.store.reader.raw.capability;
+        var caps = this.useCapabilities ? this.store.reader.raw.capability : null;
         var tileSets = (caps && caps.vendorSpecific && caps.vendorSpecific) ? 
-            caps.vendorSpecific.tileSets : null;
+            caps.vendorSpecific.tileSets : (config.tileSets || null);
+		
         if (tileSets !== null) {
             var layer = record.get("layer");
             var mapProjection = this.getMapProjection();

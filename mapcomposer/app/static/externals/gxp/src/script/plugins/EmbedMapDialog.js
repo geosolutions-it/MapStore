@@ -58,7 +58,9 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
 
 	embedURL: "Direct URL",
 	
-	urlLabel: "URL",
+	embedUrlLabel: "EMBED",
+	
+	composerUrlLabel: "FULL",
 	
 	showMapTooltip: "Show in a new Window",
 	
@@ -76,6 +78,15 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
     
     appDownloadUrl:"http://demo.geo-solutions.it/share/mapstoremobile/MapStoreMobile.apk",
     
+    links: [{
+       "label": "FULL",
+        "base" : ""
+        
+    },{
+        "label": "SMALL",
+        "base":  "viewer"
+    
+    }],
     
     /** 
      * api: method[addActions]
@@ -163,7 +174,18 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
            var curLang = OpenLayers.Util.getParameters()["locale"] || 'en';
            var qstring = "?locale=" + curLang + "&bbox=" + target.mapPanel.map.getExtent() + "&mapId=" + target.mapId;
            var url = this.embeddedTemplateName + qstring;
+           var linkFiels = [];
+		   for(var i = 0; i < this.links.length ; i++ ){
+                 linkFiels.push(this.createLinkField(this.links[i],qstring));
+           }
+          
 		   
+		   var directURL = new Ext.form.FieldSet({
+				title: this.embedURL,
+				labelWidth: 50,
+				items:linkFiels,
+				bodyStyle: 'padding: 15px'
+		   });
            var embedMap = new gxp.EmbedMapDialog({
                id: 'geobuilder-1',
                url: url
@@ -175,42 +197,7 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
 					embedMap
 				]
 		   });
-		   
-		   var urlField = new Ext.form.TextField({
-				fieldLabel: this.urlLabel,
-				labelStyle: 'font-weight:bold;',
-				width: 350,
-				value: gxp.util.getAbsoluteUrl(url),
-				selectOnFocus: true,
-				readOnly: true
-		   }); 
-		   
-		   var urlCompositeField = new Ext.form.CompositeField({
-				items:[
-					urlField,
-					{
-						xtype: 'button',
-						tooltip: this.showMapTooltip,
-						iconCls: "gx-map-go",
-						width: 20,
-						handler: function(){
-							var u = urlField.getValue();
-							window.open(u);
-						}
-					}
-				]
-		   });
-		   
-		   var directURL = new Ext.form.FieldSet({
-				title: this.embedURL,
-				labelWidth: 50,
-				items:[
-					urlCompositeField
-				],
-				bodyStyle: 'padding: 15px'
-		   });
-		   
-		   wizardItems = [snippetFieldSet];
+		   var wizardItems = [snippetFieldSet];
 		   
 		   if(this.showDirectURL === true){
 				wizardItems.push(directURL);
@@ -223,6 +210,7 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
            
            var wizard = {
                id: 'geobuilder-wizard-panel',
+               layout:'form',
                /*border: false,
                layout: 'card',
                activeItem: 0,
@@ -256,7 +244,7 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
                 layout: 'fit',
                 width: 500, 
                 
-				height: 245 +  (this.showDirectURL == true? 100 : 0) + (showQR  ? this.qrCodeSize + 60 :0),
+				height: 245 +  (this.showDirectURL == true? 100 + ( (this.links.length-1) * 50) : 0) + (showQR  ? this.qrCodeSize + 60 :0),
                 title: this.exportMapText,
                 items: [wizard]
            }).show();
@@ -338,6 +326,37 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
 		   });
         return fieldset;
     
+    },
+    createLinkField: function(config, qstring){
+           var url = config.base + qstring;
+           for(var param in config.params){
+            url+= "&" + param + "=" + encodeURIComponent(config.params[param]);
+           }
+		   var fields = [];
+		   var urlField = new Ext.form.TextField({
+				width: 350,
+				value: gxp.util.getAbsoluteUrl(url),
+				selectOnFocus: true,
+				readOnly: true
+		   }); 
+		   
+		   var urlCompositeField = new Ext.form.CompositeField({
+                fieldLabel: config.label || this.composerUrlLabel,
+				items:[
+					urlField,
+					{
+						xtype: 'button',
+						tooltip: config.showMapTooltip,
+						iconCls: "gx-map-go",
+						width: 20,
+						handler: function(){
+							var u = urlField.getValue();
+							window.open(u);
+						}
+					}
+				]
+		   });
+           return urlCompositeField;
     }
 });
 

@@ -39,9 +39,15 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
     ptype: "mxp_updater",
 
     buttonText: "Updater",
+	uploadFilesText:'Upload Files',
 
     loginManager: null,    
     setActiveOnOutput: true,
+    /**
+	 * Property: flowId
+	 * {string} the GeoBatch flow name to manage
+	 */	
+    flowId: 'ds2ds_zip2pg',
     
     /** api: method[addActions]
      */
@@ -91,13 +97,16 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
         var pluploadPanel = {
             xtype:'pluploadpanel',
             region:'west',
+			iconCls:'inbox-upload_ic',
+			title:this.uploadFilesText,
             autoScroll:true,
             width:400,
             ref:'uploader',
             collapsible:true,   
-            url: proxy + uploadUrl,
+            url: uploadUrl,
             multipart: true,
             auth: this.auth,
+			mediaContent: this.target.initialConfig.mediaContent,
             listeners:{
                 beforestart:function() {
                     var multipart_params =  pluploadPanel.multipart_params || {};
@@ -116,6 +125,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
         }
         Ext.apply(this.outputConfig,{   
             layout: 'border',
+			itemId:'Updater',
             xtype:'panel',
             closable: true,
             closeAction: 'close',
@@ -133,6 +143,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
                     GWCRestURL: this.GWCRestURL,
                     layout:'fit',
                     autoScroll:true,
+                    flowId: this.flowId,
                     auth: this.auth,
                     autoWidth:true,
                     region:'center',
@@ -141,7 +152,28 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
                 pluploadPanel
             ]
         });
-
+		// In user information the output is generated in the component and we can't check the item.initialConfig.
+        if(this.output.length > 0
+            && this.outputTarget){
+            for(var i = 0; i < this.output.length; i++){
+                if(this.output[i].ownerCt
+                    && this.output[i].ownerCt.xtype 
+                    && this.output[i].ownerCt.xtype == "tabpanel"
+                    && !this.output[i].isDestroyed){
+                    var outputConfig = config || this.outputConfig;
+                    // Not duplicate tabs
+                    for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
+                        var item = this.output[i].ownerCt.items.items[index];
+                        // only check iconCls
+                        var isCurrentItem = "Updater" == item.initialConfig["itemId"];
+                        if(isCurrentItem){
+                            this.output[i].ownerCt.setActiveTab(index);
+                            return;
+                        }
+                    } 
+                }
+            }
+        }
         return mxp.plugins.Updater.superclass.addOutput.apply(this, arguments);
     }
 });

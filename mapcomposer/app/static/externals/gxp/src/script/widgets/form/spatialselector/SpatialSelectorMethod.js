@@ -78,7 +78,13 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 	 *  ``Object``
 	 *  Parameter to perform the filter
 	 */
-
+   
+   /** api: config[metricUnit]
+	 *  ``Object``
+	 *  The metric unit to display summary
+	 */
+    metricUnit :"km",
+	
 	/** api: config[hideWhenDeactivate]
 	 *  ``Boolean``
 	 *  Flag to hide output when the selection method is deactivated. Default is true
@@ -379,7 +385,13 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 	 */
 	deactivate: function(){
 		this.reset();
-		this.hide();
+		if(this.distanceFieldset){
+         		this.distanceFieldset.hide();
+		}
+		if(this.geometryOperationFieldset){
+	        	this.geometryOperationFieldset.collapse();
+		}
+		this.hide();		
 	},
 
     /** api: method[addOutput]
@@ -467,7 +479,7 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 	 */
     getSummary: function(geometry){
 
-		var summary = "", metricUnit = "km";
+		var summary = "", metricUnit = this.metricUnit;
 
 		var area = this.getArea(geometry, metricUnit);
 		var length = this.getLength(geometry, metricUnit);
@@ -598,6 +610,7 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 				fieldLabel: this.distanceUnitsTitleText,
 				name: "dunits",
 				ref: "../dunits",
+				labelStyle: 'width: 130px;',
 				value: this.target.mapPanel.map.units,
 				allowBlank: false
 			},{
@@ -605,6 +618,7 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 				fieldLabel: this.distanceTitleText,
 				name: "distance",
 				ref: "../distance",
+				labelStyle: 'width: 130px;',
 				allowBlank: false
 			}]
 		}

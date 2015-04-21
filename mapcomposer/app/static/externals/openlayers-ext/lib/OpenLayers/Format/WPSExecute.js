@@ -99,7 +99,12 @@ OpenLayers.Format.WPSExecute = OpenLayers.Class(OpenLayers.Format.XML,
                                 node, this.namespaces.xsi,
                                 "xsi:schemaLocation", this.schemaLocation
                                 );
-                            return OpenLayers.Format.XML.prototype.write.apply(this, [node]);
+                            var xml = OpenLayers.Format.XML.prototype.write.apply(this, [node]);
+							// workaround for Chrome bug
+							if(xml.indexOf('xmlns:xlink') === -1) {
+								xml = xml.substring(0,13) + 'xmlns:xlink="http://www.w3.org/1999/xlink" '+ xml.substring(13);
+							}
+							return xml;
                         }, 
                         
                         
@@ -422,7 +427,6 @@ OpenLayers.Format.WPSExecute = OpenLayers.Class(OpenLayers.Format.XML,
                                         encoding: node.getAttribute("encoding"),
                                         value: ""
                                     };
-                service
                                     // try to get *some* value, ignore the empty text values
                                     if (this.isSimpleContent(node)) {
                                         var child;

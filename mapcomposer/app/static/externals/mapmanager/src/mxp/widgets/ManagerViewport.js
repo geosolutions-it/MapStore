@@ -49,7 +49,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
      * {string} sets the type of layout
      * 
      */ 
-    layout:'fit',
+    layout:'border',
 
     /** api: config[tools]
      *  ``Array`` Custom tools to include by default
@@ -74,8 +74,15 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
      */
     pluggableByUserGroupConfig: false,
     
+    /**
+     * api: config[loginDataStorage]
+     * {string} actually supports null or a value: "sessionStorage" to emulate the session
+     * persistence using the session storage object
+     */
+    loginDataStorage:null,
+    
     initComponent : function() {
-
+        
         // save initial config
         this.initialConfig = {};
         Ext.apply(this.initialConfig, this);
@@ -92,34 +99,50 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         this.murl = config.composerUrl;
         this.socialUrl = config.socialUrl;
         this.adminUrl = config.adminUrl;
-        
+        this.geoStoreBase = config.geoStoreBase;
         this.geoBaseUsersUrl= geoStoreBase + 'users';
         this.geoBaseMapsUrl = geoStoreBase + 'resources';
         this.geoSearchUrl = geoStoreBase + 'extjs/search/category/MAP/';
         // this.geoSearchUrl = geoStoreBase + 'extjs/search/';
         this.geoSearchUsersUrl = geoStoreBase + 'extjs/search/users';
         this.geoSearchCategoriesUrl = geoStoreBase + 'extjs/search/category';
-
+        //this.items=[];
         var mergedItems = [];
-
+        
         // this component is the tool bar at top
-        var north = {
-            region: "north",
-            layout: "fit",
+        var center = {
+            region: "center",
+            layout:'fit',
             id: this.id + "_north",
             border: false,
             tbar: ["-", "->", "-"],
             items: this.items
         };
 
-        mergedItems.push(north);
-
+        
+        
+        mergedItems.push(center);
+        mergedItems.push(this.getDecoration());
         this.items = mergedItems;
         
         mxp.widgets.ManagerViewport.superclass.initComponent.call(this, arguments);
 
         this.fireEvent("portalready");
+        var user = this.restoreLoginState();
+        if(!this.logged && user){
+            var auth = user.token;
+            this.cleanTools();
+            this.user = user.user;
+            this.auth = auth ? auth: this.auth;
+            this.logged = true;
 
+            this.defaultHeaders = {
+                'Accept': 'application/json', 
+                'Authorization' : this.auth
+            };
+
+            
+        }
         // load config if present
         this.reloadConfig();
     },
@@ -198,12 +221,10 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
                     scope: this
                 }
             });
-            if(this.auth){
-                this.adminConfigStore.proxy.getConnection().defaultHeaders= {
-                    'Accept': 'application/json', 
-                    'Authorization' : this.auth
-                };
-            }
+            this.adminConfigStore.proxy.getConnection().defaultHeaders= {
+                'Accept': 'application/json', 
+                'Authorization' : this.auth
+            };
             this.adminConfigStore.load();
         }else{
             // Load default config
@@ -339,12 +360,10 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
             this.auth = auth ? auth: this.auth;
             this.logged = true;
 
-            if(this.auth){
-                this.defaultHeaders = {
-                    'Accept': 'application/json', 
-                    'Authorization' : this.auth
-                };
-            }
+            this.defaultHeaders = {
+                'Accept': 'application/json', 
+                'Authorization' : this.auth
+            };
 
             // reload config
             this.reloadConfig();
@@ -369,6 +388,79 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
             this.logged = false;
             this.fireEvent("portalready");   
         }
+    },
+    
+     /** private: method[restoreLoginState]
+     *  Load login status from the session storage.
+     */
+    restoreLoginState: function(){
+      if(sessionStorage && this.config.loginDataStorage){
+      var ud = sessionStorage["userDetails"];
+      
+        if(ud){
+          return Ext.util.JSON.decode(ud) ;
+        }
+      }
+      return null;
+        
+    },
+    getDecoration: function(){
+         //Manage Header and Footer
+        var header = this.config.header;
+        var footer = this.config.footer;
+        var panels = [];  
+
+        var parseKnowIntegers = function(section){
+            var knownInteger = {'height':true, 'maxHeight': true, 'minWidth':true};
+            for(var key in knownInteger){
+                if(section[key]){
+                    try{
+                        section[key] = parseInt(section[key]);	
+                    }catch (e){
+                        // unknown parameter value
+                    }
+                }	
+            }
+            return section;
+        }
+        
+        var parseHeader = function(section) {
+			return (section && section.header !== undefined && section.header !== null) ? section.header : false;
+		}
+
+        if(header){
+            var north = {
+                header: parseHeader(header.container),
+                region: 'north',
+                id: 'msheader'
+            };
+            north = Ext.applyIf(north, (header.container ? parseKnowIntegers(header.container) : {}));
+            var html = header.html;
+            if(header.html instanceof Array){
+                html = header.html.join("");
+            }
+            north.html = (header.css || '') + (html || '');
+            panels.push(north);
+        }
+
+
+
+        if(footer){
+             var south = {
+                header: parseHeader(footer.container),
+                region: 'south',
+                id: 'msfooter'
+            };
+            south = Ext.applyIf(south, (footer.container ? parseKnowIntegers(footer.container) : {}));
+            var html = footer.html;
+            if(footer.html instanceof Array){
+                html = footer.html.join("");
+            }
+            south.html = (footer.css || '') + (html || '');
+            panels.push(south);
+        }
+        return panels;
+
     }
 });
 

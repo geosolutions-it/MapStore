@@ -62,32 +62,44 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
      *  output and action(s).
      */
     actionTarget: null,
+	
+	/**
+	 * api config[dynamicRange]
+     */
     dynamicRange:false,
-    //api config
-    //playback mode is one of: "track","cumulative","ranged",??"decay"??
-    playbackMode:"ranged",
-    /** api: config[outputTarget]
+	
+    /**
+     * api config[playbackMode]
+	 * Playback mode is one of: "track","cumulative","ranged",??"decay"??
+     * from Openlayers.TimeAgent tool will be set as following: 
+     *      "ranged" - use a value range for time 
+     *      "cumulative" - use a range from the start time to the current time
+     *      "track": only use single value time parameters 
+      */
+	playbackMode:"ranged",
+    
+	/** api: config[outputTarget]
      *  ``Object`` or ``String`` Where to place the tool's output (widgets.PlaybackPanel)
      *  Use 'map' as the default to display a transparent floating panel over the map.
      */
     outputTarget: 'map',
-    /** api: config[enableAndDisableControls]
-     *  ``Boolean`` flag to call disable other controls on `play` and enable when `pause`. Default is false
-     */
-    enableAndDisableControls: false,
     
     /** private: method[constructor]
      */
     constructor: function(config) {
         gxp.plugins.Playback.superclass.constructor.apply(this, arguments);
     },
+	
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
     addOutput: function(config){
         delete this._ready;
-        //set maxFrameDelay to advance frame even if the layer is not loaded
-        OpenLayers.Control.TimeManager.prototype.maxFrameDelay = (this.target.tests && this.target.tests.dropFrames) ? 10 : NaN;
+		
+		//
+        // Set maxFrameDelay to advance frame even if the layer is not loaded
+		//
+		OpenLayers.Control.TimeManager.prototype.maxFrameDelay = (this.target.tests && this.target.tests.dropFrames) ? 10 : NaN;
         config = Ext.applyIf(config || this.outputConfig || {}, {
             xtype: 'gxp_playbacktoolbar',
             mapPanel:this.target.mapPanel,
@@ -124,8 +136,12 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
         var toolbar = gxp.plugins.Playback.superclass.addOutput.call(this,config); 
         this.relayEvents(toolbar,['timechange','rangemodified']);
         this.playbackToolbar = toolbar;
-        //firing the 'rangemodified' event to indicate that the toolbar has been created with temporal layers
-        if(toolbar.control.layers){
+		
+		//
+        // Firing the 'rangemodified' event to indicate that the 
+		// toolbar has been created with temporal layers
+        //
+		if(toolbar.control.layers){
             this.fireEvent('rangemodified',this,toolbar.control.range);
         }
         return toolbar;
@@ -163,18 +179,16 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
 			this.timeManager = timeManagers[0];
 			var self = this;
 			// listen to play events
-            if(this.enableAndDisableControls){
-                this.timeManager.events.register('play', this, 
-                    function(){ 
+			this.timeManager.events.register('play', this, 
+					function(){ 
                         //call function in composer.js to disable al functionality
-                        this.target.disableAllFunc();  
-                }); 
-                this.timeManager.events.register('stop', this, 
-                    function(){ 
+                        //this.target.disableAllFunc();  
+					});	
+			this.timeManager.events.register('stop', this, 
+					function(){ 
                         //call function in composer.js to disable al functionality
-                        this.target.enableAllFunc();  
-                }); 
-            }
+                        //this.target.enableAllFunc();  
+					});	
 	    }
 		return this.timeManager;
     },    
@@ -233,8 +247,11 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
                     config.outputConfig.controlConfig.timeAgents = agentConfigs;
                 }
             }
-            //get rid of 2 instantiated objects that will cause problems
-            delete config.outputConfig.mapPanel;
+			
+			//
+            // Get rid of 2 instantiated objects that will cause problems
+            //
+			delete config.outputConfig.mapPanel;
             delete config.outputConfig.optionsWindow;
         }
         return config;

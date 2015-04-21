@@ -148,17 +148,40 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 
     templateId: null,   
    
-    constructor: function(config, mapId, auth, fScreen, templateId) {
+    constructor: function(config, mapId, authV, fScreen, templateId) {
 	
 		if(mapId)
             this.mapId = mapId;
-        if(auth)
-            this.auth = auth;
+        if(authV)
+            this.auth = authV;
         if(fScreen){
             this.fScreen = fScreen;
             this.auth = false;
         }
 
+		// /////////////////////////////////////////////////////////////////////
+		// Get from the session storage the user's 
+		// details (only provided by the MapManager and the login template 
+		// currently)
+		//  
+		// TODO: The advice is to provide some missing refactor:
+		//
+		//	1- The MapManager should have only one Login class in 
+		//     order to avoid fragmentation of the code.
+		//	2- Using the code fragment below the GeoExplorer.setAuthHeaders 
+		//     in this class is unnecessary.
+		//	3- Each Viewer plugins should use the app.userDetails in order 
+		//     to perform operations that require auth.
+		//	4- The GeoStoreLogin tool should be improved in order to check 
+		//     if the sessionStorage["userDetails"] is 
+		//     present and create the app.userDetails if needed. 
+		//	5- The Login procedure provided inside the Login Template should 
+		//     be ported on a new plugin.
+		// ////////////////////////////////////////////////////////////////////////
+        //if used in an iframe from mapmanager, get auth from the parent
+        //see Tool.js
+		this.authHeader= this.getAuth();
+			
         // Save template key
         if(templateId){
             this.templateId = templateId;
@@ -368,7 +391,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                method: 'GET',
                scope: this,
                headers:{
-                  'Accept': "application/json"
+                  'Accept': "application/json",
+                  'Authorization': this.authHeader
                },
                success: function(response, opts){  
                     var addConfig;
@@ -1340,7 +1364,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     setAuthHeaders: function(auth) {
         for(var tool in this.tools){
             if(this.tools[tool].ptype == "gxp_saveDefaultContext"){
-                this.tools[tool].auth = auth;
+                this.tools[tool].authHeader = auth;
             }
         }
     },
@@ -1391,6 +1415,29 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         }
 		
         return currentState;
+    },
+        
+    /**
+     * Retrieves auth from (in this order)
+     * * the session storage (if enabled userDetails, see ManagerViewPort.js class of mapmanager)
+     * * the parent window (For usage in manager)
+     * We should imagine to get the auth from other contexts.
+     */
+    getAuth: function(existingUserDetails, returnToken){
+        var auth;
+        
+        //get from the session storage
+        var existingUserDetails = existingUserDetails || sessionStorage["userDetails"];
+        if(existingUserDetails){
+            this.userDetails = Ext.util.JSON.decode(existingUserDetails);
+            auth = returnToken ? this.userDetails.token : this.userDetails.authHeader;
+        } else if(window.parent && window.parent.window && window.parent.window.manager && window.parent.window.manager.auth){
+          //get from the parent
+          auth = window.parent.window.manager.auth;
+          return auth;
+        }
+        
+        return auth;
     }
 });
 

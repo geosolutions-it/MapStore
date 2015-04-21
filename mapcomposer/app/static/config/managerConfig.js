@@ -1,9 +1,6 @@
-﻿{
+{
    "composerUrl":"",
    "socialUrl":"",
-   "adminUrl":"http://192.168.1.47/opensdi2-manager/",
-   "geoStoreBase":"http://192.168.1.47/opensdi2-manager/facade/geostore/rest/",
-   "externalLogoutUrl":"http://192.168.1.47/logout",
    "start":0,
    "limit":20,
    "msmTimeout":30000,
@@ -11,6 +8,8 @@
       "via":"geosolutions_it",
       "hashtags":""
    },
+   "loginDataStorage" : "sessionStorage",
+   "mediaContent":"./externals/mapmanager/theme/media",
    "ASSET":{
         "delete_icon": "./externals/mapmanager/theme/img/user_delete.png",
         "edit_icon": "./externals/mapmanager/theme/img/user_edit.png"
@@ -40,8 +39,10 @@
    "tools":[{
         "ptype": "mxp_mapviewer",
         "loginManager": "loginTool",
-        "mapStoreUrl": "http://192.168.1.47/mapstore",
+        "mapStoreUrl": "/mapstore/",
         "actionTarget":null
+    },{
+        "ptype": "mxp_categoryinitializer"
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
@@ -60,7 +61,7 @@
    "adminTools":[{
         "ptype": "mxp_mapviewer",
         "loginManager": "loginTool",
-        "mapStoreUrl": "http://192.168.1.47/mapstore",
+        "mapStoreUrl": "/mapstore/",
         "actionTarget":null
     },{
         "ptype": "mxp_usermanager",
@@ -94,7 +95,7 @@
     "loggedTools":[{
         "ptype": "mxp_mapviewer",
         "loginManager": "loginTool",
-        "mapStoreUrl": "http://192.168.1.47/mapstore",
+        "mapStoreUrl": "/mapstore/",
         "actionTarget":null
     },{
         "ptype": "mxp_login",

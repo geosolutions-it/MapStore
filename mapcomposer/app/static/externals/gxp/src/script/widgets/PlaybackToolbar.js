@@ -7,8 +7,8 @@
  */
 
 /**
- * requires OpenLayers/Control/TimeManager.js
- * requires OpenLayers/TimeAgent.js
+ * @requires ../../../../openlayers/lib/OpenLayers/Control/TimeManager.js
+ * @requires ../../../../openlayers/lib/OpenLayers/TimeAgent.js
  * @requires widgets/slider/TimeSlider.js
  */
 
@@ -32,31 +32,60 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
      *  The control to configure the playback panel with.
      */
     control: null,
+	
     mapPanel: null,
+	
     initialTime:null,
+	
     timeFormat:"l, F d, Y g:i:s A",
-    toolbarCls:'x-toolbar gx-overlay-playback', //must use toolbarCls since it is used instead of baseCls in toolbars
+	
+	/** api: property[toolbarCls]
+     * ``String``
+	 * Must use toolbarCls since it is used instead of baseCls in toolbars
+     */
+    toolbarCls:'x-toolbar gx-overlay-playback',
+	
     ctCls: 'gx-playback-wrap',
+	
     slider:true,
+	
     dynamicRange:false,
-    //api config
-    //playback mode is one of: "track","cumulative","ranged",??"decay"??
+
+	/** api: property[playbackMode]
+     * ``String``
+	 * Playback mode is one of: "track","cumulative","ranged",??"decay"??
+     * Openlayers.TimeAgent tool will be set as following: 
+     *      "range" - use a value range for time
+     *      "cumulative" - use a range from the start time to the current time
+     *      other options: only use single value time parameters (Default)
+     */
     playbackMode:"track",
+	
     showIntervals:false,
+	
     labelButtons:false,
+	
     settingsButton:true,
+	
     rateAdjuster:false,
+	
     looped:false,
+	
     autoPlay:false,
-    //api config ->timeDisplayConfig:null,
-    //api property
+
+	/** api: property[optionsWindow]
+     * ``String``
+	 * Playback mode is one of: "track","cumulative","ranged",??"decay"??
+     */
     optionsWindow:null,
+	
     /** api: property[playing]
      * ``Boolean``
      * Boolean flag indicating the control is currently playing or not.
      * Read-only
      */
     playing: false,
+	
     // api config
     //playbackActions, default: ["settings","reset","play","fastforward","next","loop"]; also available are "pause" and "end"
     
@@ -66,26 +95,43 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
      *  Text for play button label (i18n).
      */
     playLabel:'Play',
+	
     /** api: config[playTooltip]
      *  ``String``
      *  Text for play button tooltip (i18n).
      */
     playTooltip:'Play',
+	
     stopLabel:'Stop',
+	
     stopTooltip:'Stop',
+	
     fastforwardLabel:'FFWD',
+	
     fastforwardTooltip:'Double Speed Playback',
+	
     backLabel:'Back',
+	
     backTooltip:'Draw back One Frame',    
+	
     nextLabel:'Next',
+	
     nextTooltip:'Advance One Frame',
-    resetLabel:'Full Range',
-    resetTooltip:'Full Range',
+	
+    resetLabel:'Current Time',
+	
+    resetTooltip:'Reset to the Current Time',
+	
     loopLabel:'Loop',
+	
     normalLabel:'Loop',
+	
     loopTooltip:'Continously loop the animation',
+	
     normalTooltip:'Return to normal playback',
+	
     pauseLabel:'Pause',
+	
     pauseTooltip:'Pause',
 
     /** private: method[initComponent]
@@ -152,14 +198,16 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
 			
 			"fullRange"
         );
-        gxp.PlaybackToolbar.superclass.initComponent.call(this);  
+        gxp.PlaybackToolbar.superclass.initComponent.call(this);   
+     
+	
 
     },
     /** private: method[destroy]
      *  Destory the component.
      */
     destroy: function(){
-        //kill the control but only if we created the control
+        // Kill the control but only if we created the control
         if(this.control && !this.initialConfig.control){
             this.control.map && this.control.map.removeControl(this.control);
             this.control.destroy();
@@ -503,7 +551,7 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
                 this.btnSettings.disable();
                 this.btnCurrentTime.disable();
                 this.btnBack.disable();                
-                //don't start playing again if it is already playing
+                // Don't start playing again if it is already playing
                 this.control.stepType = "next";
                 this.control.play();
                  
@@ -513,18 +561,19 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
             btn.btnEl.addClass('gxp-icon-pause');
             btn.setTooltip(this.pauseTooltip);
         } else {
-                this.btnNext.enable();
-                this.btnLoop.enable();
-                this.btnFastforward.enable();
-                this.slider.enable();
-                this.btnSettings.enable();
-                this.btnCurrentTime.enable();
-                this.btnBack.enable();             
+			this.btnNext.enable();
+			this.btnLoop.enable();
+			this.btnFastforward.enable();
+			this.slider.enable();
+			this.btnSettings.enable();
+			this.btnCurrentTime.enable();
+			this.btnBack.enable();      
+			
             //if(this.control.timer){
-                //don't stop playing again if it is already stopped
-                this.control.stop();
-                
+                // Don't stop playing again if it is already stopped
+                this.control.stop();                
             //}
+			
             btn.btnEl.addClass('gxp-icon-play');
             btn.btnEl.removeClass('gxp-icon-pause');
             btn.setTooltip(this.playTooltip);

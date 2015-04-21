@@ -32,23 +32,24 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 	xtype: "msm_templatepanel",
 
 	/** i18n **/
-	title: 'Template Editor',
+	title: "Template Editor",
     headerTitleText: "Header",
+	headerCheckboxText: "Header",
     footerTitleText: "Footer",
-    sectionContentTitleText: "{0} content",
-    sectionCSSTitleText: 'CSS Style',
+    sectionContentTitleText: "{0} Content",
+    sectionCSSTitleText: "CSS Style",
     sectionLayoutConfigTitleText: "Layout config",
-    borderText: 'Border',
-    animeCollapseText: 'Anim. Collapse',
-    hideCollapseText: 'Hide Collapse',
-    splitText: 'Split',
-    collapsibleText: 'Collapsible',
-    collapseModeText: 'Collapse Mode',
-	widthText: 'Width',
-	heightText: 'Height',
-	minWidthText: 'Min Width',
-	maxHeightText: 'Max Height',
-    failSuccessTitle: 'Error',
+    borderText: "Border",
+    animeCollapseText: "Anim. Collapse",
+    hideCollapseText: "Hide Collapse",
+    splitText: "Split",
+    collapsibleText: "Collapsible",
+    collapseModeText: "Collapse Mode",
+	widthText: "Width",
+	heightText: "Height",
+	minWidthText: "Min Width",
+	maxHeightText: "Max Height",
+    failSuccessTitle: "Error",
     mapMetadataTitle: "Save a template",
     mapMedatataSetTitle: "",
     mapNameLabel: "Name",
@@ -56,6 +57,8 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
     addResourceButtonText: "Save",
     templateSuccessMsgText: "Saved succesfully",
     templateSuccessTitleText: "OK",
+    newTemplateText: "New",
+    saveTemplateText: "Save",
     /** EoF i18n **/
 
 	/** api: config[collapseModes]
@@ -64,7 +67,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 	 */
 	collapseModes:[{
 		name: "default",
-		label: "default",
+		label: "none",
 		value: "default"
 	},{
 		name: "mini",
@@ -87,6 +90,11 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
      */
     actionURL: "/opensdi2-manager/mvc/fileManager/extJSbrowser",
 
+    /** api: config[mediaContent]
+     *  ``String`` relative for the media content in the upload panel
+     */
+    mediaContent: null,
+
     /**
     * Constructor: initComponent 
     * Initializes the component
@@ -102,12 +110,12 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 				name: "templateName"
 			},{
 				xtype: "button",
-				text: "New",
+				text: this.newTemplateText,
 				handler: this.onReset, 
 				scope: this
 			},{
 				xtype: "button",
-				text: "Save",
+				text: this.saveTemplateText,
 				handler: this.onSave, 
 				scope: this
 			}]
@@ -157,11 +165,12 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 				headerMinWidth: values.header.container.minWidth,
 				headerMaxHeight: values.header.container.maxHeight,
 				headerHeight: values.header.container.height,
+				headerWidth: values.header.container.width,
 				// footer
 				footer: values.footer.html,
 				footerCSS: this.cleanupStyle(values.footer.css),
 				footerBorder: values.footer.container.border ? "on" : "off",
-				footerChk: values.footer.container.footer ? "on" : "off",
+				footerChk: values.footer.container.header ? "on" : "off",
 				footerCollapsible: values.footer.container.collapsible ? "on" : "off",
 				footerCollapseMode: values.footer.container.collapseMode,
 				footerHideCollapse: values.footer.container.hideCollapseTool ? "on" : "off",
@@ -169,7 +178,8 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 				footerAnimeCollapse: values.footer.container.animCollapse ? "on" : "off",
 				footerMinWidth: values.footer.container.minWidth,
 				footerMaxHeight: values.footer.container.maxHeight,
-				footerHeight: values.footer.container.height
+				footerHeight: values.footer.container.height,
+				footerWidth: values.footer.container.width,
 			});
 		}catch (e){
 			console.error("Error parsing template data");
@@ -210,7 +220,8 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 					"animCollapse": values.headerAnimeCollapse && values.headerAnimeCollapse == "on",
 					"minWidth": values.headerMinWidth,
 					"maxHeight": values.headerMaxHeight,
-					"height": values.headerHeight
+					"height": values.headerHeight,
+					"width": values.headerWidth
 			   }
 			},   
     		"footer": {
@@ -226,7 +237,8 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 					"animCollapse": values.footerAnimeCollapse && values.footerAnimeCollapse == "on",
 					"minWidth": values.footerMinWidth,
 					"maxHeight": values.footerMaxHeight,
-					"height": values.footerHeight
+					"height": values.footerHeight,
+					"width": values.footerWidth
 			   }
 			}
     	};
@@ -259,16 +271,17 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 		
         var win = new Ext.Window({
 		    title: this.mapMetadataTitle,
-            width: 415,
+            width: 400,
             height: 200,
+			layout: 'fit',
             resizable: false,
             items: [
                 new Ext.form.FormPanel({
-                    width: 400,
-                    height: 150,
+					border:false,
                     ref: "formPanel",
                     items: [
                         {
+						  border:false,
                           xtype: 'fieldset',
                           title: this.mapMedatataSetTitle,
                           items: [
@@ -281,18 +294,33 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
                               }, {
                                     xtype: 'textarea',
                                     width: 200,
+									
                                     name: "description",
                                     fieldLabel: this.mapDescriptionLabel,
                                     readOnly: false,
                                     hideLabel : false,
-                                    allowBlank: false,
                           			value: values.description
                               },{
 									xtype: "textfield",
 									name: "id",
 									hidden: true,
                           			value: values.id
-							  }
+							  },{
+									//use hiddend usergroupconmbobox
+									//to get the usergroups before
+									hidden:true,
+									xtype:'msm_usergroupcombobox',
+									anchor:'90%',
+									autoload:true,
+									url: this.geoStoreBase + "usergroups/",
+									auth: me.target.auth,
+									defaultSelection:'everyone',
+									hiddenName:'groupId',
+									maxLength:200,
+									allowBlank:false,
+									target: me.target
+									
+								}
                           ]
                         }
                     ]
@@ -303,9 +331,9 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
                     '->',
                     {
                         text: this.addResourceButtonText,
-                        iconCls: "gxp-icon-addgroup-button",
+                        iconCls: "accept",
                         scope: this,
-                        handler: function(){      
+                        handler: function(){
                             win.hide(); 
 
                             var saveValues = win.formPanel.getForm().getValues();
@@ -316,14 +344,52 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 									description: saveValues.description,
 									blob: blob
 								}, 
-								function success(response){                                                                            
-									Ext.Msg.show({
-									   title: me.templateSuccessTitleText,
-									   msg: me.templateSuccessMsgText,
-									   buttons: Ext.Msg.OK,
-									   icon: Ext.MessageBox.INFO
-									});
-									me.fireEvent("success");
+								function success(response){
+									//update security rule to make it public 
+									//response contains the id of the new resource
+									if(saveValues.groupId && response){
+										var reqBody='<ResourceList><Resource><id>'+response+'</id></Resource></ResourceList>';
+										// request to /usergroups/update_security_rules/<GROUPID>/<canRead>/<canWrite>
+										// to assign by default canread to everyone
+										Ext.Ajax.request({
+										   url: me.geoStoreBase + "usergroups/update_security_rules/"+saveValues.groupId+"/true/false",
+										   method: 'PUT',
+										   headers:{
+											  'Content-Type' : 'text/xml',
+											  'Authorization' : me.target.auth
+										   },
+										   params: reqBody,
+										   scope: this,
+										   success: function(response, opts){
+												Ext.Msg.show({
+												   title: me.templateSuccessTitleText,
+												   msg: me.templateSuccessMsgText,
+												   buttons: Ext.Msg.OK,
+												   icon: Ext.MessageBox.INFO
+												});
+												me.fireEvent("success");	
+										   },
+										   failure:  function(response, opts) {
+												Ext.Msg.show({
+												   title: me.failSuccessTitle,
+												   msg: me.userAlreadyTaken,
+												   buttons: Ext.Msg.OK,
+												   icon: Ext.MessageBox.ERROR
+												});
+												me.fireEvent("failure");
+										   }
+										});
+										
+									} else{
+										Ext.Msg.show({
+										   title: me.templateSuccessTitleText,
+										   msg: me.templateSuccessMsgText,
+										   buttons: Ext.Msg.OK,
+										   icon: Ext.MessageBox.INFO
+										});
+										me.fireEvent("success");	
+									}
+
 								},
 								function failure(response) {
 									Ext.Msg.show({
@@ -357,7 +423,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
            headers:{
               'Content-Type' : contentType,
               'Accept' : 'application/json, text/plain, text/xml',
-              'Authorization' : this.auth
+              'Authorization' : this.target.auth
            },
            params: blob,
            scope: this,
@@ -383,7 +449,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
     },
 
     getTemplateSectionEditor: function(section){
-    	var title = section == "header" ? this.headerTitleText: section == "footer" ? this.footerTitleText: section;
+    	var title = section == "header" ? this.headerTitleText : section == "footer" ? this.footerTitleText : section;
     	var sectionContentTitleText = String.format(this.sectionContentTitleText, title);
     	return {
 			title: title,
@@ -397,7 +463,8 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 					name: section,
 					actionURL: this.actionURL,
 					height: 190,
-					anchor:'100%'
+					anchor:'100%',
+            		mediaContent: this.mediaContent
 				}]
 			},{
 				xtype: "fieldset",
@@ -426,7 +493,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 						name: section + "Border"
 					},{
 						xtype: "checkbox",
-						fieldLabel: title,
+						fieldLabel: this.headerCheckboxText,
 						name: section + "Chk"
 					},{
 						xtype: "checkbox",
@@ -450,6 +517,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 					items:[{
 						xtype: "combo",
 						fieldLabel: this.collapseModeText,
+						width: 150,
 						name: section + "CollapseMode",
 						mode : 'local',
 						lazyRender : false,
@@ -460,6 +528,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 						autoLoad : true,
 						displayField : 'label',
 						valueField : 'value',
+						value: 'default',
 						editable : false,
 						readOnly : false,
 						store : new Ext.data.JsonStore({
@@ -478,18 +547,22 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 					},{
 						xtype: "numberfield",
 						fieldLabel: this.widthText,
+						width: 150,
 						name: section + "Width"
 					},{
 						xtype: "numberfield",
 						fieldLabel: this.heightText,
+						width: 150,
 						name: section + "Height"
 					},{
 						xtype: "numberfield",
 						fieldLabel: this.minWidthText,
+						width: 150,
 						name: section + "MinWidth"
 					},{
 						xtype: "numberfield",
 						fieldLabel: this.maxHeightText,
+						width: 150,
 						name: section + "MaxHeight"
 					}]
 				}]

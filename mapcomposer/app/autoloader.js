@@ -69,22 +69,24 @@ var notFound = function() {
     throw {notfound: true};
 };
 
-var App = function(config) {
-    
-    var sections = CONFIG.parse(config);
-    var group, root, order, urls = {};
-    for (var section in sections) {
-        group = sections[section];
-        // make root relative to config
-        root = FS.join(FS.directory(config), group.root[0]);
-        group.root = [root];
-        order = MERGE.order(group);
-        // create lib loader
-        urls["/" + section] = libLoader(section, order);
-        // create static loader for all scripts in lib
-        var app = STATIC(root)(notFound);
-        urls["/@" + section] = app; 
-    }
+var App = function(configs) {
+	var group, root, order, urls = {};
+    for(var i = 0, l = configs.length; i < l; i++) {
+		var config = configs[i];
+		var sections = CONFIG.parse(config);
+		for (var section in sections) {
+			group = sections[section];
+			// make root relative to config
+			root = FS.join(FS.directory(config), group.root[0]);
+			group.root = [root];
+			order = MERGE.order(group);
+			// create lib loader
+			urls["/" + section] = libLoader(section, order);
+			// create static loader for all scripts in lib
+			var app = STATIC(root)(notFound);
+			urls["/@" + section] = app; 
+		}
+	}
     return URLMap(urls);
     
 };

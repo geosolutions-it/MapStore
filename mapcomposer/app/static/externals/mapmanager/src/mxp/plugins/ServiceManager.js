@@ -35,12 +35,11 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
     /** api: ptype = mxp_servicemanager */
     ptype: "mxp_servicemanager",
 
-    // i18n
     buttonText: "Services",
     tooltipText: "Open service manager",
     rootText: "VA-SPs",
 
-    iconCls:'service_manager_ic',
+    iconCls:'update_manager_ic',
 
     loginManager: null,    
     setActiveOnOutput: true,
@@ -55,7 +54,30 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
             text: this.buttonText,
             tooltip: this.tooltipText,
             handler: function() { 
-                this.addOutput();
+                this.addOutput(); 
+
+                // Uncomment this code to see the alternative fb
+                // var actionURL = this.actionURL ? this.actionURL: // the action URL is configured in th plugin
+                //     this.target.adminUrl ? this.target.adminUrl + "mvc/fileManager/extJSbrowser" : // use relative path from adminUrl
+                //     "/opensdi2-manager/mvc/fileManager/extJSbrowser"; // by default search on root opensdi-manager2
+
+
+                // Ext.apply(this.outputConfig, {
+                //     xtype: "filebrowserpanel",
+                //     title: this.buttonText + " 2",
+                //     actionURL: actionURL,
+                //     layout: 'border',
+                //     closable: true,
+                //     closeAction: 'close',
+                //     autoWidth: true,
+                //     // iconCls: "template_manger_ic",  // TODO: icon
+                //     header: false,
+                //     viewConfig: {
+                //         forceFit: true
+                //     }
+                // });
+
+                // mxp.plugins.ServiceManager.superclass.addOutput.apply(this);
             },
             scope: this
         });
@@ -112,7 +134,8 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
             enableBrowser:true,
             enableUpload:true,
             uploadUrl: uploadUrl,
-            url: actionURL,
+			mediaContent: this.target.initialConfig.mediaContent,            
+			url: actionURL,
             // ovrNewdirText: "New Service ID",
             rootText: this.rootText,
             checkNodeParameters: true

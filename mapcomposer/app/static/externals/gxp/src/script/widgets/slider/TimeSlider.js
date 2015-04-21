@@ -4,11 +4,6 @@
  * Published under the GPL license.
  * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
  * of the license.
- **/
-
-/**
- * requires OpenLayers/Control/TimeManager.js
- * requires OpenLayers/TimeAgent.js
  */
  
 /** api: (define)
@@ -217,8 +212,10 @@ gxp.slider.TimeSlider = Ext.extend(Ext.slider.MultiSlider, {
     },
     
     updateTimeDisplay: function(){
-        this.sliderTip.onSlide(this,null,this.thumbs[0]);
-        this.sliderTip.el.alignTo(this.el, 'b-t?', this.offsets);
+		if(this.sliderTip){
+			this.sliderTip.onSlide(this,null,this.thumbs[0]);
+			this.sliderTip.el.alignTo(this.el, 'b-t?', this.offsets);
+		}
     },
     
     buildSliderValues : function() {
