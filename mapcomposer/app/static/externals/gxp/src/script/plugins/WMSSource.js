@@ -365,6 +365,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 name: config.name,
                 group: config.group,
                 uuid: config.uuid,
+				wcs: config.wcs, // boolean to know if is a raster layer
                 gnURL: config.gnURL,
                 source: config.source,
                 properties: "gxp_wmslayerpanel",
@@ -381,6 +382,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 {name: "name", type: "string"}, 
                 {name: "group", type: "string"},
 				{name: "uuid", type: "string"},
+				{name: "wcs", type: "boolean"},
 				{name: "gnURL", type: "string"},
 				{name: "title", type: "string"},
                 {name: "properties", type: "string"},
@@ -567,7 +569,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     this.schemaCache[typeName] = schema;
                 }
             } else {
-                callback.call(scope, false);
+                callback.call(scope, false, (r && r.get("owsType") ? r.get("owsType") : false));
             }
         }, this);
     },
@@ -740,7 +742,9 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                 if(keyword.indexOf("uuid") != -1){
                     props.uuid = keyword.substring(keyword.indexOf("uuid="));
                     props.uuid = keyword.split("=")[1];
-                }  
+                } else if(keyword.indexOf("WCS") != -1){
+					props.wcs = true;
+				}   
                 
 				// ///////////////////////////////////////////////////////////////
 				// Use 'enableLang' set to 'true' in order to not enable i18n 

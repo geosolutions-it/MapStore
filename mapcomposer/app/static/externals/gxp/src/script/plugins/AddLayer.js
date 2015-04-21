@@ -352,23 +352,34 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			combo.onSelect(record, 0);
 		}	
 	},
-
-    /**  
+	
+	/**  
 	 * api: method[checkLayerSource]
+	 * 
+	 * wmsURL - The WMS service URL of the source.
+	 * source (optional) - The given source identifier.  
      */
-	checkLayerSource: function(wmsURL){
+	checkLayerSource: function(wmsURL, source){
 	    var s;
 		for (var id in this.target.layerSources) {
-			  var src = this.target.layerSources[id];    
-			  var url  = src.initialConfig.url; 
+			var src = this.target.layerSources[id];    
+			var url  = src.initialConfig.url; 
 			  
-			  // //////////////////////////////////////////
-			  // Checking if source URL aldready exists
-			  // //////////////////////////////////////////
-			  if(url != undefined && url.indexOf(wmsURL) != -1){
-				  s = src;
-				  break;
-			  }
+			// ////////////////////////////////////////////////////
+			// Checking if the provided source ID aldready exists
+			// ////////////////////////////////////////////////////
+			if(source && id == source){
+				s = src;
+				break;
+			}
+			  
+			// //////////////////////////////////////////
+			// Checking if source URL aldready exists
+			// //////////////////////////////////////////
+			if(url != undefined && url.indexOf(wmsURL) != -1){
+				s = src;
+				break;
+			}
 		} 
 
 		return s;
@@ -398,7 +409,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			var gnLangStr = options.gnLangStr;
 			var customParams = options.customParams;
 					
-			var source = this.checkLayerSource(wmsURL);
+			var source = this.checkLayerSource(wmsURL, options.source);
 
 			if(source){
 			

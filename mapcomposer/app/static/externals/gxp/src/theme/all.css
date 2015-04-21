@@ -397,3 +397,20 @@ div.map-overlay div.overlay-element {
 	width:16px;
 	height:16px;
 }
+
+/*gxp_downloadpanel*/
+.labelField{
+	font-style: normal; 
+	color: #918E8F; 
+	font-variant: normal; 
+	font-weight: normal; 
+	font-size: 11px; 
+	line-height: normal; 
+	font-family: tahoma, arial, helvetica, sans-serif;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.crsInfoButton {
+   background-image: url(img/silk/information.png) !important;
+}
