@@ -88,6 +88,14 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
      */
 	keyShowAgain:"showAgainManagerHelp",
     fileDocURL: null,
+    
+    /**
+     * api: config[mode]
+     * ``String`` option to select if the help must me shown in a new tab or in a window
+     * default browsertab. use "window" if you want to use the "description" and you don't specify
+     * the fileDocURL.
+     */
+    mode: "browsertab",
 	
     /** end of i18n */
     /** api: config[description]
@@ -174,13 +182,19 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
             
 
         };
-
+        //if a document, as the default pdf, use the browser tab (i.e. don't show pdf in the window)
+        //the window can be used for html pages 
+        if(this.mode == "browsertab") {
+            window.open(this.fileDocURL);
+            return;
+        }
         new Ext.Window(Ext.apply({
            layout:'fit',
            iconCls:this.iconCls,
            title: this.title,
            border:false,
            autoScroll:false,
+           maximizable:true,
            items: this.fileDocURL ? iframeconfig : {html: this.description, autoScroll:true, bodyStyle:'padding:10px'},
             bbar:[{
                 xtype: 'checkbox',
