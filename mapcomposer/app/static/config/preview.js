@@ -8,6 +8,11 @@
 			"ptype": "gxp_bingsource" 
 		}
     },
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
+	},
     "map":{
         "projection": "EPSG:900913",
         "units": "m",
@@ -36,7 +41,7 @@
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,
-			"showReport": false,
+			"showReport": "always",
 			"directAddLayer": false,
 			"id": "addlayer"
 		}, {

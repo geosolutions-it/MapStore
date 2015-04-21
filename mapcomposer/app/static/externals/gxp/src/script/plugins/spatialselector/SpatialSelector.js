@@ -152,7 +152,7 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
 			layout.title = this.titleText;
 		}
 
-		var selectionMethodCombo = {
+		this.selectionMethodCombo = new Ext.form.ComboBox({
 			xtype : 'combo',
 			// anchor : '100%',
 			id : this.id + '_selectionMethod_id',
@@ -163,8 +163,10 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
 			lazyRender : false,
 			mode : 'local',
 			name : 'roiSelectionMethod',
-			forceSelected : true,
+			forceSelection : true,
+            valueNotFoundText : this.comboEmptyText,
 			emptyText : this.comboEmptyText,
+            validateOnBlur : false,
 			allowBlank : false,
 			autoLoad : true,
 			displayField : 'label',
@@ -192,17 +194,20 @@ gxp.plugins.spatialselector.SpatialSelector = Ext.extend(gxp.plugins.Tool, {
 					var method = this.spatialSelectors[c.getValue()];//record.json.method;
 					method.activate();
 					this.activeMethod = method;
+                    setTimeout(function(){
+                        c.refOwner.doLayout();
+                    }, 500);
 				},
 				scope : this
 			}
-		};
+		});
 
 	    // initialize layout
 		layout.items = [];
 		layout.items.push({
 			xtype: 'fieldset',
 			title: this.comboSelectionMethodLabel,
-			items: [selectionMethodCombo]
+			items: [this.selectionMethodCombo]
 		});
     	if(this.spatialSelectors){
 	    	for (var key in this.spatialSelectors){

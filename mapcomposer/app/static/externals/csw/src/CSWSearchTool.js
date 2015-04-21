@@ -640,6 +640,10 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 		this.searchButton.disable();
 		this.resetButton.disable();
         
+        this.on('afterlayout',function(panel, layout){
+            panel.catalogSelectionPan.doLayout();
+        });
+        
         //event associations
 		this.catalogChooser.on('select', function() {
 			this.searchButton.disable();

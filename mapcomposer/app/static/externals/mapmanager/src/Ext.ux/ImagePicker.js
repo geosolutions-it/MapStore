@@ -71,6 +71,11 @@ Ext.ux.ImagePicker = Ext.extend(Ext.FormPanel, {
      *  Height for the image carousel
      */
     imageCarouselHeight: 150,
+
+    /** api: config[mediaContent]
+     *  ``String`` relative for the media content in the upload panel
+     */
+    mediaContent: null,
     
     /** private: property[fileUpload]
      *  ``Boolean``
@@ -135,6 +140,7 @@ Ext.ux.ImagePicker = Ext.extend(Ext.FormPanel, {
                 xtype: "pluploadpanel",
                 url: uploadURL,
                 multipart: true,
+                mediaContent: this.mediaContent,
                 listeners:{
                     fileUploaded: this.onFileUpload,
                     scope: this

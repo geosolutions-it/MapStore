@@ -9,9 +9,19 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
 
     /* basic plupload configuration */
     runtimes: 'gears,browserplus,html5,silverlight,flash',
-    flash_swf_url: "../externals/mapmanager/theme/img/plupload/plupload.flash.swf",
-    silverlight_xap_url: "../externals/mapmanager/theme/img/plupload/plupload.silverlight.xap",
+    default_flash_swf_url: "plupload.flash.swf",
+    default_silverlight_xap_url: "plupload.silverlight.xap",
     chunk_size: "2mb",
+
+    /** api: config[mediaContent]
+     *  ``String`` relative for the media content in the upload panel
+     */
+
+    /**
+     * Force the URL for flash and silverlight resources
+     **/
+    flash_swf_url: null,
+    silverlight_xap_url: null,
 
     constructor: function(config) {
         
@@ -20,6 +30,16 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
 
         this.success = [];
         this.failed = [];
+
+        // Flash resource
+        if(!this.flash_swf_url){
+            this.flash_swf_url = config.mediaContent + this.default_flash_swf_url;
+        }
+
+        // Silverlight resource
+        if(!this.silverlight_xap_url){
+            this.silverlight_xap_url = config.mediaContent + this.default_silverlight_xap_url;
+        }
 
         this.viewTpl = new Ext.XTemplate(
             '<tpl for=".">',
@@ -185,6 +205,7 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
     initialize_uploader: function () {
         var runtimes = 'gears,browserplus,html5,silverlight,flash';
         this.uploader = new plupload.Uploader({
+            headers : this.auth ? {'Authorization': this.auth}: null,
             url: this.url,
             runtimes: this.runtimes || runtimes,
             browse_button: this.getTopToolbar().getComponent('addButton').getEl().dom.id,

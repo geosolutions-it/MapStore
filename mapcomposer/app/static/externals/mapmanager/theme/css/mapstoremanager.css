@@ -35,7 +35,7 @@ background: url('../img/logo.png') center no-repeat;
 /* CLASSES */
 /* -------------------- */
 .add{
-background:url(../images/add.png) no-repeat 10px 8px;
+background:url(../img/add.png) no-repeat 10px 8px;
 text-indent:30px;
 display:block;
 }
@@ -125,8 +125,12 @@ display:block;
 .map_edit .x-btn-text-icon {
     background-image: url(../img/map_edit.png);
 }
-.table_edit {
+.table_edit,.x-panel-tl .x-panel-header.table_edit{
     background-image: url(../img/table_edit.png);
+}
+
+.resource_edit,.x-panel-tl .x-panel-header.resource_edit{
+    background-image: url(../img/report_edit.png);
 }
 
 .row_expand {
@@ -298,6 +302,12 @@ left: 80px !important;
 .refresh_ic{
     background-image: url(../img/arrow_refresh.png);
 }
+.auto_refresh_ic{
+    background-image: url(../img/clock_refresh.png);
+}
+.archive_ic{
+    background-image: url(../img/fb/disk.png);
+}
 
 .delete_ic {
     background:url(../img/delete.png)
@@ -322,7 +332,3 @@ left: 80px !important;
     background-image: url(../img/gwc.png);
 }
 
-/* Service manager*/
-.service_manager_ic{
-    background-image: url(../img/server.png);
-}

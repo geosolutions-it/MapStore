@@ -203,6 +203,14 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
     * 
     */
     checkTemplateId: false,
+    
+    /**
+    * Property: addExpandCollapseControls
+    * {boolean} add expand and collapse buttons for maps grid.
+    * Default it's true
+    * 
+    */
+    addExpandCollapseControls: true,
 	
     /**
      * Method: initComponent
@@ -235,30 +243,32 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
                 handler: this.onAddMap
             });   
         }
-        
-        //add expandAll buttons    
-        this.expandAll = this.addButton({
-            id: 'id_expandAll_button',
-            text: this.textExpandAll,
-            scope: this,
-            iconCls: 'row_expand',
-            tooltip: this.tooltipExpandAll,
-            handler: function(){
-                this.grid.plugins.expandAll();
-            }
-        });
-        
-        //add collapseAll buttons    
-        this.collapseAll = this.addButton({
-            id: 'id_collapseAll_button',
-            text: this.textCollapseAll,
-            scope: this,
-            iconCls: 'row_collapse',
-            tooltip: this.tooltipCollapseAll,
-            handler: function(){
-                 this.grid.plugins.collapseAll();
-            }
-        });
+
+        if(this.addExpandCollapseControls){
+            //add expandAll buttons    
+            this.expandAll = this.addButton({
+                id: 'id_expandAll_button',
+                text: this.textExpandAll,
+                scope: this,
+                iconCls: 'row_expand',
+                tooltip: this.tooltipExpandAll,
+                handler: function(){
+                    this.grid.plugins.expandAll();
+                }
+            });
+            
+            //add collapseAll buttons    
+            this.collapseAll = this.addButton({
+                id: 'id_collapseAll_button',
+                text: this.textCollapseAll,
+                scope: this,
+                iconCls: 'row_collapse',
+                tooltip: this.tooltipCollapseAll,
+                handler: function(){
+                     this.grid.plugins.collapseAll();
+                }
+            });
+        }
 		
 		this.plugins = (this.plugins || []);
 
@@ -278,21 +288,26 @@ MSMPagingToolbar = Ext.extend(Ext.PagingToolbar, {
         
         var win = new Ext.Window({
             title: this.createMapTitleText,
-            width: 415,
-            resizable: false,
-            items: [
-                new Ext.form.FormPanel({
-                    width: 400,
-                    ref: "formPanel",
+            width: 325,
+            height: 100,
+            resizable: true,
+            plain: true,
+            layout: "fit",
+            items: [{
+                xtype: "form",
+                layout: "fit",
+                ref: "formPanel",
+                items: [{
+                    layout: "form",
                     items: [{
                         xtype: "msm_templatecombobox",
-                        ref: "templateCombo",
+                        ref: "../templateCombo",
                         name: "templateId",
                         templatesCategoriesUrl: this.templatesCategoriesUrl,
                         auth: this.auth
                     }]
-                })
-            ],
+                }]
+            }],
             bbar: new Ext.Toolbar({
                 items:[
                     '->',

@@ -357,7 +357,7 @@
 	 * Return:
 	 * 
 	 */
-	ContentProvider.prototype.update = function(pk, item, callback){
+	ContentProvider.prototype.update = function(pk, item, callback, failureCallback){
 		var data = this.beforeSave(item);
 		var uri = new Uri({'url':this.baseUrl_});
 		uri.appendPath( this.resourceNamePrefix_ ).appendId( pk );
@@ -378,7 +378,11 @@
 				callback( response );
 	       },
 	       failure:  function(response, opts){
-				this.onFailure_(response);
+                if(failureCallback){
+                    failureCallback(response);
+                }else{
+                    this.onFailure_(response);
+                }
 	       }
 	    });
 	};	
@@ -429,7 +433,7 @@
 	 * Return:
 	 * 
 	 */
-	ContentProvider.prototype.create = function(item, callback, failureCallback){
+	ContentProvider.prototype.create = function(item, callback, failureCallback, scope){
 		var uri = new Uri({'url':this.baseUrl_});
 		var data = this.beforeSave( item );
 
@@ -449,12 +453,11 @@
 	       params: data,
 	       scope: this,
 	       success: function(response, opts){
-				callback(response.responseText);
+				callback.call(scope, response.responseText);
 	       },
 	       failure:  function(response, opts){
-	       		console.log(response);
 				if(typeof(failureCallback) === 'function') {
-                    failureCallback(response);
+                    failureCallback.call(scope, response);
                 } else {
 				// ////////////////////////////////////////////////// //
 				// TODO: Refactor this code externalize the           // 
@@ -517,6 +520,138 @@
 	// /////////////////////////////////////////////////// //
 
 	/**
+	 * Class: GeoStore.Resource
+	 *
+	 * CRUD methods for Resources in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	GeoStore.Resource = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'resource';
+		},
+		beforeDeleteByFilter: function(data){
+			var xmlFilter = "<AND>" +
+								"<ATTRIBUTE>" + 
+									"<name>" + 
+										data.name + 
+									"</name>" +
+									"<operator>" + data.operator + "</operator>" + 
+									"<type>" + data.type + "</type>" +
+									"<value>" + 
+										data.value + 
+									"</value>" + 
+								"</ATTRIBUTE>" + 
+							"</AND>";
+			return xmlFilter;
+		},
+		deleteByFilter: function(filterData, callback){
+			var data = this.beforeDeleteByFilter(filterData);
+			var uri = this.baseUrl_;
+			
+			Ext.Ajax.request({
+			   url: uri,
+			   method: 'DELETE',
+			   headers:{
+				  'Content-Type' : 'text/xml',
+				  'Authorization' : this.authorization_
+			   },
+			   params: data,
+			   scope: this,
+			   success: function(response, opts){
+					callback(response);
+			   },
+			   failure:  function(response, opts) {
+			   }
+			});		
+		},
+		beforeSave: function(data){
+			// ///////////////////////////////////////
+			// Wrap new map within an xml envelop
+			// ///////////////////////////////////////
+			var addedAttributes = false;
+			var xml = '<Resource>';
+			xml += '<name>' + data.name + '</name>';
+			xml += '<description>' + data.description + '</description>';
+			if(data.metadata){
+				xml += '<metadata>'+data.metadata+'</metadata>';
+			}
+				
+			/** This can remove all the attributes if present !!! do it in a better way as soon as possible **/
+			if (data.attributes){
+				xml += '<Attributes>';
+					
+				for(var att in data.attributes){
+					xml +=
+					'<attribute>' +
+						'<name>'+ att +'</name>' +
+						'<type>'+ (att["@type"] || 'STRING') + '</type>' +
+						'<value>' + data.attributes[att].value + '</value>' +
+					'</attribute>';
+				}
+				addedAttributes = true;
+					// close attributes
+				if(addedAttributes){
+					xml += '</Attributes>';
+				}
+			}
+
+			if(data.category){
+				 xml+= '<category>' +
+					'<name>' + data.category + '</name>' +
+				'</category>';
+			}
+			if (data.blob){
+				xml+='<store>' +
+					'<data><![CDATA[ ' + data.blob + ' ]]></data>' +
+				'</store>';
+			}
+			xml += '</Resource>';
+			return xml;
+		},
+		afterFind: function(json){
+			
+			if ( json.Resource ){
+                var resource = json.Resource;
+				var data = new Object;
+				data.description = resource.description;
+                data.id = resource.id;
+				data.name = resource.name;
+				data.creation = resource.creation;	
+                if(resource.category){
+                    data.category = resource.category.name
+                }
+                
+                
+                if(resource.data){
+                    data.blob = resource.data.data;
+                }
+				if(resource.Attributes && resource.Attributes.attribute && (resource.Attributes.attribute instanceof Array)){
+                    var attrarray = resource.Attributes.attribute;
+					for(var i = 0; i < attrarray.length;i++){
+                        if(!data.attributes){
+                            data.attributes ={};
+                        }
+						data.attributes[attrarray[i].name] = attrarray[i];
+					}
+				}else if(resource.Attributes && resource.Attributes.attribute){
+                    if(!data.attributes){
+                        data.attributes ={};
+                    }
+					data.attributes[resource.Attributes.attribute.name] = resource.Attributes.attribute;
+				}
+				return data;			
+			} else {
+				this.onFailure_('cannot parse response');
+			}
+		}
+    });
+	// /////////////////////////////////////////////////// //
+	// Init some content providers used in the application //
+	// /////////////////////////////////////////////////// //
+
+	/**
 	 * Class: GeoStore.Maps
 	 *
 	 * CRUD methods for maps in GeoStore
@@ -564,9 +699,37 @@
 			// ///////////////////////////////////////
 			// Wrap new map within an xml envelop
 			// ///////////////////////////////////////
-			var addedAttributes = false;
+			//var addedAttributes = false;
 			var xml = '<Resource>';
-			if (data.owner){
+			
+			if(data.owner || data.attributes){
+				xml += 	'<Attributes>';
+				
+				if(data.owner){
+					xml += 
+						'<attribute>' +
+							'<name>owner</name>' +
+							'<type>STRING</type>' +
+							'<value>' + data.owner + '</value>' +
+						'</attribute>';
+				}
+				
+				if(data.attributes){
+					for(var i=0; i<data.attributes.length; i++){
+						xml += 
+							'<attribute>' +
+								'<name>' + data.attributes[i].name + '</name>' +
+								'<type>' + data.attributes[i]["@type"] + '</type>' +
+								'<value>' + data.attributes[i].value + '</value>' +
+							'</attribute>';
+					}
+				}
+				
+				xml += '</Attributes>';
+			}
+			
+			/** This can remove all the attributes if present !!! do it in a better way as soon as possible **/
+			/*if (data.owner){
 				xml += 
 				'<Attributes>' +
 					'<attribute>' +
@@ -575,27 +738,12 @@
 						'<value>' + data.owner + '</value>' +
 					'</attribute>';
 				addedAttributes = true;
-			}
-
-			// Add template id
-			if(data.templateId){
-				if(!addedAttributes){
-					// open attributes
-					xml += '<Attributes>';
-					addedAttributes = true;
-				}
-				xml += 
-                    '<attribute>' +
-                      '<name>templateId</name>' +
-                      '<type>STRING</type>' +
-                      '<value>' + data.templateId + '</value>' +
-                    '</attribute>';
-			}
+			}			
 
 			// close attributes
 			if(addedAttributes){
 				xml += '</Attributes>';
-			}
+			}*/
 				
 			xml +=
 				'<description>' + data.description + '</description>' +
@@ -617,7 +765,18 @@
 			
 			if ( json.Resource ){
 				var data = new Object;
-				data.owner = json.Resource.Attributes.attribute.value;
+				
+				data.attributes = [];
+				if(json.Resource.Attributes.attribute instanceof Array){
+					var array = json.Resource.Attributes.attribute;
+					for(var i=0; i<array.length; i++){
+						data.attributes.push(array[i]);
+					}
+				}else{
+					data.attributes.push(json.Resource.Attributes.attribute);
+				}
+				
+				//data.owner = json.Resource.Attributes.attribute.value;
 				data.description = json.Resource.description;
 				data.name = json.Resource.name;
 				data.blob = json.Resource.data.data;
@@ -627,6 +786,61 @@
 			} else {
 				this.onFailure_('cannot parse response');
 			}
+		},
+		create: function(item, callback, failureCallback, scope) {
+			// /////////////////////////////////////////////////////
+			// when a resource with the same name exists,
+			// geostore will return an error response (409 status)
+			// containing a valid name suggestion: client shall
+			// rename the resource and try again, up to MAX_RETRIES 
+			// times.
+			// /////////////////////////////////////////////////////
+			var MAX_RETRIES = 3,
+				retriesCounter = 0,
+				geostore = this;
+			var retryingFailureCallback = function(response) {
+				retriesCounter++;
+				if (response.status == 409 && retriesCounter < MAX_RETRIES) {
+					item.name = response.responseText;
+					geostore.create(item, callback, retryingFailureCallback);
+				} else {
+					// ////////////////////////////////////////////////// //
+					// TODO: Refactor this code externalize the           // 
+				    //	     Msg definition for the i18n                  //
+				    // ////////////////////////////////////////////////// //
+					Ext.Msg.show({
+						msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+						buttons: Ext.Msg.OK,
+						icon: Ext.MessageBox.ERROR
+					});
+				}
+			};
+			
+			// allow caller to override default error handling behavior
+			failureCallback = failureCallback || retryingFailureCallback;
+			
+			ContentProvider.prototype.create.call(this, item, callback, failureCallback, scope);
+		},
+		update: function(pk, item, callback, failureCallback) {
+			var defaultFailureCallback = function(response) {
+				var defaultErrMsg = response.statusText + "(status " + response.status + "):  " + response.responseText;
+				var conflictErrMsg = "A map with the same name already exists";
+				
+				// ////////////////////////////////////////////////// //
+				// TODO: Refactor this code externalize the           // 
+			    //	     Msg definition for the i18n                  //
+			    // ////////////////////////////////////////////////// //
+				Ext.Msg.show({
+					msg: (response.status === 409) ? conflictErrMsg : defaultErrMsg,
+					buttons: Ext.Msg.OK,
+					icon: Ext.MessageBox.ERROR
+				});
+			}
+			
+			// allow caller to override default error handling behavior
+			failureCallback = failureCallback || defaultFailureCallback;
+			
+			ContentProvider.prototype.update.call(this, pk, item, callback, failureCallback);
 		}
     });
 
@@ -802,6 +1016,88 @@
 			}
 		}
 	});
+
+    /**
+	 * Class: GeoStore.ResourcePermission
+	 *
+	 * CRUD methods for Security rules for a resource in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var ResourcePermission = GeoStore.ResourcePermission = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'securityrule';
+		},
+        
+		beforeSave: function(data){
+			// wrap security rule list
+			var xml = '<SecurityRuleList>';
+			if(data && data.length > 0){
+				for(var i = 0; i < data.length; i++){
+					var rule = data[i];
+					// valid rule
+					if(rule && (rule.user || rule.group)){
+						xml += 
+						'<SecurityRule>' +
+							'<canRead>' + rule.canRead + '</canRead>' +
+							'<canWrite>' + rule.canWrite + '</canWrite>';
+						if(rule.user){
+							xml += 
+								'<user>' + 
+									'<id>' + rule.user.id + '</id>' +
+									'<name>' + rule.user.name + '</name>' +
+								'</user>';
+						} else if(rule.group){
+							xml += 
+								'<group>' + 
+									'<id>' + rule.group.id + '</id>' +
+									'<groupName>' + rule.group.groupName + '</groupName>' +
+								'</group>';
+						}
+
+						xml += 
+							'</SecurityRule>';
+					}
+				}
+			}
+
+			xml += '</SecurityRuleList>';
+
+
+			return xml;
+		},
+	
+		afterFind: function(json){
+			 if ( json.SecurityRuleList ){
+				var data = [];
+				for (var i=0; i< json.SecurityRuleList.length; i++){
+					data.push(this.afterFind(json.SecurityRuleList[i])); 
+				}
+				return data;
+			} else if(json.SecurityRule){
+                var rule = json.SecurityRule;
+					var obj = {};
+					obj.canRead = rule.canRead;
+					obj.canWrite = rule.canWrite;
+					if(rule.user && rule.user.id){
+						obj.user = {
+							id: rule.user.id,
+							name: rule.user.name
+						};
+					}else if(rule.group && rule.group.id){
+						obj.group = {
+							id: rule.group.id,
+							groupName: rule.group.groupName
+						};
+					}
+                    return obj;
+                
+            }else{
+				this.onFailure_('cannot parse response');
+			}
+		}
+	});
 	
 	/**
 	 * Class: Google.Shortener
@@ -815,9 +1111,9 @@
 	};
 
 	/**
-	 * Class: GeoStore.Maps
+	 * Class: GeoStore.Templates
 	 *
-	 * CRUD methods for maps in GeoStore
+	 * CRUD methods for templates in GeoStore
 	 * Inherits from:
 	 *  - <GeoStore.ContentProvider>
 	 *
@@ -903,6 +1199,91 @@
 			} else {
 				this.onFailure_('cannot parse response');
 			}
+		}
+    });
+
+	/**
+	 * Class: GeoStore.Categories
+	 *
+	 * CRUD methods for categories in GeoStore
+	 * Inherits from:
+	 *  - <GeoStore.ContentProvider>
+	 *
+	 */
+	var Categories = GeoStore.Categories = ContentProvider.extend({
+		initialize: function(){
+			this.resourceNamePrefix_ = 'category';
+		},
+		deleteByFilter: function(filterData, callback){
+			var uri = this.baseUrl_;
+			
+			Ext.Ajax.request({
+			   url: uri,
+			   method: 'DELETE',
+			   headers:{
+				  'Content-Type' : 'text/xml',
+				  'Authorization' : this.authorization_
+			   },
+			   scope: this,
+			   success: function(response, opts){
+					callback(response);
+			   },
+			   failure:  function(response, opts) {
+			   }
+			});		
+		},
+		beforeSave: function(data){
+			// ///////////////////////////////////////
+			// Wrap new map within an xml envelop
+			// ///////////////////////////////////////
+			var xml = "<Category><name>" + data.name + "</name></Category>";
+			return xml;
+		},
+		afterFind: function(json){
+			
+			if ( json.Category ){
+				var data = new Object;
+				data.name = json.Resource.name;
+				return data;			
+			} else if (json.CategoryList && json.CategoryList.Category){
+				return json.CategoryList.Category;			
+			} else {
+				this.onFailure_('cannot parse response');
+			}
+		},
+		/** 
+		 * Function: find
+		 * find all elements in async mode
+		 *
+		 * Parameters:
+		 * callback - {Function}
+		 * Return:
+		 * 
+		 */
+		findByName: function(name, callback){
+			var uri = new Uri({'url':this.baseUrl_ + "/" + name});
+			
+			// ////////////////////
+			// Build a request
+			// ////////////////////
+			var self = this;
+			var Request = Ext.Ajax.request({
+		       url: uri.toString(),
+		       method: 'GET',
+		       headers:{
+		          'Content-Type' : 'application/json',
+		          'Accept' : this.acceptTypes_,
+		          'Authorization' : this.authorization_
+		       },
+		       scope: this,
+		       success: function(response, opts){
+					var data = self.afterFind( Ext.util.JSON.decode(response.responseText) );
+					callback(data);
+		       },
+		       failure:  function(response, opts){
+		       		var json = Ext.util.JSON.decode(response.responseText);
+		       }
+		    });		
 		}
     });
 

@@ -1,0 +1,307 @@
+{
+   "gsSources":{
+   		"default": {
+			"ptype": "gxp_wmssource",
+			"url": "http://localhost:8080/geoserver/ows",
+			"title": "GeoSolutions GeoServer",
+			"SRS": "EPSG:900913",
+			"version":"1.1.1",
+		    "layersCachedExtent": [
+				-20037508.34,-20037508.34,
+				20037508.34,20037508.34
+			],
+			"layerBaseParams":{
+				"FORMAT":"image/png8",
+				"TILED":true
+			}
+		},
+		"mapquest": {
+			"ptype": "gxp_mapquestsource"
+		}, 
+		"osm": { 
+			"ptype": "gxp_osmsource"
+		},
+		"google": {
+			"ptype": "gxp_googlesource" 
+		},
+		"bing": {
+			"ptype": "gxp_bingsource" 
+		}, 
+		"ol": { 
+			"ptype": "gxp_olsource" 
+		}		
+	},
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
+	},
+	"map": {
+		"projection": "EPSG:900913",
+		"units": "m",
+		"zoom": 5,
+		"extent": [
+			-20037508.34,-20037508.34,
+			20037508.34,20037508.34
+		],
+		"layers": [						
+			{
+				"source": "bing",
+				"title": "Bing Aerial",
+				"name": "Aerial",
+				"group": "background"
+			},{
+				"source": "ol",
+				"title": "Vuoto",
+				"group": "background",
+				"fixed": true,
+				"type": "OpenLayers.Layer",
+				"visibility": false,
+				"args": [
+					"None", {"visibility": false}
+				]
+		    },{
+				"source": "osm",
+				"title": "Open Street Map",
+				"name": "mapnik",
+				"group": "background"
+			},{
+				"source": "mapquest",
+				"title": "MapQuest OpenStreetMap",
+				"name": "osm",
+				"group": "background"
+			},{
+				"source": "google",
+				"title": "Google Roadmap",
+				"name": "ROADMAP",
+				"group": "background"
+			},{
+				"source": "google",
+				"title": "Google Terrain",
+				"name": "TERRAIN",
+				"group": "background"
+			},{
+                "source": "default",
+                "group" : "Overlays",
+				"title" : "States",
+				"name"  : "topp:states",
+				"tiled" : false,
+				"visibility": true
+            },{
+                "source": "default",
+                "group" : "Overlays",
+				"title" : "Tasmania Cities",
+				"name"  : "topp:tasmania_cities",
+				"tiled" : false,
+				"visibility": true
+            },{
+                "source": "default",
+                "group" : "Overlays",
+				"title" : "Temperatura",
+				"name"  : "sf:temparia_web",
+				"tiled" : false,
+				"visibility": true
+            }
+		]
+	},
+    "customPanels":[
+      {
+          "xtype": "panel",
+          "title": "FeatureGrid",      
+          "border": false,
+          "id": "south",
+          "region": "south",
+          "layout": "fit",
+          "height": 330,
+          "collapsed": false,
+          "collapsible": true,
+          "header": true
+      },{
+          "xtype": "panel",
+          "title": "Query Panel",         
+          "border": false,
+          "id": "east",
+          "width": 400,
+          "height": 500,
+          "region": "east",
+          "layout": "fit",
+          "collapsed": false,
+          "collapsible": true,
+          "header": true
+      }
+    ],	
+	"tools": [
+		{
+			"ptype": "gxp_layertree",
+			"outputConfig": {
+				"id": "layertree"
+			},
+			"outputTarget": "tree",
+			"localIndexs":{
+					"it": 0,
+					"de": 1,
+					"en": 2,
+					"fr": 3
+			}
+		}, {
+			"ptype": "gxp_legend",
+			"outputTarget": "legend",
+			"outputConfig": {
+				"autoScroll": true
+			},
+			"legendConfig" : {
+				"legendPanelId" : "legendPanel",
+				"defaults": {
+					"style": "padding:5px",                  
+					"baseParams": {
+						"FORMAT": "image/jpeg",
+						"LEGEND_OPTIONS": "forceLabels:on;fontSize:10",
+						"WIDTH": 20, "HEIGHT": 20
+					}
+				}
+			}
+		}, {
+			"ptype": "gxp_addlayers",
+			"actionTarget": "tree.tbar",
+			"id": "addlayers"
+		}, {
+			"ptype": "gxp_removelayer",
+			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_removeoverlays",
+			"actionTarget": "tree.tbar"
+		}, {
+			"ptype": "gxp_addgroup",
+			"actionTarget": "tree.tbar"
+		}, {
+			"ptype": "gxp_removegroup",
+			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_groupproperties",
+			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_layerproperties",
+			"actionTarget": ["tree.tbar", "layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_zoomtolayerextent",
+			"actionTarget": {"target": "layertree.contextMenu", "index": 0}
+		}, {
+			"ptype":"gxp_geonetworksearch",
+			"actionTarget": ["layertree.contextMenu"]
+		}, {
+			"ptype": "gxp_zoomtoextent",
+			"actionTarget": {"target": "paneltbar", "index": 15}
+		}, {
+			"ptype": "gxp_navigation", "toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 16}
+		}, {
+			"actions": ["-"], "actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_zoombox", "toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 17}
+		}, {
+			"ptype": "gxp_zoom",
+			"actionTarget": {"target": "paneltbar", "index": 18}
+		}, {
+			"actions": ["-"], "actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_navigationhistory",
+			"actionTarget": {"target": "paneltbar", "index": 19}
+		}, {
+			"actions": ["-"], "actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_wmsgetfeatureinfo_menu", 
+			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
+			"useTabPanel": true,
+			"toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 20}
+		}, {
+			"actions": ["-"], "actionTarget": "paneltbar"
+		}, {
+			"ptype": "gxp_measure", "toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 21}
+		}, {
+			"ptype": "gxp_addlayer",
+			"showCapabilitiesGrid": false,
+			"id": "addlayer"
+		}, {
+			"ptype": "gxp_geolocationmenu",
+			"outputTarget": "paneltbar",
+			"toggleGroup": "toolGroup",
+			"index": 23
+		}, {
+		  "ptype": "gxp_featuremanager",
+		  "id": "featuremanager"
+	    }, {
+		  "ptype": "gxp_featuregrid",
+		  "featureManager": "featuremanager",
+		  "outputConfig": {
+			  "id": "featuregrid",
+			  "title": "Features"
+		  },
+		  "outputTarget": "south",
+		  "exportFormats": ["CSV","shape-zip"]
+	    }, {
+          "ptype": "gxp_spatialqueryform",
+          "featureManager": "featuremanager",
+          "featureGridContainer": "south",
+          "outputTarget": "east",
+          "showSelectionSummary": true,
+          "actions": null,
+          "id": "bboxquery",
+          "outputConfig":{
+                  "outputSRS": "EPSG:900913",
+                  "selectStyle":{
+                          "strokeColor": "#ee9900",
+                          "fillColor": "#ee9900",
+                          "fillOpacity": 0.4,
+                          "strokeWidth": 1
+                  },
+                  "spatialFilterOptions": {    
+                          "lonMax": 20037508.34,  
+                          "lonMin": -20037508.34,
+                          "latMax": 20037508.34,  
+                          "latMin": -20037508.34  
+                  },
+                  "bufferOptions": {
+                        "minValue": 1,
+                        "maxValue": 1000,
+                        "decimalPrecision": 2,
+                        "distanceUnits": "m"
+                  }
+          },
+          "spatialSelectorsConfig":{
+                "bbox":{
+                    "xtype": "gxp_spatial_bbox_selector"
+                },
+                "buffer":{
+                    "xtype": "gxp_spatial_buffer_selector"
+                },
+                "circle":{
+                    "xtype": "gxp_spatial_circle_selector",
+                    "zoomToCurrentExtent": true
+                },
+                "polygon":{
+                    "xtype": "gxp_spatial_polygon_selector"
+                }
+          },
+            "validators": {
+                "tasmania_cities": {
+                    "CITY_NAME": {
+                        "type": "regex",
+                        "value": "^([a-zA-Z0-9_\\.\\-])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$",
+                        "invalidText": "Inserire una email corretta"
+                    },
+                    "ADMIN_NAME": {
+                        "type": "regex",
+                        "value": "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b",
+                        "invalidText": "IP non valido"
+                    }                    
+                }
+            }
+        }, {
+			"ptype": "gxp_languageselector",
+			"actionTarget": {"target": "panelbbar", "index": 3}
+		}
+	]
+}

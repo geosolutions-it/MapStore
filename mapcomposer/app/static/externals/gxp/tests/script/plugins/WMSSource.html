@@ -4,17 +4,17 @@
     <script src="http://extjs.cachefly.net/ext-3.3.0/adapter/ext/ext-base.js"></script>
     <script src="http://extjs.cachefly.net/ext-3.3.0/ext-all-debug.js"></script>
     <script type="text/javascript" src="../../../../openlayers/lib/OpenLayers.js"></script>
-    <script type="text/javascript" src="../../../../geoext/lib/GeoExt.js"></script>
+    <script type="text/javascript" src="../../../../GeoExt/lib/GeoExt.js"></script>
     <script type="text/javascript" src="../../../src/script/loader.js"></script>
 
     <script type="text/javascript">
        
-        function test_WMSSource(t) {
+        function test_WMTSSource(t) {
             t.plan(1);
             
-            var instance = new gxp.plugins.WMSSource();
+            var instance = new gxp.plugins.WMTSSource();
             
-            t.ok(instance instanceof gxp.plugins.WMSSource, "Instance created successfully");
+            t.ok(instance instanceof gxp.plugins.WMTSSource, "Instance created successfully");
         }
 
 

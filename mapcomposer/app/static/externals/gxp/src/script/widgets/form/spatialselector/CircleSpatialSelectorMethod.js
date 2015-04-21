@@ -45,7 +45,24 @@ gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod = Ext.extend(gxp.wi
 
 	/* xtype = gxp_spatial_circle_selector */
 	xtype : 'gxp_spatial_circle_selector',
-
+  
+  /** api: config[metricUnit]
+	 *  ``Object``
+	 *  The metric unit to display summary
+	 */
+  metricUnit :"km",
+  
+  /** api: config[displayProjection]
+	 *  ``Object``
+	 *  The projection for coordinate display (if null, the native) default null
+	 */
+  displayProjection: null,
+  
+/** api: config[CRSDecimalPrecision]
+	 *  ``Object``
+	 *  The decimal precision of lon lat
+	 */
+  CRSDecimalPrecision: 3,
 	/** api: config[name]
 	 *  ``String``
 	 *  Name to show on the combo box of the spatial selected.
@@ -85,7 +102,7 @@ gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod = Ext.extend(gxp.wi
 	 */
     getSummary: function(geometry){
 
-		var summary = "", metricUnit = "km";
+		var summary = "", metricUnit = this.metricUnit;
 
 		var area = this.getArea(geometry, metricUnit);
 		if (area) {
@@ -103,11 +120,26 @@ gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod = Ext.extend(gxp.wi
 		var circleSelectionCentroid = geometry.getCentroid();
 
 		if (circleSelectionCentroid) {
-			var lon = circleSelectionCentroid.x.toFixed(3);
-			var lat = circleSelectionCentroid.y.toFixed(3);
-			var xField = this.target.mapPanel.map.projection == "EPSG:4326" ? "Lon" : "X";
-			var yField = this.target.mapPanel.map.projection == "EPSG:4326" ? "Lat" : "Y";
-			summary += this.centroidLabel + ": " + lon + " ("+xField+") " + lat + " ("+yField+")" + '<br />';
+			var lon = circleSelectionCentroid.x;
+			var lat = circleSelectionCentroid.y;
+      var xField,yField;
+      var projWGS84 = new OpenLayers.Projection("EPSG:4326");
+      
+      if(this.displayProjection){
+        var dProj = new OpenLayers.Projection(this.displayProjection);
+        var point = new OpenLayers.Geometry.Point(lon,lat).transform(this.target.mapPanel.map.projection,dProj);
+        lon = point.x;
+        lat = point.y;
+        xField = "Lon"; //TODO distinguish if projected or not
+        yField= "Lat";
+        
+      }else{
+        xField = this.target.mapPanel.map.projection == "EPSG:4326" ? "Lon" : "X";
+        yField = this.target.mapPanel.map.projection == "EPSG:4326" ? "Lat" : "Y";
+        
+      }
+      summary += this.centroidLabel + ": " + lon.toFixed(this.CRSDecimalPrecision) + " ("+xField+") " + lat.toFixed(this.CRSDecimalPrecision) + " ("+yField+")" + '<br />';
+			
 		}
 
 		var options = {};

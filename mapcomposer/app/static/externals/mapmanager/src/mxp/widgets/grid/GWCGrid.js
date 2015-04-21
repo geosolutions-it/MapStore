@@ -88,13 +88,13 @@ mxp.widgets.GWCGrid = Ext.extend(Ext.grid.GridPanel, {
             reader:  new Ext.data.ie10XmlReader({
                 record: 'layer',
                 idPath: 'name',
-                fields: [{name: 'id', mapping: 'name'},{name: 'name', mapping: 'name'}],
+                fields: [{name: 'id', mapping: 'name'},{name: 'name', mapping: 'name'}]
             }),
             scope:this,
             headers: {Authorization:this.auth},
             listeners:{
                 beforeload: function(a,b,c){
-                    a.proxy.conn.headers = a.proxy.conn.headers ? a.proxy.conn.headers : {}
+                    a.proxy.conn.headers = a.proxy.conn.headers ? a.proxy.conn.headers : {};
                     if( a.proxy.conn.headers ){
                         if(me.auth){
                             a.proxy.conn.headers['Authorization'] = me.auth;

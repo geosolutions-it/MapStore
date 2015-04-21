@@ -35,52 +35,52 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
     ptype: "mxp_login",
 
     buttonText: "Login",
-
     /**
-     * Property: statelessSession
-     * {Boolean} If the session is stateless is not needed check user details at startup
-     * 
+    * api: config[forceLogin]
+    * login is mandatory.
+    */
+    forceLogin: false,
+    /**
+     * api config[statelessSession]
+     * (boolean) if false, the session is managed by 
+     * external application, so the login will be attempted
+     * on startup without credentials
      */
     statelessSession: true,
-    /**
-     * Property: externalHeaders
-     * {Boolean} Use external headers
-     * 
-     */
-    externalHeaders: true,
 
     /** api: method[addActions]
      */
     addActions: function() {
-
+        
         // ///////////////////////////////////
         // Inizialization of MSMLogin class
         // ///////////////////////////////////
         this.login = new MSMLogin({
             // grid: this,
+            forceLogin: this.forceLogin,
             geoStoreBase : this.target.config.geoStoreBase,
             token: this.target.auth,
-            defaultHeaders: this.target.defaultHeaders,
             statelessSession: this.statelessSession,
-            externalHeaders: this.externalHeaders,
-            target: this.target
+            defaultHeaders: this.target.defaultHeaders
         });
 
         // Add listeners for login and logout
         this.login.on("login", this.onLogin, this);
         this.login.on("logout", this.onLogout, this);
+		
+        var actions = [
+            this.login.userLabel,
+            Ext.create({xtype: 'tbseparator'}),
+            this.login.loginButton
+		];
 
-        // for external header, we don't need the login button
-        var actions = [this.login.userLabel, Ext.create({xtype: 'tbseparator'}), this.login.loginButton];
-
-        return mxp.plugins.TemplateManager.superclass.addActions.apply(this, [actions]);
+        return mxp.plugins.Login.superclass.addActions.apply(this, [actions]);
     },
 
     /** private: method[onLogin]
      *  Listener with actions to be executed when an user makes login.
      */
     onLogin: function(user, auth, details){
-        this.target.loggedOut = false;
         this.target.onLogin(user, auth, details);
         this.fireEvent("login", user, auth, details);
     },
@@ -89,9 +89,11 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
      *  Listener with actions to be executed when an user makes logout.
      */
     onLogout: function(){
-        this.target.loggedOut = true;
+        this.target.onLogout();
+        this.fireEvent("logout");
 
-        if(this.externalHeaders){
+		//TODO CHECK THIS CUSTOMIZATION FOR MARISS
+	    if(this.externalHeaders){
             // Use external logout (must remove the session)
             var logoutUrl = this.target.initialConfig.externalLogoutUrl ? 
                 this.target.initialConfig.externalLogoutUrl : "/logout";

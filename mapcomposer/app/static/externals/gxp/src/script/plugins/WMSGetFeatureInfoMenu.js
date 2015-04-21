@@ -48,6 +48,41 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
     /** api: ptype = gxp_wmsgetfeatureinfo_menu */
     ptype: "gxp_wmsgetfeatureinfo_menu",
     
+        /** api: config[zoomFirstFaturePTip]
+     *  ``String``
+     *  Tooltip string for first page action (i18n).
+     */
+    firstFtTip: "First Feature",
+
+    /** api: config[previousFeatureTip]
+     *  ``String``
+     *  Tooltip string for previous page action (i18n).
+     */
+    previousPageTip: "Previous Feature",
+
+    /** api: config[nextFeatureTip]
+     *  ``String``
+     *  Tooltip string for next page action (i18n).
+     */
+    nextPageTip: "Next Feature",
+
+    /** api: config[lastFeatureTip]
+     *  ``String``
+     *  Tooltip string for last page action (i18n).
+     */
+    lastPageTip: "Last Feature",
+
+    /** api: config[featureLabel]
+     *  ``String``
+     */
+    ftLabel: "Feature",
+    
+    /** api: config[featureOfLabel]
+     *  ``String``
+     */
+    ftOfLabel: "of",  
+   
+    
     /** api: config[outputTarget]
      *  ``String`` Popups created by this tool are added to the map by default.
      */
@@ -109,9 +144,15 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 
     /** api: config[format]
      *  ``String``
-     *  Format to show feature info ('grid' | 'html'). Default it's 'html'.
+     *  Format to show feature info ('grid' | 'html' | 'text'). Default it's 'html'.
      */
     format: "html",
+     /** api: config[maxFeatures]
+     *  ``Integer``
+     *  The max number of results to show. It is used as attribute 'feature_count' of the WMS GetFeatureInfo Request
+     *  By default is 10.
+     */
+    maxFeatures: 10,
 
     /** api: config[defaultGroupTitleText]
      *  ``String``
@@ -143,61 +184,108 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      */
      disableAfterClick: false,
      
+       /** api: config[infoAction]
+     *  ``string``
+     *  Optional info action to configure: Opts : All, click,hover 
+     */
+     infoAction: 'All',
+     
+     
     /** api: method[addActions]
      */
     addActions: function() {
         this.popupCache = {};
         this.activeIndex = 0;
-        
-		var items = [new Ext.menu.CheckItem({
+   
+   
+if(this.infoAction=='click'){ 
+    this.button = new Ext.Button({
             tooltip: this.infoActionTip,
-			text: this.infoActionTip,
             iconCls: "gxp-icon-getfeatureinfo",
             toggleGroup: this.toggleGroup,
             group: this.toggleGroup,
-			listeners: {
-				checkchange: function(item, checked) {
-					this.activeIndex = 0;
-					this.button.toggle(checked);
-					if (checked) {
-						this.button.setIconClass(item.iconCls);
-					}
-					for (var i = 0, len = info.controls.length; i < len; i++){
+            enableToggle: true,
+            allowDepress: true,
+            toggleHandler: function(button, pressed) {
+                this.activeIndex = 0;
+                this.button.toggle(pressed);
+                for (var i = 0, len = info.controls.length; i < len; i++){
+                    if (pressed) {
+                        info.controls[i].activate();
+                    } else {
+                        info.controls[i].deactivate();
+                    }
+                }
+             }, scope: this
+        });
+        }
+        else if(this.infoAction=='hover'){ 
+            this.activeIndex = 1;
+            this.button = new Ext.Button({
+            tooltip:  this.activeActionTip,
+            iconCls: (this.outputConfig)? this.outputConfig.hoverIconCls || "gxp-icon-getfeatureinfo":"gxp-icon-getfeatureinfo",
+            toggleGroup: this.toggleGroup,
+            group: this.toggleGroup,
+            enableToggle: true,
+            allowDepress: true,
+            toggleHandler: function(button, pressed) {
+                this.activeIndex = 1;
+                this.button.toggle(pressed);
+                this.toggleActiveControl(pressed);
+                },
+                scope: this
+            
+        });
+        }   
+       else{
+           this.infoAction='All';
+           var items = [new Ext.menu.CheckItem({
+            tooltip: this.infoActionTip,
+            text: this.infoActionTip,
+            iconCls: "gxp-icon-getfeatureinfo",
+            toggleGroup: this.toggleGroup,
+            group: this.toggleGroup,
+            listeners: {
+            checkchange: function(item, checked) {
+                this.activeIndex = 0;
+                this.button.toggle(checked);
+                if (checked) {
+                    this.button.setIconClass(item.iconCls);
+                }
+                for (var i = 0, len = info.controls.length; i < len; i++){
                     if (checked) {
-							info.controls[i].activate();
-						} else {
-							info.controls[i].deactivate();
-							
-						}
-					}
-				},
-				scope: this
-			}
-		}),new Ext.menu.CheckItem({
+                        info.controls[i].activate();
+                    } else {
+                        info.controls[i].deactivate();
+                    }
+                }
+           },
+           scope: this
+    }
+    }),new Ext.menu.CheckItem({
             tooltip: this.activeActionTip,
-			text: this.activeActionTip,
+            text: this.activeActionTip,
             iconCls: "gxp-icon-mouse-map",
 			
             toggleGroup: this.toggleGroup,
             group: this.toggleGroup,
-			allowDepress:false,
-			listeners: {
-				checkchange: function(item, checked) {
-					this.activeIndex = 1;
-					this.button.toggle(checked);
-					if (checked) {
-						this.button.setIconClass(item.iconCls);
-					}
-					this.toggleActiveControl(checked);
-				},
-				scope: this
-			}
-		})];
-		
-		this.button = new Ext.SplitButton({
+            allowDepress:false,
+            listeners:{
+                checkchange: function(item, checked) {
+                    this.activeIndex = 1;
+                    this.button.toggle(checked);
+                    if (checked) {
+                        this.button.setIconClass(item.iconCls);
+                    }
+                    this.toggleActiveControl(checked);
+                },
+                scope: this
+           }
+    })];
+
+        this.button = new Ext.SplitButton({
             iconCls: "gxp-icon-getfeatureinfo",
             tooltip: this.measureTooltip,
-            enableToggle: true,
             toggleGroup: this.toggleGroup,
             allowDepress: true,
             handler: function(button, event) {
@@ -224,14 +312,16 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 items: items
             })
         });
-		
-		var actions = gxp.plugins.WMSGetFeatureInfoMenu.superclass.addActions.call(this, [this.button]);
-        var infoButton = items[0];
+    }
+
+        var actions = gxp.plugins.WMSGetFeatureInfoMenu.superclass.addActions.call(this, [this.button]);
+        var infoButton = (items)? items[0]: this.button;
 
         var info = {controls: []};
-		var layersToQuery = 0;
-		
+        var layersToQuery = 0;
+
         var updateInfo = function() {
+            if(this.infoAction=='hover')return;
             var queryableLayers = this.target.mapPanel.layers.queryBy(function(x){
                 return x.get("queryable");
             });
@@ -243,37 +333,43 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 control.deactivate();  // TODO: remove when http://trac.openlayers.org/ticket/2130 is closed
                 control.destroy();
             }
-			
+
             info.controls = [];
             var started = false;
             var atLeastOneResponse = false;
-			this.masking = false;
-			
+            // click position, in lat/lon coordinates (issue #422)
+            var startLatLon = null;
+            this.masking = false;
+
             queryableLayers.each(function(x){                
                 var l = x.getLayer();
-				
-				var vendorParams = {};
-		    	Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
-				if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
-					vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
-				}
 
-				// Obtain info format
+            var vendorParams = {};
+            Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
+                if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
+                    vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
+                }
+
+                // Obtain info format
             	var infoFormat = this.getInfoFormat(x);
-				
+
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
                     url: l.url,
                     queryVisible: true,
                     layers: [x.getLayer()],
                     infoFormat: infoFormat,
+                    maxFeatures:this.maxFeatures,
                     vendorParams: vendorParams,
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
 							//first getFeatureInfo in chain
 							if(!started){
 								started= true;
+								// Issue #422
+								startLatLon = this.target.mapPanel.map.getLonLatFromPixel(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
 								atLeastOneResponse=false;
 								layersToQuery=queryableLayers.length;
+								panIn=false;//Issue #623
 							}
                             
 							if(this.loadingMask && !this.masking) {
@@ -291,20 +387,28 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                                 if(this.disableAfterClick)
                                     this.button.toggle();                                
 								
+                                // pan to bring popup into view (issue #422)
+                                if (startLatLon) {
+                                	var popup = this.popupCache[startLatLon.toString()];
+                                    if (popup) {
+                                    	// not too pretty, I'm calling a private method... any better idea?
+                                    	popup.panIntoView();
+                                    }else panIn=true; //issue #623
+                                }                                
 							}
 
                             var title = x.get("title") || x.get("name");
                             if (infoFormat == "text/html") {
                                 var match = evt.text.match(/<body[^>]*>([\s\S]*)<\/body>/);
                                 if (match && match[1].match(this.regex)) {
-                                    !this.infoPanelId ? this.displayPopup(evt, title, match[1]) : this.displayInfoInPanel(evt, title, match[1], this.infoPanelId);
+                                    !this.infoPanelId ? this.displayPopup(evt, title, match[1],null,null,null,panIn) : this.displayInfoInPanel(evt, title, match[1], this.infoPanelId);
                                     atLeastOneResponse = true;
                                 }
                             } else if (infoFormat == "text/plain") {
-                                !this.infoPanelId ? this.displayPopup(evt, title, '<pre>' + evt.text + '</pre>') : this.displayInfoInPanel(evt, title, '<pre>' + evt.text + '</pre>', this.infoPanelId);
+                                !this.infoPanelId ? this.displayPopup(evt, title, '<pre>' + evt.text + '</pre>',null,null,null,panIn) : this.displayInfoInPanel(evt, title, '<pre>' + evt.text + '</pre>', this.infoPanelId);
                                 atLeastOneResponse = true;
                             } else if (evt.features && evt.features.length > 0) {
-                                !this.infoPanelId ? this.displayPopup(evt, title, null, null, null, evt.features) : this.displayInfoInPanel(evt, title, null, this.infoPanelId, evt.features);
+                                !this.infoPanelId ? this.displayPopup(evt, title, null, null, null, evt.features,panIn) : this.displayInfoInPanel(evt, title, null, this.infoPanelId, evt.features);
                                 atLeastOneResponse = true;
                             // no response at all
                             } else if(layersToQuery === 0 && !atLeastOneResponse) {
@@ -319,7 +423,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                             
                         },
 						nogetfeatureinfo: function(evt) {
-							layersToQuery--;							
+							layersToQuery--;	
 							this.unmask();							
 						},
                         scope: this
@@ -327,7 +431,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 });
                 map.addControl(control);
                 info.controls.push(control);
-                if(infoButton.checked) {
+                if(infoButton.checked || infoButton.pressed ) {
                     control.activate();
                 }
             }, this);
@@ -348,14 +452,15 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             click: this.closePopups,
             scope:this
         });
-        Ext.each(this.button.menu.items.keys, function(key){
+       if(this.infoAction=='All'){ 
+       Ext.each(this.button.menu.items.keys, function(key){
             var item = this.button.menu.items.get(key);
             item.on({
                 click: this.closePopups,
                 scope:this
             });
         }, this);
-        
+       } 
         return actions;
     },
 
@@ -403,13 +508,12 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      * :arg text: ``String`` Body text.
      * :arg features: ``Array`` With features.
      */
-    displayPopup: function(evt, title, text, onClose, scope, features) {
+    displayPopup: function(evt, title, text, onClose, scope, features,panIn) {
         var popup;
         // Issue #91: Change pupupKey to lat/lon
         var pixel = new OpenLayers.Pixel(evt.xy.x, evt.xy.y);
         var latLon = this.target.mapPanel.map.getLonLatFromPixel(pixel);
         var popupKey = latLon.toString();
-
         
         var item = this.getPopupItem(text, title, features);
 						
@@ -424,7 +528,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 				items: [item]
 			}] : [item];
 
-            popup = this.cachePopup(latLon, items, popupKey, onClose);
+            popup = this.cachePopup(latLon, items, popupKey, onClose,panIn);
 			
         } else {
             popup = this.popupCache[popupKey];
@@ -495,7 +599,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      * :arg popupKey: ``String`` Key to save the popup on popup cache.
      * :arg onClose: ``Function`` Callback to be called on popup close.
      */
-    cachePopup: function(latLon, items, popupKey, onClose){
+    cachePopup: function(latLon, items, popupKey, onClose,panIn){
         var popup = this.addOutput({
             xtype: "gx_popup",
             title: this.popupTitle,
@@ -508,6 +612,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             unpinnable : true,*/
             items: items,
             draggable: true,
+            panIn: panIn, // Issue #422 #623
             listeners: {
                 close: (function(key) {
                     return function(panel){
@@ -585,7 +690,15 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
     getPopupItem:function(text, title, features){
     	var item;
     	if(features){
-	    	 item = this.useTabPanel ? {
+	    	 if(this.paginate){
+	    	     item = this.obtainFeatureInfoFromData(text, features, title);
+	    	      if(! this.useTabPanel ) Ext.apply( item , {
+                    autoScroll: true,
+                    autoWidth: true,
+                    collapsible: true});
+	    	 }else
+	    	 {
+	    	  item = this.useTabPanel ? {
 	            title: title,     
 	            layout: "accordion",
 	            items: this.obtainFeatureInfoFromData(text, features, title),
@@ -597,8 +710,17 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 	            autoScroll: true,
 	            autoWidth: true,
 	            collapsible: true
-	        };
+	        };}
 	    }else{
+	        if(this.paginate){
+             item =this.paginateHtml(text,title);
+       
+             if(! this.useTabPanel ) Ext.apply( item , {
+                    autoScroll: true,
+                    autoWidth: true,
+                    collapsible: true
+            });
+        }else{
 	    	item = this.useTabPanel ? {
 				title: title,										
 				html: text,
@@ -611,6 +733,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 	            autoWidth: true,
 	            collapsible: true
 	        };
+	    }
 	    }
 	    return item;
     },
@@ -672,6 +795,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 title: 'Identify features by clicking',
                 layers: [layer],
                 infoFormat: infoFormat,
+                maxFeatures:this.maxFeatures,
                 vendorParams: vendorParams,
                 hover: true,
                 queryVisible: true,
@@ -716,13 +840,39 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 
     getInfoFormat: function(layer){
 
-    	var infoFormat;
-    	if(layer){
-    		infoFormat = layer.get("infoFormat");
-    	}
-        if (infoFormat === undefined) {
-            infoFormat = (this.format == "grid") ? "application/vnd.ogc.gml" : "text/html";
+        var infoFormat;
+        var tempInfoFormat;
+        if(layer){
+            infoFormat = layer.get("infoFormat");
         }
+        if (infoFormat === undefined) {
+            switch(this.format){
+                case 'grid' : 
+                    tempInfoFormat = "application/vnd.ogc.gml";
+                    break;
+                case 'html' :
+                    tempInfoFormat = "text/html"
+                    break;
+                case 'text':
+                    tempInfoFormat = "text/plain";
+                    break;
+            }
+            var formats = layer.get('infoFormats');
+            if(formats){//check info format present
+                for(var i = 0 ; i < formats.length; i++){
+                    var f = formats[i];
+                    if(f == tempInfoFormat){
+                        return tempInfoFormat;
+                    }
+                }
+                //infoFormat not supported, autoreconfigure to proper format
+                if(formats.length>0){
+                    infoFormat = formats[0];
+                    
+                }
+            }
+        }
+
         return infoFormat;
     },
     /** private: method[clearPopups]
@@ -746,8 +896,13 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
         if (features) {
             var index = 0;
             Ext.each(features,function(feature) {
-                featureGrids.push(this.obtainFeatureGrid(feature, String.format(this.defaultGroupTitleText, parentTitle, index++)));
+                featureGrids.push(this.obtainFeatureGrid(feature, (!this.paginate)? String.format(this.defaultGroupTitleText, parentTitle, index++):null));
             }, this);
+                        if (this.paginate){
+                            return this.paginateHtml(text,parentTitle,featureGrids);
+                
+            }
+
         }else {
             featureGrids.push(this.obtainFromText(text));
         }
@@ -762,17 +917,32 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
     obtainFeatureGrid: function(feature, title){
 
         var fields = [];
-
+        var lname=(feature.gml.featureNSPrefix)?feature.gml.featureNSPrefix+":"+feature.gml.featureType:feature.gml.featureType;
+        var ignoreFields=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].ignoreFields)?this.outputGridConfig[lname].ignoreFields:[];
+        var propertyNames=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].propertyNames)?this.outputGridConfig[lname].propertyNames:null;
+        var extraFields=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].extraFields)?this.outputGridConfig[lname].extraFields:null;
         Ext.iterate(feature.data,function(fieldName,fieldValue) {
             // We add the field.
             fields.push(fieldName);
         });
-
+             var  customRenderers={};
+             for(var f in extraFields){
+                 fields.push({"name":f});
+                 customRenderers[f] = (function() {
+                                return function(d) {
+                                    var tpl=new Ext.XTemplate(extraFields[f]);
+                                     return tpl.apply(d);
+                                };
+                            })();
+                            }
         var featureGridConfig = {
             xtype: 'gxp_editorgrid',
             readOnly: true,
             title: title,
             fields: fields,
+            propertyNames :propertyNames ||{},
+            excludeFields :ignoreFields||[],
+            customRenderers:customRenderers,
             feature: feature,
             layout: {
                 type: 'vbox',
@@ -824,7 +994,165 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 			this.activeControl.deactivate();
 			this.activeControl.destroy();
 		}
-	}
+	},
+	
+createPageFromText:function(text){
+    
+      var re = /<table class="featureInfo">[\s\S]*?<\/table>/g,match, tables=[],totFt=0;
+         while(match = re.exec(text)){
+             var card={
+                                                        
+                    html: match[0],
+                    autoScroll: true
+                };
+                totFt++;
+             tables.push(card);
+         }
+         return tables;  
+},	
+
+createPageFromFeature:function(text){
+
+},
+	
+paginateHtml:function(text,title,ftGrids){
+    
+         
+         var tables=(ftGrids)?ftGrids :this.createPageFromText(text);
+         var totFt=tables.length;
+         var item = {
+            xtype:'panel',
+            layout:'card',
+            activeItem: 0,
+            aItem:0,
+            title: title,                                        
+            items:tables,
+            autoScroll: true,
+            bbar: [
+            {
+                iconCls: "x-tbar-page-first",
+                ref: "../firstFtButton",
+                tooltip: this.firstFtTip,
+                disabled: true,
+                handler: function() {
+                    var  pan=this.ownerCt.ownerCt;
+                    pan.aItem=0;
+                    pan.getLayout().setActiveItem(pan.aItem);
+                    pan.cardChange();
+                }
+            },
+            {
+                iconCls: "x-tbar-page-prev",
+                ref: "../prevFtButton",
+                tooltip: this.previousFtTip,
+                disabled: true,
+                handler: function(){ 
+                    var  pan=this.ownerCt.ownerCt;
+                    pan.aItem--;
+                    pan.getLayout().setActiveItem(pan.aItem);
+                    pan.cardChange();
+                },
+                disabled: true
+             },'-',
+             {
+                    xtype: 'compositefield',
+                    width: 130,
+                    items: [{
+                            xtype: 'label',
+                            text: this.ftLabel,
+                            autoWidth: true,
+                            style: {
+                                marginTop: '3px'
+                            }
+                        },{
+                            ref: "../../currentFt",
+                            xtype: "numberfield",
+                            width: 40,
+                            maxValue:totFt,
+                            minValue:(totFt==0)? 0:1,
+                            value: (totFt==0)? 0:1,
+                            disabled: (totFt==0),
+                            enableKeyEvents: true,
+                            listeners:{
+                                keypress: function(field, e){
+                                    var charCode = e.getCharCode();
+                                    if(charCode == 13){
+                                        var value = field.getValue();
+                                         var pan=field.ownerCt.ownerCt.ownerCt.ownerCt;
+                                         pan.aItem=value-1;
+                                         pan.getLayout().setActiveItem(pan.aItem);
+                                         pan.cardChange();
+                                    }
+                                }
+                            }
+                        },{
+                            xtype: 'label',
+                            width: 15,
+                            text: this.ftOfLabel,
+                            style: {
+                                marginTop: '3px'
+                            }
+                        },{
+                            xtype: 'label',
+                            ref: "../../numberOfFtLabel",
+                            width: 25,
+                            text: totFt,
+                            style: {
+                                marginTop: '3px'
+                            }
+                    }]
+                },
+        '-', // greedy spacer so that the buttons are aligned to each side
+            {
+                iconCls: "x-tbar-page-next",
+                ref: "../nextFtButton",
+                tooltip: this.nextFtTip,
+                disabled: (totFt<2),
+                handler: function(){ 
+                    var pan=this.ownerCt.ownerCt;
+                        pan.aItem++;
+                        pan.getLayout().setActiveItem(pan.aItem);
+                        pan.cardChange();
+                }
+            },
+            {
+                iconCls: "x-tbar-page-last",
+                ref: "../lastFtButton",
+                tooltip: this.lastFtTip,
+                disabled: (totFt<2),
+                handler: function() {
+                    var  pan=this.ownerCt.ownerCt;
+                    pan.aItem=totFt-1;
+                    pan.getLayout().setActiveItem(pan.aItem); 
+                    pan.cardChange();               
+                    }
+            }
+        ],    
+        cardChange:function(){
+            if(this.aItem==0 ){
+                this.firstFtButton.disable();
+                this.prevFtButton.disable();
+                this.lastFtButton.enable();
+                this.nextFtButton.enable();
+             }
+             else if(this.aItem > 0 && this.aItem <totFt-1){
+                 this.firstFtButton.enable();
+                 this.prevFtButton.enable();
+                 this.lastFtButton.enable();
+                 this.nextFtButton.enable();
+             }else if (this.aItem ==totFt-1){
+                 this.firstFtButton.enable();
+                 this.prevFtButton.enable();
+                 this.lastFtButton.disable();
+                 this.nextFtButton.disable();
+             }
+            this.currentFt.setValue(this.aItem+1);
+        }
+        }; 
+
+    return item;
+    
+}
 	
     
 });

@@ -23,7 +23,11 @@
         "center": [1250000.000000, 5370000.000000],
         "zoom": 5
     },
-	
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
+	},
 	"customTools":[
 		{
 		   "ptype": "gxp_mouseposition",
@@ -42,7 +46,7 @@
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,
-			"showReport": false,
+			"showReport": "never",
 			"directAddLayer": false,
 			"id": "addlayer"
 		}, {

@@ -243,7 +243,9 @@ gxp.plugins.CustomBinder = Ext.extend(gxp.plugins.Tool, {
             };
               
             var setFullRange = function (playback){
+                if(playback.timeManager){
                 playback.timeManager.clearTimer();
+                }
                 setLatest24Hours(playback);
                 handleTimeChange(playback.playbackToolbar.slider);
             };

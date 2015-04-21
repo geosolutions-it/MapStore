@@ -1,10 +1,10 @@
 /**
-* Copyright (c) 2008-2011 The Open Planning Project
-*
-* Published under the GPL license.
-* See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
-* of the license.
-*/
+ * Copyright (c) 2008-2011 The Open Planning Project
+ * 
+ * Published under the GPL license.
+ * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
+ * of the license.
+ */
 
 /**
  * @include widgets/form/FilterField.js
@@ -26,7 +26,7 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
 
     /** api: config[builderTypeNames]
      *  ``Array``
-     *  A list of labels for that correspond to builder type constants.
+     *  A list of labels that correspond to builder type constants.
      *  These will be the option names available in the builder type combo.
      *  Default is ``["any", "all", "none", "not all"]``.
      */
@@ -46,6 +46,12 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
      */
     allowBlank: false,
     
+    /** api: config[caseInsensitiveMatch]
+     *  ``Boolean``
+     *  Should Comparison Filters for Strings do case insensitive matching?  Default is ``"false"``.
+     */
+    caseInsensitiveMatch: false,
+
     /** api: config[preComboText]
      *  ``String``
      *  String to display before filter type combo.  Default is ``"Match"``.
@@ -54,7 +60,7 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
 
     /** api: config[postComboText]
      *  ``String``
-     *  String to display before filter type combo.  Default is
+     *  String to display after filter type combo.  Default is
      *  ``"of the following:"``.
      */
     postComboText: "of the following:",
@@ -65,6 +71,11 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
      *  ``"gxp-filterbuilder"``).
      */
     cls: "gxp-filterbuilder",
+    
+    /** api: config[filter]
+     *  ``OpenLayers.Filter``
+     *  Filter to initialize the component with
+     */
 
     /** private: property[builderType]
      */
@@ -90,6 +101,22 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
      *  be added.
      */
     allowGroups: true,
+    
+    /**
+     * Property: attributesComboConfig
+     * {Object}
+     */
+    attributesComboConfig: null,
+    
+    /** api:config[autoComplete]
+     *  ``Boolean`` autocomplete enabled on text fields.
+     */
+    autoComplete: false,
+    
+    /** api:config[autoCompleteCfg]
+     *  ``Object`` autocomplete configuration object.
+     */
+    autoCompleteCfg: {},
 
     initComponent: function() {
         var defConfig = {
@@ -106,6 +133,7 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
         this.items = [{
             xtype: "container",
             layout: "form",
+            ref: "form",
             defaults: {anchor: "100%"},
             hideLabels: true,
             items: [{
@@ -210,16 +238,15 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
                             filter = child;
                             break;
                         }
-                    } else if(!child || child.type === null ||
-                              child.property === null || child.value === null) {
+                    //} else if(!child || child.type === null || child.property === null || child[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "lowerBoundary" : "value"] === null || child[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "upperBoundary" : "value"] === null) {
+                    } else if(!child || child.type === null || child[child.property] === null || child[child.type === OpenLayers.Filter.Comparison.BETWEEN ? "lowerBoundary" : "value"] === null || child[child.type === OpenLayers.Filter.Comparison.BETWEEN ? "upperBoundary" : "value"] === null ) {
                         filter = false;
                         break;
                     }
                 }
             }
         } else {
-            if(!filter || filter.type === null || filter.property === null ||
-               filter.value === null) {
+            if(!filter || filter.type === null || filter.property === null || filter[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "lowerBoundary" : "value"] === null || filter[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "upperBoundary" : "value"] === null) {
                 filter = false;
             }
         }
@@ -244,6 +271,7 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
             filter = this.wrapFilter(this.createDefaultFilter());
         } else {
             filter = this.cleanFilter(filter);
+            var child, i, len;
             switch(filter.type) {
                 case OpenLayers.Filter.Logical.AND:
                 case OpenLayers.Filter.Logical.OR:
@@ -251,8 +279,7 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
                         // give the filter children if it has none
                         filter.filters = [this.createDefaultFilter()];
                     } else {
-                        var child;
-                        for(var i=0, len=filter.filters.length; i<len; ++i) {
+                        for(i=0, len=filter.filters.length; i<len; ++i) {
                             child = filter.filters[i];
                             if(child instanceof OpenLayers.Filter.Logical) {
                                 filter.filters[i] = this.customizeFilter(child);
@@ -275,12 +302,12 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
                         ];
                     } else {
                         // NOT filters should have one child only
-                        var child = filter.filters[0];
+                        child = filter.filters[0];
                         if(child instanceof OpenLayers.Filter.Logical) {
                             if(child.type !== OpenLayers.Filter.Logical.NOT) {
                                 // check children of AND and OR
                                 var grandchild;
-                                for(var i=0, len=child.filters.length; i<len; ++i) {
+                                for(i=0, len=child.filters.length; i<len; ++i) {
                                     grandchild = child.filters[i];
                                     if(grandchild instanceof OpenLayers.Filter.Logical) {
                                         child.filters[i] = this.customizeFilter(grandchild);
@@ -314,13 +341,15 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
                 default:
                     // non-logical filters get wrapped
                     filter = this.wrapFilter(filter);
+                    break;
             }
         }
         return filter;
     },
-    
+
     createDefaultFilter: function() {
-        return new OpenLayers.Filter.Comparison();
+        return new OpenLayers.Filter.Comparison({
+                            matchCase: !this.caseInsensitiveMatch});
     },
     
     /** private: method[wrapFilter]
@@ -366,8 +395,12 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
             filter: filter,
             columnWidth: 1,
             attributes: this.attributes,
+            validators: this.validators,
+            autoComplete: this.autoComplete,
+            autoCompleteCfg: this.autoCompleteCfg,
             allowBlank: group ? undefined : this.allowBlank,
             customizeFilterOnInit: group && false,
+            caseInsensitiveMatch: this.caseInsensitiveMatch,
             listeners: {
                 change: function() {
                     this.fireEvent("change", this);
@@ -387,9 +420,12 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
      */
     removeCondition: function(item, filter) {
         var parent = this.filter.filters[0].filters;
-        if(parent.length > 1) {
+        if(parent.length > 0) {
             parent.remove(filter);
             this.childFilterContainer.remove(item, true);
+        }
+        if(parent.length === 0) {
+            this.addCondition();
         }
         this.fireEvent("change", this);
     },
@@ -413,6 +449,7 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
                 fields: ["value", "name"]
             }),
             value: this.builderType,
+            ref: "../../builderTypeCombo",
             displayField: "name",
             valueField: "value",
             triggerAction: "all",
@@ -457,7 +494,7 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
             }
         }
     },
-    
+
     /** private: method[createChildFiltersPanel]
      *  :return: ``Ext.Container``
      *  
@@ -478,6 +515,9 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
                 columnWidth: 1,
                 filter: grandchild,
                 attributes: this.attributes,
+                validators: this.validators,
+                autoComplete: this.autoComplete,
+                autoCompleteCfg: this.autoCompleteCfg,
                 listeners: {
                     change: function() {
                         this.fireEvent("change", this);
@@ -532,6 +572,7 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
     },
 
     /** private: method[getBuilderType]
+     *
      *  :return: ``Integer``  One of the builder type constants.
      *  Determine the builder type based on this filter.
      */
@@ -560,6 +601,22 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
             }
         }
         return type;
+    },
+
+    /** api: method[setFilter]
+     *
+     *  :param filter: ``OpenLayers.Filter``
+     *
+     *  Change the filter associated with this instance.
+     */
+    setFilter: function(filter) {
+        this.filter = this.customizeFilter(filter);
+        this.changeBuilderType(this.getBuilderType());
+        this.builderTypeCombo.setValue(this.builderType);
+        this.form.remove(this.childFilterContainer);
+        this.form.insert(1, this.createChildFiltersPanel());
+        this.form.doLayout();
+        this.fireEvent("change", this);
     }
 
 });
