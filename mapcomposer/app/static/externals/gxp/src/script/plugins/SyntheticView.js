@@ -143,10 +143,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     formulaRiskLayer: {
         1:"rischio",
         2:"rischio",
+        3:"rischio_grid"
     },
     mixedFormulaRiskLayer: {
         1:"mixed_rischio",
         2:"mixed_rischio",
+        3:"mixed_rischio_grid"
     },
     
     originalRiskLayers: null,    
