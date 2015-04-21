@@ -110,7 +110,7 @@ public class SARWaveAction extends NetCDFAction {
                         // ////
                         // ... create the output file
                         // ////
-                        outputFiles[index] = new File(directory,  fileBaseName + "___" + varName.trim() + part + ".nc");
+                        outputFiles[index] = new File(directory,  fileBaseName + SEPARATOR + varName.trim() + part + ".nc");
                         outputFiles[index].createNewFile();
                         // ////
                         // ... create the output file data structure
@@ -238,9 +238,6 @@ public class SARWaveAction extends NetCDFAction {
 
         // writing bin data ...
         ncFileOut.create();
-
-        // writing time Variable data
-        // setTime(ncFileOut, referenceTime);
 
         // lat Variable data
         Array lat1Data = NetCDFConverterUtilities.getArray(az_size.getLength(), latDataType);

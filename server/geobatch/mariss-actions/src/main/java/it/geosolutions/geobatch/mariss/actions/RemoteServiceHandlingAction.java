@@ -48,6 +48,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.regex.Pattern;
 
@@ -89,7 +91,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
      */
     private ServiceDAO serviceDAO;
     
-    private Map<String, BaseAction<EventObject>> actionMap = new HashMap<String, BaseAction<EventObject>>();
+    //private Map<String, BaseAction<EventObject>> actionMap = new HashMap<String, BaseAction<EventObject>>();
 
     /**
      * @param serviceDAO the serviceDAO to set
@@ -534,6 +536,9 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                             }
                         }
                         
+                        // Create the Actions map
+                        List<BaseAction<EventObject>> actionMap = new ArrayList<BaseAction<EventObject>>();
+                        
                         // Creation of the Actions
                         Map<String, ConfigurationContainer> subconfigurations = configuration.getSubconfigurations();
                         if (subconfigurations != null && !subconfigurations.isEmpty()) {
@@ -578,7 +583,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                                         actionTempDir = getTempDir();
                                     }
                                     action.setTempDir(actionTempDir);
-                                    actionMap.put(key, action);
+                                    actionMap.add(action);
                                 }
                             }
                         }
@@ -588,7 +593,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                                 service, localRelativeFolder, serverResultProtocol, folder, folder,
                                 folder, resultTimeout, resultConnectMode, resultTimeout, usersSize,
                                 userIndex, serviceSize, serviceIndex, serviceFoldersSize,
-                                serviceFolderIndex));
+                                serviceFolderIndex, actionMap));
                     }
                 }
                 // ---
@@ -622,6 +627,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
      * @param serviceIndex
      * @param serviceFoldersSize
      * @param serviceFolderIndex
+     * @param actionMap 
      * @return
      * @throws IOException
      * @throws FTPException
@@ -635,7 +641,8 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
             RemoteBrowserProtocol serverResultProtocol, String serverResultUser,
             String serverResultPWD, String serverResultHost, int serverResultPort,
             FTPConnectMode resultConnectMode, int resultTimeout, int usersSize, int userIndex,
-            int serviceSize, int serviceIndex, int serviceFoldersSize, int serviceFolderIndex)
+            int serviceSize, int serviceIndex, int serviceFoldersSize, int serviceFolderIndex, 
+            Collection<BaseAction<EventObject>> actionMap)
             throws IOException, FTPException {
 
         Queue<EventObject> resultList = new LinkedList<EventObject>();
@@ -672,10 +679,9 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
             // Post process.
             if(!actionMap.isEmpty()){
                 // Simulating a sequential flow
-                Queue<EventObject> events = new ArrayBlockingQueue<EventObject>(1);
+                Queue<EventObject> events = new ArrayBlockingQueue<EventObject>(1000000);
                 events.add(new FileSystemEvent(inputFile, FileSystemEventType.FILE_ADDED));
-                for(String key : actionMap.keySet()){
-                    BaseAction<EventObject> action = actionMap.get(key);
+                for(BaseAction<EventObject> action : actionMap){
                     try {
                         events.addAll(action.execute(events));
                     } catch (ActionException e) {

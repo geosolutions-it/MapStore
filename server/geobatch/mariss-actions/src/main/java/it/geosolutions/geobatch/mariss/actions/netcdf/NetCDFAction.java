@@ -70,7 +70,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 public abstract class NetCDFAction extends BaseAction<EventObject> {
 
-    private static final String SEPARATOR = "_Var_";
+    protected static final String SEPARATOR = "_Var_";
     
     private static final String SERVICE_SEPARATOR = "_s_";
     
@@ -176,7 +176,8 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                             }
                             if (canProcessFile(netcdfFile)) {
                                 // Getting the File identifier
-                                String identifier = attributeBean.absolutePath.substring(0, attributeBean.absolutePath.length() - 8);
+                                String identifier = inputFile.getName().substring(0, inputFile.getName().length() - 8);
+                                attributeBean.identifier = identifier;
                                 // Getting SARType
                                 attributeBean.type = SARType.getType(getActionName());
                                 // Don't read configuration for the file, just
@@ -384,7 +385,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                     mosaicDir = new File(container.getParams().get(ConfigurationUtils.NETCDF_DIRECTORY_KEY), variableName);
                     if (!mosaicDir.exists()) {
                         FileUtils.forceMkdir(mosaicDir);
-                        mosaicDir.createNewFile();
+                        //mosaicDir.createNewFile();
                     }
                     // Create the new NetCDF file
                     File newFile = new File(mosaicDir, newFileName);

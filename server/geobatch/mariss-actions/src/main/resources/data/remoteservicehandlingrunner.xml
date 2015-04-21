@@ -103,7 +103,7 @@
             <geoserverPWD>geoserver</geoserverPWD>
             <geoserverUID>admin</geoserverUID>
             <geoserverURL>http://localhost:8085/geoserver</geoserverURL>
-            <productsTableName>ingestionProducts</productsTableName>
+            <productsTableName>ingestionproducts</productsTableName>
             <geoserverDataDirectory>/home/geosolutions/Nicola/DLR/test_data_dir</geoserverDataDirectory>
             
             <!-- PRODUCTS INGESTION -->

@@ -103,7 +103,7 @@ public class SARWindAction extends NetCDFAction {
                     // ////
                     // ... create the output file
                     // ////
-                    outputFiles[index] = new File(directory, fileBaseName + "___" + varName.trim()
+                    outputFiles[index] = new File(directory, fileBaseName + SEPARATOR + varName.trim()
                             + ".nc");
                     outputFiles[index].createNewFile();
                     // ////
