@@ -147,6 +147,11 @@ Ext.reg('yearrangeselector',Ext.ux.YearRangeSelector);
 /**
  * MounthYearRangeSelector select a month
  * @author Lorenzo Natali
+ *
+ * new config:
+ * noCrossYear `Boolean` if true it's possible to select a month range
+ *   in the same year.
+ * @author Mirco Bertelli
  */
 Ext.ux.MonthYearRangeSelector = Ext.extend(Ext.form.CompositeField,{
 	xtype: 'monthyearrangeselector',
@@ -215,6 +220,10 @@ Ext.ux.MonthYearRangeSelector = Ext.extend(Ext.form.CompositeField,{
 		var tipText = function(thumb){
                 return me.getMonthValue(thumb.value);
         };
+        if (me.noCrossYear){
+            this.maxValue = 11;
+            this.values[1] = 11;
+        }
 		var slider  = new Ext.slider.MultiSlider({
 				flex:1,
 				fieldLabel:'Range',
