@@ -32,6 +32,18 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
     /** api: ptype = gxp_queryform */
     ptype: "gxp_cmre_optimization_tool",
     
+	/**
+	 * Property: osdi2ManagerRestURL
+	 * {string} the OpenSDI2-Manager REST Url
+	 */
+	osdi2ManagerRestURL : null,
+	
+	/**
+	 * Property: osdi2ManagerRestURL
+	 * {string} the OpenSDI2-Manager REST Url
+	 */
+	CWIXPortalPIMTracksManagerURL : null,
+
     /** api: config[checkBoxFieldsetTitle]
      *  ``String``
      *  Text for query menu item (i18n).
@@ -59,6 +71,30 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
     getFeatures: function(layerName) {
     	var me = this;
 
+
+		var optimizationToolLayers = me.target.customData.optimizationToolLayers;
+        var layers = me.target.mapPanel.layers.queryBy(function(a) {
+            var name = a.get('name');
+            var source = a.get('source') ;
+            for(var i = 0 ; i <optimizationToolLayers.length; i++) {
+            	if(name == optimizationToolLayers[i]){
+            		if (layerName) {
+            			if(name.indexOf(layerName)>0) return true;
+            			else return false;
+            		} else {
+            			return true;
+            		}
+            	}
+            }
+            return false;
+        }, me).getRange(); 
+        for(var i=0;i<layers.length; i++){
+        	var layerRecord  = layers[i];
+        	var rec = layerRecord.getLayer();
+        	
+        	return rec.params.LAYERS;
+        }
+	/*
     	var callBack = function(filter) {
 	        if (!filter)
 	        	return;
@@ -73,7 +109,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 	            			if(name.indexOf(layerName)>0) return true;
 	            			else return false;
 	            		} else {
-	            			return true;            			
+	            			return true;
 	            		}
 	            	}
 	            }
@@ -141,7 +177,54 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 	  	};
     	
     	this.generateFilter(callBack);
+    	*/
     },
+    
+    /**
+     * 
+     */
+    sendOTHGoldEmailMEssage: function(tracks, email, assets) {
+    	// /oth/pim/OAAroutesEmail?email=&asset=1%2C2%2C3%2C4&layer=natocmre%3Aoaa_tracks_indian_ocean&sol_id=1&guid=4b3ede0d-7583-4d83-aa1a-bfb0ac5371b0
+    	var url = this.CWIXPortalPIMTracksManagerURL + '?email='+encodeURIComponent(email)+'&asset='+encodeURIComponent(assets)+'&layer='+encodeURIComponent(tracks)+'&sol_id='+this.solutionId+'&guid='+this.guid;
+    	console.log(url);
+    	
+    	var me = this;
+    	Ext.Ajax.request({
+		   url: url,
+		   method: 'GET',
+		   success: successHandler,
+		   failure: failureHandler,
+		   scope: me,
+		   headers: {
+		       'Authorization':me.target.authToken
+		   }
+		});
+
+		var successHandler = function(response,opts){
+	    	Ext.Msg.show({
+			   title: "OTH-Gold PIM Track",
+			   msg: 'OTH-Gold PIM Track was correctly Sent via E-Mail!',
+			   closable: false,
+			   width: 650,
+			   buttons: Ext.Msg.OK,
+			   icon: Ext.MessageBox.INFO
+			});
+			console.log('OTH-Gold PIM Track - SUCCESS!');
+		};
+		
+		var failureHandler = function(){
+			Ext.Msg.show({
+	            title: "OTH-Gold PIM Track - Error!",
+	            msg: 'Error occurred while trying to send OTH-Gold PIM Track via E-Mail!',
+	            width: 300,
+	            buttons : Ext.Msg.OK,
+	            icon: Ext.MessageBox.ERROR
+	        });
+			console.log('OTH-Gold PIM Track - FAILED!');
+		};
+
+    },
+    
     /**
      * 
      */
@@ -175,7 +258,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 	            });
 	        }
 	        
-	        me.storeFilterByUser();    		
+	        me.storeFilterByUser();
     	};
     	
     	this.generateFilter(callBack);
@@ -265,13 +348,23 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 			   headers: {
 			       'Authorization':me.target.authToken
 			   }
-			});        	
+			});
         };
         
         this.getCoefficients(callBack);
     },
     
+// -----
+	/**
+	 * 
+	 */
     insertOrUpdateOptimizationToolValues:function(categoryName, resourceName, resource, storeData, method, resourceId) {
+
+	// ----
+
+		// --------
+		// Store the costs selected by the user into GeoStore
+		// --------
     	var successHandler = function(response,opts){
 			 try{
 			 	if (resourceId) {
@@ -298,6 +391,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 			console.log('GeoStore filter update FAILED!');
 		};
 		
+		// --- Finally perform the Ajax Request
 		Ext.Ajax.request({
 		   url: this.target.geoStoreBaseURL + 'resources' + (resourceId ? '/resource/'+resourceId : ''),
 		   method: method,
@@ -310,8 +404,163 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 		       'Authorization':this.target.authToken
 		   }
 		});
+
+	// ----
+		
+		// --------
+		// Update GUID Filter on GeoServer through OpenSDI2-Interface and the GuidUpdateProcess of the WPS
+		// --------
+		// --- 1. Retrieve the Optimal SolutionID
+		this.solutionId = this.findOptimalSolutions(JSON.parse(storeData).optimizationToolValues)[0];
+				
+		// --- 2. Send to [POST] osdi2ManagerRestURL + "services/" + serviceId 
+		if (this.solutionId) {
+
+			// --- 3. Build "blob" JSON
+			/*var blob = JSON.stringify({
+				"guid" : "fdklkjrhoh"+this.solutionId,
+				"layers" : [
+					{
+						"guid" : this.solutionId,
+						"layerName" : "topp:states",
+						"filter" : "topp:STATE_NAME = 'Illinois'"
+					},
+					{
+						"guid" : this.solutionId,
+						"layerName" : "topp:tasmania_cities"
+					}
+				]
+			}, undefined, 2);*/
+
+			var guid = this.getLayersGUID();
+			var blob = {
+				"guid" : guid,
+				"layers" : []
+			};
+			var me = this;
+			var optimizationToolLayers = me.target.customData.optimizationToolLayers;
+	        var layers = me.target.mapPanel.layers.queryBy(function(a) {
+	            var name = a.get('name');
+	            var source = a.get('source') ;
+	            for(var i = 0 ; i <optimizationToolLayers.length; i++) {
+	            	if(name == optimizationToolLayers[i]){
+	            		return true;
+	            	}
+	            }
+	            return false;
+	            
+	        }, me).getRange(); 
+	        for(var i=0;i<layers.length; i++){
+	        	var layerRecord  = layers[i];
+	            if(!filter || filter == "" || filter =="()"){
+	                filter ="INCLUDE";
+	            }
+	            
+	            var layerInfo = layerRecord.getLayer();
+	            var layerName = layerInfo.params.LAYERS;
+	            
+	            if (layerName) {
+	            	if (!guid) {
+		            	guid = layerName.substring(layerName.lastIndexOf("_")+1);
+		            	blob.guid = guid;
+	            	}
+		            
+		            blob.layers[i] = {
+		            	"guid" : guid,
+						"layerName" : layerName,
+						"filter" : "SolutionID = " + this.solutionId
+		            };
+	            }
+	        }
+	        
+	        blob = JSON.stringify(blob, undefined, 2);
+	        
+			// --- 4. Send Request to URL-like -> "http://localhost:8180/opensdi2-manager/mvc/process/wps/services/guid-wps-process?category=WPS_RUN_CONFIGS"
+			var runUrl = this.osdi2ManagerRestURL + "services/guid-wps-process?category=WPS_RUN_CONFIGS";
+			var contentType = 'application/json';
+	
+	    	// --- 5. Finally perform the Ajax Request
+	    	var successCallback = function(response,opts){
+				 console.log('OpenSDI2 GUID Process Update SUCCESS:' + response.responseText);
+			};
+			
+			var failureCallback = function(){
+				console.log('OpenSDI2 GUID Process Update FAILED!');
+			};
+
+			Ext.Ajax.request({
+				url : runUrl,
+				method : method,
+				headers : {
+					'Content-Type' : contentType,
+					'Accept' : 'application/json, text/plain, text/xml',
+					'Authorization' : this.target.authToken
+				},
+				params : blob,
+				scope : this,
+				success: successCallback,
+		   		failure: failureCallback
+			});
+			
+		}
+	// ----
     },
-    
+// -----
+	/**
+	 * 
+	 */
+	getLayersGUID:function(){
+		var guid;
+		var me = this;
+		var optimizationToolLayers = me.target.customData.optimizationToolLayers;
+        var layerName = optimizationToolLayers[0];            
+        if (layerName) {
+        	if (!guid) {
+            	guid = layerName.substring(layerName.lastIndexOf("_")+1);
+            	
+            	return guid;
+        	}
+        } 		
+	},
+// -----
+	/**
+	 * 
+	 */
+	getLayersBaseURL:function(){
+		var baseUrl;
+		var me = this;
+		var optimizationToolLayers = me.target.customData.optimizationToolLayers;
+        var layers = me.target.mapPanel.layers.queryBy(function(a) {
+        	try {
+	            var name = a.get('name');
+	            var source = a.get('source') ;
+	            for(var i = 0 ; i <optimizationToolLayers.length; i++) {
+	            	if(name == optimizationToolLayers[i]){
+	            		return true;
+	            	}
+	            }
+	            return false;
+	       	}
+	        catch(err)
+	        {
+	        	return false;
+	        }
+        }, me).getRange(); 
+        for(var i=0;i<layers.length; i++){
+        	var layerRecord  = layers[i];
+            var layerInfo = layerRecord.getLayer();
+            var layerURL = layerInfo.url;
+            
+            if (layerURL) {
+            	if (!baseUrl) {
+	            	baseUrl = layerURL;
+	            	
+	            	return baseUrl;
+            	}
+            }
+        } 		
+	},
+// -----
     /** 
      * return the filters patterns with genterated
      * or user provided data
@@ -393,19 +642,173 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
         filterFieldsets.push(fieldset);
         filterFieldsets.push({xtype:'label',html: '<span style="color:red;font-size:11px;float:right;" >The sum of all the weights must be 1.0</span>'});
         
+        this.guid = this.getLayersGUID();
+
         //TODO
-        var btn_PIM_track = {
-            xtype: 'button',
-            text: "Get PIM Track",
-            width: 150,
-            handler: function(){
-            	me.getFeatures("tracks");
-           	},
-            scope: this
-        };
-        filterFieldsets.push(btn_PIM_track);
-        //TODO
-        
+        filterFieldsets.push({
+            xtype: "fieldset",
+            title: "Direct Optimal Asset Allocator Data Access",
+            checkboxToggle: true,
+            layout: "form",
+            ref: 'oaaInfoPanel',
+            collapsed: false,
+			labelWidth: 150,
+    		
+            lazyRender:false,
+            items:[
+            	{xtype:'label',html: '<span style="font-size:11px;float:left;" >The direct data access links below will change according to the '+this.costsTitle+' values</span><br/>&nbsp;'},
+				{
+		            xtype: 'button',
+		            text: "Get WMS GetCapabilities URL",
+		            fieldLabel : "OGC WMS 1.1.1",
+		            width: 150,
+		            handler: function(){
+		            	var url = me.getLayersBaseURL();
+		            	Ext.Msg.show({
+						   title: "OGC WMS 1.1.1",
+						   msg: '<p>Link to Optimal Asset Allocator Assets Tracks via WMS GetCapabilities</p><br/><span style="color:blue;font-size:11px;" ><a href="'+url+'?service=wms&version=1.1.1&request=GetCapabilities&GUID='+this.guid+'" target="_target"/>'+url+'?service=wms&version=1.1.1&request=GetCapabilities&GUID='+this.guid+'</span>',
+						   closable: false,
+						   width: 500,
+						   buttons: Ext.Msg.OK,		
+						   icon: Ext.MessageBox.INFO
+						});            	
+		           	},
+		            scope: this
+		       },{
+		            xtype: 'button',
+		            text: "Get WMS GetCapabilities URL",
+		            fieldLabel : "OGC WMS 1.3.0",
+		            width: 150,
+		            handler: function(){
+		            	var url = me.getLayersBaseURL();
+		            	Ext.Msg.show({
+						   title: "OGC WMS 1.3.0",
+						   msg: '<p>Link to Optimal Asset Allocator Assets Tracks via WMS GetCapabilities</p><br/><span style="color:blue;font-size:11px;" ><a href="'+url+'?service=wms&version=1.3.0&request=GetCapabilities&GUID='+this.guid+'" target="_target"/>'+url+'?service=wms&version=1.3.0&request=GetCapabilities&GUID='+this.guid+'</span>',
+						   closable: false,
+						   width: 500,
+						   buttons: Ext.Msg.OK,		
+						   icon: Ext.MessageBox.INFO
+						});            	
+		           	},
+		            scope: this
+		       },{
+		            xtype: 'button',
+		            text: "Get WFS GetCapabilities URL",
+		            fieldLabel : "OGC WFS 1.0.0",
+		            width: 150,
+		            handler: function(){
+		            	var url = me.getLayersBaseURL();
+		            	Ext.Msg.show({
+						   title: "OGC WFS 1.0.0",
+						   msg: '<p>Link to Optimal Asset Allocator Assets Tracks via WFS GetCapabilities</p><br/><span style="color:blue;font-size:11px;" ><a href="'+url+'?service=wfs&version=1.0.0&request=GetCapabilities&GUID='+this.guid+'" target="_target"/>'+url+'?service=wfs&version=1.0.0&request=GetCapabilities&GUID='+this.guid+'</span>',
+						   closable: false,
+						   width: 500,
+						   buttons: Ext.Msg.OK,		
+						   icon: Ext.MessageBox.INFO
+						});            	
+		           	},
+		            scope: this
+		       },{
+		            xtype: 'button',
+		            text: "WFS as CSV Format",
+		            fieldLabel : "OGC WFS 1.0.0 - CSV",
+		            width: 150,
+		            handler: function(){
+		            	var url = me.getLayersBaseURL();
+		            	Ext.Msg.show({
+						   title: "OGC WFS 1.0.0 - CSV",
+						   msg: '<p>Link to Optimal Asset Allocator Assets Tracks via WFS as CSV Format</p><br/><span style="color:blue;font-size:11px;" ><a href="'+url+'?service=WFS&version=1.0.0&request=GetFeature&typeName='+me.getFeatures("tracks")+'&outputFormat=csv&GUID='+this.guid+'" target="_target"/>'+url+'?service=WFS&version=1.0.0&request=GetFeature&typeName='+me.getFeatures("tracks")+'&outputFormat=csv&GUID='+this.guid+'</span>',
+						   closable: false,
+						   width: 650,
+						   buttons: Ext.Msg.OK,		
+						   icon: Ext.MessageBox.INFO
+						});            	
+		           	},
+		            scope: this
+		       },{
+		            xtype: 'button',
+		            text: "WFS as GeoJSON Format",
+		            fieldLabel : "OGC WFS 1.0.0 - GeoJSON",
+		            width: 150,
+		            handler: function(){
+		            	var url = me.getLayersBaseURL();
+		            	Ext.Msg.show({
+						   title: "OGC WFS 1.0.0 - GeoJSON",
+						   msg: '<p>Link to Optimal Asset Allocator Assets Tracks via WFS as GeoJSON Format</p><br/><span style="color:blue;font-size:11px;" ><a href="'+url+'?service=WFS&version=1.0.0&request=GetFeature&typeName='+me.getFeatures("tracks")+'&outputFormat=JSON&GUID='+this.guid+'" target="_target"/>'+url+'?service=WFS&version=1.0.0&request=GetFeature&typeName='+me.getFeatures("tracks")+'&outputFormat=JSON&GUID='+this.guid+'</span>',
+						   closable: false,
+						   width: 650,
+						   buttons: Ext.Msg.OK,
+						   icon: Ext.MessageBox.INFO
+						});
+		           	},
+		            scope: this
+		       },{
+		            xtype: "fieldset",
+		            title: "OTH-Gold PIM Track",
+		            checkboxToggle: false,
+		            layout: "form",
+		            ref: 'othGoldMailPanel',
+		            collapsed: false,
+					labelWidth: 150,
+		    		
+		            lazyRender:false,
+		            items:[
+		            	{
+			    			xtype:'textfield',
+			    			fieldLabel: "E-Mail Address",
+			    			ref: 'targetEmail',
+			    			allowBlank: false,
+			    			anchor: "100%"
+			    		},{
+			    			xtype:'textfield',
+			    			fieldLabel: "Comma-separated list of Assets (1,2,...)",
+			    			ref: 'assets',
+			    			allowBlank: false,
+			    			anchor: "100%"
+			    		},{
+			            xtype: 'button',
+			            text: "Send via e-Mail",
+			            width: 150,
+			            handler: function(){
+			            	var email = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.targetEmail;
+					    	var assets = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.assets;
+					    	
+					    	if(!email.isValid() || !assets.isValid()) {
+					    		Ext.Msg.show({
+		                            title: "OTH-Gold PIM Track - Error!",
+		                            msg: "Both fields are required!",
+		                            width: 300,
+		                            icon: Ext.MessageBox.ERROR
+		                        });
+		                        
+		                        email.markInvalid();
+		                        assets.markInvalid();
+					    	} else {
+					    		var ereg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+					    		
+					    		emailId = email.getRawValue();
+								var testResult = ereg.test(emailId);
+								
+								if (!testResult) {
+									Ext.Msg.show({
+			                            title: "OTH-Gold PIM Track - Error!",
+			                            msg: "The provided E-Mail Address is not formally correct!",
+			                            width: 300,
+			                            icon: Ext.MessageBox.ERROR
+			                        });
+			                        
+			                        email.markInvalid();
+								} else {
+									me.sendOTHGoldEmailMEssage(me.getFeatures("tracks"), emailId, assets.getRawValue());
+								}
+					    	}
+			           	},
+			            scope: this
+			        }]
+		       }
+            ]
+        });
+
     	return {xtype:'container',ref:'filterFieldsets',items:filterFieldsets};
     	
     },

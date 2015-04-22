@@ -1345,7 +1345,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		serviceRunInputs.category = me.category;
 		
 		var geoJsonInputs = JSON.stringify(serviceRunInputs, undefined, 2);
-
 		//send to [POST] osdi2ManagerRestURL + "services/" + serviceId
 		var runUrl = me.osdi2ManagerRestURL + "services/" + me.serviceId + "?category=" + me.category;
 		
@@ -1368,7 +1367,6 @@ mxp.widgets.CMREOnDemandServiceInputForm = Ext.extend(Ext.Panel, {
 		};
 
 		me.startServiceExecution(runUrl, geoJsonInputs, finish, finishError);
-	
 
 	},
 	/**

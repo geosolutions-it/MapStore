@@ -182,7 +182,9 @@
 			"actionTarget": {"target": "panelbbar", "index": 3}
 		},{
 			"ptype": "gxp_cmre_optimization_tool",
-            "outputTarget":"filter",
+			"osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
+			"CWIXPortalPIMTracksManagerURL":"http://localhost:3080/oth/pim/OAAroutesEmail",
+            "outputTarget": "filter",
 			"updateInfoTools":true,
                 "filterFieldsets":[
                   

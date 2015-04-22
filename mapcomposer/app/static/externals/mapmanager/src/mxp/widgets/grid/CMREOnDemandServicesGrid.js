@@ -48,7 +48,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 	 * Property: osdi2ManagerRestURL
 	 * {string} the OpenSDI2-Manager REST Url
 	 */
-	osdi2ManagerRestURL : 'http://localhost:8180/opensdi2-manager/mvc/process/geobatch/',
+	osdi2ManagerRestURL : null,
 
 	/* i18n */
 	nameText : 'Title',
