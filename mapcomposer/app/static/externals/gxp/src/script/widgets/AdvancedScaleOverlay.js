@@ -137,7 +137,9 @@ gxp.AdvancedScaleOverlay = Ext.extend(Ext.Panel, {
      *  :param e: ``Object``
      */
     stopMouseEvents: function(e) {
-        e.stopEvent();
+		// to manage fractionalZoom = true. If you stop events you can not edit scale selector
+		if (!this._fractionalZoom)
+			e.stopEvent();
     },
     
     /** private: method[removeFromMapPanel]
@@ -176,10 +178,8 @@ gxp.AdvancedScaleOverlay = Ext.extend(Ext.Panel, {
             }else{ 
                 Ext.get("id_box").insertBefore(Ext.get("zoom_selector"));               
             }
-			if(!this._fractionalZoom){
-				this.getEl().on("click", this.stopMouseEvents, this);
-				this.getEl().on("mousedown", this.stopMouseEvents, this);
-			}
+			this.getEl().on("click", this.stopMouseEvents, this);
+			this.getEl().on("mousedown", this.stopMouseEvents, this);
         }, this);
         
         this.scaleLinePanel.on('render', function(){
@@ -283,8 +283,8 @@ gxp.AdvancedScaleOverlay = Ext.extend(Ext.Panel, {
 			selectOnFocus: this._fractionalZoom
         });
         this.zoomSelector.on({
-            click: !this._fractionalZoom ? this.stopMouseEvents : 'undefined',
-            mousedown: !this._fractionalZoom ? this.stopMouseEvents : 'undefined',
+            click: this.stopMouseEvents,
+            mousedown: this.stopMouseEvents,
             select: function(combo, record, index) {
 				this.map.zoomTo(record.data.level);
             },
