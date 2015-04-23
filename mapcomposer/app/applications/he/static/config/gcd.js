@@ -290,6 +290,18 @@
             "customActionsProvider":"gcd",
             "customColumnsProvider": "gcd",
             "ignoreFields": ["count","FERC", "cpcty_RID", "cpcty_RID_t", "Pipeline", "Facility", "Operational_Capacity", "Avg_Cap_Sched_2008", "Avg_Cap_Sched_2009", "Avg_Cap_Sched_2010", "Avg_Cap_Sched_2011", "Avg_Cap_Sched_2012", "Avg_Cap_Sched_2013", "Avg_Cap_Sched_2014", "Proprietary_Loc_Num" ],
+            "customColumnsWidth" : {
+                "Point_Type" : 70,
+                "DRN" : 80,
+                "Prop_Name" : 200,
+                "Descriptive_Name" : 180,
+                "Operator" : 200,
+                "Facility" : 200,
+                "Proprietary_Loc_Num" : 100,
+                "County" : 100,
+                "State" : 50,
+                "Scheduled_Capacity" : 120
+            },
             "outputConfig": {
               "id": "capacity_grid",
               "region":"south",

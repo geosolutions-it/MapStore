@@ -29,7 +29,7 @@ Ext.namespace("gxp.plugins.he");
  */   
 gxp.plugins.he.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
     
-    /** api: ptype = gxp_featuregrid */
+    /** api: ptype = he_results_grid */
     ptype: "he_results_grid",
 
     /** private: property[schema]
@@ -157,7 +157,8 @@ gxp.plugins.he.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
         config = Ext.apply({
             xtype: "he_scheduled_capacities_grid",
             loadMask:true,
-            vendorParams : vendorParams
+            vendorParams : vendorParams,
+            customColumnsWidth : this.customColumnsWidth
         }, config || {});
         var featureGrid = gxp.plugins.he.ResultsGrid.superclass.addOutput.call(this, config);
         
