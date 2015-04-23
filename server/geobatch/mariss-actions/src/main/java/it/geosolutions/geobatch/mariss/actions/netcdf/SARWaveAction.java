@@ -203,8 +203,8 @@ public class SARWaveAction extends NetCDFAction {
                         // ////
                         // ... create the output file
                         // ////
-                        outputFiles[index] = new File(directory, fileBaseName + SEPARATOR
-                                + varName.trim() + part + ".nc");
+                        outputFiles[index] = new File(directory, fileBaseName + CUSTOM_DIM_SEPARATOR + "partition#"+part + SEPARATOR
+                                + varName.trim() + ".nc");
                         outputFiles[index].createNewFile();
                         // ////
                         // ... create the output file data structure

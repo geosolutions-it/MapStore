@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -118,6 +119,8 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
     }
 
     protected static final String SEPARATOR = "_Var_";
+    
+    protected static final String CUSTOM_DIM_SEPARATOR = "_Dim_";
 
     private static final String SERVICE_SEPARATOR = "_s_";
 
@@ -192,18 +195,28 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         FileUtils.write(datastore, properties);
     }
 
-    protected void createIndexerFile(File mosaicDir, String varName, String serviceName)
+    protected void createIndexerFile(File mosaicDir, String varName, String serviceName, Map<String, String> additionalDimensions)
             throws IOException {
         File indexer = new File(mosaicDir, "indexer.properties");
         indexer.createNewFile();
+        
+        String schema = "*the_geom:Polygon,location:String,time:java.util.Date,service:String,identifier:String";
+        String propertyCollectors = "StringFileNameExtractorSPI[serviceregex](service),StringFileNameExtractorSPI[identifierregex](identifier)";
+        
+        if (additionalDimensions != null && additionalDimensions.size() > 0) {
+            for (Entry<String, String> entry : additionalDimensions.entrySet()) {
+                schema += "," + entry.getKey() + ":String";
+                propertyCollectors += ",StringFileNameExtractorSPI[" + entry.getKey() + "regex](" + entry.getKey() + ")";
+            }
+        }
+        
         String properties = "TimeAttribute=time\n"
-                + "Schema=*the_geom:Polygon,location:String,time:java.util.Date,service:String,identifier:String\n"
-                + "PropertyCollectors=StringFileNameExtractorSPI[serviceregex](service),"
-                + "StringFileNameExtractorSPI[identifierregex](identifier)";
-        FileUtils.write(indexer, properties);
+                + "Schema=" + schema + "\n"
+                + "PropertyCollectors=" + propertyCollectors;
+        FileUtils.write(indexer, properties);        
     }
 
-    protected void createRegexFiles(File mosaicDir, String varName) throws IOException {
+    protected void createRegexFiles(File mosaicDir, String varName, Map<String, String> additionalDimensions) throws IOException {
         // REGEX for Service Name
         File serviceRegex = new File(mosaicDir, "serviceregex.properties");
         serviceRegex.createNewFile();
@@ -218,6 +231,16 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         String identifierProperties = "regex=" + "(?<=" + IDENTIFIER_SEPARATOR + ").*" + "(?="
                 + IDENTIFIER_SEPARATOR + ")";
         FileUtils.write(identifierRegex, identifierProperties);
+        
+        // --------------
+        if (additionalDimensions != null && additionalDimensions.size() > 0) {
+            for (Entry<String, String> entry : additionalDimensions.entrySet()) {
+                File customPropRegex = new File(mosaicDir, entry.getKey() + "regex.properties");
+                customPropRegex.createNewFile();
+                String customPropRegexProperties = "regex=" + "(?<=" + CUSTOM_DIM_SEPARATOR + entry.getKey() + "#).*" + "(?=_)";
+                FileUtils.write(customPropRegex, customPropRegexProperties);
+            }
+        }
     }
 
     protected double definingOutputVariables(boolean hasDepth, int nLat, int nLon,
@@ -545,8 +568,19 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             try {
                 // Getting Variable Name
                 String file = FilenameUtils.getBaseName(f.getAbsolutePath());
-                String variableName = getActionName()
-                        + file.substring(file.lastIndexOf(SEPARATOR) + SEPARATOR.length());
+                String variableName = /*getActionName() +*/ file.substring(file.lastIndexOf(SEPARATOR) + SEPARATOR.length());
+                
+                Map<String, String> additionalDimensions = new HashMap<String, String>();
+                if (file.indexOf(CUSTOM_DIM_SEPARATOR) > 0) {
+                    String dimensions = file.substring(file.lastIndexOf(CUSTOM_DIM_SEPARATOR), file.lastIndexOf(SEPARATOR));
+                    String dimensionNames[] = dimensions.split(CUSTOM_DIM_SEPARATOR);
+                    
+                    for (String dim : dimensionNames) {
+                        String[] theDim = dim.split("#");
+                        additionalDimensions.put(theDim[0], theDim[1]);
+                    }
+                }
+                
                 // Create the mosaic directory in the temporary geobatch directory
                 File temp = new File(getTempDir(), "temp" + file);
                 FileUtils.forceMkdir(temp);
@@ -599,9 +633,9 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                             + PATHSEPARATOR + container.getDefaultNameSpace() + PATHSEPARATOR
                             + variableName + PATHSEPARATOR + newFile.getName());
                     // Create the Mosaic elements
-                    createIndexerFile(mosaicDir, variableName, configuration.getServiceName());
+                    createIndexerFile(mosaicDir, variableName, configuration.getServiceName(), additionalDimensions);
                     createDatastoreFile(mosaicDir, variableName);
-                    createRegexFiles(mosaicDir, variableName);
+                    createRegexFiles(mosaicDir, variableName, additionalDimensions);
 
                     // Zip all the elements
                     File zipped = zipAll(temp, mosaicDir.listFiles(), mosaicDir.getName());
