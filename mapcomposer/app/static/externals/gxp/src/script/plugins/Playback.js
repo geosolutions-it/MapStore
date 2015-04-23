@@ -167,24 +167,23 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
 				self.target.fireEvent("timemanager");
                 self.getTimeManager();
                 self.populateTimeOptionsPanel();
-                
-
             }
         }, this);
     },
-    /** private: method[populateTimeOptionsPanel]
-     *  
+	
+    /** 
+	 * private: method[populateTimeOptionsPanel]  
      */    
-    populateTimeOptionsPanel: function(){
-    
+    populateTimeOptionsPanel: function(){    
         var timeOptionsPanel = Ext.getCmp("realTimePanelID");
         
-        //populate timeslider settings panel with values
-        timeOptionsPanel.optionsPanel.timeManager = this.playbackToolbar.control;
-        timeOptionsPanel.optionsPanel.playbackToolbar = this.playbackToolbar;
-        
-        timeOptionsPanel.optionsPanel.populateForm();    
-        
+		if(timeOptionsPanel){
+			//populate timeslider settings panel with values
+			timeOptionsPanel.optionsPanel.timeManager = this.playbackToolbar.control;
+			timeOptionsPanel.optionsPanel.playbackToolbar = this.playbackToolbar;
+			
+			timeOptionsPanel.optionsPanel.populateForm(); 
+		}        
     },
     
     getTimeManager: function(){
@@ -210,6 +209,7 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
 	    }
 		return this.timeManager;
     },    
+	
     /** api: method[setTime]
      *  :arg time: {Date}
      *  :return: {Boolean} - true if the time could be set to the supplied value

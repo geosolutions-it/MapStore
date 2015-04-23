@@ -316,7 +316,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				);
 			}
             
-            if(customParams.zoomToExtent)
+            if(customParams && customParams.zoomToExtent)
                 map.zoomToExtent(extent, true);
 			
 			var report = {
@@ -627,7 +627,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 						
 						var store = combo.getStore();
 						
-						var index = store.find('id', source.id);
+						var index = store.find('id', id);
 						var record = store.getAt(index);
 						
 						combo.onSelect(record, 0);
@@ -635,9 +635,9 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					
 					mask.hide();
 					
-					this.target.layerSources[source.id].loaded = true;
+					this.target.layerSources[id].loaded = true;
 					if(showLayer && options){						
-						this.addLayerRecord(options, source, callback);
+						this.addLayerRecord(options, this.target.layerSources[id], callback);
 					}else{
 						//
 						// Here only if we add only the WMS source.

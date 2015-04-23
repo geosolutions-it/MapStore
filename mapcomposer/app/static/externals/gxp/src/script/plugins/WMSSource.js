@@ -333,7 +333,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 		var layerProjection = this.getProjection(original);
 		if (layerProjection) {
 			layer.addOptions({projection: layerProjection});
-		} else {
+		} /*else {
 			Ext.Msg.show({
                 title: this.errorTitle,
                 msg: this.noCompatibleProjectionError,
@@ -343,7 +343,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
           });
 			
 		  return null;
-		}
+		}*/
 		
 		var projCode = projection.getCode();
 		var nativeExtent = original.get("bbox")[projCode];

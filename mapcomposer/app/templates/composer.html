@@ -454,8 +454,6 @@
 					var addLayer = app.tools["addlayer"];
 					
 					if(addLayer){
-
-                        addLayer.useEvents = true;
                         
 						if(useCookies || content.data){
 							var layersList;
@@ -511,18 +509,7 @@
 								wmsURL: wmsurl,
 								format: urlformat
 							}]);
-						}
-                        
-                        /*resources = [{
-                            format: "wms",
-                            msGroupName: "MODELLO WRF-ARW a 3km - Energia Potenziale Convettiva Disponibile (CAPE) (J/Kg) - (2015-04-14 ore 00 UTC).",
-                            msLayerName: "arw_3km_Temperature_surface_20150416T000000000Z:0.0",
-                            msLayerTitle: "arw_3km_Temperature_surface_20150416T000000000Z:0.0",
-                            wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/ARW_3KM_RUN00/ows?&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0"
-                        }];
-                        
-                        addMSLayer(resources);*/
-                        
+						}                       
 					}else{
 						Ext.Msg.show({
 							 title: "Add Layer",
@@ -532,6 +519,16 @@
 						});  
 					}
 						
+					/*var resources = [{
+						format: "wms",
+						msGroupName: "MODELLO WRF-ARW a 12km - Maschera Terra - Acqua - (2015-04-21 ore 00 UTC).",
+						msLayerName: "arw_12km_Land_cover_land1_sea0_surface_20150421T000000000Z:0.0",
+						msLayerTitle: "arw_12km_Land_cover_land1_sea0_surface_20150421T000000000Z:0.0",
+						wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/ARW_12KM_RUN00/ows"
+					}];
+							
+					addMSLayer(resources);*/
+					
 				    if(bbox){
 						app.mapPanel.map.zoomToExtent(bbox, true);
 					}
@@ -629,6 +626,7 @@
 							// /////////////////
 							// Time Intervall
 							// /////////////////
+							
 							var layerStartTime =  OpenLayers.Date.parse(layer.metadata.timeInterval[0][0]);
 							if(!startDate){
 								startDate = layerStartTime;
@@ -671,7 +669,9 @@
 								}
 							}	
 
-							timeUnits = timeUnits == 'H' ? timeUnits = 'Hours' : (timeUnits == 'D' ? timeUnits = 'Days' : timeUnits = 'Minutes');		
+							timeUnits = (timeUnits == 'H' || timeUnits == 'Hours') ? 
+									timeUnits = 'Hours' : ((timeUnits == 'D' || timeUnits == 'Days') ? 
+										timeUnits = 'Days' : timeUnits = 'Minutes');	
 
 							var layerName = record.get('name');
 							if(layerName.indexOf("NDVI") === -1 && layerName.indexOf("50km") === -1){
