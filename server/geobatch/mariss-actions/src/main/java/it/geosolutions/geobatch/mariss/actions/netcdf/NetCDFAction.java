@@ -19,8 +19,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -119,7 +117,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
     }
 
     protected static final String SEPARATOR = "_Var_";
-    
+
     protected static final String CUSTOM_DIM_SEPARATOR = "_Dim_";
 
     private static final String SERVICE_SEPARATOR = "_s_";
@@ -176,52 +174,53 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
 
     protected void createDatastoreFile(File mosaicDir, String varName) throws IOException {
         Map<String, Serializable> dsParams = configuration.getOutputFeature().getDataStore();
-        
-        //---
+
+        // ---
         final String host = (String) dsParams.get("host");
         final String port = (String) dsParams.get("port");
         final String database = (String) dsParams.get("database");
         final String schema = (String) dsParams.get("schema");
         final String user = (String) dsParams.get("user");
         final String passwd = (String) dsParams.get("passwd");
-        //---
+        // ---
         File datastore = new File(mosaicDir, "datastore.properties");
         datastore.createNewFile();
-        String properties = "user="+user+"\n" + "port="+port+"\n" + "passwd="+passwd+"\n"
-                + "host="+host+"\n" + "database=" + database + "\n"
-                + "driver=org.postgresql.Driver\n" + "schema="+schema+"\n"
+        String properties = "user=" + user + "\n" + "port=" + port + "\n" + "passwd=" + passwd
+                + "\n" + "host=" + host + "\n" + "database=" + database + "\n"
+                + "driver=org.postgresql.Driver\n" + "schema=" + schema + "\n"
                 + "Estimated\\ extends=false\n"
                 + "SPI=org.geotools.data.postgis.PostgisNGDataStoreFactory";
         FileUtils.write(datastore, properties);
     }
 
-    protected void createIndexerFile(File mosaicDir, String varName, String serviceName, Map<String, String> additionalDimensions)
-            throws IOException {
+    protected void createIndexerFile(File mosaicDir, String varName, String serviceName,
+            Map<String, String> additionalDimensions) throws IOException {
         File indexer = new File(mosaicDir, "indexer.properties");
         indexer.createNewFile();
-        
+
         String schema = "*the_geom:Polygon,location:String,time:java.util.Date,service:String,identifier:String";
         String propertyCollectors = "StringFileNameExtractorSPI[serviceregex](service),StringFileNameExtractorSPI[identifierregex](identifier)";
-        
+
         if (additionalDimensions != null && additionalDimensions.size() > 0) {
             for (Entry<String, String> entry : additionalDimensions.entrySet()) {
                 schema += "," + entry.getKey() + ":String";
-                propertyCollectors += ",StringFileNameExtractorSPI[" + entry.getKey() + "regex](" + entry.getKey() + ")";
+                propertyCollectors += ",StringFileNameExtractorSPI[" + entry.getKey() + "regex]("
+                        + entry.getKey() + ")";
             }
         }
-        
-        String properties = "TimeAttribute=time\n"
-                + "Schema=" + schema + "\n"
+
+        String properties = "TimeAttribute=time\n" + "Schema=" + schema + "\n"
                 + "PropertyCollectors=" + propertyCollectors;
-        FileUtils.write(indexer, properties);        
+        FileUtils.write(indexer, properties);
     }
 
-    protected void createRegexFiles(File mosaicDir, String varName, Map<String, String> additionalDimensions) throws IOException {
+    protected void createRegexFiles(File mosaicDir, String varName,
+            Map<String, String> additionalDimensions) throws IOException {
         // REGEX for Service Name
         File serviceRegex = new File(mosaicDir, "serviceregex.properties");
         serviceRegex.createNewFile();
-//        String properties = "regex=" + "(?<=" + SERVICE_SEPARATOR + ")[a-zA-Z]*" + "(?="
-//                + SERVICE_SEPARATOR + ")";
+        // String properties = "regex=" + "(?<=" + SERVICE_SEPARATOR + ")[a-zA-Z]*" + "(?="
+        // + SERVICE_SEPARATOR + ")";
         String properties = "regex=" + "(?<=" + SERVICE_SEPARATOR + ").*" + "(?="
                 + SERVICE_SEPARATOR + ")";
         FileUtils.write(serviceRegex, properties);
@@ -231,13 +230,14 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         String identifierProperties = "regex=" + "(?<=" + IDENTIFIER_SEPARATOR + ").*" + "(?="
                 + IDENTIFIER_SEPARATOR + ")";
         FileUtils.write(identifierRegex, identifierProperties);
-        
+
         // --------------
         if (additionalDimensions != null && additionalDimensions.size() > 0) {
             for (Entry<String, String> entry : additionalDimensions.entrySet()) {
                 File customPropRegex = new File(mosaicDir, entry.getKey() + "regex.properties");
                 customPropRegex.createNewFile();
-                String customPropRegexProperties = "regex=" + "(?<=" + CUSTOM_DIM_SEPARATOR + entry.getKey() + "#).*" + "(?=_)";
+                String customPropRegexProperties = "regex=" + "(?<=" + CUSTOM_DIM_SEPARATOR
+                        + entry.getKey() + "#).*" + "(?=_)";
                 FileUtils.write(customPropRegex, customPropRegexProperties);
             }
         }
@@ -310,7 +310,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
                     configuration.getGeoserverURL(), configuration.getGeoserverUID(),
                     configuration.getGeoserverPWD());
-            GeoServerRESTReader reader;
+            GeoServerRESTReader reader = null;
             try {
                 reader = new GeoServerRESTReader(configuration.getGeoserverURL(),
                         configuration.getGeoserverUID(), configuration.getGeoserverPWD());
@@ -321,10 +321,9 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                 if (!reader.existsWorkspace(namespace)) {
                     WorkspaceUtils.createWorkspace(reader, publisher, namespace, namespaceURI);
                 }
-            } catch (MalformedURLException e) {
+            } catch (Exception e) {
                 throw new ActionException(NetCDFAction.class, e.getLocalizedMessage());
-            } catch (URISyntaxException e) {
-                throw new ActionException(NetCDFAction.class, e.getLocalizedMessage());
+                // DEBUG : LOGGER.warn(e.getLocalizedMessage(), e);
             }
 
             // If the mosaic is not already configured we must configure it, otherwise we do harvesting
@@ -568,20 +567,24 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             try {
                 // Getting Variable Name
                 String file = FilenameUtils.getBaseName(f.getAbsolutePath());
-                String variableName = /*getActionName() +*/ file.substring(file.lastIndexOf(SEPARATOR) + SEPARATOR.length());
-                       variableName = variableName.toLowerCase();
-                
+                String variableName = /* getActionName() + */file.substring(file
+                        .lastIndexOf(SEPARATOR) + SEPARATOR.length());
+                variableName = variableName.toLowerCase();
+
                 Map<String, String> additionalDimensions = new HashMap<String, String>();
                 if (file.indexOf(CUSTOM_DIM_SEPARATOR) > 0) {
-                    String dimensions = file.substring(file.lastIndexOf(CUSTOM_DIM_SEPARATOR), file.lastIndexOf(SEPARATOR));
+                    String dimensions = file.substring(file.lastIndexOf(CUSTOM_DIM_SEPARATOR),
+                            file.lastIndexOf(SEPARATOR));
                     String dimensionNames[] = dimensions.split(CUSTOM_DIM_SEPARATOR);
-                    
+
                     for (String dim : dimensionNames) {
-                        String[] theDim = dim.split("#");
-                        additionalDimensions.put(theDim[0], theDim[1]);
+                        if (dim.trim().length() > 0) {
+                            String[] theDim = dim.split("#");
+                            additionalDimensions.put(theDim[0], theDim[1]);
+                        }
                     }
                 }
-                
+
                 // Create the mosaic directory in the temporary geobatch directory
                 File temp = new File(getTempDir(), "temp" + file);
                 FileUtils.forceMkdir(temp);
@@ -634,7 +637,8 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                             + PATHSEPARATOR + container.getDefaultNameSpace() + PATHSEPARATOR
                             + variableName + PATHSEPARATOR + newFile.getName());
                     // Create the Mosaic elements
-                    createIndexerFile(mosaicDir, variableName, configuration.getServiceName(), additionalDimensions);
+                    createIndexerFile(mosaicDir, variableName, configuration.getServiceName(),
+                            additionalDimensions);
                     createDatastoreFile(mosaicDir, variableName);
                     createRegexFiles(mosaicDir, variableName, additionalDimensions);
 
