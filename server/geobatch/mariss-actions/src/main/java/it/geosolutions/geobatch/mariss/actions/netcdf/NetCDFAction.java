@@ -176,6 +176,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         
         final String host = (String) dsParams.get("host");
         final String port = (String) dsParams.get("port");
+        final String database = (String) dsParams.get("database");
         final String schema = (String) dsParams.get("schema");
         final String user = (String) dsParams.get("user");
         final String passwd = (String) dsParams.get("passwd");
@@ -183,7 +184,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         File datastore = new File(mosaicDir, "datastore.properties");
         datastore.createNewFile();
         String properties = "user="+user+"\n" + "port="+port+"\n" + "passwd="+passwd+"\n"
-                + "host="+host+"\n" + "database=" + varName + "\n"
+                + "host="+host+"\n" + "database=" + database + "\n"
                 + "driver=org.postgresql.Driver\n" + "schema="+schema+"\n"
                 + "Estimated\\ extends=false\n"
                 + "SPI=org.geotools.data.postgis.PostgisNGDataStoreFactory";
