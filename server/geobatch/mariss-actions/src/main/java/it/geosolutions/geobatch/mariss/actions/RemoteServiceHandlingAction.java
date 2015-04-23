@@ -48,6 +48,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.regex.Pattern;
 
@@ -89,7 +91,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
      */
     private ServiceDAO serviceDAO;
     
-    private Map<String, BaseAction<EventObject>> actionMap = new HashMap<String, BaseAction<EventObject>>();
+    //private Map<String, BaseAction<EventObject>> actionMap = new HashMap<String, BaseAction<EventObject>>();
 
     /**
      * @param serviceDAO the serviceDAO to set
@@ -534,12 +536,64 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                             }
                         }
                         
+                        // Create the Actions map
+                        List<BaseAction<EventObject>> actionMap = new ArrayList<BaseAction<EventObject>>();
+                        
+                        // Creation of the Actions
+                        Map<String, ConfigurationContainer> subconfigurations = configuration.getSubconfigurations();
+                        if (subconfigurations != null && !subconfigurations.isEmpty()) {
+                            // Loop on the containers
+                            for (String key : subconfigurations.keySet()) {
+                                // Getting configuration container
+                                ConfigurationContainer container = subconfigurations.get(key);
+                                // Creating a possible configuration
+                                IngestionActionConfiguration config = new IngestionActionConfiguration(key,
+                                        "configuration", "");
+                                config.setMetocDictionaryPath(configuration.getMetocDictionaryPath());
+                                config.setGeoserverDataDirectory(configuration.getGeoserverDataDirectory());
+                                config.setOutputFeature(configuration.getOutputFeature());
+                                config.setProductsTableName(configuration.getProductsTableName());
+                                config.setGeoserverPWD(configuration.getGeoserverPWD());
+                                config.setGeoserverUID(configuration.getGeoserverUID());
+                                config.setGeoserverURL(configuration.getGeoserverURL());
+                                config.setContainer(container);
+                                config.setServiceName(service.getServiceId());
+                                // Getting the action
+                                BaseAction<EventObject> action = null;
+                                // Using reflection
+                                try {
+                                    Class<?> clazz = Class.forName(container.getActionClass());
+                                    if (clazz != null) {
+                                        Constructor<?> constructor = clazz
+                                                .getConstructor(IngestionActionConfiguration.class);
+                                        if (constructor != null) {
+                                            action = (BaseAction<EventObject>) constructor.newInstance(config);
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    LOGGER.debug(e.getMessage());
+                                }
+                                if(action != null){
+                                    File actionTempDir = new File(getTempDir(), key);
+                                    try {
+                                        FileUtils.forceMkdir(actionTempDir);
+                                    } catch (IOException e) {
+                                        LOGGER.error("Unable to crate Action Temporary directory, falling back to the "
+                                                + "parent one",e);
+                                        actionTempDir = getTempDir();
+                                    }
+                                    action.setTempDir(actionTempDir);
+                                    actionMap.add(action);
+                                }
+                            }
+                        }
+                        
                         // Collecting all other products files whenever a Package Ready event has been received ...
                         resultList.addAll(getPostProcessEvents(pendingProductFiles, dataStore, user,
                                 service, localRelativeFolder, serverResultProtocol, folder, folder,
                                 folder, resultTimeout, resultConnectMode, resultTimeout, usersSize,
                                 userIndex, serviceSize, serviceIndex, serviceFoldersSize,
-                                serviceFolderIndex));
+                                serviceFolderIndex, actionMap));
                     }
                 }
                 // ---
@@ -573,6 +627,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
      * @param serviceIndex
      * @param serviceFoldersSize
      * @param serviceFolderIndex
+     * @param actionMap 
      * @return
      * @throws IOException
      * @throws FTPException
@@ -586,7 +641,8 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
             RemoteBrowserProtocol serverResultProtocol, String serverResultUser,
             String serverResultPWD, String serverResultHost, int serverResultPort,
             FTPConnectMode resultConnectMode, int resultTimeout, int usersSize, int userIndex,
-            int serviceSize, int serviceIndex, int serviceFoldersSize, int serviceFolderIndex)
+            int serviceSize, int serviceIndex, int serviceFoldersSize, int serviceFolderIndex, 
+            Collection<BaseAction<EventObject>> actionMap)
             throws IOException, FTPException {
 
         Queue<EventObject> resultList = new LinkedList<EventObject>();
@@ -622,16 +678,18 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
             }
             // Post process.
             if(!actionMap.isEmpty()){
-                for(String key : actionMap.keySet()){
-                    Queue<EventObject> events = new ArrayBlockingQueue<EventObject>(1);
-                    events.add(new FileSystemEvent(inputFile, FileSystemEventType.FILE_ADDED));
-                    BaseAction<EventObject> action = actionMap.get(key);
+                // Simulating a sequential flow
+                Queue<EventObject> events = new ArrayBlockingQueue<EventObject>(1000000);
+                events.add(new FileSystemEvent(inputFile, FileSystemEventType.FILE_ADDED));
+                for(BaseAction<EventObject> action : actionMap){
                     try {
-                        resultList.addAll(action.execute(events));
+                        events.addAll(action.execute(events));
                     } catch (ActionException e) {
                         LOGGER.error(e.getMessage(), e);
                     }
                 }
+                // Filling the ResultList 
+                resultList.addAll(events);
             }
             
             
@@ -804,48 +862,6 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                 } catch (IOException e) {
                     msg = "Error processing MARISS product ingestion";
                     LOGGER.error(msg, e);
-                }
-            }
-            
-            // Selection of the ConfigurationContainer related to the input file
-            Map<String, ConfigurationContainer> subconfigurations = configuration.getSubconfigurations();
-            if (subconfigurations != null && !subconfigurations.isEmpty()) {
-                // Loop on the containers
-                for (String key : subconfigurations.keySet()) {
-                    // Getting configuration container
-                    ConfigurationContainer container = subconfigurations.get(key);
-                    // Creating a possible configuration
-                    IngestionActionConfiguration config = new IngestionActionConfiguration(key,
-                            "configuration", "");
-                    config.setMetocDictionaryPath(configuration.getMetocDictionaryPath());
-                    config.setGeoserverDataDirectory(configuration.getGeoserverDataDirectory());
-                    config.setOutputFeature(configuration.getOutputFeature());
-                    config.setProductsTableName(configuration.getProductsTableName());
-                    config.setGeoserverPWD(configuration.getGeoserverPWD());
-                    config.setGeoserverUID(configuration.getGeoserverUID());
-                    config.setGeoserverURL(configuration.getGeoserverURL());
-                    config.setContainer(container);
-                    config.setUid(user);
-                    config.setServiceName(service.getServiceId());
-                    // Getting the action
-                    BaseAction<EventObject> action = null;
-                    // Using reflection
-                    try {
-                        Class<?> clazz = Class.forName(container.getActionClass());
-                        if (clazz != null) {
-                            Constructor<?> constructor = clazz
-                                    .getConstructor(IngestionActionConfiguration.class);
-                            if (constructor != null) {
-                                action = (BaseAction<EventObject>) constructor.newInstance(config);
-                            }
-                        }
-                    } catch (Exception e) {
-                        LOGGER.debug(e.getMessage());
-                    }
-                    if(action != null){
-                        action.setTempDir(getTempDir());
-                        actionMap.put(key, action);
-                    }
                 }
             }
             
