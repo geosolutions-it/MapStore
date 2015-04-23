@@ -118,7 +118,9 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
 
     protected static final String SEPARATOR = "_Var_";
 
-    protected static final String CUSTOM_DIM_SEPARATOR = "_Dim_";
+    protected static final String CUSTOM_DIM_START_SEPARATOR = "_Dim_";    
+    protected static final String CUSTOM_DIM_VAL_SEPARATOR = "_DimVal_";
+    protected static final String CUSTOM_DIM_END_SEPARATOR = "_DimEnd_";
 
     private static final String SERVICE_SEPARATOR = "_s_";
 
@@ -236,8 +238,8 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             for (Entry<String, String> entry : additionalDimensions.entrySet()) {
                 File customPropRegex = new File(mosaicDir, entry.getKey() + "regex.properties");
                 customPropRegex.createNewFile();
-                String customPropRegexProperties = "regex=" + "(?<=" + CUSTOM_DIM_SEPARATOR
-                        + entry.getKey() + "#).*" + "(?=_)";
+                String customPropRegexProperties = "regex=" + "(?<=" + CUSTOM_DIM_START_SEPARATOR
+                        + entry.getKey() + CUSTOM_DIM_VAL_SEPARATOR +").*" + "(?=" + CUSTOM_DIM_END_SEPARATOR + ")";
                 FileUtils.write(customPropRegex, customPropRegexProperties);
             }
         }
@@ -572,14 +574,14 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                 variableName = variableName.toLowerCase();
 
                 Map<String, String> additionalDimensions = new HashMap<String, String>();
-                if (file.indexOf(CUSTOM_DIM_SEPARATOR) > 0) {
-                    String dimensions = file.substring(file.lastIndexOf(CUSTOM_DIM_SEPARATOR),
+                if (file.indexOf(CUSTOM_DIM_START_SEPARATOR) > 0) {
+                    String dimensions = file.substring(file.lastIndexOf(CUSTOM_DIM_START_SEPARATOR),
                             file.lastIndexOf(SEPARATOR));
-                    String dimensionNames[] = dimensions.split(CUSTOM_DIM_SEPARATOR);
+                    String dimensionNames[] = dimensions.split(CUSTOM_DIM_START_SEPARATOR);
 
                     for (String dim : dimensionNames) {
                         if (dim.trim().length() > 0) {
-                            String[] theDim = dim.split("#");
+                            String[] theDim = dim.split(CUSTOM_DIM_VAL_SEPARATOR);
                             additionalDimensions.put(theDim[0], theDim[1]);
                         }
                     }
