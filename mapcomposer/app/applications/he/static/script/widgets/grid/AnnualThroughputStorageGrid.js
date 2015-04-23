@@ -70,7 +70,7 @@ gxp.he.grid.AnnualThroughputStorageGrid = Ext.extend(Ext.grid.GridPanel,{
                         var max = this.getMax(store,this.dataIndex) || this.max;
                         return '<span id="progressbar-' + id + '">' + 
                                 this.fakebar
-                                    .replace(/\{progress\}/g,progress) 
+                                    .replace(/\{progress\}/g, Ext.util.Format.number(progress, '0,000')) 
                                     .replace(/\{factor\}/g,( factor))
                                     .replace(/\{barwidth\}/g,( factor/ max * progress))
                                     .replace(/\{textwidth\}/g,Math.max((factor / max * progress) - shift,0))
@@ -115,7 +115,7 @@ gxp.he.grid.AnnualThroughputStorageGrid = Ext.extend(Ext.grid.GridPanel,{
                         var max = this.getMax(store,this.dataIndex) || this.max;
                         return '<span id="progressbar-' + id + '">' + 
                                 this.fakebar
-                                    .replace(/\{progress\}/g,progress) 
+                                    .replace(/\{progress\}/g, Ext.util.Format.number(progress, '0,000')) 
                                     .replace(/\{factor\}/g,( factor))
                                     .replace(/\{barwidth\}/g,( factor/ max * progress))
                                     .replace(/\{textwidth\}/g,Math.max((factor / max * progress) - shift,0))
