@@ -313,12 +313,12 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                     configuration.getGeoserverURL(), configuration.getGeoserverUID(),
                     configuration.getGeoserverPWD());
             GeoServerRESTReader reader = null;
+            String namespace = container.getDefaultNameSpace();
+            String namespaceURI = container.getDefaultNameSpace();
+
             try {
                 reader = new GeoServerRESTReader(configuration.getGeoserverURL(),
                         configuration.getGeoserverUID(), configuration.getGeoserverPWD());
-
-                String namespace = container.getDefaultNameSpace();
-                String namespaceURI = container.getDefaultNameSpace();
 
                 if (!reader.existsWorkspace(namespace)) {
                     WorkspaceUtils.createWorkspace(reader, publisher, namespace, namespaceURI);
@@ -357,7 +357,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                     // ... setting up the appropriate event for the next action
                     events.add(new FileSystemEvent(f, FileSystemEventType.FILE_ADDED));
                     // Update DataStore
-                    insertDb(attributeBean, f.getAbsolutePath(), layerNames[index],
+                    insertDb(attributeBean, f.getAbsolutePath(), namespace, layerNames[index],
                             cfNames.get(index), geo);
                     // Updating array index
                     index++;
@@ -571,7 +571,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                 String file = FilenameUtils.getBaseName(f.getAbsolutePath());
                 String variableName = /* getActionName() + */file.substring(file
                         .lastIndexOf(SEPARATOR) + SEPARATOR.length());
-                variableName = variableName.toLowerCase();
+                variableName = variableName.toLowerCase().replace("_", "-");
 
                 Map<String, String> additionalDimensions = new HashMap<String, String>();
                 if (file.indexOf(CUSTOM_DIM_START_SEPARATOR) > 0) {
@@ -663,11 +663,11 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
     }
 
     public boolean insertDb(AttributeBean attributeBean, String outFileLocation, String layerName,
-            String cfName, Geometry geo) throws ActionException {
+            String cfName, String namespace, Geometry geo) throws ActionException {
         boolean result = false;
 
         String sql = "INSERT INTO " + configuration.getProductsTableName()
-                + " VALUES (?,?,ST_GeomFromText(?),?,?,?,?,?,?)";
+                + " VALUES (?,?,ST_GeomFromText(?),?,?,?,?,?,?,?)";
 
         Connection conn = null;
 
@@ -685,8 +685,15 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             ps.setString(5, cfName);
             ps.setString(6, attributeBean.type.name());
             ps.setString(7, outFileLocation);
-            ps.setString(8, attributeBean.absolutePath);
-            ps.setString(9, layerName);
+            ps.setString(8, configuration.getServiceName() + "/PRODUCTS/" + FilenameUtils.getBaseName(attributeBean.absolutePath));
+            ps.setString(9, namespace + ":" + layerName);
+            
+            String partition = "";
+            final String outputFileVaseName = FilenameUtils.getBaseName(outFileLocation);
+            if (outputFileVaseName.contains("partition")) {
+                partition = outputFileVaseName.substring(outputFileVaseName.indexOf(CUSTOM_DIM_VAL_SEPARATOR) + CUSTOM_DIM_VAL_SEPARATOR.length(), outputFileVaseName.indexOf(CUSTOM_DIM_END_SEPARATOR));
+            }
+            ps.setString(10, partition);
 
             result = ps.execute() && ps.getUpdateCount() > 0;
             ps.close();
