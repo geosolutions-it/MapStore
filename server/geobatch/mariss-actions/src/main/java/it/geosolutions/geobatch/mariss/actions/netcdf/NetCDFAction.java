@@ -174,13 +174,14 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
     protected void createDatastoreFile(File mosaicDir, String varName) throws IOException {
         Map<String, Serializable> dsParams = configuration.getOutputFeature().getDataStore();
         
+        //---
         final String host = (String) dsParams.get("host");
         final String port = (String) dsParams.get("port");
         final String database = (String) dsParams.get("database");
         final String schema = (String) dsParams.get("schema");
         final String user = (String) dsParams.get("user");
         final String passwd = (String) dsParams.get("passwd");
-        
+        //---
         File datastore = new File(mosaicDir, "datastore.properties");
         datastore.createNewFile();
         String properties = "user="+user+"\n" + "port="+port+"\n" + "passwd="+passwd+"\n"
