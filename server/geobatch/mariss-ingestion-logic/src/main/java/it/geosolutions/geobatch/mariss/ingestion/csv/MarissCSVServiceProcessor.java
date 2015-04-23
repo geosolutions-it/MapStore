@@ -44,193 +44,184 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * 
  * @author adiaz
  */
-public abstract class MarissCSVServiceProcessor extends
-		GenericCSVProcessor<SimpleFeature, Long> {
+public abstract class MarissCSVServiceProcessor extends GenericCSVProcessor<SimpleFeature, Long> {
 
-	// the dao
-	protected GenericDAO<SimpleFeature, Long> dao;
-	
+    // the dao
+    protected GenericDAO<SimpleFeature, Long> dao;
 
-	/*
-	 * GeometryFactory will be used to create the geometry attribute of each
-	 * feature (a Point object for the location)
-	 */
-	protected GeometryFactory geometryFactory = JTSFactoryFinder
-			.getGeometryFactory(null);
+    /*
+     * GeometryFactory will be used to create the geometry attribute of each feature (a Point object for the location)
+     */
+    protected GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 
-	// user and service name
-	protected String userName;
-	protected String serviceName;
-	protected int projection = 4326;
+    // user and service name
+    protected String userName;
 
-	/**
-	 * PK NAMES for the dao. the same that PK_PROPERTIES
-	 */
-	protected abstract String[] getPkNames();
+    protected String serviceName;
 
-	// constructors
-	public MarissCSVServiceProcessor() {
-		super();
-	}
+    protected int projection = 4326;
 
-	public MarissCSVServiceProcessor(Map<String, Serializable> connectionParam,
-			String typeName, String[] pkNames) {
-		this();
-		this.dao = new GenericFeatureDaoImpl(connectionParam, typeName, pkNames);
-	}
+    // constructors
+    public MarissCSVServiceProcessor() {
+        super();
+    }
 
-	public MarissCSVServiceProcessor(Map<String, Serializable> connectionParam,
-			String typeName) {
-		this();
-		this.dao = new GenericFeatureDaoImpl(connectionParam, typeName,
-				getPkNames());
-	}
+    public MarissCSVServiceProcessor(Map<String, Serializable> connectionParam, String typeName) {
+        this();
+        this.dao = new GenericFeatureDaoImpl(connectionParam, typeName, getPkNames());
+    }
 
-	public MarissCSVServiceProcessor(Map<String, Serializable> connectionParam,
-			String typeName, String[] pkNames, TimeFormat timeFormat) {
-		this(connectionParam, typeName, pkNames);
-		this.timeFormat = timeFormat;
-	}
+    public MarissCSVServiceProcessor(Map<String, Serializable> connectionParam, String typeName,
+            String[] pkNames) {
+        this();
+        this.dao = new GenericFeatureDaoImpl(connectionParam, typeName, pkNames);
+    }
 
-	public MarissCSVServiceProcessor(Map<String, Serializable> connectionParam,
-			String typeName, TimeFormat timeFormat) {
-		this(connectionParam, typeName);
-		this.timeFormat = timeFormat;
-	}
+    public MarissCSVServiceProcessor(Map<String, Serializable> connectionParam, String typeName,
+            String[] pkNames, TimeFormat timeFormat) {
+        this(connectionParam, typeName, pkNames);
+        this.timeFormat = timeFormat;
+    }
 
-	@Override
-	public GenericDAO<SimpleFeature, Long> getDao() {
-		return dao;
-	}
+    public MarissCSVServiceProcessor(Map<String, Serializable> connectionParam, String typeName,
+            TimeFormat timeFormat) {
+        this(connectionParam, typeName);
+        this.timeFormat = timeFormat;
+    }
 
-	/**
-	 * @param dao
-	 *            the dao to set
-	 */
-	public void setDao(GenericDAO<SimpleFeature, Long> dao) {
-		this.dao = dao;
-	}
-	
-	/**
-	 * Get user/service parameters from the file name 
-	 */
-	public String processCSVFile(File file, char separator) throws IOException {
-		Map<String, String> fileParameters = CSVIngestUtils.getParametersFromName(file.getName());
-		if(fileParameters.containsKey(CSVIngestUtils.USER_FILE_PARAMETER)){
-			setUserName(fileParameters.get(CSVIngestUtils.USER_FILE_PARAMETER));
-		}
-		if(fileParameters.containsKey(CSVIngestUtils.SERVICE_FILE_PARAMETER)){
-			setServiceName(fileParameters.get(CSVIngestUtils.SERVICE_FILE_PARAMETER));
-		}
-		
-		return super.processCSVFile(file, separator);
-	}
+    /**
+     * Create a feature in the data store
+     * 
+     * @return new feature
+     * @throws Exception
+     */
+    public SimpleFeature createFeature() throws Exception {
+        // Create feature
+        SimpleFeatureType featureType = (SimpleFeatureType) getDao().getSchema();
+        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(featureType);
 
-	/**
-	 * CSV default generic processor. It insert a new entity for each row that
-	 * don't exist in DB, update found records and remove if all not pk
-	 * properties are null
-	 */
-	@Override
-	public void process(CSVReader reader) throws CSVProcessException {
-		if(fileName != null){
-			Map<String, String> fileParameters = CSVIngestUtils.getParametersFromName(fileName);
-			if(fileParameters.containsKey(CSVIngestUtils.USER_FILE_PARAMETER)){
-				setUserName(fileParameters.get(CSVIngestUtils.USER_FILE_PARAMETER));
-			}
-			if(fileParameters.containsKey(CSVIngestUtils.SERVICE_FILE_PARAMETER)){
-				setServiceName(fileParameters.get(CSVIngestUtils.SERVICE_FILE_PARAMETER));
-			}
-		}
-		// prepare DAO resources
-		getDao().prepare();
-		try {
-			super.process(reader);
-		} catch (Exception e){
-			throw new CSVProcessException(e);
-		} finally {
-			// dispose DAO resources
-			getDao().dispose();
-		}
-	}
+        return featureBuilder.buildFeature(null);
+    }
 
-	/**
-	 * @return the userName
-	 */
-	public String getUserName() {
-		return userName;
-	}
+    @Override
+    public GenericDAO<SimpleFeature, Long> getDao() {
+        return dao;
+    }
 
-	/**
-	 * @param userName
-	 *            the userName to set
-	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    /**
+     * PK NAMES for the dao. the same that PK_PROPERTIES
+     */
+    protected abstract String[] getPkNames();
 
-	/**
-	 * @return the serviceName
-	 */
-	public String getServiceName() {
-		return serviceName;
-	}
+    /**
+     * @return the projection
+     */
+    public int getProjection() {
+        return projection;
+    }
 
-	/**
-	 * @param serviceName
-	 *            the serviceName to set
-	 */
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-	}
+    /**
+     * @return the serviceName
+     */
+    public String getServiceName() {
+        return serviceName;
+    }
 
-	/**
-	 * Create a feature in the data store
-	 * 
-	 * @return new feature
-	 * @throws Exception
-	 */
-	public SimpleFeature createFeature() throws Exception {
-		// Create feature
-		SimpleFeatureType featureType = (SimpleFeatureType) getDao()
-				.getSchema();
-		SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(
-				featureType);
+    /**
+     * @return the userName
+     */
+    public String getUserName() {
+        return userName;
+    }
 
-		return featureBuilder.buildFeature(null);
-	}
+    public void persist(SimpleFeature entity) throws IOException {
+        dao.persist(entity);
+    }
 
-	public void save(SimpleFeature entity) throws IOException {
-		dao.merge(entity);
-	}
+    /**
+     * CSV default generic processor. It insert a new entity for each row that don't exist in DB, update found records and remove if all not pk
+     * properties are null
+     */
+    @Override
+    public void process(CSVReader reader) throws CSVProcessException {
+        if (fileName != null) {
+            Map<String, String> fileParameters = CSVIngestUtils.getParametersFromName(fileName);
+            if (fileParameters.containsKey(CSVIngestUtils.USER_FILE_PARAMETER)) {
+                setUserName(fileParameters.get(CSVIngestUtils.USER_FILE_PARAMETER));
+            }
+            if (fileParameters.containsKey(CSVIngestUtils.SERVICE_FILE_PARAMETER)) {
+                setServiceName(fileParameters.get(CSVIngestUtils.SERVICE_FILE_PARAMETER));
+            }
+        }
+        // prepare DAO resources
+        getDao().prepare();
+        try {
+            super.process(reader);
+        } catch (Exception e) {
+            throw new CSVProcessException(e);
+        } finally {
+            // dispose DAO resources
+            getDao().dispose();
+        }
+    }
 
-	public void persist(SimpleFeature entity) throws IOException {
-		dao.persist(entity);
-	}
+    /**
+     * Get user/service parameters from the file name
+     */
+    public String processCSVFile(File file, char separator) throws IOException {
+        Map<String, String> fileParameters = CSVIngestUtils.getParametersFromName(file.getName());
+        if (fileParameters.containsKey(CSVIngestUtils.USER_FILE_PARAMETER)) {
+            setUserName(fileParameters.get(CSVIngestUtils.USER_FILE_PARAMETER));
+        }
+        if (fileParameters.containsKey(CSVIngestUtils.SERVICE_FILE_PARAMETER)) {
+            setServiceName(fileParameters.get(CSVIngestUtils.SERVICE_FILE_PARAMETER));
+        }
 
-	/**
-	 * @return the projection
-	 */
-	public int getProjection() {
-		return projection;
-	}
+        return super.processCSVFile(file, separator);
+    }
 
-	/**
-	 * @param projection the projection to set
-	 */
-	public void setProjection(int projection) {
-		this.projection = projection;
-	}
+    public void save(SimpleFeature entity) throws IOException {
+        dao.merge(entity);
+    }
 
-	// TODO: Generalize this configuration to allow the dynamic composition of 
-	// CSV ingestion without the class creation like CSVProductTypes1To3Processor or CSVProductTypes5Processor
-	@Override
-	public void setConfiguration(CSVProcessorConfiguration configuration) {
-		super.setConfiguration(configuration);
-		this.dao = new GenericFeatureDaoImpl(configuration.getOutputFeature().getDataStore(), configuration.getTypeName(),
-				getPkNames());
-		this.timeFormat = new TimeFormat(null, null, null, configuration.getTimeFormatConfiguration());
-		this.projection = configuration.getProjection();
-	}
+    // TODO: Generalize this configuration to allow the dynamic composition of
+    // CSV ingestion without the class creation like CSVProductTypes1To3Processor or CSVProductTypes5Processor
+    @Override
+    public void setConfiguration(CSVProcessorConfiguration configuration) {
+        super.setConfiguration(configuration);
+        this.dao = new GenericFeatureDaoImpl(configuration.getOutputFeature().getDataStore(),
+                configuration.getTypeName(), getPkNames());
+        this.timeFormat = new TimeFormat(null, null, null,
+                configuration.getTimeFormatConfiguration());
+        this.projection = configuration.getProjection();
+    }
+
+    /**
+     * @param dao the dao to set
+     */
+    public void setDao(GenericDAO<SimpleFeature, Long> dao) {
+        this.dao = dao;
+    }
+
+    /**
+     * @param projection the projection to set
+     */
+    public void setProjection(int projection) {
+        this.projection = projection;
+    }
+
+    /**
+     * @param serviceName the serviceName to set
+     */
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    /**
+     * @param userName the userName to set
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
 }

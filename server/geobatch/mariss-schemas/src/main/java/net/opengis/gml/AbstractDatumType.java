@@ -5,11 +5,11 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -17,13 +17,17 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-
 /**
- * A datum specifies the relationship of a coordinate system to the earth, thus creating a coordinate reference system. A datum uses a parameter or set of parameters that determine the location of the origin of the coordinate reference system. Each datum subtype can be associated with only specific types of coordinate systems. This abstract complexType shall not be used, extended, or restricted, in an Application Schema, to define a concrete subtype with a meaning equivalent to a concrete subtype specified in this document. 
+ * A datum specifies the relationship of a coordinate system to the earth, thus creating a coordinate reference system. A datum uses a parameter or
+ * set of parameters that determine the location of the origin of the coordinate reference system. Each datum subtype can be associated with only
+ * specific types of coordinate systems. This abstract complexType shall not be used, extended, or restricted, in an Application Schema, to define a
+ * concrete subtype with a meaning equivalent to a concrete subtype specified in this document.
  * 
- * <p>Java class for AbstractDatumType complex type.
+ * <p>
+ * Java class for AbstractDatumType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AbstractDatumType">
@@ -45,52 +49,53 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AbstractDatumType", propOrder = {
-    "datumID",
-    "remarks",
-    "anchorPoint",
-    "realizationEpoch",
-    "validArea",
-    "scope"
-})
-@XmlSeeAlso({
-    VerticalDatumType.class,
-    EngineeringDatumType.class,
-    ImageDatumType.class,
-    GeodeticDatumType.class,
-    TemporalDatumBaseType.class
-})
-public abstract class AbstractDatumType
-    extends AbstractDatumBaseType
-{
+@XmlType(name = "AbstractDatumType", propOrder = { "datumID", "remarks", "anchorPoint",
+        "realizationEpoch", "validArea", "scope" })
+@XmlSeeAlso({ VerticalDatumType.class, EngineeringDatumType.class, ImageDatumType.class,
+        GeodeticDatumType.class, TemporalDatumBaseType.class })
+public abstract class AbstractDatumType extends AbstractDatumBaseType {
 
     protected List<IdentifierType> datumID;
+
     protected StringOrRefType remarks;
+
     protected CodeType anchorPoint;
+
     @XmlSchemaType(name = "date")
     protected XMLGregorianCalendar realizationEpoch;
+
     protected ExtentType validArea;
+
     protected String scope;
 
     /**
-     * Set of alternative identifications of this datum. The first datumID, if any, is normally the primary identification code, and any others are aliases. Gets the value of the datumID property.
+     * Gets the value of the anchorPoint property.
+     * 
+     * @return possible object is {@link CodeType }
+     * 
+     */
+    public CodeType getAnchorPoint() {
+        return anchorPoint;
+    }
+
+    /**
+     * Set of alternative identifications of this datum. The first datumID, if any, is normally the primary identification code, and any others are
+     * aliases. Gets the value of the datumID property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the datumID property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the datumID property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getDatumID().add(newItem);
+     * getDatumID().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link IdentifierType }
+     * Objects of the following type(s) are allowed in the list {@link IdentifierType }
      * 
      * 
      */
@@ -102,123 +107,93 @@ public abstract class AbstractDatumType
     }
 
     /**
-     * Comments on this reference system, including source information. 
-     * 
-     * @return
-     *     possible object is
-     *     {@link StringOrRefType }
-     *     
-     */
-    public StringOrRefType getRemarks() {
-        return remarks;
-    }
-
-    /**
-     * Sets the value of the remarks property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link StringOrRefType }
-     *     
-     */
-    public void setRemarks(StringOrRefType value) {
-        this.remarks = value;
-    }
-
-    /**
-     * Gets the value of the anchorPoint property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link CodeType }
-     *     
-     */
-    public CodeType getAnchorPoint() {
-        return anchorPoint;
-    }
-
-    /**
-     * Sets the value of the anchorPoint property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link CodeType }
-     *     
-     */
-    public void setAnchorPoint(CodeType value) {
-        this.anchorPoint = value;
-    }
-
-    /**
      * Gets the value of the realizationEpoch property.
      * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     * @return possible object is {@link XMLGregorianCalendar }
+     * 
      */
     public XMLGregorianCalendar getRealizationEpoch() {
         return realizationEpoch;
     }
 
     /**
-     * Sets the value of the realizationEpoch property.
+     * Comments on this reference system, including source information.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    public void setRealizationEpoch(XMLGregorianCalendar value) {
-        this.realizationEpoch = value;
-    }
-
-    /**
-     * Gets the value of the validArea property.
+     * @return possible object is {@link StringOrRefType }
      * 
-     * @return
-     *     possible object is
-     *     {@link ExtentType }
-     *     
      */
-    public ExtentType getValidArea() {
-        return validArea;
-    }
-
-    /**
-     * Sets the value of the validArea property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ExtentType }
-     *     
-     */
-    public void setValidArea(ExtentType value) {
-        this.validArea = value;
+    public StringOrRefType getRemarks() {
+        return remarks;
     }
 
     /**
      * Gets the value of the scope property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getScope() {
         return scope;
     }
 
     /**
+     * Gets the value of the validArea property.
+     * 
+     * @return possible object is {@link ExtentType }
+     * 
+     */
+    public ExtentType getValidArea() {
+        return validArea;
+    }
+
+    /**
+     * Sets the value of the anchorPoint property.
+     * 
+     * @param value allowed object is {@link CodeType }
+     * 
+     */
+    public void setAnchorPoint(CodeType value) {
+        this.anchorPoint = value;
+    }
+
+    /**
+     * Sets the value of the realizationEpoch property.
+     * 
+     * @param value allowed object is {@link XMLGregorianCalendar }
+     * 
+     */
+    public void setRealizationEpoch(XMLGregorianCalendar value) {
+        this.realizationEpoch = value;
+    }
+
+    /**
+     * Sets the value of the remarks property.
+     * 
+     * @param value allowed object is {@link StringOrRefType }
+     * 
+     */
+    public void setRemarks(StringOrRefType value) {
+        this.remarks = value;
+    }
+
+    /**
      * Sets the value of the scope property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setScope(String value) {
         this.scope = value;
+    }
+
+    /**
+     * Sets the value of the validArea property.
+     * 
+     * @param value allowed object is {@link ExtentType }
+     * 
+     */
+    public void setValidArea(ExtentType value) {
+        this.validArea = value;
     }
 
 }

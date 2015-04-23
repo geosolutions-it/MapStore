@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Closeness of reported coordinate values to values accepted as or being true. 
+ * Closeness of reported coordinate values to values accepted as or being true.
  * 
- * <p>Java class for AbsoluteExternalPositionalAccuracyType complex type.
+ * <p>
+ * Java class for AbsoluteExternalPositionalAccuracyType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AbsoluteExternalPositionalAccuracyType">
@@ -36,12 +36,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AbsoluteExternalPositionalAccuracyType", propOrder = {
-    "result"
-})
-public class AbsoluteExternalPositionalAccuracyType
-    extends AbstractPositionalAccuracyType
-{
+@XmlType(name = "AbsoluteExternalPositionalAccuracyType", propOrder = { "result" })
+public class AbsoluteExternalPositionalAccuracyType extends AbstractPositionalAccuracyType {
 
     @XmlElement(required = true)
     protected MeasureType result;
@@ -49,10 +45,8 @@ public class AbsoluteExternalPositionalAccuracyType
     /**
      * Gets the value of the result property.
      * 
-     * @return
-     *     possible object is
-     *     {@link MeasureType }
-     *     
+     * @return possible object is {@link MeasureType }
+     * 
      */
     public MeasureType getResult() {
         return result;
@@ -61,10 +55,8 @@ public class AbsoluteExternalPositionalAccuracyType
     /**
      * Sets the value of the result property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link MeasureType }
-     *     
+     * @param value allowed object is {@link MeasureType }
+     * 
      */
     public void setResult(MeasureType value) {
         this.result = value;

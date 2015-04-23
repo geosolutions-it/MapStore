@@ -5,20 +5,20 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * A discrete coverage type whose domain is defined by a collection of surface patches (includes polygons, triangles, rectangles, etc).
  * 
- * <p>Java class for MultiSurfaceCoverageType complex type.
+ * <p>
+ * Java class for MultiSurfaceCoverageType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="MultiSurfaceCoverageType">
@@ -40,9 +40,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MultiSurfaceCoverageType")
-public class MultiSurfaceCoverageType
-    extends AbstractDiscreteCoverageType
-{
-
+public class MultiSurfaceCoverageType extends AbstractDiscreteCoverageType {
 
 }

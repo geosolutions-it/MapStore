@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -16,14 +15,15 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-
 /**
- * Number with a scale.  
- *       The value of uom (Units Of Measure) attribute is a reference to a Reference System for the amount, either a ratio or position scale. 
+ * Number with a scale. The value of uom (Units Of Measure) attribute is a reference to a Reference System for the amount, either a ratio or position
+ * scale.
  * 
- * <p>Java class for MeasureType complex type.
+ * <p>
+ * Java class for MeasureType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="MeasureType">
@@ -38,26 +38,27 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MeasureType", propOrder = {
-    "value"
-})
-@XmlSeeAlso({
-    VolumeType.class,
-    LengthType.class,
-    ScaleType.class,
-    AngleType.class,
-    GridLengthType.class,
-    SpeedType.class,
-    AreaType.class,
-    TimeType.class
-})
+@XmlType(name = "MeasureType", propOrder = { "value" })
+@XmlSeeAlso({ VolumeType.class, LengthType.class, ScaleType.class, AngleType.class,
+        GridLengthType.class, SpeedType.class, AreaType.class, TimeType.class })
 public class MeasureType {
 
     @XmlValue
     protected double value;
+
     @XmlAttribute(required = true)
     @XmlSchemaType(name = "anyURI")
     protected String uom;
+
+    /**
+     * Gets the value of the uom property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getUom() {
+        return uom;
+    }
 
     /**
      * Gets the value of the value property.
@@ -68,35 +69,21 @@ public class MeasureType {
     }
 
     /**
+     * Sets the value of the uom property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setUom(String value) {
+        this.uom = value;
+    }
+
+    /**
      * Sets the value of the value property.
      * 
      */
     public void setValue(double value) {
         this.value = value;
-    }
-
-    /**
-     * Gets the value of the uom property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getUom() {
-        return uom;
-    }
-
-    /**
-     * Sets the value of the uom property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setUom(String value) {
-        this.uom = value;
     }
 
 }

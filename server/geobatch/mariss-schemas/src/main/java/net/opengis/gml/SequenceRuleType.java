@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,11 +13,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-
 /**
- * <p>Java class for SequenceRuleType complex type.
+ * <p>
+ * Java class for SequenceRuleType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="SequenceRuleType">
@@ -33,62 +33,54 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SequenceRuleType", propOrder = {
-    "value"
-})
+@XmlType(name = "SequenceRuleType", propOrder = { "value" })
 public class SequenceRuleType {
 
     @XmlValue
     protected SequenceRuleNames value;
+
     @XmlAttribute
     protected String order;
 
     /**
-     * List of codes (adopted from ISO 19123 Annex C) that identifies the rule for traversing a grid to correspond with the sequence of members of the rangeSet.
-     * 
-     * @return
-     *     possible object is
-     *     {@link SequenceRuleNames }
-     *     
-     */
-    public SequenceRuleNames getValue() {
-        return value;
-    }
-
-    /**
-     * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link SequenceRuleNames }
-     *     
-     */
-    public void setValue(SequenceRuleNames value) {
-        this.value = value;
-    }
-
-    /**
      * Gets the value of the order property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getOrder() {
         return order;
     }
 
     /**
+     * List of codes (adopted from ISO 19123 Annex C) that identifies the rule for traversing a grid to correspond with the sequence of members of the
+     * rangeSet.
+     * 
+     * @return possible object is {@link SequenceRuleNames }
+     * 
+     */
+    public SequenceRuleNames getValue() {
+        return value;
+    }
+
+    /**
      * Sets the value of the order property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setOrder(String value) {
         this.order = value;
+    }
+
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value allowed object is {@link SequenceRuleNames }
+     * 
+     */
+    public void setValue(SequenceRuleNames value) {
+        this.value = value;
     }
 
 }

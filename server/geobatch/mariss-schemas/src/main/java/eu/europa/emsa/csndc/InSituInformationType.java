@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for InSituInformationType complex type.
+ * <p>
+ * Java class for InSituInformationType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="InSituInformationType">
@@ -36,86 +36,73 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "InSituInformationType", propOrder = {
-    "inSituValidation",
-    "inSituValidationBody",
-    "notes"
-})
+@XmlType(name = "InSituInformationType", propOrder = { "inSituValidation", "inSituValidationBody",
+        "notes" })
 public class InSituInformationType {
 
     @XmlElement(required = true)
     protected InSituValidationType inSituValidation;
+
     @XmlElement(required = true)
     protected String inSituValidationBody;
+
     protected String notes;
 
     /**
      * Gets the value of the inSituValidation property.
      * 
-     * @return
-     *     possible object is
-     *     {@link InSituValidationType }
-     *     
+     * @return possible object is {@link InSituValidationType }
+     * 
      */
     public InSituValidationType getInSituValidation() {
         return inSituValidation;
     }
 
     /**
-     * Sets the value of the inSituValidation property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link InSituValidationType }
-     *     
-     */
-    public void setInSituValidation(InSituValidationType value) {
-        this.inSituValidation = value;
-    }
-
-    /**
      * Gets the value of the inSituValidationBody property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getInSituValidationBody() {
         return inSituValidationBody;
     }
 
     /**
-     * Sets the value of the inSituValidationBody property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setInSituValidationBody(String value) {
-        this.inSituValidationBody = value;
-    }
-
-    /**
      * Gets the value of the notes property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getNotes() {
         return notes;
     }
 
     /**
+     * Sets the value of the inSituValidation property.
+     * 
+     * @param value allowed object is {@link InSituValidationType }
+     * 
+     */
+    public void setInSituValidation(InSituValidationType value) {
+        this.inSituValidation = value;
+    }
+
+    /**
+     * Sets the value of the inSituValidationBody property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setInSituValidationBody(String value) {
+        this.inSituValidationBody = value;
+    }
+
+    /**
      * Sets the value of the notes property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setNotes(String value) {
         this.notes = value;

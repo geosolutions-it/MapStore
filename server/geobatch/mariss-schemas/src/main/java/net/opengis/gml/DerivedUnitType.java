@@ -5,23 +5,26 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Definition of a unit of measure which is defined through algebraic combination of more primitive units, which are usually base units from a particular system of units. Derived units based directly on base units are usually preferred for quantities other than the base units or fundamental quantities within a system.  If a derived unit is not the preferred unit, the ConventionalUnit element should be used instead.
+ * Definition of a unit of measure which is defined through algebraic combination of more primitive units, which are usually base units from a
+ * particular system of units. Derived units based directly on base units are usually preferred for quantities other than the base units or
+ * fundamental quantities within a system. If a derived unit is not the preferred unit, the ConventionalUnit element should be used instead.
  * 
- * <p>Java class for DerivedUnitType complex type.
+ * <p>
+ * Java class for DerivedUnitType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="DerivedUnitType">
@@ -38,12 +41,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DerivedUnitType", propOrder = {
-    "derivationUnitTerm"
-})
-public class DerivedUnitType
-    extends UnitDefinitionType
-{
+@XmlType(name = "DerivedUnitType", propOrder = { "derivationUnitTerm" })
+public class DerivedUnitType extends UnitDefinitionType {
 
     @XmlElement(required = true)
     protected List<DerivationUnitTermType> derivationUnitTerm;
@@ -52,21 +51,19 @@ public class DerivedUnitType
      * Gets the value of the derivationUnitTerm property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the derivationUnitTerm property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the derivationUnitTerm property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getDerivationUnitTerm().add(newItem);
+     * getDerivationUnitTerm().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link DerivationUnitTermType }
+     * Objects of the following type(s) are allowed in the list {@link DerivationUnitTermType }
      * 
      * 
      */

@@ -5,24 +5,25 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Describes main results of the Oil Spill Analysis performed on the scene
  * 
- * <p>Java class for OilSpillsType complex type.
+ * <p>
+ * Java class for OilSpillsType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="OilSpillsType">
@@ -40,12 +41,11 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "OilSpillsType", propOrder = {
-    "oilSpillReference"
-})
+@XmlType(name = "OilSpillsType", propOrder = { "oilSpillReference" })
 public class OilSpillsType {
 
     protected List<OilSpillReferenceType> oilSpillReference;
+
     @XmlAttribute(required = true)
     protected BigInteger total;
 
@@ -53,21 +53,19 @@ public class OilSpillsType {
      * List of references to the Oil Spills detected in the scene Gets the value of the oilSpillReference property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the oilSpillReference property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the oilSpillReference property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getOilSpillReference().add(newItem);
+     * getOilSpillReference().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link OilSpillReferenceType }
+     * Objects of the following type(s) are allowed in the list {@link OilSpillReferenceType }
      * 
      * 
      */
@@ -81,10 +79,8 @@ public class OilSpillsType {
     /**
      * Gets the value of the total property.
      * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     * @return possible object is {@link BigInteger }
+     * 
      */
     public BigInteger getTotal() {
         return total;
@@ -93,10 +89,8 @@ public class OilSpillsType {
     /**
      * Sets the value of the total property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     * @param value allowed object is {@link BigInteger }
+     * 
      */
     public void setTotal(BigInteger value) {
         this.total = value;

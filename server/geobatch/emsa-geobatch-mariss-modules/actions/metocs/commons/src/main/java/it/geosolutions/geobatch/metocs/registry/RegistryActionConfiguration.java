@@ -34,10 +34,6 @@ import java.util.List;
  */
 public class RegistryActionConfiguration extends ActionConfiguration implements Configuration {
 
-    protected RegistryActionConfiguration(String id, String name, String description) {
-        super(id, name, description);
-    }
-
     private String workingDirectory;
 
     private String crs;
@@ -76,198 +72,14 @@ public class RegistryActionConfiguration extends ActionConfiguration implements 
 
     private String metocHarvesterXMLTemplatePath;
 
-
-    /**
-     * @return the workingDirectory
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
-    }
-
-    /**
-     * @param workingDirectory
-     *            the workingDirectory to set
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
-    }
-
-    public String getCrs() {
-        return crs;
-    }
-
-    public void setCrs(String crs) {
-        this.crs = crs;
-    }
-
-    public String getEnvelope() {
-        return envelope;
-    }
-
-    public void setEnvelope(String envelope) {
-        this.envelope = envelope;
-    }
-
-    public String getGeoserverPWD() {
-        return geoserverPWD;
-    }
-
-    public void setGeoserverPWD(String geoserverPWD) {
-        this.geoserverPWD = geoserverPWD;
-    }
-
-    public String getGeoserverUID() {
-        return geoserverUID;
-    }
-
-    public void setGeoserverUID(String geoserverUID) {
-        this.geoserverUID = geoserverUID;
-    }
-
-    public String getGeoserverURL() {
-        return geoserverURL;
-    }
-
-    public void setGeoserverURL(String geoserverURL) {
-        this.geoserverURL = geoserverURL;
-    }
-
-    public String getStoreFilePrefix() {
-        return storeFilePrefix;
-    }
-
-    public void setStoreFilePrefix(String storeFilePrefix) {
-        this.storeFilePrefix = storeFilePrefix;
-    }
-
-    public List<String> getStyles() {
-        return styles;
-    }
-
-    public void setStyles(List<String> styles) {
-        this.styles = styles;
-    }
-
-    public String getConfigId() {
-        return configId;
-    }
-
-    public void setConfigId(String configId) {
-        this.configId = configId;
-    }
-
-    public String getDatatype() {
-        return datatype;
-    }
-
-    public void setDatatype(String datatype) {
-        this.datatype = datatype;
-    }
-
-    public String getDefaultNamespace() {
-        return defaultNamespace;
-    }
-
-    public void setDefaultNamespace(String defaultNamespace) {
-        this.defaultNamespace = defaultNamespace;
-    }
-
-    public String getDefaultNamespaceUri() {
-        return defaultNamespaceUri;
-    }
-
-    public void setDefaultNamespaceUri(String defaultNamespaceUri) {
-        this.defaultNamespaceUri = defaultNamespaceUri;
-    }
-
-    public String getDefaultStyle() {
-        return defaultStyle;
-    }
-
-    public void setDefaultStyle(String defaultStyle) {
-        this.defaultStyle = defaultStyle;
-    }
-
-    public String getWmsPath() {
-        return wmsPath;
-    }
-
-    public void setWmsPath(String wmsPath) {
-        this.wmsPath = wmsPath;
-    }
-
-    public String getDataTransferMethod() {
-        return dataTransferMethod;
-    }
-
-    public void setDataTransferMethod(String dataTransferMethod) {
-        this.dataTransferMethod = dataTransferMethod;
-    }
-
-    /**
-     * @param metocDictionaryPath
-     *            the metocDictionaryPath to set
-     */
-    public void setMetocDictionaryPath(String metocDictionaryPath) {
-        this.metocDictionaryPath = metocDictionaryPath;
-    }
-
-    /**
-     * @return the metocDictionaryPath
-     */
-    public String getMetocDictionaryPath() {
-        return metocDictionaryPath;
-    }
-
-    /**
-     * @param metocHarvesterXMLTemplatePath
-     *            the metocHarvesterXMLTemplatePath to set
-     */
-    public void setMetocHarvesterXMLTemplatePath(String metocHarvesterXMLTemplatePath) {
-        this.metocHarvesterXMLTemplatePath = metocHarvesterXMLTemplatePath;
-    }
-
-    /**
-     * @return the metocHarvesterXMLTemplatePath
-     */
-    public String getMetocHarvesterXMLTemplatePath() {
-        return metocHarvesterXMLTemplatePath;
-    }
-
-    /**
-     * @param registryURL
-     *            the registryURL to set
-     */
-    public void setRegistryURL(String registryURL) {
-        this.registryURL = registryURL;
-    }
-
-    /**
-     * @return the registryURL
-     */
-    public String getRegistryURL() {
-        return registryURL;
-    }
-
-    /**
-     * @param providerURL
-     *            the providerURL to set
-     */
-    public void setProviderURL(String providerURL) {
-        this.providerURL = providerURL;
-    }
-
-    /**
-     * @return the providerURL
-     */
-    public String getProviderURL() {
-        return providerURL;
+    protected RegistryActionConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     @Override
     public RegistryActionConfiguration clone() {
-        final RegistryActionConfiguration configuration = new RegistryActionConfiguration(super
-                .getId(), super.getName(), super.getDescription());
+        final RegistryActionConfiguration configuration = new RegistryActionConfiguration(
+                super.getId(), super.getName(), super.getDescription());
         configuration.setCrs(crs);
         configuration.setDataTransferMethod(dataTransferMethod);
         configuration.setDatatype(datatype);
@@ -289,6 +101,188 @@ public class RegistryActionConfiguration extends ActionConfiguration implements 
         configuration.setMetocHarvesterXMLTemplatePath(metocHarvesterXMLTemplatePath);
 
         return configuration;
+    }
+
+    public String getConfigId() {
+        return configId;
+    }
+
+    public String getCrs() {
+        return crs;
+    }
+
+    public String getDataTransferMethod() {
+        return dataTransferMethod;
+    }
+
+    public String getDatatype() {
+        return datatype;
+    }
+
+    public String getDefaultNamespace() {
+        return defaultNamespace;
+    }
+
+    public String getDefaultNamespaceUri() {
+        return defaultNamespaceUri;
+    }
+
+    public String getDefaultStyle() {
+        return defaultStyle;
+    }
+
+    public String getEnvelope() {
+        return envelope;
+    }
+
+    public String getGeoserverPWD() {
+        return geoserverPWD;
+    }
+
+    public String getGeoserverUID() {
+        return geoserverUID;
+    }
+
+    public String getGeoserverURL() {
+        return geoserverURL;
+    }
+
+    /**
+     * @return the metocDictionaryPath
+     */
+    public String getMetocDictionaryPath() {
+        return metocDictionaryPath;
+    }
+
+    /**
+     * @return the metocHarvesterXMLTemplatePath
+     */
+    public String getMetocHarvesterXMLTemplatePath() {
+        return metocHarvesterXMLTemplatePath;
+    }
+
+    /**
+     * @return the providerURL
+     */
+    public String getProviderURL() {
+        return providerURL;
+    }
+
+    /**
+     * @return the registryURL
+     */
+    public String getRegistryURL() {
+        return registryURL;
+    }
+
+    public String getStoreFilePrefix() {
+        return storeFilePrefix;
+    }
+
+    public List<String> getStyles() {
+        return styles;
+    }
+
+    public String getWmsPath() {
+        return wmsPath;
+    }
+
+    /**
+     * @return the workingDirectory
+     */
+    public String getWorkingDirectory() {
+        return workingDirectory;
+    }
+
+    public void setConfigId(String configId) {
+        this.configId = configId;
+    }
+
+    public void setCrs(String crs) {
+        this.crs = crs;
+    }
+
+    public void setDataTransferMethod(String dataTransferMethod) {
+        this.dataTransferMethod = dataTransferMethod;
+    }
+
+    public void setDatatype(String datatype) {
+        this.datatype = datatype;
+    }
+
+    public void setDefaultNamespace(String defaultNamespace) {
+        this.defaultNamespace = defaultNamespace;
+    }
+
+    public void setDefaultNamespaceUri(String defaultNamespaceUri) {
+        this.defaultNamespaceUri = defaultNamespaceUri;
+    }
+
+    public void setDefaultStyle(String defaultStyle) {
+        this.defaultStyle = defaultStyle;
+    }
+
+    public void setEnvelope(String envelope) {
+        this.envelope = envelope;
+    }
+
+    public void setGeoserverPWD(String geoserverPWD) {
+        this.geoserverPWD = geoserverPWD;
+    }
+
+    public void setGeoserverUID(String geoserverUID) {
+        this.geoserverUID = geoserverUID;
+    }
+
+    public void setGeoserverURL(String geoserverURL) {
+        this.geoserverURL = geoserverURL;
+    }
+
+    /**
+     * @param metocDictionaryPath the metocDictionaryPath to set
+     */
+    public void setMetocDictionaryPath(String metocDictionaryPath) {
+        this.metocDictionaryPath = metocDictionaryPath;
+    }
+
+    /**
+     * @param metocHarvesterXMLTemplatePath the metocHarvesterXMLTemplatePath to set
+     */
+    public void setMetocHarvesterXMLTemplatePath(String metocHarvesterXMLTemplatePath) {
+        this.metocHarvesterXMLTemplatePath = metocHarvesterXMLTemplatePath;
+    }
+
+    /**
+     * @param providerURL the providerURL to set
+     */
+    public void setProviderURL(String providerURL) {
+        this.providerURL = providerURL;
+    }
+
+    /**
+     * @param registryURL the registryURL to set
+     */
+    public void setRegistryURL(String registryURL) {
+        this.registryURL = registryURL;
+    }
+
+    public void setStoreFilePrefix(String storeFilePrefix) {
+        this.storeFilePrefix = storeFilePrefix;
+    }
+
+    public void setStyles(List<String> styles) {
+        this.styles = styles;
+    }
+
+    public void setWmsPath(String wmsPath) {
+        this.wmsPath = wmsPath;
+    }
+
+    /**
+     * @param workingDirectory the workingDirectory to set
+     */
+    public void setWorkingDirectory(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
     }
 
     @Override

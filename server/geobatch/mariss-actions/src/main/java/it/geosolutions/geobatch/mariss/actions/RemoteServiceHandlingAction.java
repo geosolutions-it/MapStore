@@ -48,8 +48,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.regex.Pattern;
 
@@ -90,23 +88,8 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
      * 
      */
     private ServiceDAO serviceDAO;
-    
-    //private Map<String, BaseAction<EventObject>> actionMap = new HashMap<String, BaseAction<EventObject>>();
 
-    /**
-     * @param serviceDAO the serviceDAO to set
-     */
-    @Resource(name = "geoBatchMARISSServiceDAO")
-    public void setServiceDAO(ServiceDAO serviceDAO) {
-        this.serviceDAO = serviceDAO;
-    }
-
-    /**
-     * @return the serviceDAO
-     */
-    public ServiceDAO getServiceDAO() {
-        return serviceDAO;
-    }
+    // private Map<String, BaseAction<EventObject>> actionMap = new HashMap<String, BaseAction<EventObject>>();
 
     public RemoteServiceHandlingAction(final RemoteServiceHandlingConfiguration configuration)
             throws IOException {
@@ -138,64 +121,101 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
     }
 
     /**
-     * Execute process
+     * Check if exists a file on a remote
+     * 
+     * @param serverProtocol
+     * @param serverUser
+     * @param serverHost
+     * @param serverPWD
+     * @param serverPort
+     * @param path
+     * @param fileName
+     * @param connectMode
+     * @param timeout
+     * @return
+     * @throws IOException
+     * @throws FTPException
+     * @throws ParseException
      */
-    public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
+    private boolean checkIfExists(RemoteBrowserProtocol serverProtocol, String serverUser,
+            String serverHost, String serverPWD, int serverPort, String path, String fileName,
+            FTPConnectMode connectMode, int timeout) throws IOException, FTPException,
+            ParseException {
+        return RemoteBrowserUtils.checkIfExists(serverProtocol, serverUser, serverHost, serverPWD,
+                serverPort, path, fileName, connectMode, timeout);
+    }
 
-        // return object
-        final Queue<EventObject> ret = new LinkedList<EventObject>();
+    /**
+     * Check if a file exists
+     * 
+     * @param inputDir
+     * @param fileName
+     * @return
+     */
+    private boolean checkIfExists(String inputDir, String fileName) {
+        File file = new File(inputDir + LOCAL_SEPARATOR + fileName);
+        return file.exists();
+    }
 
-        while (events.size() > 0) {
-            final EventObject ev;
-            try {
-                if ((ev = events.remove()) != null) {
-                    if (LOGGER.isTraceEnabled()) {
-                        LOGGER.trace("Working on incoming event: " + ev.getSource());
-                    }
-                    if (ev instanceof FileSystemEvent) {
-                        FileSystemEvent fileEvent = (FileSystemEvent) ev;
-                        @SuppressWarnings("unused")
-                        File file = fileEvent.getSource();
-                        // Don't read configuration for the file, just
-                        // this.outputfeature configuration
-                        DataStore ds = FeatureConfigurationUtil.createDataStore(configuration
-                                .getOutputFeature());
-                        if (ds == null) {
-                            throw new ActionException(this, "Can't find datastore ");
-                        }
-                        try {
-                            if (!(ds instanceof JDBCDataStore)) {
-                                throw new ActionException(this, "Bad Datastore type "
-                                        + ds.getClass().getName());
-                            }
-                            JDBCDataStore dataStore = (JDBCDataStore) ds;
-                            dataStore.setExposePrimaryKeyColumns(true);
-                            // return next events configurations
-                            Queue<EventObject> resultEvents = doProcess(configuration, dataStore);
-                            ret.addAll(resultEvents);
-                        } finally {
-                            ds.dispose();
-                        }
-                    }
+    /**
+     * Move the file to the success or fail folder once it was handled
+     * 
+     * @param availableProducts
+     * @param error
+     * @param relativeFolder
+     * @param localRelativeFolder
+     * @param serverResultProtocol
+     * @param serverResultUser
+     * @param serverResultPWD
+     * @param serverResultHost
+     * @param serverResultPort
+     * @param resultConnectMode
+     * @param resultTimeout
+     * @return
+     * @throws IOException
+     * @throws FTPException
+     */
+    private List<String> colelctPostProcessingFiles(List<String> availableProducts,
+            boolean error,
+            String productsFtpFolder,
+            String localRelativeFolder, // result remote
+            RemoteBrowserProtocol serverResultProtocol, String serverResultUser,
+            String serverResultPWD, String serverResultHost, int serverResultPort,
+            FTPConnectMode resultConnectMode, int resultTimeout) throws IOException, FTPException {
 
-                    // add the event to the return
-                    ret.add(ev);
+        List<String> products = new ArrayList<String>();
 
-                } else {
-                    if (LOGGER.isErrorEnabled()) {
-                        LOGGER.error("Encountered a NULL event: SKIPPING...");
-                    }
-                    continue;
-                }
-            } catch (Exception ioe) {
-                final String message = "Unable to produce the output: " + ioe.getLocalizedMessage();
-                if (LOGGER.isErrorEnabled())
-                    LOGGER.error(message, ioe);
+        for (String productFile : availableProducts) {
 
-                throw new ActionException(this, message);
+            if (productFile.equalsIgnoreCase("packageready.txt"))
+                continue;
+
+            // Eligible for post processing.
+            final File inputFile = new File(productsFtpFolder, productFile);
+            String targetPath = null;
+            if (!error) {
+                // success: put on success remote dir
+                targetPath = configuration.getSuccesPath() + LOCAL_SEPARATOR + localRelativeFolder;
+            } else {
+                // fail: put on fail remote dir
+                targetPath = configuration.getFailPath() + LOCAL_SEPARATOR + localRelativeFolder;
             }
+
+            // put the file in the target path
+            RemoteBrowserUtils.putFile(configuration.isStoreLocal() ? RemoteBrowserProtocol.local
+                    : serverResultProtocol, serverResultUser, serverResultHost, serverResultPWD,
+                    serverResultPort, targetPath + FTP_SEPARATOR + inputFile.getName(), inputFile
+                            .getAbsolutePath(), resultConnectMode, resultTimeout);
+
+            // add the targetFile to the list
+            products.add(inputFile.getAbsolutePath());
+
+            // <do not> clean downloaded file in the input
+            // directory
+            // inputFile.delete();
         }
-        return ret;
+
+        return products;
     }
 
     /**
@@ -290,6 +310,314 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
     }
 
     /**
+     * Execute process
+     */
+    public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
+
+        // return object
+        final Queue<EventObject> ret = new LinkedList<EventObject>();
+
+        while (events.size() > 0) {
+            final EventObject ev;
+            try {
+                if ((ev = events.remove()) != null) {
+                    if (LOGGER.isTraceEnabled()) {
+                        LOGGER.trace("Working on incoming event: " + ev.getSource());
+                    }
+                    if (ev instanceof FileSystemEvent) {
+                        FileSystemEvent fileEvent = (FileSystemEvent) ev;
+                        @SuppressWarnings("unused")
+                        File file = fileEvent.getSource();
+                        // Don't read configuration for the file, just
+                        // this.outputfeature configuration
+                        DataStore ds = FeatureConfigurationUtil.createDataStore(configuration
+                                .getOutputFeature());
+                        if (ds == null) {
+                            throw new ActionException(this, "Can't find datastore ");
+                        }
+                        try {
+                            if (!(ds instanceof JDBCDataStore)) {
+                                throw new ActionException(this, "Bad Datastore type "
+                                        + ds.getClass().getName());
+                            }
+                            JDBCDataStore dataStore = (JDBCDataStore) ds;
+                            dataStore.setExposePrimaryKeyColumns(true);
+                            // return next events configurations
+                            Queue<EventObject> resultEvents = doProcess(configuration, dataStore);
+                            ret.addAll(resultEvents);
+                        } finally {
+                            ds.dispose();
+                        }
+                    }
+
+                    // add the event to the return
+                    ret.add(ev);
+
+                } else {
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error("Encountered a NULL event: SKIPPING...");
+                    }
+                    continue;
+                }
+            } catch (Exception ioe) {
+                final String message = "Unable to produce the output: " + ioe.getLocalizedMessage();
+                if (LOGGER.isErrorEnabled())
+                    LOGGER.error(message, ioe);
+
+                throw new ActionException(this, message);
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Get the services by users from the remote server (first and second level in the tree)
+     * 
+     * @param serverProtocol
+     * @param userName
+     * @param password
+     * @param host
+     * @param port
+     * @param rootPath
+     * @param connectMode
+     * @param timeout
+     * @param pattern
+     * @return
+     */
+    protected Map<String, List<Service>> getCurrentServices(RemoteBrowserProtocol serverProtocol,
+            String userName, String password, String host, int port, String rootPath,
+            FTPConnectMode connectMode, int timeout, Pattern pattern) {
+        Map<String, List<Service>> servicesByUser = null;
+
+        try {
+            servicesByUser = new HashMap<String, List<Service>>();
+
+            // obtain users
+            List<String> users = RemoteBrowserUtils.ls(serverProtocol, userName, password, host,
+                    port, rootPath, connectMode, timeout, pattern, true);
+
+            // For each file on the remote directory
+            for (String user : users) {
+
+                /*
+                 * List<String> services = RemoteBrowserUtils.ls(serverProtocol, userName, password, host, port, rootPath + FTP_SEPARATOR + user,
+                 * connectMode, timeout, pattern, true);
+                 * 
+                 * servicesByUser.put(user, services);
+                 */
+
+                servicesByUser.put(user, this.serviceDAO.findByUser(user));
+            }
+        } catch (Exception e) {
+            LOGGER.error("Error browsing remote server", e);
+        }
+        return servicesByUser;
+    }
+
+    /**
+     * Obtain post process events for CSV files
+     * 
+     * @param pendingProductFiles
+     * @param dataStore
+     * @param user
+     * @param service
+     * @param relativeFolder
+     * @param serverResultProtocol
+     * @param serverResultUser
+     * @param serverResultPWD
+     * @param serverResultHost
+     * @param serverResultPort
+     * @param resultConnectMode
+     * @param resultTimeout
+     * @param usersSize
+     * @param userIndex
+     * @param serviceSize
+     * @param serviceIndex
+     * @param serviceFoldersSize
+     * @param serviceFolderIndex
+     * @param actionMap
+     * @return
+     * @throws IOException
+     * @throws FTPException
+     */
+    private Collection<? extends EventObject> getPostProcessEvents(
+            List<String> pendingProductFiles,
+            DataStore dataStore,
+            String user,
+            Service service,
+            String relativeFolder,
+            // result remote
+            RemoteBrowserProtocol serverResultProtocol, String serverResultUser,
+            String serverResultPWD, String serverResultHost, int serverResultPort,
+            FTPConnectMode resultConnectMode, int resultTimeout, int usersSize, int userIndex,
+            int serviceSize, int serviceIndex, int serviceFoldersSize, int serviceFolderIndex,
+            Collection<BaseAction<EventObject>> actionMap) throws IOException, FTPException {
+
+        Queue<EventObject> resultList = new LinkedList<EventObject>();
+
+        // check if each CSV file type 1 to 3 CSV has also a CSV file type 5
+        List<String> failFiles = DataPackageIngestionProcessor.checkCSVFiles(pendingProductFiles);
+
+        // Copy to CSV ingestion path and pre process each file
+        for (String filePath : pendingProductFiles) {
+            boolean error = false;
+            String msg = null;
+            File inputFile = new File(filePath);
+            // copy to target folder
+            if (failFiles.contains(filePath)) {
+                // not copy to CSV ingestion
+                LOGGER.error("Error processing the CSV " + filePath
+                        + ". Another CSV file is not included in the package");
+                error = true;
+            } else {
+                try {
+                    String csvFileName = CSVIngestUtils.getUserServiceFileName(inputFile.getName(),
+                            user, service.getServiceId());
+                    File targetFile = new File(relativeFolder + File.separator + csvFileName);
+                    FileUtils.copyFile(inputFile, targetFile);
+                    FileSystemEvent event = new FileSystemEvent(targetFile,
+                            FileSystemEventType.FILE_ADDED);
+                    msg = "Processed " + inputFile + ". Check the CSV ingestion related";
+                    resultList.add(event);
+                } catch (IOException e) {
+                    LOGGER.error("Error processing acquisition list ingestion", e);
+                    error = true;
+                }
+            }
+            // Post process.
+            if (!actionMap.isEmpty()) {
+                // Simulating a sequential flow
+                Queue<EventObject> events = new ArrayBlockingQueue<EventObject>(1000000);
+                events.add(new FileSystemEvent(inputFile, FileSystemEventType.FILE_ADDED));
+                for (BaseAction<EventObject> action : actionMap) {
+                    try {
+                        events.addAll(action.execute(events));
+                    } catch (ActionException e) {
+                        LOGGER.error(e.getMessage(), e);
+                    }
+                }
+                // Filling the ResultList
+                resultList.addAll(events);
+            }
+
+            /*
+             * colelctPostProcessingFiles(inputFile, error, relativeFolder, // result remote serverResultProtocol, serverResultUser, serverResultPWD,
+             * serverResultHost, serverResultPort, resultConnectMode, resultTimeout);
+             */
+
+            updateProgress(usersSize, userIndex, serviceSize, serviceIndex, serviceFoldersSize,
+                    serviceFolderIndex, null, null, error, msg, inputFile.getAbsolutePath());
+        }
+
+        return resultList;
+    }
+
+    /**
+     * Call to known proccess for a file in a service folder
+     * 
+     * @param dataStore
+     * @param user
+     * @param service
+     * @param inputFile
+     * @param folder
+     * @param resultList
+     * @return
+     */
+    private Boolean getProcessEvents(DataStore dataStore, String user, Service service,
+            File inputFile, String folder, Queue<EventObject> resultList) {
+
+        Boolean packageReady = Boolean.FALSE;
+        String msg = null;
+
+        if ("AOI".equals(service.getStatus()) && ACQ_LIST_FOLDER.equals(folder)) {
+
+            // copy to target folder
+
+            try {
+
+                final String csvFileName = CSVIngestUtils.getUserServiceFileName(
+                        inputFile.getName(), user, service.getServiceId());
+
+                File targetFile = new File(getTempDir().getAbsolutePath() + File.separator + folder
+                        + File.separator + csvFileName);
+
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("inputFile: [" + inputFile.getAbsolutePath() + "] - targetFile: ["
+                            + targetFile.getAbsolutePath() + "]");
+                    LOGGER.debug("folder: [" + folder + "] - file: [" + csvFileName + "]");
+                }
+
+                if (!targetFile.exists())
+                    FileUtils.copyFile(inputFile, targetFile);
+
+                FileSystemEvent event = new FileSystemEvent(targetFile,
+                        FileSystemEventType.FILE_ADDED);
+
+                msg = "Processed " + inputFile + ". Check the CSV ingestion related";
+
+                // update the service status
+                this.serviceDAO.updateServiceStatus(service, "ACQUISITIONLIST");
+                resultList.add(event);
+            } catch (IOException e) {
+                msg = "Error processing acquisition list ingestion";
+                LOGGER.error(msg, e);
+            }
+        } else if ("ACQUISITIONPLAN".equals(service.getStatus()) && PRODUCTS_FOLDER.equals(folder)) {
+
+            final String filePath = inputFile.getAbsolutePath();
+
+            if (inputFile.getName().equalsIgnoreCase("packageready.txt")) {
+                try {
+
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("PRODUCTS READY folder: [" + folder + "] - file: [" + filePath
+                                + "]");
+                    }
+
+                    File targetFile = new File(getTempDir().getAbsolutePath() + File.separator
+                            + folder + File.separator + inputFile.getName());
+
+                    if (!targetFile.exists())
+                        FileUtils.copyFile(inputFile, targetFile);
+
+                    FileSystemEvent event = new FileSystemEvent(targetFile,
+                            FileSystemEventType.FILE_ADDED);
+
+                    // update the service status
+                    this.serviceDAO.updateServiceStatus(service, "PRODUCTS");
+                    packageReady = Boolean.TRUE;
+                    resultList.add(event);
+                } catch (IOException e) {
+                    msg = "Error processing MARISS product ingestion";
+                    LOGGER.error(msg, e);
+                }
+            }
+
+            /*
+             * 
+             * if (filePath.endsWith(".csv")) { pendingCSVFiles.add(filePath); msg = "Pending " + inputFile +
+             * " for checks at the end of the service files."; } else { try { String newFileName =
+             * CSVIngestUtils.getUserServiceFileName(inputFile.getName(), user, service.getServiceId()); File targetFile = new
+             * File(getTempDir().getAbsolutePath() + File.separator + folder + File.separator + newFileName); if (LOGGER.isDebugEnabled()) {
+             * LOGGER.debug("folder: [" + folder + "] - file: [" + newFileName + "]"); } if (!targetFile.exists()) FileUtils.copyFile(inputFile,
+             * targetFile); FileSystemEvent event = new FileSystemEvent(targetFile, FileSystemEventType.FILE_ADDED); msg = "Processed " + inputFile +
+             * " in a data package action.";
+             * 
+             * // update the service status this.serviceDAO.updateServiceStatus(service, "PRODUCTS"); resultList.add(event); } catch (IOException e) {
+             * msg = "Error processing MARISS product ingestion"; LOGGER.error(msg, e); } }
+             */
+        }
+        return packageReady;
+    }
+
+    /**
+     * @return the serviceDAO
+     */
+    public ServiceDAO getServiceDAO() {
+        return serviceDAO;
+    }
+
+    /**
      * Ingest new data for a service
      * 
      * @param user
@@ -346,9 +674,9 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                 // ---
 
                 // obtain service folders
-                final String serviceIDFtpPath = remotePath + FTP_SEPARATOR + user
-                        + FTP_SEPARATOR + service.getServiceId();
-                
+                final String serviceIDFtpPath = remotePath + FTP_SEPARATOR + user + FTP_SEPARATOR
+                        + service.getServiceId();
+
                 List<String> serviceFolders = RemoteBrowserUtils.ls(serverProtocol, serverUser,
                         serverPWD, serverHost, serverPort, serviceIDFtpPath, connectMode, timeout,
                         null, true);
@@ -411,11 +739,11 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
 
                         final String currentRemoteFolder = remotePath + FTP_SEPARATOR
                                 + remoteRelativeFolder;
-                        
+
                         if (LOGGER.isInfoEnabled()) {
                             LOGGER.info("Get files in the folder " + currentRemoteFolder);
                         }
-                        
+
                         List<String> fileNames = RemoteBrowserUtils.ls(serverProtocol, serverUser,
                                 serverPWD, serverHost, serverPort, currentRemoteFolder,
                                 connectMode, timeout, null, Boolean.FALSE);
@@ -423,7 +751,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                         if (LOGGER.isDebugEnabled()) {
                             LOGGER.debug("Processing files ... " + fileNames);
                         }
-                        
+
                         // files size and folder index
                         int serviceFolderFilesSize = fileNames.size();
                         int serviceFolderFileIndex = 0;
@@ -486,18 +814,18 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                                     try {
                                         String msg = "Processing events for user: " + user
                                                 + ", service: " + service;
-                                        
+
                                         // Package Ready Event added as first element of the queue...
-                                        packageReady = getProcessEvents(dataStore, user,
-                                                service, inputFile, folder, resultList);
-                                        
+                                        packageReady = getProcessEvents(dataStore, user, service,
+                                                inputFile, folder, resultList);
+
                                         error = msg == null;
                                         updateProgress(usersSize, userIndex, serviceSize,
                                                 serviceIndex, serviceFoldersSize,
                                                 serviceFolderIndex, serviceFolderFilesSize,
                                                 serviceFolderFileIndex, error, msg,
                                                 inputFile.getAbsolutePath());
-                                        
+
                                         // Clean-up packageReady inputFile
                                         inputFile.delete();
                                     } catch (Exception e) {
@@ -510,13 +838,16 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                                      * The ServiceID is ready for the products ingestion ...
                                      */
                                     if (packageReady) {
-                                        final String productsFtpFolder = serviceIDFtpPath + FTP_SEPARATOR + folder;
-                                        List<String> availableProducts = RemoteBrowserUtils.ls(serverProtocol, serverUser,
-                                                serverPWD, serverHost, serverPort, productsFtpFolder, connectMode, timeout,
-                                                null, true);
-                                        
+                                        final String productsFtpFolder = serviceIDFtpPath
+                                                + FTP_SEPARATOR + folder;
+                                        List<String> availableProducts = RemoteBrowserUtils.ls(
+                                                serverProtocol, serverUser, serverPWD, serverHost,
+                                                serverPort, productsFtpFolder, connectMode,
+                                                timeout, null, true);
+
                                         // Post process.
-                                        pendingProductFiles = colelctPostProcessingFiles(availableProducts, error,
+                                        pendingProductFiles = colelctPostProcessingFiles(
+                                                availableProducts, error,
                                                 productsFtpFolder,
                                                 localRelativeFolder,
                                                 // result remote
@@ -535,22 +866,25 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                                         + " ignored because was processed after this execution");
                             }
                         }
-                        
+
                         // Create the Actions map
                         List<BaseAction<EventObject>> actionMap = new ArrayList<BaseAction<EventObject>>();
-                        
+
                         // Creation of the Actions
-                        Map<String, ConfigurationContainer> subconfigurations = configuration.getSubconfigurations();
+                        Map<String, ConfigurationContainer> subconfigurations = configuration
+                                .getSubconfigurations();
                         if (subconfigurations != null && !subconfigurations.isEmpty()) {
                             // Loop on the containers
                             for (String key : subconfigurations.keySet()) {
                                 // Getting configuration container
                                 ConfigurationContainer container = subconfigurations.get(key);
                                 // Creating a possible configuration
-                                IngestionActionConfiguration config = new IngestionActionConfiguration(key,
-                                        "configuration", "");
-                                config.setMetocDictionaryPath(configuration.getMetocDictionaryPath());
-                                config.setGeoserverDataDirectory(configuration.getGeoserverDataDirectory());
+                                IngestionActionConfiguration config = new IngestionActionConfiguration(
+                                        key, "configuration", "");
+                                config.setMetocDictionaryPath(configuration
+                                        .getMetocDictionaryPath());
+                                config.setGeoserverDataDirectory(configuration
+                                        .getGeoserverDataDirectory());
                                 config.setOutputFeature(configuration.getOutputFeature());
                                 config.setProductsTableName(configuration.getProductsTableName());
                                 config.setGeoserverPWD(configuration.getGeoserverPWD());
@@ -567,19 +901,21 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                                         Constructor<?> constructor = clazz
                                                 .getConstructor(IngestionActionConfiguration.class);
                                         if (constructor != null) {
-                                            action = (BaseAction<EventObject>) constructor.newInstance(config);
+                                            action = (BaseAction<EventObject>) constructor
+                                                    .newInstance(config);
                                         }
                                     }
                                 } catch (Exception e) {
                                     LOGGER.debug(e.getMessage());
                                 }
-                                if(action != null){
+                                if (action != null) {
                                     File actionTempDir = new File(getTempDir(), key);
                                     try {
                                         FileUtils.forceMkdir(actionTempDir);
                                     } catch (IOException e) {
-                                        LOGGER.error("Unable to crate Action Temporary directory, falling back to the "
-                                                + "parent one",e);
+                                        LOGGER.error(
+                                                "Unable to crate Action Temporary directory, falling back to the "
+                                                        + "parent one", e);
                                         actionTempDir = getTempDir();
                                     }
                                     action.setTempDir(actionTempDir);
@@ -587,13 +923,13 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                                 }
                             }
                         }
-                        
+
                         // Collecting all other products files whenever a Package Ready event has been received ...
-                        resultList.addAll(getPostProcessEvents(pendingProductFiles, dataStore, user,
-                                service, localRelativeFolder, serverResultProtocol, folder, folder,
-                                folder, resultTimeout, resultConnectMode, resultTimeout, usersSize,
-                                userIndex, serviceSize, serviceIndex, serviceFoldersSize,
-                                serviceFolderIndex, actionMap));
+                        resultList.addAll(getPostProcessEvents(pendingProductFiles, dataStore,
+                                user, service, localRelativeFolder, serverResultProtocol, folder,
+                                folder, folder, resultTimeout, resultConnectMode, resultTimeout,
+                                usersSize, userIndex, serviceSize, serviceIndex,
+                                serviceFoldersSize, serviceFolderIndex, actionMap));
                     }
                 }
                 // ---
@@ -607,166 +943,6 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
     }
 
     /**
-     * Obtain post process events for CSV files
-     * 
-     * @param pendingProductFiles
-     * @param dataStore
-     * @param user
-     * @param service
-     * @param relativeFolder
-     * @param serverResultProtocol
-     * @param serverResultUser
-     * @param serverResultPWD
-     * @param serverResultHost
-     * @param serverResultPort
-     * @param resultConnectMode
-     * @param resultTimeout
-     * @param usersSize
-     * @param userIndex
-     * @param serviceSize
-     * @param serviceIndex
-     * @param serviceFoldersSize
-     * @param serviceFolderIndex
-     * @param actionMap 
-     * @return
-     * @throws IOException
-     * @throws FTPException
-     */
-    private Collection<? extends EventObject> getPostProcessEvents(
-            List<String> pendingProductFiles,
-            DataStore dataStore, String user,
-            Service service,
-            String relativeFolder,
-            // result remote
-            RemoteBrowserProtocol serverResultProtocol, String serverResultUser,
-            String serverResultPWD, String serverResultHost, int serverResultPort,
-            FTPConnectMode resultConnectMode, int resultTimeout, int usersSize, int userIndex,
-            int serviceSize, int serviceIndex, int serviceFoldersSize, int serviceFolderIndex, 
-            Collection<BaseAction<EventObject>> actionMap)
-            throws IOException, FTPException {
-
-        Queue<EventObject> resultList = new LinkedList<EventObject>();
-
-        // check if each CSV file type 1 to 3 CSV has also a CSV file type 5
-        List<String> failFiles = DataPackageIngestionProcessor.checkCSVFiles(pendingProductFiles);
-
-        // Copy to CSV ingestion path and pre process each file
-        for (String filePath : pendingProductFiles) {
-            boolean error = false;
-            String msg = null;
-            File inputFile = new File(filePath);
-            // copy to target folder
-            if (failFiles.contains(filePath)) {
-                // not copy to CSV ingestion
-                LOGGER.error("Error processing the CSV " + filePath
-                        + ". Another CSV file is not included in the package");
-                error = true;
-            } else {
-                try {
-                    String csvFileName = CSVIngestUtils.getUserServiceFileName(inputFile.getName(),
-                            user, service.getServiceId());
-                    File targetFile = new File(relativeFolder + File.separator + csvFileName);
-                    FileUtils.copyFile(inputFile, targetFile);
-                    FileSystemEvent event = new FileSystemEvent(targetFile,
-                            FileSystemEventType.FILE_ADDED);
-                    msg = "Processed " + inputFile + ". Check the CSV ingestion related";
-                    resultList.add(event);
-                } catch (IOException e) {
-                    LOGGER.error("Error processing acquisition list ingestion", e);
-                    error = true;
-                }
-            }
-            // Post process.
-            if(!actionMap.isEmpty()){
-                // Simulating a sequential flow
-                Queue<EventObject> events = new ArrayBlockingQueue<EventObject>(1000000);
-                events.add(new FileSystemEvent(inputFile, FileSystemEventType.FILE_ADDED));
-                for(BaseAction<EventObject> action : actionMap){
-                    try {
-                        events.addAll(action.execute(events));
-                    } catch (ActionException e) {
-                        LOGGER.error(e.getMessage(), e);
-                    }
-                }
-                // Filling the ResultList 
-                resultList.addAll(events);
-            }
-            
-            
-            /*
-               colelctPostProcessingFiles(inputFile, error, relativeFolder,
-                    // result remote
-                    serverResultProtocol, serverResultUser, serverResultPWD, serverResultHost,
-                    serverResultPort, resultConnectMode, resultTimeout);
-            */
-                    
-            updateProgress(usersSize, userIndex, serviceSize, serviceIndex, serviceFoldersSize,
-                    serviceFolderIndex, null, null, error, msg, inputFile.getAbsolutePath());
-        }
-
-        return resultList;
-    }
-
-    /**
-     * Move the file to the success or fail folder once it was handled
-     * @param availableProducts 
-     * @param error
-     * @param relativeFolder
-     * @param localRelativeFolder 
-     * @param serverResultProtocol
-     * @param serverResultUser
-     * @param serverResultPWD
-     * @param serverResultHost
-     * @param serverResultPort
-     * @param resultConnectMode
-     * @param resultTimeout
-     * @return 
-     * @throws IOException
-     * @throws FTPException
-     */
-    private List<String> colelctPostProcessingFiles(List<String> availableProducts, boolean error,
-            String productsFtpFolder,
-            String localRelativeFolder, // result remote
-            RemoteBrowserProtocol serverResultProtocol, String serverResultUser,
-            String serverResultPWD, String serverResultHost, int serverResultPort,
-            FTPConnectMode resultConnectMode, int resultTimeout) throws IOException, FTPException {
-
-        List<String> products = new ArrayList<String>();
-        
-        for (String productFile : availableProducts) {
-            
-            if (productFile.equalsIgnoreCase("packageready.txt")) 
-                continue;
-            
-            // Eligible for post processing.
-            final File inputFile = new File(productsFtpFolder, productFile);
-            String targetPath = null;
-            if (!error) {
-                // success: put on success remote dir
-                targetPath = configuration.getSuccesPath() + LOCAL_SEPARATOR + localRelativeFolder;
-            } else {
-                // fail: put on fail remote dir
-                targetPath = configuration.getFailPath() + LOCAL_SEPARATOR + localRelativeFolder;
-            }
-
-            // put the file in the target path
-            RemoteBrowserUtils.putFile(configuration.isStoreLocal() ? RemoteBrowserProtocol.local
-                    : serverResultProtocol, serverResultUser, serverResultHost, serverResultPWD,
-                    serverResultPort, targetPath + FTP_SEPARATOR + inputFile.getName(), inputFile
-                            .getAbsolutePath(), resultConnectMode, resultTimeout);
-
-            // add the targetFile to the list
-            products.add(inputFile.getAbsolutePath());
-            
-            // <do not> clean downloaded file in the input
-            // directory
-            //inputFile.delete();
-        }
-        
-        return products;
-    }
-
-    /**
      * Check if this action must observe this folder in the service
      * 
      * @param service
@@ -776,11 +952,11 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
      */
     private boolean isObservableServiceFolder(Service service, String folder) {
         // TODO: add known folders for other ingestions
-        if (/*!"ACQUISITIONLIST".equals(service.getStatus())*/ 
-                "AOI".equals(service.getStatus()) && ACQ_LIST_FOLDER.equals(folder)) {
+        if (/* !"ACQUISITIONLIST".equals(service.getStatus()) */
+        "AOI".equals(service.getStatus()) && ACQ_LIST_FOLDER.equals(folder)) {
             return true;
-        } else if (/*!"PRODUCTS".equals(service.getStatus()) &&*/
-                "ACQUISITIONPLAN".equals(service.getStatus()) && PRODUCTS_FOLDER.equals(folder)) {
+        } else if (/* !"PRODUCTS".equals(service.getStatus()) && */
+        "ACQUISITIONPLAN".equals(service.getStatus()) && PRODUCTS_FOLDER.equals(folder)) {
             return true;
         } else {
             return false;
@@ -788,118 +964,59 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
     }
 
     /**
-     * Call to known proccess for a file in a service folder
+     * Delegated on utilities class
      * 
-     * @param dataStore
-     * @param user
-     * @param service
-     * @param inputFile
-     * @param folder
-     * @param resultList 
-     * @return
+     * @param succesPath
+     * @param relativeFolder
+     * @throws IOException
      */
-    private Boolean getProcessEvents(DataStore dataStore, String user,
-            Service service, File inputFile, String folder, Queue<EventObject> resultList) {
-        
-        Boolean packageReady = Boolean.FALSE;
-        String msg = null;
+    private void mkdir(String succesPath, String relativeFolder) throws IOException {
+        FileUtils.forceMkdir(new File(succesPath + LOCAL_SEPARATOR + relativeFolder));
+    }
 
-        if ("AOI".equals(service.getStatus()) && ACQ_LIST_FOLDER.equals(folder)) {
-            
-            // copy to target folder
-            
-            try {
-                
-                final String csvFileName = CSVIngestUtils.getUserServiceFileName(inputFile.getName(),
-                        user, service.getServiceId());
-                
-                File targetFile = new File(getTempDir().getAbsolutePath() + File.separator + folder
-                        + File.separator + csvFileName);
-                
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("inputFile: [" + inputFile.getAbsolutePath() + "] - targetFile: ["
-                            + targetFile.getAbsolutePath() + "]");
-                    LOGGER.debug("folder: [" + folder + "] - file: [" + csvFileName + "]");
-                }
-                
-                if (!targetFile.exists())
-                    FileUtils.copyFile(inputFile, targetFile);
-                
-                FileSystemEvent event = new FileSystemEvent(targetFile,
-                        FileSystemEventType.FILE_ADDED);
-                
-                msg = "Processed " + inputFile + ". Check the CSV ingestion related";
+    /**
+     * Delegated on utilities class
+     * 
+     * @param serverResultProtocol
+     * @param serverResultUser
+     * @param serverResultHost
+     * @param serverResultPWD
+     * @param serverResultPort
+     * @param succesPath
+     * @param relativeFolder
+     * @param resultConnectMode
+     * @param resultTimeout
+     * @throws IOException
+     * @throws FTPException
+     * @throws ParseException
+     */
+    private void remotemkdir(RemoteBrowserProtocol serverResultProtocol, String serverResultUser,
+            String serverResultHost, String serverResultPWD, int serverResultPort,
+            String succesPath, String relativeFolder, FTPConnectMode resultConnectMode,
+            int resultTimeout) throws IOException, FTPException, ParseException {
+        RemoteBrowserUtils.forceMkdir(serverResultProtocol, serverResultUser, serverResultHost,
+                serverResultPWD, serverResultPort, succesPath, relativeFolder, resultConnectMode,
+                resultTimeout);
+    }
 
-                // update the service status
-                this.serviceDAO.updateServiceStatus(service, "ACQUISITIONLIST");
-                resultList.add(event);
-            } catch (IOException e) {
-                msg = "Error processing acquisition list ingestion";
-                LOGGER.error(msg, e);
-            }
-        } else if ("ACQUISITIONPLAN".equals(service.getStatus()) && PRODUCTS_FOLDER.equals(folder)) {
-            
-            final String filePath = inputFile.getAbsolutePath();
-            
-            if (inputFile.getName().equalsIgnoreCase("packageready.txt")) {
-                try {
-                    
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("PRODUCTS READY folder: [" + folder + "] - file: [" + filePath + "]");
-                    }
-                    
-                    File targetFile = new File(getTempDir().getAbsolutePath() + File.separator + folder + File.separator + inputFile.getName());
-                    
-                    if (!targetFile.exists())
-                        FileUtils.copyFile(inputFile, targetFile);
-                    
-                    FileSystemEvent event = new FileSystemEvent(targetFile, FileSystemEventType.FILE_ADDED);
-                    
-                    // update the service status
-//                    this.serviceDAO.updateServiceStatus(service, "PRODUCTS");
-                    packageReady = Boolean.TRUE;
-                    resultList.add(event);
-                } catch (IOException e) {
-                    msg = "Error processing MARISS product ingestion";
-                    LOGGER.error(msg, e);
-                }
-            }
-            
-            
-            /*
-            
-            if (filePath.endsWith(".csv")) {
-                pendingCSVFiles.add(filePath);
-                msg = "Pending " + inputFile + " for checks at the end of the service files.";
-            } else {
-                try {
-                    String newFileName = CSVIngestUtils.getUserServiceFileName(inputFile.getName(),
-                            user, service.getServiceId());
-                    File targetFile = new File(getTempDir().getAbsolutePath() + File.separator
-                            + folder + File.separator + newFileName);
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("folder: [" + folder + "] - file: [" + newFileName + "]");
-                    }
-                    if (!targetFile.exists())
-                        FileUtils.copyFile(inputFile, targetFile);
-                    FileSystemEvent event = new FileSystemEvent(targetFile,
-                            FileSystemEventType.FILE_ADDED);
-                    msg = "Processed " + inputFile + " in a data package action.";
+    /**
+     * @param serviceDAO the serviceDAO to set
+     */
+    @Resource(name = "geoBatchMARISSServiceDAO")
+    public void setServiceDAO(ServiceDAO serviceDAO) {
+        this.serviceDAO = serviceDAO;
+    }
 
-                    // update the service status
-                    this.serviceDAO.updateServiceStatus(service, "PRODUCTS");
-                    resultList.add(event);
-                } catch (IOException e) {
-                    msg = "Error processing MARISS product ingestion";
-                    LOGGER.error(msg, e);
-                }
-            }
-            
-            */
-            
-            this.serviceDAO.updateServiceStatus(service, "PRODUCTS");
-        }
-        return packageReady;
+    /**
+     * Save progress information for a task
+     * 
+     * @param progress
+     * @param msg
+     */
+    protected void updateProgress(float progress, String msg) {
+        listenerForwarder.setProgress(progress);
+        listenerForwarder.setTask(msg);
+        listenerForwarder.progressing();
     }
 
     /**
@@ -938,135 +1055,6 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
         }
         updateProgress(totalProgress, finalMsg);
 
-    }
-
-    /**
-     * Save progress information for a task
-     * 
-     * @param progress
-     * @param msg
-     */
-    protected void updateProgress(float progress, String msg) {
-        listenerForwarder.setProgress(progress);
-        listenerForwarder.setTask(msg);
-        listenerForwarder.progressing();
-    }
-
-    /**
-     * Get the services by users from the remote server (first and second level in the tree)
-     * 
-     * @param serverProtocol
-     * @param userName
-     * @param password
-     * @param host
-     * @param port
-     * @param rootPath
-     * @param connectMode
-     * @param timeout
-     * @param pattern
-     * @return
-     */
-    protected Map<String, List<Service>> getCurrentServices(RemoteBrowserProtocol serverProtocol,
-            String userName, String password, String host, int port, String rootPath,
-            FTPConnectMode connectMode, int timeout, Pattern pattern) {
-        Map<String, List<Service>> servicesByUser = null;
-
-        try {
-            servicesByUser = new HashMap<String, List<Service>>();
-
-            // obtain users
-            List<String> users = RemoteBrowserUtils.ls(serverProtocol, userName, password, host,
-                    port, rootPath, connectMode, timeout, pattern, true);
-
-            // For each file on the remote directory
-            for (String user : users) {
-
-                /*
-                 * List<String> services = RemoteBrowserUtils.ls(serverProtocol, userName, password, host, port, rootPath + FTP_SEPARATOR + user,
-                 * connectMode, timeout, pattern, true);
-                 * 
-                 * servicesByUser.put(user, services);
-                 */
-
-                servicesByUser.put(user, this.serviceDAO.findByUser(user));
-            }
-        } catch (Exception e) {
-            LOGGER.error("Error browsing remote server", e);
-        }
-        return servicesByUser;
-    }
-
-    /**
-     * Check if exists a file on a remote
-     * 
-     * @param serverProtocol
-     * @param serverUser
-     * @param serverHost
-     * @param serverPWD
-     * @param serverPort
-     * @param path
-     * @param fileName
-     * @param connectMode
-     * @param timeout
-     * @return
-     * @throws IOException
-     * @throws FTPException
-     * @throws ParseException
-     */
-    private boolean checkIfExists(RemoteBrowserProtocol serverProtocol, String serverUser,
-            String serverHost, String serverPWD, int serverPort, String path, String fileName,
-            FTPConnectMode connectMode, int timeout) throws IOException, FTPException,
-            ParseException {
-        return RemoteBrowserUtils.checkIfExists(serverProtocol, serverUser, serverHost, serverPWD,
-                serverPort, path, fileName, connectMode, timeout);
-    }
-
-    /**
-     * Check if a file exists
-     * 
-     * @param inputDir
-     * @param fileName
-     * @return
-     */
-    private boolean checkIfExists(String inputDir, String fileName) {
-        File file = new File(inputDir + LOCAL_SEPARATOR + fileName);
-        return file.exists();
-    }
-
-    /**
-     * Delegated on utilities class
-     * 
-     * @param serverResultProtocol
-     * @param serverResultUser
-     * @param serverResultHost
-     * @param serverResultPWD
-     * @param serverResultPort
-     * @param succesPath
-     * @param relativeFolder
-     * @param resultConnectMode
-     * @param resultTimeout
-     * @throws IOException
-     * @throws FTPException
-     * @throws ParseException
-     */
-    private void remotemkdir(RemoteBrowserProtocol serverResultProtocol, String serverResultUser,
-            String serverResultHost, String serverResultPWD, int serverResultPort,
-            String succesPath, String relativeFolder, FTPConnectMode resultConnectMode,
-            int resultTimeout) throws IOException, FTPException, ParseException {
-        RemoteBrowserUtils.forceMkdir(serverResultProtocol, serverResultUser, serverResultHost,
-                serverResultPWD, serverResultPort, succesPath, relativeFolder, resultConnectMode,
-                resultTimeout);
-    }
-
-    /**
-     * Delegated on utilities class
-     * 
-     * @param succesPath
-     * @param relativeFolder
-     * @throws IOException
-     */
-    private void mkdir(String succesPath, String relativeFolder) throws IOException {
-        FileUtils.forceMkdir(new File(succesPath + LOCAL_SEPARATOR + relativeFolder));
     }
 
 }

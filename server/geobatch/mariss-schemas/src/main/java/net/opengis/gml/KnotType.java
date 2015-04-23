@@ -5,23 +5,24 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.math.BigInteger;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * A knot is a breakpoint on a piecewise spline curve.
  * 
- * <p>Java class for KnotType complex type.
+ * <p>
+ * Java class for KnotType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="KnotType">
@@ -40,18 +41,26 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "KnotType", propOrder = {
-    "value",
-    "multiplicity",
-    "weight"
-})
+@XmlType(name = "KnotType", propOrder = { "value", "multiplicity", "weight" })
 public class KnotType {
 
     protected double value;
+
     @XmlElement(required = true)
     @XmlSchemaType(name = "nonNegativeInteger")
     protected BigInteger multiplicity;
+
     protected double weight;
+
+    /**
+     * Gets the value of the multiplicity property.
+     * 
+     * @return possible object is {@link BigInteger }
+     * 
+     */
+    public BigInteger getMultiplicity() {
+        return multiplicity;
+    }
 
     /**
      * Gets the value of the value property.
@@ -62,43 +71,29 @@ public class KnotType {
     }
 
     /**
-     * Sets the value of the value property.
+     * Gets the value of the weight property.
      * 
      */
-    public void setValue(double value) {
-        this.value = value;
-    }
-
-    /**
-     * Gets the value of the multiplicity property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getMultiplicity() {
-        return multiplicity;
+    public double getWeight() {
+        return weight;
     }
 
     /**
      * Sets the value of the multiplicity property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     * @param value allowed object is {@link BigInteger }
+     * 
      */
     public void setMultiplicity(BigInteger value) {
         this.multiplicity = value;
     }
 
     /**
-     * Gets the value of the weight property.
+     * Sets the value of the value property.
      * 
      */
-    public double getWeight() {
-        return weight;
+    public void setValue(double value) {
+        this.value = value;
     }
 
     /**

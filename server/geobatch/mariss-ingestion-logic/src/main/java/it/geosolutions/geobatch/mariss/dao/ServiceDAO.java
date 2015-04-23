@@ -28,19 +28,19 @@ import java.util.List;
  * 
  */
 public interface ServiceDAO {
-    
+
     /**
      * READ
      */
-    
+
     public Service findByServiceId(String serviceId);
-    
+
     public List<Service> findByUser(String userId);
-    
-    public List<Sensor> getSensors();
-    
+
     public List<SensorMode> getSensorModes();
-    
+
+    public List<Sensor> getSensors();
+
     /**
      * WRITE
      */
@@ -48,7 +48,7 @@ public interface ServiceDAO {
     public boolean insert(Service service);
 
     public boolean insertOrUpdate(AreaOfInterest aoi);
-    
+
     public boolean insertOrUpdate(String serviceId, List<Sensor> sensors);
 
     public boolean updateServiceStatus(Service servce, String status);

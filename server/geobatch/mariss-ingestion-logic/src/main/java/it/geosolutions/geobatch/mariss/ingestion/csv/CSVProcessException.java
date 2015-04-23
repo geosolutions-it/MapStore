@@ -20,7 +20,7 @@
 package it.geosolutions.geobatch.mariss.ingestion.csv;
 
 /**
- *
+ * 
  * @author ETj (etj at geo-solutions.it)
  * @author adiaz copied to MARISS project
  */
@@ -29,9 +29,9 @@ public class CSVProcessException extends Exception {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -2501711315277548277L;
+    private static final long serialVersionUID = -2501711315277548277L;
 
-	public CSVProcessException() {
+    public CSVProcessException() {
     }
 
     public CSVProcessException(String message) {

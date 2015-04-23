@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * A temporal coordinate system is based on a continuous interval scale defined in terms of a single time interval.
  * 
- * <p>Java class for TimeCoordinateSystemType complex type.
+ * <p>
+ * Java class for TimeCoordinateSystemType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="TimeCoordinateSystemType">
@@ -40,90 +40,74 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TimeCoordinateSystemType", propOrder = {
-    "originPosition",
-    "origin",
-    "interval"
-})
-public class TimeCoordinateSystemType
-    extends AbstractTimeReferenceSystemType
-{
+@XmlType(name = "TimeCoordinateSystemType", propOrder = { "originPosition", "origin", "interval" })
+public class TimeCoordinateSystemType extends AbstractTimeReferenceSystemType {
 
     protected TimePositionType originPosition;
+
     protected TimeInstantPropertyType origin;
+
     @XmlElement(required = true)
     protected TimeIntervalLengthType interval;
 
     /**
-     * Gets the value of the originPosition property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TimePositionType }
-     *     
-     */
-    public TimePositionType getOriginPosition() {
-        return originPosition;
-    }
-
-    /**
-     * Sets the value of the originPosition property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TimePositionType }
-     *     
-     */
-    public void setOriginPosition(TimePositionType value) {
-        this.originPosition = value;
-    }
-
-    /**
-     * Gets the value of the origin property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TimeInstantPropertyType }
-     *     
-     */
-    public TimeInstantPropertyType getOrigin() {
-        return origin;
-    }
-
-    /**
-     * Sets the value of the origin property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TimeInstantPropertyType }
-     *     
-     */
-    public void setOrigin(TimeInstantPropertyType value) {
-        this.origin = value;
-    }
-
-    /**
      * Gets the value of the interval property.
      * 
-     * @return
-     *     possible object is
-     *     {@link TimeIntervalLengthType }
-     *     
+     * @return possible object is {@link TimeIntervalLengthType }
+     * 
      */
     public TimeIntervalLengthType getInterval() {
         return interval;
     }
 
     /**
+     * Gets the value of the origin property.
+     * 
+     * @return possible object is {@link TimeInstantPropertyType }
+     * 
+     */
+    public TimeInstantPropertyType getOrigin() {
+        return origin;
+    }
+
+    /**
+     * Gets the value of the originPosition property.
+     * 
+     * @return possible object is {@link TimePositionType }
+     * 
+     */
+    public TimePositionType getOriginPosition() {
+        return originPosition;
+    }
+
+    /**
      * Sets the value of the interval property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link TimeIntervalLengthType }
-     *     
+     * @param value allowed object is {@link TimeIntervalLengthType }
+     * 
      */
     public void setInterval(TimeIntervalLengthType value) {
         this.interval = value;
+    }
+
+    /**
+     * Sets the value of the origin property.
+     * 
+     * @param value allowed object is {@link TimeInstantPropertyType }
+     * 
+     */
+    public void setOrigin(TimeInstantPropertyType value) {
+        this.origin = value;
+    }
+
+    /**
+     * Sets the value of the originPosition property.
+     * 
+     * @param value allowed object is {@link TimePositionType }
+     * 
+     */
+    public void setOriginPosition(TimePositionType value) {
+        this.originPosition = value;
     }
 
 }

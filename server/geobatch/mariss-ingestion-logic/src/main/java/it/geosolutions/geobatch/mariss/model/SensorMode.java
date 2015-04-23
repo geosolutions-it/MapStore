@@ -16,59 +16,21 @@
  */
 package it.geosolutions.geobatch.mariss.model;
 
-
 /**
  * @author Alessio
- *
+ * 
  */
 public class SensorMode {
-    
+
     private int id;
+
     private String sensorMode;
-    
+
     /**
      * 
      */
     public SensorMode(String sensorMode) {
         this.sensorMode = sensorMode;
-    }
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-
-    /**
-     * @return the sensorMode
-     */
-    public String getSensorMode() {
-        return sensorMode;
-    }
-
-    /**
-     * @param sensorMode the sensorMode to set
-     */
-    public void setSensorMode(String sensorMode) {
-        this.sensorMode = sensorMode;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        result = prime * result + ((sensorMode == null) ? 0 : sensorMode.hashCode());
-        return result;
     }
 
     @Override
@@ -96,6 +58,43 @@ public class SensorMode {
         return true;
     }
 
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @return the sensorMode
+     */
+    public String getSensorMode() {
+        return sensorMode;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + id;
+        result = prime * result + ((sensorMode == null) ? 0 : sensorMode.hashCode());
+        return result;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * @param sensorMode the sensorMode to set
+     */
+    public void setSensorMode(String sensorMode) {
+        this.sensorMode = sensorMode;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -105,5 +104,5 @@ public class SensorMode {
         builder.append("]");
         return builder.toString();
     }
-    
+
 }

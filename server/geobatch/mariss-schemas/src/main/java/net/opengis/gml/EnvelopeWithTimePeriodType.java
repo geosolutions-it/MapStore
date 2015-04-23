@@ -5,11 +5,11 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -17,13 +17,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Envelope that includes also a temporal extent.
  * 
- * <p>Java class for EnvelopeWithTimePeriodType complex type.
+ * <p>
+ * Java class for EnvelopeWithTimePeriodType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="EnvelopeWithTimePeriodType">
@@ -41,38 +42,47 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "EnvelopeWithTimePeriodType", propOrder = {
-    "timePosition"
-})
-public class EnvelopeWithTimePeriodType
-    extends EnvelopeType
-{
+@XmlType(name = "EnvelopeWithTimePeriodType", propOrder = { "timePosition" })
+public class EnvelopeWithTimePeriodType extends EnvelopeType {
 
     @XmlElement(required = true)
     protected List<TimePositionType> timePosition;
+
     @XmlAttribute
     @XmlSchemaType(name = "anyURI")
     protected String frame;
 
     /**
+     * Gets the value of the frame property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getFrame() {
+        if (frame == null) {
+            return "#ISO-8601";
+        } else {
+            return frame;
+        }
+    }
+
+    /**
      * Gets the value of the timePosition property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the timePosition property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the timePosition property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getTimePosition().add(newItem);
+     * getTimePosition().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TimePositionType }
+     * Objects of the following type(s) are allowed in the list {@link TimePositionType }
      * 
      * 
      */
@@ -84,28 +94,10 @@ public class EnvelopeWithTimePeriodType
     }
 
     /**
-     * Gets the value of the frame property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getFrame() {
-        if (frame == null) {
-            return "#ISO-8601";
-        } else {
-            return frame;
-        }
-    }
-
-    /**
      * Sets the value of the frame property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setFrame(String value) {
         this.frame = value;

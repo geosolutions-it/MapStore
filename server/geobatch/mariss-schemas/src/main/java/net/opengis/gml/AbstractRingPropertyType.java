@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.JAXBElement;
@@ -14,13 +13,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Encapsulates a ring to represent the surface boundary property of a surface.
  * 
- * <p>Java class for AbstractRingPropertyType complex type.
+ * <p>
+ * Java class for AbstractRingPropertyType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AbstractRingPropertyType">
@@ -37,9 +37,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AbstractRingPropertyType", propOrder = {
-    "ring"
-})
+@XmlType(name = "AbstractRingPropertyType", propOrder = { "ring" })
 public class AbstractRingPropertyType {
 
     @XmlElementRef(name = "_Ring", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
@@ -48,12 +46,9 @@ public class AbstractRingPropertyType {
     /**
      * Gets the value of the ring property.
      * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link AbstractRingType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link RingType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link LinearRingType }{@code >}
-     *     
+     * @return possible object is {@link JAXBElement }{@code <}{@link AbstractRingType }{@code >} {@link JAXBElement }{@code <}{@link RingType }{@code >}
+     *         {@link JAXBElement }{@code <}{@link LinearRingType }{@code >}
+     * 
      */
     public JAXBElement<? extends AbstractRingType> getRing() {
         return ring;
@@ -62,15 +57,12 @@ public class AbstractRingPropertyType {
     /**
      * Sets the value of the ring property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link JAXBElement }{@code <}{@link AbstractRingType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link RingType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link LinearRingType }{@code >}
-     *     
+     * @param value allowed object is {@link JAXBElement }{@code <}{@link AbstractRingType }{@code >} {@link JAXBElement }{@code <}{@link RingType }
+     *        {@code >} {@link JAXBElement }{@code <}{@link LinearRingType }{@code >}
+     * 
      */
     public void setRing(JAXBElement<? extends AbstractRingType> value) {
-        this.ring = ((JAXBElement<? extends AbstractRingType> ) value);
+        this.ring = ((JAXBElement<? extends AbstractRingType>) value);
     }
 
 }

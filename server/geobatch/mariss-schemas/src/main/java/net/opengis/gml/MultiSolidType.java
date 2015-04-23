@@ -5,22 +5,23 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * A MultiSolid is defined by one or more Solids, referenced through solidMember elements.
  * 
- * <p>Java class for MultiSolidType complex type.
+ * <p>
+ * Java class for MultiSolidType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="MultiSolidType">
@@ -38,36 +39,30 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MultiSolidType", propOrder = {
-    "solidMember",
-    "solidMembers"
-})
-public class MultiSolidType
-    extends AbstractGeometricAggregateType
-{
+@XmlType(name = "MultiSolidType", propOrder = { "solidMember", "solidMembers" })
+public class MultiSolidType extends AbstractGeometricAggregateType {
 
     protected List<SolidPropertyType> solidMember;
+
     protected SolidArrayPropertyType solidMembers;
 
     /**
      * Gets the value of the solidMember property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the solidMember property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the solidMember property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getSolidMember().add(newItem);
+     * getSolidMember().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SolidPropertyType }
+     * Objects of the following type(s) are allowed in the list {@link SolidPropertyType }
      * 
      * 
      */
@@ -81,10 +76,8 @@ public class MultiSolidType
     /**
      * Gets the value of the solidMembers property.
      * 
-     * @return
-     *     possible object is
-     *     {@link SolidArrayPropertyType }
-     *     
+     * @return possible object is {@link SolidArrayPropertyType }
+     * 
      */
     public SolidArrayPropertyType getSolidMembers() {
         return solidMembers;
@@ -93,10 +86,8 @@ public class MultiSolidType
     /**
      * Sets the value of the solidMembers property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link SolidArrayPropertyType }
-     *     
+     * @param value allowed object is {@link SolidArrayPropertyType }
+     * 
      */
     public void setSolidMembers(SolidArrayPropertyType value) {
         this.solidMembers = value;

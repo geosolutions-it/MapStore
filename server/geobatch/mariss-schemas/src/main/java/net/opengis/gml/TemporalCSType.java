@@ -5,20 +5,21 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A one-dimensional coordinate system containing a single time axis, used to describe the temporal position of a point in the specified time units from a specified time origin. A TemporalCS shall have one usesAxis association. 
+ * A one-dimensional coordinate system containing a single time axis, used to describe the temporal position of a point in the specified time units
+ * from a specified time origin. A TemporalCS shall have one usesAxis association.
  * 
- * <p>Java class for TemporalCSType complex type.
+ * <p>
+ * Java class for TemporalCSType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="TemporalCSType">
@@ -33,9 +34,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TemporalCSType")
-public class TemporalCSType
-    extends AbstractCoordinateSystemType
-{
-
+public class TemporalCSType extends AbstractCoordinateSystemType {
 
 }

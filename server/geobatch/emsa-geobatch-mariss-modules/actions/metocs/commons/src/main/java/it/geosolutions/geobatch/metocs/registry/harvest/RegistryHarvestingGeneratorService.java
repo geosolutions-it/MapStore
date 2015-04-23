@@ -44,11 +44,15 @@ public class RegistryHarvestingGeneratorService extends
         super(id, name, description);
     }
 
+    public boolean canCreateAction(RegistryActionConfiguration configuration) {
+        final boolean superRetVal = super.canCreateAction(configuration);
+        return superRetVal;
+    }
+
     /**
      * Action creator
      * 
-     * @param configuration
-     *            The data base action configuration
+     * @param configuration The data base action configuration
      * @return new JGSFLoDeSSSWANFileConfigurator()
      */
     public RegistryHarvestingConfiguratorAction createAction(
@@ -60,11 +64,6 @@ public class RegistryHarvestingGeneratorService extends
                 LOGGER.log(Level.INFO, e.getLocalizedMessage(), e);
             return null;
         }
-    }
-
-    public boolean canCreateAction(RegistryActionConfiguration configuration) {
-        final boolean superRetVal = super.canCreateAction(configuration);
-        return superRetVal;
     }
 
 }

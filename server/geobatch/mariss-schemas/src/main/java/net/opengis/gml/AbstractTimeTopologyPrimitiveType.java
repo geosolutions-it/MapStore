@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * The element "complex" carries a reference to the complex containing this primitive.
  * 
- * <p>Java class for AbstractTimeTopologyPrimitiveType complex type.
+ * <p>
+ * Java class for AbstractTimeTopologyPrimitiveType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AbstractTimeTopologyPrimitiveType">
@@ -36,26 +36,17 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AbstractTimeTopologyPrimitiveType", propOrder = {
-    "complex"
-})
-@XmlSeeAlso({
-    TimeNodeType.class,
-    TimeEdgeType.class
-})
-public abstract class AbstractTimeTopologyPrimitiveType
-    extends AbstractTimePrimitiveType
-{
+@XmlType(name = "AbstractTimeTopologyPrimitiveType", propOrder = { "complex" })
+@XmlSeeAlso({ TimeNodeType.class, TimeEdgeType.class })
+public abstract class AbstractTimeTopologyPrimitiveType extends AbstractTimePrimitiveType {
 
     protected ReferenceType complex;
 
     /**
      * Gets the value of the complex property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ReferenceType }
-     *     
+     * @return possible object is {@link ReferenceType }
+     * 
      */
     public ReferenceType getComplex() {
         return complex;
@@ -64,10 +55,8 @@ public abstract class AbstractTimeTopologyPrimitiveType
     /**
      * Sets the value of the complex property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ReferenceType }
-     *     
+     * @param value allowed object is {@link ReferenceType }
+     * 
      */
     public void setComplex(ReferenceType value) {
         this.complex = value;

@@ -5,23 +5,25 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * An ellipsoid is a geometric figure that can be used to describe the approximate shape of the earth. In mathematical terms, it is a surface formed by the rotation of an ellipse about its minor axis.
+ * An ellipsoid is a geometric figure that can be used to describe the approximate shape of the earth. In mathematical terms, it is a surface formed
+ * by the rotation of an ellipse about its minor axis.
  * 
- * <p>Java class for EllipsoidType complex type.
+ * <p>
+ * Java class for EllipsoidType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="EllipsoidType">
@@ -41,42 +43,38 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "EllipsoidType", propOrder = {
-    "ellipsoidID",
-    "remarks",
-    "semiMajorAxis",
-    "secondDefiningParameter"
-})
-public class EllipsoidType
-    extends EllipsoidBaseType
-{
+@XmlType(name = "EllipsoidType", propOrder = { "ellipsoidID", "remarks", "semiMajorAxis",
+        "secondDefiningParameter" })
+public class EllipsoidType extends EllipsoidBaseType {
 
     protected List<IdentifierType> ellipsoidID;
+
     protected StringOrRefType remarks;
+
     @XmlElement(required = true)
     protected MeasureType semiMajorAxis;
+
     @XmlElement(required = true)
     protected SecondDefiningParameterType secondDefiningParameter;
 
     /**
-     * Set of alternative identifications of this ellipsoid. The first ellipsoidID, if any, is normally the primary identification code, and any others are aliases. Gets the value of the ellipsoidID property.
+     * Set of alternative identifications of this ellipsoid. The first ellipsoidID, if any, is normally the primary identification code, and any
+     * others are aliases. Gets the value of the ellipsoidID property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the ellipsoidID property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the ellipsoidID property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getEllipsoidID().add(newItem);
+     * getEllipsoidID().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link IdentifierType }
+     * Objects of the following type(s) are allowed in the list {@link IdentifierType }
      * 
      * 
      */
@@ -88,75 +86,63 @@ public class EllipsoidType
     }
 
     /**
-     * Comments on or information about this ellipsoid, including source information. 
+     * Comments on or information about this ellipsoid, including source information.
      * 
-     * @return
-     *     possible object is
-     *     {@link StringOrRefType }
-     *     
+     * @return possible object is {@link StringOrRefType }
+     * 
      */
     public StringOrRefType getRemarks() {
         return remarks;
     }
 
     /**
-     * Sets the value of the remarks property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link StringOrRefType }
-     *     
-     */
-    public void setRemarks(StringOrRefType value) {
-        this.remarks = value;
-    }
-
-    /**
-     * Gets the value of the semiMajorAxis property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link MeasureType }
-     *     
-     */
-    public MeasureType getSemiMajorAxis() {
-        return semiMajorAxis;
-    }
-
-    /**
-     * Sets the value of the semiMajorAxis property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link MeasureType }
-     *     
-     */
-    public void setSemiMajorAxis(MeasureType value) {
-        this.semiMajorAxis = value;
-    }
-
-    /**
      * Gets the value of the secondDefiningParameter property.
      * 
-     * @return
-     *     possible object is
-     *     {@link SecondDefiningParameterType }
-     *     
+     * @return possible object is {@link SecondDefiningParameterType }
+     * 
      */
     public SecondDefiningParameterType getSecondDefiningParameter() {
         return secondDefiningParameter;
     }
 
     /**
+     * Gets the value of the semiMajorAxis property.
+     * 
+     * @return possible object is {@link MeasureType }
+     * 
+     */
+    public MeasureType getSemiMajorAxis() {
+        return semiMajorAxis;
+    }
+
+    /**
+     * Sets the value of the remarks property.
+     * 
+     * @param value allowed object is {@link StringOrRefType }
+     * 
+     */
+    public void setRemarks(StringOrRefType value) {
+        this.remarks = value;
+    }
+
+    /**
      * Sets the value of the secondDefiningParameter property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link SecondDefiningParameterType }
-     *     
+     * @param value allowed object is {@link SecondDefiningParameterType }
+     * 
      */
     public void setSecondDefiningParameter(SecondDefiningParameterType value) {
         this.secondDefiningParameter = value;
+    }
+
+    /**
+     * Sets the value of the semiMajorAxis property.
+     * 
+     * @param value allowed object is {@link MeasureType }
+     * 
+     */
+    public void setSemiMajorAxis(MeasureType value) {
+        this.semiMajorAxis = value;
     }
 
 }

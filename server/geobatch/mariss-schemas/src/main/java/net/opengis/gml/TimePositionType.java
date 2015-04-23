@@ -5,11 +5,11 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -17,18 +17,17 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-
 /**
- * Direct representation of a temporal position. 
- *       Indeterminate time values are also allowed, as described in ISO 19108. The indeterminatePosition 
- *       attribute can be used alone or it can qualify a specific value for temporal position (e.g. before 
- *       2002-12, after 1019624400). 
- *       For time values that identify position within a calendar, the calendarEraName attribute provides 
- *       the name of the calendar era to which the date is referenced (e.g. the Meiji era of the Japanese calendar).
+ * Direct representation of a temporal position. Indeterminate time values are also allowed, as described in ISO 19108. The indeterminatePosition
+ * attribute can be used alone or it can qualify a specific value for temporal position (e.g. before 2002-12, after 1019624400). For time values that
+ * identify position within a calendar, the calendarEraName attribute provides the name of the calendar era to which the date is referenced (e.g. the
+ * Meiji era of the Japanese calendar).
  * 
- * <p>Java class for TimePositionType complex type.
+ * <p>
+ * Java class for TimePositionType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="TimePositionType">
@@ -45,52 +44,82 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TimePositionType", propOrder = {
-    "value"
-})
+@XmlType(name = "TimePositionType", propOrder = { "value" })
 public class TimePositionType {
 
     @XmlValue
     protected List<String> value;
+
     @XmlAttribute
     @XmlSchemaType(name = "anyURI")
     protected String frame;
+
     @XmlAttribute
     protected String calendarEraName;
+
     @XmlAttribute
     protected TimeIndeterminateValueType indeterminatePosition;
 
     /**
-     * The ISO 19108:2002 hierarchy of subtypes for temporal position are collapsed 
-     *       by defining a union of XML Schema simple types for indicating temporal position relative 
-     *       to a specific reference system. 
-     *       
-     *       Dates and dateTime may be indicated with varying degrees of precision.  
-     *       dateTime by itself does not allow right-truncation, except for fractions of seconds. 
-     *       When used with non-Gregorian calendars based on years, months, days, 
-     *       the same lexical representation should still be used, with leading zeros added if the 
-     *       year value would otherwise have fewer than four digits.  
-     *       
-     *       An ordinal position may be referenced via URI identifying the definition of an ordinal era.  
-     *       
-     *       A time coordinate value is indicated as a decimal (e.g. UNIX time, GPS calendar).Gets the value of the value property.
+     * Gets the value of the calendarEraName property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getCalendarEraName() {
+        return calendarEraName;
+    }
+
+    /**
+     * Gets the value of the frame property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getFrame() {
+        if (frame == null) {
+            return "#ISO-8601";
+        } else {
+            return frame;
+        }
+    }
+
+    /**
+     * Gets the value of the indeterminatePosition property.
+     * 
+     * @return possible object is {@link TimeIndeterminateValueType }
+     * 
+     */
+    public TimeIndeterminateValueType getIndeterminatePosition() {
+        return indeterminatePosition;
+    }
+
+    /**
+     * The ISO 19108:2002 hierarchy of subtypes for temporal position are collapsed by defining a union of XML Schema simple types for indicating
+     * temporal position relative to a specific reference system.
+     * 
+     * Dates and dateTime may be indicated with varying degrees of precision. dateTime by itself does not allow right-truncation, except for fractions
+     * of seconds. When used with non-Gregorian calendars based on years, months, days, the same lexical representation should still be used, with
+     * leading zeros added if the year value would otherwise have fewer than four digits.
+     * 
+     * An ordinal position may be referenced via URI identifying the definition of an ordinal era.
+     * 
+     * A time coordinate value is indicated as a decimal (e.g. UNIX time, GPS calendar).Gets the value of the value property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the value property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the value property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getValue().add(newItem);
+     * getValue().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * Objects of the following type(s) are allowed in the list {@link String }
      * 
      * 
      */
@@ -102,76 +131,30 @@ public class TimePositionType {
     }
 
     /**
-     * Gets the value of the frame property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getFrame() {
-        if (frame == null) {
-            return "#ISO-8601";
-        } else {
-            return frame;
-        }
-    }
-
-    /**
-     * Sets the value of the frame property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setFrame(String value) {
-        this.frame = value;
-    }
-
-    /**
-     * Gets the value of the calendarEraName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCalendarEraName() {
-        return calendarEraName;
-    }
-
-    /**
      * Sets the value of the calendarEraName property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setCalendarEraName(String value) {
         this.calendarEraName = value;
     }
 
     /**
-     * Gets the value of the indeterminatePosition property.
+     * Sets the value of the frame property.
      * 
-     * @return
-     *     possible object is
-     *     {@link TimeIndeterminateValueType }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public TimeIndeterminateValueType getIndeterminatePosition() {
-        return indeterminatePosition;
+    public void setFrame(String value) {
+        this.frame = value;
     }
 
     /**
      * Sets the value of the indeterminatePosition property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link TimeIndeterminateValueType }
-     *     
+     * @param value allowed object is {@link TimeIndeterminateValueType }
+     * 
      */
     public void setIndeterminatePosition(TimeIndeterminateValueType value) {
         this.indeterminatePosition = value;

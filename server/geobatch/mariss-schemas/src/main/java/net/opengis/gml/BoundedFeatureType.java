@@ -5,20 +5,20 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Makes boundedBy mandatory
  * 
- * <p>Java class for BoundedFeatureType complex type.
+ * <p>
+ * Java class for BoundedFeatureType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="BoundedFeatureType">
@@ -38,9 +38,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "BoundedFeatureType")
-public abstract class BoundedFeatureType
-    extends AbstractFeatureType
-{
-
+public abstract class BoundedFeatureType extends AbstractFeatureType {
 
 }

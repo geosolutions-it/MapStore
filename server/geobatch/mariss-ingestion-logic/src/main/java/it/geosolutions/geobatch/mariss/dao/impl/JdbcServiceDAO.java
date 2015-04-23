@@ -58,105 +58,6 @@ public class JdbcServiceDAO implements ServiceDAO {
 
     private DataSource dataSource;
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    @Override
-    public boolean insert(Service service) {
-
-        boolean result = false;
-
-        String sql = "INSERT INTO SERVICE (\"SERVICE_ID\", \"PARENT\", \"USER\", \"STATUS\") VALUES (?, ?, ?, ?)";
-        Connection conn = null;
-
-        try {
-            conn = dataSource.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, service.getServiceId());
-            ps.setString(2, service.getParent());
-            ps.setString(3, service.getUser());
-            ps.setString(4, service.getStatus());
-            result = ps.executeUpdate() > 0;
-            ps.close();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                }
-            }
-        }
-
-        return result;
-
-    }
-
-    @Override
-    public boolean insertOrUpdate(AreaOfInterest aoi) {
-
-        boolean result = false;
-
-        String sql = "SELECT * FROM AOIS WHERE service_name = ?";
-        Connection conn = null;
-
-        try {
-            conn = dataSource.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, aoi.getServiceId());
-            ResultSet rs = ps.executeQuery();
-            boolean performUpdate = rs.next();
-            rs.close();
-
-            if (performUpdate) {
-                // perform update
-                sql = "UPDATE aois SET the_geom=?, start=?, \"end\"=?, status=?, \"desc\"=? WHERE service_name = ?";
-                if (!ps.isClosed())
-                    ps.close();
-                ps = conn.prepareStatement(sql);
-                ps.setString(1, aoi.getTheGeom());
-                ps.setDate(2, aoi.getStartTime());
-                ps.setDate(3, aoi.getEndTime());
-                ps.setString(4, aoi.getStatus());
-                ps.setString(5, aoi.getDescription());
-                ps.setString(6, aoi.getServiceId());
-                result = ps.execute() && ps.getUpdateCount() > 0;
-            } else {
-                // perform insert
-                sql = "INSERT INTO aois(service_name, the_geom, start, \"end\", status, \"desc\") VALUES (?, ?, ?, ?, ?, ?)";
-                if (!ps.isClosed())
-                    ps.close();
-                ps = conn.prepareStatement(sql);
-                ps.setString(1, aoi.getServiceId());
-                ps.setString(2, aoi.getTheGeom());
-                ps.setDate(3, aoi.getStartTime());
-                ps.setDate(4, aoi.getEndTime());
-                ps.setString(5, aoi.getStatus());
-                ps.setString(6, aoi.getDescription());
-                result = ps.executeUpdate() > 0;
-            }
-            ps.close();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                }
-            }
-        }
-
-        return result;
-
-    }
-
     @Override
     public Service findByServiceId(String serviceId) {
 
@@ -320,21 +221,28 @@ public class JdbcServiceDAO implements ServiceDAO {
     }
 
     @Override
-    public boolean updateServiceStatus(Service service, String status) {
-        boolean result = false;
+    public List<SensorMode> getSensorModes() {
 
-        String sql = "UPDATE SERVICE SET \"STATUS\" = ? WHERE \"USER\" = ? AND \"SERVICE_ID\" = ?";
+        String sql = "SELECT * FROM sensor_modes";
 
         Connection conn = null;
 
         try {
             conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, status);
-            ps.setString(2, service.getUser());
-            ps.setString(3, service.getServiceId());
-            result = ps.execute() && ps.getUpdateCount() > 0;
+            List<SensorMode> sensorModes = new ArrayList<SensorMode>();
+            ResultSet rs = ps.executeQuery();
+            SensorMode sensorMode;
+            while (rs.next()) {
+                sensorMode = new SensorMode(rs.getString("sensor_mode"));
+                sensorMode.setId(rs.getInt("id"));
+
+                sensorModes.add(sensorMode);
+            }
+            rs.close();
             ps.close();
+
+            return sensorModes;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -346,7 +254,6 @@ public class JdbcServiceDAO implements ServiceDAO {
             }
         }
 
-        return result;
     }
 
     @Override
@@ -386,30 +293,26 @@ public class JdbcServiceDAO implements ServiceDAO {
     }
 
     @Override
-    public List<SensorMode> getSensorModes() {
+    public boolean insert(Service service) {
 
-        String sql = "SELECT * FROM sensor_modes";
+        boolean result = false;
 
+        String sql = "INSERT INTO SERVICE (\"SERVICE_ID\", \"PARENT\", \"USER\", \"STATUS\") VALUES (?, ?, ?, ?)";
         Connection conn = null;
 
         try {
             conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            List<SensorMode> sensorModes = new ArrayList<SensorMode>();
-            ResultSet rs = ps.executeQuery();
-            SensorMode sensorMode;
-            while (rs.next()) {
-                sensorMode = new SensorMode(rs.getString("sensor_mode"));
-                sensorMode.setId(rs.getInt("id"));
-
-                sensorModes.add(sensorMode);
-            }
-            rs.close();
+            ps.setString(1, service.getServiceId());
+            ps.setString(2, service.getParent());
+            ps.setString(3, service.getUser());
+            ps.setString(4, service.getStatus());
+            result = ps.executeUpdate() > 0;
             ps.close();
 
-            return sensorModes;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+
         } finally {
             if (conn != null) {
                 try {
@@ -418,6 +321,69 @@ public class JdbcServiceDAO implements ServiceDAO {
                 }
             }
         }
+
+        return result;
+
+    }
+
+    @Override
+    public boolean insertOrUpdate(AreaOfInterest aoi) {
+
+        boolean result = false;
+
+        String sql = "SELECT * FROM AOIS WHERE service_name = ?";
+        Connection conn = null;
+
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, aoi.getServiceId());
+            ResultSet rs = ps.executeQuery();
+            boolean performUpdate = rs.next();
+            rs.close();
+
+            if (performUpdate) {
+                // perform update
+                sql = "UPDATE aois SET the_geom=?, start=?, \"end\"=?, status=?, \"desc\"=? WHERE service_name = ?";
+                if (!ps.isClosed())
+                    ps.close();
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, aoi.getTheGeom());
+                ps.setDate(2, aoi.getStartTime());
+                ps.setDate(3, aoi.getEndTime());
+                ps.setString(4, aoi.getStatus());
+                ps.setString(5, aoi.getDescription());
+                ps.setString(6, aoi.getServiceId());
+                result = ps.execute() && ps.getUpdateCount() > 0;
+            } else {
+                // perform insert
+                sql = "INSERT INTO aois(service_name, the_geom, start, \"end\", status, \"desc\") VALUES (?, ?, ?, ?, ?, ?)";
+                if (!ps.isClosed())
+                    ps.close();
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, aoi.getServiceId());
+                ps.setString(2, aoi.getTheGeom());
+                ps.setDate(3, aoi.getStartTime());
+                ps.setDate(4, aoi.getEndTime());
+                ps.setString(5, aoi.getStatus());
+                ps.setString(6, aoi.getDescription());
+                result = ps.executeUpdate() > 0;
+            }
+            ps.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return result;
 
     }
 
@@ -461,6 +427,40 @@ public class JdbcServiceDAO implements ServiceDAO {
 
         return result;
 
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
+    public boolean updateServiceStatus(Service service, String status) {
+        boolean result = false;
+
+        String sql = "UPDATE SERVICE SET \"STATUS\" = ? WHERE \"USER\" = ? AND \"SERVICE_ID\" = ?";
+
+        Connection conn = null;
+
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, status);
+            ps.setString(2, service.getUser());
+            ps.setString(3, service.getServiceId());
+            result = ps.execute() && ps.getUpdateCount() > 0;
+            ps.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return result;
     }
 
 }

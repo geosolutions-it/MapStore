@@ -37,66 +37,64 @@ import org.slf4j.LoggerFactory;
  * Custom image mosaic action that allow the circle flow execution
  * 
  * @author adiaz
- *
+ * 
  */
 @Action(configurationClass = CustomImageMosaicConfiguration.class)
-public class CustomImageMosaicAction extends ImageMosaicAction{
+public class CustomImageMosaicAction extends ImageMosaicAction {
 
-	private final static Logger LOGGER = LoggerFactory
-			.getLogger(CustomImageMosaicAction.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CustomImageMosaicAction.class);
 
-	// constructor
-	public CustomImageMosaicAction(CustomImageMosaicConfiguration configuration) {
-		super(configuration);
-	}
+    // constructor
+    public CustomImageMosaicAction(CustomImageMosaicConfiguration configuration) {
+        super(configuration);
+    }
 
-	/**
-	 * Check in the event queue if this action must handle the event before handling
-	 */
-	@Override
-	public Queue<EventObject> execute(Queue<EventObject> events)
-			throws ActionException {
+    /**
+     * Check if a file can be processed in this action
+     * 
+     * @param file
+     * @return
+     */
+    private boolean canProcess(EventObject event) {
+        Object innerObject = event.getSource();
+        // only available for the imc command in the event
+        // (delegated from product ingestion / NetCDFToGeotiff actions)
+        if (innerObject instanceof ImageMosaicCommand) {
+            // copy default configuration
+            ((ImageMosaicCommand) innerObject).copyConfigurationIntoCommand(getConfiguration());
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-		// return object
-		final Queue<EventObject> ret = new LinkedList<EventObject>();
-		// to process
-		final Queue<EventObject> imcs = new LinkedList<EventObject>();
+    /**
+     * Check in the event queue if this action must handle the event before handling
+     */
+    @Override
+    public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
 
-		while (!events.isEmpty()) {
-			EventObject event = events.poll();
-			if(canProcess(event)){
-				imcs.add(event);
-			}else{
-				// add the event to the return
-				ret.add(event);
-			}
-		}
+        // return object
+        final Queue<EventObject> ret = new LinkedList<EventObject>();
+        // to process
+        final Queue<EventObject> imcs = new LinkedList<EventObject>();
 
-		if(!imcs.isEmpty()){
-			LOGGER.info("Excuting " + imcs.size() + " ImageMosaicCommands");
-			ret.addAll(super.execute(imcs));
-		}
+        while (!events.isEmpty()) {
+            EventObject event = events.poll();
+            if (canProcess(event)) {
+                imcs.add(event);
+            } else {
+                // add the event to the return
+                ret.add(event);
+            }
+        }
 
-		return ret;
-	}
-	
-	/**
-	 * Check if a file can be processed in this action
-	 * 
-	 * @param file
-	 * @return
-	 */
-	private boolean canProcess(EventObject event) {
-		Object innerObject= event.getSource();
-		// only available for the imc command in the event 
-		// (delegated from product ingestion / NetCDFToGeotiff actions)
-		if (innerObject instanceof ImageMosaicCommand){
-			// copy default configuration
-			((ImageMosaicCommand)innerObject).copyConfigurationIntoCommand(getConfiguration());
-			return true;
-		}else{
-			return false;
-		}
-	}
+        if (!imcs.isEmpty()) {
+            LOGGER.info("Excuting " + imcs.size() + " ImageMosaicCommands");
+            ret.addAll(super.execute(imcs));
+        }
+
+        return ret;
+    }
 
 }

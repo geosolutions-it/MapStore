@@ -48,22 +48,18 @@ public final class PublishingRestletGlobalConfig {
 
     private static String rootDirectory;
 
-    public PublishingRestletGlobalConfig(String rootDirectory) {
-        this.rootDirectory = rootDirectory;
-    }
-
     public static String getRootDirectory() {
         return rootDirectory;
     }
 
-    public void setRootDirectory(String rootDirectory) {
+    public PublishingRestletGlobalConfig(String rootDirectory) {
         this.rootDirectory = rootDirectory;
     }
 
     public void init() throws Exception {
         File workingDir = null;
         try {
-            workingDir = Path.findLocation(rootDirectory, 
+            workingDir = Path.findLocation(rootDirectory,
                     ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
         } catch (Exception e) {
             if (LOGGER.isLoggable(Level.SEVERE))
@@ -78,6 +74,10 @@ public final class PublishingRestletGlobalConfig {
                     "Unable to work with the provided working directory:"
                             + (workingDir != null ? workingDir : ""));
         rootDirectory = workingDir.getAbsolutePath();
+    }
+
+    public void setRootDirectory(String rootDirectory) {
+        this.rootDirectory = rootDirectory;
     }
 
 }

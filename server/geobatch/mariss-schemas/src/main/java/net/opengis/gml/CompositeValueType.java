@@ -5,23 +5,25 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Aggregate value built from other Values using the Composite pattern. It contains zero or an arbitrary number of valueComponent elements, and zero or one valueComponents elements.  It may be used for strongly coupled aggregates (vectors, tensors) or for arbitrary collections of values.
+ * Aggregate value built from other Values using the Composite pattern. It contains zero or an arbitrary number of valueComponent elements, and zero
+ * or one valueComponents elements. It may be used for strongly coupled aggregates (vectors, tensors) or for arbitrary collections of values.
  * 
- * <p>Java class for CompositeValueType complex type.
+ * <p>
+ * Java class for CompositeValueType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="CompositeValueType">
@@ -39,39 +41,31 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CompositeValueType", propOrder = {
-    "valueComponent",
-    "valueComponents"
-})
-@XmlSeeAlso({
-    ValueArrayType.class
-})
-public class CompositeValueType
-    extends AbstractGMLType
-{
+@XmlType(name = "CompositeValueType", propOrder = { "valueComponent", "valueComponents" })
+@XmlSeeAlso({ ValueArrayType.class })
+public class CompositeValueType extends AbstractGMLType {
 
     protected List<ValuePropertyType> valueComponent;
+
     protected ValueArrayPropertyType valueComponents;
 
     /**
      * Gets the value of the valueComponent property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the valueComponent property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the valueComponent property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getValueComponent().add(newItem);
+     * getValueComponent().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link ValuePropertyType }
+     * Objects of the following type(s) are allowed in the list {@link ValuePropertyType }
      * 
      * 
      */
@@ -85,10 +79,8 @@ public class CompositeValueType
     /**
      * Gets the value of the valueComponents property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ValueArrayPropertyType }
-     *     
+     * @return possible object is {@link ValueArrayPropertyType }
+     * 
      */
     public ValueArrayPropertyType getValueComponents() {
         return valueComponents;
@@ -97,10 +89,8 @@ public class CompositeValueType
     /**
      * Sets the value of the valueComponents property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ValueArrayPropertyType }
-     *     
+     * @param value allowed object is {@link ValueArrayPropertyType }
+     * 
      */
     public void setValueComponents(ValueArrayPropertyType value) {
         this.valueComponents = value;

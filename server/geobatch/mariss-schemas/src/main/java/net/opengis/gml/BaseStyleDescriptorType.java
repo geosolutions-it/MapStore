@@ -5,28 +5,30 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3._2001.smil20.language.AnimateColorType;
 import org.w3._2001.smil20.language.AnimateMotionType;
 import org.w3._2001.smil20.language.AnimateType;
 import org.w3._2001.smil20.language.SetType;
 
-
 /**
  * Base complex type for geometry, topology, label and graph styles.
  * 
- * <p>Java class for BaseStyleDescriptorType complex type.
+ * <p>
+ * Java class for BaseStyleDescriptorType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="BaseStyleDescriptorType">
@@ -48,107 +50,45 @@ import org.w3._2001.smil20.language.SetType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "BaseStyleDescriptorType", propOrder = {
-    "spatialResolution",
-    "styleVariation",
-    "animate",
-    "animateMotion",
-    "animateColor",
-    "set"
-})
-@XmlSeeAlso({
-    GraphStyleType.class,
-    LabelStyleType.class,
-    TopologyStyleType.class,
-    GeometryStyleType.class
-})
-public class BaseStyleDescriptorType
-    extends AbstractGMLType
-{
+@XmlType(name = "BaseStyleDescriptorType", propOrder = { "spatialResolution", "styleVariation",
+        "animate", "animateMotion", "animateColor", "set" })
+@XmlSeeAlso({ GraphStyleType.class, LabelStyleType.class, TopologyStyleType.class,
+        GeometryStyleType.class })
+public class BaseStyleDescriptorType extends AbstractGMLType {
 
     protected ScaleType spatialResolution;
+
     protected List<StyleVariationType> styleVariation;
+
     @XmlElement(namespace = "http://www.w3.org/2001/SMIL20/")
     protected List<AnimateType> animate;
+
     @XmlElement(namespace = "http://www.w3.org/2001/SMIL20/")
     protected List<AnimateMotionType> animateMotion;
+
     @XmlElement(namespace = "http://www.w3.org/2001/SMIL20/")
     protected List<AnimateColorType> animateColor;
+
     @XmlElement(namespace = "http://www.w3.org/2001/SMIL20/")
     protected List<SetType> set;
-
-    /**
-     * Gets the value of the spatialResolution property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ScaleType }
-     *     
-     */
-    public ScaleType getSpatialResolution() {
-        return spatialResolution;
-    }
-
-    /**
-     * Sets the value of the spatialResolution property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ScaleType }
-     *     
-     */
-    public void setSpatialResolution(ScaleType value) {
-        this.spatialResolution = value;
-    }
-
-    /**
-     * Gets the value of the styleVariation property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the styleVariation property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getStyleVariation().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link StyleVariationType }
-     * 
-     * 
-     */
-    public List<StyleVariationType> getStyleVariation() {
-        if (styleVariation == null) {
-            styleVariation = new ArrayList<StyleVariationType>();
-        }
-        return this.styleVariation;
-    }
 
     /**
      * Gets the value of the animate property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the animate property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the animate property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getAnimate().add(newItem);
+     * getAnimate().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link AnimateType }
+     * Objects of the following type(s) are allowed in the list {@link AnimateType }
      * 
      * 
      */
@@ -160,53 +100,22 @@ public class BaseStyleDescriptorType
     }
 
     /**
-     * Gets the value of the animateMotion property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the animateMotion property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAnimateMotion().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link AnimateMotionType }
-     * 
-     * 
-     */
-    public List<AnimateMotionType> getAnimateMotion() {
-        if (animateMotion == null) {
-            animateMotion = new ArrayList<AnimateMotionType>();
-        }
-        return this.animateMotion;
-    }
-
-    /**
      * Gets the value of the animateColor property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the animateColor property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the animateColor property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getAnimateColor().add(newItem);
+     * getAnimateColor().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link AnimateColorType }
+     * Objects of the following type(s) are allowed in the list {@link AnimateColorType }
      * 
      * 
      */
@@ -218,24 +127,49 @@ public class BaseStyleDescriptorType
     }
 
     /**
-     * Gets the value of the set property.
+     * Gets the value of the animateMotion property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the set property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the animateMotion property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getSet().add(newItem);
+     * getAnimateMotion().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SetType }
+     * Objects of the following type(s) are allowed in the list {@link AnimateMotionType }
+     * 
+     * 
+     */
+    public List<AnimateMotionType> getAnimateMotion() {
+        if (animateMotion == null) {
+            animateMotion = new ArrayList<AnimateMotionType>();
+        }
+        return this.animateMotion;
+    }
+
+    /**
+     * Gets the value of the set property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the set property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
+     * getSet().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list {@link SetType }
      * 
      * 
      */
@@ -244,6 +178,53 @@ public class BaseStyleDescriptorType
             set = new ArrayList<SetType>();
         }
         return this.set;
+    }
+
+    /**
+     * Gets the value of the spatialResolution property.
+     * 
+     * @return possible object is {@link ScaleType }
+     * 
+     */
+    public ScaleType getSpatialResolution() {
+        return spatialResolution;
+    }
+
+    /**
+     * Gets the value of the styleVariation property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the styleVariation property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
+     * getStyleVariation().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list {@link StyleVariationType }
+     * 
+     * 
+     */
+    public List<StyleVariationType> getStyleVariation() {
+        if (styleVariation == null) {
+            styleVariation = new ArrayList<StyleVariationType>();
+        }
+        return this.styleVariation;
+    }
+
+    /**
+     * Sets the value of the spatialResolution property.
+     * 
+     * @param value allowed object is {@link ScaleType }
+     * 
+     */
+    public void setSpatialResolution(ScaleType value) {
+        this.spatialResolution = value;
     }
 
 }

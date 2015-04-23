@@ -5,24 +5,25 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.ows._1;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Complete reference to a remote or local resource, allowing including metadata about that resource. 
+ * Complete reference to a remote or local resource, allowing including metadata about that resource.
  * 
- * <p>Java class for ReferenceType complex type.
+ * <p>
+ * Java class for ReferenceType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="ReferenceType">
@@ -42,71 +43,39 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReferenceType", propOrder = {
-    "identifier",
-    "_abstract",
-    "format",
-    "metadata"
-})
-@XmlSeeAlso({
-    ServiceReferenceType.class
-})
-public class ReferenceType
-    extends AbstractReferenceBaseType
-{
+@XmlType(name = "ReferenceType", propOrder = { "identifier", "_abstract", "format", "metadata" })
+@XmlSeeAlso({ ServiceReferenceType.class })
+public class ReferenceType extends AbstractReferenceBaseType {
 
     @XmlElement(name = "Identifier")
     protected CodeType identifier;
+
     @XmlElement(name = "Abstract")
     protected List<LanguageStringType> _abstract;
+
     @XmlElement(name = "Format")
     protected String format;
+
     @XmlElement(name = "Metadata")
     protected List<MetadataType> metadata;
-
-    /**
-     * Optional unique identifier of the referenced resource. 
-     * 
-     * @return
-     *     possible object is
-     *     {@link CodeType }
-     *     
-     */
-    public CodeType getIdentifier() {
-        return identifier;
-    }
-
-    /**
-     * Sets the value of the identifier property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link CodeType }
-     *     
-     */
-    public void setIdentifier(CodeType value) {
-        this.identifier = value;
-    }
 
     /**
      * Gets the value of the abstract property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the abstract property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the abstract property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getAbstract().add(newItem);
+     * getAbstract().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link LanguageStringType }
+     * Objects of the following type(s) are allowed in the list {@link LanguageStringType }
      * 
      * 
      */
@@ -120,46 +89,41 @@ public class ReferenceType
     /**
      * Gets the value of the format property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getFormat() {
         return format;
     }
 
     /**
-     * Sets the value of the format property.
+     * Optional unique identifier of the referenced resource.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link CodeType }
+     * 
      */
-    public void setFormat(String value) {
-        this.format = value;
+    public CodeType getIdentifier() {
+        return identifier;
     }
 
     /**
-     * Optional unordered list of additional metadata about this resource. A list of optional metadata elements for this ReferenceType could be specified in the Implementation Specification for each use of this type in a specific OWS. Gets the value of the metadata property.
+     * Optional unordered list of additional metadata about this resource. A list of optional metadata elements for this ReferenceType could be
+     * specified in the Implementation Specification for each use of this type in a specific OWS. Gets the value of the metadata property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the metadata property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the metadata property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getMetadata().add(newItem);
+     * getMetadata().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link MetadataType }
+     * Objects of the following type(s) are allowed in the list {@link MetadataType }
      * 
      * 
      */
@@ -168,6 +132,26 @@ public class ReferenceType
             metadata = new ArrayList<MetadataType>();
         }
         return this.metadata;
+    }
+
+    /**
+     * Sets the value of the format property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setFormat(String value) {
+        this.format = value;
+    }
+
+    /**
+     * Sets the value of the identifier property.
+     * 
+     * @param value allowed object is {@link CodeType }
+     * 
+     */
+    public void setIdentifier(CodeType value) {
+        this.identifier = value;
     }
 
 }

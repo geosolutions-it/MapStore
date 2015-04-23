@@ -37,8 +37,7 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
  * @author adiaz
  */
 @XStreamAlias("RemoteServiceHandlingConfiguration")
-@XStreamInclude({
-    ConfigurationContainer.class})
+@XStreamInclude({ ConfigurationContainer.class })
 public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
 
     /**
@@ -138,6 +137,76 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
     }
 
     /**
+     * @return the failPath
+     */
+    public String getFailPath() {
+        return failPath;
+    }
+
+    /**
+     * @return the filePattern
+     */
+    public String getFilePattern() {
+        return filePattern;
+    }
+
+    /**
+     * @return the GeoServerDataDirectory path
+     */
+    public String getGeoserverDataDirectory() {
+        return geoserverDataDirectory;
+    }
+
+    /**
+     * @return the GeoServer password
+     */
+    public String getGeoserverPWD() {
+        return geoserverPWD;
+    }
+
+    /**
+     * @return the GeoServer User ID
+     */
+    public String getGeoserverUID() {
+        return geoserverUID;
+    }
+
+    /**
+     * @return the GeoServer URL
+     */
+    public String getGeoserverURL() {
+        return geoserverURL;
+    }
+
+    /**
+     * @return the inputPath
+     */
+    public String getInputPath() {
+        return inputPath;
+    }
+
+    /**
+     * @return the inputRemotePath
+     */
+    public String getInputRemotePath() {
+        return inputRemotePath;
+    }
+
+    /**
+     * @return the Metoc-Dictionary path
+     */
+    public String getMetocDictionaryPath() {
+        return metocDictionaryPath;
+    }
+
+    /**
+     * @return the Products Table name
+     */
+    public String getProductsTableName() {
+        return productsTableName;
+    }
+
+    /**
      * @return the remoteBrowserConfiguration
      */
     public RemoteBrowserConfiguration getRemoteBrowserConfiguration() {
@@ -145,17 +214,143 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
     }
 
     /**
-     * @param remoteBrowserConfiguration the remoteBrowserConfiguration to set
-     */
-    public void setRemoteBrowserConfiguration(RemoteBrowserConfiguration remoteBrowserConfiguration) {
-        this.remoteBrowserConfiguration = remoteBrowserConfiguration;
-    }
-
-    /**
      * @return the remoteResultBrowserConfiguration
      */
     public RemoteBrowserConfiguration getRemoteResultBrowserConfiguration() {
         return remoteResultBrowserConfiguration;
+    }
+
+    /**
+     * @return the various SubConfiguration map
+     */
+    public Map<String, ConfigurationContainer> getSubconfigurations() {
+        return subconfigurations;
+    }
+
+    /**
+     * @return the succesPath
+     */
+    public String getSuccesPath() {
+        return succesPath;
+    }
+
+    /**
+     * @return the timeFormatConfiguration
+     */
+    public TimeFormatConfiguration getTimeFormatConfiguration() {
+        return timeFormatConfiguration;
+    }
+
+    /**
+     * @return the checkIfExists
+     */
+    public boolean isCheckIfExists() {
+        return checkIfExists;
+    }
+
+    /**
+     * @return the deleteDownloadedFiles
+     */
+    public boolean isDeleteDownloadedFiles() {
+        return deleteDownloadedFiles;
+    }
+
+    /**
+     * @return the storeLocal
+     */
+    public boolean isStoreLocal() {
+        return storeLocal;
+    }
+
+    /**
+     * @param checkIfExists the checkIfExists to set
+     */
+    public void setCheckIfExists(boolean checkIfExists) {
+        this.checkIfExists = checkIfExists;
+    }
+
+    /**
+     * @param deleteDownloadedFiles the deleteDownloadedFiles to set
+     */
+    public void setDeleteDownloadedFiles(boolean deleteDownloadedFiles) {
+        this.deleteDownloadedFiles = deleteDownloadedFiles;
+    }
+
+    /**
+     * @param failPath the failPath to set
+     */
+    public void setFailPath(String failPath) {
+        this.failPath = failPath;
+    }
+
+    /**
+     * @param filePattern the filePattern to set
+     */
+    public void setFilePattern(String filePattern) {
+        this.filePattern = filePattern;
+    }
+
+    /**
+     * @param geoserverDataDirectory the path to the GeoserverDataDirectory
+     */
+    public void setGeoserverDataDirectory(String geoserverDataDirectory) {
+        this.geoserverDataDirectory = geoserverDataDirectory;
+    }
+
+    /**
+     * @param geoserverPWD the password for the current GeoServer instance
+     */
+    public void setGeoserverPWD(String geoserverPWD) {
+        this.geoserverPWD = geoserverPWD;
+    }
+
+    /**
+     * @param geoserverUID the User ID for the current GeoServer instance
+     */
+    public void setGeoserverUID(String geoserverUID) {
+        this.geoserverUID = geoserverUID;
+    }
+
+    /**
+     * @param geoserverURL the URL of the current GeoServer instance
+     */
+    public void setGeoserverURL(String geoserverURL) {
+        this.geoserverURL = geoserverURL;
+    }
+
+    /**
+     * @param inputPath the inputPath to set
+     */
+    public void setInputPath(String inputPath) {
+        this.inputPath = inputPath;
+    }
+
+    /**
+     * @param inputRemotePath the inputRemotePath to set
+     */
+    public void setInputRemotePath(String inputRemotePath) {
+        this.inputRemotePath = inputRemotePath;
+    }
+
+    /**
+     * @param metocDictionaryPath the path of the Metoc Dictionary File
+     */
+    public void setMetocDictionaryPath(String metocDictionaryPath) {
+        this.metocDictionaryPath = metocDictionaryPath;
+    }
+
+    /**
+     * @param productsTableName the name of the Products Table to set
+     */
+    public void setProductsTableName(String productsTableName) {
+        this.productsTableName = productsTableName;
+    }
+
+    /**
+     * @param remoteBrowserConfiguration the remoteBrowserConfiguration to set
+     */
+    public void setRemoteBrowserConfiguration(RemoteBrowserConfiguration remoteBrowserConfiguration) {
+        this.remoteBrowserConfiguration = remoteBrowserConfiguration;
     }
 
     /**
@@ -167,13 +362,6 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
     }
 
     /**
-     * @return the storeLocal
-     */
-    public boolean isStoreLocal() {
-        return storeLocal;
-    }
-
-    /**
      * @param storeLocal the storeLocal to set
      */
     public void setStoreLocal(boolean storeLocal) {
@@ -181,52 +369,10 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
     }
 
     /**
-     * @return the deleteDownloadedFiles
+     * @param subconfigurations the various SubConfiguration map
      */
-    public boolean isDeleteDownloadedFiles() {
-        return deleteDownloadedFiles;
-    }
-
-    /**
-     * @param deleteDownloadedFiles the deleteDownloadedFiles to set
-     */
-    public void setDeleteDownloadedFiles(boolean deleteDownloadedFiles) {
-        this.deleteDownloadedFiles = deleteDownloadedFiles;
-    }
-
-    /**
-     * @return the inputRemotePath
-     */
-    public String getInputRemotePath() {
-        return inputRemotePath;
-    }
-
-    /**
-     * @param inputRemotePath the inputRemotePath to set
-     */
-    public void setInputRemotePath(String inputRemotePath) {
-        this.inputRemotePath = inputRemotePath;
-    }
-
-    /**
-     * @return the inputPath
-     */
-    public String getInputPath() {
-        return inputPath;
-    }
-
-    /**
-     * @param inputPath the inputPath to set
-     */
-    public void setInputPath(String inputPath) {
-        this.inputPath = inputPath;
-    }
-
-    /**
-     * @return the succesPath
-     */
-    public String getSuccesPath() {
-        return succesPath;
+    public void setSubconfigurations(Map<String, ConfigurationContainer> subconfigurations) {
+        this.subconfigurations = subconfigurations;
     }
 
     /**
@@ -237,157 +383,10 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
     }
 
     /**
-     * @return the failPath
-     */
-    public String getFailPath() {
-        return failPath;
-    }
-
-    /**
-     * @param failPath the failPath to set
-     */
-    public void setFailPath(String failPath) {
-        this.failPath = failPath;
-    }
-
-    /**
-     * @return the filePattern
-     */
-    public String getFilePattern() {
-        return filePattern;
-    }
-
-    /**
-     * @param filePattern the filePattern to set
-     */
-    public void setFilePattern(String filePattern) {
-        this.filePattern = filePattern;
-    }
-
-    /**
-     * @return the checkIfExists
-     */
-    public boolean isCheckIfExists() {
-        return checkIfExists;
-    }
-
-    /**
-     * @param checkIfExists the checkIfExists to set
-     */
-    public void setCheckIfExists(boolean checkIfExists) {
-        this.checkIfExists = checkIfExists;
-    }
-
-    /**
-     * @return the timeFormatConfiguration
-     */
-    public TimeFormatConfiguration getTimeFormatConfiguration() {
-        return timeFormatConfiguration;
-    }
-
-    /**
      * @param timeFormatConfiguration the timeFormatConfiguration to set
      */
     public void setTimeFormatConfiguration(TimeFormatConfiguration timeFormatConfiguration) {
         this.timeFormatConfiguration = timeFormatConfiguration;
-    }
-
-    /**
-     * @return the Products Table name
-     */
-    public String getProductsTableName() {
-        return productsTableName;
-    }
-
-    /**
-     * @param productsTableName the name of the Products Table to set
-     */
-    public void setProductsTableName(String productsTableName) {
-        this.productsTableName = productsTableName;
-    }
-
-    /**
-     * @return the GeoServerDataDirectory path
-     */
-    public String getGeoserverDataDirectory() {
-        return geoserverDataDirectory;
-    }
-
-    /**
-     * @param geoserverDataDirectory the path to the GeoserverDataDirectory
-     */
-    public void setGeoserverDataDirectory(String geoserverDataDirectory) {
-        this.geoserverDataDirectory = geoserverDataDirectory;
-    }
-
-    /**
-     * @return the Metoc-Dictionary path
-     */
-    public String getMetocDictionaryPath() {
-        return metocDictionaryPath;
-    }
-
-    /**
-     * @param metocDictionaryPath the path of the Metoc Dictionary File
-     */
-    public void setMetocDictionaryPath(String metocDictionaryPath) {
-        this.metocDictionaryPath = metocDictionaryPath;
-    }
-
-    /**
-     * @return the GeoServer password
-     */
-    public String getGeoserverPWD() {
-        return geoserverPWD;
-    }
-
-    /**
-     * @param geoserverPWD the password for the current GeoServer instance
-     */
-    public void setGeoserverPWD(String geoserverPWD) {
-        this.geoserverPWD = geoserverPWD;
-    }
-
-    /**
-     * @return the GeoServer User ID
-     */
-    public String getGeoserverUID() {
-        return geoserverUID;
-    }
-
-    /**
-     * @param geoserverUID the User ID for the current GeoServer instance
-     */
-    public void setGeoserverUID(String geoserverUID) {
-        this.geoserverUID = geoserverUID;
-    }
-
-    /**
-     * @return the GeoServer URL
-     */
-    public String getGeoserverURL() {
-        return geoserverURL;
-    }
-
-    /**
-     * @param geoserverURL the URL of the current GeoServer instance
-     */
-    public void setGeoserverURL(String geoserverURL) {
-        this.geoserverURL = geoserverURL;
-    }
-
-    /**
-     * @return the various SubConfiguration map
-     */
-    public Map<String, ConfigurationContainer> getSubconfigurations() {
-        return subconfigurations;
-    }
-
-    /**
-     * @param subconfigurations the various SubConfiguration map
-     */
-    public void setSubconfigurations(Map<String, ConfigurationContainer> subconfigurations) {
-        this.subconfigurations = subconfigurations;
     }
 
 }

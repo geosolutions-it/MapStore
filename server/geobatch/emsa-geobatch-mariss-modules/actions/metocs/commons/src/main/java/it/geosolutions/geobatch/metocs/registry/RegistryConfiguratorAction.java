@@ -38,36 +38,13 @@ import java.util.logging.Logger;
  * @version $ GeoServerAction.java $ Revision: 0.1 $ 12/feb/07 12:07:06
  */
 
-public abstract class RegistryConfiguratorAction extends BaseAction<FileSystemEvent>
-        implements Action<FileSystemEvent> {
+public abstract class RegistryConfiguratorAction extends BaseAction<FileSystemEvent> implements
+        Action<FileSystemEvent> {
     /**
      * Default logger
      */
     protected final static Logger LOGGER = Logger.getLogger(RegistryConfiguratorAction.class
             .toString());
-
-    protected final RegistryActionConfiguration configuration;
-
-    /**
-     * Constructs a producer. The operation name will be the same than the parameter descriptor
-     * name.
-     * 
-     * @throws IOException
-     */
-    public RegistryConfiguratorAction(RegistryActionConfiguration configuration) {
-        super(configuration);
-        this.configuration = configuration;
-        // //
-        //
-        // get required parameters
-        //
-        // //
-
-        if ((configuration.getGeoserverURL() == null) || "".equals(configuration.getGeoserverURL())) {
-            throw new IllegalStateException("GeoServerURL is null.");
-        }
-
-    }
 
     /**
      * @param queryParams
@@ -84,6 +61,28 @@ public abstract class RegistryConfiguratorAction extends BaseAction<FileSystemEv
             }
 
         return queryString.toString();
+    }
+
+    protected final RegistryActionConfiguration configuration;
+
+    /**
+     * Constructs a producer. The operation name will be the same than the parameter descriptor name.
+     * 
+     * @throws IOException
+     */
+    public RegistryConfiguratorAction(RegistryActionConfiguration configuration) {
+        super(configuration);
+        this.configuration = configuration;
+        // //
+        //
+        // get required parameters
+        //
+        // //
+
+        if ((configuration.getGeoserverURL() == null) || "".equals(configuration.getGeoserverURL())) {
+            throw new IllegalStateException("GeoServerURL is null.");
+        }
+
     }
 
     public RegistryActionConfiguration getConfiguration() {

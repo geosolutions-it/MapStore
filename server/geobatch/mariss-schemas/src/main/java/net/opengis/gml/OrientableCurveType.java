@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,13 +13,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * OrientableCurve consists of a curve and an orientation. If the orientation is "+", then the OrientableCurve is identical to the baseCurve. If the orientation is "-", then the OrientableCurve is related to another _Curve with a parameterization that reverses the sense of the curve traversal.
+ * OrientableCurve consists of a curve and an orientation. If the orientation is "+", then the OrientableCurve is identical to the baseCurve. If the
+ * orientation is "-", then the OrientableCurve is related to another _Curve with a parameterization that reverses the sense of the curve traversal.
  * 
- * <p>Java class for OrientableCurveType complex type.
+ * <p>
+ * Java class for OrientableCurveType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="OrientableCurveType">
@@ -38,50 +39,31 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "OrientableCurveType", propOrder = {
-    "baseCurve"
-})
-public class OrientableCurveType
-    extends AbstractCurveType
-{
+@XmlType(name = "OrientableCurveType", propOrder = { "baseCurve" })
+public class OrientableCurveType extends AbstractCurveType {
 
     @XmlElement(required = true)
     protected CurvePropertyType baseCurve;
+
     @XmlAttribute
     protected String orientation;
 
     /**
-     * References or contains the base curve (positive orientation).
-     * NOTE: This definition allows for a nested structure, i.e. an OrientableCurve may use another OrientableCurve as its base curve.
+     * References or contains the base curve (positive orientation). NOTE: This definition allows for a nested structure, i.e. an OrientableCurve may
+     * use another OrientableCurve as its base curve.
      * 
-     * @return
-     *     possible object is
-     *     {@link CurvePropertyType }
-     *     
+     * @return possible object is {@link CurvePropertyType }
+     * 
      */
     public CurvePropertyType getBaseCurve() {
         return baseCurve;
     }
 
     /**
-     * Sets the value of the baseCurve property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link CurvePropertyType }
-     *     
-     */
-    public void setBaseCurve(CurvePropertyType value) {
-        this.baseCurve = value;
-    }
-
-    /**
      * Gets the value of the orientation property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getOrientation() {
         if (orientation == null) {
@@ -92,12 +74,20 @@ public class OrientableCurveType
     }
 
     /**
+     * Sets the value of the baseCurve property.
+     * 
+     * @param value allowed object is {@link CurvePropertyType }
+     * 
+     */
+    public void setBaseCurve(CurvePropertyType value) {
+        this.baseCurve = value;
+    }
+
+    /**
      * Sets the value of the orientation property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setOrientation(String value) {
         this.orientation = value;

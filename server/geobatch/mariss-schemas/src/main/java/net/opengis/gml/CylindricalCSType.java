@@ -5,20 +5,21 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A three-dimensional coordinate system consisting of a polar coordinate system extended by a straight coordinate axis perpendicular to the plane spanned by the polar coordinate system. A CylindricalCS shall have three usesAxis associations. 
+ * A three-dimensional coordinate system consisting of a polar coordinate system extended by a straight coordinate axis perpendicular to the plane
+ * spanned by the polar coordinate system. A CylindricalCS shall have three usesAxis associations.
  * 
- * <p>Java class for CylindricalCSType complex type.
+ * <p>
+ * Java class for CylindricalCSType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="CylindricalCSType">
@@ -33,9 +34,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CylindricalCSType")
-public class CylindricalCSType
-    extends AbstractCoordinateSystemType
-{
-
+public class CylindricalCSType extends AbstractCoordinateSystemType {
 
 }

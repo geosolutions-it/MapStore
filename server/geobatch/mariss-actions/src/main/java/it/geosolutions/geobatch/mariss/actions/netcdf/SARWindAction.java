@@ -13,13 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXBException;
 
@@ -44,8 +39,62 @@ public class SARWindAction extends NetCDFAction {
     }
 
     @Override
-    protected File[] writeNetCDF(File tempDir, String inputFileName, List<String> cfNames, AttributeBean attributeBean)
-            throws IOException, ActionException {
+    protected boolean canProcessFile(File netcdfFile) {
+        if (netcdfFile != null) {
+            String fileName = netcdfFile.getName();
+            if (fileName != null && !fileName.isEmpty()) {
+                return fileName.contains("wind");
+            }
+        }
+        return false;
+    }
+
+    public void fillVariablesMaps(NetcdfFile ncFileIn, Metocs metocDictionary,
+            AttributeBean attributeBean) throws UnsupportedEncodingException {
+        for (Object obj : ncFileIn.getVariables()) {
+            final Variable var = (Variable) obj;
+            final String varName = var.getName();
+            if (!varName.equalsIgnoreCase("longitude") && !varName.equalsIgnoreCase("latitude")
+                    && !varName.equalsIgnoreCase("mask")) {
+
+                if (attributeBean.foundVariables.get(varName) == null) {
+                    String longName = null;
+                    String briefName = null;
+                    String uom = null;
+
+                    // TODO CHANGE ME
+                    for (MetocElementType m : metocDictionary.getMetoc()) {
+                        if ((varName.equalsIgnoreCase("wind_speed") && m.getName().equals(
+                                "wind speed"))
+                                || (varName.equalsIgnoreCase("wind_direction") && m.getName()
+                                        .equals("wind direction"))) {
+                            longName = m.getName();
+                            briefName = m.getBrief();
+                            uom = m.getDefaultUom();
+                            uom = uom.indexOf(":") > 0 ? URLDecoder.decode(
+                                    uom.substring(uom.lastIndexOf(":") + 1), "UTF-8") : uom;
+                            break;
+                        }
+                    }
+
+                    if (longName != null && briefName != null) {
+                        attributeBean.foundVariables.put(varName, var);
+                        attributeBean.foundVariableLongNames.put(varName, longName);
+                        attributeBean.foundVariableBriefNames.put(varName, briefName);
+                        attributeBean.foundVariableUoM.put(varName, uom);
+                    }
+                }
+            }
+        }
+    }
+
+    protected String getActionName() {
+        return "wind";
+    }
+
+    @Override
+    protected File[] writeNetCDF(File tempDir, String inputFileName, List<String> cfNames,
+            AttributeBean attributeBean) throws IOException, ActionException {
 
         String fileBaseName = FilenameUtils.getBaseName(inputFileName);
 
@@ -103,8 +152,8 @@ public class SARWindAction extends NetCDFAction {
                     // ////
                     // ... create the output file
                     // ////
-                    outputFiles[index] = new File(directory, fileBaseName + SEPARATOR + varName.trim()
-                            + ".nc");
+                    outputFiles[index] = new File(directory, fileBaseName + SEPARATOR
+                            + varName.trim() + ".nc");
                     outputFiles[index].createNewFile();
                     // ////
                     // ... create the output file data structure
@@ -125,13 +174,15 @@ public class SARWindAction extends NetCDFAction {
 
                     // defining the file header and structure
                     double noData = definingOutputVariables(false, az_size.getLength(),
-                            ra_size.getLength(), writable, ncFileIn, hasTime, numTime, varName, attributeBean);
+                            ra_size.getLength(), writable, ncFileIn, hasTime, numTime, varName,
+                            attributeBean);
 
                     // writing bin data ...
                     try {
-                        writingDataSets(varName, ra_size, az_size, null, attributeBean.timedim, hasTime,
-                                lonOriginalData, latOriginalData, noData, null, latDataType,
-                                lonDataType, attributeBean.env, ncFileIn, writable, attributeBean);
+                        writingDataSets(varName, ra_size, az_size, null, attributeBean.timedim,
+                                hasTime, lonOriginalData, latOriginalData, noData, null,
+                                latDataType, lonDataType, attributeBean.env, ncFileIn, writable,
+                                attributeBean);
                     } catch (InvalidRangeException e) {
                         throw new ActionException(SARWindAction.class, e.getLocalizedMessage());
                     }
@@ -163,61 +214,12 @@ public class SARWindAction extends NetCDFAction {
         return outputFiles;
     }
 
-    @Override
-    protected boolean canProcessFile(File netcdfFile) {
-        if (netcdfFile != null) {
-            String fileName = netcdfFile.getName();
-            if (fileName != null && !fileName.isEmpty()) {
-                return fileName.contains("wind");
-            }
-        }
-        return false;
-    }
-
-    public void fillVariablesMaps(NetcdfFile ncFileIn, Metocs metocDictionary, AttributeBean attributeBean)
-            throws UnsupportedEncodingException {
-        for (Object obj : ncFileIn.getVariables()) {
-            final Variable var = (Variable) obj;
-            final String varName = var.getName();
-            if (!varName.equalsIgnoreCase("longitude") && !varName.equalsIgnoreCase("latitude")
-                    && !varName.equalsIgnoreCase("mask")) {
-
-                if (attributeBean.foundVariables.get(varName) == null) {
-                    String longName = null;
-                    String briefName = null;
-                    String uom = null;
-
-                    // TODO CHANGE ME
-                    for (MetocElementType m : metocDictionary.getMetoc()) {
-                        if ((varName.equalsIgnoreCase("wind_speed") && m.getName().equals(
-                                "wind speed"))
-                                || (varName.equalsIgnoreCase("wind_direction") && m.getName()
-                                        .equals("wind direction"))) {
-                            longName = m.getName();
-                            briefName = m.getBrief();
-                            uom = m.getDefaultUom();
-                            uom = uom.indexOf(":") > 0 ? URLDecoder.decode(
-                                    uom.substring(uom.lastIndexOf(":") + 1), "UTF-8") : uom;
-                            break;
-                        }
-                    }
-
-                    if (longName != null && briefName != null) {
-                        attributeBean.foundVariables.put(varName, var);
-                        attributeBean.foundVariableLongNames.put(varName, longName);
-                        attributeBean.foundVariableBriefNames.put(varName, briefName);
-                        attributeBean.foundVariableUoM.put(varName, uom);
-                    }
-                }
-            }
-        }
-    }
-
     protected void writingDataSets(String varName, Dimension ra_size, Dimension az_size,
             Dimension depthDim, Date time, boolean hasTime, Array lonOriginalData,
             Array latOriginalData, double noData, Array timeOriginalData, DataType latDataType,
             DataType lonDataType, GeneralEnvelope envelope, NetcdfFile ncFileIn,
-            NetcdfFileWriteable ncFileOut, AttributeBean attributeBean) throws IOException, InvalidRangeException {
+            NetcdfFileWriteable ncFileOut, AttributeBean attributeBean) throws IOException,
+            InvalidRangeException {
 
         double[] bbox = new double[] { envelope.getLowerCorner().getOrdinate(0),
                 envelope.getLowerCorner().getOrdinate(1), envelope.getUpperCorner().getOrdinate(0),
@@ -253,7 +255,7 @@ public class SARWindAction extends NetCDFAction {
         // time Variable data
         if (hasTime) {
             Array timeData = NetCDFConverterUtilities.getArray(1, DataType.INT);
-            timeData.setObject(0, (int)(time.getTime() / 1000));
+            timeData.setObject(0, (int) (time.getTime() / 1000));
             ncFileOut.write(NetCDFUtils.TIME_DIM, timeData);
         }
 
@@ -281,7 +283,8 @@ public class SARWindAction extends NetCDFAction {
         userRaster = NetCDFUtils.warping(bbox, lonOriginalData, latOriginalData,
                 ra_size.getLength(), az_size.getLength(), 2, userRaster, (float) noData, false);
 
-        final Variable outVar = ncFileOut.findVariable(attributeBean.foundVariableBriefNames.get(varName));
+        final Variable outVar = ncFileOut.findVariable(attributeBean.foundVariableBriefNames
+                .get(varName));
         final Array outVarData = outVar.read();
 
         int[] dimensions = new int[hasTime ? 3 : 2];
@@ -300,9 +303,5 @@ public class SARWindAction extends NetCDFAction {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("File Resampling completed in file: " + ncFileOut.getDetailInfo());
         }
-    }
-
-    protected String getActionName() {
-        return "wind";
     }
 }

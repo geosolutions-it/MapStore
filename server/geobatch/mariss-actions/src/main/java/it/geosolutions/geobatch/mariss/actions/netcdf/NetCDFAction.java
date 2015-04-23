@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -70,28 +71,27 @@ import com.vividsolutions.jts.geom.Geometry;
 
 public abstract class NetCDFAction extends BaseAction<EventObject> {
 
-    protected static final String SEPARATOR = "_Var_";
-    
-    private static final String SERVICE_SEPARATOR = "_s_";
-    
-    private static final String IDENTIFIER_SEPARATOR = "_I_";
+    static class AttributeBean {
 
-    private static final String PATHSEPARATOR = File.separator;
+        Map<String, Variable> foundVariables = new HashMap<String, Variable>();
 
-    protected final IngestionActionConfiguration configuration;
+        Map<String, String> foundVariableLongNames = new HashMap<String, String>();
 
-    private final ConfigurationContainer container;
+        Map<String, String> foundVariableBriefNames = new HashMap<String, String>();
 
-    public NetCDFAction(IngestionActionConfiguration actionConfiguration) {
-        super(actionConfiguration);
-        configuration = actionConfiguration;
-        ConfigurationContainer container = actionConfiguration.getContainer();
-        if (container == null || container.getParams() == null
-                || !container.getParams().containsKey(ConfigurationUtils.NETCDF_DIRECTORY_KEY)) {
-            throw new RuntimeException("Wrong configuration defined");
-        } else {
-            this.container = container;
-        }
+        Map<String, String> foundVariableUoM = new HashMap<String, String>();
+
+        Date timedim;
+
+        SARType type;
+
+        GeneralEnvelope env;
+
+        String absolutePath;
+
+        String identifier;
+
+        JDBCDataStore dataStore;
     }
 
     public enum SARType {
@@ -115,6 +115,236 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             // Nothing matches, returning null
             return null;
         }
+    }
+
+    protected static final String SEPARATOR = "_Var_";
+
+    private static final String SERVICE_SEPARATOR = "_s_";
+
+    private static final String IDENTIFIER_SEPARATOR = "_I_";
+
+    private static final String PATHSEPARATOR = File.separator;
+
+    protected final IngestionActionConfiguration configuration;
+
+    private final ConfigurationContainer container;
+
+    public NetCDFAction(IngestionActionConfiguration actionConfiguration) {
+        super(actionConfiguration);
+        configuration = actionConfiguration;
+        ConfigurationContainer container = actionConfiguration.getContainer();
+        if (container == null || container.getParams() == null
+                || !container.getParams().containsKey(ConfigurationUtils.NETCDF_DIRECTORY_KEY)) {
+            throw new RuntimeException("Wrong configuration defined");
+        } else {
+            this.container = container;
+        }
+    }
+
+    /**
+     * Check if a file can be processed in this action. To override in actions
+     * 
+     * @param event
+     * @return
+     */
+    public boolean canProcess(FileSystemEvent event) {
+        File file = event.getSource();
+        String extension = FilenameUtils.getExtension(file.getName());
+        return extension != null && !extension.isEmpty() && (extension.equalsIgnoreCase("tgz"));
+    }
+
+    protected abstract boolean canProcessFile(File netcdfFile);
+
+    @Override
+    public boolean checkConfiguration() {
+        // Checking if the NetCDF directory is defined
+        Map<String, String> params = container.getParams();
+        String dir = (params != null && params.containsKey(ConfigurationUtils.NETCDF_DIRECTORY_KEY)) ? params
+                .get(ConfigurationUtils.NETCDF_DIRECTORY_KEY) : null;
+        // Initial check
+        boolean exists = dir != null && !dir.isEmpty();
+        if (exists) {
+            File f = new File(dir);
+            return f != null && f.exists() && f.canWrite() && f.canRead();
+        } else {
+            return false;
+        }
+    }
+
+    protected void createDatastoreFile(File mosaicDir, String varName) throws IOException {
+        Map<String, Serializable> dsParams = configuration.getOutputFeature().getDataStore();
+        
+        final String host = (String) dsParams.get("host");
+        final String port = (String) dsParams.get("port");
+        final String schema = (String) dsParams.get("schema");
+        final String user = (String) dsParams.get("user");
+        final String passwd = (String) dsParams.get("passwd");
+        
+        File datastore = new File(mosaicDir, "datastore.properties");
+        datastore.createNewFile();
+        String properties = "user="+user+"\n" + "port="+port+"\n" + "passwd="+passwd+"\n"
+                + "host="+host+"\n" + "database=" + varName + "\n"
+                + "driver=org.postgresql.Driver\n" + "schema="+schema+"\n"
+                + "Estimated\\ extends=false\n"
+                + "SPI=org.geotools.data.postgis.PostgisNGDataStoreFactory";
+        FileUtils.write(datastore, properties);
+    }
+
+    protected void createIndexerFile(File mosaicDir, String varName, String serviceName)
+            throws IOException {
+        File indexer = new File(mosaicDir, "indexer.properties");
+        indexer.createNewFile();
+        String properties = "TimeAttribute=time\n"
+                + "Schema=*the_geom:Polygon,location:String,time:java.util.Date,service:String,identifier:String\n"
+                + "PropertyCollectors=StringFileNameExtractorSPI[serviceregex](service),"
+                + "StringFileNameExtractorSPI[identifierregex](identifier)";
+        FileUtils.write(indexer, properties);
+    }
+
+    protected void createRegexFiles(File mosaicDir, String varName) throws IOException {
+        // REGEX for Service Name
+        File serviceRegex = new File(mosaicDir, "serviceregex.properties");
+        serviceRegex.createNewFile();
+        String properties = "regex=" + "(?<=" + SERVICE_SEPARATOR + ")[a-zA-Z]*" + "(?="
+                + SERVICE_SEPARATOR + ")";
+        FileUtils.write(serviceRegex, properties);
+        // REGEX for Identifier
+        File identifierRegex = new File(mosaicDir, "identifierregex.properties");
+        identifierRegex.createNewFile();
+        String identifierProperties = "regex=" + "(?<=" + IDENTIFIER_SEPARATOR + ").*" + "(?="
+                + IDENTIFIER_SEPARATOR + ")";
+        FileUtils.write(identifierRegex, identifierProperties);
+    }
+
+    protected double definingOutputVariables(boolean hasDepth, int nLat, int nLon,
+            NetcdfFileWriteable ncFileOut, NetcdfFile ncFileIn, boolean hasTimeDim, int nTime,
+            String varName, AttributeBean attributeBean) {
+        /**
+         * createNetCDFCFGeodeticDimensions( NetcdfFileWriteable ncFileOut, final boolean hasTimeDim, final int tDimLength, final boolean hasZetaDim,
+         * final int zDimLength, final String zOrder, final boolean hasLatDim, final int latDimLength, final boolean hasLonDim, final int
+         * lonDimLength)
+         */
+        final List<Dimension> outDimensions = NetCDFUtils.createNetCDFCFGeodeticDimensions(
+                ncFileOut, true, nLat, true, nLon, DataType.FLOAT, hasTimeDim, nTime);
+        // Adding old dimensions
+        outDimensions.addAll(getOldDimensions(ncFileIn, attributeBean));
+        // Filtering az_size/ra_size dimensions
+        List<Dimension> finalDims = new ArrayList<Dimension>(outDimensions);
+        for (Dimension dim : outDimensions) {
+            String name = dim.getName();
+            if (dim != null
+                    && (name.equalsIgnoreCase("AZ_SIZE") || name.equalsIgnoreCase("RA_SIZE"))) {
+                finalDims.remove(dim);
+            }
+        }
+        // NoData value to set
+        double noData = Double.NaN;
+
+        // defining output variable
+        // SIMONE: replaced foundVariables.get(varName).getDataType()
+        // with DataType.DOUBLE
+        ncFileOut.addVariable(attributeBean.foundVariableBriefNames.get(varName),
+                attributeBean.foundVariables.get(varName).getDataType(), finalDims);
+        ncFileOut.addVariableAttribute(attributeBean.foundVariableBriefNames.get(varName),
+                "long_name", attributeBean.foundVariableLongNames.get(varName));
+        ncFileOut.addVariableAttribute(attributeBean.foundVariableBriefNames.get(varName), "units",
+                attributeBean.foundVariableUoM.get(varName));
+        ncFileOut.addVariableAttribute(attributeBean.foundVariableBriefNames.get(varName),
+                NetCDFUtilities.DatasetAttribs.MISSING_VALUE, noData);
+
+        return noData;
+    }
+
+    private Collection<EventObject> doProcess(File netcdfFile, AttributeBean attributeBean)
+            throws ActionException {
+        // Creation of the Output Event Queue
+        List<EventObject> events = new ArrayList<EventObject>();
+
+        // Ingestion of the input NetCDF data
+        String inputFileName = netcdfFile.getAbsolutePath();
+
+        LOGGER.info("Working on " + inputFileName);
+        // Getting temporary directory
+        File tempDir = getTempDir();
+        // Generation of the output NetCDF (CF Compliant)
+        LOGGER.info("Call writeDownNetCDF");
+        File[] createdFiles = null;
+        List<String> cfNames = new ArrayList<String>();
+        try {
+            createdFiles = writeNetCDF(tempDir, inputFileName, cfNames, attributeBean);
+        } catch (IOException e) {
+            throw new ActionException(NetCDFAction.class, e.getLocalizedMessage());
+        }
+
+        // After creating the final file, start the ingestion
+        if (createdFiles != null && createdFiles.length > 0) {
+
+            // Configuring REST publisher support
+            GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
+                    configuration.getGeoserverURL(), configuration.getGeoserverUID(),
+                    configuration.getGeoserverPWD());
+            GeoServerRESTReader reader;
+            try {
+                reader = new GeoServerRESTReader(configuration.getGeoserverURL(),
+                        configuration.getGeoserverUID(), configuration.getGeoserverPWD());
+
+                String namespace = container.getDefaultNameSpace();
+                String namespaceURI = container.getDefaultNameSpace();
+
+                if (!reader.existsWorkspace(namespace)) {
+                    WorkspaceUtils.createWorkspace(reader, publisher, namespace, namespaceURI);
+                }
+            } catch (MalformedURLException e) {
+                throw new ActionException(NetCDFAction.class, e.getLocalizedMessage());
+            } catch (URISyntaxException e) {
+                throw new ActionException(NetCDFAction.class, e.getLocalizedMessage());
+            }
+
+            // If the mosaic is not already configured we must configure it, otherwise we do harvesting
+            File[] finalFiles = new File[createdFiles.length];
+            String[] layerNames = new String[createdFiles.length];
+            // Boolean indicating if the operation has gone
+            boolean sent = handleMosaic(reader, publisher, createdFiles, finalFiles, layerNames,
+                    attributeBean.identifier);
+
+            // Move the original netCDF File in the netcdf directory
+
+            // Creating a subdirectory of the NetCDF directory
+            File netcdfDir = new File(container.getParams().get(
+                    ConfigurationUtils.NETCDF_DIRECTORY_KEY));
+            if (!netcdfDir.exists() || !netcdfDir.canWrite()) {
+                throw new ActionException(NetCDFAction.class, "Unable to find NetCDF directory");
+            }
+
+            if (sent) {
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info("Coverage SUCCESSFULLY sent to GeoServer!");
+                }
+                int index = 0;
+                // Create a Geometry for the NetCDF envelope
+                Geometry geo = JTS.toGeometry(new ReferencedEnvelope(attributeBean.env));
+                CoordinateReferenceSystem crs = attributeBean.env.getCoordinateReferenceSystem();
+                geo.setUserData(crs);
+                for (File f : finalFiles) {
+                    // ... setting up the appropriate event for the next action
+                    events.add(new FileSystemEvent(f, FileSystemEventType.FILE_ADDED));
+                    // Update DataStore
+                    insertDb(attributeBean, f.getAbsolutePath(), layerNames[index],
+                            cfNames.get(index), geo);
+                    // Updating array index
+                    index++;
+                }
+            } else {
+                final String message = "Coverage was NOT sent to GeoServer due to connection errors!";
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info(message);
+                }
+                if (!configuration.isFailIgnored()) {
+                    throw new ActionException(NetCDFAction.class, message);
+                }
+            }
+        }
+        return events;
     }
 
     /**
@@ -176,7 +406,8 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                             }
                             if (canProcessFile(netcdfFile)) {
                                 // Getting the File identifier
-                                String identifier = inputFile.getName().substring(0, inputFile.getName().length() - 8);
+                                String identifier = inputFile.getName().substring(0,
+                                        inputFile.getName().length() - 8);
                                 attributeBean.identifier = identifier;
                                 // Getting SARType
                                 attributeBean.type = SARType.getType(getActionName());
@@ -195,9 +426,10 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                     attributeBean.dataStore = (JDBCDataStore) ds;
                                     attributeBean.dataStore.setExposePrimaryKeyColumns(true);
                                     // return next events configurations
-                                    Collection<EventObject> resultEvents = doProcess(netcdfFile, attributeBean);
+                                    Collection<EventObject> resultEvents = doProcess(netcdfFile,
+                                            attributeBean);
                                     ret.addAll(resultEvents);
-                                    
+
                                     // Prepare a Zip file containing the ShipDetection XML files
                                     // Filtering the files
                                     IOFileFilter file = FileFilterUtils.fileFileFilter();
@@ -205,31 +437,45 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                     IOFileFilter dsFilter = new RegexFileFilter(".*_DS.*");
                                     FileFilter and = FileFilterUtils.and(file, xml, dsFilter);
                                     File[] files = netcdfDir.listFiles(and);
-                                    
+
                                     // Listing XML files
                                     if (files != null && files.length > 0) {
                                         int numFiles = files.length;
                                         // Append a txt file with the UID
-                                        File properties = new File(files[0].getParentFile(), "netcdf.properties");
+                                        File properties = new File(files[0].getParentFile(),
+                                                "netcdf.properties");
                                         properties.createNewFile();
                                         // Append Useful properties
-                                        FileUtils.write(properties, "identifier=" + identifier + "\n");
-                                        if(attributeBean.timedim != null){
-                                            FileUtils.write(properties, "time=" + new Timestamp(attributeBean.timedim.getTime()) + "\n", true);
+                                        FileUtils.write(properties, "identifier=" + identifier
+                                                + "\n");
+                                        if (attributeBean.timedim != null) {
+                                            FileUtils.write(
+                                                    properties,
+                                                    "time="
+                                                            + new Timestamp(attributeBean.timedim
+                                                                    .getTime()) + "\n", true);
                                         }
-                                        FileUtils.write(properties, "originalFileName=" + netcdfFile.getName() + "\n", true);
-                                        FileUtils.write(properties, "sartype=" + attributeBean.type + "\n", true);
-                                        FileUtils.write(properties, "envelope=" + new ReferencedEnvelope(attributeBean.env) + "\n", true);
-                                        FileUtils.write(properties, "service=" + configuration.getServiceName() + "\n", true);
+                                        FileUtils.write(properties, "originalFileName="
+                                                + netcdfFile.getName() + "\n", true);
+                                        FileUtils.write(properties, "sartype=" + attributeBean.type
+                                                + "\n", true);
+                                        FileUtils.write(properties, "envelope="
+                                                + new ReferencedEnvelope(attributeBean.env) + "\n",
+                                                true);
+                                        FileUtils.write(properties,
+                                                "service=" + configuration.getServiceName() + "\n",
+                                                true);
                                         File[] filesUpdated = new File[numFiles + 1];
                                         System.arraycopy(files, 0, filesUpdated, 0, numFiles);
                                         filesUpdated[numFiles] = properties;
                                         // Creating new Zip file where the XML files must be zipped
                                         File targetZipFile = new File(netcdfDir,
-                                                FilenameUtils.getBaseName(netcdfDir.getName()) + ".zip");
+                                                FilenameUtils.getBaseName(netcdfDir.getName())
+                                                        + ".zip");
                                         zipFile(files, targetZipFile);
                                         // Append to the event list
-                                        ret.add(new FileSystemEvent(targetZipFile, FileSystemEventType.FILE_ADDED));
+                                        ret.add(new FileSystemEvent(targetZipFile,
+                                                FileSystemEventType.FILE_ADDED));
                                     }
                                 } finally {
                                     ds.dispose();
@@ -258,96 +504,20 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         return ret;
     }
 
-    protected abstract boolean canProcessFile(File netcdfFile);
+    protected abstract String getActionName();
 
-    private Collection<EventObject> doProcess(File netcdfFile, AttributeBean attributeBean) throws ActionException {
-        // Creation of the Output Event Queue
-        List<EventObject> events = new ArrayList<EventObject>();
-
-        // Ingestion of the input NetCDF data
-        String inputFileName = netcdfFile.getAbsolutePath();
-
-        LOGGER.info("Working on " + inputFileName);
-        // Getting temporary directory
-        File tempDir = getTempDir();
-        // Generation of the output NetCDF (CF Compliant)
-        LOGGER.info("Call writeDownNetCDF");
-        File[] createdFiles = null;
-        List<String> cfNames = new ArrayList<String>();
-        try {
-            createdFiles = writeNetCDF(tempDir, inputFileName, cfNames, attributeBean);
-        } catch (IOException e) {
-            throw new ActionException(NetCDFAction.class, e.getLocalizedMessage());
-        }
-
-        // After creating the final file, start the ingestion
-        if (createdFiles != null && createdFiles.length > 0) {
-
-            // Configuring REST publisher support
-            GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
-                    configuration.getGeoserverURL(), configuration.getGeoserverUID(),
-                    configuration.getGeoserverPWD());
-            GeoServerRESTReader reader;
-            try {
-                reader = new GeoServerRESTReader(configuration.getGeoserverURL(),
-                        configuration.getGeoserverUID(), configuration.getGeoserverPWD());
-
-                String namespace = container.getDefaultNameSpace();
-                String namespaceURI = container.getDefaultNameSpace();
-                
-                if (!reader.existsWorkspace(namespace)) {
-                    WorkspaceUtils.createWorkspace(reader, publisher,
-                            namespace,
-                            namespaceURI);
-                }
-            } catch (MalformedURLException e) {
-                throw new ActionException(NetCDFAction.class, e.getLocalizedMessage());
-            } catch (URISyntaxException e) {
-                throw new ActionException(NetCDFAction.class, e.getLocalizedMessage());
-            }
-
-            // If the mosaic is not already configured we must configure it, otherwise we do harvesting
-            File[] finalFiles = new File[createdFiles.length];
-            String[] layerNames = new String[createdFiles.length];
-            // Boolean indicating if the operation has gone
-            boolean sent = handleMosaic(reader, publisher, createdFiles, finalFiles, layerNames, attributeBean.identifier);
-
-            // Move the original netCDF File in the netcdf directory
-            
-            // Creating a subdirectory of the NetCDF directory
-            File netcdfDir = new File(container.getParams().get(ConfigurationUtils.NETCDF_DIRECTORY_KEY));
-            if(!netcdfDir.exists() || !netcdfDir.canWrite()){
-                throw new ActionException(NetCDFAction.class, "Unable to find NetCDF directory");
-            }
-            
-            if (sent) {
-                if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info("Coverage SUCCESSFULLY sent to GeoServer!");
-                }
-                int index = 0;
-                // Create a Geometry for the NetCDF envelope
-                Geometry geo = JTS.toGeometry(new ReferencedEnvelope(attributeBean.env));
-                CoordinateReferenceSystem crs = attributeBean.env.getCoordinateReferenceSystem();
-                geo.setUserData(crs);
-                for (File f : finalFiles) {
-                    // ... setting up the appropriate event for the next action
-                    events.add(new FileSystemEvent(f, FileSystemEventType.FILE_ADDED));
-                    // Update DataStore
-                    insertDb(attributeBean, f.getAbsolutePath(), layerNames[index], cfNames.get(index), geo);
-                    // Updating array index
-                    index++;
-                }
-            } else {
-                final String message = "Coverage was NOT sent to GeoServer due to connection errors!";
-                if (LOGGER.isInfoEnabled()) {
-                    LOGGER.info(message);
-                }
-                if (!configuration.isFailIgnored()) {
-                    throw new ActionException(NetCDFAction.class, message);
-                }
+    protected Collection<? extends Dimension> getOldDimensions(NetcdfFile ncFileIn,
+            AttributeBean attributeBean) {
+        List<Dimension> dimensions = new ArrayList<Dimension>();
+        for (Object obj : ncFileIn.getVariables()) {
+            final Variable var = (Variable) obj;
+            final String varName = var.getName();
+            if (attributeBean.foundVariables.containsKey(varName)) {
+                List<Dimension> dims = var.getDimensions();
+                dimensions.addAll(dims);
             }
         }
-        return events;
+        return dimensions;
     }
 
     /**
@@ -360,7 +530,8 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
      * @throws ActionException
      */
     protected boolean handleMosaic(GeoServerRESTReader reader, GeoServerRESTPublisher publisher,
-            File[] outputFiles, File[] finalFiles, String[] layerNames, String identifier) throws ActionException {
+            File[] outputFiles, File[] finalFiles, String[] layerNames, String identifier)
+            throws ActionException {
         // Initialization of the result
         boolean published = true;
         // File array index
@@ -370,22 +541,24 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             try {
                 // Getting Variable Name
                 String file = FilenameUtils.getBaseName(f.getAbsolutePath());
-                String variableName = getActionName() 
+                String variableName = getActionName()
                         + file.substring(file.lastIndexOf(SEPARATOR) + SEPARATOR.length());
                 // Create the mosaic directory in the temporary geobatch directory
                 File temp = new File(getTempDir(), "temp" + file);
                 FileUtils.forceMkdir(temp);
                 File mosaicDir = new File(temp, variableName);
-                String newFileName = IDENTIFIER_SEPARATOR + identifier + IDENTIFIER_SEPARATOR 
-                        + SERVICE_SEPARATOR + configuration.getServiceName() + SERVICE_SEPARATOR + f.getName();
+                String newFileName = IDENTIFIER_SEPARATOR + identifier + IDENTIFIER_SEPARATOR
+                        + SERVICE_SEPARATOR + configuration.getServiceName() + SERVICE_SEPARATOR
+                        + f.getName();
 
                 // Check if the mosaic is present
                 if (isMosaicConfigured(reader, variableName)) {
                     // After the first file, other mosaic files will be stored inside the netcdf directory
-                    mosaicDir = new File(container.getParams().get(ConfigurationUtils.NETCDF_DIRECTORY_KEY), variableName);
+                    mosaicDir = new File(container.getParams().get(
+                            ConfigurationUtils.NETCDF_DIRECTORY_KEY), variableName);
                     if (!mosaicDir.exists()) {
                         FileUtils.forceMkdir(mosaicDir);
-                        //mosaicDir.createNewFile();
+                        // mosaicDir.createNewFile();
                     }
                     // Create the new NetCDF file
                     File newFile = new File(mosaicDir, newFileName);
@@ -415,9 +588,12 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                     }
                     // Copy the final file location
                     String geoserverDataDirectory = configuration.getGeoserverDataDirectory();
-                    geoserverDataDirectory = geoserverDataDirectory.endsWith(PATHSEPARATOR) ? geoserverDataDirectory.substring(0, geoserverDataDirectory.length() - 1) : geoserverDataDirectory;
-                    finalFiles[index] = new File(geoserverDataDirectory + PATHSEPARATOR + "data"+ PATHSEPARATOR + container.getDefaultNameSpace() + PATHSEPARATOR +
-                            variableName + PATHSEPARATOR + newFile.getName());
+                    geoserverDataDirectory = geoserverDataDirectory.endsWith(PATHSEPARATOR) ? geoserverDataDirectory
+                            .substring(0, geoserverDataDirectory.length() - 1)
+                            : geoserverDataDirectory;
+                    finalFiles[index] = new File(geoserverDataDirectory + PATHSEPARATOR + "data"
+                            + PATHSEPARATOR + container.getDefaultNameSpace() + PATHSEPARATOR
+                            + variableName + PATHSEPARATOR + newFile.getName());
                     // Create the Mosaic elements
                     createIndexerFile(mosaicDir, variableName, configuration.getServiceName());
                     createDatastoreFile(mosaicDir, variableName);
@@ -441,7 +617,57 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         return published;
     }
 
-    protected abstract String getActionName();
+    public boolean insertDb(AttributeBean attributeBean, String outFileLocation, String layerName,
+            String cfName, Geometry geo) throws ActionException {
+        boolean result = false;
+
+        String sql = "INSERT INTO " + configuration.getProductsTableName()
+                + " VALUES (?,?,ST_GeomFromText(?),?,?,?,?,?,?)";
+
+        Connection conn = null;
+
+        try {
+            conn = attributeBean.dataStore.getDataSource().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, configuration.getServiceName());
+            ps.setString(2, attributeBean.identifier);
+            ps.setString(3, geo.toText());
+            if (attributeBean.timedim != null) {
+                ps.setDate(4, new java.sql.Date(attributeBean.timedim.getTime()));
+            } else {
+                ps.setDate(4, new java.sql.Date(1));
+            }
+            ps.setString(5, cfName);
+            ps.setString(6, attributeBean.type.name());
+            ps.setString(7, outFileLocation);
+            ps.setString(8, attributeBean.absolutePath);
+            ps.setString(9, layerName);
+
+            result = ps.execute() && ps.getUpdateCount() > 0;
+            ps.close();
+        } catch (SQLException e) {
+            throw new ActionException(this, e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Check if the NetCDF ImageMosaic Layer has been already configured
+     * 
+     * @return true if the ImageMosaic is configured, false otherwise
+     */
+    protected boolean isMosaicConfigured(GeoServerRESTReader reader, String storename) {
+        String coveragename = storename;// .replace("_", "-");
+        return reader.existsCoverage(container.getDefaultNameSpace(), storename, coveragename);
+    }
 
     private File untarFile(File inputFile) throws ActionException {
         // Getting file base name without extension
@@ -517,6 +743,45 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         return finalDir;
     }
 
+    protected abstract File[] writeNetCDF(File tempDir, String inputFileName, List<String> cfNames,
+            AttributeBean attributeBean) throws IOException, ActionException;
+
+    protected void writeRaster(Dimension ra_size, Dimension az_size, final Array maskOriginalData,
+            Array originalVarArray, int[] dims, WritableRaster userRaster, Index varIndex,
+            Index maskIndex) {
+
+        int dimsLen = dims != null ? dims.length : 0;
+        int[] indexes = new int[2 + dimsLen];
+
+        for (int yPos = 0; yPos < az_size.getLength(); yPos++) {
+            for (int xPos = 0; xPos < ra_size.getLength(); xPos++) {
+                indexes[0] = yPos;
+                indexes[1] = xPos;
+                if (indexes.length > 2) {
+                    System.arraycopy(dims, 0, indexes, 2, dimsLen);
+                }
+                float sVal = originalVarArray.getFloat(varIndex.set(indexes));
+                if (maskOriginalData != null) {
+                    int validByte = 1;
+                    if (maskOriginalData.getByte(maskIndex.set(yPos, xPos)) != validByte) {
+                        sVal = Float.NaN;
+                    }
+                }
+                // Flipping y
+                boolean flipY = false;
+                int newYpos = yPos;
+                // Flipping y
+                if (flipY) {
+                    newYpos = az_size.getLength() - yPos - 1;
+                }
+                userRaster.setSample(xPos, newYpos, 0, sVal); // setSample(
+                // x, y,
+                // band,
+                // value )
+            }
+        }
+    }
+
     /**
      * Private method for zipping an array of files
      * 
@@ -590,209 +855,6 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         return zippedFile;
     }
 
-    protected void createIndexerFile(File mosaicDir, String varName, String serviceName) throws IOException {
-        File indexer = new File(mosaicDir, "indexer.properties");
-        indexer.createNewFile();
-        String properties = "TimeAttribute=time\n"
-                + "Schema=*the_geom:Polygon,location:String,time:java.util.Date,service:String,identifier:String\n"
-                + "PropertyCollectors=StringFileNameExtractorSPI[serviceregex](service),"
-                + "StringFileNameExtractorSPI[identifierregex](identifier)";
-        FileUtils.write(indexer, properties);
-    }
-    
-    protected void createRegexFiles(File mosaicDir, String varName) throws IOException {
-        // REGEX for Service Name
-        File serviceRegex = new File(mosaicDir, "serviceregex.properties");
-        serviceRegex.createNewFile();
-        String properties = "regex=" +"(?<=" +  SERVICE_SEPARATOR + ")[a-zA-Z]*" + "(?=" + SERVICE_SEPARATOR + ")";
-        FileUtils.write(serviceRegex, properties);
-        // REGEX for Identifier
-        File identifierRegex = new File(mosaicDir, "identifierregex.properties");
-        identifierRegex.createNewFile();
-        String identifierProperties = "regex=" +"(?<=" +  IDENTIFIER_SEPARATOR + ").*" + "(?=" + IDENTIFIER_SEPARATOR + ")";
-        FileUtils.write(identifierRegex, identifierProperties);
-    }
-
-    protected void createDatastoreFile(File mosaicDir, String varName) throws IOException {
-        File datastore = new File(mosaicDir, "datastore.properties");
-        datastore.createNewFile();
-        String properties = "user=postgres\n" + "port=5432\n" + "passwd=postgres\n"
-                + "host=localhost\n" + "database=" + varName + "\n"
-                + "driver=org.postgresql.Driver\n" + "schema=public\n"
-                + "Estimated\\ extends=false\n"
-                + "SPI=org.geotools.data.postgis.PostgisNGDataStoreFactory";
-        FileUtils.write(datastore, properties);
-    }
-
-    /**
-     * Check if the NetCDF ImageMosaic Layer has been already configured
-     * 
-     * @return true if the ImageMosaic is configured, false otherwise
-     */
-    protected boolean isMosaicConfigured(GeoServerRESTReader reader, String storename) {
-        String coveragename = storename;// .replace("_", "-");
-        return reader.existsCoverage(container.getDefaultNameSpace(), storename, coveragename);
-    }
-
-    protected abstract File[] writeNetCDF(File tempDir, String inputFileName, List<String> cfNames, AttributeBean attributeBean) throws IOException,
-            ActionException;
-
-    @Override
-    public boolean checkConfiguration() {
-        // Checking if the NetCDF directory is defined
-        Map<String, String> params = container.getParams();
-        String dir = (params != null && params.containsKey(ConfigurationUtils.NETCDF_DIRECTORY_KEY)) ? params
-                .get(ConfigurationUtils.NETCDF_DIRECTORY_KEY) : null;
-        // Initial check
-        boolean exists = dir != null && !dir.isEmpty();
-        if (exists) {
-            File f = new File(dir);
-            return f != null && f.exists() && f.canWrite() && f.canRead();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Check if a file can be processed in this action. To override in actions
-     * 
-     * @param event
-     * @return
-     */
-    public boolean canProcess(FileSystemEvent event) {
-        File file = event.getSource();
-        String extension = FilenameUtils.getExtension(file.getName());
-        return extension != null && !extension.isEmpty() && (extension.equalsIgnoreCase("tgz"));
-    }
-
-    protected double definingOutputVariables(boolean hasDepth, int nLat, int nLon,
-            NetcdfFileWriteable ncFileOut, NetcdfFile ncFileIn, boolean hasTimeDim, int nTime,
-            String varName, AttributeBean attributeBean) {
-        /**
-         * createNetCDFCFGeodeticDimensions( NetcdfFileWriteable ncFileOut, final boolean hasTimeDim, final int tDimLength, final boolean hasZetaDim,
-         * final int zDimLength, final String zOrder, final boolean hasLatDim, final int latDimLength, final boolean hasLonDim, final int
-         * lonDimLength)
-         */
-        final List<Dimension> outDimensions = NetCDFUtils.createNetCDFCFGeodeticDimensions(
-                ncFileOut, true, nLat, true, nLon, DataType.FLOAT, hasTimeDim, nTime);
-        // Adding old dimensions
-        outDimensions.addAll(getOldDimensions(ncFileIn, attributeBean));
-        // Filtering az_size/ra_size dimensions
-        List<Dimension> finalDims = new ArrayList<Dimension>(outDimensions);
-        for (Dimension dim : outDimensions) {
-            String name = dim.getName();
-            if (dim != null
-                    && (name.equalsIgnoreCase("AZ_SIZE") || name.equalsIgnoreCase("RA_SIZE"))) {
-                finalDims.remove(dim);
-            }
-        }
-        // NoData value to set
-        double noData = Double.NaN;
-
-        // defining output variable
-        // SIMONE: replaced foundVariables.get(varName).getDataType()
-        // with DataType.DOUBLE
-        ncFileOut.addVariable(attributeBean.foundVariableBriefNames.get(varName), attributeBean.foundVariables.get(varName)
-                .getDataType(), finalDims);
-        ncFileOut.addVariableAttribute(attributeBean.foundVariableBriefNames.get(varName), "long_name",
-                attributeBean.foundVariableLongNames.get(varName));
-        ncFileOut.addVariableAttribute(attributeBean.foundVariableBriefNames.get(varName), "units",
-                attributeBean.foundVariableUoM.get(varName));
-        ncFileOut.addVariableAttribute(attributeBean.foundVariableBriefNames.get(varName),
-                NetCDFUtilities.DatasetAttribs.MISSING_VALUE, noData);
-
-        return noData;
-    }
-
-    protected Collection<? extends Dimension> getOldDimensions(NetcdfFile ncFileIn, AttributeBean attributeBean) {
-        List<Dimension> dimensions = new ArrayList<Dimension>();
-        for (Object obj : ncFileIn.getVariables()) {
-            final Variable var = (Variable) obj;
-            final String varName = var.getName();
-            if (attributeBean.foundVariables.containsKey(varName)) {
-                List<Dimension> dims = var.getDimensions();
-                dimensions.addAll(dims);
-            }
-        }
-        return dimensions;
-    }
-
-    protected void writeRaster(Dimension ra_size, Dimension az_size, final Array maskOriginalData,
-            Array originalVarArray, int[] dims, WritableRaster userRaster, Index varIndex,
-            Index maskIndex) {
-
-        int dimsLen = dims != null ? dims.length : 0;
-        int[] indexes = new int[2 + dimsLen];
-
-        for (int yPos = 0; yPos < az_size.getLength(); yPos++) {
-            for (int xPos = 0; xPos < ra_size.getLength(); xPos++) {
-                indexes[0] = yPos;
-                indexes[1] = xPos;
-                if (indexes.length > 2) {
-                    System.arraycopy(dims, 0, indexes, 2, dimsLen);
-                }
-                float sVal = originalVarArray.getFloat(varIndex.set(indexes));
-                if (maskOriginalData != null) {
-                    int validByte = 1;
-                    if (maskOriginalData.getByte(maskIndex.set(yPos, xPos)) != validByte) {
-                        sVal = Float.NaN;
-                    }
-                }
-                // Flipping y
-                boolean flipY = false;
-                int newYpos = yPos;
-                // Flipping y
-                if (flipY) {
-                    newYpos = az_size.getLength() - yPos - 1;
-                }
-                userRaster.setSample(xPos, newYpos, 0, sVal); // setSample(
-                // x, y,
-                // band,
-                // value )
-            }
-        }
-    }
-
-    public boolean insertDb(AttributeBean attributeBean, String outFileLocation, String layerName, String cfName, Geometry geo) throws ActionException {
-        boolean result = false;
-
-        String sql = "INSERT INTO " + configuration.getProductsTableName() + " VALUES (?,?,ST_GeomFromText(?),?,?,?,?,?,?)";
-
-        Connection conn = null;
-
-        try {
-            conn = attributeBean.dataStore.getDataSource().getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, configuration.getServiceName());
-            ps.setString(2, attributeBean.identifier);
-            ps.setString(3, geo.toText());
-            if(attributeBean.timedim != null){
-                ps.setDate(4, new java.sql.Date(attributeBean.timedim.getTime()));
-            } else {
-                ps.setDate(4, new java.sql.Date(1));
-            }
-            ps.setString(5, cfName);
-            ps.setString(6, attributeBean.type.name());
-            ps.setString(7, outFileLocation);
-            ps.setString(8, attributeBean.absolutePath);
-            ps.setString(9, layerName);
-
-            result = ps.execute() && ps.getUpdateCount() > 0;
-            ps.close();
-        } catch (SQLException e) {
-            throw new ActionException(this, e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                }
-            }
-        }
-
-        return result;
-    }
-    
     /**
      * Zip a list of file into one zip file.
      * 
@@ -857,28 +919,5 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                 }
             }
         }
-    }
-    
-    static class AttributeBean{
-        
-        Map<String, Variable> foundVariables = new HashMap<String, Variable>();
-
-        Map<String, String> foundVariableLongNames = new HashMap<String, String>();
-
-        Map<String, String> foundVariableBriefNames = new HashMap<String, String>();
-
-        Map<String, String> foundVariableUoM = new HashMap<String, String>();
-        
-        Date timedim;
-
-        SARType type;
-
-        GeneralEnvelope env;
-
-        String absolutePath;
-        
-        String identifier;
-        
-        JDBCDataStore dataStore;
     }
 }

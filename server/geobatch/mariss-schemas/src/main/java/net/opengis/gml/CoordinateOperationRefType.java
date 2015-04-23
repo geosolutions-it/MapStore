@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.JAXBElement;
@@ -15,17 +14,19 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3._1999.xlink.ActuateType;
 import org.w3._1999.xlink.ShowType;
 import org.w3._1999.xlink.TypeType;
 
-
 /**
- * Association to a coordinate operation, either referencing or containing the definition of that coordinate operation. 
+ * Association to a coordinate operation, either referencing or containing the definition of that coordinate operation.
  * 
- * <p>Java class for CoordinateOperationRefType complex type.
+ * <p>
+ * Java class for CoordinateOperationRefType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="CoordinateOperationRefType">
@@ -43,102 +44,127 @@ import org.w3._1999.xlink.TypeType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CoordinateOperationRefType", propOrder = {
-    "coordinateOperation"
-})
+@XmlType(name = "CoordinateOperationRefType", propOrder = { "coordinateOperation" })
 public class CoordinateOperationRefType {
 
     @XmlElementRef(name = "_CoordinateOperation", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
     protected JAXBElement<? extends AbstractCoordinateOperationType> coordinateOperation;
+
     @XmlAttribute(namespace = "http://www.opengis.net/gml")
     @XmlSchemaType(name = "anyURI")
     protected String remoteSchema;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected TypeType type;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String href;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String role;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String arcrole;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String title;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected ShowType show;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected ActuateType actuate;
 
     /**
+     * Gets the value of the actuate property.
+     * 
+     * @return possible object is {@link ActuateType }
+     * 
+     */
+    public ActuateType getActuate() {
+        return actuate;
+    }
+
+    /**
+     * Gets the value of the arcrole property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getArcrole() {
+        return arcrole;
+    }
+
+    /**
      * Gets the value of the coordinateOperation property.
      * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link AbstractGeneralTransformationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link PassThroughOperationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link ConversionType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link TransformationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link ConcatenatedOperationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractGeneralConversionType }{@code >}
-     *     
+     * @return possible object is {@link JAXBElement }{@code <}{@link AbstractGeneralTransformationType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link PassThroughOperationType }{@code >} {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
+     *         {@link JAXBElement }{@code <}{@link ConversionType }{@code >} {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
+     *         {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >} {@link JAXBElement }{@code <}{@link TransformationType }
+     *         {@code >} {@link JAXBElement }{@code <}{@link ConcatenatedOperationType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link AbstractGeneralConversionType }{@code >}
+     * 
      */
     public JAXBElement<? extends AbstractCoordinateOperationType> getCoordinateOperation() {
         return coordinateOperation;
     }
 
     /**
-     * Sets the value of the coordinateOperation property.
+     * Gets the value of the href property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link JAXBElement }{@code <}{@link AbstractGeneralTransformationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link PassThroughOperationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link ConversionType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link TransformationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link ConcatenatedOperationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractGeneralConversionType }{@code >}
-     *     
+     * @return possible object is {@link String }
+     * 
      */
-    public void setCoordinateOperation(JAXBElement<? extends AbstractCoordinateOperationType> value) {
-        this.coordinateOperation = ((JAXBElement<? extends AbstractCoordinateOperationType> ) value);
+    public String getHref() {
+        return href;
     }
 
     /**
      * Gets the value of the remoteSchema property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getRemoteSchema() {
         return remoteSchema;
     }
 
     /**
-     * Sets the value of the remoteSchema property.
+     * Gets the value of the role property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
-    public void setRemoteSchema(String value) {
-        this.remoteSchema = value;
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * Gets the value of the show property.
+     * 
+     * @return possible object is {@link ShowType }
+     * 
+     */
+    public ShowType getShow() {
+        return show;
+    }
+
+    /**
+     * Gets the value of the title property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getTitle() {
+        return title;
     }
 
     /**
      * Gets the value of the type property.
      * 
-     * @return
-     *     possible object is
-     *     {@link TypeType }
-     *     
+     * @return possible object is {@link TypeType }
+     * 
      */
     public TypeType getType() {
         if (type == null) {
@@ -149,159 +175,98 @@ public class CoordinateOperationRefType {
     }
 
     /**
-     * Sets the value of the type property.
+     * Sets the value of the actuate property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link TypeType }
-     *     
-     */
-    public void setType(TypeType value) {
-        this.type = value;
-    }
-
-    /**
-     * Gets the value of the href property.
+     * @param value allowed object is {@link ActuateType }
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
      */
-    public String getHref() {
-        return href;
-    }
-
-    /**
-     * Sets the value of the href property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setHref(String value) {
-        this.href = value;
-    }
-
-    /**
-     * Gets the value of the role property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getRole() {
-        return role;
-    }
-
-    /**
-     * Sets the value of the role property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setRole(String value) {
-        this.role = value;
-    }
-
-    /**
-     * Gets the value of the arcrole property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getArcrole() {
-        return arcrole;
+    public void setActuate(ActuateType value) {
+        this.actuate = value;
     }
 
     /**
      * Sets the value of the arcrole property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setArcrole(String value) {
         this.arcrole = value;
     }
 
     /**
-     * Gets the value of the title property.
+     * Sets the value of the coordinateOperation property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link JAXBElement }{@code <}{@link AbstractGeneralTransformationType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link PassThroughOperationType }{@code >} {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
+     *        {@link JAXBElement }{@code <}{@link ConversionType }{@code >} {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
+     *        {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >} {@link JAXBElement }{@code <}{@link TransformationType }
+     *        {@code >} {@link JAXBElement }{@code <}{@link ConcatenatedOperationType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link AbstractGeneralConversionType }{@code >}
+     * 
      */
-    public String getTitle() {
-        return title;
+    public void setCoordinateOperation(JAXBElement<? extends AbstractCoordinateOperationType> value) {
+        this.coordinateOperation = ((JAXBElement<? extends AbstractCoordinateOperationType>) value);
     }
 
     /**
-     * Sets the value of the title property.
+     * Sets the value of the href property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public void setTitle(String value) {
-        this.title = value;
+    public void setHref(String value) {
+        this.href = value;
     }
 
     /**
-     * Gets the value of the show property.
+     * Sets the value of the remoteSchema property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ShowType }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public ShowType getShow() {
-        return show;
+    public void setRemoteSchema(String value) {
+        this.remoteSchema = value;
+    }
+
+    /**
+     * Sets the value of the role property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setRole(String value) {
+        this.role = value;
     }
 
     /**
      * Sets the value of the show property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ShowType }
-     *     
+     * @param value allowed object is {@link ShowType }
+     * 
      */
     public void setShow(ShowType value) {
         this.show = value;
     }
 
     /**
-     * Gets the value of the actuate property.
+     * Sets the value of the title property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ActuateType }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public ActuateType getActuate() {
-        return actuate;
+    public void setTitle(String value) {
+        this.title = value;
     }
 
     /**
-     * Sets the value of the actuate property.
+     * Sets the value of the type property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ActuateType }
-     *     
+     * @param value allowed object is {@link TypeType }
+     * 
      */
-    public void setActuate(ActuateType value) {
-        this.actuate = value;
+    public void setType(TypeType value) {
+        this.type = value;
     }
 
 }

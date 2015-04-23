@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,19 +12,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A cylinder is a gridded surface given as a
- *    family of circles whose positions vary along a set of parallel
- *    lines, keeping the cross sectional horizontal curves of a
- *    constant shape.
- *    NOTE! Given the same working assumptions as in the previous
- *    note, a Cylinder can be given by two circles, giving us the
- *    control points of the form ((P1, P2, P3),(P4, P5, P6)).
+ * A cylinder is a gridded surface given as a family of circles whose positions vary along a set of parallel lines, keeping the cross sectional
+ * horizontal curves of a constant shape. NOTE! Given the same working assumptions as in the previous note, a Cylinder can be given by two circles,
+ * giving us the control points of the form ((P1, P2, P3),(P4, P5, P6)).
  * 
- * <p>Java class for CylinderType complex type.
+ * <p>
+ * Java class for CylinderType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="CylinderType">
@@ -42,22 +38,19 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CylinderType")
-public class CylinderType
-    extends AbstractGriddedSurfaceType
-{
+public class CylinderType extends AbstractGriddedSurfaceType {
 
     @XmlAttribute
     protected CurveInterpolationType horizontalCurveType;
+
     @XmlAttribute
     protected CurveInterpolationType verticalCurveType;
 
     /**
      * Gets the value of the horizontalCurveType property.
      * 
-     * @return
-     *     possible object is
-     *     {@link CurveInterpolationType }
-     *     
+     * @return possible object is {@link CurveInterpolationType }
+     * 
      */
     public CurveInterpolationType getHorizontalCurveType() {
         if (horizontalCurveType == null) {
@@ -68,24 +61,10 @@ public class CylinderType
     }
 
     /**
-     * Sets the value of the horizontalCurveType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link CurveInterpolationType }
-     *     
-     */
-    public void setHorizontalCurveType(CurveInterpolationType value) {
-        this.horizontalCurveType = value;
-    }
-
-    /**
      * Gets the value of the verticalCurveType property.
      * 
-     * @return
-     *     possible object is
-     *     {@link CurveInterpolationType }
-     *     
+     * @return possible object is {@link CurveInterpolationType }
+     * 
      */
     public CurveInterpolationType getVerticalCurveType() {
         if (verticalCurveType == null) {
@@ -96,12 +75,20 @@ public class CylinderType
     }
 
     /**
+     * Sets the value of the horizontalCurveType property.
+     * 
+     * @param value allowed object is {@link CurveInterpolationType }
+     * 
+     */
+    public void setHorizontalCurveType(CurveInterpolationType value) {
+        this.horizontalCurveType = value;
+    }
+
+    /**
      * Sets the value of the verticalCurveType property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link CurveInterpolationType }
-     *     
+     * @param value allowed object is {@link CurveInterpolationType }
+     * 
      */
     public void setVerticalCurveType(CurveInterpolationType value) {
         this.verticalCurveType = value;

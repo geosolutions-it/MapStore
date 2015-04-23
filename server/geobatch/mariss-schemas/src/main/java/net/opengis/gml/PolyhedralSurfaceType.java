@@ -5,23 +5,21 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A polyhedral surface is a surface composed
- *    of polygon surfaces connected along their common boundary 
- *    curves. This differs from the surface type only in the
- *    restriction on the types of surface patches acceptable.
+ * A polyhedral surface is a surface composed of polygon surfaces connected along their common boundary curves. This differs from the surface type
+ * only in the restriction on the types of surface patches acceptable.
  * 
- * <p>Java class for PolyhedralSurfaceType complex type.
+ * <p>
+ * Java class for PolyhedralSurfaceType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="PolyhedralSurfaceType">
@@ -40,9 +38,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PolyhedralSurfaceType")
-public class PolyhedralSurfaceType
-    extends SurfaceType
-{
-
+public class PolyhedralSurfaceType extends SurfaceType {
 
 }

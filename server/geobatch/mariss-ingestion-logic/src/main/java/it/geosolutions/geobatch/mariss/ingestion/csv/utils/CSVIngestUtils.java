@@ -72,6 +72,14 @@ public class CSVIngestUtils {
      */
     public static final String SERVICE_FILE_PARAMETER = "service";
 
+    public static Timestamp getDateFormat(String dateString) throws CSVProcessException {
+        try {
+            return dateString != null ? TIME_FORMAT.getTimeStamp(dateString) : null;
+        } catch (Exception e) {
+            throw new CSVProcessException("Incorrect dateString=" + dateString);
+        }
+    }
+
     /**
      * Obtain a double value of a string or null if it's null or empty
      * 
@@ -88,12 +96,73 @@ public class CSVIngestUtils {
         }
     }
 
-    public static Timestamp getDateFormat(String dateString) throws CSVProcessException {
-        try {
-            return dateString != null ? TIME_FORMAT.getTimeStamp(dateString) : null;
-        } catch (Exception e) {
-            throw new CSVProcessException("Incorrect dateString=" + dateString);
+    /**
+     * Get the parameters in the file name using {@link CSVIngestUtils#PARAMS_START}, {@link CSVIngestUtils#PARAMS_SEPARATOR},
+     * {@link CSVIngestUtils#NAME_VALUE_SEPARATOR} and {@link CSVIngestUtils#PARAMS_END}
+     * 
+     * @param fileName with the parameters
+     * 
+     * @return the Map with the pairs
+     */
+    public static Map<String, String> getParametersFromName(String fileName) {
+        Map<String, String> parameters = new HashMap<String, String>();
+        if (fileName.contains(PARAMS_START) && fileName.contains(PARAMS_END)) {
+            String partial = fileName.substring(fileName.indexOf(PARAMS_START)
+                    + PARAMS_START.length());
+            partial = partial.substring(0, partial.indexOf(PARAMS_END));
+            String[] pairs = partial.split(PARAMS_SEPARATOR);
+            for (String nameValuePair : pairs) {
+                parameters.put(nameValuePair.split(NAME_VALUE_SEPARATOR)[0],
+                        nameValuePair.split(NAME_VALUE_SEPARATOR)[1]);
+            }
         }
+        return parameters;
+    }
+
+    /**
+     * Obtain a new file name for a given parameters
+     * 
+     * @param fileName original
+     * @param parameters for the new name
+     * 
+     * @return composition using {@link CSVIngestUtils#PARAMS_START}, {@link CSVIngestUtils#PARAMS_SEPARATOR},
+     *         {@link CSVIngestUtils#NAME_VALUE_SEPARATOR} and {@link CSVIngestUtils#PARAMS_END}
+     */
+    public static String getParametersInName(String fileName, Map<String, String> parameters) {
+        String newName = fileName;
+        String paramsString = "";
+        if (parameters != null && !parameters.isEmpty()) {
+            paramsString += PARAMS_START;
+            int index = 0;
+            int size = parameters.keySet().size();
+            for (String name : parameters.keySet()) {
+                index++;
+                paramsString += name + NAME_VALUE_SEPARATOR + parameters.get(name);
+                if (index < size) {
+                    paramsString += PARAMS_SEPARATOR;
+                } else {
+                    paramsString += PARAMS_END;
+                }
+            }
+            newName = paramsString + newName;
+        }
+        return newName;
+    }
+
+    /**
+     * Include service and user names in the file name
+     * 
+     * @param fileName
+     * @param userName
+     * @param serviceName
+     * 
+     * @return file name with the parameters
+     */
+    public static String getUserServiceFileName(String fileName, String userName, String serviceName) {
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put(USER_FILE_PARAMETER, userName);
+        parameters.put(SERVICE_FILE_PARAMETER, serviceName);
+        return getParametersInName(fileName, parameters);
     }
 
     /**
@@ -142,75 +211,6 @@ public class CSVIngestUtils {
             }
         }
         return ret;
-    }
-
-    /**
-     * Include service and user names in the file name
-     * 
-     * @param fileName
-     * @param userName
-     * @param serviceName
-     * 
-     * @return file name with the parameters
-     */
-    public static String getUserServiceFileName(String fileName, String userName, String serviceName) {
-        Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put(USER_FILE_PARAMETER, userName);
-        parameters.put(SERVICE_FILE_PARAMETER, serviceName);
-        return getParametersInName(fileName, parameters);
-    }
-
-    /**
-     * Obtain a new file name for a given parameters
-     * 
-     * @param fileName original
-     * @param parameters for the new name
-     * 
-     * @return composition using {@link CSVIngestUtils#PARAMS_START}, {@link CSVIngestUtils#PARAMS_SEPARATOR},
-     *         {@link CSVIngestUtils#NAME_VALUE_SEPARATOR} and {@link CSVIngestUtils#PARAMS_END}
-     */
-    public static String getParametersInName(String fileName, Map<String, String> parameters) {
-        String newName = fileName;
-        String paramsString = "";
-        if (parameters != null && !parameters.isEmpty()) {
-            paramsString += PARAMS_START;
-            int index = 0;
-            int size = parameters.keySet().size();
-            for (String name : parameters.keySet()) {
-                index++;
-                paramsString += name + NAME_VALUE_SEPARATOR + parameters.get(name);
-                if (index < size) {
-                    paramsString += PARAMS_SEPARATOR;
-                } else {
-                    paramsString += PARAMS_END;
-                }
-            }
-            newName = paramsString + newName;
-        }
-        return newName;
-    }
-
-    /**
-     * Get the parameters in the file name using {@link CSVIngestUtils#PARAMS_START}, {@link CSVIngestUtils#PARAMS_SEPARATOR},
-     * {@link CSVIngestUtils#NAME_VALUE_SEPARATOR} and {@link CSVIngestUtils#PARAMS_END}
-     * 
-     * @param fileName with the parameters
-     * 
-     * @return the Map with the pairs
-     */
-    public static Map<String, String> getParametersFromName(String fileName) {
-        Map<String, String> parameters = new HashMap<String, String>();
-        if (fileName.contains(PARAMS_START) && fileName.contains(PARAMS_END)) {
-            String partial = fileName.substring(fileName.indexOf(PARAMS_START)
-                    + PARAMS_START.length());
-            partial = partial.substring(0, partial.indexOf(PARAMS_END));
-            String[] pairs = partial.split(PARAMS_SEPARATOR);
-            for (String nameValuePair : pairs) {
-                parameters.put(nameValuePair.split(NAME_VALUE_SEPARATOR)[0],
-                        nameValuePair.split(NAME_VALUE_SEPARATOR)[1]);
-            }
-        }
-        return parameters;
     }
 
 }

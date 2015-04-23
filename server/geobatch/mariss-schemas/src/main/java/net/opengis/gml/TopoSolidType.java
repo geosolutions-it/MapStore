@@ -5,23 +5,25 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * The topological boundary of a TopoSolid consists of a set of directed faces. Note that all faces associated with the TopoSolid, including dangling faces, appear in the boundary. The coboundary of a TopoSolid is empty and hence requires no representation.
+ * The topological boundary of a TopoSolid consists of a set of directed faces. Note that all faces associated with the TopoSolid, including dangling
+ * faces, appear in the boundary. The coboundary of a TopoSolid is empty and hence requires no representation.
  * 
- * <p>Java class for TopoSolidType complex type.
+ * <p>
+ * Java class for TopoSolidType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="TopoSolidType">
@@ -38,12 +40,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TopoSolidType", propOrder = {
-    "directedFace"
-})
-public class TopoSolidType
-    extends AbstractTopoPrimitiveType
-{
+@XmlType(name = "TopoSolidType", propOrder = { "directedFace" })
+public class TopoSolidType extends AbstractTopoPrimitiveType {
 
     @XmlElement(required = true)
     protected List<DirectedFacePropertyType> directedFace;
@@ -52,21 +50,19 @@ public class TopoSolidType
      * Gets the value of the directedFace property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the directedFace property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the directedFace property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getDirectedFace().add(newItem);
+     * getDirectedFace().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link DirectedFacePropertyType }
+     * Objects of the following type(s) are allowed in the list {@link DirectedFacePropertyType }
      * 
      * 
      */

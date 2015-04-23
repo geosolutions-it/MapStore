@@ -5,23 +5,24 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.math.BigInteger;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * An element of a covariance matrix.
  * 
- * <p>Java class for CovarianceElementType complex type.
+ * <p>
+ * Java class for CovarianceElementType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="CovarianceElementType">
@@ -40,67 +41,27 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CovarianceElementType", propOrder = {
-    "rowIndex",
-    "columnIndex",
-    "covariance"
-})
+@XmlType(name = "CovarianceElementType", propOrder = { "rowIndex", "columnIndex", "covariance" })
 public class CovarianceElementType {
 
     @XmlElement(required = true)
     @XmlSchemaType(name = "positiveInteger")
     protected BigInteger rowIndex;
+
     @XmlElement(required = true)
     @XmlSchemaType(name = "positiveInteger")
     protected BigInteger columnIndex;
+
     protected double covariance;
-
-    /**
-     * Gets the value of the rowIndex property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getRowIndex() {
-        return rowIndex;
-    }
-
-    /**
-     * Sets the value of the rowIndex property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setRowIndex(BigInteger value) {
-        this.rowIndex = value;
-    }
 
     /**
      * Gets the value of the columnIndex property.
      * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     * @return possible object is {@link BigInteger }
+     * 
      */
     public BigInteger getColumnIndex() {
         return columnIndex;
-    }
-
-    /**
-     * Sets the value of the columnIndex property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setColumnIndex(BigInteger value) {
-        this.columnIndex = value;
     }
 
     /**
@@ -112,11 +73,41 @@ public class CovarianceElementType {
     }
 
     /**
+     * Gets the value of the rowIndex property.
+     * 
+     * @return possible object is {@link BigInteger }
+     * 
+     */
+    public BigInteger getRowIndex() {
+        return rowIndex;
+    }
+
+    /**
+     * Sets the value of the columnIndex property.
+     * 
+     * @param value allowed object is {@link BigInteger }
+     * 
+     */
+    public void setColumnIndex(BigInteger value) {
+        this.columnIndex = value;
+    }
+
+    /**
      * Sets the value of the covariance property.
      * 
      */
     public void setCovariance(double value) {
         this.covariance = value;
+    }
+
+    /**
+     * Sets the value of the rowIndex property.
+     * 
+     * @param value allowed object is {@link BigInteger }
+     * 
+     */
+    public void setRowIndex(BigInteger value) {
+        this.rowIndex = value;
     }
 
 }

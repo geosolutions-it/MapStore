@@ -5,24 +5,25 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * A container for an array of curve segments.
  * 
- * <p>Java class for CurveSegmentArrayPropertyType complex type.
+ * <p>
+ * Java class for CurveSegmentArrayPropertyType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="CurveSegmentArrayPropertyType">
@@ -39,9 +40,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CurveSegmentArrayPropertyType", propOrder = {
-    "curveSegment"
-})
+@XmlType(name = "CurveSegmentArrayPropertyType", propOrder = { "curveSegment" })
 public class CurveSegmentArrayPropertyType {
 
     @XmlElementRef(name = "_CurveSegment", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
@@ -51,36 +50,26 @@ public class CurveSegmentArrayPropertyType {
      * Gets the value of the curveSegment property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the curveSegment property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the curveSegment property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getCurveSegment().add(newItem);
+     * getCurveSegment().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link AbstractCurveSegmentType }{@code >}
-     * {@link JAXBElement }{@code <}{@link CircleByCenterPointType }{@code >}
-     * {@link JAXBElement }{@code <}{@link BezierType }{@code >}
-     * {@link JAXBElement }{@code <}{@link ArcStringType }{@code >}
-     * {@link JAXBElement }{@code <}{@link GeodesicType }{@code >}
-     * {@link JAXBElement }{@code <}{@link LineStringSegmentType }{@code >}
-     * {@link JAXBElement }{@code <}{@link BSplineType }{@code >}
-     * {@link JAXBElement }{@code <}{@link ArcByCenterPointType }{@code >}
-     * {@link JAXBElement }{@code <}{@link CircleType }{@code >}
-     * {@link JAXBElement }{@code <}{@link OffsetCurveType }{@code >}
-     * {@link JAXBElement }{@code <}{@link ArcType }{@code >}
-     * {@link JAXBElement }{@code <}{@link ArcStringByBulgeType }{@code >}
-     * {@link JAXBElement }{@code <}{@link ArcByBulgeType }{@code >}
-     * {@link JAXBElement }{@code <}{@link CubicSplineType }{@code >}
-     * {@link JAXBElement }{@code <}{@link GeodesicStringType }{@code >}
-     * {@link JAXBElement }{@code <}{@link ClothoidType }{@code >}
+     * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link AbstractCurveSegmentType }{@code >}
+     * {@link JAXBElement }{@code <}{@link CircleByCenterPointType }{@code >} {@link JAXBElement }{@code <}{@link BezierType }{@code >}
+     * {@link JAXBElement }{@code <}{@link ArcStringType }{@code >} {@link JAXBElement }{@code <}{@link GeodesicType }{@code >} {@link JAXBElement }
+     * {@code <}{@link LineStringSegmentType }{@code >} {@link JAXBElement }{@code <}{@link BSplineType }{@code >} {@link JAXBElement }{@code <}
+     * {@link ArcByCenterPointType }{@code >} {@link JAXBElement }{@code <}{@link CircleType }{@code >} {@link JAXBElement }{@code <}
+     * {@link OffsetCurveType }{@code >} {@link JAXBElement }{@code <}{@link ArcType }{@code >} {@link JAXBElement }{@code <}{@link ArcStringByBulgeType }
+     * {@code >} {@link JAXBElement }{@code <}{@link ArcByBulgeType }{@code >} {@link JAXBElement }{@code <}{@link CubicSplineType }{@code >}
+     * {@link JAXBElement }{@code <}{@link GeodesicStringType }{@code >} {@link JAXBElement }{@code <}{@link ClothoidType }{@code >}
      * 
      * 
      */

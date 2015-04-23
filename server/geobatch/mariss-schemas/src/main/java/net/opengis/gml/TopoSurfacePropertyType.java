@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for TopoSurfacePropertyType complex type.
+ * <p>
+ * Java class for TopoSurfacePropertyType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="TopoSurfacePropertyType">
@@ -34,9 +34,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TopoSurfacePropertyType", propOrder = {
-    "topoSurface"
-})
+@XmlType(name = "TopoSurfacePropertyType", propOrder = { "topoSurface" })
 public class TopoSurfacePropertyType {
 
     @XmlElement(name = "TopoSurface", required = true)
@@ -45,10 +43,8 @@ public class TopoSurfacePropertyType {
     /**
      * Gets the value of the topoSurface property.
      * 
-     * @return
-     *     possible object is
-     *     {@link TopoSurfaceType }
-     *     
+     * @return possible object is {@link TopoSurfaceType }
+     * 
      */
     public TopoSurfaceType getTopoSurface() {
         return topoSurface;
@@ -57,10 +53,8 @@ public class TopoSurfacePropertyType {
     /**
      * Sets the value of the topoSurface property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link TopoSurfaceType }
-     *     
+     * @param value allowed object is {@link TopoSurfaceType }
+     * 
      */
     public void setTopoSurface(TopoSurfaceType value) {
         this.topoSurface = value;

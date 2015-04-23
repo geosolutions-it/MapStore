@@ -5,18 +5,19 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for InSituValidationType.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
+ * Java class for InSituValidationType.
+ * 
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * 
  * <pre>
  * &lt;simpleType name="InSituValidationType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -31,15 +32,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum InSituValidationType {
 
-    OS_VERIFIED,
-    OS_NOT_VERIFIED;
-
-    public String value() {
-        return name();
-    }
+    OS_VERIFIED, OS_NOT_VERIFIED;
 
     public static InSituValidationType fromValue(String v) {
         return valueOf(v);
+    }
+
+    public String value() {
+        return name();
     }
 
 }

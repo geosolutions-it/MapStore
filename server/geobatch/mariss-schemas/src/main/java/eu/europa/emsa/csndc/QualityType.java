@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Specify the data package quality info file
  * 
- * <p>Java class for QualityType complex type.
+ * <p>
+ * Java class for QualityType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="QualityType">
@@ -37,63 +37,53 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "QualityType", propOrder = {
-    "identifier",
-    "fileName"
-})
+@XmlType(name = "QualityType", propOrder = { "identifier", "fileName" })
 public class QualityType {
 
     @XmlElement(required = true)
     protected String identifier;
+
     @XmlElement(required = true)
     protected String fileName;
 
     /**
-     * Identifier of the quality file. 
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    /**
-     * Sets the value of the identifier property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setIdentifier(String value) {
-        this.identifier = value;
-    }
-
-    /**
      * Reference to quality file in the Package
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getFileName() {
         return fileName;
     }
 
     /**
+     * Identifier of the quality file.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    /**
      * Sets the value of the fileName property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setFileName(String value) {
         this.fileName = value;
+    }
+
+    /**
+     * Sets the value of the identifier property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setIdentifier(String value) {
+        this.identifier = value;
     }
 
 }

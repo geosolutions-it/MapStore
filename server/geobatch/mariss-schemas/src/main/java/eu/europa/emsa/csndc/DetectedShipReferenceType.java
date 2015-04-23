@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * GML files describing observed in the original satellite image
  * 
- * <p>Java class for DetectedShipReferenceType complex type.
+ * <p>
+ * Java class for DetectedShipReferenceType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="DetectedShipReferenceType">
@@ -37,62 +37,53 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DetectedShipReferenceType", propOrder = {
-    "identifier",
-    "fileName"
-})
+@XmlType(name = "DetectedShipReferenceType", propOrder = { "identifier", "fileName" })
 public class DetectedShipReferenceType {
 
     @XmlElement(required = true)
     protected String identifier;
+
     protected String fileName;
-
-    /**
-     * Reference to the detected ship. This ID shall match with the identifier of the Detected Ship feature described by GML file according to csndc_ds.xsd schema.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    /**
-     * Sets the value of the identifier property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setIdentifier(String value) {
-        this.identifier = value;
-    }
 
     /**
      * Reference to GML file describing the Detected Ship feature
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getFileName() {
         return fileName;
     }
 
     /**
+     * Reference to the detected ship. This ID shall match with the identifier of the Detected Ship feature described by GML file according to
+     * csndc_ds.xsd schema.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    /**
      * Sets the value of the fileName property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setFileName(String value) {
         this.fileName = value;
+    }
+
+    /**
+     * Sets the value of the identifier property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setIdentifier(String value) {
+        this.identifier = value;
     }
 
 }

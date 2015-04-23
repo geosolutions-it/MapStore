@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,15 +13,15 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A timeslice encapsulates the time-varying properties of a dynamic feature--it 
- *         must be extended to represent a timestamped projection of a feature. The dataSource 
- *         property describes how the temporal data was acquired.
+ * A timeslice encapsulates the time-varying properties of a dynamic feature--it must be extended to represent a timestamped projection of a feature.
+ * The dataSource property describes how the temporal data was acquired.
  * 
- * <p>Java class for AbstractTimeSliceType complex type.
+ * <p>
+ * Java class for AbstractTimeSliceType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AbstractTimeSliceType">
@@ -40,67 +39,53 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AbstractTimeSliceType", propOrder = {
-    "validTime",
-    "dataSource"
-})
-@XmlSeeAlso({
-    MovingObjectStatusType.class
-})
-public abstract class AbstractTimeSliceType
-    extends AbstractGMLType
-{
+@XmlType(name = "AbstractTimeSliceType", propOrder = { "validTime", "dataSource" })
+@XmlSeeAlso({ MovingObjectStatusType.class })
+public abstract class AbstractTimeSliceType extends AbstractGMLType {
 
     @XmlElement(required = true)
     protected TimePrimitivePropertyType validTime;
+
     protected StringOrRefType dataSource;
-
-    /**
-     * Gets the value of the validTime property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TimePrimitivePropertyType }
-     *     
-     */
-    public TimePrimitivePropertyType getValidTime() {
-        return validTime;
-    }
-
-    /**
-     * Sets the value of the validTime property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TimePrimitivePropertyType }
-     *     
-     */
-    public void setValidTime(TimePrimitivePropertyType value) {
-        this.validTime = value;
-    }
 
     /**
      * Gets the value of the dataSource property.
      * 
-     * @return
-     *     possible object is
-     *     {@link StringOrRefType }
-     *     
+     * @return possible object is {@link StringOrRefType }
+     * 
      */
     public StringOrRefType getDataSource() {
         return dataSource;
     }
 
     /**
+     * Gets the value of the validTime property.
+     * 
+     * @return possible object is {@link TimePrimitivePropertyType }
+     * 
+     */
+    public TimePrimitivePropertyType getValidTime() {
+        return validTime;
+    }
+
+    /**
      * Sets the value of the dataSource property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link StringOrRefType }
-     *     
+     * @param value allowed object is {@link StringOrRefType }
+     * 
      */
     public void setDataSource(StringOrRefType value) {
         this.dataSource = value;
+    }
+
+    /**
+     * Sets the value of the validTime property.
+     * 
+     * @param value allowed object is {@link TimePrimitivePropertyType }
+     * 
+     */
+    public void setValidTime(TimePrimitivePropertyType value) {
+        this.validTime = value;
     }
 
 }

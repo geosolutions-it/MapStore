@@ -5,20 +5,20 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Direction expressed as a vector, either using components, or using angles.
  * 
- * <p>Java class for DirectionVectorType complex type.
+ * <p>
+ * Java class for DirectionVectorType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="DirectionVectorType">
@@ -39,84 +39,70 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DirectionVectorType", propOrder = {
-    "vector",
-    "horizontalAngle",
-    "verticalAngle"
-})
+@XmlType(name = "DirectionVectorType", propOrder = { "vector", "horizontalAngle", "verticalAngle" })
 public class DirectionVectorType {
 
     protected VectorType vector;
+
     protected AngleType horizontalAngle;
+
     protected AngleType verticalAngle;
-
-    /**
-     * Gets the value of the vector property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link VectorType }
-     *     
-     */
-    public VectorType getVector() {
-        return vector;
-    }
-
-    /**
-     * Sets the value of the vector property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link VectorType }
-     *     
-     */
-    public void setVector(VectorType value) {
-        this.vector = value;
-    }
 
     /**
      * Gets the value of the horizontalAngle property.
      * 
-     * @return
-     *     possible object is
-     *     {@link AngleType }
-     *     
+     * @return possible object is {@link AngleType }
+     * 
      */
     public AngleType getHorizontalAngle() {
         return horizontalAngle;
     }
 
     /**
-     * Sets the value of the horizontalAngle property.
+     * Gets the value of the vector property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link AngleType }
-     *     
+     * @return possible object is {@link VectorType }
+     * 
      */
-    public void setHorizontalAngle(AngleType value) {
-        this.horizontalAngle = value;
+    public VectorType getVector() {
+        return vector;
     }
 
     /**
      * Gets the value of the verticalAngle property.
      * 
-     * @return
-     *     possible object is
-     *     {@link AngleType }
-     *     
+     * @return possible object is {@link AngleType }
+     * 
      */
     public AngleType getVerticalAngle() {
         return verticalAngle;
     }
 
     /**
+     * Sets the value of the horizontalAngle property.
+     * 
+     * @param value allowed object is {@link AngleType }
+     * 
+     */
+    public void setHorizontalAngle(AngleType value) {
+        this.horizontalAngle = value;
+    }
+
+    /**
+     * Sets the value of the vector property.
+     * 
+     * @param value allowed object is {@link VectorType }
+     * 
+     */
+    public void setVector(VectorType value) {
+        this.vector = value;
+    }
+
+    /**
      * Sets the value of the verticalAngle property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link AngleType }
-     *     
+     * @param value allowed object is {@link AngleType }
+     * 
      */
     public void setVerticalAngle(AngleType value) {
         this.verticalAngle = value;

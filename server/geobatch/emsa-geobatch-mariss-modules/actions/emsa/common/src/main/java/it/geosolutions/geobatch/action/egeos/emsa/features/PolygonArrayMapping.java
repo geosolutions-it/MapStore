@@ -20,12 +20,12 @@ import com.vividsolutions.jts.geom.Polygon;
  */
 public class PolygonArrayMapping extends PolygonMapping {
 
-    public PolygonArrayMapping(String xpath, String destName) {
-        super(xpath, destName);
-    }
-
     public PolygonArrayMapping(String name) {
         super(name);
+    }
+
+    public PolygonArrayMapping(String xpath, String destName) {
+        super(xpath, destName);
     }
 
     @Override
@@ -39,23 +39,25 @@ public class PolygonArrayMapping extends PolygonMapping {
         Polygon[] polarr = new Polygon[polygons.getLength()];
         for (int i = 0; i < polygons.getLength(); i++) {
             Node polygon = polygons.item(i);
-            String ordinates = (String) xpath.evaluate("gml:exterior/gml:LinearRing/gml:posList", polygon,
-                    XPathConstants.STRING);
+            String ordinates = (String) xpath.evaluate("gml:exterior/gml:LinearRing/gml:posList",
+                    polygon, XPathConstants.STRING);
             if (ordinates == null || ordinates.length() == 0) {
                 ordinates = (String) xpath.evaluate("exterior/LinearRing/posList", polygon,
                         XPathConstants.STRING);
             }
             double[] doubles = parseRingOrdinates(ordinates);
-            doubles = doubles != null && doubles.length > 0 ? doubles : new double[] {0,0,-1,-1};
+            doubles = doubles != null && doubles.length > 0 ? doubles
+                    : new double[] { 0, 0, -1, -1 };
             LinearRing shell = gf.createLinearRing(new LiteCoordinateSequence(doubles));
 
-            NodeList interiorNodes = (NodeList) xpath.evaluate("gml:interior/gml:LinearRing/gml:posList",
-                    polygon, XPathConstants.NODESET);
+            NodeList interiorNodes = (NodeList) xpath.evaluate(
+                    "gml:interior/gml:LinearRing/gml:posList", polygon, XPathConstants.NODESET);
             if (interiorNodes == null) {
                 interiorNodes = (NodeList) xpath.evaluate("interior/LinearRing/posList", polygon,
                         XPathConstants.NODESET);
             }
-            LinearRing[] holes = new LinearRing[interiorNodes != null ? interiorNodes.getLength() : 0];
+            LinearRing[] holes = new LinearRing[interiorNodes != null ? interiorNodes.getLength()
+                    : 0];
             for (int j = 0; j < holes.length; j++) {
                 doubles = parseRingOrdinates(interiorNodes.item(j).getTextContent());
                 holes[i] = gf.createLinearRing(new LiteCoordinateSequence(doubles));

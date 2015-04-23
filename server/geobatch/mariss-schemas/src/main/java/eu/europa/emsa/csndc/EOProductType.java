@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Specify the data package attributes
  * 
- * <p>Java class for EOProductType complex type.
+ * <p>
+ * Java class for EOProductType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="EOProductType">
@@ -37,62 +37,52 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "EOProductType", propOrder = {
-    "identifier",
-    "fileName"
-})
+@XmlType(name = "EOProductType", propOrder = { "identifier", "fileName" })
 public class EOProductType {
 
     @XmlElement(required = true)
     protected String identifier;
+
     protected String fileName;
-
-    /**
-     * EO product external identifier. This ID shall match with the uid of the EO product described in the eop namespace.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    /**
-     * Sets the value of the identifier property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setIdentifier(String value) {
-        this.identifier = value;
-    }
 
     /**
      * Gets the value of the fileName property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getFileName() {
         return fileName;
     }
 
     /**
+     * EO product external identifier. This ID shall match with the uid of the EO product described in the eop namespace.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    /**
      * Sets the value of the fileName property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setFileName(String value) {
         this.fileName = value;
+    }
+
+    /**
+     * Sets the value of the identifier property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setIdentifier(String value) {
+        this.identifier = value;
     }
 
 }

@@ -16,76 +16,24 @@
  */
 package it.geosolutions.geobatch.mariss.model;
 
-
 /**
  * @author Alessio
- *
+ * 
  */
 public class Sensor {
-    
+
     private int id;
+
     private String sensor;
+
     private SensorMode sensorMode;
-    
+
     /**
      * 
      */
     public Sensor(String sensor, SensorMode sensorMode) {
         this.sensor = sensor;
         this.sensorMode = sensorMode;
-    }
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-
-    /**
-     * @return the sensor
-     */
-    public String getSensor() {
-        return sensor;
-    }
-
-    /**
-     * @param sensor the sensor to set
-     */
-    public void setSensor(String sensor) {
-        this.sensor = sensor;
-    }
-
-    /**
-     * @return the sensorMode
-     */
-    public SensorMode getSensorMode() {
-        return sensorMode;
-    }
-
-    /**
-     * @param sensorMode the sensorMode to set
-     */
-    public void setSensorMode(SensorMode sensorMode) {
-        this.sensorMode = sensorMode;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        result = prime * result + ((sensor == null) ? 0 : sensor.hashCode());
-        result = prime * result + ((sensorMode == null) ? 0 : sensorMode.hashCode());
-        return result;
     }
 
     @Override
@@ -120,6 +68,58 @@ public class Sensor {
         return true;
     }
 
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @return the sensor
+     */
+    public String getSensor() {
+        return sensor;
+    }
+
+    /**
+     * @return the sensorMode
+     */
+    public SensorMode getSensorMode() {
+        return sensorMode;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + id;
+        result = prime * result + ((sensor == null) ? 0 : sensor.hashCode());
+        result = prime * result + ((sensorMode == null) ? 0 : sensorMode.hashCode());
+        return result;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * @param sensor the sensor to set
+     */
+    public void setSensor(String sensor) {
+        this.sensor = sensor;
+    }
+
+    /**
+     * @param sensorMode the sensorMode to set
+     */
+    public void setSensorMode(SensorMode sensorMode) {
+        this.sensorMode = sensorMode;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -131,5 +131,5 @@ public class Sensor {
         builder.append("]");
         return builder.toString();
     }
-    
+
 }

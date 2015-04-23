@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package org.w3._2001.smil20;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,15 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3._2001.smil20.language.AnimateType;
 
-
 /**
- * <p>Java class for animatePrototype complex type.
+ * <p>
+ * Java class for animatePrototype complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="animatePrototype">
@@ -37,115 +38,38 @@ import org.w3._2001.smil20.language.AnimateType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "animatePrototype")
-@XmlSeeAlso({
-    AnimateType.class
-})
+@XmlSeeAlso({ AnimateType.class })
 public class AnimatePrototype {
 
     @XmlAttribute(required = true)
     protected String attributeName;
+
     @XmlAttribute
     protected String attributeType;
+
     @XmlAttribute
     protected String additive;
+
     @XmlAttribute
     protected String accumulate;
+
     @XmlAttribute
     protected String from;
+
     @XmlAttribute
     protected String by;
+
     @XmlAttribute
     protected String values;
+
     @XmlAttribute
     protected String to;
 
     /**
-     * Gets the value of the attributeName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAttributeName() {
-        return attributeName;
-    }
-
-    /**
-     * Sets the value of the attributeName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAttributeName(String value) {
-        this.attributeName = value;
-    }
-
-    /**
-     * Gets the value of the attributeType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAttributeType() {
-        if (attributeType == null) {
-            return "auto";
-        } else {
-            return attributeType;
-        }
-    }
-
-    /**
-     * Sets the value of the attributeType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAttributeType(String value) {
-        this.attributeType = value;
-    }
-
-    /**
-     * Gets the value of the additive property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAdditive() {
-        if (additive == null) {
-            return "replace";
-        } else {
-            return additive;
-        }
-    }
-
-    /**
-     * Sets the value of the additive property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAdditive(String value) {
-        this.additive = value;
-    }
-
-    /**
      * Gets the value of the accumulate property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getAccumulate() {
         if (accumulate == null) {
@@ -156,111 +80,161 @@ public class AnimatePrototype {
     }
 
     /**
-     * Sets the value of the accumulate property.
+     * Gets the value of the additive property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
-    public void setAccumulate(String value) {
-        this.accumulate = value;
+    public String getAdditive() {
+        if (additive == null) {
+            return "replace";
+        } else {
+            return additive;
+        }
     }
 
     /**
-     * Gets the value of the from property.
+     * Gets the value of the attributeName property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
-    public String getFrom() {
-        return from;
+    public String getAttributeName() {
+        return attributeName;
     }
 
     /**
-     * Sets the value of the from property.
+     * Gets the value of the attributeType property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
-    public void setFrom(String value) {
-        this.from = value;
+    public String getAttributeType() {
+        if (attributeType == null) {
+            return "auto";
+        } else {
+            return attributeType;
+        }
     }
 
     /**
      * Gets the value of the by property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getBy() {
         return by;
     }
 
     /**
-     * Sets the value of the by property.
+     * Gets the value of the from property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setBy(String value) {
-        this.by = value;
-    }
-
-    /**
-     * Gets the value of the values property.
+     * @return possible object is {@link String }
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
      */
-    public String getValues() {
-        return values;
-    }
-
-    /**
-     * Sets the value of the values property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setValues(String value) {
-        this.values = value;
+    public String getFrom() {
+        return from;
     }
 
     /**
      * Gets the value of the to property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getTo() {
         return to;
     }
 
     /**
+     * Gets the value of the values property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getValues() {
+        return values;
+    }
+
+    /**
+     * Sets the value of the accumulate property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setAccumulate(String value) {
+        this.accumulate = value;
+    }
+
+    /**
+     * Sets the value of the additive property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setAdditive(String value) {
+        this.additive = value;
+    }
+
+    /**
+     * Sets the value of the attributeName property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setAttributeName(String value) {
+        this.attributeName = value;
+    }
+
+    /**
+     * Sets the value of the attributeType property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setAttributeType(String value) {
+        this.attributeType = value;
+    }
+
+    /**
+     * Sets the value of the by property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setBy(String value) {
+        this.by = value;
+    }
+
+    /**
+     * Sets the value of the from property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setFrom(String value) {
+        this.from = value;
+    }
+
+    /**
      * Sets the value of the to property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setTo(String value) {
         this.to = value;
+    }
+
+    /**
+     * Sets the value of the values property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setValues(String value) {
+        this.values = value;
     }
 
 }

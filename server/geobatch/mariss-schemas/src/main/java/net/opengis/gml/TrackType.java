@@ -5,20 +5,20 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * The track of a moving object is a sequence of specialized timeslices        that indicate the status of the object.
+ * The track of a moving object is a sequence of specialized timeslices that indicate the status of the object.
  * 
- * <p>Java class for TrackType complex type.
+ * <p>
+ * Java class for TrackType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="TrackType">
@@ -36,9 +36,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TrackType")
-public class TrackType
-    extends HistoryPropertyType
-{
-
+public class TrackType extends HistoryPropertyType {
 
 }

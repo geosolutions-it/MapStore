@@ -62,27 +62,6 @@ public class MetocElementType {
     protected String type;
 
     /**
-     * Gets the value of the name property.
-     * 
-     * @return possible object is {@link String }
-     * 
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param value
-     *            allowed object is {@link String }
-     * 
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
-
-    /**
      * Gets the value of the brief property.
      * 
      * @return possible object is {@link String }
@@ -90,17 +69,6 @@ public class MetocElementType {
      */
     public String getBrief() {
         return brief;
-    }
-
-    /**
-     * Sets the value of the brief property.
-     * 
-     * @param value
-     *            allowed object is {@link String }
-     * 
-     */
-    public void setBrief(String value) {
-        this.brief = value;
     }
 
     /**
@@ -114,14 +82,13 @@ public class MetocElementType {
     }
 
     /**
-     * Sets the value of the defaultUom property.
+     * Gets the value of the name property.
      * 
-     * @param value
-     *            allowed object is {@link String }
+     * @return possible object is {@link String }
      * 
      */
-    public void setDefaultUom(String value) {
-        this.defaultUom = value;
+    public String getName() {
+        return name;
     }
 
     /**
@@ -135,10 +102,39 @@ public class MetocElementType {
     }
 
     /**
+     * Sets the value of the brief property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setBrief(String value) {
+        this.brief = value;
+    }
+
+    /**
+     * Sets the value of the defaultUom property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setDefaultUom(String value) {
+        this.defaultUom = value;
+    }
+
+    /**
+     * Sets the value of the name property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setName(String value) {
+        this.name = value;
+    }
+
+    /**
      * Sets the value of the type property.
      * 
-     * @param value
-     *            allowed object is {@link String }
+     * @param value allowed object is {@link String }
      * 
      */
     public void setType(String value) {

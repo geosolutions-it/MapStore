@@ -5,23 +5,24 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.math.BigInteger;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Curve segment defines a homogeneous segment of a curve.
  * 
- * <p>Java class for AbstractCurveSegmentType complex type.
+ * <p>
+ * Java class for AbstractCurveSegmentType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AbstractCurveSegmentType">
@@ -41,89 +42,25 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AbstractCurveSegmentType")
-@XmlSeeAlso({
-    GeodesicStringType.class,
-    LineStringSegmentType.class,
-    ArcStringType.class,
-    BSplineType.class,
-    OffsetCurveType.class,
-    ClothoidType.class,
-    CubicSplineType.class,
-    ArcByCenterPointType.class,
-    ArcStringByBulgeType.class
-})
+@XmlSeeAlso({ GeodesicStringType.class, LineStringSegmentType.class, ArcStringType.class,
+        BSplineType.class, OffsetCurveType.class, ClothoidType.class, CubicSplineType.class,
+        ArcByCenterPointType.class, ArcStringByBulgeType.class })
 public abstract class AbstractCurveSegmentType {
 
     @XmlAttribute
     protected BigInteger numDerivativesAtStart;
+
     @XmlAttribute
     protected BigInteger numDerivativesAtEnd;
+
     @XmlAttribute
     protected BigInteger numDerivativeInterior;
 
     /**
-     * Gets the value of the numDerivativesAtStart property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getNumDerivativesAtStart() {
-        if (numDerivativesAtStart == null) {
-            return new BigInteger("0");
-        } else {
-            return numDerivativesAtStart;
-        }
-    }
-
-    /**
-     * Sets the value of the numDerivativesAtStart property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setNumDerivativesAtStart(BigInteger value) {
-        this.numDerivativesAtStart = value;
-    }
-
-    /**
-     * Gets the value of the numDerivativesAtEnd property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getNumDerivativesAtEnd() {
-        if (numDerivativesAtEnd == null) {
-            return new BigInteger("0");
-        } else {
-            return numDerivativesAtEnd;
-        }
-    }
-
-    /**
-     * Sets the value of the numDerivativesAtEnd property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setNumDerivativesAtEnd(BigInteger value) {
-        this.numDerivativesAtEnd = value;
-    }
-
-    /**
      * Gets the value of the numDerivativeInterior property.
      * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     * @return possible object is {@link BigInteger }
+     * 
      */
     public BigInteger getNumDerivativeInterior() {
         if (numDerivativeInterior == null) {
@@ -134,15 +71,61 @@ public abstract class AbstractCurveSegmentType {
     }
 
     /**
+     * Gets the value of the numDerivativesAtEnd property.
+     * 
+     * @return possible object is {@link BigInteger }
+     * 
+     */
+    public BigInteger getNumDerivativesAtEnd() {
+        if (numDerivativesAtEnd == null) {
+            return new BigInteger("0");
+        } else {
+            return numDerivativesAtEnd;
+        }
+    }
+
+    /**
+     * Gets the value of the numDerivativesAtStart property.
+     * 
+     * @return possible object is {@link BigInteger }
+     * 
+     */
+    public BigInteger getNumDerivativesAtStart() {
+        if (numDerivativesAtStart == null) {
+            return new BigInteger("0");
+        } else {
+            return numDerivativesAtStart;
+        }
+    }
+
+    /**
      * Sets the value of the numDerivativeInterior property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     * @param value allowed object is {@link BigInteger }
+     * 
      */
     public void setNumDerivativeInterior(BigInteger value) {
         this.numDerivativeInterior = value;
+    }
+
+    /**
+     * Sets the value of the numDerivativesAtEnd property.
+     * 
+     * @param value allowed object is {@link BigInteger }
+     * 
+     */
+    public void setNumDerivativesAtEnd(BigInteger value) {
+        this.numDerivativesAtEnd = value;
+    }
+
+    /**
+     * Sets the value of the numDerivativesAtStart property.
+     * 
+     * @param value allowed object is {@link BigInteger }
+     * 
+     */
+    public void setNumDerivativesAtStart(BigInteger value) {
+        this.numDerivativesAtStart = value;
     }
 
 }

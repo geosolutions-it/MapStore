@@ -5,19 +5,20 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for FileValueModelType.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
+ * Java class for FileValueModelType.
+ * 
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * 
  * <pre>
  * &lt;simpleType name="FileValueModelType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -33,6 +34,15 @@ public enum FileValueModelType {
 
     @XmlEnumValue("Record Interleaved")
     RECORD_INTERLEAVED("Record Interleaved");
+    public static FileValueModelType fromValue(String v) {
+        for (FileValueModelType c : FileValueModelType.values()) {
+            if (c.value.equals(v)) {
+                return c;
+            }
+        }
+        throw new IllegalArgumentException(v);
+    }
+
     private final String value;
 
     FileValueModelType(String v) {
@@ -41,15 +51,6 @@ public enum FileValueModelType {
 
     public String value() {
         return value;
-    }
-
-    public static FileValueModelType fromValue(String v) {
-        for (FileValueModelType c: FileValueModelType.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
     }
 
 }

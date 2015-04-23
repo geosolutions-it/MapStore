@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * [complexType of] The style descriptor for labels of a feature, geometry or topology.
  * 
- * <p>Java class for LabelStyleType complex type.
+ * <p>
+ * Java class for LabelStyleType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="LabelStyleType">
@@ -37,65 +37,53 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "LabelStyleType", propOrder = {
-    "style",
-    "label"
-})
-public class LabelStyleType
-    extends BaseStyleDescriptorType
-{
+@XmlType(name = "LabelStyleType", propOrder = { "style", "label" })
+public class LabelStyleType extends BaseStyleDescriptorType {
 
     @XmlElement(required = true)
     protected String style;
+
     @XmlElement(required = true)
     protected LabelType label;
 
     /**
-     * Gets the value of the style property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getStyle() {
-        return style;
-    }
-
-    /**
-     * Sets the value of the style property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setStyle(String value) {
-        this.style = value;
-    }
-
-    /**
      * Gets the value of the label property.
      * 
-     * @return
-     *     possible object is
-     *     {@link LabelType }
-     *     
+     * @return possible object is {@link LabelType }
+     * 
      */
     public LabelType getLabel() {
         return label;
     }
 
     /**
+     * Gets the value of the style property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getStyle() {
+        return style;
+    }
+
+    /**
      * Sets the value of the label property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link LabelType }
-     *     
+     * @param value allowed object is {@link LabelType }
+     * 
      */
     public void setLabel(LabelType value) {
         this.label = value;
+    }
+
+    /**
+     * Sets the value of the style property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setStyle(String value) {
+        this.style = value;
     }
 
 }

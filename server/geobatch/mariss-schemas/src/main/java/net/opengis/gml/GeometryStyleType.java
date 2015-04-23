@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * [complexType of] The style descriptor for geometries of a feature.
  * 
- * <p>Java class for GeometryStyleType complex type.
+ * <p>
+ * Java class for GeometryStyleType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="GeometryStyleType">
@@ -42,141 +42,119 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "GeometryStyleType", propOrder = {
-    "symbol",
-    "style",
-    "labelStyle"
-})
-public class GeometryStyleType
-    extends BaseStyleDescriptorType
-{
+@XmlType(name = "GeometryStyleType", propOrder = { "symbol", "style", "labelStyle" })
+public class GeometryStyleType extends BaseStyleDescriptorType {
 
     protected SymbolType symbol;
+
     protected String style;
+
     protected LabelStylePropertyType labelStyle;
+
     @XmlAttribute
     protected String geometryProperty;
+
     @XmlAttribute
     protected String geometryType;
 
     /**
-     * Gets the value of the symbol property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link SymbolType }
-     *     
-     */
-    public SymbolType getSymbol() {
-        return symbol;
-    }
-
-    /**
-     * Sets the value of the symbol property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link SymbolType }
-     *     
-     */
-    public void setSymbol(SymbolType value) {
-        this.symbol = value;
-    }
-
-    /**
-     * Gets the value of the style property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getStyle() {
-        return style;
-    }
-
-    /**
-     * Sets the value of the style property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setStyle(String value) {
-        this.style = value;
-    }
-
-    /**
-     * Gets the value of the labelStyle property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link LabelStylePropertyType }
-     *     
-     */
-    public LabelStylePropertyType getLabelStyle() {
-        return labelStyle;
-    }
-
-    /**
-     * Sets the value of the labelStyle property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link LabelStylePropertyType }
-     *     
-     */
-    public void setLabelStyle(LabelStylePropertyType value) {
-        this.labelStyle = value;
-    }
-
-    /**
      * Gets the value of the geometryProperty property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getGeometryProperty() {
         return geometryProperty;
     }
 
     /**
-     * Sets the value of the geometryProperty property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setGeometryProperty(String value) {
-        this.geometryProperty = value;
-    }
-
-    /**
      * Gets the value of the geometryType property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getGeometryType() {
         return geometryType;
     }
 
     /**
+     * Gets the value of the labelStyle property.
+     * 
+     * @return possible object is {@link LabelStylePropertyType }
+     * 
+     */
+    public LabelStylePropertyType getLabelStyle() {
+        return labelStyle;
+    }
+
+    /**
+     * Gets the value of the style property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getStyle() {
+        return style;
+    }
+
+    /**
+     * Gets the value of the symbol property.
+     * 
+     * @return possible object is {@link SymbolType }
+     * 
+     */
+    public SymbolType getSymbol() {
+        return symbol;
+    }
+
+    /**
+     * Sets the value of the geometryProperty property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setGeometryProperty(String value) {
+        this.geometryProperty = value;
+    }
+
+    /**
      * Sets the value of the geometryType property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setGeometryType(String value) {
         this.geometryType = value;
+    }
+
+    /**
+     * Sets the value of the labelStyle property.
+     * 
+     * @param value allowed object is {@link LabelStylePropertyType }
+     * 
+     */
+    public void setLabelStyle(LabelStylePropertyType value) {
+        this.labelStyle = value;
+    }
+
+    /**
+     * Sets the value of the style property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setStyle(String value) {
+        this.style = value;
+    }
+
+    /**
+     * Sets the value of the symbol property.
+     * 
+     * @param value allowed object is {@link SymbolType }
+     * 
+     */
+    public void setSymbol(SymbolType value) {
+        this.symbol = value;
     }
 
 }

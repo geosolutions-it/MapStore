@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,15 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Definition of a unit of measure which is a base unit from the system of units.  A base unit cannot be derived by combination of other base units within this system.  Sometimes known as "fundamental unit".
+ * Definition of a unit of measure which is a base unit from the system of units. A base unit cannot be derived by combination of other base units
+ * within this system. Sometimes known as "fundamental unit".
  * 
- * <p>Java class for BaseUnitType complex type.
+ * <p>
+ * Java class for BaseUnitType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="BaseUnitType">
@@ -36,12 +37,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "BaseUnitType", propOrder = {
-    "unitsSystem"
-})
-public class BaseUnitType
-    extends UnitDefinitionType
-{
+@XmlType(name = "BaseUnitType", propOrder = { "unitsSystem" })
+public class BaseUnitType extends UnitDefinitionType {
 
     @XmlElement(required = true)
     protected ReferenceType unitsSystem;
@@ -49,10 +46,8 @@ public class BaseUnitType
     /**
      * Gets the value of the unitsSystem property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ReferenceType }
-     *     
+     * @return possible object is {@link ReferenceType }
+     * 
      */
     public ReferenceType getUnitsSystem() {
         return unitsSystem;
@@ -61,10 +56,8 @@ public class BaseUnitType
     /**
      * Sets the value of the unitsSystem property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ReferenceType }
-     *     
+     * @param value allowed object is {@link ReferenceType }
+     * 
      */
     public void setUnitsSystem(ReferenceType value) {
         this.unitsSystem = value;

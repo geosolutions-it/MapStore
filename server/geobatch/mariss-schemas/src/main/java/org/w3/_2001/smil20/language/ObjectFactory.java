@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package org.w3._2001.smil20.language;
 
 import javax.xml.bind.JAXBElement;
@@ -13,28 +12,29 @@ import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 
-
 /**
- * This object contains factory methods for each 
- * Java content interface and Java element interface 
- * generated in the org.w3._2001.smil20.language package. 
- * <p>An ObjectFactory allows you to programatically 
- * construct new instances of the Java representation 
- * for XML content. The Java representation of XML 
- * content can consist of schema derived interfaces 
- * and classes representing the binding of schema 
- * type definitions, element declarations and model 
- * groups.  Factory methods for each of these are 
- * provided in this class.
+ * This object contains factory methods for each Java content interface and Java element interface generated in the org.w3._2001.smil20.language
+ * package.
+ * <p>
+ * An ObjectFactory allows you to programatically construct new instances of the Java representation for XML content. The Java representation of XML
+ * content can consist of schema derived interfaces and classes representing the binding of schema type definitions, element declarations and model
+ * groups. Factory methods for each of these are provided in this class.
  * 
  */
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _Set_QNAME = new QName("http://www.w3.org/2001/SMIL20/Language", "set");
-    private final static QName _AnimateMotion_QNAME = new QName("http://www.w3.org/2001/SMIL20/Language", "animateMotion");
-    private final static QName _AnimateColor_QNAME = new QName("http://www.w3.org/2001/SMIL20/Language", "animateColor");
-    private final static QName _Animate_QNAME = new QName("http://www.w3.org/2001/SMIL20/Language", "animate");
+    private final static QName _Set_QNAME = new QName("http://www.w3.org/2001/SMIL20/Language",
+            "set");
+
+    private final static QName _AnimateMotion_QNAME = new QName(
+            "http://www.w3.org/2001/SMIL20/Language", "animateMotion");
+
+    private final static QName _AnimateColor_QNAME = new QName(
+            "http://www.w3.org/2001/SMIL20/Language", "animateColor");
+
+    private final static QName _Animate_QNAME = new QName("http://www.w3.org/2001/SMIL20/Language",
+            "animate");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.w3._2001.smil20.language
@@ -44,19 +44,22 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link AnimateMotionType }
+     * Create an instance of {@link JAXBElement }{@code <}{@link AnimateType }{@code >}
      * 
      */
-    public AnimateMotionType createAnimateMotionType() {
-        return new AnimateMotionType();
+    @XmlElementDecl(namespace = "http://www.w3.org/2001/SMIL20/Language", name = "animate")
+    public JAXBElement<AnimateType> createAnimate(AnimateType value) {
+        return new JAXBElement<AnimateType>(_Animate_QNAME, AnimateType.class, null, value);
     }
 
     /**
-     * Create an instance of {@link SetType }
+     * Create an instance of {@link JAXBElement }{@code <}{@link AnimateColorType }{@code >}
      * 
      */
-    public SetType createSetType() {
-        return new SetType();
+    @XmlElementDecl(namespace = "http://www.w3.org/2001/SMIL20/Language", name = "animateColor")
+    public JAXBElement<AnimateColorType> createAnimateColor(AnimateColorType value) {
+        return new JAXBElement<AnimateColorType>(_AnimateColor_QNAME, AnimateColorType.class, null,
+                value);
     }
 
     /**
@@ -68,6 +71,24 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link AnimateMotionType }{@code >}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.w3.org/2001/SMIL20/Language", name = "animateMotion")
+    public JAXBElement<AnimateMotionType> createAnimateMotion(AnimateMotionType value) {
+        return new JAXBElement<AnimateMotionType>(_AnimateMotion_QNAME, AnimateMotionType.class,
+                null, value);
+    }
+
+    /**
+     * Create an instance of {@link AnimateMotionType }
+     * 
+     */
+    public AnimateMotionType createAnimateMotionType() {
+        return new AnimateMotionType();
+    }
+
+    /**
      * Create an instance of {@link AnimateType }
      * 
      */
@@ -76,7 +97,7 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link SetType }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link SetType }{@code >}
      * 
      */
     @XmlElementDecl(namespace = "http://www.w3.org/2001/SMIL20/Language", name = "set")
@@ -85,30 +106,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link AnimateMotionType }{@code >}}
+     * Create an instance of {@link SetType }
      * 
      */
-    @XmlElementDecl(namespace = "http://www.w3.org/2001/SMIL20/Language", name = "animateMotion")
-    public JAXBElement<AnimateMotionType> createAnimateMotion(AnimateMotionType value) {
-        return new JAXBElement<AnimateMotionType>(_AnimateMotion_QNAME, AnimateMotionType.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link AnimateColorType }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://www.w3.org/2001/SMIL20/Language", name = "animateColor")
-    public JAXBElement<AnimateColorType> createAnimateColor(AnimateColorType value) {
-        return new JAXBElement<AnimateColorType>(_AnimateColor_QNAME, AnimateColorType.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link AnimateType }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://www.w3.org/2001/SMIL20/Language", name = "animate")
-    public JAXBElement<AnimateType> createAnimate(AnimateType value) {
-        return new JAXBElement<AnimateType>(_Animate_QNAME, AnimateType.class, null, value);
+    public SetType createSetType() {
+        return new SetType();
     }
 
 }

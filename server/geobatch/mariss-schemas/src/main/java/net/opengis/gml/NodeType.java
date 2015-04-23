@@ -5,22 +5,24 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Its optional co-boundary is a set of connected directedEdges.  The orientation of one of these dirEdges is "+" if the Node is the "to" node of the Edge, and "-" if it is the "from" node.
+ * Its optional co-boundary is a set of connected directedEdges. The orientation of one of these dirEdges is "+" if the Node is the "to" node of the
+ * Edge, and "-" if it is the "from" node.
  * 
- * <p>Java class for NodeType complex type.
+ * <p>
+ * Java class for NodeType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="NodeType">
@@ -38,36 +40,30 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "NodeType", propOrder = {
-    "directedEdge",
-    "pointProperty"
-})
-public class NodeType
-    extends AbstractTopoPrimitiveType
-{
+@XmlType(name = "NodeType", propOrder = { "directedEdge", "pointProperty" })
+public class NodeType extends AbstractTopoPrimitiveType {
 
     protected List<DirectedEdgePropertyType> directedEdge;
+
     protected PointPropertyType pointProperty;
 
     /**
      * Gets the value of the directedEdge property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the directedEdge property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the directedEdge property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getDirectedEdge().add(newItem);
+     * getDirectedEdge().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link DirectedEdgePropertyType }
+     * Objects of the following type(s) are allowed in the list {@link DirectedEdgePropertyType }
      * 
      * 
      */
@@ -81,10 +77,8 @@ public class NodeType
     /**
      * Gets the value of the pointProperty property.
      * 
-     * @return
-     *     possible object is
-     *     {@link PointPropertyType }
-     *     
+     * @return possible object is {@link PointPropertyType }
+     * 
      */
     public PointPropertyType getPointProperty() {
         return pointProperty;
@@ -93,10 +87,8 @@ public class NodeType
     /**
      * Sets the value of the pointProperty property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link PointPropertyType }
-     *     
+     * @param value allowed object is {@link PointPropertyType }
+     * 
      */
     public void setPointProperty(PointPropertyType value) {
         this.pointProperty = value;

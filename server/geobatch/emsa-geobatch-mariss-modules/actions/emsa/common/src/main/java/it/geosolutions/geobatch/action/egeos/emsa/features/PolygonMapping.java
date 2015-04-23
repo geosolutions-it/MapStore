@@ -21,19 +21,19 @@ import com.vividsolutions.jts.geom.LinearRing;
  */
 public class PolygonMapping extends FeatureMapping {
 
-    public PolygonMapping(String xpath, String destName) {
-        super(xpath, destName);
-    }
-
     public PolygonMapping(String name) {
         super(name);
+    }
+
+    public PolygonMapping(String xpath, String destName) {
+        super(xpath, destName);
     }
 
     public Object getValue(XPath xpath, Node root) throws XPathExpressionException {
         GeometryFactory gf = new GeometryFactory();
         try {
-            String ordinates = (String) xpath.evaluate("gml:exterior/gml:LinearRing/gml:posList", root,
-                    XPathConstants.STRING);
+            String ordinates = (String) xpath.evaluate("gml:exterior/gml:LinearRing/gml:posList",
+                    root, XPathConstants.STRING);
             if (ordinates == null || ordinates.length() == 0) {
                 ordinates = (String) xpath.evaluate("exterior/LinearRing/posList", root,
                         XPathConstants.STRING);
@@ -42,8 +42,8 @@ public class PolygonMapping extends FeatureMapping {
             double[] doubles = parseRingOrdinates(ordinates);
             LinearRing shell = gf.createLinearRing(new LiteCoordinateSequence(doubles));
 
-            NodeList interiorNodes = (NodeList) xpath.evaluate("gml:interior/gml:LinearRing/gml:posList", root,
-                    XPathConstants.NODESET);
+            NodeList interiorNodes = (NodeList) xpath.evaluate(
+                    "gml:interior/gml:LinearRing/gml:posList", root, XPathConstants.NODESET);
             if (interiorNodes == null) {
                 interiorNodes = (NodeList) xpath.evaluate("interior/LinearRing/posList", root,
                         XPathConstants.NODESET);
@@ -56,16 +56,15 @@ public class PolygonMapping extends FeatureMapping {
 
             return gf.createPolygon(shell, holes);
         } catch (Exception e) {
-            double[] doubles = new double[] {0, 0, 0, 0};
+            double[] doubles = new double[] { 0, 0, 0, 0 };
             LinearRing shell = gf.createLinearRing(new LiteCoordinateSequence(doubles));
             return gf.createPolygon(shell, new LinearRing[0]);
         }
     }
 
     /**
-     * NOTE:
-     *      THIS IS PROBABLY SPECIFIC FOR EMSA
-     *      
+     * NOTE: THIS IS PROBABLY SPECIFIC FOR EMSA
+     * 
      * @param ordinates
      * @return
      */
@@ -77,23 +76,22 @@ public class PolygonMapping extends FeatureMapping {
                 doubles[j] = Double.parseDouble(strarr[j]);
             }
             // check if the ordinates form a closed ring, if not, fix it
-            if (doubles[0] != doubles[doubles.length - 2] || doubles[1] != doubles[doubles.length - 1]) {
+            if (doubles[0] != doubles[doubles.length - 2]
+                    || doubles[1] != doubles[doubles.length - 1]) {
                 double[] tmp = new double[doubles.length + 2];
                 System.arraycopy(doubles, 0, tmp, 0, doubles.length);
                 /*
-                 *      Here we suppose that data is stored in the format:
-                 *      - Lat Lon
-                 *      
-                 * NOTE:
-                 *      THIS IS PROBABLY SPECIFIC FOR 'EMSA'
+                 * Here we suppose that data is stored in the format: - Lat Lon
                  * 
-                 *      Take a look into the xml files located into DER packages
+                 * NOTE: THIS IS PROBABLY SPECIFIC FOR 'EMSA'
+                 * 
+                 * Take a look into the xml files located into DER packages
                  */
                 tmp[doubles.length] = doubles[1];
                 tmp[doubles.length + 1] = doubles[0];
                 doubles = tmp;
             }
-        
+
             return doubles;
         }
         return null;

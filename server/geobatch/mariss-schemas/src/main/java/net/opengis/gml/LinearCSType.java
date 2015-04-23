@@ -5,20 +5,22 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A one-dimensional coordinate system that consists of the points that lie on the single axis described. The associated ordinate is the distance from the specified origin to the point along the axis. Example: usage of the line feature representing a road to describe points on or along that road. A LinearCS shall have one usesAxis association. 
+ * A one-dimensional coordinate system that consists of the points that lie on the single axis described. The associated ordinate is the distance from
+ * the specified origin to the point along the axis. Example: usage of the line feature representing a road to describe points on or along that road.
+ * A LinearCS shall have one usesAxis association.
  * 
- * <p>Java class for LinearCSType complex type.
+ * <p>
+ * Java class for LinearCSType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="LinearCSType">
@@ -33,9 +35,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LinearCSType")
-public class LinearCSType
-    extends AbstractCoordinateSystemType
-{
-
+public class LinearCSType extends AbstractCoordinateSystemType {
 
 }

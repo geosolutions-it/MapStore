@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,13 +14,15 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-
 /**
- * Defines the origin of a temporal coordinate reference system. This type extends the TemporalDatumRestrictionType to add the "origin" element with the dateTime type. 
+ * Defines the origin of a temporal coordinate reference system. This type extends the TemporalDatumRestrictionType to add the "origin" element with
+ * the dateTime type.
  * 
- * <p>Java class for TemporalDatumType complex type.
+ * <p>
+ * Java class for TemporalDatumType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="TemporalDatumType">
@@ -38,12 +39,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TemporalDatumType", propOrder = {
-    "origin"
-})
-public class TemporalDatumType
-    extends TemporalDatumBaseType
-{
+@XmlType(name = "TemporalDatumType", propOrder = { "origin" })
+public class TemporalDatumType extends TemporalDatumBaseType {
 
     @XmlElement(required = true)
     @XmlSchemaType(name = "dateTime")
@@ -52,10 +49,8 @@ public class TemporalDatumType
     /**
      * Gets the value of the origin property.
      * 
-     * @return
-     *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     * @return possible object is {@link XMLGregorianCalendar }
+     * 
      */
     public XMLGregorianCalendar getOrigin() {
         return origin;
@@ -64,10 +59,8 @@ public class TemporalDatumType
     /**
      * Sets the value of the origin property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
+     * @param value allowed object is {@link XMLGregorianCalendar }
+     * 
      */
     public void setOrigin(XMLGregorianCalendar value) {
         this.origin = value;

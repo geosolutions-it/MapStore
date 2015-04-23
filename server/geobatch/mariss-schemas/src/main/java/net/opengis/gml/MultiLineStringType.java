@@ -5,22 +5,24 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A MultiLineString is defined by one or more LineStrings, referenced through lineStringMember elements. Deprecated with GML version 3.0. Use MultiCurveType instead.
+ * A MultiLineString is defined by one or more LineStrings, referenced through lineStringMember elements. Deprecated with GML version 3.0. Use
+ * MultiCurveType instead.
  * 
- * <p>Java class for MultiLineStringType complex type.
+ * <p>
+ * Java class for MultiLineStringType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="MultiLineStringType">
@@ -37,12 +39,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MultiLineStringType", propOrder = {
-    "lineStringMember"
-})
-public class MultiLineStringType
-    extends AbstractGeometricAggregateType
-{
+@XmlType(name = "MultiLineStringType", propOrder = { "lineStringMember" })
+public class MultiLineStringType extends AbstractGeometricAggregateType {
 
     protected List<LineStringPropertyType> lineStringMember;
 
@@ -50,21 +48,19 @@ public class MultiLineStringType
      * Gets the value of the lineStringMember property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the lineStringMember property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the lineStringMember property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getLineStringMember().add(newItem);
+     * getLineStringMember().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link LineStringPropertyType }
+     * Objects of the following type(s) are allowed in the list {@link LineStringPropertyType }
      * 
      * 
      */

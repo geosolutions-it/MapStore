@@ -5,20 +5,20 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Value of an angle quantity provided in either degree-minute-second format or single value format.
  * 
- * <p>Java class for AngleChoiceType complex type.
+ * <p>
+ * Java class for AngleChoiceType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AngleChoiceType">
@@ -36,58 +36,48 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AngleChoiceType", propOrder = {
-    "angle",
-    "dmsAngle"
-})
+@XmlType(name = "AngleChoiceType", propOrder = { "angle", "dmsAngle" })
 public class AngleChoiceType {
 
     protected MeasureType angle;
+
     protected DMSAngleType dmsAngle;
 
     /**
      * Gets the value of the angle property.
      * 
-     * @return
-     *     possible object is
-     *     {@link MeasureType }
-     *     
+     * @return possible object is {@link MeasureType }
+     * 
      */
     public MeasureType getAngle() {
         return angle;
     }
 
     /**
-     * Sets the value of the angle property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link MeasureType }
-     *     
-     */
-    public void setAngle(MeasureType value) {
-        this.angle = value;
-    }
-
-    /**
      * Gets the value of the dmsAngle property.
      * 
-     * @return
-     *     possible object is
-     *     {@link DMSAngleType }
-     *     
+     * @return possible object is {@link DMSAngleType }
+     * 
      */
     public DMSAngleType getDmsAngle() {
         return dmsAngle;
     }
 
     /**
+     * Sets the value of the angle property.
+     * 
+     * @param value allowed object is {@link MeasureType }
+     * 
+     */
+    public void setAngle(MeasureType value) {
+        this.angle = value;
+    }
+
+    /**
      * Sets the value of the dmsAngle property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link DMSAngleType }
-     *     
+     * @param value allowed object is {@link DMSAngleType }
+     * 
      */
     public void setDmsAngle(DMSAngleType value) {
         this.dmsAngle = value;

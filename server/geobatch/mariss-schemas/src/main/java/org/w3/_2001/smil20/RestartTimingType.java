@@ -5,19 +5,20 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package org.w3._2001.smil20;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for restartTimingType.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
+ * Java class for restartTimingType.
+ * 
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * 
  * <pre>
  * &lt;simpleType name="restartTimingType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -35,13 +36,19 @@ import javax.xml.bind.annotation.XmlType;
 public enum RestartTimingType {
 
     @XmlEnumValue("never")
-    NEVER("never"),
-    @XmlEnumValue("always")
-    ALWAYS("always"),
-    @XmlEnumValue("whenNotActive")
-    WHEN_NOT_ACTIVE("whenNotActive"),
-    @XmlEnumValue("default")
+    NEVER("never"), @XmlEnumValue("always")
+    ALWAYS("always"), @XmlEnumValue("whenNotActive")
+    WHEN_NOT_ACTIVE("whenNotActive"), @XmlEnumValue("default")
     DEFAULT("default");
+    public static RestartTimingType fromValue(String v) {
+        for (RestartTimingType c : RestartTimingType.values()) {
+            if (c.value.equals(v)) {
+                return c;
+            }
+        }
+        throw new IllegalArgumentException(v);
+    }
+
     private final String value;
 
     RestartTimingType(String v) {
@@ -50,15 +57,6 @@ public enum RestartTimingType {
 
     public String value() {
         return value;
-    }
-
-    public static RestartTimingType fromValue(String v) {
-        for (RestartTimingType c: RestartTimingType.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
     }
 
 }

@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.JAXBElement;
@@ -14,13 +13,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * A dynamic feature may possess a history and/or a timestamp.
  * 
- * <p>Java class for DynamicFeatureType complex type.
+ * <p>
+ * Java class for DynamicFeatureType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="DynamicFeatureType">
@@ -35,92 +35,76 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DynamicFeatureType", propOrder = {
-    "validTime",
-    "history",
-    "dataSource"
-})
-public class DynamicFeatureType
-    extends AbstractFeatureType
-{
+@XmlType(name = "DynamicFeatureType", propOrder = { "validTime", "history", "dataSource" })
+public class DynamicFeatureType extends AbstractFeatureType {
 
     protected TimePrimitivePropertyType validTime;
+
     @XmlElementRef(name = "history", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
     protected JAXBElement<? extends HistoryPropertyType> history;
+
     protected StringOrRefType dataSource;
-
-    /**
-     * Gets the value of the validTime property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TimePrimitivePropertyType }
-     *     
-     */
-    public TimePrimitivePropertyType getValidTime() {
-        return validTime;
-    }
-
-    /**
-     * Sets the value of the validTime property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TimePrimitivePropertyType }
-     *     
-     */
-    public void setValidTime(TimePrimitivePropertyType value) {
-        this.validTime = value;
-    }
-
-    /**
-     * Gets the value of the history property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link HistoryPropertyType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link TrackType }{@code >}
-     *     
-     */
-    public JAXBElement<? extends HistoryPropertyType> getHistory() {
-        return history;
-    }
-
-    /**
-     * Sets the value of the history property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link JAXBElement }{@code <}{@link HistoryPropertyType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link TrackType }{@code >}
-     *     
-     */
-    public void setHistory(JAXBElement<? extends HistoryPropertyType> value) {
-        this.history = ((JAXBElement<? extends HistoryPropertyType> ) value);
-    }
 
     /**
      * Gets the value of the dataSource property.
      * 
-     * @return
-     *     possible object is
-     *     {@link StringOrRefType }
-     *     
+     * @return possible object is {@link StringOrRefType }
+     * 
      */
     public StringOrRefType getDataSource() {
         return dataSource;
     }
 
     /**
+     * Gets the value of the history property.
+     * 
+     * @return possible object is {@link JAXBElement }{@code <}{@link HistoryPropertyType }{@code >} {@link JAXBElement }{@code <}{@link TrackType }
+     *         {@code >}
+     * 
+     */
+    public JAXBElement<? extends HistoryPropertyType> getHistory() {
+        return history;
+    }
+
+    /**
+     * Gets the value of the validTime property.
+     * 
+     * @return possible object is {@link TimePrimitivePropertyType }
+     * 
+     */
+    public TimePrimitivePropertyType getValidTime() {
+        return validTime;
+    }
+
+    /**
      * Sets the value of the dataSource property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link StringOrRefType }
-     *     
+     * @param value allowed object is {@link StringOrRefType }
+     * 
      */
     public void setDataSource(StringOrRefType value) {
         this.dataSource = value;
+    }
+
+    /**
+     * Sets the value of the history property.
+     * 
+     * @param value allowed object is {@link JAXBElement }{@code <}{@link HistoryPropertyType }{@code >} {@link JAXBElement }{@code <}{@link TrackType }
+     *        {@code >}
+     * 
+     */
+    public void setHistory(JAXBElement<? extends HistoryPropertyType> value) {
+        this.history = ((JAXBElement<? extends HistoryPropertyType>) value);
+    }
+
+    /**
+     * Sets the value of the validTime property.
+     * 
+     * @param value allowed object is {@link TimePrimitivePropertyType }
+     * 
+     */
+    public void setValidTime(TimePrimitivePropertyType value) {
+        this.validTime = value;
     }
 
 }

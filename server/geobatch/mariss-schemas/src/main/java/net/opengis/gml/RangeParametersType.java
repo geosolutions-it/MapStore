@@ -5,12 +5,12 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,19 +20,20 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3._1999.xlink.ActuateType;
 import org.w3._1999.xlink.ShowType;
 import org.w3._1999.xlink.TypeType;
 
-
 /**
- * Metadata about the rangeSet.  Definition of record structure.   
- *       This is required if the rangeSet is encoded in a DataBlock.  
- *       We use a gml:_Value with empty values as a map of the composite value structure.
+ * Metadata about the rangeSet. Definition of record structure. This is required if the rangeSet is encoded in a DataBlock. We use a gml:_Value with
+ * empty values as a map of the composite value structure.
  * 
- * <p>Java class for RangeParametersType complex type.
+ * <p>
+ * Java class for RangeParametersType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="RangeParametersType">
@@ -50,182 +51,112 @@ import org.w3._1999.xlink.TypeType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RangeParametersType", propOrder = {
-    "_boolean",
-    "category",
-    "quantity",
-    "count",
-    "booleanList",
-    "categoryList",
-    "quantityList",
-    "countList",
-    "categoryExtent",
-    "quantityExtent",
-    "countExtent",
-    "compositeValue"
-})
+@XmlType(name = "RangeParametersType", propOrder = { "_boolean", "category", "quantity", "count",
+        "booleanList", "categoryList", "quantityList", "countList", "categoryExtent",
+        "quantityExtent", "countExtent", "compositeValue" })
 public class RangeParametersType {
 
     @XmlElement(name = "Boolean")
     protected Boolean _boolean;
+
     @XmlElement(name = "Category")
     protected CodeType category;
+
     @XmlElement(name = "Quantity")
     protected MeasureType quantity;
+
     @XmlElement(name = "Count")
     protected BigInteger count;
+
     @XmlList
     @XmlElement(name = "BooleanList")
     protected List<String> booleanList;
+
     @XmlElement(name = "CategoryList")
     protected CodeOrNullListType categoryList;
+
     @XmlElement(name = "QuantityList")
     protected MeasureOrNullListType quantityList;
+
     @XmlList
     @XmlElement(name = "CountList")
     protected List<String> countList;
+
     @XmlElement(name = "CategoryExtent")
     protected CategoryExtentType categoryExtent;
+
     @XmlElement(name = "QuantityExtent")
     protected QuantityExtentType quantityExtent;
+
     @XmlList
     @XmlElement(name = "CountExtent")
     protected List<String> countExtent;
+
     @XmlElementRef(name = "CompositeValue", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
     protected JAXBElement<? extends CompositeValueType> compositeValue;
+
     @XmlAttribute(namespace = "http://www.opengis.net/gml")
     @XmlSchemaType(name = "anyURI")
     protected String remoteSchema;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected TypeType type;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String href;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String role;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String arcrole;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String title;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected ShowType show;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected ActuateType actuate;
 
     /**
-     * Gets the value of the boolean property.
+     * Gets the value of the actuate property.
      * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
+     * @return possible object is {@link ActuateType }
+     * 
      */
-    public Boolean isBoolean() {
-        return _boolean;
+    public ActuateType getActuate() {
+        return actuate;
     }
 
     /**
-     * Sets the value of the boolean property.
+     * Gets the value of the arcrole property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setBoolean(Boolean value) {
-        this._boolean = value;
-    }
-
-    /**
-     * Gets the value of the category property.
+     * @return possible object is {@link String }
      * 
-     * @return
-     *     possible object is
-     *     {@link CodeType }
-     *     
      */
-    public CodeType getCategory() {
-        return category;
-    }
-
-    /**
-     * Sets the value of the category property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link CodeType }
-     *     
-     */
-    public void setCategory(CodeType value) {
-        this.category = value;
-    }
-
-    /**
-     * Gets the value of the quantity property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link MeasureType }
-     *     
-     */
-    public MeasureType getQuantity() {
-        return quantity;
-    }
-
-    /**
-     * Sets the value of the quantity property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link MeasureType }
-     *     
-     */
-    public void setQuantity(MeasureType value) {
-        this.quantity = value;
-    }
-
-    /**
-     * Gets the value of the count property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getCount() {
-        return count;
-    }
-
-    /**
-     * Sets the value of the count property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setCount(BigInteger value) {
-        this.count = value;
+    public String getArcrole() {
+        return arcrole;
     }
 
     /**
      * Gets the value of the booleanList property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the booleanList property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the booleanList property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getBooleanList().add(newItem);
+     * getBooleanList().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * Objects of the following type(s) are allowed in the list {@link String }
      * 
      * 
      */
@@ -237,149 +168,73 @@ public class RangeParametersType {
     }
 
     /**
-     * Gets the value of the categoryList property.
+     * Gets the value of the category property.
      * 
-     * @return
-     *     possible object is
-     *     {@link CodeOrNullListType }
-     *     
-     */
-    public CodeOrNullListType getCategoryList() {
-        return categoryList;
-    }
-
-    /**
-     * Sets the value of the categoryList property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link CodeOrNullListType }
-     *     
-     */
-    public void setCategoryList(CodeOrNullListType value) {
-        this.categoryList = value;
-    }
-
-    /**
-     * Gets the value of the quantityList property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link MeasureOrNullListType }
-     *     
-     */
-    public MeasureOrNullListType getQuantityList() {
-        return quantityList;
-    }
-
-    /**
-     * Sets the value of the quantityList property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link MeasureOrNullListType }
-     *     
-     */
-    public void setQuantityList(MeasureOrNullListType value) {
-        this.quantityList = value;
-    }
-
-    /**
-     * Gets the value of the countList property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the countList property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getCountList().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
-     * 
+     * @return possible object is {@link CodeType }
      * 
      */
-    public List<String> getCountList() {
-        if (countList == null) {
-            countList = new ArrayList<String>();
-        }
-        return this.countList;
+    public CodeType getCategory() {
+        return category;
     }
 
     /**
      * Gets the value of the categoryExtent property.
      * 
-     * @return
-     *     possible object is
-     *     {@link CategoryExtentType }
-     *     
+     * @return possible object is {@link CategoryExtentType }
+     * 
      */
     public CategoryExtentType getCategoryExtent() {
         return categoryExtent;
     }
 
     /**
-     * Sets the value of the categoryExtent property.
+     * Gets the value of the categoryList property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link CategoryExtentType }
-     *     
+     * @return possible object is {@link CodeOrNullListType }
+     * 
      */
-    public void setCategoryExtent(CategoryExtentType value) {
-        this.categoryExtent = value;
+    public CodeOrNullListType getCategoryList() {
+        return categoryList;
     }
 
     /**
-     * Gets the value of the quantityExtent property.
+     * Gets the value of the compositeValue property.
      * 
-     * @return
-     *     possible object is
-     *     {@link QuantityExtentType }
-     *     
+     * @return possible object is {@link JAXBElement }{@code <}{@link ValueArrayType }{@code >} {@link JAXBElement }{@code <}{@link CompositeValueType }
+     *         {@code >}
+     * 
      */
-    public QuantityExtentType getQuantityExtent() {
-        return quantityExtent;
+    public JAXBElement<? extends CompositeValueType> getCompositeValue() {
+        return compositeValue;
     }
 
     /**
-     * Sets the value of the quantityExtent property.
+     * Gets the value of the count property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link QuantityExtentType }
-     *     
+     * @return possible object is {@link BigInteger }
+     * 
      */
-    public void setQuantityExtent(QuantityExtentType value) {
-        this.quantityExtent = value;
+    public BigInteger getCount() {
+        return count;
     }
 
     /**
      * Gets the value of the countExtent property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the countExtent property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the countExtent property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getCountExtent().add(newItem);
+     * getCountExtent().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * Objects of the following type(s) are allowed in the list {@link String }
      * 
      * 
      */
@@ -391,62 +246,117 @@ public class RangeParametersType {
     }
 
     /**
-     * Gets the value of the compositeValue property.
+     * Gets the value of the countList property.
      * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link ValueArrayType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link CompositeValueType }{@code >}
-     *     
+     * <p>
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the countList property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
+     * getCountList().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list {@link String }
+     * 
+     * 
      */
-    public JAXBElement<? extends CompositeValueType> getCompositeValue() {
-        return compositeValue;
+    public List<String> getCountList() {
+        if (countList == null) {
+            countList = new ArrayList<String>();
+        }
+        return this.countList;
     }
 
     /**
-     * Sets the value of the compositeValue property.
+     * Gets the value of the href property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link JAXBElement }{@code <}{@link ValueArrayType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link CompositeValueType }{@code >}
-     *     
+     * @return possible object is {@link String }
+     * 
      */
-    public void setCompositeValue(JAXBElement<? extends CompositeValueType> value) {
-        this.compositeValue = ((JAXBElement<? extends CompositeValueType> ) value);
+    public String getHref() {
+        return href;
+    }
+
+    /**
+     * Gets the value of the quantity property.
+     * 
+     * @return possible object is {@link MeasureType }
+     * 
+     */
+    public MeasureType getQuantity() {
+        return quantity;
+    }
+
+    /**
+     * Gets the value of the quantityExtent property.
+     * 
+     * @return possible object is {@link QuantityExtentType }
+     * 
+     */
+    public QuantityExtentType getQuantityExtent() {
+        return quantityExtent;
+    }
+
+    /**
+     * Gets the value of the quantityList property.
+     * 
+     * @return possible object is {@link MeasureOrNullListType }
+     * 
+     */
+    public MeasureOrNullListType getQuantityList() {
+        return quantityList;
     }
 
     /**
      * Gets the value of the remoteSchema property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getRemoteSchema() {
         return remoteSchema;
     }
 
     /**
-     * Sets the value of the remoteSchema property.
+     * Gets the value of the role property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
-    public void setRemoteSchema(String value) {
-        this.remoteSchema = value;
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * Gets the value of the show property.
+     * 
+     * @return possible object is {@link ShowType }
+     * 
+     */
+    public ShowType getShow() {
+        return show;
+    }
+
+    /**
+     * Gets the value of the title property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getTitle() {
+        return title;
     }
 
     /**
      * Gets the value of the type property.
      * 
-     * @return
-     *     possible object is
-     *     {@link TypeType }
-     *     
+     * @return possible object is {@link TypeType }
+     * 
      */
     public TypeType getType() {
         if (type == null) {
@@ -457,159 +367,184 @@ public class RangeParametersType {
     }
 
     /**
-     * Sets the value of the type property.
+     * Gets the value of the boolean property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link TypeType }
-     *     
+     * @return possible object is {@link Boolean }
+     * 
      */
-    public void setType(TypeType value) {
-        this.type = value;
+    public Boolean isBoolean() {
+        return _boolean;
     }
 
     /**
-     * Gets the value of the href property.
+     * Sets the value of the actuate property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getHref() {
-        return href;
-    }
-
-    /**
-     * Sets the value of the href property.
+     * @param value allowed object is {@link ActuateType }
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
      */
-    public void setHref(String value) {
-        this.href = value;
-    }
-
-    /**
-     * Gets the value of the role property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getRole() {
-        return role;
-    }
-
-    /**
-     * Sets the value of the role property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setRole(String value) {
-        this.role = value;
-    }
-
-    /**
-     * Gets the value of the arcrole property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getArcrole() {
-        return arcrole;
+    public void setActuate(ActuateType value) {
+        this.actuate = value;
     }
 
     /**
      * Sets the value of the arcrole property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setArcrole(String value) {
         this.arcrole = value;
     }
 
     /**
-     * Gets the value of the title property.
+     * Sets the value of the boolean property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link Boolean }
+     * 
      */
-    public String getTitle() {
-        return title;
+    public void setBoolean(Boolean value) {
+        this._boolean = value;
     }
 
     /**
-     * Sets the value of the title property.
+     * Sets the value of the category property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link CodeType }
+     * 
      */
-    public void setTitle(String value) {
-        this.title = value;
+    public void setCategory(CodeType value) {
+        this.category = value;
     }
 
     /**
-     * Gets the value of the show property.
+     * Sets the value of the categoryExtent property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ShowType }
-     *     
+     * @param value allowed object is {@link CategoryExtentType }
+     * 
      */
-    public ShowType getShow() {
-        return show;
+    public void setCategoryExtent(CategoryExtentType value) {
+        this.categoryExtent = value;
+    }
+
+    /**
+     * Sets the value of the categoryList property.
+     * 
+     * @param value allowed object is {@link CodeOrNullListType }
+     * 
+     */
+    public void setCategoryList(CodeOrNullListType value) {
+        this.categoryList = value;
+    }
+
+    /**
+     * Sets the value of the compositeValue property.
+     * 
+     * @param value allowed object is {@link JAXBElement }{@code <}{@link ValueArrayType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link CompositeValueType }{@code >}
+     * 
+     */
+    public void setCompositeValue(JAXBElement<? extends CompositeValueType> value) {
+        this.compositeValue = ((JAXBElement<? extends CompositeValueType>) value);
+    }
+
+    /**
+     * Sets the value of the count property.
+     * 
+     * @param value allowed object is {@link BigInteger }
+     * 
+     */
+    public void setCount(BigInteger value) {
+        this.count = value;
+    }
+
+    /**
+     * Sets the value of the href property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setHref(String value) {
+        this.href = value;
+    }
+
+    /**
+     * Sets the value of the quantity property.
+     * 
+     * @param value allowed object is {@link MeasureType }
+     * 
+     */
+    public void setQuantity(MeasureType value) {
+        this.quantity = value;
+    }
+
+    /**
+     * Sets the value of the quantityExtent property.
+     * 
+     * @param value allowed object is {@link QuantityExtentType }
+     * 
+     */
+    public void setQuantityExtent(QuantityExtentType value) {
+        this.quantityExtent = value;
+    }
+
+    /**
+     * Sets the value of the quantityList property.
+     * 
+     * @param value allowed object is {@link MeasureOrNullListType }
+     * 
+     */
+    public void setQuantityList(MeasureOrNullListType value) {
+        this.quantityList = value;
+    }
+
+    /**
+     * Sets the value of the remoteSchema property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setRemoteSchema(String value) {
+        this.remoteSchema = value;
+    }
+
+    /**
+     * Sets the value of the role property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setRole(String value) {
+        this.role = value;
     }
 
     /**
      * Sets the value of the show property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ShowType }
-     *     
+     * @param value allowed object is {@link ShowType }
+     * 
      */
     public void setShow(ShowType value) {
         this.show = value;
     }
 
     /**
-     * Gets the value of the actuate property.
+     * Sets the value of the title property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ActuateType }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public ActuateType getActuate() {
-        return actuate;
+    public void setTitle(String value) {
+        this.title = value;
     }
 
     /**
-     * Sets the value of the actuate property.
+     * Sets the value of the type property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ActuateType }
-     *     
+     * @param value allowed object is {@link TypeType }
+     * 
      */
-    public void setActuate(ActuateType value) {
-        this.actuate = value;
+    public void setType(TypeType value) {
+        this.type = value;
     }
 
 }

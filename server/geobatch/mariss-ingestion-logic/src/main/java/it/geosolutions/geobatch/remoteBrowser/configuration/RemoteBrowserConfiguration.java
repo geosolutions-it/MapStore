@@ -32,27 +32,27 @@ import it.geosolutions.geobatch.ftp.client.configuration.FTPActionConfiguration;
  */
 public class RemoteBrowserConfiguration extends FTPActionConfiguration {
 
-/**
- * Protocol for the operation
- */
-RemoteBrowserProtocol serverProtocol;
+    /**
+     * Protocol for the operation
+     */
+    RemoteBrowserProtocol serverProtocol;
 
-public RemoteBrowserConfiguration(String id, String name, String description) {
-    super(id, name, description);
-}
+    public RemoteBrowserConfiguration(String id, String name, String description) {
+        super(id, name, description);
+    }
 
-/**
- * @return the serverProtocol
- */
-public RemoteBrowserProtocol getServerProtocol() {
-    return serverProtocol;
-}
+    /**
+     * @return the serverProtocol
+     */
+    public RemoteBrowserProtocol getServerProtocol() {
+        return serverProtocol;
+    }
 
-/**
- * @param serverProtocol the serverProtocol to set
- */
-public void setServerProtocol(RemoteBrowserProtocol serverProtocol) {
-    this.serverProtocol = serverProtocol;
-}
+    /**
+     * @param serverProtocol the serverProtocol to set
+     */
+    public void setServerProtocol(RemoteBrowserProtocol serverProtocol) {
+        this.serverProtocol = serverProtocol;
+    }
 
 }

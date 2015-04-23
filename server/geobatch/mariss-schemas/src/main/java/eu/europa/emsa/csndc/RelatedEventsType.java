@@ -5,22 +5,23 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Other events to be put in relation with this one
  * 
- * <p>Java class for RelatedEventsType complex type.
+ * <p>
+ * Java class for RelatedEventsType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="RelatedEventsType">
@@ -38,58 +39,30 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RelatedEventsType", propOrder = {
-    "alreadyInPreviousImage",
-    "identifier"
-})
+@XmlType(name = "RelatedEventsType", propOrder = { "alreadyInPreviousImage", "identifier" })
 public class RelatedEventsType {
 
     protected Boolean alreadyInPreviousImage;
+
     protected List<String> identifier;
-
-    /**
-     * Gets the value of the alreadyInPreviousImage property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isAlreadyInPreviousImage() {
-        return alreadyInPreviousImage;
-    }
-
-    /**
-     * Sets the value of the alreadyInPreviousImage property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setAlreadyInPreviousImage(Boolean value) {
-        this.alreadyInPreviousImage = value;
-    }
 
     /**
      * Gets the value of the identifier property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the identifier property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the identifier property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getIdentifier().add(newItem);
+     * getIdentifier().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * Objects of the following type(s) are allowed in the list {@link String }
      * 
      * 
      */
@@ -98,6 +71,26 @@ public class RelatedEventsType {
             identifier = new ArrayList<String>();
         }
         return this.identifier;
+    }
+
+    /**
+     * Gets the value of the alreadyInPreviousImage property.
+     * 
+     * @return possible object is {@link Boolean }
+     * 
+     */
+    public Boolean isAlreadyInPreviousImage() {
+        return alreadyInPreviousImage;
+    }
+
+    /**
+     * Sets the value of the alreadyInPreviousImage property.
+     * 
+     * @param value allowed object is {@link Boolean }
+     * 
+     */
+    public void setAlreadyInPreviousImage(Boolean value) {
+        this.alreadyInPreviousImage = value;
     }
 
 }

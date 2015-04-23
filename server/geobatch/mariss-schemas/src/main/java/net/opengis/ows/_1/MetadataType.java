@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.ows._1;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,17 +13,22 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3._1999.xlink.ActuateType;
 import org.w3._1999.xlink.ShowType;
 import org.w3._1999.xlink.TypeType;
 
-
 /**
- * This element either references or contains more metadata about the element that includes this element. To reference metadata stored remotely, at least the xlinks:href attribute in xlink:simpleAttrs shall be included. Either at least one of the attributes in xlink:simpleAttrs or a substitute for the AbstractMetaData element shall be included, but not both. An Implementation Specification can restrict the contents of this element to always be a reference or always contain metadata. (Informative: This element was adapted from the metaDataProperty element in GML 3.0.) 
+ * This element either references or contains more metadata about the element that includes this element. To reference metadata stored remotely, at
+ * least the xlinks:href attribute in xlink:simpleAttrs shall be included. Either at least one of the attributes in xlink:simpleAttrs or a substitute
+ * for the AbstractMetaData element shall be included, but not both. An Implementation Specification can restrict the contents of this element to
+ * always be a reference or always contain metadata. (Informative: This element was adapted from the metaDataProperty element in GML 3.0.)
  * 
- * <p>Java class for MetadataType complex type.
+ * <p>
+ * Java class for MetadataType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="MetadataType">
@@ -43,86 +47,122 @@ import org.w3._1999.xlink.TypeType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MetadataType", propOrder = {
-    "abstractMetaData"
-})
+@XmlType(name = "MetadataType", propOrder = { "abstractMetaData" })
 public class MetadataType {
 
     @XmlElement(name = "AbstractMetaData")
     protected Object abstractMetaData;
+
     @XmlAttribute
     @XmlSchemaType(name = "anyURI")
     protected String about;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected TypeType type;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String href;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String role;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String arcrole;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String title;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected ShowType show;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected ActuateType actuate;
 
     /**
-     * Gets the value of the abstractMetaData property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
-     */
-    public Object getAbstractMetaData() {
-        return abstractMetaData;
-    }
-
-    /**
-     * Sets the value of the abstractMetaData property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
-     */
-    public void setAbstractMetaData(Object value) {
-        this.abstractMetaData = value;
-    }
-
-    /**
      * Gets the value of the about property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getAbout() {
         return about;
     }
 
     /**
-     * Sets the value of the about property.
+     * Gets the value of the abstractMetaData property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link Object }
+     * 
      */
-    public void setAbout(String value) {
-        this.about = value;
+    public Object getAbstractMetaData() {
+        return abstractMetaData;
+    }
+
+    /**
+     * Gets the value of the actuate property.
+     * 
+     * @return possible object is {@link ActuateType }
+     * 
+     */
+    public ActuateType getActuate() {
+        return actuate;
+    }
+
+    /**
+     * Gets the value of the arcrole property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getArcrole() {
+        return arcrole;
+    }
+
+    /**
+     * Gets the value of the href property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getHref() {
+        return href;
+    }
+
+    /**
+     * Gets the value of the role property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * Gets the value of the show property.
+     * 
+     * @return possible object is {@link ShowType }
+     * 
+     */
+    public ShowType getShow() {
+        return show;
+    }
+
+    /**
+     * Gets the value of the title property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getTitle() {
+        return title;
     }
 
     /**
      * Gets the value of the type property.
      * 
-     * @return
-     *     possible object is
-     *     {@link TypeType }
-     *     
+     * @return possible object is {@link TypeType }
+     * 
      */
     public TypeType getType() {
         if (type == null) {
@@ -133,159 +173,93 @@ public class MetadataType {
     }
 
     /**
-     * Sets the value of the type property.
+     * Sets the value of the about property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link TypeType }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public void setType(TypeType value) {
-        this.type = value;
+    public void setAbout(String value) {
+        this.about = value;
     }
 
     /**
-     * Gets the value of the href property.
+     * Sets the value of the abstractMetaData property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link Object }
+     * 
      */
-    public String getHref() {
-        return href;
+    public void setAbstractMetaData(Object value) {
+        this.abstractMetaData = value;
     }
 
     /**
-     * Sets the value of the href property.
+     * Sets the value of the actuate property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setHref(String value) {
-        this.href = value;
-    }
-
-    /**
-     * Gets the value of the role property.
+     * @param value allowed object is {@link ActuateType }
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
      */
-    public String getRole() {
-        return role;
-    }
-
-    /**
-     * Sets the value of the role property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setRole(String value) {
-        this.role = value;
-    }
-
-    /**
-     * Gets the value of the arcrole property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getArcrole() {
-        return arcrole;
+    public void setActuate(ActuateType value) {
+        this.actuate = value;
     }
 
     /**
      * Sets the value of the arcrole property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setArcrole(String value) {
         this.arcrole = value;
     }
 
     /**
-     * Gets the value of the title property.
+     * Sets the value of the href property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public String getTitle() {
-        return title;
+    public void setHref(String value) {
+        this.href = value;
     }
 
     /**
-     * Sets the value of the title property.
+     * Sets the value of the role property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTitle(String value) {
-        this.title = value;
-    }
-
-    /**
-     * Gets the value of the show property.
+     * @param value allowed object is {@link String }
      * 
-     * @return
-     *     possible object is
-     *     {@link ShowType }
-     *     
      */
-    public ShowType getShow() {
-        return show;
+    public void setRole(String value) {
+        this.role = value;
     }
 
     /**
      * Sets the value of the show property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ShowType }
-     *     
+     * @param value allowed object is {@link ShowType }
+     * 
      */
     public void setShow(ShowType value) {
         this.show = value;
     }
 
     /**
-     * Gets the value of the actuate property.
+     * Sets the value of the title property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ActuateType }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public ActuateType getActuate() {
-        return actuate;
+    public void setTitle(String value) {
+        this.title = value;
     }
 
     /**
-     * Sets the value of the actuate property.
+     * Sets the value of the type property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ActuateType }
-     *     
+     * @param value allowed object is {@link TypeType }
+     * 
      */
-    public void setActuate(ActuateType value) {
-        this.actuate = value;
+    public void setType(TypeType value) {
+        this.type = value;
     }
 
 }

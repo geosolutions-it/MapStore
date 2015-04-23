@@ -5,23 +5,25 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.ows._1;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Contents of typical Contents section of an OWS service metadata (Capabilities) document. This type shall be extended and/or restricted if needed for specific OWS use to include the specific metadata needed. 
+ * Contents of typical Contents section of an OWS service metadata (Capabilities) document. This type shall be extended and/or restricted if needed
+ * for specific OWS use to include the specific metadata needed.
  * 
- * <p>Java class for ContentsBaseType complex type.
+ * <p>
+ * Java class for ContentsBaseType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="ContentsBaseType">
@@ -39,36 +41,33 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ContentsBaseType", propOrder = {
-    "datasetDescriptionSummary",
-    "otherSource"
-})
+@XmlType(name = "ContentsBaseType", propOrder = { "datasetDescriptionSummary", "otherSource" })
 public class ContentsBaseType {
 
     @XmlElement(name = "DatasetDescriptionSummary")
     protected List<DatasetDescriptionSummaryBaseType> datasetDescriptionSummary;
+
     @XmlElement(name = "OtherSource")
     protected List<MetadataType> otherSource;
 
     /**
-     * Unordered set of summary descriptions for the datasets available from this OWS server. This set shall be included unless another source is referenced and all this metadata is available from that source. Gets the value of the datasetDescriptionSummary property.
+     * Unordered set of summary descriptions for the datasets available from this OWS server. This set shall be included unless another source is
+     * referenced and all this metadata is available from that source. Gets the value of the datasetDescriptionSummary property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the datasetDescriptionSummary property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the datasetDescriptionSummary property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getDatasetDescriptionSummary().add(newItem);
+     * getDatasetDescriptionSummary().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link DatasetDescriptionSummaryBaseType }
+     * Objects of the following type(s) are allowed in the list {@link DatasetDescriptionSummaryBaseType }
      * 
      * 
      */
@@ -80,24 +79,23 @@ public class ContentsBaseType {
     }
 
     /**
-     * Unordered set of references to other sources of metadata describing the coverage offerings available from this server. Gets the value of the otherSource property.
+     * Unordered set of references to other sources of metadata describing the coverage offerings available from this server. Gets the value of the
+     * otherSource property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the otherSource property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the otherSource property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getOtherSource().add(newItem);
+     * getOtherSource().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link MetadataType }
+     * Objects of the following type(s) are allowed in the list {@link MetadataType }
      * 
      * 
      */

@@ -20,140 +20,35 @@ import java.sql.Date;
 
 /**
  * @author Alessio
- *
+ * 
  */
 public class AreaOfInterest {
-    
+
     private int id;
+
     private String serviceId;
+
     private String description;
+
     private String theGeom;
+
     private Date startTime;
+
     private Date endTime;
+
     private String status;
-    
+
     /**
      * 
      */
-    public AreaOfInterest(String serviceId, String description, String theGeom, Date startTime, Date endTime, String status) {
+    public AreaOfInterest(String serviceId, String description, String theGeom, Date startTime,
+            Date endTime, String status) {
         this.serviceId = serviceId;
         this.description = description;
         this.theGeom = theGeom;
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
-    }
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the serviceId
-     */
-    public String getServiceId() {
-        return serviceId;
-    }
-
-    /**
-     * @param serviceId the serviceId to set
-     */
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    /**
-     * @return the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * @return the status
-     */
-    public String getStatus() {
-        return status;
-    }
-
-    /**
-     * @param status the status to set
-     */
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    /**
-     * @return the theGeom
-     */
-    public String getTheGeom() {
-        return theGeom;
-    }
-
-    /**
-     * @param theGeom the theGeom to set
-     */
-    public void setTheGeom(String theGeom) {
-        this.theGeom = theGeom;
-    }
-
-    /**
-     * @return the startTime
-     */
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    /**
-     * @param startTime the startTime to set
-     */
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    /**
-     * @return the endTime
-     */
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    /**
-     * @param endTime the endTime to set
-     */
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
-        result = prime * result + id;
-        result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
-        result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
-        result = prime * result + ((status == null) ? 0 : status.hashCode());
-        result = prime * result + ((theGeom == null) ? 0 : theGeom.hashCode());
-        return result;
     }
 
     @Override
@@ -216,6 +111,118 @@ public class AreaOfInterest {
         return true;
     }
 
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @return the endTime
+     */
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @return the serviceId
+     */
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    /**
+     * @return the startTime
+     */
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @return the theGeom
+     */
+    public String getTheGeom() {
+        return theGeom;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
+        result = prime * result + id;
+        result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
+        result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
+        result = prime * result + ((status == null) ? 0 : status.hashCode());
+        result = prime * result + ((theGeom == null) ? 0 : theGeom.hashCode());
+        return result;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @param endTime the endTime to set
+     */
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * @param serviceId the serviceId to set
+     */
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
+    }
+
+    /**
+     * @param startTime the startTime to set
+     */
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * @param theGeom the theGeom to set
+     */
+    public void setTheGeom(String theGeom) {
+        this.theGeom = theGeom;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -235,5 +242,5 @@ public class AreaOfInterest {
         builder.append("]");
         return builder.toString();
     }
-    
+
 }

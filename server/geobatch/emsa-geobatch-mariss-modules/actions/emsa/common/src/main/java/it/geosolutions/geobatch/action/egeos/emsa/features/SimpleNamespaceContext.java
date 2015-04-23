@@ -19,10 +19,6 @@ public class SimpleNamespaceContext implements NamespaceContext {
         context = new HashMap<String, String>();
     }
 
-    public void setNamespace(String prefix, String namespaceURI) {
-        context.put(prefix, namespaceURI);
-    }
-
     public String getNamespaceURI(String prefix) {
         return (String) context.get(prefix);
     }
@@ -50,5 +46,9 @@ public class SimpleNamespaceContext implements NamespaceContext {
                 prefixes.add(prefix);
         }
         return prefixes.iterator();
+    }
+
+    public void setNamespace(String prefix, String namespaceURI) {
+        context.put(prefix, namespaceURI);
     }
 }

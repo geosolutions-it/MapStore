@@ -5,18 +5,19 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for AesheticCriteriaType.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
+ * Java class for AesheticCriteriaType.
+ * 
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * 
  * <pre>
  * &lt;simpleType name="AesheticCriteriaType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -41,25 +42,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum AesheticCriteriaType {
 
-    MIN_CROSSINGS,
-    MIN_AREA,
-    MIN_BENDS,
-    MAX_BENDS,
-    UNIFORM_BENDS,
-    MIN_SLOPES,
-    MIN_EDGE_LENGTH,
-    MAX_EDGE_LENGTH,
-    UNIFORM_EDGE_LENGTH,
-    MAX_ANGULAR_RESOLUTION,
-    MIN_ASPECT_RATIO,
-    MAX_SYMMETRIES;
-
-    public String value() {
-        return name();
-    }
+    MIN_CROSSINGS, MIN_AREA, MIN_BENDS, MAX_BENDS, UNIFORM_BENDS, MIN_SLOPES, MIN_EDGE_LENGTH, MAX_EDGE_LENGTH, UNIFORM_EDGE_LENGTH, MAX_ANGULAR_RESOLUTION, MIN_ASPECT_RATIO, MAX_SYMMETRIES;
 
     public static AesheticCriteriaType fromValue(String v) {
         return valueOf(v);
+    }
+
+    public String value() {
+        return name();
     }
 
 }

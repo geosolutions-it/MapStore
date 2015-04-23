@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package org.w3._2001.smil20.language;
 
 import java.math.BigDecimal;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
+
 import org.w3._2001.smil20.AnimatePrototype;
 import org.w3._2001.smil20.FillDefaultType;
 import org.w3._2001.smil20.FillTimingAttrsType;
@@ -35,11 +36,12 @@ import org.w3._2001.smil20.SyncBehaviorDefaultType;
 import org.w3._2001.smil20.SyncBehaviorType;
 import org.w3c.dom.Element;
 
-
 /**
- * <p>Java class for animateType complex type.
+ * <p>
+ * Java class for animateType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="animateType">
@@ -62,93 +64,121 @@ import org.w3c.dom.Element;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "animateType", propOrder = {
-    "any"
-})
-public class AnimateType
-    extends AnimatePrototype
-{
+@XmlType(name = "animateType", propOrder = { "any" })
+public class AnimateType extends AnimatePrototype {
 
     @XmlAnyElement(lax = true)
     protected List<Object> any;
+
     @XmlAttribute
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     protected Object targetElement;
+
     @XmlAttribute
     protected SyncBehaviorDefaultType syncBehaviorDefault;
+
     @XmlAttribute
     protected String syncToleranceDefault;
+
     @XmlAttribute
     protected FillDefaultType fillDefault;
+
     @XmlAttribute
     protected RestartTimingType restart;
+
     @XmlAttribute
     protected FillTimingAttrsType fill;
+
     @XmlAttribute
     protected SyncBehaviorType syncBehavior;
+
     @XmlAttribute
     protected String syncTolerance;
+
     @XmlAttribute
     protected RestartDefaultType restartDefault;
+
     @XmlAttribute
     protected String begin;
+
     @XmlAttribute
     protected String end;
+
     @XmlAttribute
     protected String min;
+
     @XmlAttribute
     protected String max;
+
     @XmlAttribute
     @XmlSchemaType(name = "nonNegativeInteger")
     protected BigInteger repeat;
+
     @XmlAttribute
     protected String repeatDur;
+
     @XmlAttribute
     protected BigDecimal repeatCount;
+
     @XmlAttribute
     protected String dur;
+
     @XmlAttribute
     protected String calcMode;
+
     @XmlAttribute
     protected String alt;
+
     @XmlAttribute
     @XmlSchemaType(name = "anyURI")
     protected String longdesc;
+
     @XmlAttribute
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
     @XmlSchemaType(name = "ID")
     protected String id;
+
     @XmlAttribute(name = "class")
     protected String clazz;
+
     @XmlAttribute(namespace = "http://www.w3.org/XML/1998/namespace")
     protected String lang;
+
     @XmlAttribute(name = "skip-content")
     protected Boolean skipContent;
+
     @XmlAnyAttribute
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
+
+    /**
+     * Gets the value of the alt property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getAlt() {
+        return alt;
+    }
 
     /**
      * Gets the value of the any property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the any property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the any property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getAny().add(newItem);
+     * getAny().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Element }
-     * {@link Object }
+     * Objects of the following type(s) are allowed in the list {@link Element } {@link Object }
      * 
      * 
      */
@@ -160,448 +190,20 @@ public class AnimateType
     }
 
     /**
-     * Gets the value of the targetElement property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
-     */
-    public Object getTargetElement() {
-        return targetElement;
-    }
-
-    /**
-     * Sets the value of the targetElement property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
-     */
-    public void setTargetElement(Object value) {
-        this.targetElement = value;
-    }
-
-    /**
-     * Gets the value of the syncBehaviorDefault property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link SyncBehaviorDefaultType }
-     *     
-     */
-    public SyncBehaviorDefaultType getSyncBehaviorDefault() {
-        if (syncBehaviorDefault == null) {
-            return SyncBehaviorDefaultType.INHERIT;
-        } else {
-            return syncBehaviorDefault;
-        }
-    }
-
-    /**
-     * Sets the value of the syncBehaviorDefault property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link SyncBehaviorDefaultType }
-     *     
-     */
-    public void setSyncBehaviorDefault(SyncBehaviorDefaultType value) {
-        this.syncBehaviorDefault = value;
-    }
-
-    /**
-     * Gets the value of the syncToleranceDefault property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getSyncToleranceDefault() {
-        if (syncToleranceDefault == null) {
-            return "inherit";
-        } else {
-            return syncToleranceDefault;
-        }
-    }
-
-    /**
-     * Sets the value of the syncToleranceDefault property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setSyncToleranceDefault(String value) {
-        this.syncToleranceDefault = value;
-    }
-
-    /**
-     * Gets the value of the fillDefault property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link FillDefaultType }
-     *     
-     */
-    public FillDefaultType getFillDefault() {
-        if (fillDefault == null) {
-            return FillDefaultType.INHERIT;
-        } else {
-            return fillDefault;
-        }
-    }
-
-    /**
-     * Sets the value of the fillDefault property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link FillDefaultType }
-     *     
-     */
-    public void setFillDefault(FillDefaultType value) {
-        this.fillDefault = value;
-    }
-
-    /**
-     * Gets the value of the restart property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link RestartTimingType }
-     *     
-     */
-    public RestartTimingType getRestart() {
-        if (restart == null) {
-            return RestartTimingType.DEFAULT;
-        } else {
-            return restart;
-        }
-    }
-
-    /**
-     * Sets the value of the restart property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link RestartTimingType }
-     *     
-     */
-    public void setRestart(RestartTimingType value) {
-        this.restart = value;
-    }
-
-    /**
-     * Gets the value of the fill property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link FillTimingAttrsType }
-     *     
-     */
-    public FillTimingAttrsType getFill() {
-        if (fill == null) {
-            return FillTimingAttrsType.DEFAULT;
-        } else {
-            return fill;
-        }
-    }
-
-    /**
-     * Sets the value of the fill property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link FillTimingAttrsType }
-     *     
-     */
-    public void setFill(FillTimingAttrsType value) {
-        this.fill = value;
-    }
-
-    /**
-     * Gets the value of the syncBehavior property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link SyncBehaviorType }
-     *     
-     */
-    public SyncBehaviorType getSyncBehavior() {
-        if (syncBehavior == null) {
-            return SyncBehaviorType.DEFAULT;
-        } else {
-            return syncBehavior;
-        }
-    }
-
-    /**
-     * Sets the value of the syncBehavior property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link SyncBehaviorType }
-     *     
-     */
-    public void setSyncBehavior(SyncBehaviorType value) {
-        this.syncBehavior = value;
-    }
-
-    /**
-     * Gets the value of the syncTolerance property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getSyncTolerance() {
-        return syncTolerance;
-    }
-
-    /**
-     * Sets the value of the syncTolerance property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setSyncTolerance(String value) {
-        this.syncTolerance = value;
-    }
-
-    /**
-     * Gets the value of the restartDefault property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link RestartDefaultType }
-     *     
-     */
-    public RestartDefaultType getRestartDefault() {
-        if (restartDefault == null) {
-            return RestartDefaultType.INHERIT;
-        } else {
-            return restartDefault;
-        }
-    }
-
-    /**
-     * Sets the value of the restartDefault property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link RestartDefaultType }
-     *     
-     */
-    public void setRestartDefault(RestartDefaultType value) {
-        this.restartDefault = value;
-    }
-
-    /**
      * Gets the value of the begin property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getBegin() {
         return begin;
     }
 
     /**
-     * Sets the value of the begin property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setBegin(String value) {
-        this.begin = value;
-    }
-
-    /**
-     * Gets the value of the end property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getEnd() {
-        return end;
-    }
-
-    /**
-     * Sets the value of the end property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setEnd(String value) {
-        this.end = value;
-    }
-
-    /**
-     * Gets the value of the min property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMin() {
-        return min;
-    }
-
-    /**
-     * Sets the value of the min property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMin(String value) {
-        this.min = value;
-    }
-
-    /**
-     * Gets the value of the max property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getMax() {
-        return max;
-    }
-
-    /**
-     * Sets the value of the max property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setMax(String value) {
-        this.max = value;
-    }
-
-    /**
-     * Gets the value of the repeat property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getRepeat() {
-        return repeat;
-    }
-
-    /**
-     * Sets the value of the repeat property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setRepeat(BigInteger value) {
-        this.repeat = value;
-    }
-
-    /**
-     * Gets the value of the repeatDur property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getRepeatDur() {
-        return repeatDur;
-    }
-
-    /**
-     * Sets the value of the repeatDur property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setRepeatDur(String value) {
-        this.repeatDur = value;
-    }
-
-    /**
-     * Gets the value of the repeatCount property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigDecimal }
-     *     
-     */
-    public BigDecimal getRepeatCount() {
-        return repeatCount;
-    }
-
-    /**
-     * Sets the value of the repeatCount property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigDecimal }
-     *     
-     */
-    public void setRepeatCount(BigDecimal value) {
-        this.repeatCount = value;
-    }
-
-    /**
-     * Gets the value of the dur property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDur() {
-        return dur;
-    }
-
-    /**
-     * Sets the value of the dur property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDur(String value) {
-        this.dur = value;
-    }
-
-    /**
      * Gets the value of the calcMode property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getCalcMode() {
         if (calcMode == null) {
@@ -612,144 +214,253 @@ public class AnimateType
     }
 
     /**
-     * Sets the value of the calcMode property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCalcMode(String value) {
-        this.calcMode = value;
-    }
-
-    /**
-     * Gets the value of the alt property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAlt() {
-        return alt;
-    }
-
-    /**
-     * Sets the value of the alt property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAlt(String value) {
-        this.alt = value;
-    }
-
-    /**
-     * Gets the value of the longdesc property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getLongdesc() {
-        return longdesc;
-    }
-
-    /**
-     * Sets the value of the longdesc property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setLongdesc(String value) {
-        this.longdesc = value;
-    }
-
-    /**
-     * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setId(String value) {
-        this.id = value;
-    }
-
-    /**
      * Gets the value of the clazz property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getClazz() {
         return clazz;
     }
 
     /**
-     * Sets the value of the clazz property.
+     * Gets the value of the dur property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
-    public void setClazz(String value) {
-        this.clazz = value;
+    public String getDur() {
+        return dur;
+    }
+
+    /**
+     * Gets the value of the end property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getEnd() {
+        return end;
+    }
+
+    /**
+     * Gets the value of the fill property.
+     * 
+     * @return possible object is {@link FillTimingAttrsType }
+     * 
+     */
+    public FillTimingAttrsType getFill() {
+        if (fill == null) {
+            return FillTimingAttrsType.DEFAULT;
+        } else {
+            return fill;
+        }
+    }
+
+    /**
+     * Gets the value of the fillDefault property.
+     * 
+     * @return possible object is {@link FillDefaultType }
+     * 
+     */
+    public FillDefaultType getFillDefault() {
+        if (fillDefault == null) {
+            return FillDefaultType.INHERIT;
+        } else {
+            return fillDefault;
+        }
+    }
+
+    /**
+     * Gets the value of the id property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getId() {
+        return id;
     }
 
     /**
      * Gets the value of the lang property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getLang() {
         return lang;
     }
 
     /**
-     * Sets the value of the lang property.
+     * Gets the value of the longdesc property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
-    public void setLang(String value) {
-        this.lang = value;
+    public String getLongdesc() {
+        return longdesc;
+    }
+
+    /**
+     * Gets the value of the max property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getMax() {
+        return max;
+    }
+
+    /**
+     * Gets the value of the min property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getMin() {
+        return min;
+    }
+
+    /**
+     * Gets a map that contains attributes that aren't bound to any typed property on this class.
+     * 
+     * <p>
+     * the map is keyed by the name of the attribute and the value is the string value of the attribute.
+     * 
+     * the map returned by this method is live, and you can add new attribute by updating the map directly. Because of this design, there's no setter.
+     * 
+     * 
+     * @return always non-null
+     */
+    public Map<QName, String> getOtherAttributes() {
+        return otherAttributes;
+    }
+
+    /**
+     * Gets the value of the repeat property.
+     * 
+     * @return possible object is {@link BigInteger }
+     * 
+     */
+    public BigInteger getRepeat() {
+        return repeat;
+    }
+
+    /**
+     * Gets the value of the repeatCount property.
+     * 
+     * @return possible object is {@link BigDecimal }
+     * 
+     */
+    public BigDecimal getRepeatCount() {
+        return repeatCount;
+    }
+
+    /**
+     * Gets the value of the repeatDur property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getRepeatDur() {
+        return repeatDur;
+    }
+
+    /**
+     * Gets the value of the restart property.
+     * 
+     * @return possible object is {@link RestartTimingType }
+     * 
+     */
+    public RestartTimingType getRestart() {
+        if (restart == null) {
+            return RestartTimingType.DEFAULT;
+        } else {
+            return restart;
+        }
+    }
+
+    /**
+     * Gets the value of the restartDefault property.
+     * 
+     * @return possible object is {@link RestartDefaultType }
+     * 
+     */
+    public RestartDefaultType getRestartDefault() {
+        if (restartDefault == null) {
+            return RestartDefaultType.INHERIT;
+        } else {
+            return restartDefault;
+        }
+    }
+
+    /**
+     * Gets the value of the syncBehavior property.
+     * 
+     * @return possible object is {@link SyncBehaviorType }
+     * 
+     */
+    public SyncBehaviorType getSyncBehavior() {
+        if (syncBehavior == null) {
+            return SyncBehaviorType.DEFAULT;
+        } else {
+            return syncBehavior;
+        }
+    }
+
+    /**
+     * Gets the value of the syncBehaviorDefault property.
+     * 
+     * @return possible object is {@link SyncBehaviorDefaultType }
+     * 
+     */
+    public SyncBehaviorDefaultType getSyncBehaviorDefault() {
+        if (syncBehaviorDefault == null) {
+            return SyncBehaviorDefaultType.INHERIT;
+        } else {
+            return syncBehaviorDefault;
+        }
+    }
+
+    /**
+     * Gets the value of the syncTolerance property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getSyncTolerance() {
+        return syncTolerance;
+    }
+
+    /**
+     * Gets the value of the syncToleranceDefault property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getSyncToleranceDefault() {
+        if (syncToleranceDefault == null) {
+            return "inherit";
+        } else {
+            return syncToleranceDefault;
+        }
+    }
+
+    /**
+     * Gets the value of the targetElement property.
+     * 
+     * @return possible object is {@link Object }
+     * 
+     */
+    public Object getTargetElement() {
+        return targetElement;
     }
 
     /**
      * Gets the value of the skipContent property.
      * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
+     * @return possible object is {@link Boolean }
+     * 
      */
     public boolean isSkipContent() {
         if (skipContent == null) {
@@ -760,33 +471,243 @@ public class AnimateType
     }
 
     /**
+     * Sets the value of the alt property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setAlt(String value) {
+        this.alt = value;
+    }
+
+    /**
+     * Sets the value of the begin property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setBegin(String value) {
+        this.begin = value;
+    }
+
+    /**
+     * Sets the value of the calcMode property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setCalcMode(String value) {
+        this.calcMode = value;
+    }
+
+    /**
+     * Sets the value of the clazz property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setClazz(String value) {
+        this.clazz = value;
+    }
+
+    /**
+     * Sets the value of the dur property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setDur(String value) {
+        this.dur = value;
+    }
+
+    /**
+     * Sets the value of the end property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setEnd(String value) {
+        this.end = value;
+    }
+
+    /**
+     * Sets the value of the fill property.
+     * 
+     * @param value allowed object is {@link FillTimingAttrsType }
+     * 
+     */
+    public void setFill(FillTimingAttrsType value) {
+        this.fill = value;
+    }
+
+    /**
+     * Sets the value of the fillDefault property.
+     * 
+     * @param value allowed object is {@link FillDefaultType }
+     * 
+     */
+    public void setFillDefault(FillDefaultType value) {
+        this.fillDefault = value;
+    }
+
+    /**
+     * Sets the value of the id property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setId(String value) {
+        this.id = value;
+    }
+
+    /**
+     * Sets the value of the lang property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setLang(String value) {
+        this.lang = value;
+    }
+
+    /**
+     * Sets the value of the longdesc property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setLongdesc(String value) {
+        this.longdesc = value;
+    }
+
+    /**
+     * Sets the value of the max property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setMax(String value) {
+        this.max = value;
+    }
+
+    /**
+     * Sets the value of the min property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setMin(String value) {
+        this.min = value;
+    }
+
+    /**
+     * Sets the value of the repeat property.
+     * 
+     * @param value allowed object is {@link BigInteger }
+     * 
+     */
+    public void setRepeat(BigInteger value) {
+        this.repeat = value;
+    }
+
+    /**
+     * Sets the value of the repeatCount property.
+     * 
+     * @param value allowed object is {@link BigDecimal }
+     * 
+     */
+    public void setRepeatCount(BigDecimal value) {
+        this.repeatCount = value;
+    }
+
+    /**
+     * Sets the value of the repeatDur property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setRepeatDur(String value) {
+        this.repeatDur = value;
+    }
+
+    /**
+     * Sets the value of the restart property.
+     * 
+     * @param value allowed object is {@link RestartTimingType }
+     * 
+     */
+    public void setRestart(RestartTimingType value) {
+        this.restart = value;
+    }
+
+    /**
+     * Sets the value of the restartDefault property.
+     * 
+     * @param value allowed object is {@link RestartDefaultType }
+     * 
+     */
+    public void setRestartDefault(RestartDefaultType value) {
+        this.restartDefault = value;
+    }
+
+    /**
      * Sets the value of the skipContent property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
+     * @param value allowed object is {@link Boolean }
+     * 
      */
     public void setSkipContent(Boolean value) {
         this.skipContent = value;
     }
 
     /**
-     * Gets a map that contains attributes that aren't bound to any typed property on this class.
+     * Sets the value of the syncBehavior property.
      * 
-     * <p>
-     * the map is keyed by the name of the attribute and 
-     * the value is the string value of the attribute.
+     * @param value allowed object is {@link SyncBehaviorType }
      * 
-     * the map returned by this method is live, and you can add new attribute
-     * by updating the map directly. Because of this design, there's no setter.
-     * 
-     * 
-     * @return
-     *     always non-null
      */
-    public Map<QName, String> getOtherAttributes() {
-        return otherAttributes;
+    public void setSyncBehavior(SyncBehaviorType value) {
+        this.syncBehavior = value;
+    }
+
+    /**
+     * Sets the value of the syncBehaviorDefault property.
+     * 
+     * @param value allowed object is {@link SyncBehaviorDefaultType }
+     * 
+     */
+    public void setSyncBehaviorDefault(SyncBehaviorDefaultType value) {
+        this.syncBehaviorDefault = value;
+    }
+
+    /**
+     * Sets the value of the syncTolerance property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setSyncTolerance(String value) {
+        this.syncTolerance = value;
+    }
+
+    /**
+     * Sets the value of the syncToleranceDefault property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setSyncToleranceDefault(String value) {
+        this.syncToleranceDefault = value;
+    }
+
+    /**
+     * Sets the value of the targetElement property.
+     * 
+     * @param value allowed object is {@link Object }
+     * 
+     */
+    public void setTargetElement(Object value) {
+        this.targetElement = value;
     }
 
 }

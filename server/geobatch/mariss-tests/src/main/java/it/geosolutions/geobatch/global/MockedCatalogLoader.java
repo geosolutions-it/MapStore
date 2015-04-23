@@ -42,5 +42,5 @@ public class MockedCatalogLoader extends CatalogHolder {
         CatalogHolder.setCatalog(catalog);
         LOGGER.info("Current catalog is " + catalog);
     }
-    
+
 }

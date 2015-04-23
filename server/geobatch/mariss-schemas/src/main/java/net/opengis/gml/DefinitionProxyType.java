@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A proxy entry in a dictionary of definitions. An element of this type contains a reference to a remote definition object. This entry is expected to be convenient in allowing multiple elements in one XML document to contain short (abbreviated XPointer) references, which are resolved to an external definition provided in a Dictionary element in the same XML document. 
+ * A proxy entry in a dictionary of definitions. An element of this type contains a reference to a remote definition object. This entry is expected to
+ * be convenient in allowing multiple elements in one XML document to contain short (abbreviated XPointer) references, which are resolved to an
+ * external definition provided in a Dictionary element in the same XML document.
  * 
- * <p>Java class for DefinitionProxyType complex type.
+ * <p>
+ * Java class for DefinitionProxyType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="DefinitionProxyType">
@@ -36,23 +38,18 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DefinitionProxyType", propOrder = {
-    "definitionRef"
-})
-public class DefinitionProxyType
-    extends DefinitionType
-{
+@XmlType(name = "DefinitionProxyType", propOrder = { "definitionRef" })
+public class DefinitionProxyType extends DefinitionType {
 
     @XmlElement(required = true)
     protected ReferenceType definitionRef;
 
     /**
-     * A reference to a remote entry in this dictionary, used when this dictionary entry is identified to allow external references to this specific entry. The remote entry referenced can be in a dictionary in the same or different XML document. 
+     * A reference to a remote entry in this dictionary, used when this dictionary entry is identified to allow external references to this specific
+     * entry. The remote entry referenced can be in a dictionary in the same or different XML document.
      * 
-     * @return
-     *     possible object is
-     *     {@link ReferenceType }
-     *     
+     * @return possible object is {@link ReferenceType }
+     * 
      */
     public ReferenceType getDefinitionRef() {
         return definitionRef;
@@ -61,10 +58,8 @@ public class DefinitionProxyType
     /**
      * Sets the value of the definitionRef property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ReferenceType }
-     *     
+     * @param value allowed object is {@link ReferenceType }
+     * 
      */
     public void setDefinitionRef(ReferenceType value) {
         this.definitionRef = value;

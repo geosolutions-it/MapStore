@@ -95,74 +95,8 @@ public class NetCDFUtils {
     public static final String NAME = "name";
 
     public static final String LONG_NAME = "long_name";
-    
+
     public static final String START_UNIT_DATE = "seconds since 1970-01-01 0:00:00";
-
-    /* Private constructor */
-    private NetCDFUtils() {
-    }
-
-    /**
-     * Find a dimension in a ncFile. Ignore name case
-     * 
-     * @param ncFile
-     * @param name
-     * @param lower flag to compare with: lower name (true), upper name (false) or exact name (null)
-     * @return
-     */
-    public static Dimension findDimension(NetcdfFile ncFile, String name, boolean ignoreCase) {
-        // Default search
-        Dimension dimension = ncFile.findDimension(name);
-        if (dimension != null) {
-            // found with default search
-            return dimension;
-        } else {
-            // not found, try to iterate and look ignoring case
-            for (Dimension dim : ncFile.getDimensions()) {
-                String nameCompare = dim.getName();
-                // compare with ignore case or not
-                if (ignoreCase && nameCompare.toLowerCase().equals(name.toLowerCase())) {
-                    return dim;
-                } else if (nameCompare.equals(name)) {
-                    return dim;
-                }
-            }
-        }
-        // not found
-        return null;
-    }
-
-    /**
-     * Find a variable in a ncFile
-     * 
-     * @param ncFile
-     * @param name
-     * @param ignoreCase flag
-     * @return
-     */
-    @SuppressWarnings("deprecation")
-    public static Variable findVariable(NetcdfFile ncFile, String name, boolean ignoreCase) {
-        // Default search
-        Variable variable = ncFile.findVariable(name);
-        if (variable != null) {
-            // found with default search
-            return variable;
-        } else {
-            // not found, try to iterate and look ignoring case
-            for (Variable var : ncFile.getVariables()) {
-                String nameCompare = var.getName();
-                // compare with ignore case or not
-                if (ignoreCase && nameCompare.toLowerCase().equals(name.toLowerCase())) {
-                    return var;
-                } else if (nameCompare.equals(name)) {
-                    return var;
-                }
-
-            }
-        }
-        // not found
-        return null;
-    }
 
     /**
      * @param lon_dim
@@ -231,22 +165,6 @@ public class NetCDFUtils {
     }
 
     /**
-     * @return
-     * @throws JAXBException
-     * @throws IOException
-     * @throws FileNotFoundException
-     */
-    public static Metocs getMetocsDictionary(String metodLocation) throws JAXBException,
-            IOException, FileNotFoundException {
-        JAXBContext context = JAXBContext.newInstance(Metocs.class);
-        Unmarshaller um = context.createUnmarshaller();
-
-        File metocDictionaryFile = Path.findLocation(metodLocation,
-                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
-        return (Metocs) um.unmarshal(new FileReader(metocDictionaryFile));
-    }
-
-    /**
      * For the NetCDF_CF Geodetic file we assume that it contains georectified geodetic grids and therefore has a maximum set of dimensions as
      * follows:
      * 
@@ -267,8 +185,8 @@ public class NetCDFUtils {
      * @param zDimLength
      * @param hasLatDim
      * @param latDimLength
-     * @param hasTimeDim 
-     * @param tDimLength 
+     * @param hasTimeDim
+     * @param tDimLength
      * @param hasLonDimaram length3
      * @return
      */
@@ -308,6 +226,108 @@ public class NetCDFUtils {
         }
 
         return dimensions;
+    }
+
+    /**
+     * Find a dimension in a ncFile. Ignore name case
+     * 
+     * @param ncFile
+     * @param name
+     * @param lower flag to compare with: lower name (true), upper name (false) or exact name (null)
+     * @return
+     */
+    public static Dimension findDimension(NetcdfFile ncFile, String name, boolean ignoreCase) {
+        // Default search
+        Dimension dimension = ncFile.findDimension(name);
+        if (dimension != null) {
+            // found with default search
+            return dimension;
+        } else {
+            // not found, try to iterate and look ignoring case
+            for (Dimension dim : ncFile.getDimensions()) {
+                String nameCompare = dim.getName();
+                // compare with ignore case or not
+                if (ignoreCase && nameCompare.toLowerCase().equals(name.toLowerCase())) {
+                    return dim;
+                } else if (nameCompare.equals(name)) {
+                    return dim;
+                }
+            }
+        }
+        // not found
+        return null;
+    }
+
+    /**
+     * Find a variable in a ncFile
+     * 
+     * @param ncFile
+     * @param name
+     * @param ignoreCase flag
+     * @return
+     */
+    @SuppressWarnings("deprecation")
+    public static Variable findVariable(NetcdfFile ncFile, String name, boolean ignoreCase) {
+        // Default search
+        Variable variable = ncFile.findVariable(name);
+        if (variable != null) {
+            // found with default search
+            return variable;
+        } else {
+            // not found, try to iterate and look ignoring case
+            for (Variable var : ncFile.getVariables()) {
+                String nameCompare = var.getName();
+                // compare with ignore case or not
+                if (ignoreCase && nameCompare.toLowerCase().equals(name.toLowerCase())) {
+                    return var;
+                } else if (nameCompare.equals(name)) {
+                    return var;
+                }
+
+            }
+        }
+        // not found
+        return null;
+    }
+
+    public static int getDataType(final DataType varDataType) {
+        int dataType = DataBuffer.TYPE_UNDEFINED;
+        if (varDataType == DataType.FLOAT)
+            dataType = DataBuffer.TYPE_FLOAT;
+        else if (varDataType == DataType.DOUBLE)
+            dataType = DataBuffer.TYPE_DOUBLE;
+        else if (varDataType == DataType.BYTE)
+            dataType = DataBuffer.TYPE_BYTE;
+        else if (varDataType == DataType.SHORT)
+            dataType = DataBuffer.TYPE_SHORT;
+        else if (varDataType == DataType.INT)
+            dataType = DataBuffer.TYPE_INT;
+        return dataType;
+    }
+
+    /**
+     * @return
+     * @throws JAXBException
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    public static Metocs getMetocsDictionary(String metodLocation) throws JAXBException,
+            IOException, FileNotFoundException {
+        JAXBContext context = JAXBContext.newInstance(Metocs.class);
+        Unmarshaller um = context.createUnmarshaller();
+
+        File metocDictionaryFile = Path.findLocation(metodLocation,
+                ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory());
+        return (Metocs) um.unmarshal(new FileReader(metocDictionaryFile));
+    }
+
+    public static SampleModel getSampleModel(final DataType varDataType, final int width,
+            final int height, final int numBands) {
+        final int dataType = getDataType(varDataType);
+        return RasterFactory.createBandedSampleModel(dataType, // data type
+                width, // width
+                height, // height
+                numBands); // num bands
     }
 
     /**
@@ -478,30 +498,6 @@ public class NetCDFUtils {
         }
 
         return target;
-    }
-
-    public static int getDataType(final DataType varDataType) {
-        int dataType = DataBuffer.TYPE_UNDEFINED;
-        if (varDataType == DataType.FLOAT)
-            dataType = DataBuffer.TYPE_FLOAT;
-        else if (varDataType == DataType.DOUBLE)
-            dataType = DataBuffer.TYPE_DOUBLE;
-        else if (varDataType == DataType.BYTE)
-            dataType = DataBuffer.TYPE_BYTE;
-        else if (varDataType == DataType.SHORT)
-            dataType = DataBuffer.TYPE_SHORT;
-        else if (varDataType == DataType.INT)
-            dataType = DataBuffer.TYPE_INT;
-        return dataType;
-    }
-
-    public static SampleModel getSampleModel(final DataType varDataType, final int width,
-            final int height, final int numBands) {
-        final int dataType = getDataType(varDataType);
-        return RasterFactory.createBandedSampleModel(dataType, // data type
-                width, // width
-                height, // height
-                numBands); // num bands
     }
 
     /**
@@ -844,5 +840,9 @@ public class NetCDFUtils {
 
         else
             throw new IllegalArgumentException("Unsupported DataType");
+    }
+
+    /* Private constructor */
+    private NetCDFUtils() {
     }
 }
