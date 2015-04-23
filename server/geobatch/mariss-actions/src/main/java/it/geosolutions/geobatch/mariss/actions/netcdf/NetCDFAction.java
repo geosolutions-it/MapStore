@@ -207,7 +207,9 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         // REGEX for Service Name
         File serviceRegex = new File(mosaicDir, "serviceregex.properties");
         serviceRegex.createNewFile();
-        String properties = "regex=" + "(?<=" + SERVICE_SEPARATOR + ")[a-zA-Z]*" + "(?="
+//        String properties = "regex=" + "(?<=" + SERVICE_SEPARATOR + ")[a-zA-Z]*" + "(?="
+//                + SERVICE_SEPARATOR + ")";
+        String properties = "regex=" + "(?<=" + SERVICE_SEPARATOR + ").*" + "(?="
                 + SERVICE_SEPARATOR + ")";
         FileUtils.write(serviceRegex, properties);
         // REGEX for Identifier
