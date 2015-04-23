@@ -90,6 +90,9 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
      */
     addOutput: function (config) {
         var source = this.target.layerSources[this.source];
+        if(this.resultsGridID && this.target.tools[this.resultsGridID]){
+            this.resultsGrid = this.target.tools[this.resultsGridID];
+        }
         this.vendorParams = {};
         if(source && source.authParam){
             this.vendorParams[source.authParam] = source.getAuthParam();
@@ -792,6 +795,21 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
             }
             
             this.layerName = this.bypointLayerName;
+            
+            if(this.resultsGrid && this.resultsGrid.ignoreFields && this.resultsGrid.ignoreFields.indexOf("Pipeline") > -1){
+                
+                this.resultsGrid.ignoreFields.remove("Pipeline");
+                
+            }
+            
+        }else{
+            
+            if(this.resultsGrid && this.resultsGrid.ignoreFields && this.resultsGrid.ignoreFields.indexOf("Pipeline") == -1){
+                
+                this.resultsGrid.ignoreFields = this.resultsGrid.ignoreFields.concat("Pipeline");
+                
+            }
+            
         }
         
         var viewParams=this.createViewParams();

@@ -240,6 +240,7 @@
             },
             "featureManager": "featuremanager",
             "featureGridContainer":"results_panel",
+            "resultsGridID":"results_grid",
             "outputConfig":{
                  "id":"CapacityDataForm",
                  "cardId": 0
@@ -283,6 +284,7 @@
           "autoSetLayer":false
 	    }, {
             "ptype": "he_results_grid",
+            "id": "results_grid",
             "source": "gs",
             "featureManager": "featuremanager",
             "customActionsProvider":"gcd",
