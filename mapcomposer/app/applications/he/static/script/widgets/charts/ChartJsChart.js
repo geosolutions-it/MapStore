@@ -62,8 +62,8 @@ gxp.charts.ChartJsChart = Ext.extend(Ext.Container, {
         animation: false,
         beizerCurve: false,
         maintainAspectRatio: false,
-        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><div><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><div class=\"comm-how\"><%if(segments[i].label){%><%=segments[i].label%><%}%> <%=segments[i].value%></div></div></li><%}%></ul>",
-        tooltipTemplate:"<%if (label){%><%=label%>: <%}%><%= value %>",
+        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><div><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><div class=\"comm-how\"><%if(segments[i].label){%><%=segments[i].label%><%}%></br><%=Ext.util.Format.number(segments[i].value, '0,000')%></div></div></li><%}%></ul>",
+        tooltipTemplate:"<%if (label){%><%=label%>: <%}%><%= Ext.util.Format.number(value, '0,000') %>",
         customTooltips: function(tooltip){
             
             // Hide if no tooltip
