@@ -619,29 +619,9 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                         // record.get("pl_PipelineName");
                         //var record = combobox.findRecord(combobox.valueField, pipelineId);
                         
-                        new Ext.Window({
-                            title: pipelineName +' - Pipeline Statistics',
-                            layout: 'border',
-                            autoScroll: false,
-                            border:false,
-                            height: Math.min(Ext.getBody().getViewSize().height,785),
-                            maximizable:true,
-                            width: 900,
-                            items:[{
-                                xtype: 'he_pipeline_statistics',
-                                ref: 'chartsPanel', 
-                                region: 'center',
-                                baseParams: Ext.apply({
-                                    service:'WFS',
-                                    version:'1.1.0',
-                                    request:'GetFeature',
-                                    outputFormat: 'application/json'
-                                }, this.vendorParams ),
-                                ferc: pipelineId,
-                                pipelineName: pipelineName,
-                                border: false
-                            }],
-                            tools:[{
+                        var windowTools = [];
+                        if(this.target.userCanPrint()){
+                            windowTools = [{
                                 id:'print',
                                 scope: this,
                                 handler: function(event, toolEl, panel){
@@ -674,7 +654,33 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                                     });
                                     
                                 }
-                            }]
+                            }];
+
+                        }
+                        
+                        new Ext.Window({
+                            title: pipelineName +' - Pipeline Statistics',
+                            layout: 'border',
+                            autoScroll: false,
+                            border:false,
+                            height: Math.min(Ext.getBody().getViewSize().height,785),
+                            maximizable:true,
+                            width: 900,
+                            items:[{
+                                xtype: 'he_pipeline_statistics',
+                                ref: 'chartsPanel', 
+                                region: 'center',
+                                baseParams: Ext.apply({
+                                    service:'WFS',
+                                    version:'1.1.0',
+                                    request:'GetFeature',
+                                    outputFormat: 'application/json'
+                                }, this.vendorParams ),
+                                ferc: pipelineId,
+                                pipelineName: pipelineName,
+                                border: false
+                            }],
+                            tools: windowTools
                         }).show();
 
                     }

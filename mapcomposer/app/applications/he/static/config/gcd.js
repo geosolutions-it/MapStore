@@ -1,4 +1,5 @@
 {
+    "deniedPrintingGroup" : "nosnapshot",
     "portalConfig":{
 		"header":false
 	},

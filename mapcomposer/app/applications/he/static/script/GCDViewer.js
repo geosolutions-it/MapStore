@@ -142,7 +142,7 @@ GeoExplorer.GCDViewer = Ext.extend(GeoExplorer.Composer, {
             target.doLayout();
         }
     },
-        constructor: function(config) {
+    constructor: function(config) {
 
         if(!config.tools)
         {
@@ -235,6 +235,9 @@ GeoExplorer.GCDViewer = Ext.extend(GeoExplorer.Composer, {
             })
         }
         
+        if(config.deniedPrintingGroup){
+            this.deniedPrintingGroup = config.deniedPrintingGroup;
+        }
         
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },
@@ -255,5 +258,29 @@ GeoExplorer.GCDViewer = Ext.extend(GeoExplorer.Composer, {
                 loading.hide();
             };
         }
+    },
+    /**
+     * Checks if the current user is in the group denied to print
+     */
+    userCanPrint: function(){
+        if(this.deniedPrintingGroup){
+            // Check User Group
+            if(this.userDetails) {
+                var user = this.userDetails.user;
+                if (user && user.groups){
+                    var groupfound = false;
+                    var deniedPrintingGroup = this.deniedPrintingGroup;
+                    $.each(user.groups.group,function(index, g) {
+                        if(g.groupName && g.groupName == deniedPrintingGroup){
+                            groupfound = true;
+                        }
+                    });
+                    return !groupfound;
+                }
+            }
+            return false;
+        }
+        
+        return true;
     }
 });

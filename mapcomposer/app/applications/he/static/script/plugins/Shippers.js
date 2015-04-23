@@ -763,29 +763,9 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
             });
             return 
         }
-         var canvasWindow = new Ext.Window({
-            title: pipelineName +' - Transport Customers',
-            layout:'border',
-            autoScroll:false,
-            height:Math.min(Ext.getBody().getViewSize().height,750),
-            width:900,
-            maximizable:true,
-            items:[{
-                    xtype: 'he_contractsbycategory',
-                    ref: 'chartsPanel', 
-                    ferc: pipelineId,
-                    pipelineName : pipelineName,
-                    url: this.geoServerUrl,
-                    region:'center',
-                    border:false,
-                    baseParams:Ext.apply({
-                        service:'WFS',
-                        version:'1.1.0',
-                        request:'GetFeature',
-                        outputFormat: 'application/json',
-                    }, this.vendorParams || {})
-                }],
-            tools:[{
+        var windowTools = [];
+        if(this.target.userCanPrint()){
+            windowTools = [{
                 id:'print',
                 scope: this,
                 handler: function(event, toolEl, panel){
@@ -827,7 +807,32 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                     });
                     
                 }
-            }]
+            }];
+        
+        }
+        var canvasWindow = new Ext.Window({
+            title: pipelineName +' - Transport Customers',
+            layout:'border',
+            autoScroll:false,
+            height:Math.min(Ext.getBody().getViewSize().height,750),
+            width:900,
+            maximizable:true,
+            items:[{
+                    xtype: 'he_contractsbycategory',
+                    ref: 'chartsPanel', 
+                    ferc: pipelineId,
+                    pipelineName : pipelineName,
+                    url: this.geoServerUrl,
+                    region:'center',
+                    border:false,
+                    baseParams:Ext.apply({
+                        service:'WFS',
+                        version:'1.1.0',
+                        request:'GetFeature',
+                        outputFormat: 'application/json',
+                    }, this.vendorParams || {})
+                }],
+            tools: windowTools
         }).show();
     },
     
