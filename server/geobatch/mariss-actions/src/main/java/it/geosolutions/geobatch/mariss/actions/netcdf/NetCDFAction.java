@@ -211,8 +211,10 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             }
         }
 
-        String properties = "TimeAttribute=time\n" + "Schema=" + schema + "\n"
-                + "PropertyCollectors=" + propertyCollectors;
+//        String properties = "TimeAttribute=time\n" + "Schema=" + schema + "\n"
+//                + "PropertyCollectors=" + propertyCollectors;
+        String properties = "Schema=" + schema + "\n"
+              + "PropertyCollectors=" + propertyCollectors;
         FileUtils.write(indexer, properties);
     }
 
@@ -685,7 +687,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             ps.setString(5, cfName);
             ps.setString(6, attributeBean.type.name());
             ps.setString(7, outFileLocation);
-            ps.setString(8, configuration.getServiceName() + "/PRODUCTS/" + FilenameUtils.getBaseName(attributeBean.absolutePath));
+            ps.setString(8, configuration.getServiceName() + "/PRODUCTS/" + FilenameUtils.getName(attributeBean.absolutePath));
             ps.setString(9, namespace + ":" + layerName);
             
             String partition = null;

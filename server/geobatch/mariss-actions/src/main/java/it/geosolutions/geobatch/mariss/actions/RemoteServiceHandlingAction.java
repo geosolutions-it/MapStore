@@ -559,6 +559,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                 this.serviceDAO.updateServiceStatus(service, "ACQUISITIONLIST");
                 resultList.add(event);
             } catch (IOException e) {
+                this.serviceDAO.updateServiceStatus(service, "FAILURE");
                 msg = "Error processing acquisition list ingestion";
                 LOGGER.error(msg, e);
             }
@@ -588,6 +589,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                     packageReady = Boolean.TRUE;
                     resultList.add(event);
                 } catch (IOException e) {
+                    this.serviceDAO.updateServiceStatus(service, "FAILURE");
                     msg = "Error processing MARISS product ingestion";
                     LOGGER.error(msg, e);
                 }
