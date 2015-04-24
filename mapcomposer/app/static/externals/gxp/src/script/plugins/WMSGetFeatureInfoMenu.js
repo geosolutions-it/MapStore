@@ -925,11 +925,15 @@ if(this.infoAction=='click'){
             fields.push(fieldName);
         });
              var  customRenderers={};
+             var ft=feature;
              for(var f in extraFields){
                  fields.push({"name":f});
                  customRenderers[f] = (function() {
                                 return function(d) {
-                                    var tpl=new Ext.XTemplate(extraFields[f]);
+                                    var tpl=new Ext.XTemplate(extraFields[f].tpl);
+                                    if(extraFields[f].fid){
+                                         d.fid=ft.fid;
+                                    }
                                      return tpl.apply(d);
                                 };
                             })();
