@@ -889,6 +889,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                                         .getGeoserverDataDirectory());
                                 config.setOutputFeature(configuration.getOutputFeature());
                                 config.setProductsTableName(configuration.getProductsTableName());
+                                config.setShipDetectionsTableName(configuration.getShipDetectionsTableName());
                                 config.setGeoserverPWD(configuration.getGeoserverPWD());
                                 config.setGeoserverUID(configuration.getGeoserverUID());
                                 config.setGeoserverURL(configuration.getGeoserverURL());

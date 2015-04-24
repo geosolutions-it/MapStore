@@ -774,6 +774,13 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         return result;
     }
 
+    /**
+     * 
+     * @param attributeBean
+     * @param shipDetections
+     * @return
+     * @throws ActionException
+     */
     public boolean insertShipDetectionsIntoDb(AttributeBean attributeBean, List<ShipDetection> shipDetections) throws ActionException {
         boolean result = false;
 
@@ -802,8 +809,8 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                 ps.setString(2, attributeBean.identifier); // identifier
                 ps.setString(3, ds.getId()); // dsid
                 if (ds.getTimeStamp() != null) { // "timeStamp"
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ssZ");
-                    sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+                    SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss'Z'");
+                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
                     try {
                         ps.setDate(4, new java.sql.Date(sdf.parse(ds.getTimeStamp()).getTime()));
                     } catch (ParseException e) {
@@ -813,25 +820,44 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                 } else {
                     ps.setDate(4, new java.sql.Date(1));
                 }
-                ps.setDouble(5, ds.getHeading()); // heading
-                ps.setDouble(6, ds.getSpeed()); // speed
-                ps.setDouble(7, ds.getLength()); // length
+                
+                if (ds.getHeading() != null) ps.setDouble(5, ds.getHeading()); // heading
+                else ps.setNull(5, java.sql.Types.DOUBLE);
+                
+                if (ds.getSpeed() != null) ps.setDouble(6, ds.getSpeed()); // speed
+                else ps.setNull(6, java.sql.Types.DOUBLE);
+                
+                if (ds.getLength() != null) ps.setDouble(7, ds.getLength()); // length
+                else ps.setNull(7, java.sql.Types.DOUBLE);
+                
                 ps.setString(8, ds.getMMSI()); // "MMSI"
-                ps.setDouble(9, ds.getConfidenceLevel()); // confidencelevel
+                
+                if (ds.getConfidenceLevel() != null)  ps.setDouble(9, ds.getConfidenceLevel()); // confidencelevel
+                else ps.setNull(9, java.sql.Types.DOUBLE);
+                
                 ps.setString(10, ds.getImageIdentifier()); // imageidentifier
                 ps.setString(11, ds.getImageType()); // imagetype
+                
                 Double RCS = null;
                 Double maxPixelValue = null;
                 if (ds.getDetectionParameters() != null) {
                     RCS = ds.getDetectionParameters().getRCS();
-                    ps.setDouble(12, RCS); // "RCS"
+                
+                    if (RCS != null) ps.setDouble(12, RCS); // "RCS"
+                    else ps.setNull(12, java.sql.Types.DOUBLE);
+                    
                     maxPixelValue = ds.getDetectionParameters().getMaxPixelValue();
-                    ps.setDouble(13, maxPixelValue); // maxpixelvalue
+                    
+                    if (maxPixelValue != null) ps.setDouble(13, maxPixelValue); // maxpixelvalue
+                    else ps.setNull(13, java.sql.Types.DOUBLE);
                 } else {
-                    ps.setDouble(12, RCS); // "RCS"
-                    ps.setDouble(13, maxPixelValue); // maxpixelvalue
+                    ps.setNull(12, java.sql.Types.DOUBLE); // "RCS"
+                    ps.setNull(13, java.sql.Types.DOUBLE); // maxpixelvalue
                 }
-                ps.setDouble(14, ds.getShipCategory()); // shipcategory
+                
+                if (ds.getShipCategory() != null) ps.setDouble(14, ds.getShipCategory()); // shipcategory
+                else ps.setNull(14, java.sql.Types.DOUBLE);
+                
                 ps.setString(15, ds.getConfidenceLevelCat()); // confidencelevelcat
                 ps.setString(16, ds.getPosition()); // the_geom
                 
