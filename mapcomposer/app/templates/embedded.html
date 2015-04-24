@@ -298,6 +298,17 @@
 						}];
                                 
                         addMSLayer(resources);*/
+						
+						/*var resources = [{
+							format: "wms",
+							msGroupName: "NDVI_2014 runs from 2014-01-01T00:00:00 UTC to 2014-12-19T00:00:00 UTC",
+							msLayerName: "NDVI_2014",
+							msLayerTitle: "NDVI_2014",
+							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/NDVI/ows",
+							timeInterval: "2014-01-01T00:00:00.000Z/2014-12-19T00:00:00.000Z"
+						}];
+								
+						addMSLayer(resources);	*/
 
 						if(bbox){
 							app.mapPanel.map.zoomToExtent(bbox);
@@ -351,6 +362,8 @@
 							resource.msGroupName = "SATELLITE";
 						}else if(resource.wmsURL.indexOf("NDVI") != -1){
 							resource.msGroupName = "NDVI";
+							//timeResolution = "P2W2D";
+							//useCapabilities = false;
 						}else if(resource.wmsURL.indexOf("RADAR") != -1){
 							resource.msGroupName = "default";
 						}else{
@@ -505,7 +518,8 @@
 						}							
 					}
 					
-					var timeManagers = app.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');
+					var playback = app.tools["playback"];
+				    var timeManager = playback.getTimeManager();
 					
 					//adjust tipeStep to manage only Minutes
 					switch (timeUnits){
@@ -519,16 +533,18 @@
 							timeStep = timeStep;
 					}
 					
-					timeManagers[0].step = timeStep;
-					timeManagers[0].setEnd(endDate);
-					timeManagers[0].setStart(startDate);
-					timeManagers[0].units = "Minutes"; //timeUnits;
-					timeManagers[0].fixedRange = true;
-					
-					timeManagers[0].events.triggerEvent("rangemodified"); 						
+					timeManager.step = timeStep;
+					timeManager.units = "Minutes"; //timeUnits;
+					timeManager.fixedRange = false;		
+					timeManager.forceIncrement = true;
+					timeManager.setStart(startDate);
+					timeManager.setEnd(endDate);
+						
+					timeManager.events.triggerEvent("rangemodified"); 		
+					timeManager.setTime(startDate);							
 					
 					if(setNowTime === true){
-						timeManagers[0].currenttime(false,false);
+						timeManagers[0].currenttime(false, false);
 					}
 				}
             };			

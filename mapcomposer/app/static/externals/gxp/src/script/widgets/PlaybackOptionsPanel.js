@@ -177,7 +177,8 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
                                     [60, '1 ora'],
                                     [180, '3 ore'],
                                     [360, '6 ore'],
-                                    [720, '12 ore']
+                                    [720, '12 ore'],
+									[23040, '16 giorni']
                                 ],
                                 valueNotFoundText: this.noUnitsText,
                                 mode: 'local',

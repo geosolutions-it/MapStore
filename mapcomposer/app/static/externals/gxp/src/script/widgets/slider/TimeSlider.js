@@ -278,7 +278,7 @@ gxp.slider.TimeSlider = Ext.extend(Ext.slider.MultiSlider, {
                 'map' : indexMap,
                 'maxValue' : max,
                 'minValue' : min,
-                'interval' : interval
+                'interval' : this.timeManager.forceIncrement ? 3600000 : interval
             };
         }
     },

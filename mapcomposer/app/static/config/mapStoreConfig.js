@@ -570,7 +570,7 @@
 	},
 	{
 		"ptype": "gxp_playback",
-		"id": "areeallerta_playback",
+		"id": "playback",
 		"outputTarget": "map",
 		"playbackMode": "range",
 		"showIntervals": false,
