@@ -100,7 +100,12 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
      * Name of the products table
      */
     private String productsTableName;
-
+    
+    /**
+     * Name of the ship detections table
+     */
+    private String shipDetectionsTableName;
+    
     /**
      * Absolute path to the GeoServerDataDirectory
      */
@@ -344,6 +349,20 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
      */
     public void setProductsTableName(String productsTableName) {
         this.productsTableName = productsTableName;
+    }
+
+    /**
+     * @return the shipDetectionsTableName
+     */
+    public String getShipDetectionsTableName() {
+        return shipDetectionsTableName;
+    }
+
+    /**
+     * @param shipDetectionsTableName the shipDetectionsTableName to set
+     */
+    public void setShipDetectionsTableName(String shipDetectionsTableName) {
+        this.shipDetectionsTableName = shipDetectionsTableName;
     }
 
     /**
