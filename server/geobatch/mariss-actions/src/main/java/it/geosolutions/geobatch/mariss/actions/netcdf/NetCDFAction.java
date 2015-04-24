@@ -66,6 +66,10 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.QNameMap;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
 import com.vividsolutions.jts.geom.Geometry;
 
 public abstract class NetCDFAction extends BaseAction<EventObject> {
@@ -471,6 +475,46 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                     // Listing XML files
                                     if (files != null && files.length > 0) {
                                         int numFiles = files.length;
+                                        
+                                        QNameMap qmap = new QNameMap();
+                                        qmap.setDefaultNamespace("http://ignore.namespace/prefix");
+                                        qmap.setDefaultPrefix("");
+                                        StaxDriver staxDriver = new StaxDriver(qmap); 
+                                        XStream xstream = new XStream(staxDriver){
+                                            @Override
+                                            protected MapperWrapper wrapMapper(MapperWrapper next) {
+                                                return new MapperWrapper(next) {
+                                                    @Override
+                                                    public boolean shouldSerializeMember(Class definedIn, String fieldName) {
+                                                        if (definedIn == Object.class) {
+                                                            return false;
+                                                        }
+                                                        return super.shouldSerializeMember(definedIn, fieldName);
+                                                    }
+                                                };
+                                            }
+                                        };
+                                        
+                                        xstream.processAnnotations(ShipDetection.class);     // inform XStream to parse annotations in Data 
+                                        
+                                        List<ShipDetection> shipDetections = new ArrayList<ShipDetection>();
+                                        
+                                        for (File fileDsXml : files) {
+                                            try {
+                                                ShipDetection shpDs = (ShipDetection) xstream.fromXML(fileDsXml);
+                                                
+                                                shipDetections.add(shpDs);
+                                                
+                                            } catch (Exception e) {
+                                                LOGGER.warn(e.getMessage(), e);
+                                            }
+                                            
+                                        }
+                                        
+                                        if (shipDetections.size() > 0) {
+                                            insertShipDetectionsIntoDb(attributeBean, shipDetections);
+                                        }
+                                        
                                         // Append a txt file with the UID
                                         File properties = new File(files[0].getParentFile(),
                                                 "netcdf.properties");
@@ -536,6 +580,12 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
 
     protected abstract String getActionName();
 
+    /**
+     * 
+     * @param ncFileIn
+     * @param attributeBean
+     * @return
+     */
     protected Collection<? extends Dimension> getOldDimensions(NetcdfFile ncFileIn,
             AttributeBean attributeBean) {
         List<Dimension> dimensions = new ArrayList<Dimension>();
@@ -664,6 +714,17 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         return published;
     }
 
+    /**
+     * 
+     * @param attributeBean
+     * @param outFileLocation
+     * @param namespace
+     * @param layerName
+     * @param cfName
+     * @param geo
+     * @return
+     * @throws ActionException
+     */
     public boolean insertDb(AttributeBean attributeBean, String outFileLocation, String namespace, String layerName,
             String cfName, Geometry geo) throws ActionException {
         boolean result = false;
@@ -713,6 +774,87 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         return result;
     }
 
+    public boolean insertShipDetectionsIntoDb(AttributeBean attributeBean, List<ShipDetection> shipDetections) throws ActionException {
+        boolean result = false;
+
+        /*
+         ship_detections(         
+                
+                servicename, identifier, dsid, "timeStamp", heading, speed, length, 
+                
+                "MMSI", confidencelevel, imageidentifier, imagetype, "RCS", maxpixelvalue, 
+                
+                shipcategory, confidencelevelcat, the_geom
+         )
+        */
+        
+        String sql = "INSERT INTO " + configuration.getShipDetectionsTableName()
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromText(?))";
+
+        Connection conn = null;
+
+        try {
+            conn = attributeBean.dataStore.getDataSource().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            
+            for (ShipDetection ds : shipDetections) {
+                ps.setString(1, configuration.getServiceName()); // servicename
+                ps.setString(2, attributeBean.identifier); // identifier
+                ps.setString(3, ds.getId()); // dsid
+                if (ds.getTimeStamp() != null) { // "timeStamp"
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ssZ");
+                    sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+                    try {
+                        ps.setDate(4, new java.sql.Date(sdf.parse(ds.getTimeStamp()).getTime()));
+                    } catch (ParseException e) {
+                        LOGGER.warn(e.getMessage(), e);
+                        ps.setDate(4, new java.sql.Date(1));
+                    }
+                } else {
+                    ps.setDate(4, new java.sql.Date(1));
+                }
+                ps.setDouble(5, ds.getHeading()); // heading
+                ps.setDouble(6, ds.getSpeed()); // speed
+                ps.setDouble(7, ds.getLength()); // length
+                ps.setString(8, ds.getMMSI()); // "MMSI"
+                ps.setDouble(9, ds.getConfidenceLevel()); // confidencelevel
+                ps.setString(10, ds.getImageIdentifier()); // imageidentifier
+                ps.setString(11, ds.getImageType()); // imagetype
+                Double RCS = null;
+                Double maxPixelValue = null;
+                if (ds.getDetectionParameters() != null) {
+                    RCS = ds.getDetectionParameters().getRCS();
+                    ps.setDouble(12, RCS); // "RCS"
+                    maxPixelValue = ds.getDetectionParameters().getMaxPixelValue();
+                    ps.setDouble(13, maxPixelValue); // maxpixelvalue
+                } else {
+                    ps.setDouble(12, RCS); // "RCS"
+                    ps.setDouble(13, maxPixelValue); // maxpixelvalue
+                }
+                ps.setDouble(14, ds.getShipCategory()); // shipcategory
+                ps.setString(15, ds.getConfidenceLevelCat()); // confidencelevelcat
+                ps.setString(16, ds.getPosition()); // the_geom
+                
+                ps.addBatch();
+            }
+            
+            int[] ids = ps.executeBatch();
+            result = ids != null && ids.length > 0;
+            ps.close();
+        } catch (SQLException e) {
+            throw new ActionException(this, e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return result;
+    }
+    
     /**
      * Check if the NetCDF ImageMosaic Layer has been already configured
      * 

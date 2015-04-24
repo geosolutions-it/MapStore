@@ -32,6 +32,8 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
 
     private ConfigurationContainer container;
 
+    private String shipDetectionsTableName;
+
     public IngestionActionConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
@@ -66,6 +68,10 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
 
     public String getProductsTableName() {
         return productsTableName;
+    }
+    
+    public String getShipDetectionsTableName() {
+        return shipDetectionsTableName;
     }
 
     public String getServiceName() {
@@ -104,7 +110,12 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
         this.productsTableName = productsTableName;
     }
 
+    public void setShipDetectionsTableName(String shipDetectionsTableName) {
+        this.shipDetectionsTableName = shipDetectionsTableName;
+    }
+    
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
+
 }

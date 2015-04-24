@@ -23,6 +23,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.impl.TimeFormat;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
+import it.geosolutions.geobatch.mariss.actions.netcdf.ShipDetection;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVAcqListProcessor;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes1To3Processor;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes5Processor;
@@ -40,6 +41,11 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.QNameMap;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 /**
  * Tests for CSV ingestion action
@@ -148,4 +154,35 @@ public class CSVIngestActionTest {
             LOGGER.info("The local database is not available");
         }
     }
+    
+//    @Test
+//    public void testDsMarshalling() throws Exception {
+//        
+//        File fileDsXml = new File("C:\\work\\E-GEOS\\MARISS\\data\\data\\Phase1\\VDS\\NEREIDS_ASA_IMP_1PNIPA20100913_110107_000000162092_00495_44637_0625.N1_GMV_274.xml");
+//        
+//        QNameMap qmap = new QNameMap();
+//        qmap.setDefaultNamespace("http://ignore.namespace/prefix");
+//        qmap.setDefaultPrefix("");
+//        StaxDriver staxDriver = new StaxDriver(qmap); 
+//        XStream xstream = new XStream(staxDriver){
+//            @Override
+//            protected MapperWrapper wrapMapper(MapperWrapper next) {
+//                return new MapperWrapper(next) {
+//                    @Override
+//                    public boolean shouldSerializeMember(Class definedIn, String fieldName) {
+//                        if (definedIn == Object.class) {
+//                            return false;
+//                        }
+//                        return super.shouldSerializeMember(definedIn, fieldName);
+//                    }
+//                };
+//            }
+//        };
+//        
+//        xstream.processAnnotations(ShipDetection.class);     // inform XStream to parse annotations in Data 
+//        
+//        ShipDetection shpDs = (ShipDetection) xstream.fromXML(fileDsXml);
+//        
+//        LOGGER.info(shpDs.toString());
+//    }
 }
