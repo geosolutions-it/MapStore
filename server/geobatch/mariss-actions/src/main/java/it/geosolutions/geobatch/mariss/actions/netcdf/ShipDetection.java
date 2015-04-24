@@ -256,7 +256,8 @@ public class ShipDetection {
      * @return the the_geom
      */
     public String getPosition() {
-        return "SRID=4326;POINT(" + the_geom + ")";
+        String[] coords = the_geom.split(" ");
+        return "SRID=4326;POINT(" + coords[1] + " " + coords[0] + ")";
     }
 
     /**
