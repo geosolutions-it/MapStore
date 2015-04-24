@@ -571,7 +571,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                 String file = FilenameUtils.getBaseName(f.getAbsolutePath());
                 String variableName = /* getActionName() + */file.substring(file
                         .lastIndexOf(SEPARATOR) + SEPARATOR.length());
-                variableName = variableName.toLowerCase().replace("_", "-");
+                variableName = variableName.toLowerCase() /*.replace("_", "-")*/ ; <<<< ------ TODO
 
                 Map<String, String> additionalDimensions = new HashMap<String, String>();
                 if (file.indexOf(CUSTOM_DIM_START_SEPARATOR) > 0) {
