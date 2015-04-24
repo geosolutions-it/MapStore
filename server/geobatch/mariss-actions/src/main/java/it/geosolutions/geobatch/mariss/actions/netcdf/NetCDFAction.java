@@ -662,8 +662,8 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         return published;
     }
 
-    public boolean insertDb(AttributeBean attributeBean, String outFileLocation, String layerName,
-            String cfName, String namespace, Geometry geo) throws ActionException {
+    public boolean insertDb(AttributeBean attributeBean, String outFileLocation, String namespace, String layerName,
+            String cfName, Geometry geo) throws ActionException {
         boolean result = false;
 
         String sql = "INSERT INTO " + configuration.getProductsTableName()
@@ -688,7 +688,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             ps.setString(8, configuration.getServiceName() + "/PRODUCTS/" + FilenameUtils.getBaseName(attributeBean.absolutePath));
             ps.setString(9, namespace + ":" + layerName);
             
-            String partition = "";
+            String partition = null;
             final String outputFileVaseName = FilenameUtils.getBaseName(outFileLocation);
             if (outputFileVaseName.contains("partition")) {
                 partition = outputFileVaseName.substring(outputFileVaseName.indexOf(CUSTOM_DIM_VAL_SEPARATOR) + CUSTOM_DIM_VAL_SEPARATOR.length(), outputFileVaseName.indexOf(CUSTOM_DIM_END_SEPARATOR));
