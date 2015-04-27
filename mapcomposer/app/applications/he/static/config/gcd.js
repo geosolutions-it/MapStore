@@ -1,8 +1,41 @@
 {
+    "restrictToGroup" : "GCD_Users",
+    "redirectDeniedTo" : "/loginpage",
     "deniedPrintingGroup" : "nosnapshot",
     "portalConfig":{
-		"header":false
-	},
+        "iconCls": "flame-icon",
+        "title": "Natural Gas Reports"
+    },
+   "header": {
+	   "html": "<div class='topbanner'><div id='left-banner'><img src='images/banner/banner_left.png'   height='86' border='0' /> </div><div id='right-banner'><img src='images/banner/banner_right.png'  style='float:right'  border='0' /></div></div>",
+	   "css": "<style type='text/css'>div.topbanner{background-image: none;background-color:black;background-position:center top;height:100%;}</style>",
+	   "container": {
+			"border": false,
+			"header": false,
+			"collapsible": true,
+			"collapseMode":  "mini",
+			"hideCollapseTool": true,
+			"split": true,
+			"animCollapse": false,
+			"minHeight": 86,
+			"maxHeight": 86,
+			"height": 86
+	   }
+   },
+   
+   "footer": {
+		"html": "<div id=\"footer\"><img src=\"images/banner/logo_footer.png\" > © Hart Energy 2014 &nbsp;</div>",
+		"css": "<style type='text/css'>#footer{background-color:black;height:100%;text-align:right;color:white;line-height:30px} #footer img{text-align:left; float:left; margin:5px;}</style>",
+		"container": {
+			"border": false,
+			"header": false,
+			"split": false,
+            "resizable":false,
+			"minHeight": 30,
+			"maxHeight": 30,
+			"height": 30
+		}
+   },
     "gsSources":{ 
 		"gs": {
 			"ptype": "gxp_wmssource",
@@ -34,6 +67,7 @@
 			"ptype": "gxp_olsource" 
 		}
 	},
+    "tab":true,
     "map":{
         "projection": "EPSG:900913",
 		"units": "m",
@@ -318,6 +352,9 @@
             "exportCSVMultipleText": "Export Results",
             "exportCSVRangeText": "Export Range",
             "resultsToRangeSuffix" : {"_agg" : "_detail"}
-        }
+        },{
+			"actions": ["->"],
+			"actionTarget": "paneltbar"
+		}
     ]
 }

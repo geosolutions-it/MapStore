@@ -214,6 +214,28 @@
                       });
                  }
             });
+
+            // User Utility Method 
+            // Scan the user groups to find a match with the given one
+            // Returns false if user has no groups or if the group is not found
+            
+            var hasGroup = function(user, group){
+            
+                if(user && user.groups && group){
+                    var groupfound = false;
+                    for (var key in user.groups.group) {
+                        if (user.groups.group.hasOwnProperty(key)) {
+                            var g = user.groups.group[key];
+                            if(g.groupName && g.groupName == group){
+                                groupfound = true;
+                            }
+                        }
+                    }
+                    return groupfound;
+                }
+                
+                return false;
+            }
 			
 		    // //////////////////////////////////////////////////////            
             // Setting the locale based on query string parameter
@@ -521,24 +543,6 @@
 						
 						sessionStorage["userDetails"] = Ext.util.JSON.encode(uDetails);
                         window.location.reload();
-						/*
-                        initComposer();
-
-						app.on('ready',function(){
-							login.target = Ext.getCmp('paneltbar');
-							login.addActions();
-							login.loginSync();
-							 var myAccount = new gxp.plugins.GeoStoreAccount({
-								outputTarget:'appTabs',
-                hideAttributes: ["UUID","notes"],
-                displayPanels:false,
-								user:login.user,
-								auth:login.token,
-								geoStoreBase : serverConfig.geoStoreBase
-							 });
-							 myAccount.addOutput();
-						});
-                        */
 					}
 				},
 				showLogout : function(){
@@ -566,28 +570,56 @@
 					});        
 				}
 			});
-				
-			var existingUserDetails = sessionStorage["userDetails"];
-			if(!existingUserDetails){				
-				login.showLoginDialog();
-			}else{
-				initComposer();
-				
-				app.on('ready',function(){
-					login.target = Ext.getCmp('paneltbar');
-					login.addActions();
-					login.loginSync();
-					 var myAccount = new gxp.plugins.GeoStoreAccount({
-						outputTarget:'appTabs',
-            hideAttributes: ["UUID","notes"],
-            displayPanels:false,
-						user: app.userDetails.user,
-						auth: app.userDetails.token,
-						geoStoreBase : serverConfig.geoStoreBase
-					 });
-					 myAccount.addOutput();                     
-				});
-			}
+
+            var existingUserDetails = sessionStorage["userDetails"];
+            if(!existingUserDetails){
+                login.showLoginDialog();
+            }else{
+
+                var userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
+                var isAdmin = false;
+
+                // get auth info
+                if (userDetails) {
+                    var user = userDetails.user;
+                    if(user){
+                        if(user.role && ["ROLE_ADMIN","ADMIN"].indexOf(user.role) > -1){
+                            isAdmin = true;
+                        }
+
+                        if(!isAdmin){
+                            // Check user and redirect if necessary
+                            if(serverConfig.groupRedirect){
+
+                                for (var key in serverConfig.groupRedirect) {
+                                  if (serverConfig.groupRedirect.hasOwnProperty(key)) {
+                                    if(hasGroup(user, key)){
+                                        window.location.replace(serverConfig.groupRedirect[key]);
+                                    }
+                                  }
+                                }
+                            }
+                        }
+                    }
+                }
+            
+                initComposer();
+
+                app.on('ready',function(){
+                    login.target = Ext.getCmp('paneltbar');
+                    login.addActions();
+                    login.loginSync();
+                     var myAccount = new gxp.plugins.GeoStoreAccount({
+                        outputTarget:'appTabs',
+                        hideAttributes: ["UUID","notes"],
+                        displayPanels:false,
+                        user: app.userDetails.user,
+                        auth: app.userDetails.token,
+                        geoStoreBase : serverConfig.geoStoreBase
+                     });
+                     myAccount.addOutput();
+                });
+            }
 			
 		   /**
 			* Add a WMS layer from GeoNetwork 

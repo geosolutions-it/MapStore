@@ -1,4 +1,7 @@
 {
+    "groupRedirect":{
+        "GCD_Users": "/gcd"
+    },
     "portalConfig":{
         "iconCls": "map-icon"
     },
@@ -324,7 +327,7 @@
 			"actionTarget": {"target": "panelbbar", "index": 3}
 		}, {
 		  "ptype": "gxp_featuremanager",
-      "format": "GML2",
+          "format": "GML2",
 		  "id": "featuremanager"
 	    }, {
 		  "ptype": "gxp_featuregrid",

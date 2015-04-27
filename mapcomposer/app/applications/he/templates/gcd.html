@@ -1,6 +1,5 @@
-<!DOCTYPE html>
-<html>
-    <head>
+<% extends ../../../templates/base.html %>
+<% subskin extrahead %>
         <!--meta http-equiv="X-UA-Compatible" content="IE=8" /-->
         <title>Map Viewer</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -35,13 +34,13 @@
             <script src="script/ie8_compat.js"></script>
         <![endif]-->
         <!--[if lte IE 9]>
-    <script src="aight.min.js"></script>
-    <![endif]-->
+            <script src="aight.min.js"></script>
+        <![endif]-->
         
         <!--[if lte IE 8]><script src="r2d3.js" charset="utf-8"></script><![endif]-->
         <!--[if gte IE 9]><!-->
             <script type="text/javascript" src="script/libs/d3.min.js"></script>
-    <!--<![endif]-->
+        <!--<![endif]-->
         <!-- canvg-1.2 resources -->
         <script type="text/javascript" src="script/canvg-1.2.js"></script> 
         <!-- charts -->
@@ -68,11 +67,12 @@
         
         <!-- geocoding data  -->
         <script type="text/javascript" src="data/georeferences.js"></script>
-		
-		<!-- csw resources -->
-		<link rel="stylesheet" type="text/css" href="externals/csw/css/csw.css">
-		<script type="text/javascript" src="script/metadataexplorer.js"></script>
-		<script type="text/javascript" src="script/gcd.js"></script>
+
+        <!-- csw resources -->
+        <link rel="stylesheet" type="text/css" href="externals/csw/css/csw.css">
+        <script type="text/javascript" src="auth/base64.js"></script>
+        <script type="text/javascript" src="script/metadataexplorer.js"></script>
+        <script type="text/javascript" src="script/gcd.js"></script>
         
         <!-- common data  -->
         <script type="text/javascript" src="config/common/localConfig.js"></script>
@@ -82,25 +82,25 @@
         <script type="text/javascript" src="translations/fr.js"></script>
         <script type="text/javascript" src="translations/it.js"></script>
         <script type="text/javascript" src="translations/de.js"></script>
-    	<script type="text/javascript" src="translations/es.js"></script>
-		
-		<!-- uncomment to have  welcome screen -->	
+        <script type="text/javascript" src="translations/es.js"></script>
+
+        <!-- uncomment to have  welcome screen -->
         <script type="text/javascript">
-		    hideLoad = function(){
-				Ext.get('loading').remove();
-				Ext.get('loading-mask').fadeOut({remove:true});
-			  };
-			
-		
-		</script>
-		
-		<div id="loading-mask"></div>
-		<div id="loading">
-		  <div class="loading-indicator">
-		  </div>
-		</div>
-		
-	
+            hideLoad = function(){
+                Ext.get('loading').remove();
+                Ext.get('loading-mask').fadeOut({remove:true});
+              };
+            
+        
+        </script>
+        
+        <div id="loading-mask"></div>
+        <div id="loading">
+            <div class="loading-indicator">
+            </div>
+        </div>
+        
+
         <script>
             // ///////////////////////////////////////////////
 			// This fragment allow to retrieve a content body 
@@ -183,7 +183,7 @@
                             return "theme/app/img/blank.gif";
                         }
                 })();
-
+                
                 OpenLayers.ImgPath = "externals/openlayers/theme/default/img/";
                 
 				// ////////////////////////////
@@ -215,7 +215,26 @@
 						  });
 					 }
 				});
-            
+                
+                // User Utility Method 
+                // Scan the user groups to find a match with the given one
+                // Returns false if user has no groups or if the group is not found
+                
+                var hasGroup = function(user, group){
+                
+                    if(user && user.groups && group){
+                        var groupfound = false;
+                        $.each(user.groups.group, function(index, g) {
+                            if(g.groupName && g.groupName == group){
+                                groupfound = true;
+                            }
+                        });
+                        return groupfound;
+                    }
+                    
+                    return false;
+                }
+                
 				// //////////////////////////////////////////////////////            
 				// Setting the locale based on query string parameter
 				// //////////////////////////////////////////////////////
@@ -250,141 +269,332 @@
                     appTabs = new Ext.TabPanel(appTabsOpts); 
                 }  
                 
-				var appViewport = new Ext.Viewport({
-                    id: 'appVieport',
-                    layout:'fit',
-                    border:false,
-                    items: [{
-                        region : 'center',
-                        layout : 'border',
-                        border : false,
-                        header : false,                    
-                        items : [appTabs]
+                var header = serverConfig.header;
+                var footer = serverConfig.footer;
+
+                // If on IFRAME, remove header and footer
+                /*
+                if(self != top){
+                    header = false;
+                    footer = false;
+                }
+                */
+                
+                var viewport = {
+                        id: 'appVieport',
+                        layout: 'fit',
+                        border: false
+                };
+
+                // in header and footer, we need numbers, not strings
+                var parseKnowIntegers = function(section){
+                    var knownInteger = {'height':true, 'maxHeight': true, 'minWidth':true};
+                    for(var key in knownInteger){
+                        if(section[key]){
+                            try{
+                                section[key] = parseInt(section[key]);	
+                            }catch (e){
+                                // unknown parameter value
+                            }
+                        }	
+                    }
+                    return section;
+                }
+
+                if(header || footer){
+                    var north = {
+                        header: false,
+                        region: 'north',
+                        id: 'msheader'
+                    };
+
+                    if(header){
+                        north = Ext.applyIf(north, (header.container ? parseKnowIntegers(header.container) : {}));
+                        north.html = (header.css || '') + (header.html || '');
+                    }
+                    
+                    var south = {
+                        header: false,
+                        region: 'south',
+                        id: 'msfooter'
+                    };
+                    
+                    if(footer){
+                        south = Ext.applyIf(south, (footer.container ? parseKnowIntegers(footer.container) : {}));
+                        south.html = (footer.css || '') + (footer.html || '');
+                    }
+                    
+                    viewport.items = [{
+                        region: 'center',
+                        layout: 'border',
+                        border: false,
+                        header: false, 
+                        items: [north, appTabs, south]
+                    }];
+                }else{
+                    viewport.items = [{
+                        region: 'center',
+                        layout: 'border',
+                        border: false,
+                        header: false,                    
+                        items: [appTabs]
                     }]
-                });
-				
+                }			
+
+                var appViewport = new Ext.Viewport(viewport);
+
 				if(gsturl){
 					serverConfig.geoStoreBase = gsturl;
 				}
                 
-                app = new GeoExplorer.GCDViewer({
-                    scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
-				    defaultLanguage: serverConfig.defaultLanguage,	
-					actionToolScale: serverConfig.actionToolScale || "small",
-                    customPanels: serverConfig.customPanels,
-                    mapPanelContainerPanels:serverConfig.mapPanelContainerPanels,
-                    proxy: proxy,
-					viewerTools: serverConfig.viewerTools,
-                    removeTools: serverConfig.removeTools,
-					disableLayerChooser:serverConfig.disableLayerChooser,
-                    defaultSourceType: "gxp_wmssource",
-                    renderToTab : 'appTabs',
-                    portalConfig: serverConfig.portalConfig,
-					loadingPanel: serverConfig.loadingPanel || {},
-					geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),	 
-                    about: {
-                        title: "Custom Map",
-                        'abstract': "Custom Map",
-                        contact: "<a href='#'>#</a>."
-                    },
-                    sources: serverConfig.gsSources || {
-                        google: {
-                            ptype: "gxp_googlesource"
-                        }
-                    },
-                    georeferences: georeferences_data,
-                    map: serverConfig.map,
-                    customTools: serverConfig.customTools,
-                    deniedPrintingGroup : serverConfig.deniedPrintingGroup
-                }, mapIdentifier, false, fullScreen);   
+                var testSameOrigin = function (url) {
+                    var loc = window.location,
+                        a = document.createElement('a');
+
+                    a.href = url;
+
+                    return a.hostname == loc.hostname &&
+                           a.port == loc.port &&
+                           a.protocol == loc.protocol;
+                }
                 
-                app.on({
-                    'portalready' : function(){                    	
-                        if(fullScreen){
-		                    var westPanel = Ext.getCmp('west');
-		                    westPanel.setActiveTab('legend');
-		                    westPanel.hideTabStripItem('tree');
+                var loginService = testSameOrigin(serverConfig.geoStoreBase) ? serverConfig.geoStoreBase + 
+                        "users/user/details?includeattributes=true" : proxy + encodeURIComponent(serverConfig.geoStoreBase 
+                            + "users/user/details?includeattributes=true");
+                
+                var login = new gxp.plugins.GeoStoreLogin({
+                    draggable:false,
+                    closable: false,
+                    actionTarget: {target: "paneltbar",index: 40},
+                    loginService:  loginService,
+                    loginSync: function(){
+                        this.authorizedRoles = ["ROLE_ADMINISTRATOR"];
+                        Ext.getCmp('paneltbar').items.each(function(tool) {
+                            if (tool.needsAuthorization === true) {
+                                tool.enable();	
+                                tool.auth=login.token;
+                            }           
+                        },this);
+                        
+                        this.loginAction.disable();
+                        this.loginAction.setHidden(true);
+                        this.logoutAction.show();
+                        this.logoutAction.enable();
+                        this.logged = true;
+                        
+                        if(this.win){
+                            this.win.close();
+                        }				
+                    },
+                    loginSuccess: function(response){					
+                        if(login.user){		
+                            var uDetails = {
+                                token: login.token,
+                                user: login.user
+                            };
+                            
+                            sessionStorage["userDetails"] = Ext.util.JSON.encode(uDetails);
+                            window.location.reload();
                         }
-                    }, 
-                    'ready' : function(){
-                        if(window.hideLoad){
-                            hideLoad();
+                    },
+                    showLogout : function(){
+                        var logoutFunction = function(buttonId, text,opt){        
+                            if(buttonId === 'ok'){ 						
+                                // Clear the sessionStorage
+                                for(var i = 0; i < sessionStorage.length; i++) {
+                                    var key = sessionStorage.key(i);
+                                    if(key) {
+                                        sessionStorage.removeItem(key);
+                                    }
+                                }
+                                app.safeLeaving =true;
+                                location.reload();
+                            }
                         }
-                        app.modified = false;
-						
-						// ///////////////////////////////////////////////////
-						// Visualizing metadata tab and layer at startup 
-						// ///////////////////////////////////////////////////
-						var addLayer = app.tools["addlayer"];
-						
-						if(addLayer){
-							if(useCookies || content.data){
-								var layersList;
-								
-								if(content.data){
-									layersList = content.data;
-								}else if(useCookies){
-									var opener = window.opener;
-									var cookie = opener.document.cookie;
-									
-									var cookies = cookie.split(";");
-									var layersList;
-									for(var i=0; i<cookies.length; i++){
-										if(cookies[i].indexOf(useCookies) != -1){
-											layersList = cookies[i].split("=")[1];
-										}
-									}
-								}
-									
-								if(layersList){
-									var layers = layersList.split("#");
-									var resources = [];
-									
-									for(var i=0; i<layers.length; i++){
-										var keys = layers[i];
-										
-										keys = unescape(keys);
-										keys = Ext.util.JSON.decode(keys);
-										
-										var lname = keys.layer;
-										var lwms = decodeURIComponent(keys.wms);
-										var pname = keys.pname;
-										
-										resources.push({
-											msLayerTitle: lname,
-											msLayerName: lname,
-											msGroupName: pname,
-											wmsURL: lwms
-										});
-									}
-									
-									addMSLayer(resources);
-								}
-							}else if(layName && wmsurl){
-								var title = layTitle ? layTitle : layName;
-								
-								addMSLayer([{
-									msLayerTitle: unescape(title),
-									msLayerName: unescape(layName),
-									msGroupName: undefined, // TODO: not supported yet
-									wmsURL: wmsurl
-								}]);
-							}
-						}else{
-							Ext.Msg.show({
-								title: "Add Layer",
-								msg: "AddLayer plugin missing in configuration!",
-								width: 300,
-								icon: Ext.MessageBox.ALERT
-							});  
-						}
-					
-						if(bbox){
-							app.mapPanel.map.zoomToExtent(bbox);
-						}
+                        
+                        Ext.Msg.show({
+                           title: this.logoutTitle,
+                           msg: this.logoutText,
+                           buttons: Ext.Msg.OKCANCEL,
+                           fn: logoutFunction,
+                           icon: Ext.MessageBox.QUESTION,
+                           scope: this
+                        });        
                     }
                 });
+                var initComposer = function(){
+                
+                    app = new GeoExplorer.GCDViewer({
+                        scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
+                        defaultLanguage: serverConfig.defaultLanguage,	
+                        actionToolScale: serverConfig.actionToolScale || "small",
+                        customPanels: serverConfig.customPanels,
+                        mapPanelContainerPanels:serverConfig.mapPanelContainerPanels,
+                        proxy: proxy,
+                        viewerTools: serverConfig.viewerTools,
+                        removeTools: serverConfig.removeTools,
+                        disableLayerChooser:serverConfig.disableLayerChooser,
+                        defaultSourceType: "gxp_wmssource",
+                        renderToTab : 'appTabs',
+                        portalConfig: serverConfig.portalConfig,
+                        loadingPanel: serverConfig.loadingPanel || {},
+                        geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),	 
+                        about: {
+                            title: "Custom Map",
+                            'abstract': "Custom Map",
+                            contact: "<a href='#'>#</a>."
+                        },
+                        sources: serverConfig.gsSources || {
+                            google: {
+                                ptype: "gxp_googlesource"
+                            }
+                        },
+                        georeferences: georeferences_data,
+                        map: serverConfig.map,
+                        customTools: serverConfig.customTools,
+                        deniedPrintingGroup : serverConfig.deniedPrintingGroup
+                    }, mapIdentifier, false, fullScreen);   
+                    
+                    app.on({
+                        'portalready' : function(){                    	
+                            if(fullScreen){
+                                var westPanel = Ext.getCmp('west');
+                                westPanel.setActiveTab('legend');
+                                westPanel.hideTabStripItem('tree');
+                            }
+                        }, 
+                        'ready' : function(){
+                            if(window.hideLoad){
+                                hideLoad();
+                            }
+                            app.modified = false;
+                            
+                            // ///////////////////////////////////////////////////
+                            // Visualizing metadata tab and layer at startup 
+                            // ///////////////////////////////////////////////////
+                            var addLayer = app.tools["addlayer"];
+                            
+                            if(addLayer){
+                                if(useCookies || content.data){
+                                    var layersList;
+                                    
+                                    if(content.data){
+                                        layersList = content.data;
+                                    }else if(useCookies){
+                                        var opener = window.opener;
+                                        var cookie = opener.document.cookie;
+                                        
+                                        var cookies = cookie.split(";");
+                                        var layersList;
+                                        for(var i=0; i<cookies.length; i++){
+                                            if(cookies[i].indexOf(useCookies) != -1){
+                                                layersList = cookies[i].split("=")[1];
+                                            }
+                                        }
+                                    }
+                                        
+                                    if(layersList){
+                                        var layers = layersList.split("#");
+                                        var resources = [];
+                                        
+                                        for(var i=0; i<layers.length; i++){
+                                            var keys = layers[i];
+                                            
+                                            keys = unescape(keys);
+                                            keys = Ext.util.JSON.decode(keys);
+                                            
+                                            var lname = keys.layer;
+                                            var lwms = decodeURIComponent(keys.wms);
+                                            var pname = keys.pname;
+                                            
+                                            resources.push({
+                                                msLayerTitle: lname,
+                                                msLayerName: lname,
+                                                msGroupName: pname,
+                                                wmsURL: lwms
+                                            });
+                                        }
+                                        
+                                        addMSLayer(resources);
+                                    }
+                                }else if(layName && wmsurl){
+                                    var title = layTitle ? layTitle : layName;
+                                    
+                                    addMSLayer([{
+                                        msLayerTitle: unescape(title),
+                                        msLayerName: unescape(layName),
+                                        msGroupName: undefined, // TODO: not supported yet
+                                        wmsURL: wmsurl
+                                    }]);
+                                }
+                            }else{
+                                Ext.Msg.show({
+                                    title: "Add Layer",
+                                    msg: "AddLayer plugin missing in configuration!",
+                                    width: 300,
+                                    icon: Ext.MessageBox.ALERT
+                                });  
+                            }
+                        
+                            if(bbox){
+                                app.mapPanel.map.zoomToExtent(bbox);
+                            }
+                        }
+                    });
+                    return app;
+                }
+                
+                var existingUserDetails = sessionStorage["userDetails"];
+                if(!existingUserDetails){
+                
+                    if(window.hideLoad){
+                        hideLoad();
+                    }
+                    login.showLoginDialog();
+                    
+                }else{
+                
+                    var userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
+                    var isAdmin = false;
+                    
+                    // get auth info					
+                    if (userDetails) {
+                        var user = userDetails.user;
+                        if(user){
+                            if(user.role && ["ROLE_ADMIN","ADMIN"].indexOf(user.role) > -1){
+                                isAdmin = true;
+                            }
+                            
+                            if(!isAdmin){
+                                // Check user and redirect if necessary
+                                if(serverConfig.restrictToGroup && serverConfig.redirectDeniedTo){
+                                    
+                                    if(!hasGroup(user, serverConfig.restrictToGroup)){
+                                        window.location.replace(serverConfig.redirectDeniedTo);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    initComposer();
 
+                    app.on('ready',function(){
+                        login.target = Ext.getCmp('paneltbar');
+                        login.addActions();
+                        login.loginSync();
+                         var myAccount = new gxp.plugins.GeoStoreAccount({
+                            outputTarget:'appTabs',
+                            hideAttributes: ["UUID","notes"],
+                            displayPanels:false,
+                            user: app.userDetails.user,
+                            auth: app.userDetails.token,
+                            geoStoreBase : serverConfig.geoStoreBase
+                         });
+                         myAccount.addOutput();                     
+                    });
+                }
+                
 				/**
 				* Add a WMS layer from GeoNetwork 
 				*
@@ -437,10 +647,3 @@
 			});
         
     </script>
-    </head>
-    <body>
-        <% render content %>
-		<div style="visibility:hidden"><canvas id="printcanvas" /></div>
-    </body>
-</html>
- pr
