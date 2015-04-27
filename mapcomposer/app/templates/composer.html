@@ -625,6 +625,7 @@
 						var endDate;
 						var timeStep;
 						var timeUnits;
+						var numSecondsCheck;
 						
 						var setNowTime = false						
 						
@@ -663,14 +664,27 @@
 							}                                   
 							
 							step = step == 2 ? "16" : step;
-							if(!timeStep || (step < timeStep)){
-								timeStep = step;
+						
+							valStep = valStep.slice(-1);
+							switch(valStep){
+								case 'D':
+									tempSecondCheck = step * 86400;
+									break;
+								case 'H':
+									tempSecondCheck = step * 3600;
+									break;                                
+								default:
+									tempSecondCheck = step * 60;
 							}
 							
+							if((!timeStep && !numSecondsCheck) || (tempSecondCheck < numSecondsCheck) ){
+								timeStep = step;
+								numSecondsCheck = tempSecondCheck;
+							}
+
 							// ////////////
 							// Time Units
 							// ////////////
-							valStep = valStep.slice(-1);
 							if(!timeUnits){
 								timeUnits = valStep;
 							}else if(timeUnits != valStep){

@@ -291,10 +291,20 @@
 						/*var resources = [{
 							format: "wms",
 							msGroupName: "MODELLO WRF-ARW a 12km - Maschera Terra - Acqua - (2015-04-21 ore 00 UTC).",
-							msLayerName: "arw_12km_Land_cover_land1_sea0_surface_20150421T000000000Z:0.0",
-							msLayerTitle: "arw_12km_Land_cover_land1_sea0_surface_20150421T000000000Z:0.0",
+							msLayerName: "arw_12km_Geopotential_height_tropopause_20150425T000000000Z:0.0",
+							msLayerTitle: "arw_12km_Geopotential_height_tropopause_20150425T000000000Z:0.0",
 							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/ARW_12KM_RUN00/ows",
-							timeInterval: "2015-04-21T00:00:00/2015-04-26T00:00:00"
+							timeInterval: "2015-04-25T00:00:00.000Z/2015-04-30T00:00:00.000Z"
+						}];
+                                
+                        addMSLayer(resources);*/
+						
+						/*var resources = [{
+							format: "wms",
+							msGroupName: "MODELLO WRF-ARW a 12km - Maschera Terra - Acqua - (2015-04-21 ore 00 UTC).",
+							msLayerName: "msg_rss_cvs",
+							msLayerTitle: "msg_rss_cvs",
+							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/MSG_RSS_RGB/ows"
 						}];
                                 
                         addMSLayer(resources);*/
@@ -454,6 +464,7 @@
 					var endDate;
 					var timeStep;
 					var timeUnits;
+					var numSecondsCheck;
 					
 					var setNowTime = false						
 					
@@ -492,14 +503,27 @@
 						}                                   
 						
 						step = step == 2 ? "16" : step;
-						if(!timeStep || (step < timeStep)){
-							timeStep = step;
+					
+						valStep = valStep.slice(-1);
+						switch(valStep){
+							case 'D':
+								tempSecondCheck = step * 86400;
+								break;
+							case 'H':
+								tempSecondCheck = step * 3600;
+								break;                                
+							default:
+								tempSecondCheck = step * 60;
 						}
 						
+						if((!timeStep && !numSecondsCheck) || (tempSecondCheck < numSecondsCheck) ){
+							timeStep = step;
+							numSecondsCheck = tempSecondCheck;
+						}
+
 						// ////////////
 						// Time Units
 						// ////////////
-						valStep = valStep.slice(-1);
 						if(!timeUnits){
 							timeUnits = valStep;
 						}else if(timeUnits != valStep){
@@ -544,7 +568,7 @@
 					timeManager.setTime(startDate);							
 					
 					if(setNowTime === true){
-						timeManagers[0].currenttime(false, false);
+						timeManager.currenttime(false, false);
 					}
 				}
             };			

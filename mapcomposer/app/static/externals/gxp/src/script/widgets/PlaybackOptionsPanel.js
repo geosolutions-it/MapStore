@@ -173,6 +173,7 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
                                 anchor: '-5',
                                 //TODO: i18n these time units
                                 store: [
+									[5, '5 minuti'],
                                     [15, '15 minuti'],
                                     [60, '1 ora'],
                                     [180, '3 ore'],
