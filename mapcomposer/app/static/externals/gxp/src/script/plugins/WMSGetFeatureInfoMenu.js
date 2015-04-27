@@ -893,19 +893,36 @@ if(this.infoAction=='click'){
         var ignoreFields=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].ignoreFields)?this.outputGridConfig[lname].ignoreFields:[];
         var propertyNames=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].propertyNames)?this.outputGridConfig[lname].propertyNames:null;
         var extraFields=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].extraFields)?this.outputGridConfig[lname].extraFields:null;
+        var nameColumnWidth=(this.outputGridConfig && this.outputGridConfig[lname] &&  this.outputGridConfig[lname].nameColumnWidth)?this.outputGridConfig[lname].nameColumnWidth:null;
+        
         Ext.iterate(feature.data,function(fieldName,fieldValue) {
             fields.push(fieldName);
         });
-             var  customRenderers={};
-             for(var f in extraFields){
-                 fields.push({"name":f});
-                 customRenderers[f] = (function() {
-                                return function(d) {
-                                    var tpl=new Ext.XTemplate(extraFields[f]);
-                                     return tpl.apply(d);
-                                };
-                            })();
-                            }
+        
+        var  customRenderers={};
+        for(var f in extraFields){
+            fields.push({"name":f});
+            customRenderers[f] = (function() {
+                        return function(d) {
+                            var tpl=new Ext.XTemplate(extraFields[f]);
+                             return tpl.apply(d);
+                        };
+                    })();
+        }
+        
+        var listeners = {
+            'beforeedit': function(e) {
+                return false;
+            }
+        };
+        
+        if(nameColumnWidth){
+            listeners.render = function(grid)
+            {
+                grid.getColumnModel().setColumnWidth(0, nameColumnWidth);
+            };
+        }
+        
         var featureGridConfig = {
             xtype: 'gxp_editorgrid',
             readOnly: true,
@@ -920,11 +937,7 @@ if(this.infoAction=='click'){
                 align: 'stretch',
                 pack: 'start'
             },
-            listeners: {
-                'beforeedit': function(e) {
-                    return false;
-                }
-            }
+            listeners: listeners
         };
 
         return featureGridConfig;

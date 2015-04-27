@@ -192,7 +192,11 @@
             "useTabPanel": true,
             "format" : "grid",
             "outputGridConfig":{
+                "GCD_Users_Z0:GCD_INTER_PL":{
+                    "nameColumnWidth": 100
+                },
                 "gascapacity:gcd_v_capacity_by_pipeline_agg":{
+                    "nameColumnWidth": 100,
                     "propertyNames":{
                         "Point_Type":"Point Type",
                         "Prop_Name":"Location Name",
@@ -211,6 +215,7 @@
                     "ignoreFields":["FERC", "cpcty_RID", "cpcty_RID_t", "Available_Capacity", "Scheduled_Capacity"]
                 },
                 "gascapacity:gcd_v_capacity_by_point_agg":{
+                    "nameColumnWidth": 100,
                     "propertyNames":{
                         "Point_Type":"Point Type",
                         "Prop_Name":"Location Name",
