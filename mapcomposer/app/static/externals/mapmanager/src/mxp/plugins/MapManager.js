@@ -68,7 +68,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
 
         return mxp.plugins.MapManager.superclass.addActions.apply(this, [actions]);
 
-        this.addOutput(this);
+        
     },
     
     /** api: method[addOutput]
@@ -103,7 +103,8 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
             auth: this.target.auth,
             searchUrl: this.target.geoSearchUsersUrl,
             url: this.target.geoBaseUsersUrl,
-            geoStoreBase: this.target.config.geoStoreBase
+            geoStoreBase: this.target.config.geoStoreBase,
+            target: this.target
     	});
 
         // apply headers on grid
@@ -145,7 +146,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
             if(output.rendered && output.isVisible && output.isVisible()){
                 // rendered and visible
                 output.render();
-                output.store.proxy.getConnection().defaultHeaders = this.target.defaultHeaders;
+                output.store.proxy.headers = this.target.defaultHeaders;
                 output.getBottomToolbar().bindStore(output.store, true);
                 output.getBottomToolbar().doRefresh();
                 output.plugins.collapseAll();
@@ -160,7 +161,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
                 // Tab not enabled, wait for activate
                 output.on("activate", function(){
                     output.render();
-                    output.store.proxy.getConnection().defaultHeaders = this.target.defaultHeaders;
+                    output.store.proxy.headers = this.target.defaultHeaders;
                     output.getBottomToolbar().bindStore(output.store, true);
                     output.getBottomToolbar().doRefresh();
                     output.plugins.collapseAll();

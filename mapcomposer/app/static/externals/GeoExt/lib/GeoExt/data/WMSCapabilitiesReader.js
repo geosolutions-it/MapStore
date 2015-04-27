@@ -61,6 +61,7 @@ GeoExt.data.WMSCapabilitiesReader = function(meta, recordType) {
                 {name: "maxScale", type: "float"},
                 {name: "prefix", type: "string"},
                 {name: "formats"}, // array
+                {name: "infoFormats"},//array
                 {name: "styles"}, // array
                 {name: "srs"}, // object
                 {name: "dimensions"}, // object

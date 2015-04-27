@@ -1,8 +1,6 @@
 {
    
    "scaleOverlayMode": "basic",
-   "adminUrl":"http://192.168.1.47/opensdi2-manager/",
-   "geoStoreBase":"http://192.168.1.47/opensdi2-manager/facade/geostore/rest/",
    "externalHeaders": true,
    "header":{
         "container": {
@@ -25,7 +23,7 @@
             "ptype": "gxp_wmssource",
             "title": "MARISS", 
             "version": "1.1.1",
-            "url": "http://192.168.1.47/geoserver/mariss/ows",
+            "url": "/geoserver/mariss/ows",
 			"layerBaseParams": {
 				"TILED": true,
 				"TILESORIGIN": "-180,-90" 
@@ -46,6 +44,11 @@
 		"ol": { 
 			"ptype": "gxp_olsource" 
 		}
+	},
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
 	},
 	"map": {
 		"projection": "EPSG:900913",
@@ -112,6 +115,15 @@
 				"title": "Bing Aerial With Labels",
 				"name": "AerialWithLabels",
 				"group": "background"
+			},{
+				"source": "ol",
+				"group": "background",
+				"fixed": true,
+				"type": "OpenLayers.Layer",
+				"visibility": false,
+				"args": [
+					"None", {"visibility": false}
+				]
 			}
 		]
 	},
@@ -163,6 +175,9 @@
 			"embeddedTemplateName": "viewer",
 			"showDirectURL": true
 		}, {
+			"ptype": "gxp_categoryinitializer",
+            "silentErrors": true
+		}, {
 		   "ptype": "gxp_mouseposition",
 		   "displayProjectionCode":"EPSG:4326",
 		   "customCss": "font-weight: bold; text-shadow: 1px 0px 0px #FAFAFA, 1px 1px 0px #FAFAFA, 0px 1px 0px #FAFAFA,-1px 1px 0px #FAFAFA, -1px 0px 0px #FAFAFA, -1px -1px 0px #FAFAFA, 0px -1px 0px #FAFAFA, 1px -1px 0px #FAFAFA, 1px 4px 5px #aeaeae;color:#050505 "
@@ -170,7 +185,7 @@
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,
-			"showReport": false,
+			"showReport": "never",
 			"directAddLayer": false,
 			"id": "addlayer"
 		}, {
@@ -226,7 +241,7 @@
 			"id": "featuregrid",
 			"container": "panel",
 			"outputTarget": "south",
-			"wfsURL": "http://192.168.1.47/geoserver/mariss/wfs",
+			"wfsURL": "/geoserver/mariss/wfs",
 			"featureType": "TEM_QL__1P_mosaic_idx",
 			"zoomToTooltip": "zoom to AOI",
 			"srsName": "EPSG:4326",
@@ -297,8 +312,8 @@
 		},{                   
 			"ptype": "gxp_wpsmanager",
 			"id": "wpsSPM",
-			"url": "http://192.168.1.47/geoserver/wps",
-			"geostoreUrl": "http://192.168.1.47/opensdi2-manager/facade/geostore/rest",
+			"url": "/geoserver/wps",
+			"geostoreUrl": "http://localhost/opensdi2-manager/facade/geostore/rest",
 			"geostoreProxy": "/proxy?url=",
 			"silentErrors": true,
 			"checkLocation": true,

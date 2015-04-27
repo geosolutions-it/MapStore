@@ -40,7 +40,7 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
     tooltipSearch: "Type a name to search",
     textReset: "Reset",
     tooltipReset: "Clean search",
-    failSuccessTitle: 'Error',
+    failSuccessTitle: "Error",
     resizerText: "Templates per page",
     tooltipDelete: "Delete template",
 	deleteTemplateTitleText: "Attention",
@@ -53,6 +53,13 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
 	 * 
 	 */			
 	pageSize: 50,
+ 
+    /**
+     * Property: expandCollapseOnTopBar
+     * {boolean} Include row expander and collapser buttons on top bar (otherwise it will be added at bottom bar)
+     * 
+     */
+    expandCollapseOnTopBar: true,
 
 	// layout config
 	// layout:'fit',
@@ -74,6 +81,8 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
     initComponent : function() {
     	var me = this;
 
+		this.addEvents('delete_template');
+		
     	// search box
     	var searchField = new Ext.form.TextField({
 			name: "templateSearch"
@@ -132,7 +141,6 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
             
             sortInfo: { field: "name", direction: "ASC" }
 		 });
-        
 
 		var expander = new Ext.ux.grid.RowExpander({
             /**
@@ -201,6 +209,7 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									
 									geostore.deleteByPk(id, function(response){
 										me.searchTemplate();
+										me.fireEvent("delete_template", response);
 									});
 									
                                     return true;
@@ -225,6 +234,50 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     }
 			})
 		});
+
+        // the top bar of the template grid
+        var topBar = [searchField, searchButton, resetSearchButton];
+
+        // bbar as paging
+        var pagingBbar = new MSMPagingToolbar({
+            pageSize : this.pageSize,
+            store : store,
+            grid: this,
+            addMapControls: false,
+            addExpandCollapseControls: !this.expandCollapseOnTopBar,
+            displayInfo: true,
+            plugins: [
+                new Ext.ux.plugin.PagingToolbarResizer( {
+                    options : [5, 10, 20, 50, 100],
+                    displayText: this.resizerText
+                })
+            ]
+        });
+
+        // row expander/collapser on top
+        if(this.expandCollapseOnTopBar){
+            topBar.push("->");
+            topBar.push({
+                text: pagingBbar.textExpandAll,
+                tooltip: pagingBbar.tooltipExpandAll,
+                iconCls: 'row_expand',
+                disabled: false,
+                handler : function() {
+                    expander.expandAll();               
+                },
+                scope: this
+            });
+            topBar.push({
+                text: pagingBbar.textCollapseAll,
+                tooltip: pagingBbar.tooltipCollapseAll,
+                iconCls: 'row_collapse',
+                disabled: false,
+                handler : function() {
+                    expander.collapseAll();
+                },
+                scope: this
+            });
+        }
 
 		Ext.apply(this, {
 			store: store,
@@ -261,21 +314,9 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
 		        }
 		    ]}),		
 			// the top bar of the template grid
-			tbar: [ searchField, searchButton, resetSearchButton],
+			tbar: topBar,
             // bbar as paging
-            bbar: new MSMPagingToolbar({
-	            pageSize : this.pageSize,
-	            store : store,
-	            grid: this,
-                addMapControls: false,
-	            displayInfo: true,
-	            plugins: [
-	            	new Ext.ux.plugin.PagingToolbarResizer( {
-						options : [5, 10, 20, 50, 100],
-						displayText: this.resizerText
-					})
-	            ]
-	        }),
+            bbar: pagingBbar,
         	plugins: expander          
         });
 		

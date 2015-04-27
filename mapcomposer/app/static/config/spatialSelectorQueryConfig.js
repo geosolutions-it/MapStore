@@ -24,6 +24,11 @@
 			"ptype": "gxp_olsource" 
 		}
 	},
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
+	},
 	"map": {
 		"projection": "EPSG:900913",
 		"units": "m",
@@ -173,10 +178,10 @@
 		  "id": "bboxquery",
 		  "spatialSelectorsConfig":{
 		        "bbox":{
-		            "ptype": "gxp_spatial_bbox_selector"
+		            "xtype": "gxp_spatial_bbox_selector"
 		        },
 		        "buffer":{
-		            "ptype": "gxp_spatial_buffer_selector",
+		            "xtype": "gxp_spatial_buffer_selector",
 					"bufferOptions": {
 						"minValue": 1,
 						"maxValue": 10000,
@@ -184,14 +189,14 @@
 					}
 		        },
 		        "circle":{
-		            "ptype": "gxp_spatial_circle_selector",
+		            "xtype": "gxp_spatial_circle_selector",
 		            "zoomToCurrentExtent": true
 		        },
 		        "polygon":{
-		            "ptype": "gxp_spatial_polygon_selector"
+		            "xtype": "gxp_spatial_polygon_selector"
 		        },
 		        "geocoder":{
-		            "ptype": "gxp_spatial_geocoding_selector",
+		            "xtype": "gxp_spatial_geocoding_selector",
 		            "wpsManagerID": "wpsManager",
 		            "wfsBaseURL": "http://localhost:8080/geoserver/wfs?",
 		            "geocoderTypeName": "topp:states",

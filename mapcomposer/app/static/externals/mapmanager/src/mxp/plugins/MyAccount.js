@@ -33,14 +33,12 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
     
     /** api: ptype = mxp_usermanager */
     ptype: "mxp_myaccount",
-
+    // i18n
     buttonText: "My Account",
     tooltipText: "My Account details",
     groupsText: "Groups",
     usersText: "Users",
-
-    setActiveOnOutput: true,
-     changePassword:'Change Password',
+    changePassword:'Change Password',
     textPassword: 'Password',
     textPasswordConf: 'Confirm Password',
     textSubmit: 'Submit',
@@ -48,10 +46,36 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
     textPasswordChangeSuccess: 'Password Changed',
     textErrorPasswordChange: 'ErrorChangingPassowd',
     textConfirmChangePassword: 'Are you sure to change the Password? You will have to log in again after this operation',
-    loginManager: null, 
     usernameLabel:'User Name',
+    
+    //config
+    loginManager: null, 
     scrollable:true,
-    notAllowedAttributes:['UUID'],
+    setActiveOnOutput: true,
+    /** api: config[displayPanels]
+     *  ``boolean`` use panels to see attributes instead of template
+     */
+    displayPanels: true,
+    
+    /** api: config[additionalControls]
+     *  ``Array``buttons to place in the right panel
+     */
+     additionalControls:null,
+     
+     /** api: config[controlsWidth]
+     *  ``integer``width of the `dditionalControls`
+     */
+     controlsWidth:200,
+     
+    /** api: config[hideAttributes]
+     *  ``Array`` user attributes to hide in the my account tab
+     */
+    hideAttributes :['UUID'],
+    
+    /** api: config[userTemplate]
+     *  ``Array`` XTemplate to display user page.
+     *  user is the root element. groups.group and attribute are arrays to iterate
+     */
     userTemplate: [ '<style>',
                 '#account_details td{padding:5px;width: 200px;padding-left: 7px;color: #fff;text-shadow: 2px 2px 2px #666;}',
                 '#account_details .b{font-weight:bold;}#account_details tr.even{background: #6a7064;}#account_details tr.odd{background: #bab29f;}',
@@ -117,6 +141,8 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
         return mxp.plugins.MyAccount.superclass.addActions.apply(this, [actions]);
     },
     
+    /** api: method[addOutput]
+     */
     addOutput: function(config) {
         this.login = this.target.login ? this.target.login: 
                 this.loginManager && this.target.currentTools[this.loginManager] 
@@ -141,16 +167,18 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
         if(!user.groups.group){
             user.groups.group = [];
         }
+        
         if(!(user.groups.group instanceof Array)){
             user.groups.group = [user.groups.group];
         }
+        
         //remove attributes not allowed to display
-        if(this.notAllowedAttributes){
+        if(this.hideAttributes){
             var attributes = [];
             for( var i = 0 ; i < user.attribute.length ; i++){
                 remove = false;
-                for( var j = 0 ; j < this.notAllowedAttributes.length ; j++){ 
-                    if( user.attribute[i].name == this.notAllowedAttributes[j] ){
+                for( var j = 0 ; j < this.hideAttributes.length ; j++){ 
+                    if( user.attribute[i].name == this.hideAttributes[j] ){
                         remove = true; 
                         break;
                     }
@@ -167,6 +195,7 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
             accountDetailsText: this.accountDetailsText
         }
         var controlPanel = {
+        itemId:'my_account',
             xtype: "panel",
             layout: 'border',
             title: "My Account",
@@ -183,17 +212,20 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
                 }
             ]
         };
+        //use panels instead of template
         if (this.displayPanels){
+            
             controlPanel.items.push({
                 ref:'attributes',
                 layout:'fit',
                 forcefit:true,
                 title:'Attributes',
-                region:'south',
+                region:'center',
                 xtype:'grid',
+                autoExpandColumn: "value",
                 columns: [
                     {header: "name", width: 120, dataIndex: 'name', sortable: true},
-                    {header: "value", width: 180, dataIndex: 'value', sortable: true}
+                    {id:'value',header: "value", width: 180, dataIndex: 'value', sortable: true}
                 ],
                 store : new Ext.data.JsonStore({
                     data: user,
@@ -211,17 +243,19 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
                 ref:'groups',
                 layout:'fit',
                 forcefit:true,
+                width: 400,
                 title:'Groups',
-                region:'center',
+                region:'west',
                 xtype:'grid',
+                autoExpandColumn: "groupName",
                 columns: [
-                    {header: "id", width: 180, dataIndex: 'id', sortable: true},
-                    {header: "name", width: 120, dataIndex: 'groupName', sortable: true}
+                    {header: "id", width: 100, dataIndex: 'id', sortable: true, hidden:true},
+                    {id: "groupName", header: "name", width: 180, dataIndex: 'groupName', sortable: true}
                     
                 ],
                 store : new Ext.data.JsonStore({
                     data: user,
-                    root:'groups',
+                    root:'groups.group',
                     fields: [{
                         name: 'groupName',
                         type: 'string'
@@ -233,12 +267,36 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
             });
         
         }
-        
-        this.output = mxp.plugins.MyAccount.superclass.addOutput.call(this, Ext.apply(controlPanel,config));
+        // additional buttons support in the right panel
+        if(this.additionalControls){
+          controlPanel.items.push({region:'east',xtype:'panel',frame:true,width:this.controlsWidth,layout:'vbox',items:this.additionalControls});
+        }
+        // In user information the output is generated in the component and we can't check the item.initialConfig.
+        if(this.output.length > 0
+            && this.outputTarget){
+            for(var i = 0; i < this.output.length; i++){
+                if(this.output[i].ownerCt
+                    && this.output[i].ownerCt.xtype 
+                    && this.output[i].ownerCt.xtype == "tabpanel"
+                    && !this.output[i].isDestroyed){
+                    var outputConfig = config || this.outputConfig;
+                    // Not duplicate tabs
+                    for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
+                        var item = this.output[i].ownerCt.items.items[index];
+                        // only check iconCls
+                        var isCurrentItem = "my_account" == item.initialConfig["itemId"];
+                        if(isCurrentItem){
+                            this.output[i].ownerCt.setActiveTab(index);
+                            return;
+                        }
+                    } 
+                }
+            }
+        }
 		
 		//hide selection layer on tab change
 		
-		return this.output;
+		return mxp.plugins.MyAccount.superclass.addOutput.call(this, Ext.apply(controlPanel,config));
 		
 	},
     getChangePasswordTool: function(){

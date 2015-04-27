@@ -1,6 +1,10 @@
 /**
  * Copyright (c) 2009-2010 The Open Planning Project
  */
+/*
+	NOTE: configuration customization could override
+	these strings
+*/
 
 GeoExt.Lang.add("de", {
     "GeoExplorer.prototype": {
@@ -49,7 +53,7 @@ GeoExt.Lang.add("de", {
     "gxp.plugins.AddLayers.prototype": {
         addActionMenuText: "Schicht hinzufügen",
         addActionTip: "Schicht hinzufügen",
-        addServerText: "Neuen Server hinzufügen",
+        addServerText: "Neuen Server",
         addButtonText: "Schichten hinzufügen",
         untitledText: "Ohne Überschrift",
         addLayerSourceErrorText: "Fehler beim finden der WMS capabilities ({msg}).\nBitte die Url kontrollieren und nochmals versuchen.",
@@ -159,14 +163,26 @@ GeoExt.Lang.add("de", {
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
         infoActionTip: "Feature Info erhalten",
         popupTitle: "Feature Info",
-		noDataMsg: "Keine Daten vom Server erhalten"
+		noDataMsg: "Keine Daten vom Server erhalten",
+		firstFtTip: "Erste Feature",
+        previousPageTip: "Vorheriges Feature",
+        nextPageTip: "Nächste Feature",
+        lastPageTip: "LetzteFeature",
+        ftLabel: "Feature",
+        ftOfLabel: "von" 
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
         infoActionTip: "Feature Info erhalten",
         popupTitle: "Feature Info",
 		noDataMsg: "Keine Daten vom Server erhalten",
-		activeActionTip: "Informationen über ausgewählte Schicht"
+		activeActionTip: "Informationen über ausgewählte Schicht",
+		firstFtTip: "Erste Feature",
+        previousPageTip: "Vorheriges Feature",
+        nextPageTip: "Nächste Feature",
+        lastPageTip: "LetzteFeature",
+        ftLabel: "Feature",
+        ftOfLabel: "von", 
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -238,11 +254,37 @@ GeoExt.Lang.add("de", {
     },
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Neuen Server hinzufügen...",
+        title: "Neuen Server",
         cancelText: "Löschen",
         addServerText: "Server hinzufügen",
         invalidURLText: "Als WMS endpoint gültige Url eingeben (e.g. http://example.com/geoserver/wms)",
-        contactingServerText: "Verbindungsversuch zum Server..."
+        contactingServerText: "Verbindungsversuch zum Server...",
+		sourceTypeLabel: "Type",
+		advancedOptionsTitle: "Advanced Options",
+		generalTabTitle: "General",
+		titleLabel: "Title",
+		versionLabel: "Version (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Params",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Add",
+		propNameLabel: "Name",
+		propValueLabel: "Value",
+		paramsWinTitle: "Params Options",
+		okButtonText: "Ok",
+		addPropDialogTitle: "Add Property",
+		addPropDialogMsg: "Property name or his value are not valid",
+		cancelButtonText: "Cancel",
+		removeButtonText: "Remove",
+		removePropDialogTitle: "Remove Property",
+		removePropDialogMsg: "This property cannot be removed: ",
+		newSourceDialogTitle: "New Source",
+		newSourceDialogMsg: "Some source selected properties are invalid.",
+		mandatoryLabelText: "All fields marked with (*) are mandatory."
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -279,7 +321,8 @@ GeoExt.Lang.add("de", {
 		mapMedatataSetTitle: "Karte Metadaten",	
 		mapNameLabel: "Name",	
 		mapDescriptionLabel: "Beschreibung",
-		addResourceButtonText: "In Map"
+		addResourceButtonText: "In Map",
+		conflictErrMsg: "Eine Karte mit dem gleichen Namen ist bereits vorhanden"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
@@ -294,6 +337,12 @@ GeoExt.Lang.add("de", {
         zoomInTooltip: "Zoom Box Vorwärts",
         zoomOutTooltip: "Zoom Box Zurück"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Schicht ist nicht in der Kartenprojektion",
+		wfsDescribeFeatureTypeError: "Fehler beim Abrufen der Eigenschaften von Feature-Typ",
+		errorTitle: "Fehler"
+	},
 
     "GeoExt.ux.PrintPreview.prototype":{
 	    paperSizeText: "Papierformat:",
@@ -360,7 +409,7 @@ GeoExt.Lang.add("de", {
     },
 	
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Auf Karte anzeigen",
+        displayFeatureText: "Zeigen",
         firstPageTip: "Erste Seite",
         previousPageTip: "Vorherige Seite",
         zoomPageExtentTip: "Zoom zur Erweterung der Seite",
@@ -369,11 +418,15 @@ GeoExt.Lang.add("de", {
         title: "Zeilen",
         totalMsg: "Insgesamt: {0} Zeilen",
         displayExportCSVText: "Export to CSV",
-        exportCSVSingleText: "einzelne Seite",
-        exportCSVMultipleText: "Alle Seite",
+        exportCSVSingleText: "Einzelne Seite",
+        exportCSVMultipleText: "Alle Seiten",
         failedExportCSV: "Fehler beim Ansprechen für Ausgabeformat CSV finden",
         invalidParameterValueErrorText: "Ungültige Parameter Wert",
-		zoomToFeature: "Zoom auf Funktionen"
+		zoomToFeature: "Zoom auf Funktionen",
+		exportTitleText: "Export",
+		pageLabel: "Seite",
+		pageOfLabel: "von",
+		totalRecordsLabel: "Einträge Insgesamt"
     },
 	
     "gxp.plugins.QueryForm.prototype": {
@@ -639,13 +692,53 @@ GeoExt.Lang.add("de", {
 		previewText: "Vorschau",				
 		embedCodeTitle: "Embed Code",
 		embedURL: "Direct URL",		
-		urlLabel: "URL",
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
 		showMapTooltip: "In einem neuen Fenster anzeigen",
         loadMapText: "Load this Map (installieren Sie zuerst die Anwendung)", 
         downloadAppText: "Die Anwendung Installieren", 
         loadInMapStoreMobileText: "Mobile",
         openImageInANewTab: "Bild in einem neuen Tab"
 	},
+
+    "gxp.widgets.form.SpatialSelectorField.prototype" :{
+        title : "Gebiet vom Interesse",
+        selectionMethodLabel : "Methode der Auswahl",
+        comboEmptyText : "Sie wählen eine Methode aus..",
+        comboSelectionMethodLabel : "Auswahl",
+        northLabel : "Nördlich",
+        westLabel : "Westen",
+        eastLabel : "Osten",
+        southLabel : "Südwärts",
+        setAoiTitle : "Bounding Box",
+        setAoiText : "Es zieht(zeichnet)",
+        setAoiTooltip : "Ermöglichen Sie der SetBox-Kontrolle, einen ROI (zu ziehen(zeichnen), Kasten) auf der Karte Springend",
+        areaLabel : "Gebiet",
+        perimeterLabel : "Umkreis",
+        radiusLabel : "Strahl",
+        centroidLabel : "Centroide",
+        latitudeEmptyText : 'Y',
+        longitudeEmptyText : 'X',
+        geocodingFieldSetTitle : "GeoCoder",
+        geocodingPanelTitle : "Einen Platz zu wählen",
+        geocodingPanelBtnRefreshTxt : "Es zeigt Geometrie",
+        geocodingPanelBtnDestroyTxt : "Sie verbergen Geometrie",
+        geocodingPanelBtnDeleteTxt : "Sie entfernen Platz",
+        geocodingPanelLocationHeader: "Platz",
+        geocodingPanelCustomHeader: "Verwandter",
+        geocodingPanelGeometryHeader: "WKT der Geometrie",
+        geocodingPanelBtnSelectAllTxt : "Es wählt Alles auso", 
+        geocodingPanelBtnDeSelectAllTxt : "Sie entfernen die ganze Auswahl", 
+        geocodingPanelMsgRemRunningTitle : "Sie entfernen Platz",
+        geocodingPanelMsgRemRunningMsg : "Wollen Sie die durch die Liste ausgewählten Plätze entfernen?",
+        geocodingFieldLabel : "Es sucht nach einem Platz",
+        geocodingFieldEmptyText : "Sie fügen Platz ein...",
+        geocodingFieldBtnAddTooltip : "Sie fügen einen Platz zur Liste hinzu",
+        geocodingFieldBtnDelTooltip : "Sie reinigen...",
+        selectionSummary : "Zusammenfassung der Auswahlen",
+        geocoderSelectorsLabels: ['Union der Geometrie', 'Liste der Administrativen Gebiete', 'Administratives Gebiet und sottoaree'],
+        selectionReturnTypeLabel: "Typ der Auswahl"
+    },
     
     "gxp.plugins.WFSGrid.prototype":{
         displayMsgPaging: "Bestandteil {0} - {1} of {2}",
@@ -660,12 +753,175 @@ GeoExt.Lang.add("de", {
         noRecordFoundLabel: "Kein Bestandteil gefunden",
         loadMsg: "Bitte warten..."
     },
+
+    "gxp.plugins.spatialselector.SpatialSelector.prototype" :{
+        titleText : "Gebiet vom Interesse",
+        selectionMethodLabel : "Methode der Auswahl",
+        comboEmptyText : "Sie wählen eine Methode aus..",
+        comboSelectionMethodLabel : "Auswahl"
+    },
+    
+    "gxp.widgets.form.spatialselector.SpatialSelectorMethod.prototype" :{
+        areaLabel : "Gebiet",
+        perimeterLabel : "Umkreis",
+        lengthLabel: "Länge",
+        radiusLabel : "Strahl",
+        centroidLabel : "Centroide",
+        selectionSummary: "Zusammenfassung der Auswahlen",
+        geometryOperationText: "Geometrie-Operation",
+        geometryOperationEmptyText: "Wählen Sie eine Operation(Betrieb) aus",
+        distanceTitleText: "Entfernung",
+        distanceUnitsTitleText: "Entfernungseinheiten",
+        noOperationTitleText: "Keine gültige Operation(Betrieb)",
+        noOperationMsgText: "Wählen Sie bitte eine Operation(Betrieb) vor Frage aus",
+        noCompleteMsgText: "Ergänzen Sie bitte Form(Formular) vor Frage"        
+    },
+    
+    "gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.prototype" :{
+        name  : 'BBOX',
+        label : 'Bounding Box',
+        northLabel : "Nördlich",
+        westLabel : "Westen",
+        eastLabel : "Osten",
+        southLabel : "Südwärts",
+        setAoiTitle : "Bounding Box",
+        setAoiText : "Es zieht(zeichnet)",
+        setAoiTooltip : "Ermöglichen Sie der SetBox-Kontrolle, einen ROI (zu ziehen(zeichnen), Kasten) auf der Karte Springend"
+    },
+    
+    "gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.prototype" :{
+        name  : 'Buffer',
+        label : 'Buffer',
+        latitudeEmptyText : 'Y',
+        longitudeEmptyText : 'X'
+    },
+    
+    "gxp.widgets.form.spatialselector.CircleSpatialSelectorMethod.prototype" :{
+        name  : 'Kreis',
+        label : 'Kreis'
+    },
+    
+    "gxp.widgets.form.spatialselector.GeocoderSpatialSelectorMethod.prototype" :{
+        name  : 'Geocoding',
+        label : 'Geocoding',
+        geocodingFieldSetTitle : "GeoCoder",
+        geocodingPanelTitle : "Einen Platz zu wählen",
+        geocodingPanelBtnRefreshTxt : "Es zeigt Geometrie",
+        geocodingPanelBtnDestroyTxt : "Sie verbergen Geometrie",
+        geocodingPanelBtnDeleteTxt : "Sie entfernen Platz",
+        geocodingPanelLocationHeader: "Platz",
+        geocodingPanelCustomHeader: "Verwandter",
+        geocodingPanelGeometryHeader: "WKT der Geometrie",
+        geocodingPanelBtnSelectAllTxt : "Es wählt Alles aus", 
+        geocodingPanelBtnDeSelectAllTxt : "Sie entfernen alle Auswahlen", 
+        geocodingPanelMsgRemRunningTitle : "Sie entfernen Platz",
+        geocodingPanelMsgRemRunningMsg : "Wollen Sie die durch die Liste ausgewählten Plätze entfernen?",
+        geocodingFieldLabel : "Es sucht nach einem Platz",
+        geocodingFieldEmptyText : "Sie fügen Platz ein...",
+        geocodingFieldBtnAddTooltip : "Sie fügen einen Platz zur Liste hinzu",
+        geocodingFieldBtnDelTooltip : "Sie reinigen...",
+        selectionSummary : "Zusammenfassung der Auswahlen"
+    },
+    
+    "gxp.widgets.form.spatialselector.PolygonSpatialSelectorMethod.prototype" :{
+        name  : 'Polygon',
+        label : 'Polygon'
+    },
+
+    "gxp.plugins.spatialselector.Geocoder.prototype" :{
+        titleText: "Geocoder",
+        searchText: "Suche",
+        searchTpText: "Suche wählte Ort und Steilflug in auf Karte aus",
+        resetText: "Neu fassen",
+        resetTpText: "Neu gefasste Ort-Suche",
+        translatedKeys: {
+            "name": "Straße",
+            "number": "Zahl(Nummer)"
+        }
+    },
 	
 	"gxp.plugins.ResourceStatus.prototype":{
 		rootNodeText: "Ressourcen Import",
 		serviceErrorTitle: "Dienstfehler",
 		tabTitle: "Importiert",
-		layerNodeName: "Levels",
-		serviceNodeName: "Service"
-    }
+		layerNodeName: "Ressourcen",
+		waitMsg: "Laden von Ressourcen ...",
+		expandAllText: "Alle Knoten Erweitern",
+		collapseAllText: "Alles Alle Knoten"
+    },
+	
+	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
+        noFilterSelectedMsgTitle: "Keinen Filter ausgewählt",    
+        noFilterSelectedMsgText: "Sie müssen mindestens einen Filter auswählen",    
+        invalidRegexFieldMsgTitle: "Ungültige Domänen",    
+        invalidRegexFieldMsgText: "Eine oder mehrere Domänen sind falsch!",
+        unknownErrorMsgTitle: 'Fehler',
+        unknownErrorMsgText: 'Unbekannter Fehler aufgetreten',
+        errorCode: 'Fehlercode',
+        errorText: 'Fehlermeldung'
+    },
+	
+	"gxp.plugins.FeatureManager.prototype":{
+        noValidWmsVersionMsgTitle: 'WMS Version ungültig',    
+        noValidWmsVersionMsgText: "Die Queryform-Plugin nicht mit WMS Source Version arbeiten: "
+    },
+    "gxp.data.WMTSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "Keine Schicht in der aktuellen Kartenprojektion ist auf diesem Server nicht verfügbar",
+        warningTitle: "Warnung"
+    },
+    "gxp.data.TMSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "Keine Schicht in der aktuellen Kartenprojektion ist auf diesem Server nicht verfügbar",
+        warningTitle: "Warnung"
+    },
+
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Aktivieren/Deaktivieren Snapping"
+    },
+	
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Wiedergabe",
+        playTooltip: "Wiedergabe",
+        stopLabel: "Stopp",
+        stopTooltip: "Stopp",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Double Speed​​-Wiedergabe",
+        backLabel:'Zurück',
+        backTooltip:'Zeichnen Sie ein Bild zurück',            
+        nextLabel: "Nächste",
+        nextTooltip: "Ein Bild vor",
+        loopLabel: "Schleife",
+        loopTooltip: "Stufenlos Schleife die Animation",
+        normalTooltip: "Rückkehr zur normalen Wiedergabe",
+        pauseLabel: "Pause",
+        pauseTooltip: "Pause"
+    },
+	
+    "gxp.PlaybackOptionsPanel.prototype": {
+        optionTitleText: "Datum & Zeit",
+        rangeFieldsetText: "Zeitbereich",
+        animationFieldsetText: "Animationsoptionen",
+        startText: "Starten",
+        endText: "Ende",
+        saveText: 'Sparen',
+        cancelText: 'Stornieren',         
+        listOnlyText: "Verwenden Sie Genaue Werte-Liste nur",
+        stepText: "Zeichentrick Schritt",
+        unitsText: "Zeichentrick-Einheiten",
+        frameRateText:'Zeichentrick-Verzögerung (s)',        
+        noUnitsText: "Snap To Zeitliste",
+        loopText: "Loop-Animation",
+        reverseText: "Reverse-Zeichentrick",
+        rangeChoiceText: "Wählen Sie den Bereich für die Zeitsteuerung",
+        rangedPlayChoiceText: "Wiedergabemodus",
+        secondsText: 'Sekunden', 
+        minutesText: 'Protokoll', 
+        hoursText: 'Stunden', 
+        daysText: 'Tage', 
+        monthsText: 'Monate', 
+        yearsText: 'Jahre'        
+    },
+	
+	"gxp.plugins.StaticPage.prototype": {
+        tabTitle: "Statische Seite"
+    }  
 });

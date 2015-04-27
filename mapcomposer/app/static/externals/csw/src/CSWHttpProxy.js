@@ -139,12 +139,12 @@
 		}
 
 		// Sort results by a given property 
-		optionsCsw.Query.SortBy = {
-			SortProperty: {
-				PropertyName: {value: this.sortProperty},
-				SortOrder: {value: this.sortOrder}
+		optionsCsw.Query.SortBy = [
+			{
+				property: this.sortProperty,
+				order: this.sortOrder
 			}	
-		}; 
+		];
 
 		var format = new OpenLayers.Format.CSWGetRecords();
 		return format.write(optionsCsw);

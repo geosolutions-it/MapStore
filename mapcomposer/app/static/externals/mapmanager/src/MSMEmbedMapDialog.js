@@ -79,9 +79,7 @@ EmbedMapDialog = Ext.extend(Ext.Container, {
     
     /** private: property[widthField]
      */
-    widthField: null,
-    
-    
+    widthField: null,    
     
     /**QR Code add-ons
     */
@@ -91,8 +89,7 @@ EmbedMapDialog = Ext.extend(Ext.Container, {
     openImageInANewTab: "Open Image in a New Tab",
     showQRCode: true,
     qrCodeSize:128,
-    appDownloadUrl:"http://demo.geo-solutions.it/share/mapstoremobile/MapStoreMobile.apk",
-    
+    appDownloadUrl:"http://demo.geo-solutions.it/share/mapstoremobile/MapStoreMobile.apk",    
     
     /** private: method[initComponent]
      */

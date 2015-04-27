@@ -35,6 +35,18 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
     
     /** api: ptype = gxp_featuremanager */
     ptype: "gxp_featuremanager",
+
+    /** api: config[noValidWmsVersionMsgTitle]
+     *  ``String``
+     *  Title string for no valid WMS version (i18n).
+     */    
+    noValidWmsVersionMsgTitle: 'No valid WMS version',
+    
+    /** api: config[noValidWmsVersionMsgText]
+     *  ``String``
+     *  Text string for no valid WMS version (i18n).
+     */    
+    noValidWmsVersionMsgText: "The queryForm plugin doesn't work with WMS Source version: ",   
     
     /** api: config[maxFeatures]
      *  ``Number`` Default is 100
@@ -82,6 +94,17 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  ``Object`` An object with "Point", "Line" and "Polygon" properties,
      *  each with a valid symbolizer object for OpenLayers. Will be used to
      *  render features.
+     */
+     /** api: config[selectedSymbolizer]
+     *  ``Object`` An object with "Point", "Line" and "Polygon" properties,
+     *  each with a valid symbolizer object for OpenLayers. Will be used to
+     *  render selected features.
+     */
+    /** api: config[vecLayerOptions]
+     *  ``Object`` Optional object with non-default properties to set on the
+     *  OpenLayers.Layer.Vector used to render features
+     *  i.e. to have zindex use  "vecLayerOptions": {"rendererOptions":{"zIndexing": true}}
+     *  in composer configuration
      */
     
     /** api: config[format]
@@ -334,20 +357,20 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                     }
                 })]
             }),
-            "selected": new OpenLayers.Style(null, {
-                rules: [new OpenLayers.Rule({symbolizer: {display: "none"}})]
+             "selected": new OpenLayers.Style(null, {
+              rules: [new OpenLayers.Rule({symbolizer: this.initialConfig.selectedSymbolizer || {display: "none"}})]
             })
         };
         
-        this.featureLayer = new OpenLayers.Layer.Vector(this.id, {
+        this.featureLayer = new OpenLayers.Layer.Vector(this.id, Ext.apply({
             displayInLayerSwitcher: false,
             visibility: false,
             styleMap: new OpenLayers.StyleMap({
-                "select": OpenLayers.Util.extend({display: ""},
+                 "select": this.initialConfig.selectedSymbolizer ? this.style["selected"] :  OpenLayers.Util.extend({display: ""},
                     OpenLayers.Feature.Vector.style["select"]),
                 "vertex": this.style["all"]
             }, {extendDefault: false})    
-        });
+        },this.vecLayerOptions||{}));
         
         this.target.on({
             ready: function() {
@@ -611,6 +634,18 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         if (source && source instanceof gxp.plugins.WMSSource) {
             source.getSchema(record, function(schema) {
                 if (schema === false) {
+                
+                    //information about why selected layers are not queriable.                
+                    var layer = record.get("layer");
+                    var wmsVersion = layer.params.VERSION;
+                    Ext.MessageBox.show({
+                        title: this.noValidWmsVersionMsgTitle,
+                        msg: this.noValidWmsVersionMsgText + wmsVersion,
+                        buttons: Ext.Msg.OK,
+                        animEl: 'elId',
+                        icon: Ext.MessageBox.INFO
+                    });
+                    
                     this.clearFeatureStore();
                 } else {
                     var fields = [], geometryName;
@@ -645,19 +680,30 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                             fields.push(field);
                         }
                     }, this);
-                    var protocolOptions = {
+                    
+                    var protocolOptions = {    
                         srsName: this.target.mapPanel.map.getProjection(),
                         url: schema.url,
                         featureType: schema.reader.raw.featureTypes[0].typeName,
                         featureNS: schema.reader.raw.targetNamespace,
                         geometryName: geometryName
                     };
+                    
+                    //
+                    // Check for existing 'viewparams' inside the selected layer
+                    //
+                    var layer = record.getLayer();
+                    if(layer){
+                        protocolOptions = Ext.applyIf(protocolOptions, layer.vendorParams ? {viewparams: layer.vendorParams.viewparams} : {});
+                    }
+
                     this.hitCountProtocol = new OpenLayers.Protocol.WFS(Ext.apply({
                         version: "1.1.0",
                         readOptions: {output: "object"},
                         resultType: "hits",
                         filter: filter
                     }, protocolOptions));
+                    
                     this.featureStore = new gxp.data.WFSFeatureStore(Ext.apply({
                         fields: fields,
                         proxy: {
@@ -668,6 +714,8 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         maxFeatures: this.maxFeatures,
                         layer: this.featureLayer,
                         ogcFilter: filter,
+                        sortBy: this.sortBy,
+                        remoteSort:this.remoteSort,
                         autoLoad: autoLoad,
                         autoSave: false,
                         listeners: {

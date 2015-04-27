@@ -33,6 +33,7 @@
 
     // i18n
     fieldLabel: "Template",
+    emptyText: "Default Template",
 
     // base config
     typeAhead: true,
@@ -70,7 +71,7 @@
 	                   icon: Ext.MessageBox.ERROR
 	                });                                
 	            },
-	            defaultHeaders: this.target.defaultHeaders
+	            headers: {'Accept': 'application/json', 'Authorization' : this.auth}
 	        }),
 	        listeners:{
 	        	load: function(store){
@@ -79,8 +80,11 @@
 	        	scope: this
 	        }
     	};
-
-    	this.store.proxy.getConnection().defaultHeaders = this.target.defaultHeaders;
+    	
+        this.store.proxy.getConnection().defaultHeaders = {
+            'Accept': 'application/json', 
+            'Authorization' : this.auth || this.target.defaultHeaders
+        };
 		
         MSMTemplateComboBox.superclass.initComponent.call(this, arguments);
 	}

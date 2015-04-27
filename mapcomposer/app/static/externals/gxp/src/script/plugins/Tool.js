@@ -227,7 +227,7 @@ gxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
 						if(actions[k] instanceof GeoExt.Action && actions[k].initialConfig){
 							actions[k].initialConfig.scale = this.target.actionToolScale;
 						}else{
-							actions[k].scale = this.target.actionToolScale;
+							actions[k].scale = this.target.actionToolScale || actions[k].scale;
 						}						
 					}
 				}
@@ -405,6 +405,15 @@ gxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
             }
         }
         this.output = [];
+    },
+    /**
+     * Retrieves auth from (in this order)
+     * * the parent window (For usage in manager)
+     * * the session storage (if enabled userDetails, see ManagerViewPort.js class of mapmanager)
+     * We should imagine to get the auth from other contexts.
+     */
+    getAuth: function(){
+        return this.target.getAuth();
     }
     
 });
