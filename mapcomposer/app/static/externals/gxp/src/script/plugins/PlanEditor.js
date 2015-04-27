@@ -898,8 +898,18 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     },
 
     onSelectService: function(serviceName, panel, loadData){
+        var targetFeatureManager = this.target.tools.productFeatureManager;
+        var filter = new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.EQUAL_TO,
+            property: 'servicename',
+            value: serviceName
+        });
+
+        targetFeatureManager.clearFeatures();
+        targetFeatureManager.loadFeatures(filter);
         // save current serviceName. It's 'user@serviceName' in the WFS layer
-        this.currentServiceName = this.target.userDetails.user.name +  "@" + serviceName;
+        //this.currentServiceName = this.target.userDetails.user.name +  "@" + serviceName;
+        this.currentServiceName = serviceName;
         // change mode
         this.mode = "aoiEdit";
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<comment>DML statements for usid database</comment>
+	<entry key="role_usid.countall">
+		SELECT count(*) FROM role_usid
+	</entry>
+	<entry key="role_usid.getallrecords">
+		SELECT role, usid FROM role_usid ORDER BY role, usid LIMIT ? OFFSET ?
+	</entry>
+	<entry key="role_usid.getsinglerecord">
+		SELECT role, usid FROM role_usid WHERE role = ? AND usid = ?
+	</entry>
+	<entry key="role_usid.countusidbyrole">
+		SELECT count(usid) FROM role_usid WHERE role = ?
+	</entry>
+	<entry key="role_usid.getusidbyrole">
+		SELECT usid FROM role_usid WHERE role = ?
+	</entry>
+	<entry key="role_usid.countrolesbyusid">
+		SELECT count(role) FROM role_usid WHERE usid = ?
+	</entry>
+	<entry key="role_usid.getrolesbyusid">
+		SELECT role FROM role_usid WHERE usid = ?
+	</entry>
+	<entry key="role_usid.getusidbyrole_page">
+		SELECT usid FROM role_usid WHERE role = ? ORDER BY usid, role LIMIT ? OFFSET ?
+	</entry>
+	<entry key="role_usid.getrolesbyusid_page">
+		SELECT role FROM role_usid WHERE usid = ? ORDER BY role, usid LIMIT ? OFFSET ?
+	</entry>
+	<entry key="role_usid.delete">
+		DELETE FROM role_usid WHERE role = ? AND usid = ?;
+	</entry>
+	<entry key="role_usid.insert">
+		INSERT INTO role_usid (role, usid) VALUES (?, ?);
+	</entry>
+</properties>

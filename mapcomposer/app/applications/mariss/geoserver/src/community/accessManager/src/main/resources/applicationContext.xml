@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights reserved.
+ This code is licensed under the GPL 2.0 license, available at the root
+ application directory.
+ -->
+<!--  <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"  
+  	      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ 		  xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+          xmlns:util="http://www.springframework.org/schema/util" >
+          
+<bean id="albAccessManager" class="it.geosolutions.security.alb.AlbAccessManager" >
+	<constructor-arg index="0" ref="rawCatalog" />
+	<constructor-arg index="1" ref="dataDirectory" />
+</bean>
+
+<!-- LimitBuilders -->
+
+<bean name="readOnlyAccessLimitBuilder" class="it.geosolutions.security.alb.limitbuilder.ReadWriteALB">
+	<property name="canRead" value="true" />
+	<property name="canWrite" value="false" />
+</bean>
+<bean name="denyAccessLimitBuilder" class="it.geosolutions.security.alb.limitbuilder.ReadWriteALB">
+	<property name="canRead" value="false" />
+	<property name="canWrite" value="false" />
+</bean>
+<bean name="adminAccessLimitBuilder" class="it.geosolutions.security.alb.limitbuilder.ReadWriteALB">
+	<property name="canRead" value="true" />
+	<property name="canWrite" value="true" />
+</bean>
+
+<!-- REST Services -->
+<bean name="reloadAccessRules" class="it.geosolutions.security.alb.rest.ALBReloadFinder">
+	<constructor-arg index="0" ref="albAccessManager" />
+</bean>
+<bean class="org.geoserver.rest.RESTMapping">
+	<property name="routes">
+		<map>
+			<entry>
+				<key>
+					<value>/alb/reload</value>
+				</key>
+				<value>reloadAccessRules</value>
+			</entry>
+		</map>
+	</property>
+</bean>
+
+<!--  NPA SPECIFIC TOOLS -->
+<!-- USID SERVICE TIER AND REST PART -->
+ <import resource="npa-services.xml"/>
+ <!-- Access Limit Builders for npa project -->
+ <import resource="npa-access.xml" />
+
+
+</beans>

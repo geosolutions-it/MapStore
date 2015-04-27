@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights 
+    reserved. This code is licensed under the GPL 2.0 license, available at the 
+    root application directory. -->
+<!-- <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd"> -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+    xmlns:util="http://www.springframework.org/schema/util">
+
+    <bean name="manageUsid" class="it.geosolutions.npa.rest.USIDFinder">
+        <constructor-arg index="0" ref="usidService" />
+    </bean>
+    <bean class="org.geoserver.rest.RESTMapping">
+        <property name="routes">
+            <map>
+                <entry>
+                    <key>
+                        <value>/usidrules/{ruleId}</value>
+                    </key>
+                    <value>manageUsid</value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>/usidrules</value>
+                    </key>
+                    <value>manageUsid</value>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,18 @@
+<config>
+    <rules>
+        <rule>
+            <workspace>cite</workspace><!-- NOTE this can be * only if layer is * -->
+            <layer>Lakes</layer>
+            <accessLimitBuilder>readOnlyAccessLimitBuilder</accessLimitBuilder><!-- ANYBODY CAN READ -->
+        </rule>
+        <rule>
+            <workspace>cite</workspace><!-- NOTE this can be * only if layer is * -->
+            <layer>*</layer>
+            <accessLimitBuilder>usidAccessLimitBuilder</accessLimitBuilder>
+            <options>
+                <option name="cql_filter">FID in (%s)</option>
+            </options>
+        </rule>
+    </rules>
+    <defaultAccessBuilder>denyAccessLimitBuilder</defaultAccessBuilder>
+</config>

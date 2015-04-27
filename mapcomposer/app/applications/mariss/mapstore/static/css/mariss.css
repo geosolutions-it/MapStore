@@ -1,0 +1,46 @@
+.olControlOverviewMapElement{
+    border-radius: 1em 0px;
+    border: 2px solid gray;
+    background-color: white;
+}
+.x-action-col-cell  .groupaction{
+    background-image: url(../externals/gxp/src/theme/img/silk/folder_add.png) !important;
+    width:16px;
+    height:16px;
+}
+.x-btn .icon-groupaction, .x-menu-item .icon-groupaction {
+    background-image: url(../externals/gxp/src/theme/img/silk/folder_add.png);
+}
+.x-btn .icon-groupdownload, .x-menu-item .icon-groupdownload {
+    background-image: url(../images/folder_go.png);
+}
+.x-btn .icon-filtervec, .x-menu-item .icon-filtervec {
+    background-image: url(../theme/app/img/geosilk/vector_filter.png);
+}
+.x-action-col-cell  .addtocartaction{
+    background-image: url(../images/cart_put.png) !important;
+    width:16px;
+    height:16px;
+    margin-left:2px;
+}
+.x-action-col-cell  .addScenario{
+    background-image: url(../externals/gxp/src/theme/img/silk/folder_add.png) !important;
+    
+    width:16px;
+    height:16px;
+}
+.x-btn .icon-raster, .x-menu-item .icon-raster {
+    background-image: url(../externals/gxp/src/theme/img/silk/map.png);
+}
+.x-tree-node .x-tree-node-outofrange a span{
+    color:gray !important;
+     font-style: italic;
+}
+.x-layout-collapsed-south:after{
+    color: #333;
+font-weight: bold;
+font-size: 11px;
+font-family: tahoma,arial,verdana,sans-serif;
+    margin-left:48%;
+    content:"Footprints Panel";
+}

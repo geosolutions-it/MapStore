@@ -1,0 +1,15 @@
+target
+bin
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+.project
+.classpath
+.settings
+
+#Temporaney files 
+*.pom~
+*.md*

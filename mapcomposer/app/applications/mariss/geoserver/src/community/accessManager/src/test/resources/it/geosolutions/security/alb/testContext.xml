@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2001 - 2013 OpenPlans - www.openplans.org. All rights 
+    reserved. This code is licensed under the GPL 2.0 license, available at the 
+    root application directory. -->
+<!-- <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd"> -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
+    xmlns:util="http://www.springframework.org/schema/util">
+
+    <bean id="mockData" class="org.geoserver.data.test.MockTestData">
+    </bean>
+
+    <bean id="dataDirectory" class="org.geoserver.config.GeoServerDataDirectory">
+        <constructor-arg index="0"
+            value="#{mockData.dataDirectoryRoot}" />
+    </bean>
+
+    <bean id="dataDirInit" class="it.geosolutions.security.alb.DataDirInitializer"
+        depends-on="mockData">
+    </bean>
+
+    <bean id="albAccessManager" class="it.geosolutions.security.alb.AlbAccessManager"
+        depends-on="dataDirInit">
+        <constructor-arg index="0" value="#{mockData.catalog}" />
+        <constructor-arg index="1" ref="dataDirectory" />
+    </bean>
+
+    <!-- LimitBuilders -->
+
+    <bean name="readOnlyAccessLimitBuilder"
+        class="it.geosolutions.security.alb.limitbuilder.ReadWriteALB">
+        <property name="canRead" value="true" />
+        <property name="canWrite" value="false" />
+    </bean>
+    <bean name="denyAccessLimitBuilder"
+        class="it.geosolutions.security.alb.limitbuilder.ReadWriteALB">
+        <property name="canRead" value="false" />
+        <property name="canWrite" value="false" />
+    </bean>
+    <bean name="adminAccessLimitBuilder"
+        class="it.geosolutions.security.alb.limitbuilder.ReadWriteALB">
+        <property name="canRead" value="true" />
+        <property name="canWrite" value="true" />
+    </bean>
+
+</beans>

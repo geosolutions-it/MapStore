@@ -1,0 +1,15 @@
+<jdbcservice>
+  <id>2e06b4a4:1452c77d38e:-7ffe</id>
+  <name>npa-test</name>
+  <className>org.geoserver.security.jdbc.JDBCRoleService</className>
+  <propertyFileNameDDL>test-ddl.xml</propertyFileNameDDL>
+  <propertyFileNameDML>test-dml.xml</propertyFileNameDML>
+  <jndi>false</jndi>
+  <driverClassName>org.h2.Driver</driverClassName>
+  <connectURL>jdbc:h2:target/h2/test-ds</connectURL>
+  <userName>sa</userName>
+  <password></password>
+  <creatingTables>true</creatingTables>
+  <adminRoleName>ADMIN</adminRoleName>
+  <groupAdminRoleName>ADMIN</groupAdminRoleName>
+</jdbcservice>

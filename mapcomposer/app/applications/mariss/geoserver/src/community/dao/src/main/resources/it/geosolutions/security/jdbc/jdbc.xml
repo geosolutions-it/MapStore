@@ -1,0 +1,15 @@
+<jdbcservice>
+  <id>2e06b4a4:1452c77d38e:-7ffe</id>
+  <name>npa</name>
+  <className>org.geoserver.security.jdbc.JDBCRoleService</className>
+  <propertyFileNameDDL>ddl.xml</propertyFileNameDDL>
+  <propertyFileNameDML>dml.xml</propertyFileNameDML>
+  <jndi>false</jndi>
+  <driverClassName>org.postgresql.Driver</driverClassName>
+  <connectURL>jdbc:postgresql://localhost:5432/npa</connectURL>
+  <userName>npa</userName>
+  <password>npa</password>
+  <creatingTables>true</creatingTables>
+  <adminRoleName>ADMIN</adminRoleName>
+  <groupAdminRoleName>ADMIN</groupAdminRoleName>
+</jdbcservice>

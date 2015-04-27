@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>DDL statements for usid database</comment>
+  <entry key="check.table">role_usid</entry>
+  <entry key="role_usid.create">
+        create table role_usid(role varchar(64) not null,usid varchar(64),  primary key(role,usid) )
+  </entry>
+  <entry key="role_usid.drop">drop table role_usid</entry>
+</properties>
