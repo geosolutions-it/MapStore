@@ -1439,6 +1439,198 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         }
         
         return auth;
+    },
+    /** private: method[addTemporalLayers]
+     *  Calculate the time values related to the whole set of added layers and
+     *  set TimeManager params
+     */
+    addTemporalLayers: function(records){
+    
+        // ///////////////////////////////////////////////////////////////////
+        // Calculate the time values related to the whole set of added layers 
+        // ///////////////////////////////////////////////////////////////////
+        var startDate;
+        var endDate;
+        var timeStep;
+        var timeUnits;
+        var numSecondsCheck;
+        
+        var setNowTime = false						
+        
+        for(var i=0; i<records.length; i++){
+            var record = records[i].record;
+            
+            var layer = record instanceof OpenLayers.Layer.WMS ? record : record.get('layer');
+            
+            // /////////////////
+            // Time Intervall
+            // /////////////////
+            
+            var layerStartTime =  OpenLayers.Date.parse(layer.metadata.timeInterval[0][0]);
+            if(!startDate){
+                startDate = layerStartTime;
+            }else if(layerStartTime.getTime() < startDate.getTime()){
+                startDate = layerStartTime;
+            }
+            
+            var layerEndTime =  OpenLayers.Date.parse(layer.metadata.timeInterval[0][1]);
+            if(!endDate){
+                endDate = layerEndTime;
+            }else if(layerEndTime.getTime() > endDate.getTime()){
+                endDate = layerEndTime;
+            }
+            
+            // ////////////
+            // Time Step
+            // ////////////
+            var valStep = layer.metadata.timeInterval[0][2];
+            var r = /\d+/g;
+            var s = valStep;
+            var step, m;
+            while ((m = r.exec(s)) != null) {
+              step = m[0];
+            }                                   
+            
+            step = step == 2 ? "16" : step;
+        
+            valStep = valStep.slice(-1);
+            switch(valStep){
+                case 'D':
+                    tempSecondCheck = step * 86400;
+                    break;
+                case 'H':
+                    tempSecondCheck = step * 3600;
+                    break;                                
+                default:
+                    tempSecondCheck = step * 60;
+            }
+            
+            if((!timeStep && !numSecondsCheck) || (tempSecondCheck < numSecondsCheck) ){
+                timeStep = step;
+                numSecondsCheck = tempSecondCheck;
+            }
+
+            // ////////////
+            // Time Units
+            // ////////////
+            if(!timeUnits){
+                timeUnits = valStep;
+            }else if(timeUnits != valStep){
+                if((timeUnits == 'D' && valStep ==  'H') || (timeUnits == 'H' && valStep ==  'M')){
+                    timeUnits = valStep;
+                }
+            }	
+
+            timeUnits = (timeUnits == 'H' || timeUnits == 'Hours') ? 
+                    timeUnits = 'Hours' : ((timeUnits == 'D' || timeUnits == 'Days') ? 
+                        timeUnits = 'Days' : timeUnits = 'Minutes');	
+
+            var layerName = record instanceof OpenLayers.Layer.WMS ? record.name : record.get('name');
+            if(layerName.indexOf("NDVI") === -1 && layerName.indexOf("50km") === -1){
+                setNowTime = true;
+            }							
+        }
+        
+        var playback = app.tools["playback"];
+        var timeManager = playback.getTimeManager();
+        
+        //adjust tipeStep to manage only Minutes
+        switch (timeUnits){
+            case 'Hours':
+                timeStep = timeStep * 60;
+                break;
+            case 'Days':
+                timeStep = timeStep * 1440;
+                break;                                
+            default:
+                timeStep = timeStep;
+        }
+        
+        timeManager.step = timeStep;
+        timeManager.units = "Minutes"; //timeUnits;
+        timeManager.fixedRange = true;
+        timeManager.forceIncrement = !setNowTime;
+        timeManager.setStart(startDate);
+        timeManager.setEnd(endDate);
+            
+        timeManager.events.triggerEvent("rangemodified"); 		
+        timeManager.setTime(startDate);						
+        
+        if(setNowTime === true){
+            timeManager.currenttime(false,false);
+        }
+        
+        //set startDate and endDate of playbackOptionsPanel                        
+        playback.populateTimeOptionsPanel();
+        
+    },
+    /** private: method[setTemporalLayersParams]
+     *  Sets layers Style, Group and basic information
+     *  
+     */    
+    setTemporalLayersParams: function(resources){
+
+        for(var i=0; i<resources.length; i++){
+            var resource = resources[i];
+            var resourceName = resource.msLayerName;
+            
+            var customParams = {};
+            
+            //
+            // Setting the Style
+            //
+            var layerString = resourceName.split(":");
+            var styles;
+            var style;
+            if((resourceName.indexOf("Wind") != -1) && (resourceName.indexOf("gfs") != -1)){
+                styles = "wind_arrow_palette_gfs";
+                style = "wind_arrow_palette_raster_gfs"; 
+            }else if ((resourceName.indexOf("Wind") != -1) && (resourceName.indexOf("arw") != -1)){
+                styles = "wind_arrow_palette";
+                style = "wind_arrow_palette_raster";                         
+            }else if(resource.wmsURL.indexOf('RADAR') != -1){					
+                styles = layerString[0] + "_" + layerString[1];
+                style = layerString[0] + "_" + layerString[1];                                                       
+            }else{
+                styles = layerString[0].substring(0,layerString[0].lastIndexOf("_")) + "_" + layerString[1];
+                style = layerString[0].substring(0,layerString[0].lastIndexOf("_")) + "_" + layerString[1];
+            }
+            
+            //
+            // Setting the Group
+            //
+            if(resource.wmsURL.indexOf("ARW") != -1 || resource.wmsURL.indexOf("GFS") != -1){
+                resource.msGroupName = "MODELLI";
+            }else if(resource.wmsURL.indexOf("MSG") != -1){
+                resource.msGroupName = "SATELLITE";
+            }else if(resource.wmsURL.indexOf("NDVI") != -1){
+                resource.msGroupName = "NDVI";
+            }else{
+                resource.msGroupName = "default";
+            }
+            
+            //
+            // Update the resource basic information
+            //
+            resource.msLayerName = layerString[0],
+            resource.msLayerTitle = layerString[1] ? layerString[0] + ":" + layerString[1] : layerString[0],
+            customParams.elevation = layerString[1] ? layerString[1] : "",
+            customParams.styles = ((resourceName.indexOf("Wind") != -1) || layerString[1]) ? [styles] : [],
+            customParams.style = ((resourceName.indexOf("Wind") != -1) || layerString[1]) ? [style] : [],
+            customParams.format = "image/png8";
+            customParams.loadingProgress = true;
+            
+            resource.customParams = customParams;
+            
+            resource.sourceOptions = {
+                layerBaseParams:{
+                    FORMAT: "image/png8",
+                    TILED: true,
+                    TILESORIGIN:"-20037508.34, -20037508.34"
+                }
+            };
+        }
+    
     }
 });
 
