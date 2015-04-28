@@ -262,24 +262,24 @@
                         enableTabScroll: true
                     };
                     
+
+                var header = serverConfig.header;
+                var footer = serverConfig.footer;
+
+                // If on IFRAME, remove header and footer
+                if(self != top){
+                    header = false;
+                    footer = false;
+                    serverConfig.tab = false;
+                }
+                
                 if(!serverConfig.tab && !serverConfig.cswconfig){
                     appTabsOpts.layout = 'fit';
                     appTabs = new Ext.Panel(appTabsOpts); 
                 }else{
                     appTabs = new Ext.TabPanel(appTabsOpts); 
                 }  
-                
-                var header = serverConfig.header;
-                var footer = serverConfig.footer;
-
-                // If on IFRAME, remove header and footer
-                /*
-                if(self != top){
-                    header = false;
-                    footer = false;
-                }
-                */
-                
+                                
                 var viewport = {
                         id: 'appVieport',
                         layout: 'fit',
@@ -365,6 +365,7 @@
                 var login = new gxp.plugins.GeoStoreLogin({
                     draggable:false,
                     closable: false,
+                    hideInIframe : true,
                     actionTarget: {target: "paneltbar",index: 40},
                     loginService:  loginService,
                     loginSync: function(){
@@ -378,8 +379,10 @@
                         
                         this.loginAction.disable();
                         this.loginAction.setHidden(true);
-                        this.logoutAction.show();
-                        this.logoutAction.enable();
+                        if(!(this.hideInIframe && this.isEmbed)){
+                            this.logoutAction.show();
+                            this.logoutAction.enable();
+                        }
                         this.logged = true;
                         
                         if(this.win){
