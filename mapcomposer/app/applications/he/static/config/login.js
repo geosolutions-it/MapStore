@@ -326,9 +326,10 @@
 			"ptype": "gxp_languageselector",
 			"actionTarget": {"target": "panelbbar", "index": 3}
 		}, {
-		  "ptype": "gxp_featuremanager",
-          "format": "GML2",
-		  "id": "featuremanager"
+            "ptype": "gxp_featuremanager",
+            "pagingType": 1,
+            "format": "GML2",
+            "id": "featuremanager"
 	    }, {
 		  "ptype": "gxp_featuregrid",
 		  "featureManager": "featuremanager",
