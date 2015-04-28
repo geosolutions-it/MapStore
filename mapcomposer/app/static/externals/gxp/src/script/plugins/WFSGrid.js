@@ -679,141 +679,6 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         };
     },
 
-    /* private: method[getStartEditTargetsAction]
-     
-    getStartEditTargetsAction: function(actionConf){
-        var sourceSRS=actionConf.sourceSRS;
-        var me= this;
-        return {
-            xtype: 'actioncolumn',
-            sortable : false, 
-            width: 30,            
-            items: [{
-                icon   : this.startEditToIconPath,  
-                tooltip: this.startEditToTooltip,
-                scope: this,
-                handler: function(grid, rowIndex, colIndex) {
-                    var record = grid.getStore().getAt(rowIndex);
-                   
-                    me.currentRecord = me.save[record.get("id")];
-                    if(!me.currentRecord) {
-                        me.currentRecord = {
-                            id: record.get("id"),
-                            value: record.get("value"),
-                            oldvalue: record.get("value"),
-                            geometry: me.getGeometry(record,sourceSRS),
-                            oldgeometry: me.getGeometry(record,sourceSRS)
-                        };
-                    }
-                        
-                    //var arrayGrid = [];
-                    var columnCount = grid.getColumnModel().getColumnCount();
-                    
-                    var selectionModel = grid.getSelectionModel();
-                    selectionModel.unlock();
-                    selectionModel.clearSelections(false);
-                    selectionModel.selectRow( rowIndex, false );
-                    
-                    var colRecord = grid.getStore().getAt(rowIndex).get('value');
-                    var textField = {
-                        anchor: '100%',
-                        xtype: 'fieldset',
-                        title:'Value',
-                        defaults: {
-                            labelWidth: 70
-                        },
-                        defaultType: 'textfield',
-                        items: [{
-                            fieldLabel: 'Value',
-                            anchor: '100%',
-                            name: 'value',
-                            value: colRecord
-                        }]
-                    };
-                    
-                    var win = new Ext.Window({
-                        width: 300,
-                        height: 250,
-                        modal: true,
-                        resizable: false,
-                        title: 'Road Edit Form',
-                        autoShow: true,
-                        autoScroll: true,
-                        layout: 'fit',
-                        constrain: true,
-                        items: [{
-                            title: 'VALUE',
-                            anchor: '100%',
-                            items: textField
-                        }],
-                        buttons: [
-                            {
-                                text: "Salva",
-                                //iconCls:this.okIconCls,
-                                handler: function() {
-                                
-                                    var myTabs = tabs;
-                                    var changed = false;
-                                    myTabs.items.each(function(i){
-                                    
-                                        if(i.items.items[0].getXType() != 'fieldset'){
-                                            var store = i.items.items[0].getStore();
-                                            var fieldName = i.title.toLowerCase();
-                                            var ccc = [];
-                                            var foundDirty = false;
-                                            store.each(function(r) {
-                                                if(r.dirty) {
-                                                    changed  = true;
-                                                    foundDirty = true;
-                                                    me.currentRecord[fieldName].push({id: r.get("id"), value: parseFloat(r.get('values'))});                                                    
-                                                }
-                                                ccc.push(r.get('values'));
-                                            });
-                                            if(foundDirty) {
-                                                var newString = "{" + ccc.join() + "}";
-                                                
-                                                var originSelectionModel = me.wfsGrid.getSelectionModel();
-                                                var record = originSelectionModel.getSelected();
-                                                record.set(fieldName,newString);
-                                            }
-                                        }else{
-                                            var fieldValue = parseFloat(i.items.items[0].items.items[0].getValue());
-                                            var originSelectionModel = me.wfsGrid.getSelectionModel();
-                                            var record = originSelectionModel.getSelected();
-                                            var fieldName = i.title.toLowerCase();
-                                            var oldValue = record.get(fieldName);
-                                            if(oldValue !== fieldValue) {
-                                                me.currentRecord["value"] = fieldValue;
-                                                record.set(fieldName,fieldValue);
-                                                record.set("value",fieldValue);
-                                                changed = true;
-                                            }
-                                        }
-                                        
-                                    });
-                                    if(changed) {
-                                        me.save[me.currentRecord.id] = me.currentRecord;
-                                    }
-                                    this.ownerCt.ownerCt.hide();
-                                }
-                            },{
-                                 text: "Chiudi",
-                                 //iconCls:this.cancelIconCls,
-                                 //scope:this,
-                                 handler:function() {
-                                    this.ownerCt.ownerCt.hide();
-                                }
-                            }
-                        ]                        
-                    }); 
-
-                     win.show();
-                     
-                }
-            }]  
-        };
-    },*/    
-
     /** private: method[getRemoveTargetAction]
      */    
     getRemoveTargetAction: function(actionConf){
@@ -1717,7 +1582,57 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             });
         }
         
+        if(this.allowExtraRecordsUpdate && this.extraRecords && this.extraRecords.length > 0) {
+            var syntView = app.tools["syntheticview"];
+            var map = me.target.mapPanel.map;
+            for(var i = 0, l = this.extraRecords.length; i < l; i++) {
+                var extraRecord = this.extraRecords[i];
+                if(extraRecord.gridId === this.id) {
+                    this.save[extraRecord.id] = extraRecord;
+                    var layer, style;
+                    
+                    if(extraRecord.removed) {
+                        layer = "Bersagli rimossi";
+                        style = {
+                            strokeColor: "#FF0000",
+                            strokeWidth: 3,
+                            fillColor: "#FF0000",
+                            fillOpacity: 0.5
+                        };
+                    } else if(extraRecord.newfeature) {
+                       layer = "Bersagli aggiunti";
+                       style = {
+                            strokeColor: "#00FF00",
+                            strokeWidth: 3,
+                            fillColor: "#00FF00",
+                            fillOpacity: 0.5
+                       };
+                    } else {
+                        layer = "Bersagli modificati";
+                        style = {
+                            strokeColor: "#FFFF00",
+                            strokeWidth: 3,
+                            fillColor: "#FFFF00",
+                            fillOpacity: 0.5
+                        };   
+                    }
+                    
+                    this.persistEditGeometry(
+                        layer, 
+                        extraRecord.id, 
+                        syntView.reproject(
+                            extraRecord.geometry.clone(), 
+                            new OpenLayers.Projection(this.srsName), 
+                            map.getProjectionObject()
+                        ), style
+                    );
+                }
+            }
+        }
+        
         var totalHandler = function(total, callback){
+            
+            
             if(parseInt(total,10) > 0 || (me.extraRecords && me.extraRecords.length > 0)) {
                 me.loadFeatureFields(function(){
                     if(me.columns){
@@ -1809,13 +1724,16 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                     if(me.extraRecords && me.extraRecords.length > 0) {
                                         for(var j = 0, lenextra = me.extraRecords.length; j < lenextra; j++){
                                             var extraRecord = me.extraRecords[j];
-                                            if(extraRecord.id === r[i].get("id")) {
-                                                if(extraRecord.removed) {
-                                                    add = false;
-                                                } else {
-                                                    // changed
-                                                    r[i].data.feature.geometry = extraRecord.geometry;
-                                                    r[i].set("value", extraRecord.value);                                                    
+                                            if(extraRecord.gridId === me.id) {
+                                                if(extraRecord.id === r[i].get("id")) {
+                                                    if(extraRecord.removed) {
+                                                        add = false;
+                                                    } else {
+                                                        // changed
+                                                        r[i].data.feature.geometry = extraRecord.geometry;
+                                                        r[i].set("value", extraRecord.value); 
+                                                        
+                                                    }
                                                 }
                                             }
                                         }
@@ -1830,7 +1748,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                     if(me.extraRecords && me.extraRecords.length > 0) {
                                         for(var j = 0, lenextra = me.extraRecords.length; j < lenextra; j++){
                                             var extraRecord = me.extraRecords[j];
-                                            if(extraRecord.newfeature) {
+                                            if(extraRecord.gridId === me.id && extraRecord.newfeature) {
                                                 var recordType = me.wfsGrid.getStore().recordType;
                                                 var newRecord = new recordType({                                                    
                                                     "geometry": "",
@@ -1842,6 +1760,8 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                                     "value": extraRecord.value
                                                 });
                                                 finalRecords.push(newRecord);
+                                                
+                                                
                                             }
                                         }
                                     }
@@ -1967,28 +1887,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             me.editTargetGeometry({layerName:"Bersaglio Selezionato Editing",sourceSRS:'EPSG:32632'}, wfsGridPanel, 0, 0, true);
         }
         
-        /*if(this.allowAdd) {
-            bbar = new Ext.Toolbar({
-                items:[{
-                    icon   : this.addIconPath,  
-                    tooltip: this.addTooltip,
-                    toggleGroup: "pippo",
-                    scope: this,
-                    handler: function() {
-                        if(me.isEmpty) {                            
-                            me.isEmpty = false;
-                            if(me.onFill) {
-                                me.onFill.call(null, me);
-                            }
-                            totalHandler(1, addNewTarget);
-                        } else {
-                            addNewTarget();
-                        }
-                    }
-
-                }]
-            });
-        }*/
+        
         
         if(this.allowEdit) {
             this.tbar = new Ext.Toolbar({

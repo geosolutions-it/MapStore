@@ -546,7 +546,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             } else if(info.removed) {
                 styleName = "simulation_removed";
             } else {
-                styleName = "simulation_chaned";
+                styleName = "simulation_changed";
             }
             var geometry = this.reproject(info.geometry.clone(), sourceProjection, destProjection);
             var feature = new OpenLayers.Feature.Vector(geometry, {

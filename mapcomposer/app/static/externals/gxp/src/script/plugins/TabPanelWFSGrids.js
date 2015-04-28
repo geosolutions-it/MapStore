@@ -230,7 +230,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
             
             /** api: method[loadGrids]
              */    
-            loadGrids: function(attributeName, attributeValue, projection, viewParams, tplData, extraRecords,noAlert) {
+            loadGrids: function(attributeName, attributeValue, projection, viewParams, tplData, extraRecords,noAlert, allowExtraRecordsUpdate) {
                 this.removeAllGrids();
                 var grids = this.hideAllBut(attributeName, attributeValue);
                 
@@ -249,9 +249,10 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                     grids[i].target= me.target;
                     grids[i].viewParams= viewParams;
                     grids[i].extraRecords = me.reprojectRecords(extraRecords);
+                    grids[i].allowExtraRecordsUpdate = allowExtraRecordsUpdate;
+                    grids[i].save = {};
                     grids[i].addOutput({},i === 0);
                     grids[i].tplData = tplData;
-                    grids[i].save = {};
                     grids[i].onEmpty=function(grid) {                        
                         // no record found message
                         var noRecordFoundEl = grid.wfsGrid.el.child('.x-grid3-scroller');

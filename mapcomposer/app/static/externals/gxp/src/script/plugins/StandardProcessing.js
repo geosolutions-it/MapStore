@@ -1123,22 +1123,26 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var status = this.getStatus();        
         var bounds = syntView.getBounds(status, map);
         viewParams = "bounds:" + bounds;
-        
+        var extraTargets;
+        var allowExtraTargetsUpdate = false;
+        if(type === 'init') {
+            extraTargets = this.status.simulation.targetsInfo;
+            allowExtraTargetsUpdate = true;
+        }
         if(this.isSingleTarget(status)) {
-            wfsGrid.loadGrids(["id", "type"], [status.target['id_bersaglio'], 'all'], syntView.selectionLayerProjection, viewParams,undefined,undefined,true);                                
+            wfsGrid.loadGrids(["id", "type"], [status.target['id_bersaglio'], 'all'], syntView.selectionLayerProjection, viewParams,undefined,extraTargets,true,allowExtraTargetsUpdate);                                
         } else if(this.isAllHumanTargets(status)) {
-            wfsGrid.loadGrids("type", ['umano', 'all'], syntView.selectionLayerProjection, viewParams,undefined,undefined,true);
+            wfsGrid.loadGrids("type", ['umano', 'all'], syntView.selectionLayerProjection, viewParams,undefined,extraTargets,true,allowExtraTargetsUpdate);
         } else if(this.isAllNotHumanTargets(status)) {
-            wfsGrid.loadGrids("type", ['ambientale','all'], syntView.selectionLayerProjection, viewParams,undefined,undefined,true);
+            wfsGrid.loadGrids("type", ['ambientale','all'], syntView.selectionLayerProjection, viewParams,undefined,extraTargets,true,allowExtraTargetsUpdate);
         } else {
-            wfsGrid.loadGrids(null ,null , syntView.selectionLayerProjection, viewParams,undefined,undefined,true);
+            wfsGrid.loadGrids(null ,null , syntView.selectionLayerProjection, viewParams,undefined,extraTargets,true,allowExtraTargetsUpdate);
         }
     
     },
     
     // check if same target is change then apply the simulation grid reload
     updateSimulationTabPabel: function(wfsGrid,syntView,map,type,startValue){
-        
         // check modify on grafo_simulazione 
         var arcIsEmpty = true;
         var targetsAreEmpty = true;
@@ -1209,12 +1213,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         // check if grid is changed. If it is changed, appear an alert, else the grid reload
         //if ((selectedTargetLayer && selectedTargetLayer.features.length !== 0) ||
-        if ((selectedTargetLayerEditing && selectedTargetLayerEditing.features.length !== 0) || 
+        if ((type !== 'init') && (!this.ignoreSimulationUpdate) && (
+            (selectedTargetLayerEditing && selectedTargetLayerEditing.features.length !== 0) || 
             (simulationAddedLayer && simulationAddedLayer.features.length !== 0) || 
             (simulationChangedLayer && simulationChangedLayer.features.length !== 0) || 
             (simulationRemovedLayer && simulationRemovedLayer.features.length !== 0) || 
             //(simulationModLayer && simulationModLayer.features.length !== 0) ||
-            !arcIsEmpty || !targetsAreEmpty){
+            !arcIsEmpty || !targetsAreEmpty)){
             
             Ext.Msg.show({
                 title: this.alertSimGridReloadTitle,
@@ -1240,6 +1245,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     enableDisableSimulation: function(enable,type,startValue) {
         var southPanel = Ext.getCmp("south");        
         var wfsGrid = Ext.getCmp("featuregrid");
+        if(type === 'init') {
+            wfsGrid.currentGrids = null;
+        }
         var map = this.appTarget.mapPanel.map;
         
         var scale = Math.round(map.getScale()); 
@@ -1675,7 +1683,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                             }
                             
                             // targets
-                            if(recordInfo.oldgeometry || recordInfo.geometry) {                                
+                            if(recordInfo.oldgeometry || recordInfo.geometry) {
+                                recordInfo.gridId = grid.id;
                                 obj.simulation.targetsInfo.push(recordInfo);
                                 obj.simulation.exportInfo.push({
                                     id: recordInfo.id,
@@ -1740,7 +1749,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *  :arg status: ``Object``        
      *     set current processing parameter when the form is open
      */
-    setStatus: function(status){        
+    setStatus: function(status){
+        this.ignoreSimulationUpdate = true;
         var store;
         
         this.status = status;
@@ -1791,6 +1801,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 this.map.getProjectionObject());
             this.selDamage.setDamageArea(geometry, status.damageAreaType);
         }
+        this.ignoreSimulationUpdate = false;
     },        
     
     /** private: method[setComboStatus]   
