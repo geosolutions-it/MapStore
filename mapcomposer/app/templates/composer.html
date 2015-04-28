@@ -509,24 +509,36 @@
 								wmsURL: wmsurl,
 								format: urlformat
 							}]);
-						}     
+						}
 
 						/*var resources = [{
 							format: "wms",
-							msGroupName: "NDVI_2014 runs from 2014-01-01T00:00:00 UTC to 2014-12-19T00:00:00 UTC",
-							msLayerName: "NDVI_2014",
-							msLayerTitle: "NDVI_2014",
-							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/NDVI/ows?&SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0"
+							msGroupName: "MODELLO WRF-ARW a 12km - Maschera Terra - Acqua - (2015-04-21 ore 00 UTC).",
+							msLayerName: "arw_12km_Geopotential_height_tropopause_20150425T000000000Z:0.0",
+							msLayerTitle: "arw_12km_Geopotential_height_tropopause_20150425T000000000Z:0.0",
+							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/ARW_12KM_RUN00/ows",
+							timeInterval: "2015-04-25T00:00:00.000Z/2015-04-30T00:00:00.000Z"
 						}];
-								
-						addMSLayer(resources);*/				
+                                
+                        addMSLayer(resources);*/
 						
 						/*var resources = [{
 							format: "wms",
 							msGroupName: "MODELLO WRF-ARW a 12km - Maschera Terra - Acqua - (2015-04-21 ore 00 UTC).",
-							msLayerName: "arw_12km_Land_cover_land1_sea0_surface_20150421T000000000Z:0.0",
-							msLayerTitle: "arw_12km_Land_cover_land1_sea0_surface_20150421T000000000Z:0.0",
-							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/ARW_12KM_RUN00/ows"
+							msLayerName: "msg_rss_cvs",
+							msLayerTitle: "msg_rss_cvs",
+							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/MSG_RSS_RGB/ows"
+						}];
+                                
+                        addMSLayer(resources);*/
+						
+						/*var resources = [{							
+							format: "wms",
+							msGroupName: "NDVI_2014 runs from 2014-01-01T00:00:00 UTC to 2014-12-19T00:00:00 UTC",
+							msLayerName: "NDVI_2014",
+							msLayerTitle: "NDVI_2014",
+							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/NDVI/ows",
+							timeInterval: "2014-01-01T00:00:00.000Z/2014-12-19T00:00:00.000Z"
 						}];
 								
 						addMSLayer(resources);*/
@@ -706,6 +718,13 @@
 						var playback = app.tools["playback"];
 						var timeManager = playback.getTimeManager();
                         
+						// ////////////////////////////////////////////////////////////
+						// Force the timeslider's internal 'increment check' to 1h if 
+						// the range is too large (ie. for NDVI). This solve unespected 
+						// bheavihors on thumbs initial setting.
+						// ////////////////////////////////////////////////////////////
+						timeManager.forceIncrement = timeStep == 16;
+					
                         //adjust tipeStep to manage only Minutes
                         switch (timeUnits){
                             case 'Hours':
@@ -721,7 +740,6 @@
 						timeManager.step = timeStep;
 						timeManager.units = "Minutes"; //timeUnits;
 						timeManager.fixedRange = true;
-						timeManager.forceIncrement = true;
 						timeManager.setStart(startDate);
 						timeManager.setEnd(endDate);
 							
@@ -735,14 +753,28 @@
                         //set startDate and endDate of playbackOptionsPanel                        
                         playback.populateTimeOptionsPanel();
                         
-						var baseLayer1 = app.mapPanel.map.getLayersByName("Stati")[0];
-						var baseLayer2 = app.mapPanel.map.getLayersByName("Regioni")[0];
-						var baseLayer3 = app.mapPanel.map.getLayersByName("Province")[0];
-						var baseLayer4 = app.mapPanel.map.getLayersByName("Comuni Italia")[0];
-						app.mapPanel.map.setLayerIndex(baseLayer1, 200);
-						app.mapPanel.map.setLayerIndex(baseLayer2, 201);
-						app.mapPanel.map.setLayerIndex(baseLayer3, 202);
-						app.mapPanel.map.setLayerIndex(baseLayer4, 203);
+						//
+						// Set layer indexes
+						//						
+						var layerTree = app.tools["layertree_plugin"];
+						
+						var root = layerTree.output[0].getRootNode();
+						var childNodes = root.childNodes;
+
+						var layers = [];
+						for(var i=childNodes.length - 1; i>=0; i--){
+							var leafs = childNodes[i].childNodes;
+							
+							for(var j=leafs.length - 1; j>=0; j--){
+								var leaf = leafs[j];
+								layers.push(leaf);
+							}						
+						}
+						
+						for(var i=0; i<layers.length; i++){
+							var layer = layers[i].layer;
+							app.mapPanel.map.setLayerIndex(layer, i+1);
+						}
 					}
 				});
 				

@@ -113,6 +113,12 @@
 					"None", {"visibility": false}
 				]
 			},{
+			   "group":"SATELLITE"
+			},{
+			   "group":"MODELLI"
+			},{
+			   "group":"NDVI"
+			},{
 			   "format":"image/png",
 			   "group": "Limiti Mondiali",
 			   "name":"confini_mondiali_stati",
@@ -172,12 +178,6 @@
 			   "srs":"EPSG:900913",
 			   "queryable": false,
 			   "displayInLayerSwitcher": true
-			},{
-			   "group":"SATELLITE"
-			},{
-			   "group":"MODELLI"
-			},{
-			   "group":"NDVI"
 			},
 		{
 			"toUpdate": false,

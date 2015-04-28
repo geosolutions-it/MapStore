@@ -299,7 +299,7 @@
                                 
                         addMSLayer(resources);*/
 						
-						/*var resources = [{
+						var resources = [{
 							format: "wms",
 							msGroupName: "MODELLO WRF-ARW a 12km - Maschera Terra - Acqua - (2015-04-21 ore 00 UTC).",
 							msLayerName: "msg_rss_cvs",
@@ -307,9 +307,9 @@
 							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/MSG_RSS_RGB/ows"
 						}];
                                 
-                        addMSLayer(resources);*/
+                        addMSLayer(resources);
 						
-						/*var resources = [{
+						/*var resources = [{							
 							format: "wms",
 							msGroupName: "NDVI_2014 runs from 2014-01-01T00:00:00 UTC to 2014-12-19T00:00:00 UTC",
 							msLayerName: "NDVI_2014",
@@ -318,7 +318,7 @@
 							timeInterval: "2014-01-01T00:00:00.000Z/2014-12-19T00:00:00.000Z"
 						}];
 								
-						addMSLayer(resources);	*/
+						addMSLayer(resources);*/
 
 						if(bbox){
 							app.mapPanel.map.zoomToExtent(bbox);
@@ -545,6 +545,13 @@
 					var playback = app.tools["playback"];
 				    var timeManager = playback.getTimeManager();
 					
+					// ////////////////////////////////////////////////////////////
+					// Force the timeslider's internal 'increment check' to 1h if 
+					// the range is too large (ie. for NDVI). This solve unespected 
+					// bheavihors on thumbs initial setting.
+				    // ////////////////////////////////////////////////////////////
+					timeManager.forceIncrement = timeStep == 16;
+					
 					//adjust tipeStep to manage only Minutes
 					switch (timeUnits){
 						case 'Hours':
@@ -560,7 +567,6 @@
 					timeManager.step = timeStep;
 					timeManager.units = "Minutes"; //timeUnits;
 					timeManager.fixedRange = false;		
-					timeManager.forceIncrement = true;
 					timeManager.setStart(startDate);
 					timeManager.setEnd(endDate);
 						
