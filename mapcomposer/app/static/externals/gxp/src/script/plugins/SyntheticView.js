@@ -834,6 +834,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }, this);
         if(status.damageArea) {
             status.damageAreaGeometry = wktParser.read(status.damageArea).geometry;
+            if(!status.damageAreaType) {
+                status.damageAreaType = 'polygon';
+            }
         }
         this.setStatus(status);
         Ext.getCmp("south").collapse();
@@ -1839,9 +1842,11 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
         
         if(this.status && !this.status.initial && this.reset){
-
+            
             // Tipo elaborazione
-            this.processingPane.elaborazione.setValue(1);                        
+            this.processingPane.elaborazione.setValue(1);
+            var record = this.processingPane.elaborazione.getStore().getAt(0);
+            this.processingPane.elaborazione.fireEvent('select', this.processingPane.elaborazione, record, 0);
             // Formula
             this.processingPane.formula.setValue(this.processingPane.formula.getStore().data.items[0].get('id_formula'));                        
             // Resolution
@@ -1852,7 +1857,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             // Categoria
             this.processingPane.macrobers.setValue(this.processingPane.allTargetOption);                        
             // Bersaglio
-            this.processingPane.bers.setValue("");                        
+            this.processingPane.bers.setValue("");
+            
+            this.processingPane.resetCombos();
             // Classe ADR
             this.processingPane.classi.setValue(this.processingPane.allClassOption);                        
             // Sostanza

@@ -852,23 +852,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     combo.list.setWidth( 'auto' );
                     combo.innerList.setWidth( 'auto' );
                 },                
-                select: function(cb, record, index) {                    
+                select: function(cb, record, index) {
                     // filtra solo la combo delle sostanze in base alla classe scelta, resetta gli altri filtri
                     var classe = record.get('value'); 
 
-                    var store=this.sostanzeStore;
-                    delete store.baseParams.filter;
-                    store.proxy.protocol.filter.filters= new Array();
-
                     if(classe != "0"){
-                       var filter= new OpenLayers.Filter.Comparison({
-                            type: OpenLayers.Filter.Comparison.EQUAL_TO,
-                            property: "fk_classe_adr",
-                            value: classe
-                        });
-                        
-                        store.proxy.protocol.filter.filters.push(filter);                        
-                    }       
+                        this.sostanzeStore.filterBy(function(record, id) {
+                            return id === 1000 || record.get('class') === classe;
+                        }, this);
+                    } else {
+                        this.sostanzeStore.clearFilter();
+                    }
                     this.resetCombos([this.sostanze]);
                 },
                 scope: this
@@ -1386,6 +1380,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *    resets the given combos to their initial value ("all values")
      */
     resetCombos: function(combos) {
+        combos = combos || [this.sostanze, this.accident, this.seriousness];
         Ext.each(combos, function(combo) {
             var record = combo.store.getAt(0);
             combo.setValue(record.get('name'));
@@ -1644,6 +1639,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             
             damageAreaGeometry:  damageAreaGeometry,
             damageArea: damageAreaGeometry ? damageAreaGeometry.toString() : undefined,
+            damageAreaType: this.selDamage.getDamageAreaType(),
             simulation : {
                 cff:[],
                 padr:[],
@@ -1787,6 +1783,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         // simulation
         if(this.status.processing === 3) {
             this.enableDisableSimulation(true, 'init');
+        }
+        
+        if(this.status.processing === 4) {
+            var geometry = this.reproject(status.damageAreaGeometry.clone(),
+                new OpenLayers.Projection(this.selectionLayerProjection),
+                this.map.getProjectionObject());
+            this.selDamage.setDamageArea(geometry, status.damageAreaType);
         }
     },        
     

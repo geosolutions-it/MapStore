@@ -99,10 +99,6 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
             }
         });
 
-        this.filterCircle;
-        this.filterPolygon;
-        this.drawings;
-        this.draw;
         
         this.autoHeight = true;
 
@@ -211,78 +207,8 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
                         if (me.filterPolygon) {
                             me.filterPolygon = new OpenLayers.Filter.Spatial({})
                         };
-
-                        if (outputValue == 'circle') {
-
-                            this.bufferFieldset.disable();
-
-                            me.drawings = new OpenLayers.Layer.Vector({}, {
-                                displayInLayerSwitcher: false
-                            });
-
-                            app.mapPanel.map.addLayer(me.drawings);
-                            var polyOptions = {
-                                sides: 100
-                            };
-
-                            me.draw = new OpenLayers.Control.DrawFeature(
-                                me.drawings,
-                                OpenLayers.Handler.RegularPolygon, {
-                                    handlerOptions: polyOptions
-                                }
-                            );
-
-                            app.mapPanel.map.addControl(me.draw);
-                            me.draw.activate();
-
-                            me.drawings.events.on({
-                                "featureadded": function (event) {
-                                    /*me.filterCircle = new OpenLayers.Filter.Spatial({
-											type: OpenLayers.Filter.Spatial.INTERSECTS,
-											property: featureManager.featureStore.geometryName,
-											value: event.feature.geometry
-										});*/
-                                },
-                                "beforefeatureadded": function (event) {
-                                    me.drawings.destroyFeatures();
-                                }
-                            });
-
-                        } else if (outputValue == 'polygon') {
-
-                            this.bufferFieldset.disable();
-
-                            me.drawings = new OpenLayers.Layer.Vector({}, {
-                                displayInLayerSwitcher: false
-                            });
-                            app.mapPanel.map.addLayer(me.drawings);
-
-                            me.draw = new OpenLayers.Control.DrawFeature(
-                                me.drawings,
-                                OpenLayers.Handler.Polygon
-                            );
-
-                            app.mapPanel.map.addControl(me.draw);
-                            me.draw.activate();
-
-                            me.drawings.events.on({
-                                "featureadded": function (event) {
-                                    /*me.filterPolygon = new OpenLayers.Filter.Spatial({
-											type: OpenLayers.Filter.Spatial.INTERSECTS,
-											property: featureManager.featureStore.geometryName,
-											value: event.feature.geometry
-										});*/
-                                },
-                                "beforefeatureadded": function (event) {
-                                    me.drawings.destroyFeatures();
-                                }
-                            });
-
-                        } else {
-
-                            this.bufferFieldSet.enable();
-                            this.bufferFieldset.doLayout(true,false);
-                        }
+                        this.enableDrawing(outputValue);
+                        
                     },
                     scope: this
                 }
@@ -301,6 +227,53 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
         return areaDamage;
     },
     
+    enableDrawing: function(type, geometry) {
+        if(type === 'circle' || type === 'polygon') {
+            this.bufferFieldset.disable();
+
+            this.drawings = new OpenLayers.Layer.Vector({}, {
+                displayInLayerSwitcher: false
+            });
+
+            app.mapPanel.map.addLayer(this.drawings);
+            
+            this.draw = new OpenLayers.Control.DrawFeature(
+                this.drawings,
+                type === 'circle' ? 
+                    OpenLayers.Handler.RegularPolygon : OpenLayers.Handler.Polygon,
+                type === 'circle' ? 
+                        {handlerOptions: {
+                            sides: 100
+                        }} : undefined
+                    
+                
+            );
+            
+            app.mapPanel.map.addControl(this.draw);
+            this.draw.activate();
+
+            if(geometry) {
+                var feature = new OpenLayers.Feature.Vector(geometry,{
+                    "id": 1
+                });
+
+                this.drawings.addFeatures([feature]);
+            }
+            
+            this.drawings.events.on({
+                "beforefeatureadded": function (event) {
+                    this.drawings.destroyFeatures();
+                },
+                scope: this
+            });
+            
+        } else {
+            this.bufferFieldSet.enable();
+            this.bufferFieldset.doLayout(true,false);
+        }
+        
+    },
+    
     getDamageArea: function() {
         if(this.drawings && this.drawings.features && this.drawings.features.length > 0) {
             return this.drawings.features[0].geometry;
@@ -310,6 +283,19 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
         }
         
         return null;
+    },
+    
+    setDamageArea: function(geometry, type) {
+        type = type || 'polygon';
+        if(type === 'buffer') {
+            type = 'circle';
+        }
+        Ext.getCmp('selectionMethod_id').setValue(type);
+        this.enableDrawing(type, geometry);
+    },
+    
+    getDamageAreaType: function() {
+        return Ext.getCmp('selectionMethod_id').getValue();
     },
     
     clearDrawFeature: function(){
