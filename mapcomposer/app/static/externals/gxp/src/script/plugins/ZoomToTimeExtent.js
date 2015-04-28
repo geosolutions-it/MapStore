@@ -77,29 +77,14 @@ gxp.plugins.ZoomToTimeExtent = Ext.extend(gxp.plugins.Tool, {
                 var layer = selectedLayer.getLayer();
                 if (layer instanceof OpenLayers.Layer.WMS && layer.dimensions && layer.dimensions.time && timeManagers[0]){
                     
-                    timeManagers[0].step = 60;
-                    timeManagers[0].units = "Minutes";
-                    
-                    timeManagers[0].setEnd(OpenLayers.Date.parse(layer.metadata.timeInterval[0][1]));
-                    timeManagers[0].fixedRange=true;
+                    var records = [];
 
-                    timeManagers[0].setStart(OpenLayers.Date.parse(layer.metadata.timeInterval[0][0]));
-                    timeManagers[0].fixedRange=true;
-                     
-                    timeManagers[0].events.triggerEvent("rangemodified");  
+                    records.push({
+                        record: layer
+                    });
                     
-                    //ripristina i valori di default del playbackOptionsPanel
-                    var timeOptionsPanel = Ext.getCmp("realTimePanelID");
-                    
-                    if(timeOptionsPanel && timeOptionsPanel.optionsPanel){
-                        timeOptionsPanel.optionsPanel.populateForm();                     
-                        var combo = timeOptionsPanel.optionsPanel.stepValueField;
-                        combo.setValue(60);
-                        var record = combo.getStore().getAt(1);
-                        combo.fireEvent('select',combo,record,1);                   
-                    }
-                    
-                    timeManagers[0].currenttime(false,false);                    
+                    //Sets time parameter for added layers 
+                    app.addTemporalLayers(records);
                     
                 }else{
                     Ext.Msg.alert(this.menuText,this.layerTimeAlert);

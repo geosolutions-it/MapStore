@@ -299,7 +299,7 @@
                                 
                         addMSLayer(resources);*/
 						
-						var resources = [{
+						/*var resources = [{
 							format: "wms",
 							msGroupName: "MODELLO WRF-ARW a 12km - Maschera Terra - Acqua - (2015-04-21 ore 00 UTC).",
 							msLayerName: "msg_rss_cvs",
@@ -307,7 +307,7 @@
 							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/MSG_RSS_RGB/ows"
 						}];
                                 
-                        addMSLayer(resources);
+                        addMSLayer(resources);*/
 						
 						/*var resources = [{							
 							format: "wms",
@@ -440,7 +440,8 @@
 							ready: function(records){		
 								playback.on({
 									rangemodified: function(){
-										setTimeSlider(records);
+										// Sets time parameter for added layers 
+										app.addTemporalLayers(records);
 									}
 								});
 							}
@@ -448,135 +449,14 @@
 					}else{
 						addLayer.on({
 							ready: function(records){		
-								setTimeSlider(records);
+								// Sets time parameter for added layers 
+								app.addTemporalLayers(records);
 							}
 						});
 					}
 					
 					addLayer.addLayer(resources);
 				};
-				
-				setTimeSlider = function(records){
-					// ///////////////////////////////////////////////////////////////////
-					// Calculate the time values related to the whole set of added layers 
-					// ///////////////////////////////////////////////////////////////////
-					var startDate;
-					var endDate;
-					var timeStep;
-					var timeUnits;
-					var numSecondsCheck;
-					
-					var setNowTime = false						
-					
-					for(var i=0; i<records.length; i++){
-						var record = records[i].record;
-						
-						var layer = record.get('layer');
-						
-						// /////////////////
-						// Time Intervall
-						// /////////////////
-						
-						var layerStartTime = OpenLayers.Date.parse(layer.metadata.timeInterval[0][0]);
-						if(!startDate){
-							startDate = layerStartTime;
-						}else if(layerStartTime.getTime() < startDate.getTime()){
-							startDate = layerStartTime;
-						}
-						
-						var layerEndTime = OpenLayers.Date.parse(layer.metadata.timeInterval[0][1]);
-						if(!endDate){
-							endDate = layerEndTime;
-						}else if(layerEndTime.getTime() > endDate.getTime()){
-							endDate = layerEndTime;
-						}
-						
-						// ////////////
-						// Time Step
-						// ////////////
-						var valStep = layer.metadata.timeInterval[0][2];
-						var r = /\d+/g;
-						var s = valStep;
-						var step, m;
-						while ((m = r.exec(s)) != null) {
-						  step = m[0];
-						}                                   
-						
-						step = step == 2 ? "16" : step;
-					
-						valStep = valStep.slice(-1);
-						switch(valStep){
-							case 'D':
-								tempSecondCheck = step * 86400;
-								break;
-							case 'H':
-								tempSecondCheck = step * 3600;
-								break;                                
-							default:
-								tempSecondCheck = step * 60;
-						}
-						
-						if((!timeStep && !numSecondsCheck) || (tempSecondCheck < numSecondsCheck) ){
-							timeStep = step;
-							numSecondsCheck = tempSecondCheck;
-						}
-
-						// ////////////
-						// Time Units
-						// ////////////
-						if(!timeUnits){
-							timeUnits = valStep;
-						}else if(timeUnits != valStep){
-							if((timeUnits == 'D' && valStep ==  'H') || (timeUnits == 'H' && valStep ==  'M')){
-								timeUnits = valStep;
-							}
-						}	
-
-						timeUnits = (timeUnits == 'H' || timeUnits == 'Hours') ? 
-							timeUnits = 'Hours' : ((timeUnits == 'D' || timeUnits == 'Days') ? 
-								timeUnits = 'Days' : timeUnits = 'Minutes');		
-
-						var layerName = record.get('name');
-						if(layerName.indexOf("NDVI") === -1 && layerName.indexOf("50km") === -1){
-							setNowTime = true;
-						}							
-					}
-					
-					var playback = app.tools["playback"];
-				    var timeManager = playback.getTimeManager();
-					
-					// ////////////////////////////////////////////////////////////
-					// Force the timeslider's internal 'increment check' to 1h if 
-					// the range is too large (ie. for NDVI). This solve unespected 
-					// bheavihors on thumbs initial setting.
-				    // ////////////////////////////////////////////////////////////
-					timeManager.forceIncrement = timeStep == 16;
-					
-					//adjust tipeStep to manage only Minutes
-					switch (timeUnits){
-						case 'Hours':
-							timeStep = timeStep * 60;
-							break;
-						case 'Days':
-							timeStep = timeStep * 1440;
-							break;                                
-						default:
-							timeStep = timeStep;
-					}
-					
-					timeManager.step = timeStep;
-					timeManager.units = "Minutes"; //timeUnits;
-					timeManager.fixedRange = false;		
-					timeManager.setStart(startDate);
-					timeManager.setEnd(endDate);
-						
-					timeManager.events.triggerEvent("rangemodified"); 		
-					timeManager.setTime(startDate);							
-					
-					if(setNowTime === true){
-						timeManager.currenttime(false, false);
-					}
-				}
             };			
                 
 			Ext.Ajax.request({
