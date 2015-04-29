@@ -236,7 +236,11 @@ GeoExt.WMSLegend = Ext.extend(GeoExt.LayerLegend, {
      *  the per-sublayer box component.
      */
     update: function() {
+        
         var layer = this.layerRecord.getLayer();
+        
+		
+		
         // In some cases, this update function is called on a layer
         // that has just been removed, see ticket #238.
         // The following check bypass the update if map is not set.
@@ -270,7 +274,17 @@ GeoExt.WMSLegend = Ext.extend(GeoExt.LayerLegend, {
             this.remove(cmp);
             cmp.destroy();
         }
+var cmpId = this.id;
+var skip=false;
+		this.ownerCt.items.each(function(it){
 
+			if(it.items.get(0).text==textCmp.text && it.id != cmpId && !it.hidden ){
+				skip=true;
+				return false;
+			}
+			
+		});
+		if(skip) this.hide();
         for(i = 0, len = layerNames.length; i<len; i++) {
             layerName = layerNames[i];
             if(!this.items || !this.getComponent(layerName)) {
