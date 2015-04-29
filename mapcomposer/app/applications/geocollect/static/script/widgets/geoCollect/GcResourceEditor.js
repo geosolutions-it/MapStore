@@ -51,6 +51,7 @@ mxp.widgets.GcResourceEditor = Ext.extend(Ext.Panel, {
 	border:false,
 	resource:null, // la risorsa caricata
 	authParam:null,
+	template:null,
 	layoutConfig: {
         // layout-specific configs go here
         titleCollapse: true,
@@ -235,11 +236,39 @@ getResourceData: function(){
                    
                 },
 loadResourceData: function(resource){
-                   		var pr=new  OpenLayers.Format.JSON();
-    					res= pr.read(resource);
-                   		this.resource=res;
-                   	//	this.jsonP.loadResourceData(resource);		
-                   		this.dbEdit.loadResourceData(this.resource.schema_seg);
+					
+					var pr=new  OpenLayers.Format.JSON();
+    				res= pr.read(resource);
+                   	this.resource=res;
+
+
+					var templateId=null;
+					var	parent =this.findParentByType('mxp_geostoreresourceform');
+  					if(parent && parent.general  && parent.general.getForm()){
+  					var catField=parent.general.getForm().getFieldValues();
+  					console.log(catField);
+  					if(catField.templateId) templateId= catField.templateId;
+ 					}
+					
+					
+   					 // Try to load template resource
+       				if(parent.resourceManager && templateId && templateId.length>0){
+       					parent.setLoading(true, this.loadingMessage);
+            			var me =this;
+            			parent.resourceManager.findByPk(templateId, 
+                //Full Resource Load Success
+                function(data){ 
+				if(data){
+						me.template = data;
+	
+				}
+				parent.setLoading(false);
+				me.dbEdit.loadResourceData(me.resource.schema_seg,me.template);
+                    //TODO load visibility
+                },{full:true});
+
+        			}else{
+	                    this.dbEdit.loadResourceData(this.resource.schema_seg,this.template);}
                    //Carichi solo il db panle le altre vanno caricate dopo di lui
                 },
 canCommit :function(){
