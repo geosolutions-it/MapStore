@@ -343,7 +343,7 @@ if(this.infoAction=='click'){
 
             queryableLayers.each(function(x){                
                 var l = x.getLayer();
-
+			
             var vendorParams = {};
             Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
                 if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
@@ -429,6 +429,29 @@ if(this.infoAction=='click'){
                         scope: this
                     }
                 });
+                //Override control function to add check for inRangeLayer
+                control.findLayers= function() {
+                    var candidates = this.layers || this.map.layers;
+                    var layers = [];
+                    var layer, url;
+                    for(var i = candidates.length - 1; i >= 0; --i) {
+                        layer = candidates[i];
+                        if(layer instanceof OpenLayers.Layer.WMS &&
+                        (!this.queryVisible || (layer.getVisibility() && layer.calculateInRange())) ) {
+                            url = OpenLayers.Util.isArray(layer.url) ? layer.url[0] : layer.url;
+                            // if the control was not configured with a url, set it
+                            // to the first layer url
+                            if(this.drillDown === false && !this.url) {
+                                this.url = url;
+                            }
+                            if(this.drillDown === true || this.urlMatches(url)) {
+                                layers.push(layer);
+                            }
+                        }
+                    }
+                return layers;
+               };
+                
                 map.addControl(control);
                 info.controls.push(control);
                 if(infoButton.checked || infoButton.pressed ) {
@@ -831,10 +854,36 @@ if(this.infoAction=='click'){
                     },deactivate: cleanup
                 }
             });
+            
+            //Override control function to add check for inRangeLayer
+                control.findLayers= function() {
+                    var candidates = this.layers || this.map.layers;
+                    var layers = [];
+                    var layer, url;
+                    for(var i = candidates.length - 1; i >= 0; --i) {
+                        layer = candidates[i];
+                        if(layer instanceof OpenLayers.Layer.WMS &&
+                        (!this.queryVisible || (layer.getVisibility() && layer.calculateInRange())) ) {
+                            url = OpenLayers.Util.isArray(layer.url) ? layer.url[0] : layer.url;
+                            // if the control was not configured with a url, set it
+                            // to the first layer url
+                            if(this.drillDown === false && !this.url) {
+                                this.url = url;
+                            }
+                            if(this.drillDown === true || this.urlMatches(url)) {
+                                layers.push(layer);
+                            }
+                        }
+                    }
+                return layers;
+               };
+            
             this.target.mapPanel.map.addControl(control);
             this.activeControl=control;
             control.activate();
+            
         }, this);
+         
         
     },   
 
