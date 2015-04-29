@@ -103,6 +103,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     meter100Text: '100 metri',
     meter500Text: '500 metri',
     GrigliaText: 'Griglia',
+    comuniText: 'Rappr. Amministrativa Comunale',
+    provinceText: 'Rappr. Amministrativa Provinciale',
 	exportDisclaimerTitle: 'Disclaimer',
 	agreeDisclaimerText: 'Accetto',
 	notAgreeDisclaimerText: 'Non Accetto',
@@ -2173,7 +2175,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			else
 				Ext.getCmp("elab-savebutton").disable();
 		};
-		
+		var currentResolution = this.status.resolution || 1;
+        var showAggregation = this.status.formulaInfo.dependsOnArcs;
 		this.saveDownloadPanel = new Ext.form.FormPanel({
 			frame: true,
 			labelWidth: 80,
@@ -2211,6 +2214,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 							xtype: 'combo',
 							id: 'diag-combo-aggregation',
 							name: 'elab_aggregation',
+                            hidden: !showAggregation,
 							fieldLabel: me.saveProcessingAggregationLabel,
 							typeAhead: true,
 							triggerAction: 'all',
@@ -2222,9 +2226,15 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 									'id',
 									'text'
 								],
-								data: [[1, me.meter100Text], [2, me.meter500Text],[3, me.GrigliaText]]
+								data: [
+                                    [1, me.meter100Text], 
+                                    [2, me.meter500Text],
+                                    [3, me.GrigliaText],
+                                    [4, me.comuniText],
+                                    [3, me.provinceText]
+                                ]
 							}),
-							value: 1,
+							value: currentResolution,
 							valueField: 'id',
 							displayField: 'text'
 						}
@@ -3131,46 +3141,57 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
             
         } else {
-            // Create a process and configure it
-            var riskProcess = this.wpsClient.getProcess('destination', 'gs:RiskCalculatorSimple');    
-            var targetId = this.getChosenTarget(status);            
-            var me = this;
-            riskProcess.execute({
-                headers: this.getBasicAuthentication(),
-                // spatial input can be a feature or a geometry or an array of
-                // features or geometries
-                inputs: {
-                    store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
-                    processing: new OpenLayers.WPSProcess.LiteralData({value:status.processing}),
-                    formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
-                    target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
-                    materials: new OpenLayers.WPSProcess.LiteralData({value:status.sostanza.id.join(',')}),
-                    scenarios: new OpenLayers.WPSProcess.LiteralData({value:status.accident.id.join(',')}),
-                    entities: new OpenLayers.WPSProcess.LiteralData({value:status.seriousness.id.join(',')}),
-                    severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'}),
-                    fp: new OpenLayers.WPSProcess.LiteralData({value:status.temporal.value})
-                },
-                outputs: [],
-                success: function(outputs) {
-                    if(outputs.executeResponse.status.processSucceeded && outputs.executeResponse.processOutputs.length > 0) {
-                        var data = Ext.decode(outputs.executeResponse.processOutputs[0].literalData.value);
-                        me.fillFormulaResults(status.formulaDesc, data);
-                        
-                    } else {
-                        Ext.Msg.show({
-                            title: this.wpsTitle,
-                            buttons: Ext.Msg.OK,                
-                            msg: this.wpsError,
-                            icon: Ext.MessageBox.ERROR,
-                            scope: this
-                        }); 
-                    }
+            this.noArcsFormula(false, function(outputs) {
+                if(outputs.executeResponse.status.processSucceeded && outputs.executeResponse.processOutputs.length > 0) {
+                    var data = Ext.decode(outputs.executeResponse.processOutputs[0].literalData.value);
+                    this.fillFormulaResults(status.formulaDesc, data);
+                    
+                } else {
+                    Ext.Msg.show({
+                        title: this.wpsTitle,
+                        buttons: Ext.Msg.OK,                
+                        msg: this.wpsError,
+                        icon: Ext.MessageBox.ERROR,
+                        scope: this
+                    }); 
                 }
-            });            
+            }, this);           
         }
         
         Ext.getCmp('edit-processing-button').enable();
     },
+    
+    noArcsFormula: function(download, callback, scope) {
+        var status = this.status;
+        // Create a process and configure it
+        var riskProcess = this.wpsClient.getProcess('destination', 'gs:RiskCalculatorSimple');    
+        var targetId = this.getChosenTarget(status);            
+        var me = this;
+        riskProcess.execute({
+            headers: this.getBasicAuthentication(),
+            // spatial input can be a feature or a geometry or an array of
+            // features or geometries
+            inputs: {
+                store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
+                processing: new OpenLayers.WPSProcess.LiteralData({value:status.processing}),
+                formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
+                target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
+                materials: new OpenLayers.WPSProcess.LiteralData({value:status.sostanza.id.join(',')}),
+                scenarios: new OpenLayers.WPSProcess.LiteralData({value:status.accident.id.join(',')}),
+                entities: new OpenLayers.WPSProcess.LiteralData({value:status.seriousness.id.join(',')}),
+                severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'}),
+                fp: new OpenLayers.WPSProcess.LiteralData({value:status.temporal.value}),
+                download: new OpenLayers.WPSProcess.LiteralData({value:download})
+            },
+            outputs: [],
+            success: function(outputs) {
+                if(callback) {
+                    callback.call(scope, outputs);
+                }
+            }
+        }); 
+    },
+    
     fillFormulaResults: function(formulaTitle, result) {
         
         var data =[];

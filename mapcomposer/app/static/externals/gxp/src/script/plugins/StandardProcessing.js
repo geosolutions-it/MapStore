@@ -1046,7 +1046,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.enableDisableSelAreaDamage(formula, elaborazione);
         this.enableDisableTemporali(formula, elaborazione);
         this.enableDisableTargets(formula, elaborazione);
-        this.enableDisableScenario(formula, elaborazione);        
+        this.enableDisableScenario(formula, elaborazione);
+        this.enableDisableResolution(formula, elaborazione);
     },
     
     enableDisableTemporali: function(formula, elaborazione) {
@@ -1054,6 +1055,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             this.enableDisable(formula.get('condizioni_temporali') && elaborazione.get('id') === 2, this.temporal);        
         }else{
             this.enableDisable(elaborazione.get('id') !== 4, this.temporal);
+        }
+    },
+    
+    enableDisableResolution: function(formula, elaborazione) {
+        var enable = false;
+        if(formula){
+            enable = formula.get('ambito_territoriale')  && elaborazione.get('id') <= 2;
+        }
+        this.enableDisable(enable, this.resolution);
+        if(!enable) {
+            this.resolution.setValue(this.resolutionStore.getAt(0).get('id_resolution'));
         }
     },
     
