@@ -1644,6 +1644,9 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             }
                             if(column.editable) {
                                 column.editor = new Ext.form.NumberField();
+                                column.renderer = function (val){
+                                    return '<b>' + val + '</b>';
+                                }
                             }
                             me.wfsColumns.push(column);
                         }
@@ -1760,7 +1763,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                                     "value": extraRecord.value
                                                 });
                                                 finalRecords.push(newRecord);
-                                                
+                                                newRecord.join(this);
                                                 
                                             }
                                         }

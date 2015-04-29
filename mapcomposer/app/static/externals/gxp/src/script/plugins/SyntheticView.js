@@ -576,9 +576,17 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     cleanAndEncodeStatus: function(status) {
         var geometries = [];
+        var oldgeometries = [];
         Ext.each(status.simulation.targetsInfo, function(info) {
             geometries.push(info.geometry);
-            info.geometry = info.geometry.toString();
+            if(info.geometry) {
+                info.geometry = info.geometry.toString();
+            }
+            
+            oldgeometries.push(info.oldgeometry);
+            if(info.oldgeometry) {
+                info.oldgeometry = info.oldgeometry.toString();
+            }
         }, this);
         if(status.damageAreaGeometry) {
             geometries.push(status.damageAreaGeometry);
@@ -586,7 +594,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
         var result = Ext.util.JSON.encode(status);
         Ext.each(status.simulation.targetsInfo, function(info) {
-            info.geometry = geometries.shift();
+            var geometry = geometries.shift();
+            if(geometry) {
+                info.geometry = geometry;
+            }
+            var oldgeometry = oldgeometries.shift();
+            if(oldgeometry) {
+                info.oldgeometry = oldgeometry;
+            }
         }, this);
         if(status.damageArea) {
             status.damageAreaGeometry = geometries[0];
@@ -830,7 +845,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         var wktParser = new OpenLayers.Format.WKT();
         Ext.each(status.simulation.targetsInfo, function(info) {
-            info.geometry = wktParser.read(info.geometry).geometry;
+            if(info.geometry) {
+                info.geometry = wktParser.read(info.geometry).geometry;
+            }
+            if(info.oldgeometry) {
+                info.oldgeometry = wktParser.read(info.oldgeometry).geometry;
+            }
         }, this);
         if(status.damageArea) {
             status.damageAreaGeometry = wktParser.read(status.damageArea).geometry;
