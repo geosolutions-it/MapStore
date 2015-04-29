@@ -219,14 +219,14 @@
             // Scan the user groups to find a match with the given one
             // Returns false if user has no groups or if the group is not found
             
-            var hasGroup = function(user, group){
+            var hasGroup = function(user, targetGroups){
             
-                if(user && user.groups && group){
+                if(user && user.groups && targetGroups){
                     var groupfound = false;
                     for (var key in user.groups.group) {
                         if (user.groups.group.hasOwnProperty(key)) {
                             var g = user.groups.group[key];
-                            if(g.groupName && g.groupName == group){
+                            if(g.groupName && targetGroups.indexOf(g.groupName) > -1 ){
                                 groupfound = true;
                             }
                         }
@@ -513,6 +513,7 @@
 			var login = new gxp.plugins.GeoStoreLogin({
 				draggable:false,
 				closable: false,
+                logoutTitle: "Logout",
 				actionTarget: {target: "paneltbar",index: 40},
 				loginService:  loginService,
 				loginSync: function(){
@@ -534,8 +535,8 @@
 						this.win.close();
 					}				
 				},
-				loginSuccess: function(response){					
-					if(login.user){		
+				loginSuccess: function(response){
+					if(login.user){
 						var uDetails = {
 							token: login.token,
 							user: login.user
@@ -589,6 +590,7 @@
 
                         if(!isAdmin){
                             // Check user and redirect if necessary
+                            /*
                             if(serverConfig.groupRedirect){
 
                                 for (var key in serverConfig.groupRedirect) {
@@ -599,10 +601,17 @@
                                   }
                                 }
                             }
+                            */
+                            if(serverConfig.restrictToGroups && serverConfig.redirectDeniedTo){
+                                
+                                if(!hasGroup(user, serverConfig.restrictToGroups)){
+                                    window.location.replace(serverConfig.redirectDeniedTo);                                   
+                                }
+                            }
                         }
                     }
                 }
-            
+                
                 initComposer();
 
                 app.on('ready',function(){

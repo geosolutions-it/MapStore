@@ -3,6 +3,7 @@
     "redirectDeniedTo" : "/loginpage",
     "deniedPrintingGroup" : "nosnapshot",
     "portalConfig":{
+        "header":false,
         "iconCls": "flame-icon",
         "title": "Natural Gas Reports"
     },

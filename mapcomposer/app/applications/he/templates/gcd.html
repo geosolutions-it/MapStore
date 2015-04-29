@@ -366,6 +366,7 @@
                     draggable:false,
                     closable: false,
                     hideInIframe : true,
+                    logoutTitle: "Logout",
                     actionTarget: {target: "paneltbar",index: 40},
                     loginService:  loginService,
                     loginSync: function(){
@@ -559,43 +560,50 @@
                 
                     var userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
                     var isAdmin = false;
-                    
-                    // get auth info					
-                    if (userDetails) {
-                        var user = userDetails.user;
-                        if(user){
-                            if(user.role && ["ROLE_ADMIN","ADMIN"].indexOf(user.role) > -1){
-                                isAdmin = true;
-                            }
-                            
-                            if(!isAdmin){
-                                // Check user and redirect if necessary
-                                if(serverConfig.restrictToGroup && serverConfig.redirectDeniedTo){
-                                    
-                                    if(!hasGroup(user, serverConfig.restrictToGroup)){
-                                        window.location.replace(serverConfig.redirectDeniedTo);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
+                                        
                     initComposer();
 
                     app.on('ready',function(){
                         login.target = Ext.getCmp('paneltbar');
                         login.addActions();
                         login.loginSync();
-                         var myAccount = new gxp.plugins.GeoStoreAccount({
+                        var myAccount = new gxp.plugins.GeoStoreAccount({
                             outputTarget:'appTabs',
                             hideAttributes: ["UUID","notes"],
                             displayPanels:false,
                             user: app.userDetails.user,
                             auth: app.userDetails.token,
                             geoStoreBase : serverConfig.geoStoreBase
-                         });
-                         myAccount.addOutput();                     
+                        });
+                        myAccount.addOutput();
+                         
+                        // get auth info					
+                        if (userDetails) {
+                            var user = userDetails.user;
+                            if(user){
+                                if(user.role && ["ROLE_ADMIN","ADMIN"].indexOf(user.role) > -1){
+                                    isAdmin = true;
+                                }
+                                
+                                if(!isAdmin){
+                                    // Check user and redirect if necessary
+                                    if(serverConfig.restrictToGroup && serverConfig.redirectDeniedTo){
+                                        
+                                        if(!hasGroup(user, serverConfig.restrictToGroup)){
+                                            //window.location.replace(serverConfig.redirectDeniedTo);
+                                            appTabs.hideTabStripItem(0);
+                                            appTabs.setActiveTab(appTabs.items.getCount()-1);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                         
+                         
                     });
+                    
+
+
                 }
                 
 				/**

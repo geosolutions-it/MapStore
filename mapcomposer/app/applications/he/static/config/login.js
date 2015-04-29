@@ -1,4 +1,6 @@
 {
+    "restrictToGroups" : ["GeoWeb_Users"],
+    "redirectDeniedTo" : "/gcd",
     "groupRedirect":{
         "GCD_Users": "/gcd"
     },
