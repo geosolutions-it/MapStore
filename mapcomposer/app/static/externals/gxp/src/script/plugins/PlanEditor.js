@@ -32,7 +32,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     ptype: "gxp_planeditor",
 
     /** i18n **/
-    titleText: "Plan",
+    titleText: "Plans",
     columnsHeadersText:{
         service_name: "ServiceName",
         start: "Start",

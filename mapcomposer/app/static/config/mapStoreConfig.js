@@ -1,22 +1,7 @@
 {
     "scaleOverlayMode": "basic",
     "externalHeaders": true,
-    "header": {
-        "container": {
-            "border": false,
-            "header": false,
-            "collapsible": true,
-            "collapseMode": "mini",
-            "hideCollapseTool": true,
-            "split": true,
-            "animCollapse": false,
-            "minHeight": 80,
-            "maxHeight": 80,
-            "height": 80
-        },
-        "html": "<img style=\"position:absolute; top:0px; left:20px; z-index:1000\" src=\"theme/app/img/mariss_logo.jpg\" height=\"100%\"/><h1 style=\"color:grey; font-size:30px; position:absolute; top:20px; left:260px; z-index:1000\">MARISS Project</h1></div>",
-        "css": "<style>#msheader .x-panel-body .x-panel-body-noheader{padding:30px;background-color: #FFFFFF;}</style>"
-    },
+    "header": {},
     "gsSources": {
         "MARISS-Layers": {
             "ptype": "gxp_wmssource",
@@ -201,10 +186,11 @@
             "id": "south",
             "region": "south",
             "layout": "fit",
-            "height": 330,
+            "height": 220,
             "collapsed": false,
             "collapsible": true,
-            "header": true
+            "header": true,
+            "split": true
         },
         {
             "xtype": "tabpanel",
@@ -437,16 +423,16 @@
                 },
                 "propertyNames": {
                     "servicename": "ServiceID",
-                    "identifier": "Product Id",
-                    "time": "Time",
-                    "originalfilepath": "File Path"
+                    "time": "Time"
                 },
-                "timeFormat": "l, F d, Y g:i:s A"
+                "timeFormat": "g:i:s A"
             },
             "ignoreFields": [
                 "layerlist",
                 "variablelist",
-                "sartypelist"
+                "sartypelist",
+                "identifier",
+                "originalfilepath"
             ],
             "outputTarget": "south"
         },
