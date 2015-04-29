@@ -52,6 +52,11 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
      */
     layer: null,
     
+    /** api: config[fileName]
+     *  ``String``
+     *  The name of the file to download
+     */
+    fileName: "scheduled-capacities.png",
     
     /** api: method[getColumns]
      *  :arg store: ``GeoExt.data.FeatureStore``
@@ -129,6 +134,7 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                             title: feature.data.Location,
                             xtype: 'gxp_chart_panel',
                             region: 'center',
+                            ref: 'chartPanel', 
                             showLegend:false,
                             frame:false,
                             header:true,
@@ -164,9 +170,80 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
 
                             }
                         };
+                        
+                        var canvasPanel = {
+                            ref: 'canvasPanel',
+                            xtype: 'component',
+                            autoEl: {
+                                tag: 'canvas'
+                            }
+                        };
+                        
                         var headerClass = "x-window-header";
                         if(feature.data.Point_Type && feature.data.Point_Type != ""){
                             headerClass = headerClass + " headerptype"+feature.data.Point_Type;
+                        }
+                        
+                        //regex is for IE11 so we have to use a servlet
+                        if(Ext.isIE11 === undefined){
+                            Ext.isIE11 = !!navigator.userAgent.match(/Trident.*rv[ :]*11\./);
+                        }
+                        
+                        var windowTools = [];
+                        if(app.userCanPrint() && !Ext.isIE && !Ext.isIE11){
+                            this.service = app.printServiceURL;
+                            windowTools = [{
+                                id:'print',
+                                scope: this,
+                                handler: function(event, toolEl, panel){
+                                    
+                                    var me = this;
+                                    
+                                    // Hide Window Buttons
+                                    var visible_items = $(panel.header.dom)
+                                        .children([".x-tool"])
+                                        .filter(function (index) {
+                                              return $(this).css("display") === "block";
+                                          });
+                                    $.each(visible_items, function(i, item){$(item).hide()});
+                                    
+                                    var target = panel.getEl().dom;
+                                    //var tgtparent = target.parentElement;
+                                    var data = target.className;
+                                    target.className += " html2canvasreset";//set className - Jquery: $(target).addClass("html2canvasreset");
+                                    //$(target).appendTo(document.body)
+                                    this.inlineAllStyles();
+                                    
+                                    canvg(
+                                        panel.canvasPanel.getId(),
+                                        panel.chartPanel.getEl().child('svg').parent().dom.innerHTML);
+                                    panel.chartPanel.hide();
+                                    html2canvas( target , {
+                                            proxy: proxy,
+                                           // allowTaint:true,  
+                                            //CORS errors not managed with ie11, so disable
+                                            useCORS: !Ext.isIE11,
+                                            //logging:true,
+                                            onrendered: function(c) {
+                                                target.className = data;
+                                                var canvasData = c.toDataURL("image/png;base64");
+                                                if(Ext.isIE || Ext.isIE11){
+                                                    me.uploadCanvas(canvasData);
+                                                }else{
+                                                    me.localDownload(canvasData);
+                                                }
+                                                // Restore Window buttons
+                                                $.each(visible_items, function(i, item){$(item).show()});
+                                                panel.chartPanel.show();
+                                                panel.canvasPanel.hide();
+                                                // Reattach panel to original parent
+                                                //$(target).appendTo(tgtparent);
+                                            }
+                                    });
+                                    
+                                }
+                            }];
+
                         }
                         
                         var canvasWindow = new Ext.Window({
@@ -178,10 +255,11 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                             autoScroll: false,
                             height: 350,
                             width: 950,
-                            items: [chart]
-                            , headerCfg : {
+                            items: [chart, canvasPanel],
+                            headerCfg : {
                                 cls : headerClass
-                            }
+                            },
+                            tools: windowTools
                         }).show();
 
                     }
@@ -240,8 +318,133 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
         }, this);
         
         return columns;
-    }
+    },
    
+        /**
+     * private method[localDownload]
+     * Use a link and emulate click to download the data:image in the canvasData argument. 
+     * Works for Chrome and Firefox
+     */
+    localDownload: function(canvasData){
+        var img = new Image();
+        img.src= canvasData;
+        var url = img.src.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+        var downloadLink = document.createElement("a");
+        downloadLink.href = url;
+        downloadLink.download = this.fileName;
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    
+    },
+    
+    /** api: method[uploadCanvas]
+     * upload base64 ecoded canvas data to servicebox and finalize with download response.
+     * A service that forces download is needed for Internet Explorer (now IE11 download attribute in link is not supported)
+     */
+    uploadCanvas: function (canvasData){
+        var mHost = this.service.split("/");
+
+        var mUrl = this.service + "UploadCanvas";
+            mUrl = mHost[2] == location.host ? mUrl : proxy + mUrl;
+
+        Ext.Ajax.request({
+            url: mUrl,
+            method: "POST",
+            headers:{
+                  'Content-Type' : 'application/upload'
+            },
+            params: canvasData,
+            scope: this,
+            success: function(response, opts){
+                if (response.readyState == 4 && response.status == 200){
+                    if(response.responseText && response.responseText.indexOf("\"success\":false") < 0){
+                        var fname = this.fileName;
+
+                        var mUrl = this.service + "UploadCanvas";
+                            mUrl = mHost[2] == location.host ? mUrl + "?ID=" + response.responseText + 
+                                "&fn=" + fname : proxy + encodeURIComponent(mUrl + "?ID=" + response.responseText + "&fn=" + fname);
+
+                        app.safeLeaving =true;
+                        window.location.assign(mUrl);
+
+                    }else{
+                        // this error should go to failure
+                        Ext.Msg.show({
+                             title: this.printStapshotTitle,
+                             msg: this.generatingErrorMsg + " " + gxp.util.getResponseFailureServiceBoxMessage(response),
+                             width: 300,
+                             icon: Ext.MessageBox.ERROR
+                        });
+                    }
+                }else if (response.status != 200){
+                    Ext.Msg.show({
+                         title: 'Print Snapshot',
+                         msg: this.serverErrorMsg,
+                         width: 300,
+                         icon: Ext.MessageBox.ERROR
+                    });
+                }	
+            },
+            failure:  function(response, opts){
+                Ext.Msg.show({
+                     title: this.printStapshotTitle,
+                     msg: this.generatingErrorMsg + " " + gxp.util.getResponseFailureServiceBoxMessage(response),
+                     width: 300,
+                     icon: Ext.MessageBox.ERROR
+                });
+            }
+        });
+    },
+    
+    
+    inlineAllStyles: function () {
+        var svg_style, selector, cssText;
+
+        for (var i = 0; i <= document.styleSheets.length - 1; i++) {
+            //loop through your stylesheets
+            if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf('metricsgraphics.css') != -1) {
+                //pull out the styles from the one you want to use
+                if (document.styleSheets[i].rules != undefined) {
+                    svg_style = document.styleSheets[i].rules
+                } else {
+                    svg_style = document.styleSheets[i].cssRules
+                }
+            }
+        }
+
+        if (svg_style != null && svg_style != undefined) {
+            for (var i = 0; i < svg_style.length; i++) {
+                if (svg_style[i].type == 1) {
+
+                    selector = svg_style[i].selectorText;
+
+                    styles = this.makeStyleObject(svg_style[i]);
+
+                    // Apply the style directly to the elements that match the selctor
+                    // (this requires to not have to deal with selector parsing)
+                    $(selector).css(styles);
+                }
+            };
+        }
+    },
+
+    makeStyleObject: function(rule) {
+        var styleDec = rule.style;
+        var output = {};
+        var s;
+
+        for (s = 0; s < styleDec.length; s++) {
+            output[styleDec[s]] = styleDec[styleDec[s]];
+            if(styleDec[styleDec[s]] === undefined) {
+                //firefox being firefoxy
+                output[styleDec[s]] = styleDec.getPropertyValue(styleDec[s])
+            }
+        }
+
+        return output;
+    }
     
 
 });
