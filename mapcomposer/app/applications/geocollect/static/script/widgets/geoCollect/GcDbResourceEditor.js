@@ -77,13 +77,20 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
     surveyTitle:'Survey',
     sColName:"Name",
     sColType:"Type",
+    sColAlias:"Alias",
+    sColMainFields:"Show In Grid",
     serverError:"Invalid response from server.",
     errorLayer:"Trouble creating layer store from response.",   
     //Contorllo per inizializzazione!
     authkey:null,
     authParam:null,
+    template:null,
+    gcFeatureEditor:null,
+    templateDirty:false,
+    gcSegGrid:null,
+    
     //Campi utilizzati in attribute reader
-    parseFields: ["name", "type", "restriction","localType","nillable"],
+    parseFields: ["name", "type", "restriction","localType","nillable","_alias","_mainfields"],
     
     
 	initComponent: function() {
@@ -244,7 +251,8 @@ this.comboSource = new Ext.form.ComboBox({
                     	SERVICE:rec.data.owsType,
                     	},
                     	callback:function(){
-                    		//this.cleanType(this.seg_fieldStore);
+                    		if(this.template)
+                    		          this.addTemplateValues(this.seg_fieldStore);
                     		this.fireReady(this);},
                 		scope:this
         
@@ -327,15 +335,27 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
    			});
      //Grid che mostra la lista dei campi disponibili dello schema segnalazioni
    var seg_schema_grid={
-   		xtype:'grid',
+   		xtype:'editorgrid',
    	   	title: this.noticeTitle,
         store: this.seg_fieldStore,
      	flex:1,
+     	ref:'../seg_schema_grid',
      	autoScroll:true,
 	
     	        cm: new Ext.grid.ColumnModel([
             {id: "name", header: this.sColName, dataIndex: "name", sortable: true},
-            {id: "localType", header: this.sColType, dataIndex: "localType", sortable: true}
+            {id: "localType", header: this.sColType, dataIndex: "localType", sortable: true},
+            {id: "alias", header: this.sColAlias, dataIndex: "_alias", sortable: true,editor: new Ext.form.TextField({
+                allowBlank: false
+            }),hidden:true},
+            checkColumn = new Ext.grid.CheckColumn({
+                    header: this.sColMainFields,
+                     dataIndex: '_mainfields',
+                     id: 'mainFields',
+                 hidden: true,
+                 editor: new Ext.form.Checkbox()
+})
+
         ]),
         sm: new	 Ext.grid.RowSelectionModel({singleSelect:true}),
         autoExpandColumn: "name",
@@ -348,6 +368,7 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
    var sop_schema_grid={
   
    		xtype:'grid',
+   		
    	   	title: this.surveyTitle ,
         store: this.sop_fieldStore,
       	flex:1,
@@ -503,6 +524,10 @@ this.autoScroll=true;
 	},
 	//Api method for Resource Editor  TODO:: implementare
 	getResourceData: function(){
+		if(this.template){
+		    this.setGcFeatureGrid();
+			this.setGcSegGrid();
+		}
 		if(this.typeName){
 							idx =this.dbstore.find('typeName',this.typeName);
 							rec=this.dbstore.getAt(idx);
@@ -520,6 +545,7 @@ this.autoScroll=true;
    		 	    "localFormStore":rec.get('name')+"_sop",	// local device table name
    	 			"fields":this.getFieldsObj(this.sop_fieldStore)
 		};
+                    
                                   
                     return {"schema_seg":schema_seg,"schema_sop":schema_sop};
                 }},
@@ -538,8 +564,14 @@ this.autoScroll=true;
  	return recObj;
  	},
  	               
-    loadResourceData: function(resource){
+    loadResourceData: function(resource,template){
     			s_seg=resource;
+                if(template){
+                    
+                	var pr=new  OpenLayers.Format.JSON();
+    				this.template= pr.read(template);
+    					
+                	}
     			//Se esiste schema recupero ed inizializzo
     			//Non ho altro da fare perchè tutte le info le recupero dallo stor
 	    		if(s_seg && s_seg.typeName && this.typeName!=s_seg.typeName ){	
@@ -552,7 +584,7 @@ this.autoScroll=true;
              			
              	},
     canCommit :function(){
-    	   //se ho la source sttata posso esportare
+    	   //se ho la source settata posso esportare
            if (this.typeName)return true;
            else
               	return false;
@@ -561,18 +593,130 @@ this.autoScroll=true;
                //qui mostro tutti i campi
                //ripulisce i type dai prefissi xsd e elimina campi geometry
    	 cleanType: function(store){
-              /* store.filter({
-   				 fn   : function(record) {
-      			return record.get('type').indexOf( "gml:") == -1
-    			},
-    			scope: this
-  });*/
-               	//ciclo su tutti i record ed elimino da type i prefissi
-               	for(i=0,ilen=store.getCount();i<ilen;i++){
+   			 	for(i=0,ilen=store.getCount();i<ilen;i++){
                		var type=store.getAt(i).get("type");
-               		ctype=type.substr(type.indexOf(':')+1)
+               		ctype=type.substr(type.indexOf(':')+1);
                		store.getAt(i).set("ctype",ctype);
                }
+               
+               
+
+},
+//Update map template with new propertyNames
+setGcFeatureGrid:function(){
+    var np=this.getPropertyNames(this.seg_fieldStore);
+    var p=this.gcFeatureEditor.propertyNames;
+    if(!p){ 
+        this.templateDirty=true;
+        this.gcFeatureEditor.propertyNames=np;
+     }else{
+         for (var key in np){
+             if(np[key]!= p[key]){
+                 this.templateDirty=true;
+                 this.gcFeatureEditor.propertyNames=np;
+                 break;
+             }
+         }
+     }
+    
+},
+setGcSegGrid:function(){
+    var newMF=this.getMainFields(this.seg_fieldStore);
+    var mF= this.gcSegGrid.mainFields;
+    if(!mF){
+        this.templateDirty=true;
+        this.gcSegGrid.mainFields=newMF;
+    }else{
+        for (var key in newMF){
+            if(mF.indexOf(newMF[key])==-1){
+                this.templateDirty=true;
+                this.gcSegGrid.mainFields=newMF;
+                break;
+             }
+        }
+    }
+    var cConf=this.gcSegGrid.colConfig;
+    var newConf=this.getColConfig(this.gcSegGrid.mainFields,this.gcFeatureEditor.propertyNames);
+    if(!cConf && Object.keys(newConf).length>0){
+        this.templateDirty=true;
+        this.gcSegGrid.colConfig=newConf;
+    }else{
+        for (var key in newConf){
+            if(newConf[key]!= cConf[key]){
+                this.templateDirty=true;
+                this.gcSegGrid.colConfig=newConf;
+                break;
+             }
+        
+        }
+    }
+},
+
+getColConfig:function(mainFields,propertyNames){
+ var colConfig={};
+     mainFields.forEach(function(f){
+        if(propertyNames[f])colConfig[f]={header:propertyNames[f]};           
+             });
+ return colConfig; 
+} , 
+
+
+
+getPropertyNames:function(store){
+ var propertyNames={};
+ if(this.gcFeatureEditor){
+     store.each(function(r){
+                var n= r.get('name');
+                var a= r.get('_alias');
+                if(  n!=a || (r.modified._alias && a != r.modified._alias)) propertyNames[n]=a; 
+             });
+ }
+ return propertyNames;
+  
+
+    
+}, 
+getMainFields:function(store){
+ var mainFields=[];
+ if(this.gcSegGrid){
+     store.each(function(r){
+                var n= r.get('name');
+               
+                if( r.get('_mainfields')) mainFields.push(n); 
+             });
+ }
+ return mainFields; 
+    
+} , 
+addTemplateValues: function(store){
+    		var me=this;
+    		
+    		this.template.customTools.forEach(function(t){
+    			if(t.ptype=== "gxp_gcfeatureeditor"){
+    				me.gcFeatureEditor=t;	
+    			}else if(t.ptype=== "gxp_gcseggrid"){
+                    me.gcSegGrid=t;
+                }
+    		});
+			if(me.gcFeatureEditor){
+				//attivare colonna!
+				this.seg_schema_grid.getColumnModel().setHidden( 2, false );
+				var pnames= me.gcFeatureEditor.propertyNames ;
+             store.each(function(r){
+             	var n= r.get('name');
+                 r.set('_alias',(pnames[n])? pnames[n]:n);
+             });
+             }if(me.gcSegGrid){
+                //attivare colonna!
+                this.seg_schema_grid.getColumnModel().setHidden( 3, false );
+                var mainFields= me.gcSegGrid.mainFields;
+             store.each(function(r){
+                var n= r.get('name');
+                 r.set('_mainfields',(mainFields.indexOf(n)>-1));
+             });
+             } 
+
+              
 
 },
 //Ritorna store segnalazione clonato 

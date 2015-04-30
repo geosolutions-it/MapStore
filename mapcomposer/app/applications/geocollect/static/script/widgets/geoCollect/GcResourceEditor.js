@@ -214,20 +214,29 @@ mxp.widgets.GcResourceEditor.superclass.initComponent.call(this, arguments);
 },
 //Ritorna json completo da salvare montando i vari pezzi
 getResourceData: function(){
+	
+
   	//Devo recuperare il titolo da fuori!!
   	 var	parent =this.findParentByType('mxp_geostoreresourceform');
   		if(parent && parent.general  && parent.general.getForm()){
   					catField=parent.general.getForm().getFieldValues();
   					
   					if(catField.name) tit= catField.name;
-					if(catField.id)id=catField.id;
+					if(catField.id)  id=catField.id;
  }
- 
-  					var pr=new  OpenLayers.Format.JSON();    
-        
-                 	dbRes=this.dbEdit.getResourceData();
+					var pr=new  OpenLayers.Format.JSON(); 
+					dbRes=this.dbEdit.getResourceData();
+				    me=this;
+ 						//Saving map template if dirty
+					if(this.dbEdit.templateDirty){
+							this.template.blob= pr.write(this.dbEdit.template,true);
+							var tmpRes= this.template;
+							 parent.forceUpdate(tmpRes.id,tmpRes.blob,function(response){},function(response){});
+							 };
+                
                     mobRes=this.mobEdit.getResourceData();
                   	a={id:""+id+"",title:tit};
+                  
                    	Ext.apply(a,dbRes);
                     Ext.apply(a,mobRes);
                     this.jsonP.loadResourceData(pr.write(a,true));
@@ -246,12 +255,9 @@ loadResourceData: function(resource){
 					var	parent =this.findParentByType('mxp_geostoreresourceform');
   					if(parent && parent.general  && parent.general.getForm()){
   					var catField=parent.general.getForm().getFieldValues();
-  					console.log(catField);
-  					if(catField.templateId) templateId= catField.templateId;
+  					if(catField['attribute.templateId']) templateId= catField['attribute.templateId'];
  					}
-					
-					
-   					 // Try to load template resource
+					 // Try to load template resource
        				if(parent.resourceManager && templateId && templateId.length>0){
        					parent.setLoading(true, this.loadingMessage);
             			var me =this;
@@ -263,12 +269,12 @@ loadResourceData: function(resource){
 	
 				}
 				parent.setLoading(false);
-				me.dbEdit.loadResourceData(me.resource.schema_seg,me.template);
+				me.dbEdit.loadResourceData(me.resource.schema_seg,(me.template)?me.template.blob:null);
                     //TODO load visibility
                 },{full:true});
 
         			}else{
-	                    this.dbEdit.loadResourceData(this.resource.schema_seg,this.template);}
+	                    this.dbEdit.loadResourceData(this.resource.schema_seg,(this.template)?this.template.blob:null);}
                    //Carichi solo il db panle le altre vanno caricate dopo di lui
                 },
 canCommit :function(){

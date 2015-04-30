@@ -91,13 +91,7 @@
             "target": "north.tbar",
             "index": 4
         },
-        "attributeFields":[{
-                    "xtype":"textfield",
-                     "id":"attribute.templateId",
-                     "anchor":'95%',
-                     "fieldLabel": "Template Id",
-                     "name":"templateId"
-         }],
+        
         "resourceEditor":{
             "xtype":"mxp_gc_resource_editor",
             "ref":"/missionResEdit",
