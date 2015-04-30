@@ -32,7 +32,7 @@ GeoExt.Lang.add("en", {
         humanTitle:'Social', 
         resultsLabel: "Processing result",         
         notHumanTitle:'environmental', 
-        defaultExtentLabel: "Regione Piemonte",
+        defaultExtentLabel: "All the territory",
         targetsTextBotton: "Targets",
         areaDamageTextBotton: "Damage areas",
         roadGraphTextBotton: "Road graph",  

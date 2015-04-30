@@ -90,7 +90,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     temporalLabel: "Condizioni Temporali",
     elabStandardLabel: "Elaborazione Standard",
     totalRiskLabel: "Rischio totale",
-    defaultExtentLabel: "Regione Piemonte",
+    defaultExtentLabel: "Tutto il territorio",
     targetsTextBotton: "Bersagli",
     areaDamageTextBotton: "Aree di danno",
     roadGraphTextBotton: "Grafo stradale",    
