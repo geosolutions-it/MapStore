@@ -95,6 +95,8 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         String identifier;
 
         JDBCDataStore dataStore;
+
+        boolean maskOneIsValid;
     }
 
     public enum SARType {
@@ -404,6 +406,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                             // Getting file name
                             File inputFile = fileEvent.getSource();
                             attributeBean.absolutePath = inputFile.getAbsolutePath();
+                            attributeBean.maskOneIsValid = container.isMaskOneIsValid();
                             // Unzipping the tar.gz file
                             File netcdfDir = untarFile(inputFile);
 
@@ -970,7 +973,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
 
     protected void writeRaster(Dimension ra_size, Dimension az_size, final Array maskOriginalData,
             Array originalVarArray, int[] dims, WritableRaster userRaster, Index varIndex,
-            Index maskIndex) {
+            Index maskIndex, boolean maskOneIsValid) {
 
         int dimsLen = dims != null ? dims.length : 0;
         int[] indexes = new int[2 + dimsLen];
@@ -984,7 +987,7 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                 }
                 float sVal = originalVarArray.getFloat(varIndex.set(indexes));
                 if (maskOriginalData != null) {
-                    int validByte = 1;
+                    int validByte = maskOneIsValid ? 1 : 0;
                     if (maskOriginalData.getByte(maskIndex.set(yPos, xPos)) != validByte) {
                         sVal = Float.NaN;
                     }

@@ -14,6 +14,8 @@ public class ConfigurationContainer {
     private String defaultNameSpaceURI;
 
     private String actionClass;
+    
+    private boolean maskOneIsValid;
 
     private Map<String, String> params;
 
@@ -58,5 +60,13 @@ public class ConfigurationContainer {
 
     public void setPattern(String pattern) {
         this.pattern = pattern;
+    }
+
+    public boolean isMaskOneIsValid() {
+        return maskOneIsValid;
+    }
+
+    public void setMaskOneIsValid(boolean maskOneIsValid) {
+        this.maskOneIsValid = maskOneIsValid;
     }
 }

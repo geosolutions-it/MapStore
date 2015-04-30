@@ -326,7 +326,7 @@ public class SARWaveAction extends NetCDFAction {
         int[] dimArray = new int[] { partition };
         // Filling data inside the Raster
         writeRaster(ra_size, az_size, maskOriginalData, originalVarArray, dimArray, userRaster,
-                varIndex, maskIndex);
+                varIndex, maskIndex, attributeBean.maskOneIsValid);
 
         // Resampling to a Regular Grid ...
         if (LOGGER.isInfoEnabled())

@@ -5,6 +5,7 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
 import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
+import it.geosolutions.rendered.viewer.RenderedImageBrowser;
 
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
@@ -275,7 +276,7 @@ public class SARWindAction extends NetCDFAction {
         Index varIndex = originalVarArray.getIndex();
         Index maskIndex = maskOriginalData != null ? maskOriginalData.getIndex() : null;
         writeRaster(ra_size, az_size, maskOriginalData, originalVarArray, null, userRaster,
-                varIndex, maskIndex);
+                varIndex, maskIndex, attributeBean.maskOneIsValid);
 
         // Resampling to a Regular Grid ...
         if (LOGGER.isInfoEnabled()) {
