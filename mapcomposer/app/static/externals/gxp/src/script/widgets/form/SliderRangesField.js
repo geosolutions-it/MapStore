@@ -26,7 +26,7 @@ gxp.form.SliderRangesField = Ext.extend(Ext.slider.MultiSlider, {
      *  Override
      */
     initComponent: function() {
-
+        this.hidden = true;
         if(! this.plugins)
             this.plugins = new Ext.slider.Tip({
                 getText: function(thumb){
