@@ -161,6 +161,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     analiticViewScale: 17070,
     cellViewScale: 500010,
     
+    formulaPrecision: 4,
+    
     analyticView: false,
     
     aoi: null,
@@ -2114,7 +2116,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 						}
 					}),
 					store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
-					precision: new OpenLayers.WPSProcess.LiteralData({value:15}),
+					precision: new OpenLayers.WPSProcess.LiteralData({value:this.formulaPrecision}),
 					processing: new OpenLayers.WPSProcess.LiteralData({value:status.processing}),
 					formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
 					target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
@@ -2924,7 +2926,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     getFormulaEnv: function(status, targetId) {
-        var env = "formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing;
+        var env = "formula:"+status.formula+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing+";precision:"+this.formulaPrecision;;
         if(status.processing === 3) {
             var simulation = status.simulation;            
             env += ';pis:'+simulation.pis.join('_') + ';padr:'+simulation.padr.join('_') + ';cff:'+simulation.cff.join('_');
