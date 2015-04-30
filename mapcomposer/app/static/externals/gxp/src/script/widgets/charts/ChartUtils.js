@@ -208,5 +208,40 @@ nrl.chartbuilder.util = {
             'December'
         ];
         return (!longForm ? shortMonths[n-1] : longMonths[n-1]);
+    },
+    /**
+     * Converts absolute decade in an object that shows, year, month and dec;
+     *
+     * ``Number`` absDec absolute decade
+     *                   the absolute value of the dekad: year * 36 + dekad_in_year
+     *                   where dek_in_year is the dekad in the year. 1 to 36
+     *
+     * return ``Object`` {year: ..., month: ..., dec: ...}
+     */
+    getDekDate: function(absDec){
+        var year = Math.floor((absDec - 1) / 36);
+        var dek_in_y = (absDec-1)%36 + 1;
+
+        var month = Math.floor((dek_in_y-1)/3) + 1;
+        var dek_in_month = (dek_in_y-1)%3 + 1;
+
+        return {
+            year: year,
+            month: month,
+            dec: dek_in_month
+        };
+    },
+    /**
+     * Adds 0s at the beginning to have a string of at least 'padding' characters
+     * n: 21, padding: 5 => return '00021'
+     */
+    zeroPadding: function(n, padding){
+        var nstr = n + '';
+        if (nstr.length < padding){
+            for(var i=padding-nstr.length; i>0; i--){
+                nstr = '0' + nstr;
+            }
+        }
+        return nstr;
     }
 };

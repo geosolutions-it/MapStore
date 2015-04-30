@@ -369,6 +369,34 @@
             },
             "outputTarget":"nrl"
       },{
+            "ptype":"nrl_market_prices",
+            "layerStyle":{
+                "strokeColor":"orange",
+                "strokeWidth":1,
+                "fillOpacity":0.3,
+                "cursor":"pointer"
+            },
+            "currencies": [
+                ["usd", "US Dollars"],
+                ["pkr", "PK Rupees"]
+            ],
+            "defaultCurrency": "pkr",
+            "defaultDenominator": "1",
+            "dataUrl":"http://84.33.2.75/geoserver/ows",
+            "factorsurl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:measure_units_for_crop&outputFormat=json",
+            "metadataUrl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:marketprices_metadata&outputFormat=json",
+            "highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
+            "titleText": "Market Prices",
+            "outputConfig":{
+                "id":"Market Prices"
+            },
+            "outputTarget":"nrl",
+            "layers": {
+                "province": "nrl:province_select",
+                "district": "nrl:district_select"
+            },
+            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')"
+      },{
 		  "ptype":"nrl_report_crop_data",
           "cropPluginRef":"CropData",
 		 "factorsurl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
