@@ -412,7 +412,11 @@
                                     }
                                 }
                                 app.safeLeaving =true;
-                                location.reload();
+                                if (serverConfig.redirectDeniedTo){
+                                    window.location.replace(serverConfig.redirectDeniedTo);
+                                } else {
+                                    window.location.reload();
+                                }
                             }
                         }
                         
