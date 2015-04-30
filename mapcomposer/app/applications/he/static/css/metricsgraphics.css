@@ -337,7 +337,7 @@ circle.mg-points-mono {
 .mg-x-axis-small text,
 .mg-y-axis-small text,
 .mg-active-datapoint-small {
-    font-size: 0.6rem;
+    font-size: 12px;
 }
 
 .mg-x-axis-small .label,
@@ -359,5 +359,5 @@ circle.mg-points-mono {
 }
 
 .mg-year-marker-small text {
-    font-size: 0.6rem;
+    font-size: 12px;
 }

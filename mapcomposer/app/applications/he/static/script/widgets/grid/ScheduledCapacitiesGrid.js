@@ -176,7 +176,8 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                             xtype: 'component',
                             autoEl: {
                                 tag: 'canvas'
-                            }
+                            },
+                            hidden :true
                         };
                         
                         var headerClass = "x-window-header";
@@ -190,7 +191,7 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                         }
                         
                         var windowTools = [];
-                        if(app.userCanPrint() && !Ext.isIE && !Ext.isIE11){
+                        if(app.userCanPrint()){
                             this.service = app.printServiceURL;
                             windowTools = [{
                                 id:'print',
@@ -213,6 +214,8 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                                     target.className += " html2canvasreset";//set className - Jquery: $(target).addClass("html2canvasreset");
                                     //$(target).appendTo(document.body)
                                     this.inlineAllStyles();
+                                    
+                                    panel.canvasPanel.show();
                                     
                                     canvg(
                                         panel.canvasPanel.getId(),
