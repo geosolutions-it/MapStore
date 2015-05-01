@@ -575,16 +575,7 @@
                         login.target = Ext.getCmp('paneltbar');
                         login.addActions();
                         login.loginSync();
-                        var myAccount = new gxp.plugins.GeoStoreAccount({
-                            outputTarget:'appTabs',
-                            hideAttributes: ["UUID","notes"],
-                            displayPanels:false,
-                            user: app.userDetails.user,
-                            auth: app.userDetails.token,
-                            geoStoreBase : serverConfig.geoStoreBase
-                        });
-                        myAccount.addOutput();
-                         
+                        var unauthorized = false;
                         // get auth info					
                         if (userDetails) {
                             var user = userDetails.user;
@@ -598,13 +589,46 @@
                                     if(serverConfig.restrictToGroups ){
                                         
                                         if(!hasGroup(user, serverConfig.restrictToGroups)){
-                                            //window.location.replace(serverConfig.redirectDeniedTo);
-                                            appTabs.hideTabStripItem(0);
-                                            appTabs.setActiveTab(appTabs.items.getCount()-1);
+                                            unauthorized = true;
                                         }
                                     }
                                 }
                             }
+                        }
+
+                        var myAccount = new gxp.plugins.GeoStoreAccount({
+                            outputTarget:'appTabs',
+                            hideAttributes: ["UUID","notes"],
+                            displayPanels:false,
+                            user: app.userDetails.user,
+                            auth: app.userDetails.token,
+                            geoStoreBase : serverConfig.geoStoreBase,
+                            getLogOutTool : (unauthorized ? function(){
+                                return {
+                                    width: 100,
+                                    xtype: 'box',
+                                    autoEl: {
+                                        children: [{
+                                          tag: 'a',
+                                          href: '#',
+                                          cn: "Logout"
+                                        }]
+                                    },
+                                    listeners: {
+                                        render: function(c){
+                                            c.el.select('a').on('click', function(){
+                                                login.showLogout();
+                                            });
+                                        }
+                                    }
+                                }
+                            } : null)
+                        });
+                        myAccount.addOutput();
+                         					
+                        if (unauthorized) {
+                            appTabs.hideTabStripItem(0);
+                            appTabs.setActiveTab(appTabs.items.getCount()-1);
                         }
                          
                          

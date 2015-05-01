@@ -1,5 +1,5 @@
 {
-    "restrictToGroup" : "GCD_Users",
+    "restrictToGroups" : ["GCD_Users"],
     "redirectDeniedTo" : "/loginpage",
     "deniedPrintingGroup" : "nosnapshot",
     "portalConfig":{

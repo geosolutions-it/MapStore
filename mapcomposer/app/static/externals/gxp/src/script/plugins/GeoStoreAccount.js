@@ -1,5 +1,5 @@
 /**
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2015 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -157,13 +157,21 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
                 }
             }
             user.attribute = attributes;
-        }                      
+        }
+        
+        var cPanelTBar = ["->",this.getChangePasswordTool()];
+        
+        if(this.getLogOutTool){
+            cPanelTBar.push("|");
+            cPanelTBar.push(this.getLogOutTool());
+        }
+        
         var controlPanel = {
             xtype: "panel",
             layout: 'border',
             title: "My Account",
             iconCls: "user-icon",  
-            tbar: ["->",this.getChangePasswordTool()],
+            tbar: cPanelTBar,
             header: false,
             items:[{
                 region:'center',
