@@ -72,7 +72,7 @@ public class CSVIngestActionTest {
     private Map<String, Serializable> getConnectionParameters() {
         Map<String, Serializable> params = new HashMap<String, Serializable>();
         params.put("dbtype", "postgis");
-        params.put("host", "localhost");
+        params.put("host", "84.33.2.25");
         params.put("port", 5432);
         params.put("schema", "public");
         params.put("database", "mariss");

@@ -97,6 +97,10 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         JDBCDataStore dataStore;
 
         boolean maskOneIsValid;
+
+        int numShipDetections;
+        
+        int numOilSpills;
     }
 
     public enum SARType {
@@ -462,10 +466,6 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                     }
                                     attributeBean.dataStore = (JDBCDataStore) ds;
                                     attributeBean.dataStore.setExposePrimaryKeyColumns(true);
-                                    // return next events configurations
-                                    Collection<EventObject> resultEvents = doProcess(netcdfFile,
-                                            attributeBean);
-                                    ret.addAll(resultEvents);
 
                                     // Prepare a Zip file containing the ShipDetection XML files
                                     // Filtering the files
@@ -475,6 +475,12 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                     FileFilter and = FileFilterUtils.and(file, xml, dsFilter);
                                     File[] files = netcdfDir.listFiles(and);
 
+                                    attributeBean.numShipDetections = (files != null ? files.length : 0);
+                                    
+                                    // return next events configurations
+                                    Collection<EventObject> resultEvents = doProcess(netcdfFile, attributeBean);
+                                    ret.addAll(resultEvents);
+                                    
                                     // Listing XML files
                                     if (files != null && files.length > 0) {
                                         int numFiles = files.length;
@@ -519,40 +525,25 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                                         }
                                         
                                         // Append a txt file with the UID
-                                        File properties = new File(files[0].getParentFile(),
-                                                "netcdf.properties");
+                                        File properties = new File(files[0].getParentFile(), "netcdf.properties");
                                         properties.createNewFile();
                                         // Append Useful properties
-                                        FileUtils.write(properties, "identifier=" + identifier
-                                                + "\n");
+                                        FileUtils.write(properties, "identifier=" + identifier + "\n");
                                         if (attributeBean.timedim != null) {
-                                            FileUtils.write(
-                                                    properties,
-                                                    "time="
-                                                            + new Timestamp(attributeBean.timedim
-                                                                    .getTime()) + "\n", true);
+                                            FileUtils.write(properties, "time=" + new Timestamp(attributeBean.timedim.getTime()) + "\n", true);
                                         }
-                                        FileUtils.write(properties, "originalFileName="
-                                                + netcdfFile.getName() + "\n", true);
-                                        FileUtils.write(properties, "sartype=" + attributeBean.type
-                                                + "\n", true);
-                                        FileUtils.write(properties, "envelope="
-                                                + new ReferencedEnvelope(attributeBean.env) + "\n",
-                                                true);
-                                        FileUtils.write(properties,
-                                                "service=" + configuration.getServiceName() + "\n",
-                                                true);
+                                        FileUtils.write(properties, "originalFileName=" + netcdfFile.getName() + "\n", true);
+                                        FileUtils.write(properties, "sartype=" + attributeBean.type + "\n", true);
+                                        FileUtils.write(properties, "envelope=" + new ReferencedEnvelope(attributeBean.env) + "\n", true);
+                                        FileUtils.write(properties, "service=" + configuration.getServiceName() + "\n", true);
                                         File[] filesUpdated = new File[numFiles + 1];
                                         System.arraycopy(files, 0, filesUpdated, 0, numFiles);
                                         filesUpdated[numFiles] = properties;
                                         // Creating new Zip file where the XML files must be zipped
-                                        File targetZipFile = new File(netcdfDir,
-                                                FilenameUtils.getBaseName(netcdfDir.getName())
-                                                        + ".zip");
+                                        File targetZipFile = new File(netcdfDir, FilenameUtils.getBaseName(netcdfDir.getName()) + ".zip");
                                         zipFile(files, targetZipFile);
                                         // Append to the event list
-                                        ret.add(new FileSystemEvent(targetZipFile,
-                                                FileSystemEventType.FILE_ADDED));
+                                        ret.add(new FileSystemEvent(targetZipFile, FileSystemEventType.FILE_ADDED));
                                     }
                                 } finally {
                                     ds.dispose();
@@ -732,8 +723,9 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
             String cfName, Geometry geo) throws ActionException {
         boolean result = false;
 
-        String sql = "INSERT INTO " + configuration.getProductsTableName()
-                + " VALUES (?,?,ST_GeomFromText(?),?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO " + configuration.getProductsTableName() 
+                + "(servicename, identifier, bbox, \"time\", variable, sartype, outfilelocation, originalfilepath, layername, partition, numoilspill, numshipdetect)"
+                + " VALUES (?,?,ST_GeomFromText(?),?,?,?,?,?,?,?,?,?)";
 
         Connection conn = null;
 
@@ -760,6 +752,8 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
                 partition = outputFileVaseName.substring(outputFileVaseName.indexOf(CUSTOM_DIM_VAL_SEPARATOR) + CUSTOM_DIM_VAL_SEPARATOR.length(), outputFileVaseName.indexOf(CUSTOM_DIM_END_SEPARATOR));
             }
             ps.setString(10, partition);
+            ps.setString(11, String.valueOf(attributeBean.numOilSpills));
+            ps.setString(12, String.valueOf(attributeBean.numShipDetections));
 
             result = ps.execute() && ps.getUpdateCount() > 0;
             ps.close();
