@@ -37,14 +37,14 @@ gxp.grid.GcHistoryGrid = Ext.extend(Ext.grid.GridPanel, {
      *  displayed in the grid.
      */    
     
-     ignoreFields: null,
+    ignoreFields: null,
     
     /** api: config[colConfig]
      *  ``Object``
      *  An object with as keys the field names, which will provide the ability
      *  to override the col configuration for that fileds
      */
-    colConfig:null,
+    colConfig:{},
     
     /** api: config[mapPanel]
      *  the mapPanel
@@ -144,7 +144,8 @@ gxp.grid.GcHistoryGrid = Ext.extend(Ext.grid.GridPanel, {
      */
     initComponent: function() {
         
-        this.ignoreFields = ["feature", "state", "fid"].concat(this.ignoreFields); 
+        this.ignoreFields = ["feature", "state", "fid","gid"].concat(this.ignoreFields);
+        if(this.hist_date )this.colConfig.hist_date=this.hist_date; 
         this.store= new Ext.data.Store();
         this.cm= new Ext.grid.ColumnModel({columns: []});
         this.sm= new Ext.grid.RowSelectionModel({singleSelect:true});

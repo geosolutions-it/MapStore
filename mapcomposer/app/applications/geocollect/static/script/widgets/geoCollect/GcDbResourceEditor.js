@@ -78,7 +78,9 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
     sColName:"Name",
     sColType:"Type",
     sColAlias:"Alias",
-    sColMainFields:"Show In Grid",
+    sColMainFields:"Show In Main Grid",
+    sColHisFields:"Show In History Grid",
+    sColSopFields:"Show In Survey Grid",
     serverError:"Invalid response from server.",
     errorLayer:"Trouble creating layer store from response.",   
     //Contorllo per inizializzazione!
@@ -88,9 +90,13 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
     gcFeatureEditor:null,
     templateDirty:false,
     gcSegGrid:null,
+    gcHistoryGrid:null,
+    gcSopGrid:null,
     
-    //Campi utilizzati in attribute reader
-    parseFields: ["name", "type", "restriction","localType","nillable","_alias","_mainfields"],
+    //Campi utilizzati in attribute reader segnalazioni
+    parseFieldsSeg: ["name", "type", "restriction","localType","nillable","_alias","_mainfields","_histfields"],
+        //Campi utilizzati in attribute reader sopralluoghi
+    parseFieldsSop: ["name", "type", "restriction","localType","nillable","_alias","_sopfields"],
     
     
 	initComponent: function() {
@@ -252,7 +258,7 @@ this.comboSource = new Ext.form.ComboBox({
                     	},
                     	callback:function(){
                     		if(this.template)
-                    		          this.addTemplateValues(this.seg_fieldStore);
+                    		          this.addTemplateValuesSeg(this.seg_fieldStore);
                     		this.fireReady(this);},
                 		scope:this
         
@@ -266,6 +272,8 @@ this.comboSource = new Ext.form.ComboBox({
                     	},
                     	callback:function(){
                     			//this.cleanType(this.sop_fieldStore);
+                    			if(this.template)
+                    		          this.addTemplateValuesSop(this.sop_fieldStore);
                     		this.fireReady(this);},
                 		scope:this
             			});
@@ -344,14 +352,28 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
 	
     	        cm: new Ext.grid.ColumnModel([
             {id: "name", header: this.sColName, dataIndex: "name", sortable: true},
-            {id: "localType", header: this.sColType, dataIndex: "localType", sortable: true},
+            {id: "type", header: this.sColType, dataIndex: "type", sortable: true,
+                renderer:{
+                        fn: function(v){ 
+                            return v.substr(v.indexOf(':')+1);}
+                    }
+            },
             {id: "alias", header: this.sColAlias, dataIndex: "_alias", sortable: true,editor: new Ext.form.TextField({
                 allowBlank: false
             }),hidden:true},
-            checkColumn = new Ext.grid.CheckColumn({
+            segFields = new Ext.grid.CheckColumn({
+                       width:120, 
                     header: this.sColMainFields,
                      dataIndex: '_mainfields',
                      id: 'mainFields',
+                 hidden: true,
+                 editor: new Ext.form.Checkbox()    
+            }), 
+            hisFields = new Ext.grid.CheckColumn({
+                        width:120,
+                    header: this.sColHisFields,
+                     dataIndex: '_histfields',
+                     id: 'histFields',
                  hidden: true,
                  editor: new Ext.form.Checkbox()
 })
@@ -367,15 +389,31 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
  //Grid che mostra la lista dei campi disponibili dello schema sopralluoghi
    var sop_schema_grid={
   
-   		xtype:'grid',
-   		
+   		xtype:'editorgrid',
+   		ref:'../sop_schema_grid',
    	   	title: this.surveyTitle ,
         store: this.sop_fieldStore,
       	flex:1,
       	autoScroll:true,
         cm: new Ext.grid.ColumnModel([
             {id: "name", header: this.sColName, dataIndex: "name", sortable: true},
-            {id: "localType", header: this.sColType, dataIndex: "localType", sortable: true}
+             {id: "type", header: this.sColType, dataIndex: "type", sortable: true,
+                renderer:{
+                        fn: function(v){ 
+                            return v.substr(v.indexOf(':')+1);}
+                    }
+            },
+            {id: "alias", header: this.sColAlias, dataIndex: "_alias", sortable: true,editor: new Ext.form.TextField({
+                allowBlank: false
+            }),hidden:true},
+            sopFields = new Ext.grid.CheckColumn({
+                       width:120, 
+                    header: this.sColSopFields,
+                     dataIndex: '_sopfields',
+                     id: 'sopFields',
+                 hidden: true,
+                 editor: new Ext.form.Checkbox()    
+            })
         ]),
         sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
         autoExpandColumn: "name"
@@ -527,6 +565,8 @@ this.autoScroll=true;
 		if(this.template){
 		    this.setGcFeatureGrid();
 			this.setGcSegGrid();
+			this.setHistoryGrid();
+			this.setSopGrid();
 		}
 		if(this.typeName){
 							idx =this.dbstore.find('typeName',this.typeName);
@@ -570,7 +610,7 @@ this.autoScroll=true;
                     
                 	var pr=new  OpenLayers.Format.JSON();
     				this.template= pr.read(template);
-    					
+    				this.getTemplateConfigPlugin();
                 	}
     			//Se esiste schema recupero ed inizializzo
     			//Non ho altro da fare perchè tutte le info le recupero dallo stor
@@ -606,7 +646,7 @@ this.autoScroll=true;
 setGcFeatureGrid:function(){
     var np=this.getPropertyNames(this.seg_fieldStore);
     var p=this.gcFeatureEditor.propertyNames;
-    if(!p){ 
+    if(!p ||Object.keys(np).length !=Object.keys(p).length){ 
         this.templateDirty=true;
         this.gcFeatureEditor.propertyNames=np;
      }else{
@@ -623,7 +663,7 @@ setGcFeatureGrid:function(){
 setGcSegGrid:function(){
     var newMF=this.getMainFields(this.seg_fieldStore);
     var mF= this.gcSegGrid.mainFields;
-    if(!mF){
+    if(!mF ||  newMF.lenght!=mF.lenght){
         this.templateDirty=true;
         this.gcSegGrid.mainFields=newMF;
     }else{
@@ -637,7 +677,7 @@ setGcSegGrid:function(){
     }
     var cConf=this.gcSegGrid.colConfig;
     var newConf=this.getColConfig(this.gcSegGrid.mainFields,this.gcFeatureEditor.propertyNames);
-    if(!cConf && Object.keys(newConf).length>0){
+    if(!cConf || Object.keys(newConf).length != Object.keys(cConf).length){
         this.templateDirty=true;
         this.gcSegGrid.colConfig=newConf;
     }else{
@@ -650,8 +690,120 @@ setGcSegGrid:function(){
         
         }
     }
+   
+    
+},
+setHistoryGrid:function(){
+     var newHistIgnore=this.getHistoryIgnoreFields(this.seg_fieldStore);
+    var hIgnore = this.gcHistoryGrid.ignoreFields;
+    if(!hIgnore || hIgnore.length!= newHistIgnore.length){
+        this.templateDirty=true;
+        this.gcHistoryGrid.ignoreFields=newHistIgnore;
+    }else{
+        for (var key in newHistIgnore){
+            if(hIgnore.indexOf(newHistIgnore[key])==-1){
+                this.templateDirty=true;
+                this.gcHistoryGrid.ignoreFields=newHistIgnore;
+                break;
+             }
+        }
+    }
+    var cConf=this.gcHistoryGrid.colConfig;
+    var newConf=this.getHistoryColConfig(this.gcFeatureEditor.propertyNames);
+    if(!cConf || Object.keys(newConf).length != Object.keys(cConf).length){
+        this.templateDirty=true;
+        this.gcHistoryGrid.colConfig=newConf;
+    }else{
+        for (var key in newConf){
+            if(newConf[key]!= cConf[key]){
+                this.templateDirty=true;
+                this.gcHistoryGrid.colConfig=newConf;
+                break;
+             }
+        
+        }
+    }
+    
+},
+setSopGrid:function(){
+     var newSopIgnore=this.getSopIgnoreFields(this.sop_fieldStore);
+    var sIgnore = this.gcSopGrid.ignoreFields;
+    if(!sIgnore || sIgnore.length!= newSopIgnore.length){
+        this.templateDirty=true;
+        this.gcSopGrid.ignoreFields=newSopIgnore;
+    }else{
+        for (var key in newSopIgnore){
+            if(sIgnore.indexOf(newSopIgnore[key])==-1){
+                this.templateDirty=true;
+                this.gcSopGrid.ignoreFields=newSopIgnore;
+                break;
+             }
+        }
+    } 
+    var np=this.getSopPropertyNames(this.sop_fieldStore);
+    var p=this.gcSopGrid.propertyNames;
+    if(!p ||Object.keys(np).length !=Object.keys(p).length){ 
+        this.templateDirty=true;
+        this.gcSopGrid.propertyNames=np;
+     }else{
+         for (var key in np){
+             if(np[key]!= p[key]){
+                 this.templateDirty=true;
+                 this.gcSopGrid.propertyNames=np;
+                 break;
+             }
+         }
+     }
+    
+    
+},
+getSopIgnoreFields:function(store){
+     var ignoreFileds=[];
+ if(this.gcSopGrid){
+     store.each(function(r){
+                var n= r.get('name');
+                if(! r.get('_sopfields')) ignoreFileds.push(n); 
+             });
+ }
+ return ignoreFileds; 
+    
 },
 
+getHistoryColConfig:function(propertyNames){
+     var colConfig={};
+      for (var key in propertyNames){
+             colConfig[key]={header:propertyNames[key]}; 
+         }
+    
+ return colConfig; 
+    
+},
+getSopPropertyNames:function(store){
+ var propertyNames={};
+ if(this.gcSopGrid){
+     store.each(function(r){
+                var n= r.get('name');
+                var a= r.get('_alias');
+                if(  n!=a || (r.modified._alias && a != r.modified._alias)) propertyNames[n]=a; 
+             });
+ }
+ return propertyNames;
+    
+}, 
+
+
+
+getHistoryIgnoreFields:function(store){
+     var ignoreFileds=[];
+ if(this.gcHistoryGrid){
+     store.each(function(r){
+                var n= r.get('name');
+                if(! r.get('_histfields')) ignoreFileds.push(n); 
+             });
+ }
+ return ignoreFileds; 
+    
+},
 getColConfig:function(mainFields,propertyNames){
  var colConfig={};
      mainFields.forEach(function(f){
@@ -688,23 +840,30 @@ getMainFields:function(store){
  return mainFields; 
     
 } , 
-addTemplateValues: function(store){
-    		var me=this;
-    		
+getTemplateConfigPlugin:function(){
+	var me=this;	
     		this.template.customTools.forEach(function(t){
     			if(t.ptype=== "gxp_gcfeatureeditor"){
     				me.gcFeatureEditor=t;	
     			}else if(t.ptype=== "gxp_gcseggrid"){
                     me.gcSegGrid=t;
+                    me.gcHistoryGrid=me.gcSegGrid.configHistory;
+                     me.gcSopGrid=me.gcSegGrid.configSurvey;;
                 }
+                
     		});
+
+},
+addTemplateValuesSeg: function(store){
+    		var me=this;
+    		
 			if(me.gcFeatureEditor){
 				//attivare colonna!
 				this.seg_schema_grid.getColumnModel().setHidden( 2, false );
 				var pnames= me.gcFeatureEditor.propertyNames ;
              store.each(function(r){
              	var n= r.get('name');
-                 r.set('_alias',(pnames[n])? pnames[n]:n);
+                 r.set('_alias',(pnames && pnames[n])? pnames[n]:n);
              });
              }if(me.gcSegGrid){
                 //attivare colonna!
@@ -714,16 +873,47 @@ addTemplateValues: function(store){
                 var n= r.get('name');
                  r.set('_mainfields',(mainFields.indexOf(n)>-1));
              });
-             } 
-
+             }
+             if(me.gcHistoryGrid){
+                //attivare colonna!
+                this.seg_schema_grid.getColumnModel().setHidden( 4, false );
+                var histFields= me.gcHistoryGrid.ignoreFields;
+             	store.each(function(r){
+                var n= r.get('name');
+                 r.set('_histfields',(histFields.indexOf(n)==-1));
+             });
+             }
               
 
 },
+addTemplateValuesSop: function(store){
+    		var me=this;
+
+			 if(me.gcSopGrid){
+                //attivare colonna!
+                this.sop_schema_grid.getColumnModel().setHidden( 2, false );
+                    var pnames= me.gcSopGrid.propertyNames ;
+                    store.each(function(r){
+                    var n= r.get('name');
+                        r.set('_alias',( pnames && pnames[n])? pnames[n]:n);
+                    });
+                this.sop_schema_grid.getColumnModel().setHidden( 3, false );
+                var sopFields= me.gcSopGrid.ignoreFields;
+                    store.each(function(r){
+                var n= r.get('name');
+                 r.set('_sopfields',(sopFields && sopFields.indexOf(n)==-1));
+             });
+             
+             } 
+
+
+    },
+
 //Ritorna store segnalazione clonato 
 getSeg_Store:function(){
 
 new_seg=	new GeoExt.data.AttributeStore({
-	fields:this.parseFields,
+	fields:this.parseFieldsSeg,
 	proxy:new Ext.data.MemoryProxy(this.seg_fieldStore.reader.raw.featureTypes[0].properties)	
 });
 
@@ -733,7 +923,7 @@ new_seg=	new GeoExt.data.AttributeStore({
 
 getSop_Store:function(){
 	new_sop=	new GeoExt.data.AttributeStore({
-	fields:this.parseFields,
+	fields:this.parseFieldsSop,
 	proxy:new Ext.data.MemoryProxy(this.sop_fieldStore.reader.raw.featureTypes[0].properties)	
 });
 
