@@ -117,6 +117,8 @@
 			},{
 			   "group":"MODELLI"
 			},{
+			   "group":"RADAR"
+			},{
 			   "group":"NDVI"
 			},{
 			   "format":"image/png",
@@ -432,7 +434,7 @@
 		"topInUnits": "m",
 		"topOutUnits": "km"
 	},
-	"removeTools": ["wmsgetfeatureinfo_menu_plugin"],
+	"removeTools": ["wmsgetfeatureinfo_menu_plugin","layertree_plugin"],
 	"customPanels": [{
 		"xtype": "tabpanel",
 		"border": false,
@@ -587,7 +589,45 @@
 				"frameRate": 5
 			}
 		}
-	}, 
+	}, {
+            "ptype": "gxp_nestedlayertree",
+            "id": "nestedlayertree_plugin",
+            "unshift":true,
+            "groupConfig": [
+                {
+                    "title": "<span style=\"color:#000000;font-weight: bold;\">OSSERVAZIONI E DATI</span>",
+                    "children": [
+                        {"name": "Fulmini", "title": "Fulmini"},
+                        {"name": "Stazioni Meteorologiche", "title": "Stazioni Meteorologiche"},
+						{"name": "Limiti Mondiali", "title": "Limiti Mondiali"},
+						{"name": "RADAR", "title": "RADAR"},
+						{"name": "NDVI", "title": "NDVI"}
+                    ],
+					"expanded": true,
+					"checked": true
+                },			
+                {
+                    "title": "<span style=\"color:#000000;font-weight: bold;\">OSSERVAZIONI SATELLITE</span>",
+                    "children": [
+                        {"name": "SATELLITE", "title": "SATELLITE"}
+                    ],
+					"expanded": true,
+					"checked": true
+                },
+                {
+                    "title": "<span style=\"color:#000000;font-weight: bold;\">MODELLI</span>",
+                    "children": [
+                        {"name": "Modelli Atmosfera", "title": "Modelli Atmosfera"}
+                    ],
+					"expanded": true,
+					"checked": true
+                }
+            ],					
+            "outputConfig": {
+                "id": "layertree"
+            },
+            "outputTarget": "tree"
+            }, 
 	{
 		"ptype": "gxp_resourcestatus",
 		"id": "resourcetree_plugin",

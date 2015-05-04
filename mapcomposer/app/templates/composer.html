@@ -511,16 +511,15 @@
 							}]);
 						}
 
-						/*var resources = [{
+						var resources = [{
 							format: "wms",
 							msGroupName: "MODELLO WRF-ARW a 12km - Maschera Terra - Acqua - (2015-04-21 ore 00 UTC).",
-							msLayerName: "arw_12km_Geopotential_height_tropopause_20150425T000000000Z:0.0",
-							msLayerTitle: "arw_12km_Geopotential_height_tropopause_20150425T000000000Z:0.0",
-							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/ARW_12KM_RUN00/ows",
-							timeInterval: "2015-04-25T00:00:00.000Z/2015-04-30T00:00:00.000Z"
+							msLayerName: "arw_12km_Temperature_surface_20150503T000000000Z:0.0",
+							msLayerTitle: "arw_12km_Temperature_surface_20150503T000000000Z:0.0",
+							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/ARW_12KM_RUN00/ows"
 						}];
                                 
-                        addMSLayer(resources);*/
+                        addMSLayer(resources);
 						
 						/*var resources = [{
 							format: "wms",
@@ -578,7 +577,7 @@
 						//
 						// Fix layer's indexes on the Map
 						//						
-						var layerTree = app.tools["layertree_plugin"];
+						var layerTree = app.tools["nestedlayertree_plugin"];
 						
 						var root = layerTree.output[0].getRootNode();
 						var childNodes = root.childNodes;
@@ -597,6 +596,10 @@
 							var layer = layers[i].layer;
 							if(layer){
 								app.mapPanel.map.setLayerIndex(layer, i+1);
+							}else{
+								for(var k=0;k<layers[i].childNodes.length;k++){
+									app.mapPanel.map.setLayerIndex(layers[i].childNodes[k].layer, i+1);
+								}
 							}							
 						}
 					}

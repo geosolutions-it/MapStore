@@ -13,7 +13,7 @@ gxp.plugins.NestedLayerTree = Ext.extend(gxp.plugins.LayerTree, {
      */
     groupConfig: null,
 
-    createGroup: function(text, groupCode, expanded) {
+    createGroup: function(text, groupCode, expanded, checked) {
         var target = this.target, me = this;
         var addListeners = function(node, record) {
             if (record) {
@@ -56,7 +56,7 @@ gxp.plugins.NestedLayerTree = Ext.extend(gxp.plugins.LayerTree, {
             iconCls: "gxp-folder",
             nodeType: 'gx_layercontainer',
             group: groupCode,
-            checked: false,
+            checked: checked,
             singleClickExpand: true,
             allowDrag: true,            
             loader: new GeoExt.tree.LayerLoader({
@@ -114,13 +114,13 @@ gxp.plugins.NestedLayerTree = Ext.extend(gxp.plugins.LayerTree, {
             });
             if (group.folder){
                 for (var j=0, jj=group.folder.length; j<jj; ++j) {
-                    root.appendChild(this.createGroup(group.folder[j].title, group.folder[j].name, true));
+                    root.appendChild(this.createGroup(group.folder[j].title, group.folder[j].name, group.expanded, group.checked));
                 }
                 var node2 = root.childNodes[count];
                 root.insertBefore(node2, baseLayers);
             }else if(group.children){
                 for (var j=0, jj=group.children.length; j<jj; ++j) {
-                    node.appendChild(this.createGroup(group.children[j].title, group.children[j].name, false));
+                    node.appendChild(this.createGroup(group.children[j].title, group.children[j].name, group.expanded, group.checked));
                 }
                 root.insertBefore(node, baseLayers);            
             }else{
