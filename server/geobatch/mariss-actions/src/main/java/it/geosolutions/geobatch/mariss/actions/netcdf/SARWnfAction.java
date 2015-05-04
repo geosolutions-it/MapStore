@@ -225,7 +225,7 @@ public class SARWnfAction extends NetCDFAction {
                 envelope.getLowerCorner().getOrdinate(1), envelope.getUpperCorner().getOrdinate(0),
                 envelope.getUpperCorner().getOrdinate(1) };
 
-        final Variable maskOriginalVar = ncFileIn.findVariable("mask");
+        final Variable maskOriginalVar = ncFileIn.findVariable("MASK");
         final DataType maskDataType = maskOriginalVar != null ? maskOriginalVar.getDataType()
                 : null;
         final Array maskOriginalData = maskDataType != null ? maskOriginalVar.read() : null;
@@ -270,7 +270,7 @@ public class SARWnfAction extends NetCDFAction {
         Index varIndex = originalVarArray.getIndex();
         Index maskIndex = maskOriginalData != null ? maskOriginalData.getIndex() : null;
         writeRaster(ra_size, az_size, maskOriginalData, originalVarArray, null, userRaster,
-                varIndex, maskIndex);
+                varIndex, maskIndex, attributeBean.maskOneIsValid);
 
         // Resampling to a Regular Grid ...
         if (LOGGER.isInfoEnabled()) {
