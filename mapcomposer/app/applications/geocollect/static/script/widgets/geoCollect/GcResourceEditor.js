@@ -61,6 +61,9 @@ mxp.widgets.GcResourceEditor = Ext.extend(Ext.Panel, {
     },
 	
 initComponent: function() {
+    
+   
+    
 this.items=[{
 	xtype:"mxp_gc_db_resource_editor",
 	ref:"dbEdit",
@@ -166,7 +169,7 @@ this.items=[{
 			                    handler: function(btn){ 
 			                    //Se sono in editing il bottone è disabilitato|| 
 			             	
-			                    			 this.getResourceData();
+			                    			 this.getResourceData(false);
      			                    	 },
                                 scope:this
 			                    
@@ -213,7 +216,7 @@ this.items=[{
 mxp.widgets.GcResourceEditor.superclass.initComponent.call(this, arguments);	
 },
 //Ritorna json completo da salvare montando i vari pezzi
-getResourceData: function(){
+getResourceData: function(skipTemplate){
 	
 
   	//Devo recuperare il titolo da fuori!!
@@ -228,10 +231,15 @@ getResourceData: function(){
 					dbRes=this.dbEdit.getResourceData();
 				    me=this;
  						//Saving map template if dirty
-					if(this.dbEdit.templateDirty){
+					if(this.dbEdit.templateDirty && skipTemplate){
+							if(!this.template)this.template=this.dbEdit.templateResource;
 							this.template.blob= pr.write(this.dbEdit.template,true);
 							var tmpRes= this.template;
-							 parent.forceUpdate(tmpRes.id,tmpRes.blob,function(response){},function(response){});
+							parent.setLoading(true, parent.loadingMessage);
+							 parent.forceUpdate(tmpRes.id,tmpRes.blob,function(response){
+							 },function(response){
+							    
+							 });
 							 };
                 
                     mobRes=this.mobEdit.getResourceData();
@@ -254,10 +262,15 @@ loadResourceData: function(resource){
 					var templateId=null;
 					var	parent =this.findParentByType('mxp_geostoreresourceform');
   					if(parent && parent.general  && parent.general.getForm()){
-  					var catField=parent.general.getForm().getFieldValues();
-  					if(catField['attribute.templateId']) templateId= catField['attribute.templateId'];
+  						var field=parent.general.getForm().findField( 'attribute.templateId' );
+
+  						
+  					if(field) templateId= field.getValue();
  					}
+					 if(parent)
+					 this.dbEdit.rForm=parent;
 					 // Try to load template resource
+
        				if(parent.resourceManager && templateId && templateId.length>0){
        					parent.setLoading(true, this.loadingMessage);
             			var me =this;

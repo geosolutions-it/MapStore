@@ -93,12 +93,14 @@
         },
         "attributeFields":[{
                     "xtype":"textfield",
-                    "disabled":true,
+                    "readOnly":true,
                      "id":"attribute.templateId",
                      "anchor":'95%',
                      "fieldLabel": "Template Id",
                      "name":"attribute.templateId"
-         }],
+         }
+         
+         ],
         "resourceEditor":{
             "xtype":"mxp_gc_resource_editor",
             "ref":"/missionResEdit",

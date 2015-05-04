@@ -50,7 +50,7 @@
     	this.store = {
 	        xtype: "jsonstore",
 	        root: 'results',
-	        autoLoad: true,
+	        autoLoad: false,
 	        totalProperty: 'totalCount',
 	        successProperty: 'success',
 	        idProperty: 'id',

@@ -231,7 +231,7 @@ this.dbstore.addEvents(
 //il combobox che contiene la lista daelle sorgenti disponibili  //se mi passono il layer devo settarelo come visisbile e scaricare gli attributi
 this.comboSource = new Ext.form.ComboBox({
   	xtype:'combo',
-  	fieldLabel:this.selectDbLabel,
+  	
   	typeAhead:false,
     store:this.dbstore,
     displayField: 'name',
@@ -283,10 +283,7 @@ this.comboSource = new Ext.form.ComboBox({
             		if(this.isLoaded){
             			
             			
-            			
             		}
-            		
-            		
             		
             	},		
                scope:this
@@ -419,6 +416,69 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
         autoExpandColumn: "name"
  	
    };
+   
+  var comboTemplate= {
+        xtype: 'compositefield',
+        items: [
+            {
+                  xtype:"label",
+                  text:this.selectDbLabel,
+                  width: 80,
+                  style: {
+                marginTop: '3px',
+               
+                }
+            },
+        this.comboSource,
+              {
+                  xtype:"label",
+                  text:"Template",
+                  width: 130,
+                  ref:"../../comboTemplateLabel",
+                  style: {
+                marginTop: '3px',
+               
+                 marginLeft: '30px'
+            },
+              },{
+                xtype: "msm_templatecombobox",
+                width: 175,
+                allowBlank: true, 
+               ref:"../../comboTemplate",
+                templatesCategoriesUrl:'',
+                auth: userInfo.token,
+                listeners: { 
+                    
+                    select:function( combo, record, index ){
+                      var field=this.rForm.general.getForm().findField( 'attribute.templateId' );
+                        field.setValue(record.get('id'));
+                        this.rForm.setLoading(true, this.loadingMessage);
+                        var me =this;
+                        this.rForm.resourceManager.findByPk(record.get('id'), 
+                //Full Resource Load Success
+                        function(data){ 
+                        if(data){
+                            me.templateResource=data;
+                            me.template = data.blob;
+                            me.comboTemplate.hide();
+                            me.comboTemplateLabel.hide();
+                            var pr=new  OpenLayers.Format.JSON();
+                            me.template= pr.read(me.template);
+                            me.getTemplateConfigPlugin();
+                             me.addTemplateValuesSop(me.sop_fieldStore);
+                             me.addTemplateValuesSeg(me.seg_fieldStore);
+    
+                }
+                me.rForm.setLoading(false);
+                    //TODO load visibility
+                },{full:true});
+                    },
+                    scope: this
+                }
+    }
+    ]};
+   
+   
 //Creo il pannello principale che contiene la mission db
 //TODO::sistmare layout delle grid con i parametri per ora sono una sopra l'altra
 
@@ -433,13 +493,14 @@ this.autoScroll=true;
 			  {
 			  	 xtype: 'panel',
 			  	 frame:true,
-			  	 layout:'form',
+			  	 layout:'fit',
 			  	 anchor:'100%, 10%',
 
 			  	 border: false,
 			  	 items:[
-			  	 this.comboSource ]
-			  	 },{
+			  	 comboTemplate ]
+			  	 },
+			  	 {
 			  	 	xtype: 'panel',
 			  	 	frame:true,
 			  	 	anchor:'100%, 90%',
@@ -607,11 +668,17 @@ this.autoScroll=true;
     loadResourceData: function(resource,template){
     			s_seg=resource;
                 if(template){
-                    
+                   this.comboTemplate.hide();
+                   this.comboTemplateLabel.hide();
                 	var pr=new  OpenLayers.Format.JSON();
     				this.template= pr.read(template);
     				this.getTemplateConfigPlugin();
                 	}
+                	else{
+                	     
+                	    this.comboTemplate.getStore().proxy.setUrl(this.rForm.geoStoreBase + '/extjs/search/category'+ "/TEMPLATE",true);
+                	    
+                	    }
     			//Se esiste schema recupero ed inizializzo
     			//Non ho altro da fare perchè tutte le info le recupero dallo stor
 	    		if(s_seg && s_seg.typeName && this.typeName!=s_seg.typeName ){	
@@ -663,17 +730,18 @@ setGcFeatureGrid:function(){
 setGcSegGrid:function(){
     var newMF=this.getMainFields(this.seg_fieldStore);
     var mF= this.gcSegGrid.mainFields;
-    if(!mF ||  newMF.lenght!=mF.lenght){
+    if(!mF ||  newMF.length!=mF.length){
         this.templateDirty=true;
         this.gcSegGrid.mainFields=newMF;
     }else{
-        for (var key in newMF){
+    	var me=this;
+        Object.keys(newMF).forEach(function(key){
             if(mF.indexOf(newMF[key])==-1){
-                this.templateDirty=true;
-                this.gcSegGrid.mainFields=newMF;
-                break;
+                me.templateDirty=true;
+                me.gcSegGrid.mainFields=newMF;
+                return false;
              }
-        }
+        });
     }
     var cConf=this.gcSegGrid.colConfig;
     var newConf=this.getColConfig(this.gcSegGrid.mainFields,this.gcFeatureEditor.propertyNames);
@@ -682,7 +750,7 @@ setGcSegGrid:function(){
         this.gcSegGrid.colConfig=newConf;
     }else{
         for (var key in newConf){
-            if(newConf[key]!= cConf[key]){
+            if(!cConf[key] || newConf[key].header!= cConf[key].header){
                 this.templateDirty=true;
                 this.gcSegGrid.colConfig=newConf;
                 break;
@@ -700,22 +768,25 @@ setHistoryGrid:function(){
         this.templateDirty=true;
         this.gcHistoryGrid.ignoreFields=newHistIgnore;
     }else{
-        for (var key in newHistIgnore){
+    	var me=this;
+        Object.keys(newHistIgnore).forEach(function(key){
             if(hIgnore.indexOf(newHistIgnore[key])==-1){
-                this.templateDirty=true;
-                this.gcHistoryGrid.ignoreFields=newHistIgnore;
-                break;
+                me.templateDirty=true;
+                me.gcHistoryGrid.ignoreFields=newHistIgnore;
+                return false;
              }
-        }
+        })
+
     }
     var cConf=this.gcHistoryGrid.colConfig;
+
     var newConf=this.getHistoryColConfig(this.gcFeatureEditor.propertyNames);
     if(!cConf || Object.keys(newConf).length != Object.keys(cConf).length){
         this.templateDirty=true;
         this.gcHistoryGrid.colConfig=newConf;
     }else{
         for (var key in newConf){
-            if(newConf[key]!= cConf[key]){
+            if(!cConf[key]||newConf[key].header!= cConf[key].header){
                 this.templateDirty=true;
                 this.gcHistoryGrid.colConfig=newConf;
                 break;
@@ -732,13 +803,14 @@ setSopGrid:function(){
         this.templateDirty=true;
         this.gcSopGrid.ignoreFields=newSopIgnore;
     }else{
-        for (var key in newSopIgnore){
+    	var me=this;
+    	 Object.keys(newSopIgnore).forEach(function(key){
             if(sIgnore.indexOf(newSopIgnore[key])==-1){
-                this.templateDirty=true;
-                this.gcSopGrid.ignoreFields=newSopIgnore;
-                break;
+                me.templateDirty=true;
+                me.gcSopGrid.ignoreFields=newSopIgnore;
+                return false;
              }
-        }
+        });
     } 
     var np=this.getSopPropertyNames(this.sop_fieldStore);
     var p=this.gcSopGrid.propertyNames;
@@ -747,7 +819,7 @@ setSopGrid:function(){
         this.gcSopGrid.propertyNames=np;
      }else{
          for (var key in np){
-             if(np[key]!= p[key]){
+             if(!p[key]||np[key].header!= p[key].header){
                  this.templateDirty=true;
                  this.gcSopGrid.propertyNames=np;
                  break;
