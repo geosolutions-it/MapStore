@@ -44,24 +44,29 @@ gxp.plugins.npa.CartGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
 
         var data = row.data;
         // a function to query all parts of a selected product.
-        var queryFun = function(record, recordId){
+        var queryFun = function(record, recordId) {
             return record.data.servicename == data.servicename &&
-                   record.data.identifier  == data.identifier;
+                record.data.identifier == data.identifier;
         };
 
         // get an array of formatted record from query results
-        var getRecordArray = function(queryStoreResults){
+        var getRecordArray = function(queryStoreResults) {
             var storeFieldList = this.cartGrid.getStore().fields.keys;
             var recordList = [];
-            for(var i=0; i<queryStoreResults.items.length; i++){
+            for (var i = 0; i < queryStoreResults.items.length; i++) {
                 var item = queryStoreResults.items[i].data;
                 var record = {};
-                for(var j=0; j<storeFieldList.length; j++){
+                for (var j = 0; j < storeFieldList.length; j++) {
                     var fieldName = storeFieldList[j];
-                    switch (fieldName){
-                        case 'bounds': record[fieldName] = item.feature.geometry.getBounds(); break;
-                        case 'id': record[fieldName] = item.fid; break;
-                        default: record[fieldName] = item[fieldName];
+                    switch (fieldName) {
+                        case 'bounds':
+                            record[fieldName] = item.feature.geometry.getBounds();
+                            break;
+                        case 'id':
+                            record[fieldName] = item.fid;
+                            break;
+                        default:
+                            record[fieldName] = item[fieldName];
                     }
                 }
                 recordList.push(record);
@@ -73,10 +78,10 @@ gxp.plugins.npa.CartGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         var recordsToAdd = getRecordArray.call(this, srcStore.queryBy(queryFun));
 
         // removes the records that are already listed in cart
-        for (var rIndex=0; rIndex<recordsToAdd.length; rIndex++){
+        for (var rIndex = 0; rIndex < recordsToAdd.length; rIndex++) {
             var alreadyExistRecord = this.cartGrid.getStore().getById(recordsToAdd[rIndex].id);
-            if(alreadyExistRecord != undefined)
-                recordsToAdd.splice(rIndex,1);
+            if (alreadyExistRecord != undefined)
+                recordsToAdd.splice(rIndex, 1);
         }
 
         //sorts records by product-identifier and feature-id and lists they in cart grid.
@@ -84,7 +89,7 @@ gxp.plugins.npa.CartGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         this.cartGrid.getStore().sort([{
             field: 'identifier',
             direction: 'ASC'
-        },{
+        }, {
             field: 'id',
             direction: 'ACS'
         }]);
@@ -160,8 +165,65 @@ gxp.plugins.npa.CartGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
 
                 handler: function(btn) {
                     var recs = sm.getSelections();
-                    if (recs.length > 0)
-                        Ext.MessageBox.alert('Downloading...', 'still to be implemented.');
+                    if (recs.length > 0) {
+                        // requestBody structure:
+                        // {
+                        //     serivename_0: {
+                        //         identifier_0-0: [filepath_0-0-0, filepath_0-0-1, ..., filepath_0-0-n],
+                        //         identifier_0-1: [filepath_0-1-0, filepath_0-1-1, ..., filepath_0-1-m],
+                        //         ...
+                        //         identifier_0-x: [filepath_0-x-0, filepath_0-x-1, ..., filepath_0-0-y]
+                        //     },
+                        //     ...
+                        // }
+                        //
+                        // selected items are grouped by identifiers and
+                        // identifiers are gouped by servicenames
+                        var requestBody = {};
+                        for (var r = 0; r < recs.length; r++) {
+                            var recServiceId = recs[r].data.servicename;
+                            if (!requestBody[recServiceId])
+                                requestBody[recServiceId] = {};
+
+                            var recProdId = recs[r].data.identifier;
+                            if (!requestBody[recServiceId][recProdId])
+                                requestBody[recServiceId][recProdId] = [];
+
+                            var recDownloadFilePath = recs[r].data.outfilelocation;
+                            requestBody[recServiceId][recProdId].push(recDownloadFilePath);
+                        }
+                        var win = new Ext.Window({
+                            title: 'Download data - Request payload',
+                            modal: true,
+                            layout: 'fit',
+                            height: 400,
+                            width: 400,
+                            items: [{
+                                xtype: 'textarea',
+                                readOnly: true,
+                                value: Ext.util.JSON.encode(requestBody)
+                            }],
+                            buttons: [{
+                                text: 'Ok',
+                                handler: function(btn){
+                                    btn.ownerCt.ownerCt.close();
+                                }
+                            }]
+                        });
+                        win.show();
+                        Ext.Ajax.request({
+                            method: 'POST',
+                            url: 'ajax_demo/sample.json',
+                            jsonData: requestBody,
+                            success: function(response, opts) {
+                                var obj = Ext.decode(response.responseText);
+                                console.dir(obj);
+                            },
+                            failure: function(response, opts) {
+                                console.log('server-side failure with status code ' + response.status);
+                            }
+                        });
+                    }
                 },
                 scope: this
             }, '-', {
