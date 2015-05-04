@@ -328,6 +328,7 @@
             "id": "productFeatureManager",
             "autoLoadFeatures": true,
             "remoteSort": true,
+            "sortBy":["servicename", "identifier"],
             "forceMultiple": true,
             "autoSetLayer": false,
             "format": "JSON",
