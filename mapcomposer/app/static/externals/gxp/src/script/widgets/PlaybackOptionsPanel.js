@@ -64,6 +64,7 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
     daysText: 'Days',
     monthsText: 'Months',
     yearsText: 'Years',
+	wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/ows",
 
     /** private: method[initComponent]
      */
@@ -411,53 +412,54 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
             }
 
             if ((lyr.dimensions && lyr.dimensions.time) || (lyr.metadata.timeInterval && lyr.metadata.timeInterval.length)) {
+				if (newVal !== 23040){
+					if (lyr.options.toUpdate) {
+						var newLayer = lyr.options.stationPrefix + newVal + '_web';
 
-                if (lyr.options.toUpdate) {
-                    var newLayer = lyr.options.stationPrefix + newVal + '_web';
+						app.mapPanel.map.removeLayer(lyr);
 
-                    app.mapPanel.map.removeLayer(lyr);
+						var resources = [];
 
-                    var resources = [];
+						resources.push({
+							msLayerTitle: lyr.name,
+							msLayerName: newLayer,
+							msGroupName: "Stazioni Meteorologiche",
+							wmsURL: this.wmsURL,
+							format: "image/png8",
+							customParams: {
+								style: [lyr.params.STYLES],
+								styles: [lyr.params.STYLES],                                                
+								toUpdate: lyr.toUpdate,
+								stationPrefix: lyr.stationPrefix,
+								tiled: false,
+								zoomToExtent: false,
+								visibility: lyr.visibility,
+								allowRange: ("allowRange" in lyr) ? lyr.allowRange : false,
+								getGraph: lyr.options.stationPrefix === "raf" ? false : true,
+								graphTable: newLayer,
+								graphAttribute: ["prec_mm"],
+								cumulative: true,
+								tabCode: "id"
+								
+							}
+						});
+						
+						addLayer.addLayer(
+							resources
+						);
 
-                    resources.push({
-                        msLayerTitle: lyr.name,
-                        msLayerName: newLayer,
-                        msGroupName: "Stazioni Meteorologiche",
-                        wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/ows",
-                        format: "image/png8",
-                        customParams: {
-                            style: [lyr.params.STYLES],
-                            styles: [lyr.params.STYLES],                                                
-                            toUpdate: lyr.toUpdate,
-                            stationPrefix: lyr.stationPrefix,
-                            tiled: false,
-                            zoomToExtent: false,
-                            visibility: lyr.visibility,
-                            allowRange: ("allowRange" in lyr) ? lyr.allowRange : false,
-                            getGraph: lyr.options.stationPrefix === "raf" ? false : true,
-                            graphTable: newLayer,
-                            graphAttribute: ["prec_mm"],
-                            cumulative: true,
-                            tabCode: "id"
-                            
-                        }
-                    });
-                    
-                    addLayer.addLayer(
-                        resources
-                    );
+						this.timeManager.setNow(this.timeManager.currentTime);
 
-                    timeManager.setNow(timeManager.currentTime);
+					} else {
 
-                } else {
+						this.timeManager.setNow(this.timeManager.currentTime);
 
-                    timeManager.setNow(timeManager.currentTime);
-
-                }
+					}
+				}
 
             }
 
-        });
+        },this);
 
         var updatableAreaAllerta = app.mapPanel.map.getLayersBy("isAreaAllerta", true);
         
@@ -465,40 +467,41 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
 
             if ((lyr.dimensions && lyr.dimensions.time) || (lyr.metadata.timeInterval && lyr.metadata.timeInterval.length)) {
 
-                var newLayer = lyr.options.stationPrefix + newVal + '_web_allerta';
+				if (newVal !== 5 && newVal !== 23040){
+					var newLayer = lyr.options.stationPrefix + newVal + '_web_allerta';
 
-                app.mapPanel.map.removeLayer(lyr);
+					app.mapPanel.map.removeLayer(lyr);
 
-                var resources = [];
+					var resources = [];
 
-                resources.push({
-                    msLayerTitle: lyr.name,
-                    msLayerName: newLayer,
-                    msGroupName: "Elaborazioni Aree di Allerta",
-                    wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/ows",
-                    format: "image/png8",
-                    customParams: {
-                        style: [lyr.params.STYLES],
-                        styles: [lyr.params.STYLES],                        
-                        toUpdate: lyr.toUpdate,
-                        stationPrefix: lyr.stationPrefix,
-                        isAreaAllerta: lyr.isAreaAllerta,
-                        tiled: false,
-                        zoomToExtent: false,
-                        visibility: lyr.visibility,
-                        allowRange: ("allowRange" in lyr) ? lyr.allowRange : false
-                    }
-                });
-            
-                addLayer.addLayer(
-                    resources
-                );
+					resources.push({
+						msLayerTitle: lyr.name,
+						msLayerName: newLayer,
+						msGroupName: "Elaborazioni Aree di Allerta",
+						wmsURL: this.wmsURL,
+						format: "image/png8",
+						customParams: {
+							style: [lyr.params.STYLES],
+							styles: [lyr.params.STYLES],                        
+							toUpdate: lyr.toUpdate,
+							stationPrefix: lyr.stationPrefix,
+							isAreaAllerta: lyr.isAreaAllerta,
+							tiled: false,
+							zoomToExtent: false,
+							visibility: lyr.visibility,
+							allowRange: ("allowRange" in lyr) ? lyr.allowRange : false
+						}
+					});
+				
+					addLayer.addLayer(
+						resources
+					);
 
-                timeManager.setNow(timeManager.currentTime);
-
+					this.timeManager.setNow(this.timeManager.currentTime);
+				}
             }
 
-        });        
+        },this);        
 
     },
 
@@ -595,8 +598,8 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.form.FieldSet, {
         
         var combo = this.stepValueField;
         combo.setValue(60);
-        var record = combo.getStore().getAt(1);
-        combo.fireEvent('select',combo,record,1);
+        var record = combo.getStore().getAt(2);
+        combo.fireEvent('select',combo,record,2);
         
     }
 });

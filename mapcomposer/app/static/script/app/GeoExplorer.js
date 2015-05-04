@@ -1490,10 +1490,17 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             while ((m = r.exec(s)) != null) {
               step = m[0];
             }                                   
+			
+			//to update weather stations and highlight
+			//default step 1 and default valStep H
+			if (layer.params && layer.params.LAYERS.indexOf("_web") !== -1){
+				step = 1;
+				valStep = "H";
+			}else{
+				step = step == 2 ? "16" : step;
+				valStep = valStep.slice(-1);
+			}
             
-            step = step == 2 ? "16" : step;
-        
-            valStep = valStep.slice(-1);
             switch(valStep){
                 case 'D':
                     tempSecondCheck = step * 86400;
@@ -1565,7 +1572,15 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         if(setNowTime === true){
             timeManager.currenttime(false,false);
         }
-        
+		
+		//to update weather stations and highlight
+		var timeOptionsPanel = Ext.getCmp("realTimePanelID");
+		var combo = timeOptionsPanel.optionsPanel.stepValueField;
+		combo.setValue(timeStep);
+		var index = combo.getStore().find( "field1", timeStep);
+		var record = combo.getStore().getAt(index);
+		combo.fireEvent('select',combo,record,2);
+		
         //set startDate and endDate of playbackOptionsPanel                        
         playback.populateTimeOptionsPanel();
         
@@ -1606,7 +1621,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             // Setting the Group
             //
             if(resource.wmsURL.indexOf("ARW") != -1 || resource.wmsURL.indexOf("GFS") != -1){
-                resource.msGroupName = "MODELLI";
+                resource.msGroupName = "Modelli Atmosfera";
             }else if(resource.wmsURL.indexOf("MSG") != -1){
                 resource.msGroupName = "SATELLITE";
             }else if(resource.wmsURL.indexOf("NDVI") != -1){

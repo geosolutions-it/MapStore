@@ -82,7 +82,7 @@ gxp.plugins.ZoomToTimeExtent = Ext.extend(gxp.plugins.Tool, {
                     records.push({
                         record: layer
                     });
-                    
+					
                     //Sets time parameter for added layers 
                     app.addTemporalLayers(records);
                     
