@@ -424,7 +424,9 @@
                 },
                 "propertyNames": {
                     "servicename": "ServiceID",
-                    "time": "Time"
+                    "time": "Time",
+                    "numoilspill": "# Oil Spill",
+                    "numshipdetect": "# Ship Detect"
                 },
                 "timeFormat": "g:i:s A"
             },
