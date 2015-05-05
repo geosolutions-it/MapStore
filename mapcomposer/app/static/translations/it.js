@@ -875,7 +875,7 @@ GeoExt.Lang.add("it", {
         nextLabel: "Avanti",
         nextTooltip: "Avanza di uno step",
         resetLabel: "Reset",
-        resetTooltip: "Tutto l'intervallo",
+        resetTooltip: "Fine intervallo temporale",
         loopLabel: "Loop",
         loopTooltip: "Animazione continua",
         normalTooltip: "Ritorno alla riproduzione normale",
@@ -910,5 +910,11 @@ GeoExt.Lang.add("it", {
 	
 	"gxp.plugins.StaticPage.prototype": {
         tabTitle: "Pagina Statica"
+    },
+    
+    "gxp.plugins.ZoomToTimeExtent.prototype": {
+        menuText: "Zoom estensione temporale del layer selezionato",
+        tooltip: "Zoom estensione temporale del layer selezionato",
+        layerTimeAlert: "Il livello selezionato non ha estensione temporale"        
     }
 });

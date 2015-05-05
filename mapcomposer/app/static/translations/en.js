@@ -896,5 +896,11 @@ GeoExt.Lang.add("en", {
 	
 	"gxp.plugins.StaticPage.prototype": {
         tabTitle: "Static Page"
-    }
+    },
+    
+    "gxp.plugins.ZoomToTimeExtent.prototype": {
+        menuText: "Zoom To Time Extent",
+        tooltip: "Zoom To Time Extent",
+        layerTimeAlert: "The selected Layer has no temporal dimension"        
+    } 
 });

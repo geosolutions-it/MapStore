@@ -18,11 +18,17 @@
 		"ol": {
 			"ptype": "gxp_olsource"
 		},
-	    "LaMMA_Stazioni": {
+	    "lamma_stazioni": {
 			"ptype": "gxp_wmssource",
-			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/ows",               
-			"title": "LaMMA Stazioni" 
-
+			"url": "http://geoportale.lamma.rete.toscana.it/geoserver/lamma_stazioni/ows",
+			"title": "LaMMA Stazioni",
+			"SRS": "EPSG:4326",
+			"version": "1.1.1",
+			"loadingProgress": true,
+			"layerBaseParams": {
+				"FORMAT": "image/png8",
+				"TILED": false
+			}
 		}, 
 		"LaMMA_confini": {
 				"ptype": "gxp_wmssource",
@@ -107,6 +113,14 @@
 					"None", {"visibility": false}
 				]
 			},{
+			   "group":"SATELLITE"
+			},{
+			   "group":"MODELLI"
+			},{
+			   "group":"RADAR"
+			},{
+			   "group":"NDVI"
+			},{
 			   "format":"image/png",
 			   "group": "Limiti Mondiali",
 			   "name":"confini_mondiali_stati",
@@ -166,186 +180,250 @@
 			   "srs":"EPSG:900913",
 			   "queryable": false,
 			   "displayInLayerSwitcher": true
-			},{
-			   "group":"SATELLITE"
-			},{
-			   "group":"MODELLI"
-			},{
-			   "group":"NDVI"
-			},{
-			   "format":"image/png8",
-			   "group":"Stazioni",
-			   "name":"temperatura",
-			   "opacity":0.9,
-			   "selected":false,
-			   "tiled":false,                       
-			   "source":"LaMMA_Stazioni", 
-			   "styles":["temperatura"],
-			   "style":["temperatura"],
-			   "title":"Temperatura (°C) freq. oraria",
-			   "transparent":true,
-			   "visibility":true,
-			   "ratio":1,
-			   "srs":"EPSG:900913",
-			   "getGraph": true,
-			   "graphTable": "temperatura",
-			   "graphAttribute": ["temp_c"],
-			   "cumulative": false,                        
-			   "elevation":"0.0",
-			   "displayOutsideMaxExtent": true,
-			   "restrictedExtent": [1075735.7826,5192220.48427,1381771.78301,5538868.79933]
-			},{
-			   "format":"image/png8",
-			   "group":"Stazioni",
-			   "name":"umidita",
-			   "opacity":0.9,
-			   "selected":false,
-			   "tiled":false,                       
-			   "source":"LaMMA_Stazioni", 
-			   "styles":["umidita"],
-			   "style":["umidita"],
-			   "title":"Umidita relativa (%) freq. oraria",
-			   "transparent":true,
-			   "visibility":false,
-			   "ratio":1,
-			   "srs":"EPSG:900913",
-			   "getGraph": true,
-			   "graphTable": "umidita",
-			   "graphAttribute": ["umid_per"],                       
-			   "elevation":"0.0",
-			   "displayOutsideMaxExtent": true,
-			   "restrictedExtent": [1075735.7826,5192220.48427,1381771.78301,5538868.79933]
-			},{
-			   "format":"image/png8",
-			   "group":"Stazioni",
-			   "name":"temp_rugiada",
-			   "opacity":0.9,
-			   "selected":false,
-			   "tiled":false,                       
-			   "source":"LaMMA_Stazioni", 
-			   "styles":["temperatura_rug"],
-			   "style":["temperatura_rug"],
-			   "title":"Temperatura di rugiada (°C) freq. oraria",
-			   "transparent":true,
-			   "visibility":false,
-			   "ratio":1,
-			   "srs":"EPSG:900913",
-			   "getGraph": true,
-			   "graphTable": "temp_rugiada",
-			   "graphAttribute": ["trug_c"],                       
-			   "elevation":"0.0",
-			   "displayOutsideMaxExtent": true,
-			   "restrictedExtent": [1075735.7826,5192220.48427,1381771.78301,5538868.79933]
-			},{
-			   "format":"image/png8",
-			   "group":"Stazioni",
-			   "name":"vento",
-			   "opacity":0.9,
-			   "selected":false,
-			   "tiled":false,                       
-			   "source":"LaMMA_Stazioni", 
-			   "styles":["vento"],
-			   "style":["vento"],
-			   "title":"Vento - velocità (m/s) e direzione (°) freq. oraria",
-			   "transparent":true,
-			   "visibility":false,
-			   "ratio":1,
-			   "srs":"EPSG:900913",
-			   "getGraph": true,
-			   "graphTable": "vento",
-			   "graphAttribute": ["vven_ms","dven_gr"],
-			   "elevation":"0.0",
-			   "displayOutsideMaxExtent": true,
-			   "restrictedExtent": [1075735.7826,5192220.48427,1381771.78301,5538868.79933]
-			},{
-			   "format":"image/png8",
-			   "group":"Stazioni",
-			   "name":"pressione",
-			   "opacity":0.9,
-			   "selected":false,
-			   "tiled":false,                       
-			   "source":"LaMMA_Stazioni", 
-			   "styles":["pressione"],
-			   "style":["pressione"],
-			   "title":"Pressione s.l.m. (hPa) - freq. oraria",
-			   "transparent":true,
-			   "visibility":false,
-			   "ratio":1,
-			   "srs":"EPSG:900913",
-			   "getGraph": true,
-			   "graphTable": "pressione",
-			   "graphAttribute": ["pres_hpa"],
-			   "elevation":"0.0",
-			   "displayOutsideMaxExtent": true,
-			   "restrictedExtent": [1075735.7826,5192220.48427,1381771.78301,5538868.79933]
-			},{
-			   "format":"image/png8",
-			   "group":"Stazioni",
-			   "name":"pioggia360",
-			   "opacity":0.9,
-			   "selected":false,
-			   "tiled":false,                       
-			   "source":"LaMMA_Stazioni", 
-			   "styles":["heatmap_pioggia"],
-			   "style":["heatmap_pioggia"],
-			   "title":"Pioggia cum. 6 h (mm)",
-			   "transparent":true,
-			   "visibility":false,
-			   "ratio":1,
-			   "srs":"EPSG:900913",
-			   "getGraph": true,
-			   "graphTable": "pioggia360",
-			   "graphAttribute": ["prec_mm"],
-			   "cumulative": true, 
-			   "elevation":"0.0",
-			   "displayOutsideMaxExtent": true,
-			   "restrictedExtent": [1075735.7826,5192220.48427,1381771.78301,5538868.79933]
-			},{
-			   "format":"image/png8",
-			   "group":"Stazioni",
-			   "name":"pioggia60",
-			   "opacity":0.9,
-			   "buffer": 2,
-			   "selected":false,
-			   "tiled":false,
-			   "source":"LaMMA_Stazioni", 
-			   "styles":["heatmap_pioggia"],
-			   "style":["heatmap_pioggia"],
-			   "title":"Pioggia cum. 1 h (mm)",
-			   "transparent":true,
-			   "visibility":false,
-			   "ratio":1,
-			   "srs":"EPSG:900913",
-			   "getGraph": true,
-			   "graphTable": "pioggia60",
-			   "graphAttribute": ["prec_mm"],
-			   "cumulative": true,                        
-			   "elevation":"0.0",
-			   "displayOutsideMaxExtent": true,
-			   "restrictedExtent": [1075735.7826,5192220.48427,1381771.78301,5538868.79933]
-			},{
-			   "format":"image/png8",
-			   "group":"Stazioni",
-			   "name":"pioggia15",
-			   "opacity":0.9,
-			   "selected":false,
-			   "tiled":false,                       
-			   "source":"LaMMA_Stazioni", 
-			   "styles":["heatmap_pioggia"],
-			   "style":["heatmap_pioggia"],
-			   "title":"Pioggia cum. 15min (mm)",
-			   "transparent":true,
-			   "visibility":false,
-			   "ratio":1,
-			   "srs":"EPSG:900913",
-			   "getGraph": true,
-			   "graphTable": "pioggia15",
-			   "graphAttribute": ["prec_mm"],
-			   "cumulative": true, 
-			   "elevation":"0.0",
-			   "displayOutsideMaxExtent": true,
-			   "restrictedExtent": [1075735.7826,5192220.48427,1381771.78301,5538868.79933]
-			}
+			},
+		{
+			"toUpdate": false,
+            "isAreaAllerta": true,
+            "stationPrefix": "prec",            
+			"format": "image/png8",
+			"group": "Elaborazioni Aree di Allerta",
+			"name": "prec60_web_allerta",
+			"opacity": 1.0,
+			"selected": false,
+			"tiled": false,
+			"source": "lamma_stazioni",
+			"styles": ["pavg_mm_allerta"],
+			"style": ["pavg_mm_allerta"],            
+			"title": "Pioggia AVG (mm)",
+			"transparent": true,
+			"visibility": false,
+			"ratio": 1,
+			"elevation": "0.0",
+			"displayOutsideMaxExtent": true
+		},
+		{
+			"toUpdate": false,
+            "isAreaAllerta": true,
+            "stationPrefix": "prec",               
+			"format": "image/png8",
+			"group": "Elaborazioni Aree di Allerta",
+			"name": "prec60_web_allerta",
+			"opacity": 1.0,
+			"selected": false,
+			"tiled": false,
+			"source": "lamma_stazioni",
+			"styles": ["pmax_mm_allerta"],
+			"style": ["pmax_mm_allerta"],             
+			"title": "Pioggia MAX (mm)",
+			"transparent": true,
+			"visibility": false,
+			"ratio": 1,
+			"elevation": "0.0",
+			"displayOutsideMaxExtent": true
+		},
+        {
+			"toUpdate": false,        
+			"format": "image/png8",
+			"group": "Stazioni Meteorologiche",
+			"name": "temp15_web",
+			"opacity": 1.0,
+			"selected": false,
+			"tiled": false,
+			"source": "lamma_stazioni",
+			"styles": ["temperatura"],
+			"style": ["temperatura"],
+			"title": "Temperatura (°C)",
+			"transparent": true,
+			"visibility": false,
+			"ratio": 1,
+			"getGraph": true,
+			"graphTable": "temp15_web",
+			"graphAttribute": ["temp_c"],
+			"cumulative": false,
+			"tabCode": "id",
+			"elevation": "0.0",
+			"displayOutsideMaxExtent": true
+		},
+		{
+            "toUpdate": false, 
+			"format": "image/png8",
+			"group": "Stazioni Meteorologiche",
+			"name": "pres15_web",
+			"opacity": 1.0,
+			"selected": false,
+			"tiled": false,
+			"source": "lamma_stazioni",
+			"styles": ["pressione"],
+			"style": ["pressione"],
+			"title": "Pressione s.l.m. (hPa)",
+			"transparent": true,
+			"visibility": false,
+			"ratio": 1,
+			"getGraph": true,
+			"graphTable": "pres15_web",
+			"graphAttribute": ["pres_hpa"],
+			"cumulative": false,
+			"tabCode": "id",
+			"elevation": "0.0",
+			"displayOutsideMaxExtent": true
+		},
+		{
+            "toUpdate": false, 
+			"format": "image/png8",
+			"group": "Stazioni Meteorologiche",
+			"name": "ven15_web",
+			"opacity": 1.0,
+			"selected": false,
+			"tiled": false,
+			"source": "lamma_stazioni",
+			"styles": ["vento"],
+			"style": ["vento"],
+			"title": "Vento - velocità (m/s) e direzione (°)",
+			"transparent": true,
+			"visibility": false,
+			"ratio": 1,
+			"getGraph": true,
+			"graphTable": "ven15_web",
+			"graphAttribute": ["vven_ms",
+			"dven_gr"],
+			"cumulative": false,
+			"tabCode": "id",
+			"elevation": "0.0",
+			"displayOutsideMaxExtent": true
+		},
+		{
+            "toUpdate": false, 
+			"format": "image/png8",
+			"group": "Stazioni Meteorologiche",
+			"name": "trug15_web",
+			"opacity": 1.0,
+			"selected": false,
+			"tiled": false,
+			"source": "lamma_stazioni",
+			"styles": ["temperatura_rug"],
+			"style": ["temperatura_rug"],
+			"title": "Temperatura di rugiada (°C)",
+			"transparent": true,
+			"visibility": false,
+			"ratio": 1,
+			"getGraph": true,
+			"graphTable": "trug15_web",
+			"graphAttribute": ["trug_c"],
+			"cumulative": false,
+			"tabCode": "id",
+			"elevation": "0.0",
+			"displayOutsideMaxExtent": true
+		},
+		{
+            "toUpdate": false, 
+			"format": "image/png8",
+			"group": "Stazioni Meteorologiche",
+			"name": "umid15_web",
+			"opacity": 1.0,
+			"selected": false,
+			"tiled": false,
+			"source": "lamma_stazioni",
+			"styles": ["umidita"],
+			"style": ["umidita"],
+			"title": "Umidita relativa (%)",
+			"transparent": true,
+			"visibility": false,
+			"ratio": 1,
+			"getGraph": true,
+			"graphTable": "umid15_web",
+			"graphAttribute": ["umid_per"],
+			"cumulative": false,
+			"tabCode": "id",
+			"elevation": "0.0",
+			"displayOutsideMaxExtent": true
+		},
+		{
+			"toUpdate": true,
+            "stationPrefix": "raf",
+			"format": "image/png8",
+			"group": "Stazioni Meteorologiche",
+			"name": "raf15_web",
+			"opacity": 1.0,
+			"selected": false,
+			"tiled": false,
+			"source": "lamma_stazioni",
+			"styles": ["raffica"],
+			"style": ["raffica"],
+			"title": "Raffica - velocità (m/s) e direzione (°)",
+			"transparent": true,
+			"visibility": false,
+			"ratio": 1,
+			"getGraph": true,
+			"graphTable": "raf15_web",
+			"graphAttribute": ["vraf_ms",
+			"draf_gr"],
+			"cumulative": false,
+			"tabCode": "id",
+			"elevation": "0.0",
+			"displayOutsideMaxExtent": true
+		},
+		{
+			"toUpdate": true,
+            "stationPrefix": "prec",
+			"format": "image/png8",
+			"group": "Stazioni Meteorologiche",
+			"name": "prec60_web",
+			"opacity": 1.0,
+			"selected": false,
+			"tiled": false,
+			"source": "lamma_stazioni",
+			"styles": ["pioggia"],
+			"style": ["pioggia"],
+			"title": "Pioggia cum.(mm)",
+			"transparent": true,
+			"visibility": true,
+			"ratio": 1,
+			"getGraph": true,
+			"graphTable": "prec60_web",
+			"graphAttribute": ["prec_mm"],
+			"cumulative": true,
+			"tabCode": "id",
+			"elevation": "0.0",
+			"displayOutsideMaxExtent": true
+		},
+		{
+			"toUpdate": false,
+            "allowRange": true,
+			"format": "image/png8",
+			"group": "Fulmini",
+			"name": "fulmini_lampinet_nn_web",
+			"opacity": 1.0,
+			"selected": false,
+			"tiled": false,
+			"source": "lamma_stazioni",
+			"styles": [],
+			"style": [],
+			"title": "Fulmini Lampinet Nube Nube",
+			"transparent": true,
+			"visibility": true,
+			"ratio": 1,
+			"elevation": "0.0",
+			"displayOutsideMaxExtent": true
+		},
+		{
+			"toUpdate": false,
+            "allowRange": true,
+			"format": "image/png8",
+			"group": "Fulmini",
+			"name": "fulmini_lampinet_tn_web",
+			"opacity": 1.0,
+			"selected": false,
+			"tiled": false,
+			"source": "lamma_stazioni",
+			"styles": [],
+			"style": [],
+			"title": "Fulmini Lampinet Terra Nube",
+			"transparent": true,
+			"visibility": true,
+			"ratio": 1,
+			"elevation": "0.0",
+			"displayOutsideMaxExtent": true
+		}
 		],
 		"center": [1250000.000000, 5375000.000000],
 		"zoom": 5				
@@ -356,7 +434,7 @@
 		"topInUnits": "m",
 		"topOutUnits": "km"
 	},
-	"removeTools": ["wmsgetfeatureinfo_menu_plugin"],
+	"removeTools": ["wmsgetfeatureinfo_menu_plugin","layertree_plugin"],
 	"customPanels": [{
 		"xtype": "tabpanel",
 		"border": false,
@@ -426,7 +504,10 @@
 			"showReport": "never",
 			"directAddLayer": false,
 			"id": "addlayer"
-	},
+	}, {
+			"actions": ["-"], 
+			"actionTarget": "paneltbar"
+    },
 	{
 			"ptype": "gxp_geolocationmenu",
 			"actionTarget": "paneltbar",
@@ -491,7 +572,7 @@
 	},
 	{
 		"ptype": "gxp_playback",
-		"id": "areeallerta_playback",
+		"id": "playback",
 		"outputTarget": "map",
 		"playbackMode": "range",
 		"showIntervals": false,
@@ -508,7 +589,45 @@
 				"frameRate": 5
 			}
 		}
-	}, 
+	}, {
+            "ptype": "gxp_nestedlayertree",
+            "id": "nestedlayertree_plugin",
+            "unshift":true,
+            "groupConfig": [
+                {
+                    "title": "<span style=\"color:#000000;font-weight: bold;\">OSSERVAZIONI E DATI</span>",
+                    "children": [
+                        {"name": "Fulmini", "title": "Fulmini"},
+                        {"name": "Stazioni Meteorologiche", "title": "Stazioni Meteorologiche"},
+						{"name": "Limiti Mondiali", "title": "Limiti Mondiali"},
+						{"name": "RADAR", "title": "RADAR"},
+						{"name": "NDVI", "title": "NDVI"}
+                    ],
+					"expanded": true,
+					"checked": true
+                },			
+                {
+                    "title": "<span style=\"color:#000000;font-weight: bold;\">OSSERVAZIONI SATELLITE</span>",
+                    "children": [
+                        {"name": "SATELLITE", "title": "SATELLITE"}
+                    ],
+					"expanded": true,
+					"checked": true
+                },
+                {
+                    "title": "<span style=\"color:#000000;font-weight: bold;\">MODELLI</span>",
+                    "children": [
+                        {"name": "Modelli Atmosfera", "title": "Modelli Atmosfera"}
+                    ],
+					"expanded": true,
+					"checked": true
+                }
+            ],					
+            "outputConfig": {
+                "id": "layertree"
+            },
+            "outputTarget": "tree"
+            }, 
 	{
 		"ptype": "gxp_resourcestatus",
 		"id": "resourcetree_plugin",
@@ -516,5 +635,8 @@
 				"id": "resourcetree"
 		},
 		"outputTarget": "west"
-	}]
+	}, {
+        "ptype": "gxp_zoomtotimeextent",
+        "actionTarget": ["tree.tbar", "layertree.contextMenu"]
+    }]
 }

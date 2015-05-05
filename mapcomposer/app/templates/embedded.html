@@ -54,8 +54,8 @@
 		<script type="text/javascript" src="translations/en.js"></script>
         <script type="text/javascript" src="translations/it.js"></script>
 		
-	    <script type="text/javascript" src="AddLayer.js"></script>
-	    <script type="text/javascript" src="WMSSource.js"></script>
+	    <!--script type="text/javascript" src="AddLayer.js"></script>
+	    <script type="text/javascript" src="WMSSource.js"></script-->
 		
 		<!-- uncomment to have  welcome screen
         <script type="text/javascript">
@@ -84,7 +84,7 @@
 			// /////////////////////////////////////////////////////
 			// Extra parameters to add layers at startup
 			// /////////////////////////////////////////////////////
-			var layName; var layTitle; var wmsurl; var gsturl; var urlformat;
+			var layName, layTitle, wmsurl, gsturl, urlformat, timeInterval;
 		
 			// ///////////////////////////////////////////////////////////////
             // Custom variables from the mapStoreConfig user configuration file 
@@ -134,6 +134,9 @@
 									break;
 						case "format":
 									urlformat = param[1];
+									break;
+						case "timeInterval":
+									timeInterval = param[1];
 									break;
 						default : 
 									//mapIdentifier = -1;
@@ -264,14 +267,20 @@
 							var addLayer = app.tools["addlayer"];
 							
 							if(addLayer){						
+                                
 								var title = layTitle ? layTitle : layName;
 								
+								// temporary setting for test purpose
+								//hname = window.location.hostname;
+								//wmsurl = "http://" + hname + "/geoserver/" +  wmsurl.split('/geoserver/')[1];
+																
 								addMSLayer([{
 									msLayerTitle: unescape(title),
 									msLayerName: unescape(layName),
 									msGroupName: undefined, // TODO: not supported yet
 									wmsURL: wmsurl,
-									format: urlformat
+									format: urlformat,
+									timeInterval: timeInterval
 								}]);
 							}else{
 								Ext.Msg.show({
@@ -282,43 +291,41 @@
 								});  
 							}
 						}
-					
+						
+						/*var resources = [{
+							format: "wms",
+							msGroupName: "MODELLO WRF-ARW a 12km - Maschera Terra - Acqua - (2015-04-21 ore 00 UTC).",
+							msLayerName: "arw_12km_Geopotential_height_tropopause_20150425T000000000Z:0.0",
+							msLayerTitle: "arw_12km_Geopotential_height_tropopause_20150425T000000000Z:0.0",
+							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/ARW_12KM_RUN00/ows",
+							timeInterval: "2015-04-25T00:00:00.000Z/2015-04-30T00:00:00.000Z"
+						}];
+                                
+                        addMSLayer(resources);*/
+						
+						/*var resources = [{
+							format: "wms",
+							msGroupName: "MODELLO WRF-ARW a 12km - Maschera Terra - Acqua - (2015-04-21 ore 00 UTC).",
+							msLayerName: "msg_rss_cvs",
+							msLayerTitle: "msg_rss_cvs",
+							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/MSG_RSS_RGB/ows"
+						}];
+                                
+                        addMSLayer(resources);*/
+						
+						/*var resources = [{							
+							format: "wms",
+							msGroupName: "NDVI_2014 runs from 2014-01-01T00:00:00 UTC to 2014-12-19T00:00:00 UTC",
+							msLayerName: "NDVI_2014",
+							msLayerTitle: "NDVI_2014",
+							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/NDVI/ows",
+							timeInterval: "2014-01-01T00:00:00.000Z/2014-12-19T00:00:00.000Z"
+						}];
+								
+						addMSLayer(resources);*/
+
 						if(bbox){
 							app.mapPanel.map.zoomToExtent(bbox);
-						}
-						
-					    //
-						// Override TimeManager behavior
-						//
-						OpenLayers.Control.TimeManager.prototype.nowtime = function(looped) {
-							this.clearTimer();
-							//this.clearTooltipTimer();
-							
-							var d = new Date();        
-							var UTC = d.getUTCFullYear() + '-'
-										+ this.pad(d.getUTCMonth() + 1) + '-'
-										+ this.pad(d.getUTCDate()) + 'T'
-										
-										+ this.pad(d.getUTCHours()) + ':'
-										+ "00" + ':'
-										+ "00" + 'Z';
-										//+ this.pad(d.getUTCMinutes()) + ':'
-										//+ this.pad(d.getUTCSeconds()) + 'Z';
-
-							currentTimeUTC = Date.fromISO( UTC ); 
-							
-							var nowStaz = this.delHours(currentTimeUTC, 2);
-							
-							var newTime = new Date(nowStaz.getTime());
-							this.setNow(newTime,"curTime");
-							this.events.triggerEvent('reset', {
-								'looped' : !!looped
-							});
-							return this.currentTime;
-						}
-						
-						OpenLayers.Control.TimeManager.prototype.delHours = function(data, ore) {
-							return new Date(data.getTime() - ore * 3600000)
 						}
                     }
                 });
@@ -330,6 +337,7 @@
 				*/
 				addMSLayer = function(resources){
 					var addLayer = app.tools["addlayer"];
+					var useCapabilities = true;
 					
 					for(var i=0; i<resources.length; i++){
 						var resource = resources[i];
@@ -341,8 +349,8 @@
 						// Setting the Style
 						//
 						var layerString = resourceName.split(":");
-						var styles;
-						var style;
+						var styles, style, timeResolution;
+						
 						if((resourceName.indexOf("Wind") != -1) && (resourceName.indexOf("gfs") != -1)){
 							styles = "wind_arrow_palette_gfs";
 							style = "wind_arrow_palette_raster_gfs"; 
@@ -362,12 +370,25 @@
 						//
 						if(resource.wmsURL.indexOf("ARW") != -1 || resource.wmsURL.indexOf("GFS") != -1){
 							resource.msGroupName = "MODELLI";
+							timeResolution = resourceName.indexOf("50km") != -1 ? "PT6H" : "PT1H";
+							useCapabilities = false;							
 						}else if(resource.wmsURL.indexOf("MSG") != -1){
 							resource.msGroupName = "SATELLITE";
 						}else if(resource.wmsURL.indexOf("NDVI") != -1){
 							resource.msGroupName = "NDVI";
+							//timeResolution = "P2W2D";
+							//useCapabilities = false;
+						}else if(resource.wmsURL.indexOf("RADAR") != -1){
+							resource.msGroupName = "default";
 						}else{
 							resource.msGroupName = "default";
+						}
+						
+						if(!useCapabilities){
+							// Trim the WMS URL removing all parameters if any
+							if(resource.wmsURL.indexOf("?") != -1){
+								resource.wmsURL = resource.wmsURL.split("?")[0];
+							}
 						}
 						
 						//
@@ -381,98 +402,62 @@
 						customParams.format = "image/png8";					
 						
 						resource.customParams = customParams;
-					}				
+						
+						if(!useCapabilities){
+							if(resource.timeInterval){
+								// Ensure an ISO Date format
+								var timeIntervalArray = resource.timeInterval.split("/");
+								for(var i=0; i<timeIntervalArray.length; i++){
+									timeIntervalArray[i] = timeIntervalArray[i].indexOf("Z") == -1 ? 
+										timeIntervalArray[i] + ".000Z" : timeIntervalArray[i];
+								}														
 								
-					addLayer.on({
-						'ready': function(records){
-							
-							// ///////////////////////////////////////////////////////////////////
-							// Calculate the time values related to the whole set of added layers 
-							// ///////////////////////////////////////////////////////////////////
-							var startDate;
-							var endDate;
-							var timeStep;
-							var timeUnits;
-							
-							for(var i=0; i<records.length; i++){
-								var record = records[i].record;
-								
-								var layer = record.get('layer');
-								
-								// /////////////////
-								// Time Intervall
-								// /////////////////
-								var layerStartTime =  OpenLayers.Date.parse(layer.metadata.timeInterval[0][0]);
-								if(!startDate){
-									startDate = layerStartTime;
-								}else if(layerStartTime.getTime() < startDate.getTime()){
-									startDate = layerStartTime;
-								}
-								
-								var layerEndTime =  OpenLayers.Date.parse(layer.metadata.timeInterval[0][1]);
-								if(!endDate){
-									endDate = layerEndTime;
-								}else if(layerEndTime.getTime() > endDate.getTime()){
-									endDate = layerEndTime;
-								}
-								
-								// ////////////
-								// Time Step
-								// ////////////
-								var valStep = layer.metadata.timeInterval[0][2];
-								var r = /\d+/g;
-								var s = valStep;
-								var step, m;
-								while ((m = r.exec(s)) != null) {
-								  step = m[0];
-								}                                   
-								
-								step = step == 2 ? "16" : step;
-								if(!timeStep || (step < timeStep)){
-									timeStep = step;
-								}
-								
-								// ////////////
-								// Time Units
-								// ////////////
-								valStep = valStep.slice(-1);
-								if(!timeUnits){
-									timeUnits = valStep;
-								}else if(timeUnits != valStep){
-									if((timeUnits == 'D' && valStep ==  'H') || (timeUnits == 'H' && valStep ==  'M')){
-										timeUnits = valStep;
+								resource.customParams.dimensions = {
+									time:{
+										name: "time",
+										units: "ISO8601",
+										unitsymbol: null,
+										nearestVal: false,
+										multipleVal: false,
+										current: false,
+										default: "current",
+										values: [timeIntervalArray.join("/") + "/" + timeResolution]
 									}
-								}					
+								};
 							}
-							
-							var timeManagers = app.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');
-							
-							timeManagers[0].step = timeStep;
-							timeManagers[0].setEnd(endDate);
-							timeManagers[0].setStart(startDate);
-							timeManagers[0].units = timeUnits;
-							timeManagers[0].fixedRange = true;
-							
-							timeManagers[0].events.triggerEvent("rangemodified"); 						
-							timeManagers[0].currenttime(startDate, false);
-							
-							/*
-							var layerName = record.get('name');
-							if(layerName.indexOf("NDVI") === -1 && layerName.indexOf("50km") === -1){
-								timeManagers[0].nowtime();
-							}
-													
-							var baseLayer1 = app.mapPanel.map.getLayersByName("Stati")[0];
-							var baseLayer2 = app.mapPanel.map.getLayersByName("Regioni")[0];
-							var baseLayer3 = app.mapPanel.map.getLayersByName("Province")[0];
-							var baseLayer4 = app.mapPanel.map.getLayersByName("Comuni Italia")[0];
-							app.mapPanel.map.setLayerIndex(baseLayer1, count+8);
-							app.mapPanel.map.setLayerIndex(baseLayer2, count+9);
-							app.mapPanel.map.setLayerIndex(baseLayer3, count+10);
-							app.mapPanel.map.setLayerIndex(baseLayer4, count+11);
-							*/
 						}
-					});
+                        
+						resource.sourceOptions = {
+							useCapabilities: useCapabilities,
+                            layerBaseParams: {
+                                FORMAT: "image/png8",
+                                TILED: true,
+                                TILESORIGIN:"-20037508.34, -20037508.34"
+                            }
+                        };
+					}				
+						
+					if(!useCapabilities){
+						var playback = app.tools["playback"];
+						
+						addLayer.on({
+							ready: function(records){		
+								playback.on({
+									rangemodified: function(){
+										// Sets time parameter for added layers 
+										app.addTemporalLayers(records);
+									}
+								});
+							}
+						});	
+					}else{
+						addLayer.on({
+							ready: function(records){		
+								// Sets time parameter for added layers 
+								app.addTemporalLayers(records);
+							}
+						});
+					}
 					
 					addLayer.addLayer(resources);
 				};

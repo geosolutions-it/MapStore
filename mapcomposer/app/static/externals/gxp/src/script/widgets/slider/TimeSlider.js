@@ -83,7 +83,7 @@ gxp.slider.TimeSlider = Ext.extend(Ext.slider.MultiSlider, {
             'change' : function(slider, value, thumb, silent) {    
                     this.onSliderChangeComplete(slider, value, thumb, silent);
                     this.onSliderChangeRangeComplete(slider, value, thumb, silent);
-                },
+            },
             'dragstart' : function() {
                 if(this.timeManager.timer) {
                     this.timeManager.stop();
@@ -278,7 +278,7 @@ gxp.slider.TimeSlider = Ext.extend(Ext.slider.MultiSlider, {
                 'map' : indexMap,
                 'maxValue' : max,
                 'minValue' : min,
-                'interval' : interval
+                'interval' : this.timeManager.forceIncrement ? 3600000 : interval
             };
         }
     },
