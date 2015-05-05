@@ -176,7 +176,7 @@ GeoExt.Lang.add("en", {
         popupTitle: "Feature Info",
 		noDataMsg: "No data returned from the server",
 		maskMessage: "Getting Feature Info...",
-		activeActionTip:"Active info on selected layer"
+		activeActionTip:"Info Active Layer (no crop map)"
     },
 
     "gxp.plugins.Zoom.prototype": {
