@@ -1575,11 +1575,14 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		
 		//to update weather stations and highlight
 		var timeOptionsPanel = Ext.getCmp("realTimePanelID");
-		var combo = timeOptionsPanel.optionsPanel.stepValueField;
-		combo.setValue(timeStep);
-		var index = combo.getStore().find( "field1", timeStep);
-		var record = combo.getStore().getAt(index);
-		combo.fireEvent('select',combo,record,2);
+		
+		if (timeOptionsPanel){
+			var combo = timeOptionsPanel.optionsPanel.stepValueField;
+			combo.setValue(timeStep);
+			var index = combo.getStore().find( "field1", timeStep);
+			var record = combo.getStore().getAt(index);
+			combo.fireEvent('select',combo,record,2);
+		}
 		
         //set startDate and endDate of playbackOptionsPanel                        
         playback.populateTimeOptionsPanel();
