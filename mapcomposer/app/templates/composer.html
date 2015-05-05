@@ -488,6 +488,10 @@
 									var pname = keys.pname;
 									var format = keys.format;
 									
+									// temporary setting for test purpose
+									//hname = window.location.hostname;
+									//lwms = "http://" + hname + "/geoserver/" +  lwms.split('/geoserver/')[1];
+									
 									resources.push({
 										msLayerTitle: lname,
 										msLayerName: lname,
@@ -502,6 +506,10 @@
 						}else if(layName && wmsurl){
 							var title = layTitle ? layTitle : layName;
 
+							// temporary setting for test purpose
+							//hname = window.location.hostname;
+							//wmsurl = "http://" + hname + "/geoserver/" +  wmsurl.split('/geoserver/')[1];
+																
 							addMSLayer([{
 								msLayerTitle: unescape(title),
 								msLayerName: unescape(layName),
@@ -511,7 +519,7 @@
 							}]);
 						}
 
-						var resources = [{
+						/*var resources = [{
 							format: "wms",
 							msGroupName: "MODELLO WRF-ARW a 12km - Maschera Terra - Acqua - (2015-04-21 ore 00 UTC).",
 							msLayerName: "arw_12km_Temperature_surface_20150503T000000000Z:0.0",
@@ -519,7 +527,7 @@
 							wmsURL: "http://geoportale.lamma.rete.toscana.it/geoserver/ARW_12KM_RUN00/ows"
 						}];
                                 
-                        addMSLayer(resources);
+                        addMSLayer(resources);*/
 						
 						/*var resources = [{
 							format: "wms",
