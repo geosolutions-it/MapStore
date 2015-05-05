@@ -138,6 +138,10 @@ gxp.grid.GcHistoryGrid = Ext.extend(Ext.grid.GridPanel, {
     vendorParams: '',
 
     outputFormat: 'application/json',
+
+    dateFormat:"m/d/Y",
+    timeFormat: "g:i A",
+
     
     /** private: method[initComponent]
      *  Override
@@ -160,7 +164,8 @@ gxp.grid.GcHistoryGrid = Ext.extend(Ext.grid.GridPanel, {
 //Recupero lo achema dal server per costruire records model e columns model 
  getSchema: function(callback,scope){   
         var schema = new GeoExt.data.AttributeStore({
-            url: this.wfsURL, 
+            url: this.wfsURL,
+            fields: ["name", "type", "restriction","localType","nillable"], 
             baseParams: Ext.apply({
                 SERVICE: "WFS",
                 VERSION: "1.1.0",
@@ -319,6 +324,7 @@ createRecordsModel: function() {
                         "xsd:short": "int",
                         "xsd:long": "int",
                         "xsd:date": "date",
+                        "xsd:datetime": "datetime",
                         "xsd:string": "string",
                         "xsd:float": "float",
                         "xsd:decimal": "float"
