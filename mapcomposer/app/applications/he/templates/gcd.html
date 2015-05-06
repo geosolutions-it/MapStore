@@ -626,12 +626,11 @@
                         });
                         myAccount.addOutput();
                          					
-                        if (unauthorized) {
+                        if (unauthorized && (appTabs instanceof Ext.TabPanel)) {
                             appTabs.hideTabStripItem(0);
                             appTabs.setActiveTab(appTabs.items.getCount()-1);
                         }
-                         
-                         
+                        
                     });
 
                 }
