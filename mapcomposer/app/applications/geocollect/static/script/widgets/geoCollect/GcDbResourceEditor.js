@@ -941,6 +941,9 @@ addTemplateValuesSeg: function(store){
                 //attivare colonna!
                 this.seg_schema_grid.getColumnModel().setHidden( 3, false );
                 var mainFields= me.gcSegGrid.mainFields;
+                if(!mainFields){
+                    mainFields = [];
+                }
              store.each(function(r){
                 var n= r.get('name');
                  r.set('_mainfields',(mainFields.indexOf(n)>-1));
@@ -950,6 +953,9 @@ addTemplateValuesSeg: function(store){
                 //attivare colonna!
                 this.seg_schema_grid.getColumnModel().setHidden( 4, false );
                 var histFields= me.gcHistoryGrid.ignoreFields;
+                if(!histFields){
+                    histFields = [];
+                }
              	store.each(function(r){
                 var n= r.get('name');
                  r.set('_histfields',(histFields.indexOf(n)==-1));
