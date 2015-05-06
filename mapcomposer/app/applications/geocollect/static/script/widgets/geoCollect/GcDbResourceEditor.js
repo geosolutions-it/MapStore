@@ -658,7 +658,7 @@ this.autoScroll=true;
  	};
  	var recObj={};
  			store.each(function(rec){			
- 			    var type =rec.get('localType');
+ 			    var type =rec.get('type').split(':')[1];
                  			  type=(transformType[type])?transformType[type]:type;  
  				recObj[rec.get('name')]=type;
  				});
