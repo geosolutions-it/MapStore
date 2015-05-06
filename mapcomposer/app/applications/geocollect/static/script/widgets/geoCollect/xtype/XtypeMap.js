@@ -245,8 +245,12 @@ getXtype:function(){
    	'height':this.heigthFild.getValue()
    	
    };
-    if(this.zoomCk.getValue())attribute.zoom=this.zoomLev.getValue();
-    if(this.descriptionField.getValue()) attributes.description=this.descriptionField.getValue();
+    if(this.zoomCk.getValue()){
+        attributes.zoom=this.zoomLev.getValue();
+    }
+    if(this.descriptionField.getValue()){
+        attributes.description=this.descriptionField.getValue();
+    }
    
    geom= this.getGeometryFields();
    var o={
