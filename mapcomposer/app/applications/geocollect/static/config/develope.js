@@ -241,14 +241,7 @@
                     "typeName": "punti_abbandono_his",
                      "colConfig":{
                             "status":{
-                            "header": "STATUS",
-                            "editor": { 
-                                "xtype": "combo",
-                                "store": ["Si","No","Forse"],
-                                "queryMode": "local",
-                                "typeAhead": true,
-                                "triggerAction": "all"
-                                }
+                            "header": "STATO"
                             }
                     },
                     "picturesBrowserConfig": {

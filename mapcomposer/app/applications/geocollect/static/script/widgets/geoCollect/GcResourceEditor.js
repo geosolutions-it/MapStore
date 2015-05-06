@@ -51,6 +51,7 @@ mxp.widgets.GcResourceEditor = Ext.extend(Ext.Panel, {
 	border:false,
 	resource:null, // la risorsa caricata
 	authParam:null,
+	template:null,
 	layoutConfig: {
         // layout-specific configs go here
         titleCollapse: true,
@@ -60,6 +61,9 @@ mxp.widgets.GcResourceEditor = Ext.extend(Ext.Panel, {
     },
 	
 initComponent: function() {
+    
+   
+    
 this.items=[{
 	xtype:"mxp_gc_db_resource_editor",
 	ref:"dbEdit",
@@ -165,7 +169,7 @@ this.items=[{
 			                    handler: function(btn){ 
 			                    //Se sono in editing il bottone è disabilitato|| 
 			             	
-			                    			 this.getResourceData();
+			                    			 this.getResourceData(false);
      			                    	 },
                                 scope:this
 			                    
@@ -212,21 +216,35 @@ this.items=[{
 mxp.widgets.GcResourceEditor.superclass.initComponent.call(this, arguments);	
 },
 //Ritorna json completo da salvare montando i vari pezzi
-getResourceData: function(){
+getResourceData: function(skipTemplate){
+	
+
   	//Devo recuperare il titolo da fuori!!
   	 var	parent =this.findParentByType('mxp_geostoreresourceform');
   		if(parent && parent.general  && parent.general.getForm()){
   					catField=parent.general.getForm().getFieldValues();
   					
   					if(catField.name) tit= catField.name;
-					if(catField.id)id=catField.id;
+					if(catField.id)  id=catField.id;
  }
- 
-  					var pr=new  OpenLayers.Format.JSON();    
-        
-                 	dbRes=this.dbEdit.getResourceData();
+					var pr=new  OpenLayers.Format.JSON(); 
+					dbRes=this.dbEdit.getResourceData();
+				    me=this;
+ 						//Saving map template if dirty
+					if(this.dbEdit.templateDirty && skipTemplate){
+							if(!this.template)this.template=this.dbEdit.templateResource;
+							this.template.blob= pr.write(this.dbEdit.template,true);
+							var tmpRes= this.template;
+							parent.setLoading(true, parent.loadingMessage);
+							 parent.forceUpdate(tmpRes.id,tmpRes.blob,function(response){
+							 },function(response){
+							    
+							 });
+							 };
+                
                     mobRes=this.mobEdit.getResourceData();
                   	a={id:""+id+"",title:tit};
+                  
                    	Ext.apply(a,dbRes);
                     Ext.apply(a,mobRes);
                     this.jsonP.loadResourceData(pr.write(a,true));
@@ -235,11 +253,41 @@ getResourceData: function(){
                    
                 },
 loadResourceData: function(resource){
-                   		var pr=new  OpenLayers.Format.JSON();
-    					res= pr.read(resource);
-                   		this.resource=res;
-                   	//	this.jsonP.loadResourceData(resource);		
-                   		this.dbEdit.loadResourceData(this.resource.schema_seg);
+					
+					var pr=new  OpenLayers.Format.JSON();
+    				res= pr.read(resource);
+                   	this.resource=res;
+
+
+					var templateId=null;
+					var	parent =this.findParentByType('mxp_geostoreresourceform');
+  					if(parent && parent.general  && parent.general.getForm()){
+  						var field=parent.general.getForm().findField( 'attribute.templateId' );
+
+  						
+  					if(field) templateId= field.getValue();
+ 					}
+					 if(parent)
+					 this.dbEdit.rForm=parent;
+					 // Try to load template resource
+
+       				if(parent.resourceManager && templateId && templateId.length>0){
+       					parent.setLoading(true, this.loadingMessage);
+            			var me =this;
+            			parent.resourceManager.findByPk(templateId, 
+                //Full Resource Load Success
+                function(data){ 
+				if(data){
+						me.template = data;
+	
+				}
+				parent.setLoading(false);
+				me.dbEdit.loadResourceData(me.resource.schema_seg,(me.template)?me.template.blob:null);
+                    //TODO load visibility
+                },{full:true});
+
+        			}else{
+	                    this.dbEdit.loadResourceData(this.resource.schema_seg,(this.template)?this.template.blob:null);}
                    //Carichi solo il db panle le altre vanno caricate dopo di lui
                 },
 canCommit :function(){

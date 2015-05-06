@@ -77,13 +77,26 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
     surveyTitle:'Survey',
     sColName:"Name",
     sColType:"Type",
+    sColAlias:"Alias",
+    sColMainFields:"Show In Main Grid",
+    sColHisFields:"Show In History Grid",
+    sColSopFields:"Show In Survey Grid",
     serverError:"Invalid response from server.",
     errorLayer:"Trouble creating layer store from response.",   
     //Contorllo per inizializzazione!
     authkey:null,
     authParam:null,
-    //Campi utilizzati in attribute reader
-    parseFields: ["name", "type", "restriction","localType","nillable"],
+    template:null,
+    gcFeatureEditor:null,
+    templateDirty:false,
+    gcSegGrid:null,
+    gcHistoryGrid:null,
+    gcSopGrid:null,
+    
+    //Campi utilizzati in attribute reader segnalazioni
+    parseFieldsSeg: ["name", "type", "restriction","localType","nillable","_alias","_mainfields","_histfields"],
+        //Campi utilizzati in attribute reader sopralluoghi
+    parseFieldsSop: ["name", "type", "restriction","localType","nillable","_alias","_sopfields"],
     
     
 	initComponent: function() {
@@ -218,7 +231,7 @@ this.dbstore.addEvents(
 //il combobox che contiene la lista daelle sorgenti disponibili  //se mi passono il layer devo settarelo come visisbile e scaricare gli attributi
 this.comboSource = new Ext.form.ComboBox({
   	xtype:'combo',
-  	fieldLabel:this.selectDbLabel,
+  	
   	typeAhead:false,
     store:this.dbstore,
     displayField: 'name',
@@ -244,7 +257,8 @@ this.comboSource = new Ext.form.ComboBox({
                     	SERVICE:rec.data.owsType,
                     	},
                     	callback:function(){
-                    		//this.cleanType(this.seg_fieldStore);
+                    		if(this.template)
+                    		          this.addTemplateValuesSeg(this.seg_fieldStore);
                     		this.fireReady(this);},
                 		scope:this
         
@@ -258,6 +272,8 @@ this.comboSource = new Ext.form.ComboBox({
                     	},
                     	callback:function(){
                     			//this.cleanType(this.sop_fieldStore);
+                    			if(this.template)
+                    		          this.addTemplateValuesSop(this.sop_fieldStore);
                     		this.fireReady(this);},
                 		scope:this
             			});
@@ -267,10 +283,7 @@ this.comboSource = new Ext.form.ComboBox({
             		if(this.isLoaded){
             			
             			
-            			
             		}
-            		
-            		
             		
             	},		
                scope:this
@@ -327,15 +340,41 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
    			});
      //Grid che mostra la lista dei campi disponibili dello schema segnalazioni
    var seg_schema_grid={
-   		xtype:'grid',
+   		xtype:'editorgrid',
    	   	title: this.noticeTitle,
         store: this.seg_fieldStore,
      	flex:1,
+     	ref:'../seg_schema_grid',
      	autoScroll:true,
 	
     	        cm: new Ext.grid.ColumnModel([
             {id: "name", header: this.sColName, dataIndex: "name", sortable: true},
-            {id: "localType", header: this.sColType, dataIndex: "localType", sortable: true}
+            {id: "type", header: this.sColType, dataIndex: "type", sortable: true,
+                renderer:{
+                        fn: function(v){ 
+                            return v.substr(v.indexOf(':')+1);}
+                    }
+            },
+            {id: "alias", header: this.sColAlias, dataIndex: "_alias", sortable: true,editor: new Ext.form.TextField({
+                allowBlank: false
+            }),hidden:true},
+            segFields = new Ext.grid.CheckColumn({
+                       width:120, 
+                    header: this.sColMainFields,
+                     dataIndex: '_mainfields',
+                     id: 'mainFields',
+                 hidden: true,
+                 editor: new Ext.form.Checkbox()    
+            }), 
+            hisFields = new Ext.grid.CheckColumn({
+                        width:120,
+                    header: this.sColHisFields,
+                     dataIndex: '_histfields',
+                     id: 'histFields',
+                 hidden: true,
+                 editor: new Ext.form.Checkbox()
+})
+
         ]),
         sm: new	 Ext.grid.RowSelectionModel({singleSelect:true}),
         autoExpandColumn: "name",
@@ -347,19 +386,99 @@ this.sop_fieldStore = new GeoExt.data.AttributeStore({
  //Grid che mostra la lista dei campi disponibili dello schema sopralluoghi
    var sop_schema_grid={
   
-   		xtype:'grid',
+   		xtype:'editorgrid',
+   		ref:'../sop_schema_grid',
    	   	title: this.surveyTitle ,
         store: this.sop_fieldStore,
       	flex:1,
       	autoScroll:true,
         cm: new Ext.grid.ColumnModel([
             {id: "name", header: this.sColName, dataIndex: "name", sortable: true},
-            {id: "localType", header: this.sColType, dataIndex: "localType", sortable: true}
+             {id: "type", header: this.sColType, dataIndex: "type", sortable: true,
+                renderer:{
+                        fn: function(v){ 
+                            return v.substr(v.indexOf(':')+1);}
+                    }
+            },
+            {id: "alias", header: this.sColAlias, dataIndex: "_alias", sortable: true,editor: new Ext.form.TextField({
+                allowBlank: false
+            }),hidden:true},
+            sopFields = new Ext.grid.CheckColumn({
+                       width:120, 
+                    header: this.sColSopFields,
+                     dataIndex: '_sopfields',
+                     id: 'sopFields',
+                 hidden: true,
+                 editor: new Ext.form.Checkbox()    
+            })
         ]),
         sm: new Ext.grid.RowSelectionModel({singleSelect:true}),
         autoExpandColumn: "name"
  	
    };
+   
+  var comboTemplate= {
+        xtype: 'compositefield',
+        items: [
+            {
+                  xtype:"label",
+                  text:this.selectDbLabel,
+                  width: 80,
+                  style: {
+                marginTop: '3px',
+               
+                }
+            },
+        this.comboSource,
+              {
+                  xtype:"label",
+                  text:"Template",
+                  width: 130,
+                  ref:"../../comboTemplateLabel",
+                  style: {
+                marginTop: '3px',
+               
+                 marginLeft: '30px'
+            },
+              },{
+                xtype: "msm_templatecombobox",
+                width: 175,
+                allowBlank: true, 
+               ref:"../../comboTemplate",
+                templatesCategoriesUrl:'',
+                auth: userInfo.token,
+                listeners: { 
+                    
+                    select:function( combo, record, index ){
+                      var field=this.rForm.general.getForm().findField( 'attribute.templateId' );
+                        field.setValue(record.get('id'));
+                        this.rForm.setLoading(true, this.loadingMessage);
+                        var me =this;
+                        this.rForm.resourceManager.findByPk(record.get('id'), 
+                //Full Resource Load Success
+                        function(data){ 
+                        if(data){
+                            me.templateResource=data;
+                            me.template = data.blob;
+                            me.comboTemplate.hide();
+                            me.comboTemplateLabel.hide();
+                            var pr=new  OpenLayers.Format.JSON();
+                            me.template= pr.read(me.template);
+                            me.getTemplateConfigPlugin();
+                             me.addTemplateValuesSop(me.sop_fieldStore);
+                             me.addTemplateValuesSeg(me.seg_fieldStore);
+    
+                }
+                me.rForm.setLoading(false);
+                    //TODO load visibility
+                },{full:true});
+                    },
+                    scope: this
+                }
+    }
+    ]};
+   
+   
 //Creo il pannello principale che contiene la mission db
 //TODO::sistmare layout delle grid con i parametri per ora sono una sopra l'altra
 
@@ -374,13 +493,14 @@ this.autoScroll=true;
 			  {
 			  	 xtype: 'panel',
 			  	 frame:true,
-			  	 layout:'form',
+			  	 layout:'fit',
 			  	 anchor:'100%, 10%',
 
 			  	 border: false,
 			  	 items:[
-			  	 this.comboSource ]
-			  	 },{
+			  	 comboTemplate ]
+			  	 },
+			  	 {
 			  	 	xtype: 'panel',
 			  	 	frame:true,
 			  	 	anchor:'100%, 90%',
@@ -503,6 +623,12 @@ this.autoScroll=true;
 	},
 	//Api method for Resource Editor  TODO:: implementare
 	getResourceData: function(){
+		if(this.template){
+		    this.setGcFeatureGrid();
+			this.setGcSegGrid();
+			this.setHistoryGrid();
+			this.setSopGrid();
+		}
 		if(this.typeName){
 							idx =this.dbstore.find('typeName',this.typeName);
 							rec=this.dbstore.getAt(idx);
@@ -520,6 +646,7 @@ this.autoScroll=true;
    		 	    "localFormStore":rec.get('name')+"_sop",	// local device table name
    	 			"fields":this.getFieldsObj(this.sop_fieldStore)
 		};
+                    
                                   
                     return {"schema_seg":schema_seg,"schema_sop":schema_sop};
                 }},
@@ -538,8 +665,20 @@ this.autoScroll=true;
  	return recObj;
  	},
  	               
-    loadResourceData: function(resource){
+    loadResourceData: function(resource,template){
     			s_seg=resource;
+                if(template){
+                   this.comboTemplate.hide();
+                   this.comboTemplateLabel.hide();
+                	var pr=new  OpenLayers.Format.JSON();
+    				this.template= pr.read(template);
+    				this.getTemplateConfigPlugin();
+                	}
+                	else{
+                	     
+                	    this.comboTemplate.getStore().proxy.setUrl(this.rForm.geoStoreBase + '/extjs/search/category'+ "/TEMPLATE",true);
+                	    
+                	    }
     			//Se esiste schema recupero ed inizializzo
     			//Non ho altro da fare perchè tutte le info le recupero dallo stor
 	    		if(s_seg && s_seg.typeName && this.typeName!=s_seg.typeName ){	
@@ -552,7 +691,7 @@ this.autoScroll=true;
              			
              	},
     canCommit :function(){
-    	   //se ho la source sttata posso esportare
+    	   //se ho la source settata posso esportare
            if (this.typeName)return true;
            else
               	return false;
@@ -561,25 +700,292 @@ this.autoScroll=true;
                //qui mostro tutti i campi
                //ripulisce i type dai prefissi xsd e elimina campi geometry
    	 cleanType: function(store){
-              /* store.filter({
-   				 fn   : function(record) {
-      			return record.get('type').indexOf( "gml:") == -1
-    			},
-    			scope: this
-  });*/
-               	//ciclo su tutti i record ed elimino da type i prefissi
-               	for(i=0,ilen=store.getCount();i<ilen;i++){
+   			 	for(i=0,ilen=store.getCount();i<ilen;i++){
                		var type=store.getAt(i).get("type");
-               		ctype=type.substr(type.indexOf(':')+1)
+               		ctype=type.substr(type.indexOf(':')+1);
                		store.getAt(i).set("ctype",ctype);
                }
+               
+               
 
 },
+//Update map template with new propertyNames
+setGcFeatureGrid:function(){
+    var np=this.getPropertyNames(this.seg_fieldStore);
+    var p=this.gcFeatureEditor.propertyNames;
+    if(!p ||Object.keys(np).length !=Object.keys(p).length){ 
+        this.templateDirty=true;
+        this.gcFeatureEditor.propertyNames=np;
+     }else{
+         for (var key in np){
+             if(np[key]!= p[key]){
+                 this.templateDirty=true;
+                 this.gcFeatureEditor.propertyNames=np;
+                 break;
+             }
+         }
+     }
+    
+},
+setGcSegGrid:function(){
+    var newMF=this.getMainFields(this.seg_fieldStore);
+    var mF= this.gcSegGrid.mainFields;
+    if(!mF ||  newMF.length!=mF.length){
+        this.templateDirty=true;
+        this.gcSegGrid.mainFields=newMF;
+    }else{
+    	var me=this;
+        Object.keys(newMF).forEach(function(key){
+            if(mF.indexOf(newMF[key])==-1){
+                me.templateDirty=true;
+                me.gcSegGrid.mainFields=newMF;
+                return false;
+             }
+        });
+    }
+    var cConf=this.gcSegGrid.colConfig;
+    var newConf=this.getColConfig(this.gcSegGrid.mainFields,this.gcFeatureEditor.propertyNames);
+    if(!cConf || Object.keys(newConf).length != Object.keys(cConf).length){
+        this.templateDirty=true;
+        this.gcSegGrid.colConfig=newConf;
+    }else{
+        for (var key in newConf){
+            if(!cConf[key] || newConf[key].header!= cConf[key].header){
+                this.templateDirty=true;
+                this.gcSegGrid.colConfig=newConf;
+                break;
+             }
+        
+        }
+    }
+   
+    
+},
+setHistoryGrid:function(){
+     var newHistIgnore=this.getHistoryIgnoreFields(this.seg_fieldStore);
+    var hIgnore = this.gcHistoryGrid.ignoreFields;
+    if(!hIgnore || hIgnore.length!= newHistIgnore.length){
+        this.templateDirty=true;
+        this.gcHistoryGrid.ignoreFields=newHistIgnore;
+    }else{
+    	var me=this;
+        Object.keys(newHistIgnore).forEach(function(key){
+            if(hIgnore.indexOf(newHistIgnore[key])==-1){
+                me.templateDirty=true;
+                me.gcHistoryGrid.ignoreFields=newHistIgnore;
+                return false;
+             }
+        })
+
+    }
+    var cConf=this.gcHistoryGrid.colConfig;
+
+    var newConf=this.getHistoryColConfig(this.gcFeatureEditor.propertyNames);
+    if(!cConf || Object.keys(newConf).length != Object.keys(cConf).length){
+        this.templateDirty=true;
+        this.gcHistoryGrid.colConfig=newConf;
+    }else{
+        for (var key in newConf){
+            if(!cConf[key]||newConf[key].header!= cConf[key].header){
+                this.templateDirty=true;
+                this.gcHistoryGrid.colConfig=newConf;
+                break;
+             }
+        
+        }
+    }
+    
+},
+setSopGrid:function(){
+     var newSopIgnore=this.getSopIgnoreFields(this.sop_fieldStore);
+    var sIgnore = this.gcSopGrid.ignoreFields;
+    if(!sIgnore || sIgnore.length!= newSopIgnore.length){
+        this.templateDirty=true;
+        this.gcSopGrid.ignoreFields=newSopIgnore;
+    }else{
+    	var me=this;
+    	 Object.keys(newSopIgnore).forEach(function(key){
+            if(sIgnore.indexOf(newSopIgnore[key])==-1){
+                me.templateDirty=true;
+                me.gcSopGrid.ignoreFields=newSopIgnore;
+                return false;
+             }
+        });
+    } 
+    var np=this.getSopPropertyNames(this.sop_fieldStore);
+    var p=this.gcSopGrid.propertyNames;
+    if(!p ||Object.keys(np).length !=Object.keys(p).length){ 
+        this.templateDirty=true;
+        this.gcSopGrid.propertyNames=np;
+     }else{
+         for (var key in np){
+             if(!p[key]||np[key].header!= p[key].header){
+                 this.templateDirty=true;
+                 this.gcSopGrid.propertyNames=np;
+                 break;
+             }
+         }
+     }
+    
+    
+},
+getSopIgnoreFields:function(store){
+     var ignoreFileds=[];
+ if(this.gcSopGrid){
+     store.each(function(r){
+                var n= r.get('name');
+                if(! r.get('_sopfields')) ignoreFileds.push(n); 
+             });
+ }
+ return ignoreFileds; 
+    
+},
+
+getHistoryColConfig:function(propertyNames){
+     var colConfig={};
+      for (var key in propertyNames){
+             colConfig[key]={header:propertyNames[key]}; 
+         }
+    
+ return colConfig; 
+    
+},
+getSopPropertyNames:function(store){
+ var propertyNames={};
+ if(this.gcSopGrid){
+     store.each(function(r){
+                var n= r.get('name');
+                var a= r.get('_alias');
+                if(  n!=a || (r.modified._alias && a != r.modified._alias)) propertyNames[n]=a; 
+             });
+ }
+ return propertyNames;
+    
+}, 
+
+
+
+getHistoryIgnoreFields:function(store){
+     var ignoreFileds=[];
+ if(this.gcHistoryGrid){
+     store.each(function(r){
+                var n= r.get('name');
+                if(! r.get('_histfields')) ignoreFileds.push(n); 
+             });
+ }
+ return ignoreFileds; 
+    
+},
+getColConfig:function(mainFields,propertyNames){
+ var colConfig={};
+     mainFields.forEach(function(f){
+        if(propertyNames[f])colConfig[f]={header:propertyNames[f]};           
+             });
+ return colConfig; 
+} , 
+
+
+
+getPropertyNames:function(store){
+ var propertyNames={};
+ if(this.gcFeatureEditor){
+     store.each(function(r){
+                var n= r.get('name');
+                var a= r.get('_alias');
+                if(  n!=a || (r.modified._alias && a != r.modified._alias)) propertyNames[n]=a; 
+             });
+ }
+ return propertyNames;
+  
+
+    
+}, 
+getMainFields:function(store){
+ var mainFields=[];
+ if(this.gcSegGrid){
+     store.each(function(r){
+                var n= r.get('name');
+               
+                if( r.get('_mainfields')) mainFields.push(n); 
+             });
+ }
+ return mainFields; 
+    
+} , 
+getTemplateConfigPlugin:function(){
+	var me=this;	
+    		this.template.customTools.forEach(function(t){
+    			if(t.ptype=== "gxp_gcfeatureeditor"){
+    				me.gcFeatureEditor=t;	
+    			}else if(t.ptype=== "gxp_gcseggrid"){
+                    me.gcSegGrid=t;
+                    me.gcHistoryGrid=me.gcSegGrid.configHistory;
+                     me.gcSopGrid=me.gcSegGrid.configSurvey;;
+                }
+                
+    		});
+
+},
+addTemplateValuesSeg: function(store){
+    		var me=this;
+    		
+			if(me.gcFeatureEditor){
+				//attivare colonna!
+				this.seg_schema_grid.getColumnModel().setHidden( 2, false );
+				var pnames= me.gcFeatureEditor.propertyNames ;
+             store.each(function(r){
+             	var n= r.get('name');
+                 r.set('_alias',(pnames && pnames[n])? pnames[n]:n);
+             });
+             }if(me.gcSegGrid){
+                //attivare colonna!
+                this.seg_schema_grid.getColumnModel().setHidden( 3, false );
+                var mainFields= me.gcSegGrid.mainFields;
+             store.each(function(r){
+                var n= r.get('name');
+                 r.set('_mainfields',(mainFields.indexOf(n)>-1));
+             });
+             }
+             if(me.gcHistoryGrid){
+                //attivare colonna!
+                this.seg_schema_grid.getColumnModel().setHidden( 4, false );
+                var histFields= me.gcHistoryGrid.ignoreFields;
+             	store.each(function(r){
+                var n= r.get('name');
+                 r.set('_histfields',(histFields.indexOf(n)==-1));
+             });
+             }
+              
+
+},
+addTemplateValuesSop: function(store){
+    		var me=this;
+
+			 if(me.gcSopGrid){
+                //attivare colonna!
+                this.sop_schema_grid.getColumnModel().setHidden( 2, false );
+                    var pnames= me.gcSopGrid.propertyNames ;
+                    store.each(function(r){
+                    var n= r.get('name');
+                        r.set('_alias',( pnames && pnames[n])? pnames[n]:n);
+                    });
+                this.sop_schema_grid.getColumnModel().setHidden( 3, false );
+                var sopFields= me.gcSopGrid.ignoreFields;
+                    store.each(function(r){
+                var n= r.get('name');
+                 r.set('_sopfields',(sopFields && sopFields.indexOf(n)==-1));
+             });
+             
+             } 
+
+
+    },
+
 //Ritorna store segnalazione clonato 
 getSeg_Store:function(){
 
 new_seg=	new GeoExt.data.AttributeStore({
-	fields:this.parseFields,
+	fields:this.parseFieldsSeg,
 	proxy:new Ext.data.MemoryProxy(this.seg_fieldStore.reader.raw.featureTypes[0].properties)	
 });
 
@@ -589,7 +995,7 @@ new_seg=	new GeoExt.data.AttributeStore({
 
 getSop_Store:function(){
 	new_sop=	new GeoExt.data.AttributeStore({
-	fields:this.parseFields,
+	fields:this.parseFieldsSop,
 	proxy:new Ext.data.MemoryProxy(this.sop_fieldStore.reader.raw.featureTypes[0].properties)	
 });
 

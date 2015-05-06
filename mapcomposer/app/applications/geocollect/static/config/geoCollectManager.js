@@ -91,13 +91,25 @@
             "target": "north.tbar",
             "index": 4
         },
+        "attributeFields":[{
+                    "xtype":"textfield",
+                    "readOnly":true,
+                     "id":"attribute.templateId",
+                     "anchor":'95%',
+                     "fieldLabel": "Template Id",
+                     "name":"attribute.templateId"
+         }
+         
+         ],
         "resourceEditor":{
             "xtype":"mxp_gc_resource_editor",
             "ref":"/missionResEdit",
             "gcSource":"http://geocollect.geo-solutions.it/geoserver/it.geosolutions/ows",
-            "authParam":"authkey"
-        },
-    },{ 
+            "authParam":"authkey",
+
+        }
+    },
+    { 
         "ptype": "mxp_servicemanager",
         "buttonText": "Photos",
         "notDuplicateOutputs":true,

@@ -442,6 +442,10 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
                         if(field){
                             field.setValue(attributes[attname].value);
                         }else{
+                             var field = me.general.attributeColumn.find("id", "attribute."+attname)[0];
+                        if(field)
+                            field.setValue(attributes[attname].value);
+                        else {  
                             //Add attribute field
                             me.general.attributeColumn.add({
                                 xtype:'textfield',
@@ -451,6 +455,7 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
                                 name:'attribute.'+attname,
                                 value:attributes[attname].value
                             });
+                            }
                             me.general.attributeColumn.doLayout();
                         }
                        

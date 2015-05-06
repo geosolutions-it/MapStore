@@ -57,7 +57,7 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
     edit:true,
     format:'JSON',
     filter:null,
-     queriableAttribute : null ,
+    queriableAttribute : null ,
     /** api: config[schema]
      *  ``GeoExt.data.AttributeStore``
      *  Optional schema for the grid. If provided, appropriate field
@@ -82,6 +82,7 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 	autoLoad:false,
 	actionTooltip: "Zoom To Feature",
 	baseParams:null,
+	sortBy:'DATA_AGG',
     
     /** api: method[initComponent]
      *  Initializes the FeatureGrid.
@@ -355,7 +356,7 @@ createStore: function(schema) {
                         layer: this.featureLayer,
                         ogcFilter: this.filter,
                         autoLoad: this.autoLoad,
-                        sortBy:'DATA_AGG',
+                        sortBy:this.sortBy,
                         autoSave: false,
                         listeners: {
                             "write": function() {
@@ -450,6 +451,10 @@ createStore: function(schema) {
                  if (this.colConfig && this.colConfig[name]) {
                      
                     Ext.apply(col, this.colConfig[name]);
+                }
+                 if (this.propertyNames && this.propertyNames[name]) {
+                     
+                    col.header= this.propertyNames[name];
                 }
                 columns.push(col);
             }
