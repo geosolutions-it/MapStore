@@ -48,13 +48,28 @@
         "pluginId": "loginTool",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 3
+          "index": 10
+        }
+    },{ 
+        "ptype": "mxp_help",
+        "showOnStartup":"true",
+        "buttonText": "Info",
+        "title":"GeoCollect",
+        "text":"Info",
+        "iconCls":"information_ic",
+        "showOnStartup":true,
+        "windowHeight": 320,
+        "windowWidth": 637,
+        "fileDocURL":"html/splash.html",
+        "actionTarget":{
+             "target": "north.tbar",
+             "index": 15
         }
     },{
         "ptype": "mxp_languageselector",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 7
+          "index": 20
         }
     }],
    "adminTools":[{
@@ -140,18 +155,43 @@
           "target": "north.tbar",
           "index": 1 
         }
+    },{ 
+        "ptype": "mxp_geostore_mission_resource_editor",
+        "category": "GEOCOLLECT",
+        "loginManager": "loginTool",
+        "buttonText": "Mission Configuration",
+        "actionTarget":{
+            "target": "north.tbar",
+            "index": 2
+        },
+        "attributeFields":[{
+                    "xtype":"textfield",
+                    "readOnly":true,
+                     "id":"attribute.templateId",
+                     "anchor":'95%',
+                     "fieldLabel": "Template Id",
+                     "name":"attribute.templateId"
+         }
+         
+         ],
+        "resourceEditor":{
+            "xtype":"mxp_gc_resource_editor",
+            "ref":"/missionResEdit",
+            "gcSource":"http://geocollect.geo-solutions.it/geoserver/it.geosolutions/ows?srsName=EPSG:4326&cql_filter=gcid>0&",
+            "authParam":"authkey"
+        }
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 4
+          "index": 10
         }
     },{
         "ptype": "mxp_languageselector",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 8
+          "index": 20
         }
     }],
    "embedLink": {
