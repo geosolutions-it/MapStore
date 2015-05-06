@@ -499,7 +499,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             if (schema) {
                 var autoCompleteCfg = me.autoComplete || {};
                 // configure exception listener, leaving existing listeners untouched
-                var autoCompleteListeners = me.autoComplete.listeners || {};
+                var autoCompleteListeners = autoCompleteCfg.listeners || {};
                 Ext.applyIf(autoCompleteListeners, {
                 	"exception": function(proxy, type, action, params, errorResponse, arg) {
                 		me.exceptionCallback(errorResponse);
