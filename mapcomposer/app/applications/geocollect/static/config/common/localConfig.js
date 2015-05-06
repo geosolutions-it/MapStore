@@ -5,7 +5,7 @@ var localConfig = {
    proxy:"/http_proxy/proxy/?url=",
    loginDataStorage : sessionStorage,
    defaultLanguage: "en",
-   gcSource:"http://geocollect.geo-solutions.it/geoserver/it.geosolutions/ows?srsName=EPSG:4326&cql_filter=GCID>0&",
+   gcSource:"http://geocollect.geo-solutions.it/geoserver/it.geosolutions/ows?srsName=EPSG:4326&cql_filter=gcid>0&",
    proj4jsDefs: {
 	"EPSG:3003":"+proj=tmerc +lat_0=0 +lon_0=9 +k=0.9996 +x_0=1500000 +y_0=0 +ellps=intl +units=m +no_defs",
 	"EPSG:23032":"+proj=utm +zone=32 +ellps=intl +units=m +no_defs",

@@ -264,7 +264,9 @@ GeoExt.Lang.add("it", {
         saveOrCancelEdit:'Salva O Annulla Modifiche',
         commitErrorTitle:'Errore Durantre Il Salvataggio',
         commitErrorMsg:'Modifiche Non Salvate!'
+    },
+    "mxp.plugins.MapManager.prototype":{
+        buttonText: "Gestione Missioni",
+        tooltipText: "Apri Gestore Missioni"
     }
-   
-
 });

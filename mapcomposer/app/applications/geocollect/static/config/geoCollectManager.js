@@ -104,11 +104,10 @@
         "resourceEditor":{
             "xtype":"mxp_gc_resource_editor",
             "ref":"/missionResEdit",
-            "gcSource":"http://geocollect.geo-solutions.it/geoserver/it.geosolutions/ows?srsName=EPSG:4326&cql_filter=GCID>0&",
+            "gcSource":"http://geocollect.geo-solutions.it/geoserver/it.geosolutions/ows?srsName=EPSG:4326&cql_filter=gcid>0&",
             "authParam":"authkey"
         }
-    },
-    { 
+    },{ 
         "ptype": "mxp_servicemanager",
         "buttonText": "Photos",
         "notDuplicateOutputs":true,
