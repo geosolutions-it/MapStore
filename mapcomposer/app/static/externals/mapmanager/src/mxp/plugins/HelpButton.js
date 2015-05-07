@@ -1,5 +1,5 @@
 /**
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2015 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -38,8 +38,9 @@ Ext.namespace("mxp.plugins");
  *  Author: Lorenzo Natali at lorenzo.natali@geo-solutions.it
  */ 
 mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
+
     ptype:'mxp_help',
-     
+
     /** i18n */
     menuText:'help',
     text:'Help', 
@@ -51,13 +52,13 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
      *  ``String`` key of the localStorage to store and retrieve the 
      *   "don't show again this message" flag
      */
-	keyShowAgain:"showAgainManagerHelp",
-    
+    keyShowAgain:"showAgainManagerHelp",
+
      /** api: config[fileDocURL]
      *  ``String`` if present, the window will load the page at the URL in this confiugration parameter in an iframe
      */
-	fileDocURL: null,
-	
+    fileDocURL: null,
+
     /** end of i18n */
     /** api: config[description]
      *  ``String`` Html to show in the window
@@ -78,7 +79,8 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
     /** api: method[addActions]
      */
     addActions: function() {
-        var actions = [{
+        
+        var thisButton = new Ext.Button({
             menuText: this.menuText,
             text:this.text,
             enableToggle: false,
@@ -88,18 +90,19 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
                 this.showHelp();
             },
             scope: this
-        }];
+        });
+
+        var actions = [thisButton];
+
         if(this.showOnStartup && this.isShowAllowed()){
             this.showHelp();
-        
         }
         return mxp.plugins.HelpButton.superclass.addActions.apply(this, [actions]);
     },
-	
+
     showHelp:function(){
 
-			//var url = 'http://' + window.location.host + '/' + this.fileDocURL;
-			//use an Iframe
+        //use an Iframe
         var me = this;        
         var iframeconfig = {
             waitMsg: this.loadingMessage,
@@ -161,7 +164,7 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
         },{
             height:this.windowHeight,width:this.windowWidth
         })).show();
-		
+
     },
     isShowAllowed: function(){
         var deny = localStorage[this.keyShowAgain];
