@@ -623,7 +623,7 @@ this.autoScroll=true;
 	},
 	//Api method for Resource Editor  TODO:: implementare
 	getResourceData: function(){
-		if(this.template){
+		if(this.template && this.template.customTools){
 		    this.setGcFeatureGrid();
 			this.setGcSegGrid();
 			this.setHistoryGrid();
@@ -711,23 +711,33 @@ this.autoScroll=true;
 },
 //Update map template with new propertyNames
 setGcFeatureGrid:function(){
+		if(!this.gcFeatureEditor)return;
     var np=this.getPropertyNames(this.seg_fieldStore);
     var p=this.gcFeatureEditor.propertyNames;
-    if(!p ||Object.keys(np).length !=Object.keys(p).length){ 
+    if(!p ||  this._objPropCount(np) !=this._objPropCount(p)){ 
         this.templateDirty=true;
         this.gcFeatureEditor.propertyNames=np;
      }else{
-         for (var key in np){
+         Ext.iterate(np,function(key){
              if(np[key]!= p[key]){
                  this.templateDirty=true;
                  this.gcFeatureEditor.propertyNames=np;
-                 break;
+                 return true;
              }
-         }
+         },this);
      }
     
 },
+_objPropCount:function(obj){
+    var n=0;
+    Ext.iterate(obj,function(k){
+        n++;
+    });
+    return n;
+    
+},
 setGcSegGrid:function(){
+	if(!this.gcSegGrid)return;
     var newMF=this.getMainFields(this.seg_fieldStore);
     var mF= this.gcSegGrid.mainFields;
     if(!mF ||  newMF.length!=mF.length){
@@ -735,8 +745,8 @@ setGcSegGrid:function(){
         this.gcSegGrid.mainFields=newMF;
     }else{
     	var me=this;
-        Object.keys(newMF).forEach(function(key){
-            if(mF.indexOf(newMF[key])==-1){
+        Ext.each(newMF,function(key){
+            if(mF.indexOf(key)==-1){
                 me.templateDirty=true;
                 me.gcSegGrid.mainFields=newMF;
                 return false;
@@ -744,8 +754,9 @@ setGcSegGrid:function(){
         });
     }
     var cConf=this.gcSegGrid.colConfig;
+    
     var newConf=this.getColConfig(this.gcSegGrid.mainFields,this.gcFeatureEditor.propertyNames);
-    if(!cConf || Object.keys(newConf).length != Object.keys(cConf).length){
+    if(!cConf ||this._objPropCount(newConf) != this._objPropCount(cConf)){
         this.templateDirty=true;
         this.gcSegGrid.colConfig=newConf;
     }else{
@@ -762,6 +773,7 @@ setGcSegGrid:function(){
     
 },
 setHistoryGrid:function(){
+	if(!this.gcHistoryGrid)return;
      var newHistIgnore=this.getHistoryIgnoreFields(this.seg_fieldStore);
     var hIgnore = this.gcHistoryGrid.ignoreFields;
     if(!hIgnore || hIgnore.length!= newHistIgnore.length){
@@ -769,8 +781,8 @@ setHistoryGrid:function(){
         this.gcHistoryGrid.ignoreFields=newHistIgnore;
     }else{
     	var me=this;
-        Object.keys(newHistIgnore).forEach(function(key){
-            if(hIgnore.indexOf(newHistIgnore[key])==-1){
+    	Ext.each(newHistIgnore,function(key){
+            if(hIgnore.indexOf(key)==-1){
                 me.templateDirty=true;
                 me.gcHistoryGrid.ignoreFields=newHistIgnore;
                 return false;
@@ -781,7 +793,7 @@ setHistoryGrid:function(){
     var cConf=this.gcHistoryGrid.colConfig;
 
     var newConf=this.getHistoryColConfig(this.gcFeatureEditor.propertyNames);
-    if(!cConf || Object.keys(newConf).length != Object.keys(cConf).length){
+    if(!cConf ||this._objPropCount(newConf) != this._objPropCount(cConf)){
         this.templateDirty=true;
         this.gcHistoryGrid.colConfig=newConf;
     }else{
@@ -797,6 +809,7 @@ setHistoryGrid:function(){
     
 },
 setSopGrid:function(){
+	if(!this.gcSopGrid)return;
      var newSopIgnore=this.getSopIgnoreFields(this.sop_fieldStore);
     var sIgnore = this.gcSopGrid.ignoreFields;
     if(!sIgnore || sIgnore.length!= newSopIgnore.length){
@@ -804,8 +817,8 @@ setSopGrid:function(){
         this.gcSopGrid.ignoreFields=newSopIgnore;
     }else{
     	var me=this;
-    	 Object.keys(newSopIgnore).forEach(function(key){
-            if(sIgnore.indexOf(newSopIgnore[key])==-1){
+    	 Ext.each(newSopIgnore,function(key){
+            if(sIgnore.indexOf(key)==-1){
                 me.templateDirty=true;
                 me.gcSopGrid.ignoreFields=newSopIgnore;
                 return false;
@@ -814,7 +827,7 @@ setSopGrid:function(){
     } 
     var np=this.getSopPropertyNames(this.sop_fieldStore);
     var p=this.gcSopGrid.propertyNames;
-    if(!p ||Object.keys(np).length !=Object.keys(p).length){ 
+    if(!p ||this._objPropCount(np) !=this._objPropCount(p)){ 
         this.templateDirty=true;
         this.gcSopGrid.propertyNames=np;
      }else{
@@ -878,7 +891,7 @@ getHistoryIgnoreFields:function(store){
 },
 getColConfig:function(mainFields,propertyNames){
  var colConfig={};
-     mainFields.forEach(function(f){
+     Ext.each(mainFields,function(f){
         if(propertyNames[f])colConfig[f]={header:propertyNames[f]};           
              });
  return colConfig; 
@@ -913,8 +926,9 @@ getMainFields:function(store){
     
 } , 
 getTemplateConfigPlugin:function(){
-	var me=this;	
-    		this.template.customTools.forEach(function(t){
+	var me=this;
+	if(this.template.customTools)	
+    		Ext.each(this.template.customTools,function(t){
     			if(t.ptype=== "gxp_gcfeatureeditor"){
     				me.gcFeatureEditor=t;	
     			}else if(t.ptype=== "gxp_gcseggrid"){
@@ -922,6 +936,7 @@ getTemplateConfigPlugin:function(){
                     me.gcHistoryGrid=me.gcSegGrid.configHistory;
                      me.gcSopGrid=me.gcSegGrid.configSurvey;;
                 }
+                
                 
     		});
 
