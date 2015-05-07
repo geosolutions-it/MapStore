@@ -112,7 +112,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
      */
 	targetCSR: [
 		["Native", "", "", ""],
-		["EPSG:4326", "EPSG:4326", "epsg", "4326"],
+		["EPSG:4326", "EPSG:4326", "epsg", "4326"]
 	],
 	
 	/** api: config[layerStore]
@@ -1228,7 +1228,15 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 							// //////////////////////////////////////////////////
 							
 							var layerStore = this.target.mapPanel.layers;  
-							var index = layerStore.findExact("name", record.data.name);
+							//var index = layerStore.findExact("name", record.data.name);
+							var index = layerStore.findBy(function (exisitingRec, id) {
+								console.log(id);
+								console.log(exisitingRec);
+
+								if (exisitingRec.data.name == record.data.name && exisitingRec.data.group != 'background') return true;
+								else return false;
+							}, this, 0);
+							
 							if (index > -1) {
 								var original = layerStore.getAt(index);
 							
