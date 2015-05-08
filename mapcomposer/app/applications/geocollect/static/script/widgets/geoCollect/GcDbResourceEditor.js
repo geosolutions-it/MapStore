@@ -895,7 +895,7 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
             store.each(function(r) {
                 var n = r.get('name');
                 var a = r.get('_alias');
-                if (n != a || (r.modified._alias && a != r.modified._alias))
+                if (n != a || (r.modified && r.modified._alias && a != r.modified._alias))
                     propertyNames[n] = a;
             });
         }
@@ -932,7 +932,7 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
             store.each(function(r) {
                 var n = r.get('name');
                 var a = r.get('_alias');
-                if (n != a || (r.modified._alias && a != r.modified._alias))
+                if (n != a || (r.modified && r.modified._alias && a != r.modified._alias))
                     propertyNames[n] = a;
             });
         }
