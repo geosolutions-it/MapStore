@@ -130,6 +130,13 @@ gxp.plugins.he.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
      **/
     resultsToRangeSuffix : {"_agg" : "_detail"},
     
+    additionalPropertiesArrays: {
+        "gcd_v_capacity_by_pipeline_agg" : ["cpcty_RID_t"],
+        "gcd_v_capacity_by_pipeline_detail" : ["cpcty_RID_t", "EffectiveDate"],
+        "gcd_v_capacity_by_point_agg" : ["cpcty_RID_t"],
+        "gcd_v_capacity_by_point_detail" : ["cpcty_RID_t", "EffectiveDate"]
+    },
+    
     /** private: method[displayTotalResults]
      */
     displayTotalResults: function() {
@@ -161,9 +168,7 @@ gxp.plugins.he.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
             customColumnsWidth : this.customColumnsWidth
         }, config || {});
         var featureGrid = gxp.plugins.he.ResultsGrid.superclass.addOutput.call(this, config);
-        
-        
-        
+
         return featureGrid;
     },
 
@@ -397,10 +402,21 @@ gxp.plugins.he.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
         for (var i=0; i<numColumns; i++){
             var header = colModel.getColumnHeader(i) ;
             if( header && header != "" && !colModel.isHidden(i)){
-                 var fieldName= colModel.getDataIndex(i);
+                var fieldName= colModel.getDataIndex(i);
                 propertyName.push(fieldName);
             }
         }   
+        
+        if(this.additionalPropertiesArrays){
+            for (var property in this.additionalPropertiesArrays) {
+                if (this.additionalPropertiesArrays.hasOwnProperty(property)) {
+                    if(property == protocol.featureType){
+                        propertyName.push.apply(propertyName, this.additionalPropertiesArrays[property]);
+                    }
+                }
+            }
+        }
+        
         var failedExport = String.format(this.failedExport, outputFormat);
         
         // Url generation

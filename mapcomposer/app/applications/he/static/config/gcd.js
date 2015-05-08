@@ -357,7 +357,13 @@
             "exportDoubleCheck": false,
             "exportCSVMultipleText": "Export Results",
             "exportCSVRangeText": "Export Range",
-            "resultsToRangeSuffix" : {"_agg" : "_detail"}
+            "resultsToRangeSuffix" : {"_agg" : "_detail"},
+            "additionalPropertiesArrays": {
+                "gcd_v_capacity_by_pipeline_agg" : ["cpcty_RID_t"],
+                "gcd_v_capacity_by_pipeline_detail" : ["cpcty_RID_t", "EffectiveDate", "EffectiveDateYear"],
+                "gcd_v_capacity_by_point_agg" : ["cpcty_RID_t"],
+                "gcd_v_capacity_by_point_detail" : ["cpcty_RID_t", "EffectiveDate", "EffectiveDateYear"]
+            }
         },{
 			"actions": ["->"],
 			"actionTarget": "paneltbar"
