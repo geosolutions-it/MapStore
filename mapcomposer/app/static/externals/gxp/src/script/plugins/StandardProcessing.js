@@ -84,15 +84,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     selectionAreaLabel: "Area Selezionata",
     alertSimGridReloadTitle: "Aggiornamento Bersagli",
     alertSimGridReloadMsg: "Vuoi aggiornare i Bersagli? - Tutte le modifica andranno perse!",    
+    formulaHelpTitle: "Descrizione Formula",
     // End i18n.
         
     cellViewScale: 500010,
     maxProcessingArea: {
+        0: 10000000,
         1: 100000000,
-        2: 1000000000,
+        2: 10000000000,
         3: 1000000000000,
-        4: 100000000,
-        5: 100000000
+        4: 10000000000000,
+        5: 100000000000000
     },
         
     // TODO: bbox piemonte    
@@ -182,6 +184,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
               },{
                         "name": "name",              
                         "mapping": "descrizione_" + GeoExt.Lang.locale
+              },{
+                        "name": "help",              
+                        "mapping": "help_" + GeoExt.Lang.locale
               },{
                         "name": "udm",              
                         "mapping": "udm_" + GeoExt.Lang.locale
@@ -607,7 +612,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     var store = this.formula.getStore();
                     this.filterComboFormulaScale(this.formula);
                     this.formula.setValue(store.getAt(0).get('id_formula'));
-                    
+                    Ext.getCmp('warning_message').setValue(''); 
                     this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), record);
                     this.enableDisableSimulation(record.get('id') === 3);
                 }
@@ -631,7 +636,17 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             triggerAction: 'all',
             selectOnFocus:true,
             editable: false,
-            resizable: true,    
+            resizable: true,
+            onRender: function() {
+                Ext.form.ComboBox.prototype.onRender.apply(this, arguments);
+                this.el.up('').appendChild(Ext.DomHelper.createDom({
+                    tag: 'span',
+                    cls: 'formula-help'
+                }));
+                this.el.up('').select('.formula-help').on('click', function() {
+                    this.fireEvent('help', this);
+                }, this);
+            },
             listeners: {
                 scope: this,                
                 expand: function(combo) {
@@ -645,9 +660,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 },
                 select: function(combo, record, index) {
                     this.enableDisableForm(record, this.getComboRecord(this.elaborazione, 'id'));
+                },
+                help: function(combo) {
+                    var formulaRec = this.formulaStore.getAt(this.formulaStore.findExact("id_formula",this.formula.getValue()));
+                    this.showFormulaHelp(formulaRec.get('help') || 'help');
                 }
             } 
         });
+        
         
         this.filterComboFormulaScale(this.formula);
         this.formula.setValue(this.formulaStore.getAt(0).get('id_formula'));
@@ -698,6 +718,35 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         });
         
         return this.elabSet;
+    },
+    
+    showFormulaHelp: function(helpMsg) {
+        this.formulaHelpWin = new Ext.Window({
+			title: this.formulaHelpTitle,
+			layout: "fit",
+			width: 600,
+			height: 500,
+			closeAction: 'close',
+			resizable: false,
+			plain: true,
+			border: false,
+			modal: true,
+			items: [
+				{
+					xtype:'box',
+                    style: 'background-color: white; overflow: auto;',
+					html: '<div class="formula-help-text">' + helpMsg + '</div>'
+				}
+			],
+			keys: [{ 
+				key: [Ext.EventObject.ESC], 
+				handler: function() {
+					this.formulaHelpWin.close();
+				},
+				scope: this
+			}]
+		});
+		this.formulaHelpWin.show();
     },
     
     /** private: method[buildConditionsForm]
@@ -1071,7 +1120,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     
     enableDisableAOI: function(formula, elaborazione) {
         if(formula){
-            this.enableDisable(formula.get('ambito_territoriale') || elaborazione.get('id') !== 4, this.aoiFieldset);
+            this.enableDisable(formula.get('ambito_territoriale') && elaborazione.get('id') !== 4, this.aoiFieldset);
         }else{
             this.enableDisable(elaborazione.get('id') !== 4, this.aoiFieldset);      
         }
@@ -1419,25 +1468,42 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 icon: Ext.MessageBox.WARNING
             });        
         } else {
-            this.validateForm(this.panel.getForm(), this.aoiFieldset.getAOIMapBounds());
+            this.validateForm(this.panel.getForm(), this.getAOI());
         }
     },
     
+    getAOI: function() {
+        var processing = this.getComboRecord(this.elaborazione, "id").get("id");
+        if(processing === 4) {
+            return this.selDamage.getDamageArea().getBounds();
+        } else {
+            return this.aoiFieldset.getAOIMapBounds();
+        }
+    },
     
-    matchRoiAndResolution: function(formulaRec, resolutionRec, roi) {
-        var resolutionId = resolutionRec.get('id_resolution');
-        
-        var bbox;
+    matchRoiAndResolution: function(processing, formulaRec, resolutionRec, roi) {
+        var resolutionId;
+        if(processing >= 3) {
+            // seriously limit simulation and damage calculus
+            resolutionId = 0;
+        } else {
+            resolutionId = resolutionRec.get('id_resolution');
+        }
+        var bbox, area;
         if(roi instanceof OpenLayers.Bounds) {
             bbox = roi;
+            
         } else {
             if((resolutionId >= 4 && roi.type === 'comune') || 
                 (resolutionId === 5 && roi.type === 'provincia')) {
                 return this.resolutionNotAllowedMessage;
             }
+            area = roi.area;
             bbox = roi.bbox;
         }
-        var area = (bbox.right - bbox.left) * (bbox.top - bbox.bottom);
+        if(!area) {
+            area = (bbox.right - bbox.left) * (bbox.top - bbox.bottom);
+        }
         if(area && area > this.maxProcessingArea[resolutionId]) {
             return this.areaTooBigMessage;
         }
@@ -1461,6 +1527,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var incidente = parseInt(this.getComboRecord(this.accident).data.value, 10);
         var entita = this.getComboRecord(this.seriousness).data.value;
         
+        var processingRec = this.getComboRecord(this.elaborazione, "id");
         var formulaRec = this.formulaStore.getAt(this.formulaStore.findExact("id_formula",this.formula.getValue()));                
         
         if(formulaRec.get('sostanze') === 2 && sostanza === 0) {
@@ -1482,25 +1549,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var resolutionRec = this.resolutionStore.getAt(this.resolutionStore.findExact("id_resolution", this.resolution.getValue()));
         
         if(!error && formulaRec.get('ambito_territoriale')) {
-            error = this.matchRoiAndResolution(formulaRec, resolutionRec, roi); 
-            /*var scale = Math.round(map.getScale());   
-            
-            var visibleOnArcs = formulaRec.get('visibile') === 1 || formulaRec.get('visibile') === 3;
-            var visibleOnGrid = formulaRec.get('visibile') === 2 || formulaRec.get('visibile') === 3;
-            
-            if(scale <= this.cellViewScale && !visibleOnArcs) {
-                error = this.notVisibleOnArcsMessage;
-            } else if(scale > this.cellViewScale && !visibleOnGrid) {
-                error = this.notVisibleOnGridMessage;
-            }
-            if(roi instanceof OpenLayers.Bounds) {
-                var ambitoTerritoriale = formulaRec.get('ambito_territoriale')
-                var area = (roi.right - roi.left) * (roi.top - roi.bottom);
-                // TODO: relax this
-                if(ambitoTerritoriale && area > this.maxProcessingArea && visibleOnArcs) {
-                    error = this.areaTooBigMessage;
-                }
-            }*/
+            error = this.matchRoiAndResolution(processingRec.get("id"), formulaRec, resolutionRec, roi); 
         }
         
         if(!error) {
@@ -1535,6 +1584,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         this.syntView.setStatus(status);
         
+        
         Ext.getCmp("south").collapse();
         
         this.syntView.doProcess();
@@ -1544,6 +1594,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     cancelProcessing: function() {
         this.enableDisableSimulation(false);
         this.switchToSyntheticView();
+        Ext.getCmp('warning_message').setValue('');
+        this.syntView.restorePreviousState();
         this.selDamage.clearDrawFeature();
     },
     
@@ -1560,7 +1612,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     getRoiObject: function() {
         var bbox, roiType, roiId;
         
-        var roi = this.aoiFieldset.getAOIMapBounds();
+        var roi = this.getAOI();
         var label;
         if(roi instanceof OpenLayers.Bounds) {
             roiType = 'aoi';
@@ -1767,11 +1819,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         this.status = status;
         this.elaborazione.setValue(this.status.processing);
+        var elaborazionePos = this.elaborazioneStore.findExact("id", this.status.processing);
+        this.elaborazione.fireEvent('select',this.elaborazione, this.elaborazioneStore.getAt(elaborazionePos));
         // TODO: migrate ongrid formulas to standard ones
-        var formulaPos = this.formula.getStore().findExact("id_formula", this.status.formula);
+        var formulaPos = this.formulaStore.findExact("id_formula", this.status.formula);
         if(formulaPos !== -1) {
             this.formula.setValue(this.status.formula);
-            this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(formulaPos));
+            this.formula.fireEvent('select',this.formula, this.formulaStore.getAt(formulaPos));
             /*if(!this.loadUserElab){
                 this.formula.fireEvent('select',this.formula, this.formula.getStore().getAt(formulaPos));
             }*/

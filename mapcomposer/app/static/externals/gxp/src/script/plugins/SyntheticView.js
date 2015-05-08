@@ -145,12 +145,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     formulaRiskLayer: {
         1:"rischio",
         2:"rischio",
-        3:"rischio_grid"
+        3:"rischio_grid",
+        4:"rischio_grid",
+        5:"rischio_grid"
     },
     mixedFormulaRiskLayer: {
         1:"mixed_rischio",
         2:"mixed_rischio",
-        3:"mixed_rischio_grid"
+        3:"mixed_rischio_grid",
+        4:"mixed_rischio_grid",
+        5:"mixed_rischio_grid"
     },
     
     formulaPrecision: 4,
@@ -1832,7 +1836,25 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.onEditProcessing();
     },
     
-    onEditProcessing: function(){        
+    restorePreviousState: function() {
+        var status = this.getStatus();
+        if(status && !status.initial) {
+            if(status.resolution <= 2 && status.formulaInfo.dependsOnTarget && status.formulaInfo.dependsOnArcs) {
+                Ext.getCmp("analytic_view").enable();
+            } else {
+                Ext.getCmp("analytic_view").disable();
+            }
+        } else if(!status && this.processingDone) {
+            var scale = this.getMapScale();
+            if(scale <= this.analiticViewScale) {
+                Ext.getCmp("analytic_view").enable();  
+            } else {
+                Ext.getCmp("analytic_view").disable();
+            }
+        }
+    },
+    
+    onEditProcessing: function(){
         var map = this.target.mapPanel.map;
         
         if(!this.processingPane.aoiFieldset)
@@ -1863,7 +1885,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             });
         }
         
-        if(this.status && !this.status.initial && this.reset){
+        if(this.reset){
             
             // Tipo elaborazione
             this.processingPane.elaborazione.setValue(1);
@@ -3035,7 +3057,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     doProcess: function() {
-        
         if(this.simulationRestore) {
             for(var buttonId in this.simulationRestore.buttons) {
                 if(this.simulationRestore.buttons.hasOwnProperty(buttonId)) {
