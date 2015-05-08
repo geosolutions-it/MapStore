@@ -170,7 +170,9 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                                 c.refOwner.refOwner.buttonsContainer.btnLookup.setDisabled(false);
                                 c.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.hide();
                                 c.refOwner.refOwner.refine.pointtype.hide();
-                                this.pipelineLayer.setVisibility(this.pipelineLayerVisible);
+                                if(this.pipelineLayer){
+                                    this.pipelineLayer.setVisibility(this.pipelineLayerVisible);
+                                }
                             }else{
 
                                 c.refOwner.refOwner.refine.pointtype.show();
@@ -181,7 +183,9 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                                 }else{
                                     c.refOwner.refOwner.buttonsContainer.show_general_statistics_btn.setDisabled(false);
                                 }
-                                this.pipelineLayer.setVisibility(true);
+                                if(this.pipelineLayer){
+                                    this.pipelineLayer.setVisibility(true);
+                                }
                             }
                         }
 
