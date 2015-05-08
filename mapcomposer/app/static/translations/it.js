@@ -156,7 +156,8 @@ GeoExt.Lang.add("it", {
         resolutionLevel5: "Rappr. Amministrativa Provinciale",
         selectionAreaLabel: "Area Selezionata",
         alertSimGridReloadTitle: "Aggiornamento Bersagli",
-        alertSimGridReloadMsg: "Vuoi aggiornare i dati di simulazione? - Tutte le modifiche andranno perse!"        
+        alertSimGridReloadMsg: "Vuoi aggiornare i dati di simulazione? - Tutte le modifiche andranno perse!",
+        formulaHelpTitle: "Descrizione Formula"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elementi {0} - {1} di {2}",

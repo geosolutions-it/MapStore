@@ -160,7 +160,8 @@ GeoExt.Lang.add("fr", {
         resolutionLevel5: "Représentation provinciale administratif",
         selectionAreaLabel: "Zone sélectionnée",
         alertSimGridReloadTitle: "Mise à jour des objectifs",
-        alertSimGridReloadMsg: "Voulez-vous mettre à jour les données de simulation? - Toutes les éditions sera perdu!"   
+        alertSimGridReloadMsg: "Voulez-vous mettre à jour les données de simulation? - Toutes les éditions sera perdu!",
+        formulaHelpTitle: "Description Formule"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elements {0} - {1} of {2}",

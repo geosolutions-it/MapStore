@@ -156,7 +156,8 @@ GeoExt.Lang.add("de", {
         resolutionLevel5: "arstellung Provincial Administrative",
         selectionAreaLabel: "Gewählter Bearbeitungsbereich",
         alertSimGridReloadTitle: "Update vulnerable Elemente",
-        alertSimGridReloadMsg: "Möchten Sie die Simulationsdaten aktualisieren? - Alle bisherigen Bearbeitungsschritte gehen dabei verloren!"   
+        alertSimGridReloadMsg: "Möchten Sie die Simulationsdaten aktualisieren? - Alle bisherigen Bearbeitungsschritte gehen dabei verloren!",
+        formulaHelpTitle: "Beschreibung Formel"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Bestandteil {0} - {1} von {2}",

@@ -159,7 +159,8 @@ GeoExt.Lang.add("en", {
         resolutionLevel5: "Provinces",
         selectionAreaLabel: "Selected Area",
         alertSimGridReloadTitle: "Update Targets",
-        alertSimGridReloadMsg: "Do you want to update the simulation data? - All editing will be lost!"   
+        alertSimGridReloadMsg: "Do you want to update the simulation data? - All editing will be lost!",
+        formulaHelpTitle: "Formula Description"
     },
     "gxp.plugins.TabPanelWFSGrids.prototype": {
         displayMsgPaging: "Elements {0} - {1} of {2}",
