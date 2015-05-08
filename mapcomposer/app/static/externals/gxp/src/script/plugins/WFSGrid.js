@@ -198,26 +198,15 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     
     setTotalRecord: function(callback){
         var me= this;
-        var hitCountProtocol = /*new OpenLayers.Protocol.WFS({ 
-               url: this.wfsURL, 
-               featureType: this.featureType, 
-               readOptions: {output: "object"},
-               featureNS: this.featureNS, 
-               resultType: "hits",
-               filter: this.filter,
-               viewparams: this.viewParams,
-               outputFormat: "application/json",
-               srsName: this.srsName,
-               version: this.version
-       });*/
-        this.getProtocol({
+        var hitCountProtocol = this.getProtocol({
             resultType: "hits",
             outputFormat: "text/xml"
         });
-                 
-               
+        me.showLoadMask(); 
+         
         hitCountProtocol.read({
             callback: function(response) {
+                me.hideLoadMask();
                 var respObj=new OpenLayers.Format.WFST({version: "1.1.0"}).read(
                             response.priv.responseXML, {output: "object"});
                 this.countFeature=respObj.numberOfFeatures;
@@ -1506,6 +1495,18 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         }); 
     },
 
+    showLoadMask: function() {
+        if(this.loadMask) {
+            this.loadMask.show(); 
+        }
+    },
+    
+    hideLoadMask: function() {
+        if(this.loadMask) {
+            this.loadMask.hide();
+        }
+    },
+    
     /** api: method[addOutput]
      */
     addOutput: function(config, activate) {
@@ -1671,9 +1672,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         fields: me.featureFields,
                         listeners:{
                             beforeload: function(store){
-
-                                if(me.loadMask && me.loadMask.el && me.loadMask.el.dom)
-                                    me.loadMask.show(); 
+                                me.showLoadMask();
                                 
                                 me.wfsGrid.reconfigure(
                                     store, 
@@ -1686,17 +1685,16 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                 }
                             },
                             load : function(store){
-                                 if(me.loadMask)
-                                 me.loadMask.hide();
-                                 if(me.allowEdit) {
+                                me.hideLoadMask();
+                                 
+                                if(me.allowEdit) {
                                     // enable add button
                                     me.tbar.findByType('button')[0].enable();
-                                 }
+                                }
                             },
                             
                             exception : function(store){
-                                if(me.loadMask && me.loadMask.el && me.loadMask.el.dom)
-                                me.loadMask.hide(); 
+                                me.hideLoadMask();
                             }
                         },
                         loadRecords : function(o, options, success){     
@@ -2106,14 +2104,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             viewConfig : {
                 forceFit: true
             },
-            listeners: {
-                render: function(grid){
-                    if(me.loadMsg){
-                       me.loadMask = new Ext.LoadMask(grid.getEl(), {msg:me.loadMsg});
-                    }
-                    
-                }
-            },     
+
             sm: this.sm,
             colModel: new Ext.grid.ColumnModel({
                 columns: []
@@ -2122,6 +2113,12 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             bbar: bbar,
             scope: this,
             listeners: {
+                render: function(grid){
+                    if(me.loadMsg){
+                       me.loadMask = new Ext.LoadMask(grid.getEl(), {msg:me.loadMsg});
+                    }
+                    
+                },
                 afteredit : function(object) {
                     row = object.row;
                     unitGrid = Ext.getCmp(this.id);
