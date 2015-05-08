@@ -212,3 +212,26 @@ div#homelogos ul li a:hover {
 .formula-help-text {
     font-size: 13px;
 }
+
+.tema-legend-container {
+    text-align: center;
+    margin-top: 10px;
+    padding-left: 10px;
+}
+
+.tema-legend {
+    width: 20px;
+    height: 50px;
+}
+
+.tema-low-legend {
+    background-color: #00FF00;
+}
+
+.tema-medium-legend {
+    background-color: #FFFF00;
+}
+
+.tema-high-legend {
+    background-color: #FF0000;
+}
