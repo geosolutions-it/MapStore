@@ -89,7 +89,7 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
         this.autoHeight= true;
         this.layout='table';
         this.layoutConfig= {
-            columns: 2
+            columns: 3
         };
         this.items = [];
         
@@ -100,7 +100,7 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
                     cellCls: 'spatial-cell',
                     labelAlign: "top",
                     border: false,
-                    colspan: 2,
+                    colspan: 3,
                     items: [this.multiSlider]
                 });
 		this.configureNumericFields();
@@ -129,12 +129,20 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
 	configureNumericFields: function() {
 		if(this.numericFields){
             this.items.push({
+                xtype: 'box',
+                colspan: 1,
+                rowspan: 4,
+                cls: 'tema-legend-container',
+                html:'<div class="tema-legend tema-low-legend"></div><div class="tema-legend tema-medium-legend"></div><div class="tema-legend tema-high-legend"></div>',
+                width: 50
+            });
+            this.items.push({
                 layout: "form",
                 //cellCls: 'spatial-cell',
                 labelAlign: "top",
                 border: false,
                 colspan: 2,
-                hidden: true,
+                
                 items: [
                 new Ext.form.NumberField({
                     width: 250,
@@ -191,6 +199,7 @@ gxp.form.SliderRangesFieldSet = Ext.extend(Ext.form.FieldSet, {
                 items: [
                 new Ext.form.NumberField({
                     width: 250,
+                    disabled: true,
                     fieldLabel: this.multiSlider.ranges[this.multiSlider.ranges.length -1].name,
                     id: this.id+"_maxValue",
                     value: this.multiSlider.maxValue,
