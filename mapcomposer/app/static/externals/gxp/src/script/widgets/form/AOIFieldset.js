@@ -650,12 +650,17 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                 name = this.province.store.getAt(this.province.store.find('id', codProvincia)).get('name');
             }
             var bbox = new OpenLayers.Bounds.fromString(geometry.getBounds().toBBOX());
+
             if(this.map.getProjection() != this.aoiProjection.getCode()) {
                 bbox = bbox.transform(this.aoiProjection,this.mapProjection);
+                area =  geometry.clone().transform(this.aoiProjection,this.mapProjection).getArea();
+            } else {
+                area =  geometry.clone().getArea();
             }
             return {
                 bbox: bbox,
                 type: type,
+                area: area || undefined,
                 id: id,
                 name: name
             };
