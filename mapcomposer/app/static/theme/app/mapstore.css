@@ -197,3 +197,18 @@ div#homelogos ul li a:hover {
     /* when OL encounters a 404, don't display the pink image */
     display: none !important;
 } 
+
+.formula-help {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  right: -20px;
+  top: 3px;
+  display: inline-block;
+  background-image: url(img/silk/information.png);
+  cursor: pointer;
+}
+
+.formula-help-text {
+    font-size: 13px;
+}
