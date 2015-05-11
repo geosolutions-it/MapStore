@@ -256,7 +256,7 @@ loadResourceData: function(resource){
                     
                 //genera oggetto con condizioni e colori
     getPriorityValuesColors:function(){
-    	obj={};
+    	var obj={};
     	var filterArray=this.filterContainer.findByType('mxp_filterfield');	
 				    for(i=0;i<filterArray.length;i++){
 				    	filter=filterArray[i].filter;
@@ -268,13 +268,13 @@ loadResourceData: function(resource){
     setPriorityValuesColors:function(res){
   
     	var filterArray=this.filterContainer.findByType('mxp_filterfield');	
-    	rec=filterArray[0].selRecord;
+    	var rec=filterArray[0].selRecord;
 		//Se il campo priorityField == a quello slezionato carico le condizioni
 		if(res.priorityField==this.listIcon.getValue()){
 			rec=filterArray[0].selRecord;
 				if(filterArray[0])filterArray[0].findParentByType('container').destroy();
-			obj=res.priorityValuesColors;
-				  Object.getOwnPropertyNames(obj).forEach(function(val, idx, array) {
+			var obj=res.priorityValuesColors;
+				  Ext.iterate(obj,function(val, idx, array) {
   				var filter=new OpenLayers.Filter.Comparison({
 							property:res.priorityField,
 							type: OpenLayers.Filter.Comparison.EQUAL_TO,
