@@ -212,7 +212,14 @@ this.items=[{
                 }
             })
 
+
 ];	
+
+this.on('render',function(){
+    this.parent =this.findParentByType('mxp_geostoreresourceform');
+    if(this.parent)
+        this.dbEdit.rForm=this.parent;
+},this),
 mxp.widgets.GcResourceEditor.superclass.initComponent.call(this, arguments);	
 },
 //Ritorna json completo da salvare montando i vari pezzi
@@ -220,7 +227,7 @@ getResourceData: function(skipTemplate){
 	
 
   	//Devo recuperare il titolo da fuori!!
-  	 var	parent =this.findParentByType('mxp_geostoreresourceform');
+  	 var	parent =this.parent;
   		if(parent && parent.general  && parent.general.getForm()){
   					catField=parent.general.getForm().getFieldValues();
   					
@@ -259,19 +266,12 @@ loadResourceData: function(resource){
                    	this.resource=res;
 
 
-					var templateId=null;
-					var	parent =this.findParentByType('mxp_geostoreresourceform');
-  					if(parent && parent.general  && parent.general.getForm()){
-  						var field=parent.general.getForm().findField( 'attribute.templateId' );
-
-  						
-  					if(field) templateId= field.getValue();
- 					}
-					 if(parent)
-					 this.dbEdit.rForm=parent;
-					 // Try to load template resource
-
-       				if(parent.resourceManager && templateId && templateId.length>0){
+                    var templateId=null;
+                    var	parent =this.parent;
+                    if(parent && parent.general  && parent.general.getForm()){
+                        var field=parent.general.getForm().findField( 'attribute.templateId' );
+                        if(field) templateId= field.getValue();}
+       			/*	if(parent.resourceManager && templateId && templateId.length>0){
        					parent.setLoading(true, this.loadingMessage);
             			var me =this;
             			parent.resourceManager.findByPk(templateId, 
@@ -286,8 +286,9 @@ loadResourceData: function(resource){
                     //TODO load visibility
                 },{full:true});
 
-        			}else{
-	                    this.dbEdit.loadResourceData(this.resource.schema_seg,(this.template)?this.template.blob:null);}
+        			}else{ */
+	                    this.dbEdit.loadResourceData(this.resource.schema_seg,templateId);
+	                    //}
                    //Carichi solo il db panle le altre vanno caricate dopo di lui
                 },
 canCommit :function(){
