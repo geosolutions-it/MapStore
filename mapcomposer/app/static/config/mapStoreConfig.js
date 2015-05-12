@@ -137,7 +137,7 @@
 			},{
 				"source": "nrl",
 				"title": "Province Boundary",
-				"name": "nrl:province_boundary",
+				"name": "nrl:province_view",
 				"group": "Admin",
 				"visibility": true
 			},{
@@ -215,7 +215,7 @@
 			},{
 				"source": "nrl",
 				"title": "District Boundary",
-				"name": "nrl:district_boundary",
+				"name": "nrl:district_view",
 				"group": "Admin",
 				"visibility": true
 			},{
