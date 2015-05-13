@@ -5,7 +5,7 @@
    "gsSources":{ 
 		"bolzano": {
 			"ptype": "gxp_wmssource",
-			"url": "http://localhost/geoserver/ows",
+			"url": "http://localhost:8080/geoserver/ows",
 			"title": "Bolzano GeoServer",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1",
@@ -430,7 +430,7 @@
 			"id": "download",
 			"layersFromAllCapabilities": false,
 			"outputTarget": "west",
-            "wpsUrl": "http://localhost/geoserver/ows?service=WPS",
+            "wpsUrl": "http://localhost:8080/geoserver/ows?service=WPS",
 			"sridLinkTpl": "http://spatialreference.org/ref/#AUTH#/#SRID#/",
 			"autoComplete": {
 				"sources": ["bolzano"],

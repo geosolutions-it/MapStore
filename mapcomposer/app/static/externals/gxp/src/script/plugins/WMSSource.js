@@ -127,7 +127,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
      *  If specified, the version string will be included in WMS GetCapabilities
      *  requests.  By default, no version is set.
      */
-
+	version: "1.1.1",
+	
     /** api: method[createStore]
      *
      *  Creates a store of layer records.  Fires "ready" when store is loaded.
