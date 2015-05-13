@@ -1230,10 +1230,13 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 							var layerStore = this.target.mapPanel.layers;  
 							//var index = layerStore.findExact("name", record.data.name);
 							var index = layerStore.findBy(function (exisitingRec, id) {
-								console.log(id);
-								console.log(exisitingRec);
+								//console.log(id);
+								//console.log(exisitingRec);
 
-								if (exisitingRec.data.name == record.data.name && exisitingRec.data.group != 'background') return true;
+								if (exisitingRec.data.name == record.data.name && 
+										exisitingRec.data.group != 'background' &&
+											exisitingRec.data.source == record.data.source){
+											return true;}
 								else return false;
 							}, this, 0);
 							
