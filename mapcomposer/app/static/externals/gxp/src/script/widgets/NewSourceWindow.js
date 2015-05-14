@@ -758,7 +758,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 			var generalForm = this.generalForm.getForm();
 			generalForm.setValues({
 				title: source.title ? source.title : "",
-				version: source.version ? source.version : "1.1.1",
+				version: source.version ? source.version : "1.3.0",
 				authParam: source.authParam ? source.authParam : "",
 			});
 		
