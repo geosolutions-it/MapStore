@@ -87,6 +87,7 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
 
             // gets the list of selected regions
             var region_list = form.aoiFieldSet.selectedRegions.getValue();
+            region_list = region_list.replace("'KHYBER PAKHTUNKHWA'","'FATA'\\,'KPK'");
 
             if (gran_type == 'pakistan'){
                 return 'grouping_opt:'   + grouping_opt   + ';' +
@@ -238,7 +239,10 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
                     name: 'province',
                     dataIndex: 'province',
                     //width:50,
-                    hidden: (gran_type == 'pakistan')
+                    hidden: (gran_type == 'pakistan'),
+                    renderer: function(value){
+                        return (value == 'KPK' ? 'KHYBER PAKHTUNKHWA' : value);
+                    }
                 },{
                     sortable: true,
                     id: 'district',
@@ -281,7 +285,10 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
                     name: 'province',
                     dataIndex: 'province',
                     //width:50,
-                    hidden: (gran_type == 'pakistan')
+                    hidden: (gran_type == 'pakistan'),
+                    renderer: function(value){
+                        return (value == 'KPK' ? 'KHYBER PAKHTUNKHWA' : value);
+                    }
                 },{
                     sortable: true,
                     id: 'district',

@@ -387,7 +387,12 @@
             "outputConfig":{
                 "id":"Fertilizers"
             },
-            "outputTarget":"nrl"
+            "outputTarget":"nrl",
+            "layers": {
+                "province": "nrl:province_select",
+                "district": "nrl:district_select"
+            },
+            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')"
       },{
 		  "ptype":"nrl_report_crop_data",
           "cropPluginRef":"CropData",
