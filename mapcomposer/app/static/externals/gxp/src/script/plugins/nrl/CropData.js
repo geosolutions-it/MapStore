@@ -367,7 +367,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     target:this.target,
                     areaFilter:this.areaFilter, 
                     hilightLayerName:this.hilightLayerName,
-                    layers:this.layers
+                    layers:this.layers,
+                    selectableLayer: this.layers.province,
                 },{ 
                     fieldLabel: 'Mode',
                     xtype: 'radiogroup',

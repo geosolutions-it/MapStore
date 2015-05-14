@@ -73,6 +73,18 @@
 				"displayInLayerSwitcher":false,
 				"visibility": false
 			},{
+                "source": "nrl",
+                "title": "nrl:district_select",
+                "name": "nrl:district_select",
+                "displayInLayerSwitcher":false,
+                "visibility": false
+            },{
+                "source": "nrl",
+                "title": "nrl:province_select",
+                "name": "nrl:province_select",
+                "displayInLayerSwitcher":false,
+                "visibility": false
+            },{
 				"source": "mapquest",
 				"title": "MapQuest OpenStreetMap",
 				"name": "osm",

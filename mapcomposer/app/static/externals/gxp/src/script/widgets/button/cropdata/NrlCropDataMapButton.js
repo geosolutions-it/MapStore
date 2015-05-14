@@ -62,7 +62,8 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 			}
             var variable = values.variable;
             var units = this.form.output.units;
-            var region_list=values.region_list.replace(/\\,/g   ,',');
+            values.region_list = values.region_list.replace("'KHYBER PAKHTUNKHWA'","'FATA'\\,'KPK'");
+            var region_list    = values.region_list.replace(/\\,/g   ,',');
 			uoms = units.getSelectedUnits();
             
         
@@ -70,8 +71,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
             //set up cql_filter
 			var cql_filter="1=1";
             if(values.areatype=='province' &&region_list.length>0 ){
-                cql_filter="province IN (" +region_list+ ")";
-            
+                cql_filter="province IN (" +region_list.replace('KPK', 'Khyber Pakhtunkhwa')+ ")";
             }
         
 			//set up the area type
@@ -159,7 +159,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 					vendorParams:{
 						propertyName: 'region,crop,year,production,area,yield,variable,prod_diff,area_diff,yield_diff,prod_avg,area_avg,yield_avg',
                         cql_filter:cql_filter,
-						layers: "nrl:CropDataMap",
+						
 						viewParams: "crop:" + crop + ";" +
 									"gran_type:" + areatype + ";" +
 									"start_year:" + values.startYear + ";" +
@@ -351,15 +351,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 				//target.mapPanel.map.removeControl(control);
 			
 			})
-			
-			var data = {
-                title: values.crop + " " + values.endYear + "-" + values.variable, 
-                name: "nrl:CropDataMap",
-                //group: "crop_data",
-                layer: wms,
-				selected:true
-				
-            }
+
 			var fields = [
                 {name: "name", type: "string"}, 
                 {name: "group", type: "string"},
@@ -368,7 +360,6 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
 				{name: "querible", type: "boolean"}
             ];
 			var Record = GeoExt.data.LayerRecord.create(fields);
-            //var record = new Record(data);
 			
 			//target.mapPanel.map.addLayers([wms]);
 			Ext.getCmp('id_mapTab').setActiveTab(0);
