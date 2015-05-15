@@ -89,11 +89,14 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
     gcSegGrid : null,
     gcHistoryGrid : null,
     gcSopGrid : null,
+    automationConfDirty: false,
+    automationAvailable: false,
+    comboGridStore: undefined, //store for comboboxes in sop grid
 
     //Campi utilizzati in attribute reader segnalazioni
     parseFieldsSeg : ["name", "type", "restriction", "localType", "nillable", "_alias", "_mainfields", "_histfields"],
     //Campi utilizzati in attribute reader sopralluoghi
-    parseFieldsSop : ["name", "type", "restriction", "localType", "nillable", "_alias", "_sopfields"],
+    parseFieldsSop : ["name", "type", "restriction", "localType", "nillable", "_alias", "_sopfields", "_automation"],
 
     initComponent : function() {
         this.addEvents({
@@ -298,7 +301,7 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
         if (authkey && this.authParam) {
             wfsBaseParams[this.authParam] = authkey;
         }    ;
-
+        this.comboGridStore = new Ext.data.ArrayStore();
         //CREAO GLI SOTRE PER RECUPERO ATTRIBUTI DELLA FONTE SEGNALAZIONE E SOPRALLUOGO
         //TODO::Aggiungere gestione errore se non carica non necessario in realtà a questo punto!!
         this.seg_fieldStore = new GeoExt.data.AttributeStore({
@@ -316,6 +319,21 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
                     }
                     // TODO: decide on signature for failure listeners
                     this.fireEvent("failure", this, msg, Array.prototype.slice.call(arguments));
+                },
+                load: function(){
+                    var tmp = [new Ext.data.Record({name: '', type: ':'})];
+                    //var tmp = [];
+                    this.seg_fieldStore.each(function(r){
+                        tmp.push(new Ext.data.Record(
+                            {
+                                name: r.get('name'),
+                                type: r.get('type')
+                            }
+                        ));
+                    });
+                    this.comboGridStore.add(tmp);
+                    //this.comboGridStore.sort('name');
+                    //this.comboGridStore.insert(0, [new Ext.data.Record({name: '', type: ':'})]);
                 },
                 scope : this
             }
@@ -434,9 +452,35 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
                 id : 'sopFields',
                 hidden : true,
                 editor : new Ext.form.Checkbox()
-            })]),
+            }),{
+                header: 'Automation',
+                id: 'automation',
+                dataIndex: '_automation',
+                width : 120,
+                editor: new Ext.form.ComboBox({
+                    store: this.comboGridStore,
+                    //store: this.seg_fieldStore,
+                    displayField: 'name',
+                    valueField: 'name',
+                    editable: false,
+                    allowBlank: true,
+                    triggerAction: 'all',
+                    lazyRender: false,
+                    mode: 'local',
+                    typeAhead: true,
+                    tpl : '<tpl for="."><div class="x-combo-list-item">{name}&nbsp;</div></tpl>',
+                    listeners: {
+                        change: function(){
+                            this.automationConfDirty = true;
+                        },
+                        scope: this
+                    }
+                }),
+                hidden : true
+            }]),
             sm : new Ext.grid.RowSelectionModel({
-                singleSelect : true
+                singleSelect : true,
+                moveEditorOnEnter: true
             }),
             autoExpandColumn : "name"
 
@@ -1029,8 +1073,54 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
                  r.commit();
             });
 
+            var actionId = this.ownerCt.ownerCt.ownerCt.missionResEdit.resource.sop_form.url.replace(/.*\//g,'');
+            var urlAutomationConfig = localConfig.openSDIBase + actionId + '/configuration';
+            Ext.Ajax.request({
+                url: urlAutomationConfig,
+                success: function(data){
+                    this.automationConfig = Ext.util.JSON.decode(data.responseText);
+                    var map = this.automationConfig.rules || {};
+                    store.each(function(r){
+                        var n = r.get('name');
+                        var value = map[n] ? map[n] : '';
+                        r.set('_automation', value);
+                        r.commit();
+                    });
+                    this.sop_schema_grid.getColumnModel().setHidden(4, false);
+                    this.automationAvailable = true;
+                },
+                failure: function(response, request){
+                    this.automationConfig = {};
+                    Ext.Msg.show({
+                        title: 'Automation',
+                        msg: 'Automation is not available for this mission.',
+                        icon: Ext.MessageBox.INFO,
+                        buttons: Ext.MessageBox.OK
+                    });
+                },
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization' : manager.auth
+                },
+                scope: me
+            });
+
         }
 
+    },
+
+    getAutomationConfig: function(){
+        var map = {};
+        var sopGridStore = this.sop_schema_grid.getStore();
+        sopGridStore.each(function(r){
+            var key = r.get('name');
+            var val = r.get('_automation');
+            if (val != '')
+                map[key] = val;
+        });
+        var retval = this.automationConfig;
+        retval.rules = map;
+        return retval;
     },
 
     //Ritorna store segnalazione clonato

@@ -60,6 +60,7 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
 	frame : true,
 	destLabel : 'Mission Fields',
 	segHidden : false,
+    formUrlDirty: false,
 
 	initComponent : function() {
 		//Nella preview ho solo questi widget!!
@@ -106,7 +107,13 @@ mxp.widgets.GcFormResourceEditor = Ext.extend(Ext.Panel, {
             }, ' ', {
                 ref : '//formUrl',
                 xtype : 'textfield',
-                allowBlank : true
+                allowBlank : true,
+                listeners: {
+                    change: function(){
+                        this.formUrlDirty = true;
+                    },
+                    scope: this
+                }
 
             }, '-',{
                 xtype : 'label',

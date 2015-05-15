@@ -224,41 +224,71 @@ mxp.widgets.GcResourceEditor.superclass.initComponent.call(this, arguments);
 },
 //Ritorna json completo da salvare montando i vari pezzi
 getResourceData: function(skipTemplate){
-	
+    //Devo recuperare il titolo da fuori!!
+    var parent =this.parent;
+    if(parent && parent.general  && parent.general.getForm()){
+        catField=parent.general.getForm().getFieldValues();
 
-  	//Devo recuperare il titolo da fuori!!
-  	 var	parent =this.parent;
-  		if(parent && parent.general  && parent.general.getForm()){
-  					catField=parent.general.getForm().getFieldValues();
-  					
-  					if(catField.name) tit= catField.name;
-					if(catField.id)  id=catField.id;
- }
-					var pr=new  OpenLayers.Format.JSON(); 
-					dbRes=this.dbEdit.getResourceData();
-				    me=this;
- 						//Saving map template if dirty
-					if(this.dbEdit.templateDirty && skipTemplate){
-							if(!this.template)this.template=this.dbEdit.templateResource;
-							this.template.blob= pr.write(this.dbEdit.template,true);
-							var tmpRes= this.template;
-							parent.setLoading(true, parent.loadingMessage);
-							 parent.forceUpdate(tmpRes.id,tmpRes.blob,function(response){
-							 },function(response){
-							    
-							 });
-							 };
-                
-                    mobRes=this.mobEdit.getResourceData();
-                  	a={id:""+id+"",title:tit};
-                  
-                   	Ext.apply(a,dbRes);
-                    Ext.apply(a,mobRes);
-                    this.jsonP.loadResourceData(pr.write(a,true));
-                  return pr.write(a,true);
-  	
-                   
-                },
+        if(catField.name){
+            tit= catField.name;
+        }
+        if(catField.id){
+            id=catField.id;
+        }
+    }
+
+    var pr = new  OpenLayers.Format.JSON();
+    dbRes=this.dbEdit.getResourceData();
+    me=this;
+
+    //Saving map template if dirty
+    if(this.dbEdit.templateDirty && skipTemplate){
+
+        if(!this.template){
+            this.template=this.dbEdit.templateResource;
+        }
+
+        this.template.blob= pr.write(this.dbEdit.template,true);
+        var tmpRes= this.template;
+        parent.setLoading(true, parent.loadingMessage);
+        parent.forceUpdate(tmpRes.id, tmpRes.blob, function(response){}, function(response){});
+    };
+
+    if (this.dbEdit.automationAvailable && (this.dbEdit.automationConfDirty || this.mobEdit.pForm.formUrlDirty)){
+        var automationConfig = this.dbEdit.getAutomationConfig();
+        var automationId = this.mobEdit.pForm.formUrl.getValue().replace(/.*\//g,'');
+        var url = localConfig.openSDIBase + automationId + '/configuration';
+        Ext.Ajax.request({
+            url: url,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : manager.auth
+            },
+            jsonData: automationConfig,
+            success: function(){},
+            failure: function(response, request){
+                Ext.Msg.show({
+                    title: 'Saving automation config...',
+                    msg: response.status + ': ' + response.statusText,
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.MessageBox.ERROR
+                });
+            }
+        });
+    }
+
+    mobRes=this.mobEdit.getResourceData();
+    a = {
+        id: "" + id + "",
+        title: tit
+    };
+
+    Ext.apply(a,dbRes);
+    Ext.apply(a,mobRes);
+    this.jsonP.loadResourceData(pr.write(a,true));
+    return pr.write(a,true);
+},
 loadResourceData: function(resource){
 					
 					var pr=new  OpenLayers.Format.JSON();

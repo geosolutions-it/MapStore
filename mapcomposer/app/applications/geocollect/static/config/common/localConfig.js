@@ -2,6 +2,7 @@
  *  that can be overridden by the serverConfig objects in templates */
 var localConfig = {
    geoStoreBase: "http://geocollect.geo-solutions.it/geostore/rest/",
+   openSDIBase: 'http://geocollect.geo-solutions.it/opensdi2-manager/mvc/geocollect/action/',
    proxy:"/http_proxy/proxy/?url=",
    loginDataStorage : sessionStorage,
    defaultLanguage: "en",
