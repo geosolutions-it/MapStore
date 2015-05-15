@@ -92,7 +92,7 @@
 			}*/ 
 		
             var app;
-            var modified = false; var mapIdentifier = -1; var fullScreen = false; var bbox; var languageSelector = true; var useCookies;
+            var modified = false; var mapIdentifier = -1; var fullScreen = false; var bbox; var languageSelector = true; var useCookies, markersurl;
 			
 			// /////////////////////////////////////////////////////
 			// Extra parameters to add layers at startup
@@ -137,6 +137,10 @@
 						case "wmsurl" : 
 									wmsurl = param[1]; 
 									wmsurl = decodeURIComponent(wmsurl);
+									break;
+						case "markersurl" : 
+									markersurl = param[1]; 
+									markersurl = decodeURIComponent(markersurl);
 									break;
 						case "gsturl" : 
 									gsturl = param[1]; 
@@ -248,6 +252,8 @@
 				}
                 
                 app = new GeoExplorer.Viewer({
+					markers: serverConfig.markers,
+					markersURL: markersurl || serverConfig.markersURL,
                     scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
 				    defaultLanguage: serverConfig.defaultLanguage,	
 					actionToolScale: serverConfig.actionToolScale || "small",

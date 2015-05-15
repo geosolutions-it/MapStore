@@ -169,6 +169,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
 						  //
 						  // SAVE MAP
 						  //
+						  //console.log(configStr);
 						  this.metadataDialog(configStr); 
 					  }else{
 						  //

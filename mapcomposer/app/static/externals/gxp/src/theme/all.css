@@ -192,6 +192,15 @@
     background-image: url(img/map_cursor.png) !important;
 }
 
+.x-btn .gx-map-link, .x-menu-item .gx-map-link, .x-tree-node .gx-map-link {
+    background-image: url(img/link.png)  !important;
+}
+
+.x-btn .gx-map-edit, .x-menu-item .gx-map-edit, .x-tree-node .gx-map-edit {
+    background-image: url(img/silk/map_edit.png)  !important;
+}
+
+
 /* gxp_featureeditor */
 .x-btn .gxp-icon-addfeature, .x-menu-item .gxp-icon-addfeature {
     background-image: url(img/silk/pencil_add.png);

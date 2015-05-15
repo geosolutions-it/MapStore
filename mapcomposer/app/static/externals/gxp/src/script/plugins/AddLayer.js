@@ -413,9 +413,9 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 		//
 		// We check the type of the argument for retrocompatibility
 		//
+		this.records = [];
 		if(resources instanceof Array){
-			this.resourcesSize = resources.length;
-			this.records = [];
+			this.resourcesSize = resources.length;			
 			
 			for(var i=0; i<resources.length; i++){
 				var resource = resources[i];

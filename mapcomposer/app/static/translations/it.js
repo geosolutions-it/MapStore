@@ -555,7 +555,18 @@ GeoExt.Lang.add("it", {
 		imageUrlText:'URL immagine',
 		importGeoJsonText:'Importa GeoJson',
 		errorText:"Errore",
-		notWellFormedText:"Il testo che hai inserito non è ben formato."
+		notWellFormedText:"Il testo che hai inserito non è ben formato.",
+		invalidURLText: "Inserire un URL valido (esempio http://example.com/)",
+		contactingServerText: "In attesa del Server...",
+		okButtonText: "OK",
+		cancelButtonText: "Chiudi",	
+		urlMarkersTitle: "Carica Marchers da URL",    
+		urlMarkersMsg: "Lo URL inserito non è valido",	
+		importTooltipButton: "Importa con Testo",
+		importTextButton: "Importa Testo",
+		importURLTooltipButton: "Impora da URL",
+		importURLTextButton: "Importa da URL",
+		importURLWinTitle: "Collegamento esterno ai Markers"
 	},
 	
 	"gxp.widgets.form.CoordinatePicker.prototype":{
