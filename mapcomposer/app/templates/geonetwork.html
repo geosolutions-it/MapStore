@@ -436,6 +436,7 @@
             };*/
 
             app = new GeoExplorer.Composer({  
+				markers: serverConfig.markers,
 				scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
                 defaultLanguage: serverConfig.defaultLanguage,		
 				actionToolScale: serverConfig.actionToolScale || "small",
@@ -470,6 +471,7 @@
 					tabPanel.setActiveTab(tabs[0]); 
 				}else{
 					var metaURL = url.indexOf("uuid") != -1 ? url : url + 'main.home?uuid=' + uuid;
+					metaURL = metaURL.replace("ita", "it");
 					
 					var meta = Ext.getCmp("geonetworkPanel");
 					var gnIframe = document.getElementById('iframe-gn-panel');
@@ -552,9 +554,32 @@
 			*
 			* TODO: Check the API using a MapServer URL as wmsURL.
 			*/
-			addMSLayer = function(resources){
+//			addMSLayer = function(resources){
+//				var addLayer = app.tools["addlayer"];
+//				
+//				addLayer.addLayer(
+//					resources
+//				);
+//			};
+			
+            addMSLayer = function(){
+				var resources;
+				if(arguments.length > 1){
+					resources = {
+						msLayerTitle: arguments[0],
+						msLayerName: arguments[1],
+						wmsURL: arguments[2],
+						gnUrl: arguments[3],
+						enableViewTab: arguments[4],
+						msLayerUUID: arguments[5],
+						gnLangStr: arguments[6]
+					};
+				}else{
+                    resources = arguments[0];
+				}
+                
 				var addLayer = app.tools["addlayer"];
-				
+                
 				addLayer.addLayer(
 					resources
 				);

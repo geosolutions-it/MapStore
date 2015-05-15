@@ -248,6 +248,7 @@
 				}
                 
                 app = new GeoExplorer.Viewer({
+					markers: serverConfig.markers,
                     scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
 				    defaultLanguage: serverConfig.defaultLanguage,	
 					actionToolScale: serverConfig.actionToolScale || "small",

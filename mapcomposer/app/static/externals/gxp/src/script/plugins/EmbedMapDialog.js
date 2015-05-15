@@ -81,11 +81,12 @@ gxp.plugins.EmbedMapDialog = Ext.extend(gxp.plugins.Tool, {
     links: [{
        "label": "FULL",
         "base" : ""
-        
+    },{
+        "label": "VIEW",
+        "base":  "viewer"
     },{
         "label": "SMALL",
-        "base":  "viewer"
-    
+        "base":  "embedded"
     }],
     
     /** 

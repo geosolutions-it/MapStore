@@ -84,6 +84,29 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
 	 /**private Panel markerChooser
 	  */
 	 
+	/** api: method[init]
+     *  :arg target: ``Object`` The object initializing this plugin.
+     */
+    init: function (target) {
+        gxp.plugins.MarkerEditor.superclass.init.apply(this, arguments);
+       	
+		target.on({
+			'ready' : function(){
+				if(this.target.markers){
+					var store = this.panel.grid.getStore();
+					
+					var geojsonstring = this.target.markers;
+					try {
+						var geojson = Ext.util.JSON.decode(geojsonstring);
+						store.loadData(geojson, {loadInMap: false});									
+					}catch(e){
+						Ext.Msg.alert(this.errorText, this.notWellFormedText);
+					}    				
+				}
+			},
+			scope: this
+		});
+    },
 	
     addOutput: function(config) {
 		target =this.target;
@@ -315,19 +338,14 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                             },id);
                             //var record = store.reader.readRecords([obj]);
                             store.add(record);
-							formPanel.resetAll();
-							
-							
-                            
+							formPanel.resetAll();                            
                         }
                     },{
                         text: this.resetText,
                         ref:'../clear',
                         iconCls:'icon-removelayers',
                         handler:function(){
-                            this.refOwner.resetAll();
-							
-							
+                            this.refOwner.resetAll();						
                         }
                     }],
                     listeners: {
@@ -342,15 +360,12 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
 						this.coordinatePicker.resetPoint();
 						sm.clearSelections();
 						this.AddToMap.setAppearance("add");
-						this.updateIcon();
-					
+						this.updateIcon();					
 					},
 					updateIcon:function(icons){
 						if(!icons) icons = this.defaultIcons;
 						this.markerChooser.setText('<img src="' + icons.img.markerDefault +'" style="width:15px;height:15px" />');
-						this.icons.setValue(Ext.util.JSON.encode(icons));
-						
-					
+						this.icons.setValue(Ext.util.JSON.encode(icons));					
 					}
                 },
             
@@ -358,18 +373,17 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                     forceFit: true,
                     border:false,
                     ref:'grid',
-                    region:'center',
-              
+					id: "markerGrid",
+                    region:'center',              
                     store:new Ext.data.Store({
                         mode:'local',
                         autoload:true,
-
                         getGeoJson: function(){
                             //clearTimeout(timer);
                             var records = this.getRange();
                             var features=[];
-                            for(var i = 0;i<records.length;i++){
-                                
+							
+                            for(var i = 0;i<records.length;i++){                                
                                 var vals= records[i];
                                 var obj = {
                                     type: "Feature",
@@ -385,9 +399,9 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                                         highlights: false,
                                         cluster: false,
 										icons:vals.get('icons')
-                                    }
-                                
-                                }
+                                    }                                
+                                };
+								
                                 features.push(obj);
                             }
                             
@@ -399,8 +413,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                             //var iframe = ifp.iframe.getEl().dom;
                             target.showMarkerGeoJSON(markerName, geoJson);
                         },
-                        initIframe: function(geoJson){
-                           
+                        initIframe: function(geoJson){                           
                             target.showMarkerGeoJSON(markerName,geoJson);
                         },
                         reader:new  Ext.data.JsonReader({root:'features'},[
@@ -417,9 +430,13 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                             add: function(store){store.updateIframe(store.getGeoJson())},
                             remove: function(store){store.updateIframe(store.getGeoJson())},
                             clear: function(store){store.updateIframe(store.getGeoJson());controlPanel.form.resetAll();},
-                            load: function(store){store.initIframe(store.getGeoJson());controlPanel.form.resetAll();}
-                        }
-                        
+                            load: function(store, records, options){
+								if(options.add.loadInMap){
+									store.initIframe(store.getGeoJson());
+								}								
+								controlPanel.form.resetAll();
+							}
+                        }                        
                     }),
                     autoExpandColumn:'html',
                     columns:[
@@ -427,10 +444,8 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
 							id:'marker',
 							dataIndex:'icons',
 							width:25,
-							renderer: function(value,p,record){
-								
-								return "<img style='height:15px;width:15px;' src=\""+value.img.markerDefault+"\"/>";
-							
+							renderer: function(value,p,record){								
+								return "<img style='height:15px;width:15px;' src=\""+value.img.markerDefault+"\"/>";							
 							}
 						},{
                             id: 'label',
@@ -460,8 +475,7 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                             id: 'html',
                             dataIndex:'html',
                             header: this.gridColContent,
-                            renderer: function(value, p, record){
-								
+                            renderer: function(value, p, record){								
                                 	var xf = Ext.util.Format;
 									return '<p>' + xf.ellipsis(xf.stripTags(value), 50) +   '</p>';
                             }                            
@@ -479,12 +493,9 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                                         var store= grid.getStore();
                                         var rec = store.getAt(rowIndex);
 										if(sel){
-											if(sel.id == rec.id){controlPanel.form.resetAll()}
-											
-											
+											if(sel.id == rec.id){controlPanel.form.resetAll()}											
 										}
-                                        store.remove(rec);
-										
+                                        store.remove(rec);										
                                     }
                                 }]
                         }
@@ -560,14 +571,13 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
 									scope:this,
                                     handler:function(b){
                                         var geojsonstring = b.refOwner.geojsonTxT.getValue();
-                                        try{
+                                        try {
                                             var geojson = Ext.util.JSON.decode(geojsonstring);
-                                            store.loadData(geojson);
-                                            b.refOwner.close();
-											
-                                        }
-                                        catch(e){Ext.Msg.alert(this.errorText, this.notWellFormedText);}
-                                        
+                                            store.loadData(geojson, {loadInMap: true});
+                                            b.refOwner.close();											
+                                        }catch(e){
+											Ext.Msg.alert(this.errorText, this.notWellFormedText);
+										}                                        
                                     }
                                 }]
                             }).show();
@@ -580,7 +590,6 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                         iconCls:'icon-removelayers',
                         handler: function(b){
                             b.refOwner.getStore().removeAll();
-							
                         }
                     
                     }]
@@ -588,12 +597,29 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
                 
         });
 	
+	    this.panel = controlPanel;
 		this.output = gxp.plugins.MarkerEditor.superclass.addOutput.call(this, Ext.apply(controlPanel,config));
 		
 		//hide selection layer on tab change
 		
 		return this.output;
 		
-	}
+	},
+    
+	/** api: method[getState]
+     *  :returns {Object} - CSW catalogs added by the user
+     *  
+     */    
+    getState: function(state) {
+        var newState = state;
+		
+		var store = this.panel.grid.getStore();
+		var markers = store.getGeoJson();		
+		newState.markers = markers
+        
+        return newState;
+    }   
+	
  });
+ 
  Ext.preg(gxp.plugins.MarkerEditor.prototype.ptype, gxp.plugins.MarkerEditor);

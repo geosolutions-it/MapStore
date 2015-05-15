@@ -1094,7 +1094,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			    });
 		   
 			    var urlField = new Ext.form.TextField({
-					fieldLabel: grid.embedUrlLabel,
+					fieldLabel: "VIEW",
 					labelStyle: 'font-weight:bold;',
 					width: 350,
 					value: embedMap.getAbsoluteUrl(url),
@@ -1119,12 +1119,16 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			    });
 				
 				var composerUrl = url;
+				var embeddedUrl = url;
+				
 			    if(templateId){
-					composerUrl += "&configId=" + templateId;
-					if(composerUrl.indexOf("viewer") != -1){
-						composerUrl = composerUrl.replace(/viewer/, "composer");
-					}					
+					composerUrl += "&configId=" + templateId;	
+					embeddedUrl += "&configId=" + templateId;					
 				}
+				
+				if(composerUrl.indexOf("viewer") != -1){
+					composerUrl = composerUrl.replace(/viewer/, "composer");
+				}	
 				
 				var urlComposerField = new Ext.form.TextField({
 					fieldLabel: grid.composerUrlLabel,
@@ -1150,13 +1154,43 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						}
 					]
 			    });
+				
+				if(embeddedUrl.indexOf("viewer") != -1){
+					embeddedUrl = embeddedUrl.replace(/viewer/, "embedded");
+				}	
+				
+				var urlEmbeddedField = new Ext.form.TextField({
+					fieldLabel: grid.embedUrlLabel,
+					labelStyle: 'font-weight:bold;',
+					width: 350,
+					value: embedMap.getAbsoluteUrl(embeddedUrl),
+					selectOnFocus: true,
+					readOnly: true
+			    }); 
+				
+				var urlEmbeddedComposite = new Ext.form.CompositeField({
+					items:[
+						urlEmbeddedField,
+						{
+							xtype: 'button',
+							tooltip: grid.showMapTooltip,
+							iconCls: "gx-map-go",
+							width: 20,
+							handler: function(){
+								var u = urlEmbeddedField.getValue();
+								window.open(u);
+							}
+						}
+					]
+			    });
 		   
 			    var directURL = new Ext.form.FieldSet({
 					title: grid.embedURL,
 					labelWidth: 50,
 					items:[
 						urlCompositeField,
-						urlComposerComposite
+						urlComposerComposite,
+						urlEmbeddedComposite
 					],
 					bodyStyle: 'padding: 15px'
 			    });

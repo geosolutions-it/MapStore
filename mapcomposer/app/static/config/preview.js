@@ -4,9 +4,9 @@
 		"header":false
 	},
     "gsSources": {
-		"bing": {
-			"ptype": "gxp_bingsource" 
-		}
+		"google": {
+			"ptype": "gxp_googlesource" 
+		}		
     },
 	"loadingPanel": {
 		"width": 100,
@@ -22,9 +22,9 @@
         ],
         "layers": [
 			{
-				"source": "bing",
-				"title": "Bing Aerial",
-				"name": "AerialWithLabels",
+				"source": "google",
+				"title": "Google Roadmap",
+				"name": "ROADMAP",
 				"group": "background"
 			}
 		],

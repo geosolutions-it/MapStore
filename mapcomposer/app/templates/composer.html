@@ -401,6 +401,7 @@
 			}
 			
             app = new GeoExplorer.Composer({
+				markers: serverConfig.markers,
                 scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
 				defaultLanguage: serverConfig.defaultLanguage,	
 				actionToolScale: serverConfig.actionToolScale || "small",

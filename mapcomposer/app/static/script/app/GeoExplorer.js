@@ -136,7 +136,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      *   If this property is null, old method is used (blackList) to get the state.
      *   Default is `["sources", "map", "CSWCatalogues"]`.
      */
-    stateWhiteList: ["sources", "map", "CSWCatalogues"], 
+    stateWhiteList: ["sources", "map", "CSWCatalogues", "markers"], 
     
     toggleGroup: "toolGroup",
     
@@ -531,6 +531,13 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             });		
 			
 			this.appMask.hide();
+			
+			// //////////////////////////////////////////////////////////////////
+			// Automatically inject markers if present in loaded configuration
+			// //////////////////////////////////////////////////////////////////
+			if(this.markers){
+				this.showMarkerGeoJSON("Markers", this.markers);
+			}
 		});
 
        var googleEarthPanel = new gxp.GoogleEarthPanel({

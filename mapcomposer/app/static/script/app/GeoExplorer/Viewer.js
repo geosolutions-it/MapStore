@@ -110,6 +110,13 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         this.on("ready", function() {
         	this.toolbar.enable();
 			this.bottom_toolbar.enable();
+			
+			// //////////////////////////////////////////////////////////////////
+			// Automatically inject markers if present in loaded configuration
+			// //////////////////////////////////////////////////////////////////
+			if(this.markers){
+				this.showMarkerGeoJSON("Markers", this.markers);
+			}
         }, this);
 
         this.mapPanelContainer = new Ext.Panel({

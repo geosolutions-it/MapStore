@@ -1,6 +1,15 @@
 {
    "scaleOverlayMode": "basic",
-   "gsSources":{ 
+   "gsSources":{ 		
+		"comunefi":{
+				"ptype": "gxp_wmssource",
+				"url": "http://datigis.comune.fi.it/geowebcache_test/service/wms",
+				"title": "Comune FI WMS Server",
+				"layerBaseParams":{
+					"FORMAT": "image/png8",
+					"TILED": true
+				}
+		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -94,7 +103,18 @@
             "collapsible": true,
             "ctCls": "south-panel",
             "header": true
-        }
+        },
+		{
+			"xtype":"panel",
+			"id":"east", 
+			"region": "east",
+			"width": 550,
+			"minWidth":550,
+			"header":false,
+			"split": true,
+			"collapseMode": "mini",
+			"layout":"fit"
+		}
     ],	
 	"scaleOverlayUnits":{
         "bottomOutUnits":"nmi",    
@@ -122,16 +142,7 @@
             "saveState":true,
             "cswconfig": {
                 "catalogs": [
-                        {"name": "CSI Piemonte", "url": "http://www.ruparpiemonte.it/geocatalogorp/geonetworkrp/srv/it/csw", "description": "GeoPortale della Regione Piemonte"},
-                        {"name": "Comune di Firenze", "url": "http://datigis.comune.fi.it/geonetwork/srv/it/csw", "description": "GeoPortale del Comune di Firenze"},
-                        {"name": "PTA", "url": "http://pta.partout.it/geoportalPTA/csw", "description": "Piattaforma Tecnologica alpina", "metaDataOptions":{"base":"http://pta.partout.it/geoportalPTA/catalog/search/resource/details.page","idParam":"uuid","idIndex":0}},
-                        {"name": "Treviso", "url": "http://ows.provinciatreviso.it/geonetwork/srv/it/csw", "description": "Treviso Geonetwork"},
-                        {"name": "kscNet", "url": "http://geoportal.kscnet.ru/geonetwork/srv/ru/csw", "description": "kscNet"},
-                        {"name": "CSI-CGIAR", "url": "http://geonetwork.csi.cgiar.org/geonetwork/srv/en/csw", "description" : "CSI-CGIAR"},
-                        {"name": "EauFrance", "url": "http://sandre.eaufrance.fr/geonetwork/srv/fr/csw", "description" : "EauFrance"},
-                        {"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
-                        {"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
-                        {"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
+                        {"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork_test/srv/ita/csw", "description": "GeoNetwork del Comune di Firenze"}
                 ],
                 "dcProperty": "title",
                 "cswVersion": "2.0.2",
@@ -169,6 +180,17 @@
 			"ptype": "gxp_about",
 			"poweredbyURL": "null",
 			"actionTarget": {"target": "panelbbar", "index": 1}
+		}, {
+			"ptype": "gxp_marker_editor",
+			"outputTarget":"east",
+			"toggleGroup":"toolGroup",
+			"saveState": true
+		}, {
+			"ptype": "gxp_wmsgetfeatureinfo_menu", 
+			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
+			"useTabPanel": true,
+			"toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 20}
 		}
 	]
 }

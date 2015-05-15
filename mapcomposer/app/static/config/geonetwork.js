@@ -1,12 +1,16 @@
 {
-   "gnBaseUrl": "",
+   "gnBaseUrl": "http://datigis.comune.fi.it/geonetwork_test/",
    "scaleOverlayMode": "advanced",
    "tab": true,
    "gsSources":{ 
 		"comunefi":{
 				"ptype": "gxp_wmssource",
-				"url": "http://tms.comune.fi.it/tiles/service/wms",
-				"title": "Comune FI WMS Server"
+				"url": "http://datigis.comune.fi.it/geowebcache_test/service/wms",
+				"title": "Comune FI WMS Server",
+				"layerBaseParams":{
+					"FORMAT": "image/png8",
+					"TILED": true
+				}
 		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
@@ -107,7 +111,7 @@
 			"saveState": true,
             "cswconfig": {
                 "catalogs": [
-                        {"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork/srv/it/csw", "description": "GeoNetwork del Comune di Firenze"}
+                        {"name": "SIT Comune FI" , "url": "http://datigis.comune.fi.it/geonetwork_test/srv/ita/csw", "description": "GeoNetwork del Comune di Firenze"}
                     ],
                 "dcProperty": "title",
                 "initialBBox": {
@@ -137,6 +141,12 @@
 			"ptype": "gxp_about",
 			"poweredbyURL": "null",
 			"actionTarget": {"target": "panelbbar", "index": 1}
+		}, {
+			"ptype": "gxp_wmsgetfeatureinfo_menu", 
+			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
+			"useTabPanel": true,
+			"toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 20}
 		}
 	]
 }
