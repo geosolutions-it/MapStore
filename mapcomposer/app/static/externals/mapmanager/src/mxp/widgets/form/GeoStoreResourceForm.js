@@ -356,7 +356,7 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
             me.setLoading(false);
             me.saveSuccess();
             me.fireEvent("save",response);
-            
+            //saveAutomationConfig(automationRules, automationId);
         }
         var finishError = function(response){
             me.setLoading(false);
@@ -366,10 +366,9 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
                msg: response.statusText + "(status " + response.status + "):  ",
                buttons: Ext.Msg.OK,
                icon: Ext.MessageBox.ERROR
-            }); 
+            });
         };
         var createFinish = function(response){
-            console.log(response);  
             var win = me.showPermissionPrompt(response);
             finish(response);
         }
