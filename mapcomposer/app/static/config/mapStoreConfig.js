@@ -184,6 +184,7 @@
 			"ptype": "gxp_marker_editor",
 			"outputTarget":"east",
 			"toggleGroup":"toolGroup",
+			"zoomToMarkersExtent": true,
 			"saveState": true
 		}, {
 			"ptype": "gxp_wmsgetfeatureinfo_menu", 
