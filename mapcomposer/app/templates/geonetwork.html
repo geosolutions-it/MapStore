@@ -118,7 +118,7 @@
     <script>
         
         var app;        
-        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false;
+        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false, markersurl;
 		
 		// /////////////////////////////////////////////////////
 		// Extra parameters to manage geonetwork integration
@@ -168,6 +168,10 @@
 					case "wmsurl" : 
 									wmsurl = param[1]; 
 									wmsurl = decodeURIComponent(wmsurl);
+									break;
+					case "markersurl" : 
+									markersurl = param[1]; 
+									markersurl = decodeURIComponent(markersurl);
 									break;
 					case "uuid" : 
 									uuid = param[1]; 
@@ -437,6 +441,7 @@
 
             app = new GeoExplorer.Composer({  
 				markers: serverConfig.markers,
+				markersURL: markersurl || serverConfig.markersURL,
 				scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
                 defaultLanguage: serverConfig.defaultLanguage,		
 				actionToolScale: serverConfig.actionToolScale || "small",

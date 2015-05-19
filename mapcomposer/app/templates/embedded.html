@@ -75,7 +75,7 @@
         <script>
             
             var app;
-            var modified = false; var mapIdentifier = -1; var bbox; var fullScreen = false;
+            var modified = false; var mapIdentifier = -1; var bbox; var fullScreen = false, markersurl;
 			
 			// /////////////////////////////////////////////////////
 			// Extra parameters to add layers at startup
@@ -120,6 +120,10 @@
 						case "wmsurl" : 
 									wmsurl = param[1]; 
 									wmsurl = decodeURIComponent(wmsurl);
+									break;
+						case "markersurl" : 
+									markersurl = param[1]; 
+									markersurl = decodeURIComponent(markersurl);
 									break;
 						case "gsturl" : 
 									gsturl = param[1]; 
@@ -218,6 +222,8 @@
 				}
                 
                 app = new GeoExplorer.Viewer({
+					markers: serverConfig.markers,
+					markersURL: markersurl || serverConfig.markersURL,
 				    defaultLanguage: serverConfig.defaultLanguage,	
 					actionToolScale: serverConfig.actionToolScale || "small",
                     proxy: proxy,
