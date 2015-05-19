@@ -45,7 +45,7 @@
     }],
    "adminTools":[{
          "ptype": "mxp_cmre_ondemand_services",
-         "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",         
+         "osdi2ManagerRestURL":"http://172.21.160.30:8282/opensdi2-manager/mvc/process/wps/",         
          "baseMapUrl": "./?config=assetAllocatorResult",
          "autoRefreshTime": 30000,
          "autoOpen":true,
@@ -69,7 +69,7 @@
 					"minlat": "0",
 					"minlon": "50"
 				},
-				"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+				"owsBaseURL": "http://172.21.160.30:8080/geoserver/ows",
 				"owsService": "WCS",
 				"owsVersion": "1.0.0",
 				"owsResourceIdentifier": "TDA:PAGM",
@@ -79,7 +79,7 @@
 					{
 						"sourceId": "karpathos-dev",
 						"title":"Piracy Activity Group",
-						"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+						"owsBaseURL": "http://172.21.160.30:8080/geoserver/ows",
 						"owsService": "WMS",
 						"owsVersion": "1.3.0",
 						"owsResourceIdentifier": "TDA:PAGM",
@@ -95,7 +95,7 @@
 					"minlat": "56",
 					"minlon": "20"
 				},
-				"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+				"owsBaseURL": "http://172.21.160.30:8080/geoserver/ows",
 				"owsService": "WCS",
 				"owsVersion": "1.0.0",
 				"owsResourceIdentifier": "TDA:SmallBoatAttack",
@@ -105,7 +105,7 @@
 					{
 						"sourceId": "karpathos-dev",
 						"title":"Piracy Activity Group",
-						"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+						"owsBaseURL": "http://172.21.160.30:8080/geoserver/ows",
 						"owsService": "WMS",
 						"owsVersion": "1.3.0",
 						"owsResourceIdentifier": "TDA:PAGM",
@@ -255,7 +255,7 @@
     }],
     "loggedTools":[{
          "ptype": "mxp_cmre_ondemand_services",
-         "osdi2ManagerRestURL":"http://localhost:8180/opensdi2-manager/mvc/process/wps/",
+         "osdi2ManagerRestURL":"http://172.21.160.30:8282/opensdi2-manager/mvc/process/wps/",
          "baseMapUrl": "./?config=assetAllocatorResult",
          "autoRefreshTime": 30000,
          "autoOpen":true,
@@ -280,7 +280,7 @@
 					"minlat": "0",
 					"minlon": "50"
 				},
-				"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+				"owsBaseURL": "http://172.21.160.30:8080/geoserver/ows",
 				"owsService": "WCS",
 				"owsVersion": "1.0.0",
 				"owsResourceIdentifier": "TDA:PAGM",
@@ -290,7 +290,7 @@
 					{
 						"sourceId": "karpathos-dev",
 						"title":"Piracy Activity Group",
-						"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+						"owsBaseURL": "http://172.21.160.30:8080/geoserver/ows",
 						"owsService": "WMS",
 						"owsVersion": "1.3.0",
 						"owsResourceIdentifier": "TDA:PAGM",
@@ -306,7 +306,7 @@
 					"minlat": "56",
 					"minlon": "20"
 				},
-				"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+				"owsBaseURL": "http://172.21.160.30:8080/geoserver/ows",
 				"owsService": "WCS",
 				"owsVersion": "1.0.0",
 				"owsResourceIdentifier": "TDA:SmallBoatAttack",
@@ -316,7 +316,7 @@
 					{
 						"sourceId": "karpathos-dev",
 						"title":"Piracy Activity Group",
-						"owsBaseURL": "http://karpathos-dev/geoserver/ows",
+						"owsBaseURL": "http://172.21.160.30:8080/geoserver/ows",
 						"owsService": "WMS",
 						"owsVersion": "1.3.0",
 						"owsResourceIdentifier": "TDA:PAGM",

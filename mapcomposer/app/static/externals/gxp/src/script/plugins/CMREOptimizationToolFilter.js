@@ -185,21 +185,41 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
      */
     sendOTHGoldEmailMEssage: function(tracks, email, assets) {
     	// /oth/pim/OAAroutesEmail?email=&asset=1%2C2%2C3%2C4&layer=natocmre%3Aoaa_tracks_indian_ocean&sol_id=1&guid=4b3ede0d-7583-4d83-aa1a-bfb0ac5371b0
-    	var url = this.CWIXPortalPIMTracksManagerURL + '?email='+encodeURIComponent(email)+'&asset='+encodeURIComponent(assets)+'&layer='+encodeURIComponent(tracks)+'&sol_id='+this.solutionId+'&guid='+this.guid;
-    	console.log(url);
+    	var url = this.CWIXPortalPIMTracksManagerURL + 'OAAroutesEmail/OPL?email='+encodeURIComponent(email)+'&asset='+encodeURIComponent(assets)+'&layer='+encodeURIComponent(tracks)+'&sol_id='+this.solutionId+'&guid='+this.guid;
+    	//console.log(url);
     	
     	var me = this;
     	Ext.Ajax.request({
 		   url: url,
 		   method: 'GET',
-		   success: successHandler,
-		   failure: failureHandler,
+		   //success: successHandler,
+		   //failure: failureHandler,
+		   success: function (response){
+		   	Ext.Msg.show({
+			   title: "OTH-Gold PIM Track",
+			   msg: response.responseText,
+			   closable: false,
+			   width: 650,
+			   buttons: Ext.Msg.OK,
+			   icon: Ext.MessageBox.INFO
+			});
+		   },
+           failure: function (response){
+           	Ext.Msg.show({
+	            title: "OTH-Gold PIM Track - Error!",
+	            msg: response.responseText,
+	            width: 300,
+	            buttons : Ext.Msg.OK,
+	            icon: Ext.MessageBox.ERROR
+	        });
+	       },
 		   scope: me,
 		   headers: {
 		       'Authorization':me.target.authToken
 		   }
 		});
 
+/*
 		var successHandler = function(response,opts){
 	    	Ext.Msg.show({
 			   title: "OTH-Gold PIM Track",
@@ -222,6 +242,86 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 	        });
 			console.log('OTH-Gold PIM Track - FAILED!');
 		};
+*/
+
+    },
+    
+    /**
+     * 
+     */
+    sendOTHGoldTCPMEssage: function(tracks, tcpip, tcpport, assets) {
+    	var url = this.CWIXPortalPIMTracksManagerURL + 'OAAroutesTCP/OPL?tcpip='+encodeURIComponent(tcpip)+'&tcpport='+encodeURIComponent(tcpport)+'&asset='+encodeURIComponent(assets)+'&layer='+encodeURIComponent(tracks)+'&sol_id='+this.solutionId+'&guid='+this.guid;
+    	
+    	var me = this;
+    	Ext.Ajax.request({
+		   url: url,
+		   method: 'GET',
+		   //success: successHandler,
+		   //failure: failureHandler,
+		   success: function (response){
+		   	Ext.Msg.show({
+			   title: "OTH-Gold PIM Track",
+			   msg: response.responseText,
+			   closable: false,
+			   width: 650,
+			   buttons: Ext.Msg.OK,
+			   icon: Ext.MessageBox.INFO
+			});
+		   },
+           failure: function (response){
+           	Ext.Msg.show({
+	            title: "OTH-Gold PIM Track - Error!",
+	            msg: response.responseText,
+	            width: 300,
+	            buttons : Ext.Msg.OK,
+	            icon: Ext.MessageBox.ERROR
+	        });
+	       },
+		   scope: me,
+		   headers: {
+		       'Authorization':me.target.authToken
+		   }
+		});
+
+    },
+    
+    /**
+     * 
+     */
+    getOTHGoldMEssageText: function(tracks, assets) {
+    	// /oth/pim/OAAroutes?asset=1%2C2%2C3%2C4&layer=natocmre%3Aoaa_tracks_indian_ocean&sol_id=1&guid=4b3ede0d-7583-4d83-aa1a-bfb0ac5371b0
+    	var url = this.CWIXPortalPIMTracksManagerURL + 'OAAroutes/OPL?asset='+encodeURIComponent(assets)+'&layer='+encodeURIComponent(tracks)+'&sol_id='+this.solutionId+'&guid='+this.guid;
+    	//console.log(url);
+    	
+    	var me = this;
+    	Ext.Ajax.request({
+		   url: url,
+		   method: 'GET',
+		   success: function (response){
+		   	Ext.Msg.show({
+			   title: "OTH-Gold PIM Track",
+			   msg: response.responseText,
+			   closable: false,
+			   width: 650,
+			   height: 800,
+			   buttons: Ext.Msg.OK,
+			   icon: Ext.MessageBox.INFO
+			});
+		   },
+           failure: function (response){
+           	Ext.Msg.show({
+	            title: "OTH-Gold PIM Track - Error!",
+	            msg: response.responseText,
+	            width: 300,
+	            buttons : Ext.Msg.OK,
+	            icon: Ext.MessageBox.ERROR
+	        });
+	       },
+		   scope: me,
+		   headers: {
+		       'Authorization':me.target.authToken
+		   }
+		});
 
     },
     
@@ -760,50 +860,143 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 			    			allowBlank: false,
 			    			anchor: "100%"
 			    		},{
+					        xtype		: 'container',
+					        fieldLabel  : "TCP/IP Address",
+					        ref         : 'targetTCP',
+							layout		: 'hbox',
+					        items: [
+					        	{
+					    			xtype:'textfield',
+					    			ref: 'targetTCPIP',
+					    			allowBlank: false,
+					    			width:80,
+					    			anchor: "100%"
+					    		},{
+							        xtype: 'label',
+							        text: ':',
+							        margins: '1 1 1 1'
+							    },{
+					    			xtype:'textfield',
+					    			ref: 'targetTCPPort',
+					    			allowBlank: false,
+					    			width:40,
+					    			anchor: "100%"
+					    		}
+					    	]
+			    		},{
 			    			xtype:'textfield',
 			    			fieldLabel: "Comma-separated list of Assets (1,2,...)",
 			    			ref: 'assets',
 			    			allowBlank: false,
 			    			anchor: "100%"
 			    		},{
-			            xtype: 'button',
-			            text: "Send via e-Mail",
-			            width: 150,
-			            handler: function(){
-			            	var email = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.targetEmail;
-					    	var assets = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.assets;
-					    	
-					    	if(!email.isValid() || !assets.isValid()) {
-					    		Ext.Msg.show({
-		                            title: "OTH-Gold PIM Track - Error!",
-		                            msg: "Both fields are required!",
-		                            width: 300,
-		                            icon: Ext.MessageBox.ERROR
-		                        });
-		                        
-		                        email.markInvalid();
-		                        assets.markInvalid();
-					    	} else {
-					    		var ereg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
-					    		
-					    		emailId = email.getRawValue();
-								var testResult = ereg.test(emailId);
-								
-								if (!testResult) {
-									Ext.Msg.show({
+				            xtype: 'button',
+				            text: "Get PIM Track",
+				            width: 280,
+				            handler: function() {
+						    	var email = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.targetEmail;
+				            	var tcpip = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.targetTCP.targetTCPIP;
+				            	var tcpport = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.targetTCP.targetTCPPort;
+						    	var assets = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.assets;
+
+								email.reset();
+						    	tcpip.reset();
+						    	tcpport.reset();
+						    	
+						    	if(!assets.isValid()) {
+						    		Ext.Msg.show({
 			                            title: "OTH-Gold PIM Track - Error!",
-			                            msg: "The provided E-Mail Address is not formally correct!",
+			                            msg: "Assets are required!",
 			                            width: 300,
 			                            icon: Ext.MessageBox.ERROR
 			                        });
 			                        
-			                        email.markInvalid();
-								} else {
-									me.sendOTHGoldEmailMEssage(me.getFeatures("tracks"), emailId, assets.getRawValue());
-								}
-					    	}
-			           	},
-			            scope: this
+			                        assets.markInvalid();
+						    	} else {
+									me.getOTHGoldMEssageText(me.getFeatures("tracks"), assets.getRawValue());
+						    	}
+				           	},
+				            scope: this
+				  		},{
+					        xtype		: 'container',
+							layout		: 'hbox',
+					        items: [{
+					            xtype: 'button',
+					            text: "Send via e-Mail",
+					            width: 130,
+					            handler: function() {
+					            	var email = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.targetEmail;
+					            	var tcpip = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.targetTCP.targetTCPIP;
+					            	var tcpport = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.targetTCP.targetTCPPort;
+							    	var assets = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.assets;
+
+							    	tcpip.reset();
+							    	tcpport.reset();
+							    	
+							    	if(!email.isValid() || !assets.isValid()) {
+							    		Ext.Msg.show({
+				                            title: "OTH-Gold PIM Track - Error!",
+				                            msg: "Both fields are required!",
+				                            width: 300,
+				                            icon: Ext.MessageBox.ERROR
+				                        });
+				                        
+				                        email.markInvalid();
+				                        assets.markInvalid();
+							    	} else {
+							    		var ereg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+							    		
+							    		emailId = email.getRawValue();
+										var testResult = ereg.test(emailId);
+										
+										if (!testResult) {
+											Ext.Msg.show({
+					                            title: "OTH-Gold PIM Track - Error!",
+					                            msg: "The provided E-Mail Address is not formally correct!",
+					                            width: 300,
+					                            icon: Ext.MessageBox.ERROR
+					                        });
+					                        
+					                        email.markInvalid();
+										} else {
+											me.sendOTHGoldEmailMEssage(me.getFeatures("tracks"), emailId, assets.getRawValue());
+										}
+							    	}
+					           	},
+					            scope: this
+					  		},{
+						        xtype: 'label',
+						        text: ' - ',
+						        margins: '2 2 2 2'
+						    },{
+					            xtype: 'button',
+					            text: "Send via TCP/IP",
+					            width: 130,
+					            handler: function() {
+					            	var email = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.targetEmail;
+					            	var tcpip = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.targetTCP.targetTCPIP;
+					            	var tcpport = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.targetTCP.targetTCPPort;
+							    	var assets = this.form.filterFieldsets.oaaInfoPanel.othGoldMailPanel.assets;
+							    	
+							    	email.reset();
+							    	
+							    	if(!tcpip.isValid() || !tcpport.isValid() || !assets.isValid()) {
+							    		Ext.Msg.show({
+				                            title: "OTH-Gold PIM Track - Error!",
+				                            msg: "Both fields are required!",
+				                            width: 300,
+				                            icon: Ext.MessageBox.ERROR
+				                        });
+				                        
+				                        tcpip.markInvalid();
+				                        tcpport.markInvalid();
+				                        assets.markInvalid();
+							    	} else {
+										me.sendOTHGoldTCPMEssage(me.getFeatures("tracks"), tcpip.getRawValue(), tcpport.getRawValue(), assets.getRawValue());
+							    	}
+					           	},
+					            scope: this
+					  		}]
 			        }]
 		       }
             ]
