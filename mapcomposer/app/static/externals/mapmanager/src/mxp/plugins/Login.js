@@ -59,7 +59,7 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
             // grid: this,
             forceLogin: this.forceLogin,
             geoStoreBase : this.target.config.geoStoreBase,
-            token: this.target.auth,
+            authHeader: this.target.auth,
             statelessSession: this.statelessSession,
             defaultHeaders: this.target.defaultHeaders
         });

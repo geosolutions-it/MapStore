@@ -539,6 +539,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 getToken: function(){
                     return null;
                 },
+                getAuthHeader: function(){
+                    return null;
+                },
                 getCurrentUser: function(){
                     return null;
                 },
@@ -934,7 +937,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									// /////////////////////////////////////
 									// Get info about logged user if any
 									// /////////////////////////////////////
-									var auth = grid.login.getToken();
+									var auth = grid.login.getAuthHeader();
 									
 									// /////////////////////////
 									// Fetch base url
@@ -1037,7 +1040,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			    // /////////////////////////////////////
 			  	// Get info about logged user if any
 				// /////////////////////////////////////
-			    var auth = grid.login.getToken();
+			    var auth = grid.login.getAuthHeader();
 				
 				// ///////////////////
 				// fetch base url
@@ -1116,7 +1119,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					   items: new UserManagerView({
 					   			login: grid.login,
                                 ASSET: grid.config.ASSET,
-								auth: grid.login.getToken(),
+								auth: grid.login.getAuthHeader(),
 								url: grid.geoBaseUsersUrl,
                                 searchUrl: grid.geoSearchUsersUrl,
 								mapUrl: grid.geoBaseMapsUrl,
@@ -1132,7 +1135,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 } else {
                     new UserManagerView({
                         login: grid.login,
-                        auth: grid.login.getToken(),
+                        auth: grid.login.getAuthHeader(),
                         url: grid.geoBaseUsersUrl,
                         mapUrl: grid.geoBaseMapsUrl,
                         gridPanelBbar: grid.getBottomToolbar(),
@@ -1734,7 +1737,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									// //////////////////////////////////
 									// Get info about logged user if any
 									// //////////////////////////////////
-									var auth = grid.login.getToken();
+									var auth = grid.login.getAuthHeader();
 									
 									// ////////////////////
 									// Fetch base url
@@ -1886,7 +1889,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 listeners:{
                     beforeload: function(proxy,params){
                         if(grid.login){
-                            proxy.conn.headers['Authorization'] = grid.login.getToken();
+                            proxy.conn.headers['Authorization'] = grid.login.getAuthHeader();
                         }else if(proxy.conn.headers && proxy.conn.headers['Authorization']){
                             delete proxy.conn.headers['Authorization'];
                         }

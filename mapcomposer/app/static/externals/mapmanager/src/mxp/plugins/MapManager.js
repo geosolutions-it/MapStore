@@ -129,7 +129,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
         if(this.output){
             for(var i = 0; i < this.output.length; i++){
                 this.output[i].login = this.login.login;
-                this.output[i].auth = this.login.login.getToken();
+                this.output[i].auth = this.login.login.getAuthHeader();
 
                 if(this.login.login && this.login.login.username){
                     this.applyLoggedState(this.output[i]);

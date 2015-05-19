@@ -130,7 +130,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         this.fireEvent("portalready");
         var user = this.restoreLoginState();
         if(!this.logged && user){
-            var auth = user.token;
+            var auth = user.authHeader;
             this.cleanTools();
             this.user = user.user;
             this.auth = auth ? auth: this.auth;
@@ -399,7 +399,17 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
     saveLoginState: function(){
       //TODO Update user data
       if(sessionStorage && this.config.loginDataStorage){
-        sessionStorage["userDetails"] = this.user;
+        for(var i = 0; i < this.user.attribute.length; i++){
+            var attr = this.user.attribute[i];
+            if(attr.name == "UUID"){
+                this.token = attr.value
+            }
+        }
+        sessionStorage["userDetails"] = Ext.util.JSON.encode({
+            user: this.user,
+            token: this.token,
+            authHeader: this.auth //TODO token
+        })
       }
       
     },

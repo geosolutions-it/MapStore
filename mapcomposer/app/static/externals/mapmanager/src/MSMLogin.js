@@ -206,11 +206,11 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         if(!this.defaultHeaders){
             this.defaultHeaders = {
                 'Accept': 'application/json',
-                'Authorization': this.token
+                'Authorization': this.authHeader
             };
         }
 
-        if(!this.statelessSession || this.token){
+        if(!this.statelessSession || this.authHeader){
             this.getLoginInformation();   
         }else{
             this.showLogin();
@@ -237,13 +237,19 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                     this.userid = user.User.id;
                     this.username = user.User.name;
                     this.role = user.User.role;
-					
+					for(var i = 0; i < user.User.attribute.length; i++){
+                        var attr = user.User.attribute[i];
+                        if(attr.name == "UUID"){
+                            this.token = attr.value
+                        }
+                    }
 					// //////////////////////////////////////////////////////////
 					// Save the user's details in session storage in order to 
 					// give these informations to the opened composer.
 					// //////////////////////////////////////////////////////////
 					var userDetails = {
 						token: this.token,
+                        authHeader: this.authHeader,
 						user: user.User,
 						provider: "geostore"
 					};
@@ -326,6 +332,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
     invalidateLoginState: function(){
         // invalidate token
         this.token = null;
+        this.authHeader = null;
         this.userid = null;
         this.username = null;
         this.showLogin(true);
@@ -338,6 +345,14 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
 	getToken: function(){
 		return this.token;
 	},
+    
+    /** 
+     * api: method[getAuthHeader]
+     * get the auth header for this session.
+     */
+    getAuthHeader: function(){
+        return this.authHeader;
+    },
 
     /** 
      * api: method[getCurrentUser]
@@ -369,7 +384,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
         mask.show();
         Ext.Ajax.request({
             method: 'GET',
-            url: this.geoStoreBase + 'users/user/details/',
+            url: this.geoStoreBase + 'users/user/details?includeattributes=true',
             scope: this,
             headers: {
                 'Accept': 'application/json',
@@ -384,7 +399,7 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
                 
                 this.showLogout(user.User.name);
 				// save auth info
-				this.token = auth;
+				this.authHeader = auth;
 				if (user.User) {
 					this.userid = user.User.id;//TODO geostore don't return user id! in details request
 					this.username = user.User.name;
