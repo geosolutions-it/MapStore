@@ -1509,9 +1509,9 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
     
     /** api: method[addOutput]
      */
-    addOutput: function(config, activate) {
+    addOutput: function(config) {
         var me= this;
-        this.wfsColumns= new Array();
+        this.wfsColumns= [];
         
         if(me.actionColumns){
             for( var kk=0; kk<me.actionColumns.length; kk++){
@@ -1633,7 +1633,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         
         var totalHandler = function(total, callback){
             
-            
+            var finalColumns = me.wfsColumns.slice();
             if(parseInt(total,10) > 0 || (me.extraRecords && me.extraRecords.length > 0)) {
                 me.loadFeatureFields(function(){
                     if(me.columns){
@@ -1649,11 +1649,11 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                     return '<b>' + val + '</b>';
                                 }
                             }
-                            me.wfsColumns.push(column);
+                            finalColumns.push(column);
                         }
                     }else{
                         for(kk=0; kk<me.featureFields.length; kk++){
-                            me.wfsColumns.push({
+                            finalColumns.push({
                                 header: me.featureFields[kk].name, 
                                 dataIndex: me.featureFields[kk].name,
                                 sortable: true
@@ -1677,7 +1677,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                 me.wfsGrid.reconfigure(
                                     store, 
                                     new Ext.grid.ColumnModel({
-                                        columns: me.wfsColumns
+                                        columns: finalColumns
                                     })
                                     );
                                 if(me.wfsGrid.getBottomToolbar() && me.wfsGrid.getBottomToolbar().bind) {
@@ -2094,7 +2094,9 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             }]
             });
         }
-        
+        if(this.loadMsg){
+           this.loadMask = new Ext.LoadMask(config.maskEl, {msg:this.loadMsg});
+        }
         var wfsGridPanel=new Ext.grid.EditorGridPanel({ 
             title: this.title, 
             store: [], 
@@ -2114,9 +2116,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             scope: this,
             listeners: {
                 render: function(grid){
-                    if(me.loadMsg){
-                       me.loadMask = new Ext.LoadMask(grid.getEl(), {msg:me.loadMsg});
-                    }
+                    
                     
                 },
                 afteredit : function(object) {
@@ -2149,17 +2149,21 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         
         this.wfsGrid = gxp.plugins.WFSGrid.superclass.addOutput.call(this, config);
         
-        
-        this.wfsGrid.on('activate', function() {  
+        this.activate = function() {
             if(this.data) {
                 this.loadData();
             } else {
                 this.setTotalRecord(totalHandler);
             }
+        };
+        
+        this.wfsGrid.on('activate', function() {
+            this.activate();
         }, this, {single: true});
         
         return this.wfsGrid;
     },
+    
     loadData: function() {
         var store = new GeoExt.data.FeatureStore({ 
             //wfsParam: me,
@@ -2169,7 +2173,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 
             
         });
-        
+        var finalColumns = this.wfsColumns.slice();
         if(this.columns){
             for(kk=0; kk<this.columns.length; kk++){
                 var column = {};
@@ -2180,14 +2184,14 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 if(column.hidden && typeof column.hidden === 'string') {                    
                     column.hidden = (new Ext.XTemplate(column.hidden).apply(this.tplData || {})) === "true";
                 }
-                this.wfsColumns.push(column);
+                finalColumns.push(column);
             }
         }
         
         this.wfsGrid.reconfigure(
             store, 
             new Ext.grid.ColumnModel({
-                columns: this.wfsColumns
+                columns: finalColumns
             })
         );
         if(this.wfsGrid.getBottomToolbar()) {

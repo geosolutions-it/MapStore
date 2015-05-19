@@ -32,15 +32,13 @@ GeoExt.Lang.add("de", {
         humanTitle:'Anthropologisches', 
         notHumanTitle:'Umwelt', 
         defaultExtentLabel: "Das ganze Gebiet",
-        targetsTextBotton: "Treffer",
-        areaDamageTextBotton: "Schadensbereich",
-        roadGraphTextBotton: "Straßennetz",  
+        
         wpsTitle: "Fehler",
         wpsError: "Fehler in der Anfrage des WPS-Dienstes",
         loadMsg: "Bitte warten ...",
         notVisibleOnArcsMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
         notVisibleOnGridMessage: "Berechnungsoptionen sind in diesem Maßstabsbereich nicht sichtbar, bitte zoomen Sie stärker in die Karte hinein",
-        refreshGridButton: "Grid-Aktualisierung",
+        
         simMsg: 'Diese Funktion ist in diesem Maßstab nicht verfügbar',
         
         saveProcessingTitle: "Verarbeitung speichern",
@@ -163,7 +161,11 @@ GeoExt.Lang.add("de", {
         displayMsgPaging: "Bestandteil {0} - {1} von {2}",
         emptyMsg: "Kein Bestandteil gefunden",
         noRecordFoundLabel: "Kein Bestandteil gefunden",
-        loadMsg: "Daten werden geladen. Bitte warten..."
+        loadMsg: "Daten werden geladen. Bitte warten...",
+        refreshGridButton: "Aktualisieren alle Netze",
+        targetsTextBotton: "Treffer",
+        areaDamageTextBotton: "Schadensbereich",
+        roadGraphTextBotton: "Straßennetz"
     },
     "gxp.plugins.WFSGrid.prototype": {
         displayMsgPaging: "Bestandteil {0} - {1} von {2}",

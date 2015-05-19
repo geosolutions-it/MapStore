@@ -1776,6 +1776,66 @@
                     "type": "all"
                 }
             },
+            
+            "damage": {
+                "Aree di danno": {
+                    "featureType": "buffer_1",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id_geo_arco"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometria"
+                        },
+                        {
+                            "name": "name",         
+                            "mapping": "name"
+                        },
+                        {
+                            "name": "distanza",         
+                            "mapping": "distance"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Area", "Fascia",  "Bande", "Bereich"],
+                            "dataIndex": "name"
+                        },
+                        {
+                            "header": ["Distance", "Distanza", "Distance", "Distanz"],
+                            "dataIndex": "distanza"
+                        }
+                    ],
+                    "title": ["Damage areas", "Aree di danno",  "Des zones de dommages", "Schadensbereiche"],
+                    "id": 1,
+                    "name": "DAMAGEAREA",
+                    "type": "all",
+                    "noPaging": true
+                }
+            }
+        },
+        "currentPanel": "targets",
+                "actionColumns" : [ 
+                    {
+                      "type": "checkDisplay",
+                      "layerName": "Bersaglio Selezionato",
+                      "sourceSRS": "EPSG:32632"
+        },
+                    {
+                     "type": "zoom",
+                     "sourceSRS": "EPSG:32632"
+                    }],
+        "index": 29
+    }, {
+        "ptype": "gxp_tabpanelwfsgrids",
+        "outputTarget": "featurelist",
+        "id": "simulationgrid",
+        "withSwitchButtons": false,
+        "srsName" : "EPSG:32632",
+        "wfsURL": "http://localhost:8080/geoserver/destination/wfs",
+        "panels": {
             "simulation": {
                 "Grafo Stradale": {
                     "featureType": "grafo_simulazione",
@@ -1847,7 +1907,7 @@
                     "Archi",
                     "Archi",
                     "Segmente"],
-                    "id": 100,
+                    "id": "archi",
                     "name": "ARCHI",
                     "type": "all",
                     "noPaging": true,
@@ -1911,7 +1971,7 @@
                     ],
                     "title": ["Resident Population", "Popolazione residente", "Population résidente", "Anwohnerzahlen"],
                     "name": "POPOLAZIONE RESIDENTE",
-                    "id": 1,
+                    "id": "target1",
                     "type": "umano",
                     "noPaging": true,
                     "allowEdit": true,
@@ -1986,7 +2046,7 @@
                     ],
                     "title": ["Tourist population", "Popolazione fluttuante turistica", "Population touristique", "Tourismuszahlen"],
                     "name": "POPOLAZIONE FLUTTUANTE TURISTICA (MAX)",
-                    "id": 2,
+                    "id": "target2",
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2081,7 +2141,7 @@
                     ],
                     "title": ["Industry and services", "Addetti industria e servizi", "Industrie et services", "Industrie und Dienstleistungen"],
                     "name": "ADDETTI INDUSTRIA E SERVIZI",
-                    "id": 4,
+                    "id": "target4",
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2195,7 +2255,7 @@
                     ],
                     "title": ["Health facilities", "Addetti/utenti strutture sanitarie", "Structures sanitaires", "Sanitäre Strukturen"],
                     "name": "ADDETTI/UTENTI STRUTTURE SANITARIE",
-                    "id": 5,
+                    "id": "target5",
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2293,7 +2353,7 @@
                     ],
                     "title": ["School Facilities", "Addetti/utenti strutture scolastiche", "Établissements scolaires", "Bildungseinrichtungen"],
                     "name": "ADDETTI/UTENTI STRUTTURE SCOLASTICHE",
-                    "id": 6,
+                    "id": "target6",
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2399,7 +2459,7 @@
                     ],
                     "title": ["medium and large retailers", "Addetti/utenti centri commerciali", "Moyennes et grandes surfaces", "Strukturen mittlerer und großer Verteilung"],
                     "name": "ADDETTI/UTENTI CENTRI COMMERCIALI",
-                    "id": 7,
+                    "id": "target7",
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2472,7 +2532,7 @@
                     ],
                     "title": ["Urban Areas", "Zone urbanizzate", "Zones urbanisées", "Urbane Zonen/Flächen"],
                     "name": "ZONE URBANIZZATE",
-                    "id": 10,
+                    "id": "target10",
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2545,7 +2605,7 @@
                     ],
                     "title": ["Wooded Areas", "Aree boscate", "Zones forestières", "Bewaldete Flächen"],
                     "name": "AREE BOSCATE",
-                    "id": 11,
+                    "id": "target11",
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2626,7 +2686,7 @@
                     ],
                     "title": ["Protected Areas", "Aree protette", "Zones protégées", "Naturschutzflächen"],
                     "name": "AREE PROTETTE",
-                    "id": 12,
+                    "id": "target12",
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2699,7 +2759,7 @@
                     ],
                     "title": ["Agricultural Areas", "Aree agricole", "Zones agricoles", "Landwirtschaftliche Flächen"],
                     "name": "AREE AGRICOLE",
-                    "id": 13,
+                    "id": "target13",
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2803,7 +2863,7 @@
                         }
                     ],
                     "title": ["Surface waters", "Acque superficiali", "Eaux superficielles", "Oberflächengewässer"],
-                    "id": 15,
+                    "id": "target15",
                     "name": "ACQUE SUPERFICIALI",
                     "type": "ambientale",
                     "noPaging": true,
@@ -2884,7 +2944,7 @@
                         }
                     ],
                     "title": ["Groundwater", "Acque sotterranee", "Eaux souterraines", "unterirdische Gewässer (Tiefbrunnen)"],
-                    "id": 14,
+                    "id": "target14",
                     "name": "ACQUE SOTTERRANEE",
                     "type": "ambientale",
                     "noPaging": true,
@@ -2957,7 +3017,7 @@
                         }
                     ],
                     "title": ["Cultural Areas", "Beni culturali", "Patrimoine culturel", "Kulturelle Güter "],
-                    "id": 16,
+                    "id": "target16",
                     "name": "BENI CULTURALI",
                     "type": "ambientale",
                     "noPaging": true,
@@ -2979,58 +3039,8 @@
                         "width": 20
                     }]
                 }
-            },
-            "damage": {
-                "Aree di danno": {
-                    "featureType": "buffer_1",
-                    "fields": [
-                        {
-                            "name": "id",              
-                            "mapping": "id_geo_arco"
-                        },
-                        {
-                            "name": "geometry",        
-                            "mapping": "geometria"
-                        },
-                        {
-                            "name": "name",         
-                            "mapping": "name"
-                        },
-                        {
-                            "name": "distanza",         
-                            "mapping": "distance"
-                        }
-                    ],
-                    "columns": [
-                        {
-                            "header": ["Area", "Fascia",  "Bande", "Bereich"],
-                            "dataIndex": "name"
-                        },
-                        {
-                            "header": ["Distance", "Distanza", "Distance", "Distanz"],
-                            "dataIndex": "distanza"
-                        }
-                    ],
-                    "title": ["Damage areas", "Aree di danno",  "Des zones de dommages", "Schadensbereiche"],
-                    "id": 1,
-                    "name": "DAMAGEAREA",
-                    "type": "all",
-                    "noPaging": true
-                }
             }
-        },
-        "currentPanel": "targets",
-                "actionColumns" : [ 
-                    {
-                      "type": "checkDisplay",
-                      "layerName": "Bersaglio Selezionato",
-                      "sourceSRS": "EPSG:32632"
-        },
-                    {
-                     "type": "zoom",
-                     "sourceSRS": "EPSG:32632"
-                    }],
-        "index": 29
+        }
     }
     ]
 }

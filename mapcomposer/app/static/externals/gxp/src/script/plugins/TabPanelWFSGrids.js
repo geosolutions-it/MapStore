@@ -77,6 +77,12 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
     loadMsg: "Loading...",
     noRecordFoundLabel: "Nessun elemento trovato",
     noRecordFoundCls: "empty-grid",
+    targetsTextBotton: "Bersagli",
+    areaDamageTextBotton: "Aree di danno",
+    roadGraphTextBotton: "Grafo stradale",
+    refreshGridButton: "Aggiorna tutte le griglie",
+    
+    withSwitchButtons: true,
         
     
     /** private: method[constructor]
@@ -93,10 +99,25 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
         return records;
     },
     
+    loadTargetGrids: function() {
+        this.syntView.loadTargetGrids();
+    },
+    loadDamageGrid: function() {
+        this.syntView.loadDamageGrid();
+    },
+    loadRoadsGrid: function() {
+        this.syntView.loadRoadsGrid();
+    },
+    
+    setCurrentPanel: function(panel) {
+        Ext.getCmp(this.id).setCurrentPanel(panel);
+    },
+    
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-   
+        this.syntView = this.target.tools['syntheticview'];
+        this.processingPane = this.syntView.processingPane;
         this.grids = {};
         var info = {
             currentlyLoading: 0,
@@ -157,6 +178,59 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
         var me= this;
         var tabPanel = new Ext.TabPanel({
             enableTabScroll: true,
+            tbar: this.withSwitchButtons ? [
+                '->',{
+                    xtype: 'button',
+                    id: "targets_view",
+                    iconCls: 'analytic-view-button',
+                    text: this.targetsTextBotton,
+                    scope: this,
+                    toggleGroup: 'analytic_buttons',
+                    enableToggle: true,
+                    pressed: true,
+                    disabled:true,
+                    handler: function(btn) {
+                        me.setCurrentPanel('targets');
+                        me.loadTargetGrids();
+                    }
+                },{
+                    xtype: 'button',
+                    id: "areaDamage_view",
+                    iconCls: 'analytic-view-button',
+                    text: this.areaDamageTextBotton,
+                    scope: this,
+                    toggleGroup: 'analytic_buttons',
+                    enableToggle: true,
+                    disabled:true,
+                    handler: function(btn) {
+                        me.setCurrentPanel('damage');                        
+                        me.loadDamageGrid();
+                    }
+                },{
+                    xtype: 'button',
+                    id: "roadGraph_view",
+                    iconCls: 'analytic-view-button',
+                    text: this.roadGraphTextBotton,
+                    scope: this,
+                    toggleGroup: 'analytic_buttons',
+                    enableToggle: true,
+                    disabled:true,
+                    handler: function(btn) {
+                        this.setCurrentPanel('roads');
+                        me.loadRoadsGrid();
+                    }
+                }
+            ] : [{
+                    xtype: 'button',
+                    id: "refresh_grid",
+                    iconCls: 'refresh-grid-button',
+                    text: this.refreshGridButton,
+                    scope: this,
+                    handler: function(btn) {
+                        var activeTabIndex = Ext.getCmp(this.id).items.indexOf(Ext.getCmp(this.id).activeTab);
+                        this.processingPane.updateSimulationTabPanel(Ext.getCmp(this.id),this.syntView,null,'reload',null,activeTabIndex);
+                    }
+            }],
             id: this.id,
             activeTab: 0,
             items: [],
@@ -222,6 +296,7 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                 if(active) {
                     active.destroy();
                 }
+                this.currentGrids = [];
             },
             
             setCurrentPanel: function(currentPanel) {
@@ -230,7 +305,8 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
             
             /** api: method[loadGrids]
              */    
-            loadGrids: function(attributeName, attributeValue, projection, viewParams, tplData, extraRecords,noAlert, allowExtraRecordsUpdate) {
+            loadGrids: function(attributeName, attributeValue, projection, viewParams, tplData, extraRecords,noAlert, allowExtraRecordsUpdate, activeTab) {
+                activeTab = activeTab || 0;
                 this.removeAllGrids();
                 var grids = this.hideAllBut(attributeName, attributeValue);
                 
@@ -245,13 +321,16 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                     this.collapse();
                 }    
                 var tabPanel = this;
+                if(activeTab >= grids.length) {
+                    activeTab = 0;
+                }
                 for(var i=0; i<grids.length;i++){
                     grids[i].target= me.target;
                     grids[i].viewParams= viewParams;
                     grids[i].extraRecords = me.reprojectRecords(extraRecords);
                     grids[i].allowExtraRecordsUpdate = allowExtraRecordsUpdate;
                     grids[i].save = {};
-                    grids[i].addOutput({},i === 0);
+                    grids[i].addOutput({maskEl: Ext.getCmp(this.id).getEl()});
                     grids[i].tplData = tplData;
                     grids[i].onEmpty=function(grid) {                        
                         // no record found message
@@ -270,8 +349,11 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                             noRecordEl.remove();
                         }                        
                     };                    
-                    if(i === 0) {
-                        this.setActiveTab(i);
+                    if(i === activeTab || (grids[i].wfsGrid && grids[i].wfsGrid.id === activeTab)) {
+                        if(i > 0) {
+                            Ext.getCmp(this.id).setActiveTab(i);
+                        }
+                        grids[i].activate();
                     }
                 }
                 this.currentGrids = grids;
@@ -289,7 +371,8 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                         noRecordFoundEl.update(me.noRecordFoundLabel);                        
                     };
                     if(i === 0) {
-                        this.setActiveTab(i);
+                        grids[i].activate();
+                        //this.setActiveTab(i);
                     }
                 }
                 this.currentGrids = grids;
@@ -322,7 +405,8 @@ gxp.plugins.TabPanelWFSGrids = Ext.extend(gxp.plugins.Tool, {
                         noRecordFoundEl.update(me.noRecordFoundLabel);                        
                     };
                     if(i === 0) {
-                        this.setActiveTab(i);
+                        grids[i].activate();
+                        //this.setActiveTab(i);
                     }
                 }
                 this.currentGrids = grids;

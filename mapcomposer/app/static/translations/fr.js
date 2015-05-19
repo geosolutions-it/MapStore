@@ -36,15 +36,13 @@ GeoExt.Lang.add("fr", {
         humanTitle:'social',            
         notHumanTitle:'l\'environnement', 
         defaultExtentLabel: "L'ensemble du territoire",
-        targetsTextBotton: "Cibles",
-        areaDamageTextBotton: "Zones de dommages",
-        roadGraphTextBotton: "Graphique routière",  
+        
         wpsTitle: "Errore",
         wpsError: "Errore nella richiesta al servizio WPS",
         loadMsg: "S'il vous plaît attendre ...",
         notVisibleOnArcsMessage: "Formula pas visible à cette échelle",
         notVisibleOnGridMessage: "Formula pas visible à cette échelle",
-        refreshGridButton: "Actualiser la grille",
+        
         simMsg: "Cette fonction n'est pas disponible à cette échelle",
         
         saveProcessingTitle: "Sauver Processing",
@@ -167,7 +165,11 @@ GeoExt.Lang.add("fr", {
         displayMsgPaging: "Elements {0} - {1} of {2}",
         emptyMsg: "No elements found",
         noRecordFoundLabel: "No elements found",
-        loadMsg: "S'il vous plaît attendre ..."
+        loadMsg: "S'il vous plaît attendre ...",
+        refreshGridButton: "Actualiser toutes les grilles",
+        targetsTextBotton: "Cibles",
+        areaDamageTextBotton: "Zones de dommages",
+        roadGraphTextBotton: "Graphique routière"
     },
     "gxp.plugins.WFSGrid.prototype": {
         displayMsgPaging: "Elements {0} - {1} of {2}",

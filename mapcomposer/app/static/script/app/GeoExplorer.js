@@ -697,7 +697,20 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             header: true,
             items: [
                 {
-                  xtype: 'panel', layout: "fit", activeTab: 0, region: 'center', id: 'featurelist', autoScroll: true, border: false
+                  xtype: 'panel', 
+                  layout: "card", 
+                  activeItem: 0, 
+                  region: 'center', 
+                  id: 'featurelist', 
+                  autoScroll: true, 
+                  border: false,
+                  listeners: {
+                    add: function(panel, component, index)  {
+                        if(index === 0) {
+                            panel.getLayout().setActiveItem(component);
+                        }
+                    }
+                  }
                 }
             ]
         });

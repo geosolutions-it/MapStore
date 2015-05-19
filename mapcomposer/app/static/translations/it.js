@@ -32,15 +32,13 @@ GeoExt.Lang.add("it", {
         humanTitle:'Sociale',    
         notHumanTitle:'Ambientale', 
         defaultExtentLabel: "Tutto il territorio",
-        targetsTextBotton: "Bersagli",
-        areaDamageTextBotton: "Aree di danno",
-        roadGraphTextBotton: "Grafo stradale" , 
+        
         wpsTitle: "Errore",
         wpsError: "Errore nella richiesta al servizio WPS",
         loadMsg: "Caricamento in corso...",
         notVisibleOnArcsMessage: "Formula non visibile a questa scala",
         notVisibleOnGridMessage: "Formula non visibile a questa scala",
-        refreshGridButton: "Aggiorna la griglia",
+        
         simMsg: 'Modifica dei parametri di simulazione non possibile a questa scala. Zoomare fino a scala 1:17061',
         
         saveProcessingTitle: "Salvataggio Elaborazione",
@@ -163,7 +161,11 @@ GeoExt.Lang.add("it", {
         displayMsgPaging: "Elementi {0} - {1} di {2}",
         emptyMsg: "Nessun elemento trovato",
         noRecordFoundLabel: "Nessun elemento trovato",
-        loadMsg: "Caricamento in corso..."
+        loadMsg: "Caricamento in corso...",
+        refreshGridButton: "Aggiorna tutte le griglie",
+        targetsTextBotton: "Bersagli",
+        areaDamageTextBotton: "Aree di danno",
+        roadGraphTextBotton: "Grafo stradale" 
     },
     "gxp.plugins.WFSGrid.prototype": {
         displayMsgPaging: "Elementi {0} - {1} di {2}",

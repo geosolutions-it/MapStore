@@ -846,7 +846,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     var type = 'bers';
                     var startValue = cb.startValue;
                     var processingCombo = this.elaborazione.getValue();
-                    this.enableDisableSimulation(processingCombo === 3,type,startValue);                    
+                    this.enableDisableSimulation(processingCombo === 3,type,startValue, "target" + record.get("id_bersaglio"));                    
                 },
                 expand: function(combo) {
                     //this.loadUserElab = false;
@@ -1175,7 +1175,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     
     
     // apply simulation grid reload
-    updateSimulationTabPabelConfirm: function(wfsGrid,syntView,map,type,startValue){
+    updateSimulationTabPanelConfirm: function(wfsGrid,syntView,map,type,startValue,activeTab){
 
         if(type !== 'bers' && type !== 'reload' && type !== 'init')
             this.updateTargetCombo(type);
@@ -1191,19 +1191,19 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             allowExtraTargetsUpdate = true;
         }
         if(this.isSingleTarget(status)) {
-            wfsGrid.loadGrids(["id", "type"], [status.target['id_bersaglio'], 'all'], syntView.selectionLayerProjection, viewParams,undefined,extraTargets,true,allowExtraTargetsUpdate);                                
+            wfsGrid.loadGrids(["id", "type"], ["target" + status.target['id_bersaglio'], 'all'], syntView.selectionLayerProjection, viewParams,undefined,extraTargets,true,allowExtraTargetsUpdate,activeTab);                                
         } else if(this.isAllHumanTargets(status)) {
-            wfsGrid.loadGrids("type", ['umano', 'all'], syntView.selectionLayerProjection, viewParams,undefined,extraTargets,true,allowExtraTargetsUpdate);
+            wfsGrid.loadGrids("type", ['umano', 'all'], syntView.selectionLayerProjection, viewParams,undefined,extraTargets,true,allowExtraTargetsUpdate,activeTab);
         } else if(this.isAllNotHumanTargets(status)) {
-            wfsGrid.loadGrids("type", ['ambientale','all'], syntView.selectionLayerProjection, viewParams,undefined,extraTargets,true,allowExtraTargetsUpdate);
+            wfsGrid.loadGrids("type", ['ambientale','all'], syntView.selectionLayerProjection, viewParams,undefined,extraTargets,true,allowExtraTargetsUpdate,activeTab);
         } else {
-            wfsGrid.loadGrids(null ,null , syntView.selectionLayerProjection, viewParams,undefined,extraTargets,true,allowExtraTargetsUpdate);
+            wfsGrid.loadGrids(null ,null , syntView.selectionLayerProjection, viewParams,undefined,extraTargets,true,allowExtraTargetsUpdate,activeTab);
         }
     
     },
     
     // check if same target is change then apply the simulation grid reload
-    updateSimulationTabPabel: function(wfsGrid,syntView,map,type,startValue){
+    updateSimulationTabPanel: function(wfsGrid,syntView,map,type,startValue,activeTab){
         // check modify on grafo_simulazione 
         var arcIsEmpty = true;
         var targetsAreEmpty = true;
@@ -1230,7 +1230,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         }
         
         // get simulation layers
-        var map = app.mapPanel.map;
+        map = map || app.mapPanel.map;
         var selectedTargetLayer = map.getLayersByName(syntView.selectedTargetLayer)[0];       
         
         var selectedTargetLayerEditing = map.getLayersByName(syntView.selectedTargetLayerEditing)[0];
@@ -1256,7 +1256,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 /*if (simulationModLayer)
                     simulationModLayer.removeAllFeatures();*/
 
-                this.updateSimulationTabPabelConfirm(wfsGrid,syntView,map,type,startValue);                  
+                this.updateSimulationTabPanelConfirm(wfsGrid,syntView,map,type,startValue,activeTab);                  
                 
                 if (selectedTargetLayer && selectedTargetLayer.features.length !== 0){
                     //if (selectedTargetLayer)
@@ -1292,7 +1292,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             });   
         }else{
 
-            this.updateSimulationTabPabelConfirm(wfsGrid,syntView,map,type,startValue);
+            this.updateSimulationTabPanelConfirm(wfsGrid,syntView,map,type,startValue,activeTab);
             
             if (selectedTargetLayer && selectedTargetLayer.features.length !== 0){
                 //if (selectedTargetLayer)
@@ -1303,9 +1303,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
     },    
     
-    enableDisableSimulation: function(enable,type,startValue) {
-        var southPanel = Ext.getCmp("south");        
-        var wfsGrid = Ext.getCmp("featuregrid");
+    enableDisableSimulation: function(enable,type,startValue,activeTab) {
+        var southPanel = Ext.getCmp("south");
+        
+        var wfsGrid = Ext.getCmp("simulationgrid");
         if(type === 'init') {
             wfsGrid.currentGrids = null;
         }
@@ -1318,7 +1319,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 
             this.syntView.simulationLoaded = true;
             if(enable) {
-                this.updateSimulationTabPabel(wfsGrid,this.syntView,map,type,startValue);
+                this.updateSimulationTabPanel(wfsGrid,this.syntView,map,type,startValue,activeTab);
             }
                 
             return;
@@ -1341,17 +1342,18 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 this.syntView.simulationRestore.grids = wfsGrid.currentGrids;
             }
             
+            Ext.getCmp("featurelist").getLayout().setActiveItem(1);
+            
             wfsGrid.removeAllGrids();
             
             this.syntView.simulationLoaded = false;
             
-            var wfsGrid = Ext.getCmp("featuregrid");
             wfsGrid.setCurrentPanel('simulation');
             
             if(scale <= this.syntView.analiticViewScale) {
             
                 this.syntView.simulationLoaded = true;
-                this.updateSimulationTabPabel(wfsGrid,this.syntView,map,type,startValue);
+                this.updateSimulationTabPanel(wfsGrid,this.syntView,map,type,startValue,activeTab);
                 
             } 
 
@@ -1359,8 +1361,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             Ext.getCmp("targets_view").disable();
             Ext.getCmp("roadGraph_view").disable(); 
             Ext.getCmp("areaDamage_view").disable();
-			Ext.getCmp("refresh_grid").enable();
-            Ext.getCmp("refresh_grid").show();
+			/*Ext.getCmp("refresh_grid").enable();
+            Ext.getCmp("refresh_grid").show();*/
             
             Ext.getCmp("targets_view").toggle(false, true);
             Ext.getCmp("roadGraph_view").toggle(false, true);               
@@ -1368,21 +1370,22 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             
             this.syntView.simulationEnabled = true;
         } else {
+            Ext.getCmp("featurelist").getLayout().setActiveItem(0);
+            wfsGrid.removeAllGrids();
             if(this.syntView.simulationRestore) {
                 if(this.syntView.simulationRestore.collapsed) {
                     southPanel.collapse();
-					Ext.getCmp("refresh_grid").hide();
+					//Ext.getCmp("refresh_grid").hide();
                 } else {
-					Ext.getCmp("refresh_grid").hide();
+					//Ext.getCmp("refresh_grid").hide();
                     Ext.getCmp("areaDamage_view").enable();
                     Ext.getCmp("roadGraph_view").enable();
                     Ext.getCmp("targets_view").enable();
                     Ext.getCmp("analytic_view").enable();
-					Ext.getCmp("refresh_grid").disable();
+					//Ext.getCmp("refresh_grid").disable();
 					var mapPanelContainer = Ext.getCmp("mapPanelContainer_id");
                     mapPanelContainer.doLayout(false,true);  
                     if(this.syntView.simulationRestore.grids && this.syntView.simulationRestore.grids.length > 0) {
-                        wfsGrid.removeAllGrids();
                         wfsGrid.restoreGrids(this.syntView.simulationRestore.grids);
                     }
                 }
@@ -1397,6 +1400,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             this.syntView.removeLayersByName(map, this.syntView.vectorLayers);
             this.syntView.simulationRestore = null;
             this.syntView.simulationEnabled = false;
+            
+            
         }
     },
     
@@ -1724,7 +1729,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 
         // simulation
         if(processingRec.get('id') === 3) {
-            var wfsGrid = Ext.getCmp("featuregrid");
+            var wfsGrid = Ext.getCmp("simulationgrid");
             
             Ext.each(wfsGrid.currentGrids, function(grid) {
                 if(grid.save) {                    

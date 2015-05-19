@@ -53,7 +53,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     loadMsg: "Caricamento in corso...",
     notVisibleOnArcsMessage: "Formula non visibile a questa scala",
     notVisibleOnGridMessage: "Formula non visibile a questa scala",
-    refreshGridButton: "Aggiorna la griglia",
     simMsg: 'Modifica dei parametri di simulazione non possibile a questa scala. Zoomare fino a scala 1:17061',
     saveButton: "Salva",
     saveProcessingTitle: "Salvataggio Elaborazione",
@@ -1386,22 +1385,6 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         //set analytic/simulation button toolbar with bottons
         this.mapBbar =  [{
                     xtype: 'button',
-                    id: "refresh_grid",
-                    iconCls: 'refresh-grid-button',
-                    text: this.refreshGridButton,
-                    scope: this,
-                    disabled:true,
-                    hidden: true,
-                    handler: function(btn) {
-                        var wfsGrid = Ext.getCmp("featuregrid");
-                        var synthView = this;
-                        var map = app.mapPanel.map;
-                        
-                        this.processingPane.updateSimulationTabPabel(wfsGrid,synthView,map,'reload');
-
-                    }
-                },{
-                    xtype: 'button',
                     id: "analytic_view",
                     iconCls: 'analytic-view-button',
                     text: this.analyticViewButton,
@@ -1419,7 +1402,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 },' ',{
                     xtype:'displayfield',
                     id:'warning_message'
-                },'->',{
+                }/*,'->',{
                     xtype: 'button',
                     id: "targets_view",
                     iconCls: 'analytic-view-button',
@@ -1462,7 +1445,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         wfsGrid.setCurrentPanel('roads');
                         this.loadRoadsGrid();
                     }
-                }];        
+                }*/];        
         
         //add analytic button toolbar to mapPanelContainer        
         var mapPanelContainer = Ext.getCmp("mapPanelContainer_id");
@@ -3042,10 +3025,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         if(Ext.getCmp("roadGraph_view")) {
             Ext.getCmp("roadGraph_view").disable();        
         } 
-		if(Ext.getCmp("refresh_grid")) {
+		/*if(Ext.getCmp("refresh_grid")) {
             Ext.getCmp("refresh_grid").disable();        
             Ext.getCmp("refresh_grid").hide();        
-        }     
+        }*/
         Ext.getCmp("featuregrid").removeAllGrids();
         this.analyticEnabled = false;
         this.simulationEnabled = false;
