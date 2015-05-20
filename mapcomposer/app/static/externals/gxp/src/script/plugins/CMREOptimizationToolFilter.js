@@ -185,7 +185,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
      */
     sendOTHGoldEmailMEssage: function(tracks, email, assets) {
     	// /oth/pim/OAAroutesEmail?email=&asset=1%2C2%2C3%2C4&layer=natocmre%3Aoaa_tracks_indian_ocean&sol_id=1&guid=4b3ede0d-7583-4d83-aa1a-bfb0ac5371b0
-    	var url = this.CWIXPortalPIMTracksManagerURL + 'OAAroutesEmail/OPL?email='+encodeURIComponent(email)+'&asset='+encodeURIComponent(assets)+'&layer='+encodeURIComponent(tracks)+'&sol_id='+this.solutionId+'&guid='+this.guid;
+    	var url = this.CWIXPortalPIMTracksManagerURL + 'OAAroutesEmail/ALP?email='+encodeURIComponent(email)+'&asset='+encodeURIComponent(assets)+'&layer='+encodeURIComponent(tracks)+'&sol_id='+this.solutionId+'&guid='+this.guid;
     	//console.log(url);
     	
     	var me = this;
@@ -250,7 +250,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
      * 
      */
     sendOTHGoldTCPMEssage: function(tracks, tcpip, tcpport, assets) {
-    	var url = this.CWIXPortalPIMTracksManagerURL + 'OAAroutesTCP/OPL?tcpip='+encodeURIComponent(tcpip)+'&tcpport='+encodeURIComponent(tcpport)+'&asset='+encodeURIComponent(assets)+'&layer='+encodeURIComponent(tracks)+'&sol_id='+this.solutionId+'&guid='+this.guid;
+    	var url = this.CWIXPortalPIMTracksManagerURL + 'OAAroutesTCP/ALP?tcpip='+encodeURIComponent(tcpip)+'&tcpport='+encodeURIComponent(tcpport)+'&asset='+encodeURIComponent(assets)+'&layer='+encodeURIComponent(tracks)+'&sol_id='+this.solutionId+'&guid='+this.guid;
     	
     	var me = this;
     	Ext.Ajax.request({
@@ -290,7 +290,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
      */
     getOTHGoldMEssageText: function(tracks, assets) {
     	// /oth/pim/OAAroutes?asset=1%2C2%2C3%2C4&layer=natocmre%3Aoaa_tracks_indian_ocean&sol_id=1&guid=4b3ede0d-7583-4d83-aa1a-bfb0ac5371b0
-    	var url = this.CWIXPortalPIMTracksManagerURL + 'OAAroutes/OPL?asset='+encodeURIComponent(assets)+'&layer='+encodeURIComponent(tracks)+'&sol_id='+this.solutionId+'&guid='+this.guid;
+    	var url = this.CWIXPortalPIMTracksManagerURL + 'OAAroutes/ALP?asset='+encodeURIComponent(assets)+'&layer='+encodeURIComponent(tracks)+'&sol_id='+this.solutionId+'&guid='+this.guid;
     	//console.log(url);
     	
     	var me = this;
