@@ -149,7 +149,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
             tooltip: this.saveDefaultContextActionTip,
             handler: function() {	
                     
-				  if(this.target.auth){
+				  if(this.target.auth && this.getAuth()){
                       
 					  var configStr = Ext.util.JSON.encode(this.target.getState()); 
 					  
@@ -302,9 +302,7 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
            },
            failure:  function(response, opts){
               mask.hide();
-			  this.auth = null;
-			  
-			  
+			  this.auth = null; 
 			  
               Ext.Msg.show({
                  title: this.contextSaveFailString,
@@ -443,8 +441,18 @@ gxp.plugins.SaveDefaultContext = Ext.extend(gxp.plugins.Tool, {
         });
         
         win.show();
-    }
-        
+    },
+	
+	/**
+     * Retrieves auth from (in this order)
+     * * the parent window (For usage in manager)
+     * * the session storage (if enabled userDetails, see ManagerViewPort.js class of mapmanager)
+     * We should imagine to get the auth from other contexts.
+     */
+    getAuth: function(){
+		var authorization = this.target.getAuth();
+        return (authorization ? authorization : this.auth);
+    }        
 });
 
 Ext.preg(gxp.plugins.SaveDefaultContext.prototype.ptype, gxp.plugins.SaveDefaultContext);
