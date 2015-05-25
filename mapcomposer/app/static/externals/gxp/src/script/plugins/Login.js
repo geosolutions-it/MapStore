@@ -257,6 +257,10 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
     
         
     getService: function(mUrl) {
+        var pat = /^https?:\/\//i;
+        if (pat.test(mUrl)){
+            return mUrl
+        }
         var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
         var mHost = pattern.exec(mUrl);
 

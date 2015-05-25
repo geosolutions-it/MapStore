@@ -384,7 +384,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             var mUrl = config.geoStoreBaseURL + "data/" + this.mapId;
 
             Ext.Ajax.request({
-               url: mHost[2] == location.host ? mUrl : proxy + mUrl,
+               url: mHost[2] == location.host ? mUrl : proxy + encodeURIComponent(mUrl),
                method: 'GET',
                scope: this,
                headers:{

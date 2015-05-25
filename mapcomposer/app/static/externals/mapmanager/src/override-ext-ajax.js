@@ -31,7 +31,7 @@
                 var proxyUrl = config ? config.proxyUrl || proxy : proxy;
                 if (proxyUrl) {        
 					
-					if(proxyUrl.match(/^http:\/\//i) === null) {
+					if(proxyUrl.match(/^https?:\/\//i) === null) {
 						proxyUrl = 'http://' + window.location.host + proxyUrl;
 					}
                     uri = proxyUrl + encodeURIComponent(uri);

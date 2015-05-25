@@ -105,8 +105,9 @@ function proxyPass(config) {
     var response;
     var outgoing = createProxyRequestProps(config);
     var incoming = config.request;
-    if (!outgoing || outgoing.scheme !== incoming.scheme) {
+    if (!outgoing) {
         response = responseForStatus(400, "The url parameter value must be absolute url with same scheme as request.");
+        return response;
     } else {
         // re-issue request
         var exchange = clientRequest({

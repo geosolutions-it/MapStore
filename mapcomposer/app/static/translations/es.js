@@ -153,9 +153,9 @@ GeoExt.Lang.add("es", {
 
     "gxp.plugins.MapQuestSource.prototype": {
         title: "Capas MapQuest",
-        osmAttribution: "Tiles Cortesía de <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
+        osmAttribution: "Tiles Cortesía de <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='https://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
         osmTitle: "MapQuest OpenStreetMap",
-        naipAttribution: "Tiles Cortesía de <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
+        naipAttribution: "Tiles Cortesía de <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='https://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
         naipTitle: "Imágenes MapQuest"
     },
 

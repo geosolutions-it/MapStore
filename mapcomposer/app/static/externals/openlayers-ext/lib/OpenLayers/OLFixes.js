@@ -291,6 +291,53 @@ OpenLayers.Format.WFST.v1_1_0.prototype.writers.wfs.SortOrder = function(obj){
                     value: obj.property
                 });
         };
+/**
+ * This fixes the makeSameOrigin using default ports for https.
+ * 
+ */
+OpenLayers.Request.makeSameOrigin =  function(url, proxy) {
+        var sameOrigin = url.indexOf("http") !== 0 ;
+        var urlParts = !sameOrigin && url.match(OpenLayers.Request.URL_SPLIT_REGEX);
+        if (urlParts) {
+            var location = window.location;
+            sameOrigin =
+                urlParts[1] == location.protocol &&
+                urlParts[3] == location.hostname;
+            var uPort = urlParts[4], lPort = location.port;
+            var defaultPort = 80
+            var defaultPort = function(protocol){
+                if(protocol.indexOf("https") == 0){
+                    return 443;
+                }else{
+                    return 80;
+                }
+            }
+            //if ports are different
+            if (uPort + "" != lPort + "") {
+                //set lPort and uPort to default values and compare
+                if(lPort ==""){
+                    lPort = defaultPort(location.protocol);
+                }
+                if(uPort ==""){
+                    uPort = defaultPort(urlParts[1]);
+                }
+                sameOrigin = sameOrigin && ( (lPort +"") == (uPort +"") )
+            }
+        }
+        if (!sameOrigin) {
+            if (proxy) {
+                if (typeof proxy == "function") {
+                    url = proxy(url);
+                } else {
+                    url = proxy + encodeURIComponent(url);
+                }
+            }
+        }
+        return url;
+    },
+
+
+
 //Fix min zoom level probems
 OpenLayers.Map.prototype.adjustZoom = function(zoom) {
     return zoom;

@@ -152,9 +152,9 @@ GeoExt.Lang.add("fr", {
 
     "gxp.plugins.MapQuestSource.prototype": {
         title: "Couvertures MapQuest",
-        osmAttribution: "Avec l’autorisation ‘Tile’ de Avec la permission de tuiles <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
+        osmAttribution: "Avec l’autorisation ‘Tile’ de Avec la permission de tuiles <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='https://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
         osmTitle: "MapQuest OpenStreetMap",
-        naipAttribution: "Avec l’autorisation ‘Tile’ de Avec la permission de tuiles <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
+        naipAttribution: "Avec l’autorisation ‘Tile’ de Avec la permission de tuiles <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='https://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
         naipTitle: "MapQuest images"
     },  
 

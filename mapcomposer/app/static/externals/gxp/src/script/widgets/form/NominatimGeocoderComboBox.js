@@ -51,7 +51,7 @@ gxp.form.NominatimGeocoderComboBox = Ext.extend(Ext.form.ComboBox, {
     
     /** api: xtype = gxp_Nominatimgeocodercombo */
     xtype: "gxp_nominatimgeocodercombo",
-	url: 'http://nominatim.openstreetmap.org/search?',
+	url: 'https://nominatim.openstreetmap.org/search?',
     /** api: config[queryDelay]
      *  ``Number`` Delay before the search occurs.  Default is 100ms.
      */

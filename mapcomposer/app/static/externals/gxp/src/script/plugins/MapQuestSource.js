@@ -68,7 +68,7 @@ gxp.plugins.MapQuestSource = Ext.extend(gxp.plugins.LayerSource, {
      *  ``String``
      *  Attribution string for OSM generated layer (i18n).
      */
-    osmAttribution: "Tiles Courtesy of <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
+    osmAttribution: "Tiles Courtesy of <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='https://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
 
     /** api: config[osmTitle]
      *  ``String``
@@ -80,7 +80,7 @@ gxp.plugins.MapQuestSource = Ext.extend(gxp.plugins.LayerSource, {
      *  ``String``
      *  Attribution string for NAIP generated layer (i18n).
      */
-    naipAttribution: "Tiles Courtesy of <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='http://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
+    naipAttribution: "Tiles Courtesy of <a href='http://open.mapquest.co.uk/' target='_blank'>MapQuest</a> <img src='https://developer.mapquest.com/content/osm/mq_logo.png' border='0'>",
 
     /** api: config[naipTitle]
      *  ``String``
@@ -117,10 +117,10 @@ gxp.plugins.MapQuestSource = Ext.extend(gxp.plugins.LayerSource, {
             new OpenLayers.Layer.OSM(
                 this.osmTitle,
                 [
-                    "http://otile1.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
-                    "http://otile2.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
-                    "http://otile3.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
-                    "http://otile4.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png"
+                    "https://otile1-s.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
+                    "https://otile2-s.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
+                    "https://otile3-s.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png",
+                    "https://otile4-s.mqcdn.com/tiles/1.0.0/map/${z}/${x}/${y}.png"
                 ],
                 OpenLayers.Util.applyDefaults({                
                     attribution: this.osmAttribution,
@@ -130,10 +130,10 @@ gxp.plugins.MapQuestSource = Ext.extend(gxp.plugins.LayerSource, {
             new OpenLayers.Layer.OSM(
                 this.naipTitle,
                 [
-                    "http://otile1.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
-                    "http://otile2.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
-                    "http://otile3.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
-                    "http://otile4.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png"
+                    "https://otile1-s.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
+                    "https://otile2-s.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
+                    "https://otile3-s.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
+                    "https://otile4-s.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png"
                 ],
                 OpenLayers.Util.applyDefaults({
                     attribution: this.naipAttribution,

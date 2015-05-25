@@ -68,7 +68,7 @@ gxp.plugins.OSMSource = Ext.extend(gxp.plugins.LayerSource, {
      *  ``String``
      *  Attribution string for mapnik generated layer (i18n).
      */
-    mapnikAttribution: "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
+    mapnikAttribution: "&copy; <a href='//www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors",
 
     /** api: config[homeAttribution]
      *  ``String``
@@ -76,7 +76,7 @@ gxp.plugins.OSMSource = Ext.extend(gxp.plugins.LayerSource, {
      */
     osmarenderAttribution: "Data CC-By-SA by <a href='http://openstreetmap.org/' target='_blank'>OpenStreetMap</a>",
 
-    ocmAttribution: 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest</a>, ' + 'Data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> ',
+    ocmAttribution: 'Maps &copy; <a href="//www.thunderforest.com">Thunderforest</a>, ' + 'Data &copy; <a href="//www.openstreetmap.org/copyright">OpenStreetMap contributors</a> ',
     /** api: method[createStore]
      *
      *  Creates a store of layer records.  Fires "ready" when store is loaded.
@@ -106,9 +106,9 @@ gxp.plugins.OSMSource = Ext.extend(gxp.plugins.LayerSource, {
             new OpenLayers.Layer.OSM(
                 "OpenStreetMap",
                 [
-                    "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-                    "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
-                    "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
+                    "//a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+                    "//b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+                    "//c.tile.openstreetmap.org/${z}/${x}/${y}.png"
                 ],
                 OpenLayers.Util.applyDefaults({                
                     attribution: this.mapnikAttribution,
@@ -117,9 +117,9 @@ gxp.plugins.OSMSource = Ext.extend(gxp.plugins.LayerSource, {
             ),new OpenLayers.Layer.OSM(
                 "OpenCycleMap",
                 [
-                    "http://a.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png",
-                    "http://b.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png",
-                    "http://c.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png"
+                    "//a.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png",
+                    "//b.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png",
+                    "//c.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png"
                 ],OpenLayers.Util.applyDefaults({                
                     attribution: this.ocmAttribution,
                     type: "opencyclemap"
