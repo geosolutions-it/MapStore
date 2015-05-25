@@ -94,10 +94,8 @@ mxp.plugins.ExpiringTaskStatus = Ext.extend(mxp.plugins.Tool, {
      */
     addOutput: function(config) {
 
-        var login = this.target.login ? this.target.login: 
-                this.loginManager && this.target.currentTools[this.loginManager] 
-                ? this.target.currentTools[this.loginManager] : null;
-        this.auth = this.target.auth;
+       
+        this.auth = this.getAuthHeader();
         
         this.outputConfig = this.outputConfig || {};
 

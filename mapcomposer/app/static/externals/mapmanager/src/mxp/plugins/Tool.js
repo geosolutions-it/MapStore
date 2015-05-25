@@ -505,8 +505,27 @@ mxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
         this.removeOutput();
         this.removeActions();
         this.target.removeListener("portalready", this.addActions, this);
-    }
+    },
     
+    /** api: method[getAuthHeader]
+     * provides the auth header
+     */
+    getAuthHeader: function(){
+        var header = this.target.userDetails ? this.target.userDetails.authHeader : null ;
+       
+        if( !header && window.parent && window.parent.sessionStorage && window.parent.sessionStorage["userDetails"] ){
+            details = JSON.parse(window.parent.sessionStorage["userDetails"]);
+            header = details.token && details.token.indexOf("Basic ") == 0 ? details.token : details.header;
+        }
+        if( !header && sessionStorage && sessionStorage["userDetails"]){
+             details = JSON.parse(window.parent.sessionStorage["userDetails"]);
+             header = details.authHeader;
+            if( !header ) {
+                header = details.token && details.token.indexOf("Basic ") == 0 ? details.token : details.header;
+            }
+        }
+        return header;
+    }
 });
 
 Ext.preg(mxp.plugins.Tool.prototype.ptype, mxp.plugins.Tool);
