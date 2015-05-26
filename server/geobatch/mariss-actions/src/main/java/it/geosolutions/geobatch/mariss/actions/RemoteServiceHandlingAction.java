@@ -175,7 +175,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
      * @throws IOException
      * @throws FTPException
      */
-    private List<String> colelctPostProcessingFiles(List<String> availableProducts,
+    private List<String> collectPostProcessingFiles(List<String> availableProducts,
             boolean error,
             String productsFtpFolder,
             String localRelativeFolder, // result remote
@@ -848,7 +848,7 @@ public class RemoteServiceHandlingAction extends BaseAction<EventObject> {
                                                 timeout, null, true);
 
                                         // Post process.
-                                        pendingProductFiles = colelctPostProcessingFiles(
+                                        pendingProductFiles = collectPostProcessingFiles(
                                                 availableProducts, error,
                                                 productsFtpFolder,
                                                 localRelativeFolder,

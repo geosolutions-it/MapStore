@@ -74,6 +74,9 @@ import com.vividsolutions.jts.geom.Geometry;
 
 public abstract class NetCDFAction extends BaseAction<EventObject> {
 
+    /**
+     * 
+     */
     static class AttributeBean {
 
         Map<String, Variable> foundVariables = new HashMap<String, Variable>();
@@ -103,6 +106,9 @@ public abstract class NetCDFAction extends BaseAction<EventObject> {
         int numOilSpills;
     }
 
+    /**
+     * 
+     */
     public enum SARType {
         SAR_WIND, SAR_WAVE, SAR_WNF;
 
