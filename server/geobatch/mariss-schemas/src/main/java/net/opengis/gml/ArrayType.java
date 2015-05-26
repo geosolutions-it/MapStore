@@ -5,20 +5,21 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A non-abstract generic collection type that can be used as a document element for a homogeneous collection of any GML types - Geometries, Topologies, Features ...
+ * A non-abstract generic collection type that can be used as a document element for a homogeneous collection of any GML types - Geometries,
+ * Topologies, Features ...
  * 
- * <p>Java class for ArrayType complex type.
+ * <p>
+ * Java class for ArrayType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="ArrayType">
@@ -35,22 +36,16 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArrayType", propOrder = {
-    "members"
-})
-public class ArrayType
-    extends AbstractGMLType
-{
+@XmlType(name = "ArrayType", propOrder = { "members" })
+public class ArrayType extends AbstractGMLType {
 
     protected ArrayAssociationType members;
 
     /**
      * Gets the value of the members property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ArrayAssociationType }
-     *     
+     * @return possible object is {@link ArrayAssociationType }
+     * 
      */
     public ArrayAssociationType getMembers() {
         return members;
@@ -59,10 +54,8 @@ public class ArrayType
     /**
      * Sets the value of the members property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayAssociationType }
-     *     
+     * @param value allowed object is {@link ArrayAssociationType }
+     * 
      */
     public void setMembers(ArrayAssociationType value) {
         this.members = value;

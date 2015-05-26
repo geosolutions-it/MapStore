@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for OilSpillReferenceType complex type.
+ * <p>
+ * Java class for OilSpillReferenceType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="OilSpillReferenceType">
@@ -35,62 +35,53 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "OilSpillReferenceType", propOrder = {
-    "identifier",
-    "fileName"
-})
+@XmlType(name = "OilSpillReferenceType", propOrder = { "identifier", "fileName" })
 public class OilSpillReferenceType {
 
     @XmlElement(required = true)
     protected String identifier;
+
     protected String fileName;
-
-    /**
-     * Reference to the observed oil spill. This ID shall match with the uid of the Oil Spill feature described by GML file according to csndc_os.xsd schema.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    /**
-     * Sets the value of the identifier property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setIdentifier(String value) {
-        this.identifier = value;
-    }
 
     /**
      * Reference to the GML file describing the OS feature
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getFileName() {
         return fileName;
     }
 
     /**
+     * Reference to the observed oil spill. This ID shall match with the uid of the Oil Spill feature described by GML file according to csndc_os.xsd
+     * schema.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    /**
      * Sets the value of the fileName property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setFileName(String value) {
         this.fileName = value;
+    }
+
+    /**
+     * Sets the value of the identifier property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setIdentifier(String value) {
+        this.identifier = value;
     }
 
 }

@@ -5,30 +5,27 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A tin is a triangulated surface that uses
- *    the Delauny algorithm or a similar algorithm complemented with
- *    consideration of breaklines, stoplines, and maximum length of 
- *    triangle sides. These networks satisfy the Delauny's criterion
- *    away from the modifications: Fore each triangle in the 
- *    network, the circle passing through its vertices does not
- *    contain, in its interior, the vertex of any other triangle.
+ * A tin is a triangulated surface that uses the Delauny algorithm or a similar algorithm complemented with consideration of breaklines, stoplines,
+ * and maximum length of triangle sides. These networks satisfy the Delauny's criterion away from the modifications: Fore each triangle in the
+ * network, the circle passing through its vertices does not contain, in its interior, the vertex of any other triangle.
  * 
- * <p>Java class for TinType complex type.
+ * <p>
+ * Java class for TinType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="TinType">
@@ -59,134 +56,15 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TinType", propOrder = {
-    "stopLines",
-    "breakLines",
-    "maxLength",
-    "controlPoint"
-})
-public class TinType
-    extends TriangulatedSurfaceType
-{
-
-    protected List<LineStringSegmentArrayPropertyType> stopLines;
-    protected List<LineStringSegmentArrayPropertyType> breakLines;
-    @XmlElement(required = true)
-    protected LengthType maxLength;
-    @XmlElement(required = true)
-    protected TinType.ControlPoint controlPoint;
+@XmlType(name = "TinType", propOrder = { "stopLines", "breakLines", "maxLength", "controlPoint" })
+public class TinType extends TriangulatedSurfaceType {
 
     /**
-     * Gets the value of the stopLines property.
+     * <p>
+     * Java class for anonymous complex type.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the stopLines property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getStopLines().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link LineStringSegmentArrayPropertyType }
-     * 
-     * 
-     */
-    public List<LineStringSegmentArrayPropertyType> getStopLines() {
-        if (stopLines == null) {
-            stopLines = new ArrayList<LineStringSegmentArrayPropertyType>();
-        }
-        return this.stopLines;
-    }
-
-    /**
-     * Gets the value of the breakLines property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the breakLines property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getBreakLines().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link LineStringSegmentArrayPropertyType }
-     * 
-     * 
-     */
-    public List<LineStringSegmentArrayPropertyType> getBreakLines() {
-        if (breakLines == null) {
-            breakLines = new ArrayList<LineStringSegmentArrayPropertyType>();
-        }
-        return this.breakLines;
-    }
-
-    /**
-     * Gets the value of the maxLength property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link LengthType }
-     *     
-     */
-    public LengthType getMaxLength() {
-        return maxLength;
-    }
-
-    /**
-     * Sets the value of the maxLength property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link LengthType }
-     *     
-     */
-    public void setMaxLength(LengthType value) {
-        this.maxLength = value;
-    }
-
-    /**
-     * Gets the value of the controlPoint property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TinType.ControlPoint }
-     *     
-     */
-    public TinType.ControlPoint getControlPoint() {
-        return controlPoint;
-    }
-
-    /**
-     * Sets the value of the controlPoint property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TinType.ControlPoint }
-     *     
-     */
-    public void setControlPoint(TinType.ControlPoint value) {
-        this.controlPoint = value;
-    }
-
-
-    /**
-     * <p>Java class for anonymous complex type.
-     * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
+     * The following schema fragment specifies the expected content contained within this class.
      * 
      * <pre>
      * &lt;complexType>
@@ -204,63 +82,32 @@ public class TinType
      * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "posList",
-        "geometricPositionGroup"
-    })
+    @XmlType(name = "", propOrder = { "posList", "geometricPositionGroup" })
     public static class ControlPoint {
 
         protected DirectPositionListType posList;
-        @XmlElements({
-            @XmlElement(name = "pointProperty", type = PointPropertyType.class),
-            @XmlElement(name = "pos", type = DirectPositionType.class)
-        })
+
+        @XmlElements({ @XmlElement(name = "pointProperty", type = PointPropertyType.class),
+                @XmlElement(name = "pos", type = DirectPositionType.class) })
         protected List<Object> geometricPositionGroup;
-
-        /**
-         * Gets the value of the posList property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link DirectPositionListType }
-         *     
-         */
-        public DirectPositionListType getPosList() {
-            return posList;
-        }
-
-        /**
-         * Sets the value of the posList property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link DirectPositionListType }
-         *     
-         */
-        public void setPosList(DirectPositionListType value) {
-            this.posList = value;
-        }
 
         /**
          * Gets the value of the geometricPositionGroup property.
          * 
          * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the geometricPositionGroup property.
+         * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+         * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the geometricPositionGroup property.
          * 
          * <p>
          * For example, to add a new item, do as follows:
+         * 
          * <pre>
-         *    getGeometricPositionGroup().add(newItem);
+         * getGeometricPositionGroup().add(newItem);
          * </pre>
          * 
          * 
          * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link PointPropertyType }
-         * {@link DirectPositionType }
+         * Objects of the following type(s) are allowed in the list {@link PointPropertyType } {@link DirectPositionType }
          * 
          * 
          */
@@ -271,6 +118,130 @@ public class TinType
             return this.geometricPositionGroup;
         }
 
+        /**
+         * Gets the value of the posList property.
+         * 
+         * @return possible object is {@link DirectPositionListType }
+         * 
+         */
+        public DirectPositionListType getPosList() {
+            return posList;
+        }
+
+        /**
+         * Sets the value of the posList property.
+         * 
+         * @param value allowed object is {@link DirectPositionListType }
+         * 
+         */
+        public void setPosList(DirectPositionListType value) {
+            this.posList = value;
+        }
+
+    }
+
+    protected List<LineStringSegmentArrayPropertyType> stopLines;
+
+    protected List<LineStringSegmentArrayPropertyType> breakLines;
+
+    @XmlElement(required = true)
+    protected LengthType maxLength;
+
+    @XmlElement(required = true)
+    protected TinType.ControlPoint controlPoint;
+
+    /**
+     * Gets the value of the breakLines property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the breakLines property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
+     * getBreakLines().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list {@link LineStringSegmentArrayPropertyType }
+     * 
+     * 
+     */
+    public List<LineStringSegmentArrayPropertyType> getBreakLines() {
+        if (breakLines == null) {
+            breakLines = new ArrayList<LineStringSegmentArrayPropertyType>();
+        }
+        return this.breakLines;
+    }
+
+    /**
+     * Gets the value of the controlPoint property.
+     * 
+     * @return possible object is {@link TinType.ControlPoint }
+     * 
+     */
+    public TinType.ControlPoint getControlPoint() {
+        return controlPoint;
+    }
+
+    /**
+     * Gets the value of the maxLength property.
+     * 
+     * @return possible object is {@link LengthType }
+     * 
+     */
+    public LengthType getMaxLength() {
+        return maxLength;
+    }
+
+    /**
+     * Gets the value of the stopLines property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the stopLines property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
+     * getStopLines().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list {@link LineStringSegmentArrayPropertyType }
+     * 
+     * 
+     */
+    public List<LineStringSegmentArrayPropertyType> getStopLines() {
+        if (stopLines == null) {
+            stopLines = new ArrayList<LineStringSegmentArrayPropertyType>();
+        }
+        return this.stopLines;
+    }
+
+    /**
+     * Sets the value of the controlPoint property.
+     * 
+     * @param value allowed object is {@link TinType.ControlPoint }
+     * 
+     */
+    public void setControlPoint(TinType.ControlPoint value) {
+        this.controlPoint = value;
+    }
+
+    /**
+     * Sets the value of the maxLength property.
+     * 
+     * @param value allowed object is {@link LengthType }
+     * 
+     */
+    public void setMaxLength(LengthType value) {
+        this.maxLength = value;
     }
 
 }

@@ -48,6 +48,63 @@ import org.slf4j.LoggerFactory;
 public class Start {
     private static final Logger log = LoggerFactory.getLogger(Start.class);
 
+    public final static String JETTY_PORT = "jetty.port";
+
+    public final static String JETTY_PORT_DEFAULT = "8080";
+
+    public final static String CONTEXT_PATH = "context.path";
+
+    public final static String CONTEXT_PATH_DEFAULT = "/geobatch";
+
+    public final static String WAR_PATH = "war.path";
+
+    public final static String WAR_PATH_DEFAULT = "src/main/webapp";
+
+    public final static String TEMP_DIR = "temp.dir";
+
+    public final static String TEMP_DIR_DEFAULT = "target/work";
+
+    private static SocketConnector configureConnection(final Properties prop) {
+        // don't even think of serving more than XX requests in parallel...
+        // we have a limit in our processing and memory capacities
+        BoundedThreadPool tp = new BoundedThreadPool();
+        tp.setMaxThreads(50);
+
+        SocketConnector conn = new SocketConnector();
+
+        conn.setPort(parseInt(prop.getProperty(JETTY_PORT, JETTY_PORT_DEFAULT)));
+        conn.setThreadPool(tp);
+        conn.setAcceptQueueSize(100);
+
+        return conn;
+    }
+
+    private static WebAppContext configureContext(final Properties prop) {
+        WebAppContext wah = new WebAppContext();
+
+        wah.setContextPath(prop.getProperty(CONTEXT_PATH, CONTEXT_PATH_DEFAULT));
+        wah.setWar(prop.getProperty(WAR_PATH, WAR_PATH_DEFAULT));
+        wah.setTempDirectory(new File(prop.getProperty(TEMP_DIR, TEMP_DIR_DEFAULT)));
+        return wah;
+    }
+
+    private static Properties loadProperties(final File props) throws IllegalArgumentException,
+            IOException {
+        Properties prop = new Properties();
+        if (props == null || !props.exists()) {
+            throw new IllegalArgumentException("Bad file name argument: " + props);
+        }
+        FileInputStream is = null;
+        try {
+            is = new FileInputStream(props);
+            prop.load(is);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+
+        return prop;
+    }
+
     public static void main(String[] args) {
 
         Server server = null;
@@ -103,27 +160,6 @@ public class Start {
         }
     }
 
-    public final static String JETTY_PORT = "jetty.port";
-
-    public final static String JETTY_PORT_DEFAULT = "8080";
-
-    private static Properties loadProperties(final File props) throws IllegalArgumentException,
-            IOException {
-        Properties prop = new Properties();
-        if (props == null || !props.exists()) {
-            throw new IllegalArgumentException("Bad file name argument: " + props);
-        }
-        FileInputStream is = null;
-        try {
-            is = new FileInputStream(props);
-            prop.load(is);
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
-
-        return prop;
-    }
-
     private static int parseInt(String portVariable) {
         if (portVariable == null) {
             return -1;
@@ -134,42 +170,6 @@ public class Start {
         } catch (NumberFormatException e) {
             return -1;
         }
-    }
-
-    private static SocketConnector configureConnection(final Properties prop) {
-        // don't even think of serving more than XX requests in parallel...
-        // we have a limit in our processing and memory capacities
-        BoundedThreadPool tp = new BoundedThreadPool();
-        tp.setMaxThreads(50);
-
-        SocketConnector conn = new SocketConnector();
-
-        conn.setPort(parseInt(prop.getProperty(JETTY_PORT, JETTY_PORT_DEFAULT)));
-        conn.setThreadPool(tp);
-        conn.setAcceptQueueSize(100);
-
-        return conn;
-    }
-
-    public final static String CONTEXT_PATH = "context.path";
-
-    public final static String CONTEXT_PATH_DEFAULT = "/geobatch";
-
-    public final static String WAR_PATH = "war.path";
-
-    public final static String WAR_PATH_DEFAULT = "src/main/webapp";
-
-    public final static String TEMP_DIR = "temp.dir";
-
-    public final static String TEMP_DIR_DEFAULT = "target/work";
-
-    private static WebAppContext configureContext(final Properties prop) {
-        WebAppContext wah = new WebAppContext();
-
-        wah.setContextPath(prop.getProperty(CONTEXT_PATH, CONTEXT_PATH_DEFAULT));
-        wah.setWar(prop.getProperty(WAR_PATH, WAR_PATH_DEFAULT));
-        wah.setTempDirectory(new File(prop.getProperty(TEMP_DIR, TEMP_DIR_DEFAULT)));
-        return wah;
     }
 
     private static void setSystemProperties(final Properties prop) {

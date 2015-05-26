@@ -5,23 +5,29 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * . The topological boundary of a face consists of a set of directed edges. Note that all edges associated with a Face, including dangling and interior edges, appear in the boundary.  Dangling and interior edges are each referenced by pairs of directedEdges with opposing orientations.  The optional coboundary of a face is a pair of directed solids which are bounded by this face. If present, there is precisely one positively directed and one negatively directed solid in the coboundary of every face. The positively directed solid corresponds to the solid which lies in the direction of the positively directed normal to the face in any geometric realisation.  A face may optionally be realised by a 2-dimensional (surface) geometric primitive.
+ * . The topological boundary of a face consists of a set of directed edges. Note that all edges associated with a Face, including dangling and
+ * interior edges, appear in the boundary. Dangling and interior edges are each referenced by pairs of directedEdges with opposing orientations. The
+ * optional coboundary of a face is a pair of directed solids which are bounded by this face. If present, there is precisely one positively directed
+ * and one negatively directed solid in the coboundary of every face. The positively directed solid corresponds to the solid which lies in the
+ * direction of the positively directed normal to the face in any geometric realisation. A face may optionally be realised by a 2-dimensional
+ * (surface) geometric primitive.
  * 
- * <p>Java class for FaceType complex type.
+ * <p>
+ * Java class for FaceType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="FaceType">
@@ -40,39 +46,33 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FaceType", propOrder = {
-    "directedEdge",
-    "directedTopoSolid",
-    "surfaceProperty"
-})
-public class FaceType
-    extends AbstractTopoPrimitiveType
-{
+@XmlType(name = "FaceType", propOrder = { "directedEdge", "directedTopoSolid", "surfaceProperty" })
+public class FaceType extends AbstractTopoPrimitiveType {
 
     @XmlElement(required = true)
     protected List<DirectedEdgePropertyType> directedEdge;
+
     protected List<DirectedTopoSolidPropertyType> directedTopoSolid;
+
     protected SurfacePropertyType surfaceProperty;
 
     /**
      * Gets the value of the directedEdge property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the directedEdge property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the directedEdge property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getDirectedEdge().add(newItem);
+     * getDirectedEdge().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link DirectedEdgePropertyType }
+     * Objects of the following type(s) are allowed in the list {@link DirectedEdgePropertyType }
      * 
      * 
      */
@@ -87,21 +87,19 @@ public class FaceType
      * Gets the value of the directedTopoSolid property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the directedTopoSolid property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the directedTopoSolid property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getDirectedTopoSolid().add(newItem);
+     * getDirectedTopoSolid().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link DirectedTopoSolidPropertyType }
+     * Objects of the following type(s) are allowed in the list {@link DirectedTopoSolidPropertyType }
      * 
      * 
      */
@@ -115,10 +113,8 @@ public class FaceType
     /**
      * Gets the value of the surfaceProperty property.
      * 
-     * @return
-     *     possible object is
-     *     {@link SurfacePropertyType }
-     *     
+     * @return possible object is {@link SurfacePropertyType }
+     * 
      */
     public SurfacePropertyType getSurfaceProperty() {
         return surfaceProperty;
@@ -127,10 +123,8 @@ public class FaceType
     /**
      * Sets the value of the surfaceProperty property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link SurfacePropertyType }
-     *     
+     * @param value allowed object is {@link SurfacePropertyType }
+     * 
      */
     public void setSurfaceProperty(SurfacePropertyType value) {
         this.surfaceProperty = value;

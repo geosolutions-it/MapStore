@@ -5,20 +5,22 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A textual description and/or a set of parameters identifying a particular reference level surface used as a zero-height surface, including its position with respect to the Earth for any of the height types recognized by this standard. There are several types of Vertical Datums, and each may place constraints on the Coordinate Axis with which it is combined to create a Vertical CRS. 
+ * A textual description and/or a set of parameters identifying a particular reference level surface used as a zero-height surface, including its
+ * position with respect to the Earth for any of the height types recognized by this standard. There are several types of Vertical Datums, and each
+ * may place constraints on the Coordinate Axis with which it is combined to create a Vertical CRS.
  * 
- * <p>Java class for VerticalDatumType complex type.
+ * <p>
+ * Java class for VerticalDatumType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="VerticalDatumType">
@@ -35,22 +37,16 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "VerticalDatumType", propOrder = {
-    "verticalDatumType"
-})
-public class VerticalDatumType
-    extends AbstractDatumType
-{
+@XmlType(name = "VerticalDatumType", propOrder = { "verticalDatumType" })
+public class VerticalDatumType extends AbstractDatumType {
 
     protected VerticalDatumTypeType verticalDatumType;
 
     /**
      * Gets the value of the verticalDatumType property.
      * 
-     * @return
-     *     possible object is
-     *     {@link VerticalDatumTypeType }
-     *     
+     * @return possible object is {@link VerticalDatumTypeType }
+     * 
      */
     public VerticalDatumTypeType getVerticalDatumType() {
         return verticalDatumType;
@@ -59,10 +55,8 @@ public class VerticalDatumType
     /**
      * Sets the value of the verticalDatumType property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link VerticalDatumTypeType }
-     *     
+     * @param value allowed object is {@link VerticalDatumTypeType }
+     * 
      */
     public void setVerticalDatumType(VerticalDatumTypeType value) {
         this.verticalDatumType = value;

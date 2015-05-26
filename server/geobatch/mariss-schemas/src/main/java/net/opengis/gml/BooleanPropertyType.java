@@ -5,20 +5,20 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Property whose content is a Boolean value.
  * 
- * <p>Java class for BooleanPropertyType complex type.
+ * <p>
+ * Java class for BooleanPropertyType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="BooleanPropertyType">
@@ -36,9 +36,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "BooleanPropertyType")
-public class BooleanPropertyType
-    extends ValuePropertyType
-{
-
+public class BooleanPropertyType extends ValuePropertyType {
 
 }

@@ -5,22 +5,24 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import java.math.BigInteger;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Accuracy vector defined by mean of two metric components, x and y (expressed in linear meters). Shall be used by SP to express any uncertainty in the detected vessel position. It is, for example, suitable to express doppler effect originated uncertainty.
+ * Accuracy vector defined by mean of two metric components, x and y (expressed in linear meters). Shall be used by SP to express any uncertainty in
+ * the detected vessel position. It is, for example, suitable to express doppler effect originated uncertainty.
  * 
- * <p>Java class for PositionAccuracyVectorType complex type.
+ * <p>
+ * Java class for PositionAccuracyVectorType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="PositionAccuracyVectorType">
@@ -38,60 +40,50 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PositionAccuracyVectorType", propOrder = {
-    "x",
-    "y"
-})
+@XmlType(name = "PositionAccuracyVectorType", propOrder = { "x", "y" })
 public class PositionAccuracyVectorType {
 
     @XmlElement(required = true)
     protected BigInteger x;
+
     @XmlElement(required = true)
     protected BigInteger y;
 
     /**
      * Gets the value of the x property.
      * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     * @return possible object is {@link BigInteger }
+     * 
      */
     public BigInteger getX() {
         return x;
     }
 
     /**
-     * Sets the value of the x property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setX(BigInteger value) {
-        this.x = value;
-    }
-
-    /**
      * Gets the value of the y property.
      * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     * @return possible object is {@link BigInteger }
+     * 
      */
     public BigInteger getY() {
         return y;
     }
 
     /**
+     * Sets the value of the x property.
+     * 
+     * @param value allowed object is {@link BigInteger }
+     * 
+     */
+    public void setX(BigInteger value) {
+        this.x = value;
+    }
+
+    /**
      * Sets the value of the y property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     * @param value allowed object is {@link BigInteger }
+     * 
      */
     public void setY(BigInteger value) {
         this.y = value;

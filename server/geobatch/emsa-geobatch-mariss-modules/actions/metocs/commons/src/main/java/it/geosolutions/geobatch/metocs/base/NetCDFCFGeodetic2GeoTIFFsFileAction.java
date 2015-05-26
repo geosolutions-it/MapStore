@@ -30,9 +30,6 @@ import it.geosolutions.geobatch.metocs.utils.io.METOCSActionsIOUtils;
 import it.geosolutions.geobatch.metocs.utils.io.Utilities;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
 
-import it.geosolutions.geobatch.geoserver.GeoServerActionConfig;
-import it.geosolutions.geobatch.geoserver.GeoServerActionConfiguration;
-
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
@@ -65,11 +62,9 @@ import ucar.nc2.dataset.NetcdfDataset;
 
 /**
  * 
- * Public class to split NetCDF_CF Geodetic to GeoTIFFs and consequently send them to GeoServer
- * along with their basic metadata.
+ * Public class to split NetCDF_CF Geodetic to GeoTIFFs and consequently send them to GeoServer along with their basic metadata.
  * 
- * For the NetCDF_CF Geodetic file we assume that it contains georectified geodetic grids and
- * therefore has a maximum set of dimensions as follows:
+ * For the NetCDF_CF Geodetic file we assume that it contains georectified geodetic grids and therefore has a maximum set of dimensions as follows:
  * 
  * lat { lat:long_name = "Latitude" lat:units = "degrees_north" }
  * 
@@ -83,7 +78,7 @@ import ucar.nc2.dataset.NetcdfDataset;
  * 
  */
 @Action(configurationClass = NetCDFCFGeodetic2GeoTIFFsConfiguration.class)
-public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>{
+public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject> {
 
     /**
      * GeoTIFF Writer Default Params
@@ -101,6 +96,55 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
     protected final static Logger LOGGER = Logger
             .getLogger(NetCDFCFGeodetic2GeoTIFFsFileAction.class.toString());
 
+    /**
+     * 
+     * @param d
+     * @return
+     */
+    private static String elevLevelFormat(double d) {
+        String[] parts = String.valueOf(d).split("\\.");
+
+        String integerPart = parts[0];
+        String decimalPart = parts[1];
+
+        while (integerPart.length() % 4 != 0)
+            integerPart = "0" + integerPart;
+
+        decimalPart = decimalPart.length() > 3 ? decimalPart.substring(0, 3) : decimalPart;
+
+        while (decimalPart.length() % 3 != 0)
+            decimalPart = decimalPart + "0";
+
+        return integerPart + "." + decimalPart;
+    }
+
+    /**
+     * @param timeOriginalData
+     * @param timeOriginalIndex
+     * @param t
+     * @return
+     */
+    private static long getTimeInstant(final Array timeOriginalData, final Index timeOriginalIndex,
+            int t) {
+        long timeValue = timeOriginalData.getLong(timeOriginalIndex.set(t));
+        timeValue = METOCSActionsIOUtils.startTime + timeValue * 1000;
+
+        final Calendar roundedTimeInstant = new GregorianCalendar(TimeZone.getTimeZone("GMT+0"));
+        roundedTimeInstant.setTimeInMillis(timeValue);
+
+        int minutes = roundedTimeInstant.get(Calendar.MINUTE);
+        int hours = roundedTimeInstant.get(Calendar.HOUR);
+
+        if (minutes > 50)
+            hours++;
+
+        roundedTimeInstant.set(Calendar.SECOND, 0);
+        roundedTimeInstant.set(Calendar.MINUTE, 0);
+        roundedTimeInstant.set(Calendar.HOUR, hours);
+
+        return roundedTimeInstant.getTimeInMillis();
+    }
+
     private final NetCDFCFGeodetic2GeoTIFFsConfiguration configuration;
 
     /**
@@ -108,8 +152,8 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
      */
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmssSSS'Z'");
 
-    public NetCDFCFGeodetic2GeoTIFFsFileAction(
-            NetCDFCFGeodetic2GeoTIFFsConfiguration configuration) throws IOException {
+    public NetCDFCFGeodetic2GeoTIFFsFileAction(NetCDFCFGeodetic2GeoTIFFsConfiguration configuration)
+            throws IOException {
         super(configuration.getId(), configuration.getName(), configuration.getDescription());
         this.configuration = configuration;
         sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
@@ -118,8 +162,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
     /**
      * This method define the mapping between input and output EventObject instance
      * 
-     * @param ieo
-     *            is the object to transform
+     * @param ieo is the object to transform
      * @return the EventObject adapted
      */
     public NetcdfEvent adapter(EventObject ieo) throws ActionException {
@@ -139,9 +182,8 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
                     inputFile = new File(fs_event.getSource().getAbsolutePath());
 
                     /**
-                     * Here we assume that each FileSystemEvent file represent a valid NetcdfFile.
-                     * This is done (without checks) since the specific class implementation name
-                     * define the file type should be passed. Be careful when build flux
+                     * Here we assume that each FileSystemEvent file represent a valid NetcdfFile. This is done (without checks) since the specific
+                     * class implementation name define the file type should be passed. Be careful when build flux
                      */
                     // TODO we should check if this file is a netcdf file!
 
@@ -166,73 +208,42 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
     }
 
     /**
-     * EXECUTE METHOD
-     */
-    public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
-    	
-    	// return object
-		final Queue<EventObject> ret = new LinkedList<EventObject>();
-		
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("MetocBaseAction:execute(): Starting with processing...");
-        try {
-        	// iterate in the queue and process each one we could process
-    		while (!events.isEmpty()) {
-    			EventObject event = events.poll();
-    			if (event instanceof FileSystemEvent) {
-    				FileSystemEvent fse = (FileSystemEvent) event;
-    	            // check if can't process
-    	            if(canProcess(fse)){
-    	            	ret.addAll(doProcess(adapter(fse)));
-    	            }else{
-    					// add the event to the return
-    					ret.add(fse);
-    				}
-    			} else {
-					// add the event to the return
-					ret.add(event);
-    				//throw new ActionException(this, "EventObject not handled " + event);
-    			}
-    		}
-    		
-        } catch (Throwable t) {
-            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
-        }
-        
-        return ret;
-    }
-
-    /**
      * Check if can process the file event
+     * 
      * @param fse
      * @return
      */
-	private boolean canProcess(FileSystemEvent fse) {
-		boolean canProcess = false; 
-		try{
-			File file = fse.getSource();
-			if(file.getName().toLowerCase().endsWith(".nc")
-					|| file.getName().toLowerCase().endsWith(".netcdf")){
-				NetcdfEvent event = adapter(fse);
-				canProcess = event != null;
-			}
-		}catch (Exception e){
-			canProcess = false;
-		}
-		return canProcess;
-	}
+    private boolean canProcess(FileSystemEvent fse) {
+        boolean canProcess = false;
+        try {
+            File file = fse.getSource();
+            if (file.getName().toLowerCase().endsWith(".nc")
+                    || file.getName().toLowerCase().endsWith(".netcdf")) {
+                NetcdfEvent event = adapter(fse);
+                canProcess = event != null;
+            }
+        } catch (Exception e) {
+            canProcess = false;
+        }
+        return canProcess;
+    }
 
-	/**
-	 * Process the file event and return new events queue
-	 * 
-	 * @param event
-	 * @return
-	 */
+    @Override
+    public boolean checkConfiguration() {
+        // TODO Auto-generated method stub
+        return true;
+    }
+
+    /**
+     * Process the file event and return new events queue
+     * 
+     * @param event
+     * @return
+     */
     private Collection<? extends EventObject> doProcess(NetcdfEvent event) {
 
-		// return object
-		final Queue<EventObject> ret = new LinkedList<EventObject>();
-    	
+        // return object
+        final Queue<EventObject> ret = new LinkedList<EventObject>();
 
         if (LOGGER.isLoggable(Level.INFO))
             LOGGER.info("NetCDFCFGeodetic2GeoTIFFsFileAction::execute(): Starting with processing...");
@@ -240,12 +251,12 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
         NetcdfFile ncFileIn = null;
         try {
             // looking for file
-//            if (events.size() != 1)
-//                throw new IllegalArgumentException(
-//                        "NetCDFCFGeodetic2GeoTIFFsFileAction::execute(): Wrong number of elements for this action: "
-//                                + events.size());
-//
-//            NetcdfEvent event = adapter(events.remove());
+            // if (events.size() != 1)
+            // throw new IllegalArgumentException(
+            // "NetCDFCFGeodetic2GeoTIFFsFileAction::execute(): Wrong number of elements for this action: "
+            // + events.size());
+            //
+            // NetcdfEvent event = adapter(events.remove());
 
             ncFileIn = event.getSource();
 
@@ -327,8 +338,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
             final boolean timeDimExists = timeDim != null;
 
             /*
-             * @note Carlo Cancellieri 16 Dec 2010 Search the global attributes as global attributes
-             * or as attributes of the root group.
+             * @note Carlo Cancellieri 16 Dec 2010 Search the global attributes as global attributes or as attributes of the root group.
              */
             Attribute baseTimeAttr = null;
             if ((baseTimeAttr = ncFileIn.findGlobalAttribute("base_time")) == null)
@@ -343,8 +353,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
             final String baseTime = baseTimeAttr.getStringValue();
             baseTimeAttr = null;
             /*
-             * @note Carlo Cancellieri 16 Dec 2010 Search the global attributes as global attributes
-             * or as attributes of the root group.
+             * @note Carlo Cancellieri 16 Dec 2010 Search the global attributes as global attributes or as attributes of the root group.
              */
             Attribute tauAttr = null;
             if ((tauAttr = ncFileIn.findGlobalAttribute("tau")) == null)
@@ -359,8 +368,7 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
             tauAttr = null;
 
             /*
-             * @note Carlo Cancellieri 16 Dec 2010 Search the global attributes as global attributes
-             * or as attributes of the root group.
+             * @note Carlo Cancellieri 16 Dec 2010 Search the global attributes as global attributes or as attributes of the root group.
              */
             Attribute nodataAttr = null;
             if ((nodataAttr = ncFileIn.findGlobalAttribute("nodata")) == null)
@@ -484,34 +492,21 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
                             /**
                              * Transforming float to a double some data introduce errors
                              * 
-                             * System.out.println("FLOAT_1: "+missingValue.getNumericValue().
-                             * floatValue());
-                             * System.out.println("FLOAT_2: "+(float)missingValue.getNumericValue
-                             * ().floatValue());
-                             * System.out.println("FLOAT_3: "+(double)missingValue.
-                             * getNumericValue().floatValue());
-                             * System.out.println("F3: "+missingValue.getNumericValue().toString());
-                             * System
-                             * .out.println("F4: "+Float.parseFloat(missingValue.getNumericValue
-                             * ().toString()));
-                             * System.out.println("F5: "+Double.parseDouble(missingValue
-                             * .getNumericValue().toString()));
-                             * System.out.println("F6: "+(double)Double
-                             * .parseDouble(missingValue.getNumericValue().toString()));
+                             * System.out.println("FLOAT_1: "+missingValue.getNumericValue(). floatValue());
+                             * System.out.println("FLOAT_2: "+(float)missingValue.getNumericValue ().floatValue());
+                             * System.out.println("FLOAT_3: "+(double)missingValue. getNumericValue().floatValue());
+                             * System.out.println("F3: "+missingValue.getNumericValue().toString()); System
+                             * .out.println("F4: "+Float.parseFloat(missingValue.getNumericValue ().toString()));
+                             * System.out.println("F5: "+Double.parseDouble(missingValue .getNumericValue().toString()));
+                             * System.out.println("F6: "+(double)Double .parseDouble(missingValue.getNumericValue().toString()));
                              * 
-                             * DataType dt=missingValue.getDataType(); if (dt==DataType.DOUBLE)
-                             * localNoData = missingValue.getNumericValue().doubleValue(); else if
-                             * (dt==DataType.FLOAT) localNoData =
-                             * Double.parseDouble(missingValue.getNumericValue().toString()); else
-                             * if (dt==DataType.INT){ localNoData =
-                             * missingValue.getNumericValue().intValue(); } else if
-                             * (dt==DataType.SHORT) localNoData =
-                             * missingValue.getNumericValue().shortValue(); else if
-                             * (dt==DataType.LONG) localNoData =
-                             * missingValue.getNumericValue().longValue(); else if
-                             * (dt==DataType.BYTE) localNoData =
-                             * missingValue.getNumericValue().byteValue(); else throw new
-                             * NumberFormatException
+                             * DataType dt=missingValue.getDataType(); if (dt==DataType.DOUBLE) localNoData =
+                             * missingValue.getNumericValue().doubleValue(); else if (dt==DataType.FLOAT) localNoData =
+                             * Double.parseDouble(missingValue.getNumericValue().toString()); else if (dt==DataType.INT){ localNoData =
+                             * missingValue.getNumericValue().intValue(); } else if (dt==DataType.SHORT) localNoData =
+                             * missingValue.getNumericValue().shortValue(); else if (dt==DataType.LONG) localNoData =
+                             * missingValue.getNumericValue().longValue(); else if (dt==DataType.BYTE) localNoData =
+                             * missingValue.getNumericValue().byteValue(); else throw new NumberFormatException
                              * ("Unable to enstablish missing_value data type");
                              */
 
@@ -524,18 +519,16 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
                                 var, METOCSActionsIOUtils.DEPTH_DIM)
                                 || NetCDFConverterUtilities.hasThisDimension(var,
                                         METOCSActionsIOUtils.HEIGHT_DIM);
-                        
+
                         if (LOGGER.isLoggable(Level.FINEST))
-                        	LOGGER.fine("Moving on with imc");
+                            LOGGER.fine("Moving on with imc");
 
                         /*
-                         * Creating a new ImageMosaicCommand to add a layer using this geotiff
-                         * (variable)
+                         * Creating a new ImageMosaicCommand to add a layer using this geotiff (variable)
                          */
                         List<File> addList = new ArrayList<File>();
-                        String fileName = 
-                                layerDir.getAbsoluteFile() + File.separator + inputFileName + "_"
-                                        + varName;
+                        String fileName = layerDir.getAbsoluteFile() + File.separator
+                                + inputFileName + "_" + varName;
 
                         for (int z = 0; z < (hasLocalZLevel ? nZeta : 1); z++) {
                             for (int t = 0; t < (timeDimExists ? nTime : 1); t++) {
@@ -574,17 +567,18 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
                                         coverageName.toString(), varName, userRaster, noData,
                                         envelope, DEFAULT_COMPRESSION_TYPE,
                                         DEFAULT_COMPRESSION_RATIO, DEFAULT_TILE_SIZE);
-                                
+
                                 if (LOGGER.isLoggable(Level.FINEST))
-                                	LOGGER.fine("gtiffFile --> "+ gtiffFile.getAbsolutePath());
+                                    LOGGER.fine("gtiffFile --> " + gtiffFile.getAbsolutePath());
 
                                 addList.add(gtiffFile);
                             }
                         }
                         // delegated on ImageMosaicCommand
-                        if(LOGGER.isLoggable(Level.FINE))
-                        	LOGGER.log(Level.FINE, "Move on with IMC "+ fileName);
-                        ImageMosaicCommand cmd = new ImageMosaicCommand(new File(fileName), addList, null);
+                        if (LOGGER.isLoggable(Level.FINE))
+                            LOGGER.log(Level.FINE, "Move on with IMC " + fileName);
+                        ImageMosaicCommand cmd = new ImageMosaicCommand(new File(fileName),
+                                addList, null);
                         ret.add(new EventObject(cmd));
                     } else {
                         if (LOGGER.isLoggable(Level.SEVERE))
@@ -619,69 +613,51 @@ public class NetCDFCFGeodetic2GeoTIFFsFileAction extends BaseAction<EventObject>
             }
         }
         return ret;
-	}
-
-	/**
-     * @param timeOriginalData
-     * @param timeOriginalIndex
-     * @param t
-     * @return
-     */
-    private static long getTimeInstant(final Array timeOriginalData, final Index timeOriginalIndex,
-            int t) {
-        long timeValue = timeOriginalData.getLong(timeOriginalIndex.set(t));
-        timeValue = METOCSActionsIOUtils.startTime + timeValue * 1000;
-
-        final Calendar roundedTimeInstant = new GregorianCalendar(TimeZone.getTimeZone("GMT+0"));
-        roundedTimeInstant.setTimeInMillis(timeValue);
-
-        int minutes = roundedTimeInstant.get(Calendar.MINUTE);
-        int hours = roundedTimeInstant.get(Calendar.HOUR);
-
-        if (minutes > 50)
-            hours++;
-
-        roundedTimeInstant.set(Calendar.SECOND, 0);
-        roundedTimeInstant.set(Calendar.MINUTE, 0);
-        roundedTimeInstant.set(Calendar.HOUR, hours);
-
-        return roundedTimeInstant.getTimeInMillis();
     }
 
     /**
-     * 
-     * @param d
-     * @return
+     * EXECUTE METHOD
      */
-    private static String elevLevelFormat(double d) {
-        String[] parts = String.valueOf(d).split("\\.");
+    public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
 
-        String integerPart = parts[0];
-        String decimalPart = parts[1];
+        // return object
+        final Queue<EventObject> ret = new LinkedList<EventObject>();
 
-        while (integerPart.length() % 4 != 0)
-            integerPart = "0" + integerPart;
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("MetocBaseAction:execute(): Starting with processing...");
+        try {
+            // iterate in the queue and process each one we could process
+            while (!events.isEmpty()) {
+                EventObject event = events.poll();
+                if (event instanceof FileSystemEvent) {
+                    FileSystemEvent fse = (FileSystemEvent) event;
+                    // check if can't process
+                    if (canProcess(fse)) {
+                        ret.addAll(doProcess(adapter(fse)));
+                    } else {
+                        // add the event to the return
+                        ret.add(fse);
+                    }
+                } else {
+                    // add the event to the return
+                    ret.add(event);
+                    // throw new ActionException(this, "EventObject not handled " + event);
+                }
+            }
 
-        decimalPart = decimalPart.length() > 3 ? decimalPart.substring(0, 3) : decimalPart;
+        } catch (Throwable t) {
+            LOGGER.log(Level.SEVERE, t.getLocalizedMessage(), t);
+        }
 
-        while (decimalPart.length() % 3 != 0)
-            decimalPart = decimalPart + "0";
-
-        return integerPart + "." + decimalPart;
+        return ret;
     }
 
-	@Override
-	public boolean checkConfiguration() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	/**
-	 * @return the configuration
-	 */
-	@SuppressWarnings("unchecked")
-	public NetCDFCFGeodetic2GeoTIFFsConfiguration getConfiguration() {
-		return configuration;
-	}
+    /**
+     * @return the configuration
+     */
+    @SuppressWarnings("unchecked")
+    public NetCDFCFGeodetic2GeoTIFFsConfiguration getConfiguration() {
+        return configuration;
+    }
 
 }

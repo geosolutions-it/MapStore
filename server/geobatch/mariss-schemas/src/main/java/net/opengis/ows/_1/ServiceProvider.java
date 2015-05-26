@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.ows._1;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,11 +13,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for anonymous complex type.
+ * <p>
+ * Java class for anonymous complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -37,88 +37,74 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "providerName",
-    "providerSite",
-    "serviceContact"
-})
+@XmlType(name = "", propOrder = { "providerName", "providerSite", "serviceContact" })
 @XmlRootElement(name = "ServiceProvider")
 public class ServiceProvider {
 
     @XmlElement(name = "ProviderName", required = true)
     protected String providerName;
+
     @XmlElement(name = "ProviderSite")
     protected OnlineResourceType providerSite;
+
     @XmlElement(name = "ServiceContact", required = true)
     protected ResponsiblePartySubsetType serviceContact;
 
     /**
      * Gets the value of the providerName property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getProviderName() {
         return providerName;
     }
 
     /**
-     * Sets the value of the providerName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setProviderName(String value) {
-        this.providerName = value;
-    }
-
-    /**
      * Gets the value of the providerSite property.
      * 
-     * @return
-     *     possible object is
-     *     {@link OnlineResourceType }
-     *     
+     * @return possible object is {@link OnlineResourceType }
+     * 
      */
     public OnlineResourceType getProviderSite() {
         return providerSite;
     }
 
     /**
-     * Sets the value of the providerSite property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link OnlineResourceType }
-     *     
-     */
-    public void setProviderSite(OnlineResourceType value) {
-        this.providerSite = value;
-    }
-
-    /**
      * Gets the value of the serviceContact property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ResponsiblePartySubsetType }
-     *     
+     * @return possible object is {@link ResponsiblePartySubsetType }
+     * 
      */
     public ResponsiblePartySubsetType getServiceContact() {
         return serviceContact;
     }
 
     /**
+     * Sets the value of the providerName property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setProviderName(String value) {
+        this.providerName = value;
+    }
+
+    /**
+     * Sets the value of the providerSite property.
+     * 
+     * @param value allowed object is {@link OnlineResourceType }
+     * 
+     */
+    public void setProviderSite(OnlineResourceType value) {
+        this.providerSite = value;
+    }
+
+    /**
      * Sets the value of the serviceContact property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ResponsiblePartySubsetType }
-     *     
+     * @param value allowed object is {@link ResponsiblePartySubsetType }
+     * 
      */
     public void setServiceContact(ResponsiblePartySubsetType value) {
         this.serviceContact = value;

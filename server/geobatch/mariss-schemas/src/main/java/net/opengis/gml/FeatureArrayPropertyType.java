@@ -5,26 +5,28 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
+
 import eu.europa.emsa.csndc.OilSpillType;
 import eu.europa.emsa.csndc.ShipType;
-
 
 /**
  * Container for features - follow gml:ArrayAssociationType pattern.
  * 
- * <p>Java class for FeatureArrayPropertyType complex type.
+ * <p>
+ * Java class for FeatureArrayPropertyType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="FeatureArrayPropertyType">
@@ -41,9 +43,7 @@ import eu.europa.emsa.csndc.ShipType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FeatureArrayPropertyType", propOrder = {
-    "feature"
-})
+@XmlType(name = "FeatureArrayPropertyType", propOrder = { "feature" })
 public class FeatureArrayPropertyType {
 
     @XmlElementRef(name = "_Feature", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
@@ -53,37 +53,27 @@ public class FeatureArrayPropertyType {
      * Gets the value of the feature property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the feature property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the feature property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getFeature().add(newItem);
+     * getFeature().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link RectifiedGridCoverageType }{@code >}
-     * {@link JAXBElement }{@code <}{@link AbstractDiscreteCoverageType }{@code >}
-     * {@link JAXBElement }{@code <}{@link AbstractFeatureType }{@code >}
-     * {@link JAXBElement }{@code <}{@link MultiPointCoverageType }{@code >}
-     * {@link JAXBElement }{@code <}{@link MultiCurveCoverageType }{@code >}
-     * {@link JAXBElement }{@code <}{@link DirectedObservationAtDistanceType }{@code >}
-     * {@link JAXBElement }{@code <}{@link DirectedObservationType }{@code >}
-     * {@link JAXBElement }{@code <}{@link ObservationType }{@code >}
-     * {@link JAXBElement }{@code <}{@link MultiSurfaceCoverageType }{@code >}
-     * {@link JAXBElement }{@code <}{@link AbstractCoverageType }{@code >}
-     * {@link JAXBElement }{@code <}{@link MultiSolidCoverageType }{@code >}
-     * {@link JAXBElement }{@code <}{@link AbstractFeatureCollectionType }{@code >}
-     * {@link JAXBElement }{@code <}{@link ShipType }{@code >}
-     * {@link JAXBElement }{@code <}{@link AbstractContinuousCoverageType }{@code >}
-     * {@link JAXBElement }{@code <}{@link FeatureCollectionType }{@code >}
-     * {@link JAXBElement }{@code <}{@link GridCoverageType }{@code >}
-     * {@link JAXBElement }{@code <}{@link OilSpillType }{@code >}
+     * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link RectifiedGridCoverageType }{@code >}
+     * {@link JAXBElement }{@code <}{@link AbstractDiscreteCoverageType }{@code >} {@link JAXBElement }{@code <}{@link AbstractFeatureType }{@code >}
+     * {@link JAXBElement }{@code <}{@link MultiPointCoverageType }{@code >} {@link JAXBElement }{@code <}{@link MultiCurveCoverageType }{@code >}
+     * {@link JAXBElement }{@code <}{@link DirectedObservationAtDistanceType }{@code >} {@link JAXBElement }{@code <}{@link DirectedObservationType }
+     * {@code >} {@link JAXBElement }{@code <}{@link ObservationType }{@code >} {@link JAXBElement }{@code <}{@link MultiSurfaceCoverageType }{@code >}
+     * {@link JAXBElement }{@code <}{@link AbstractCoverageType }{@code >} {@link JAXBElement }{@code <}{@link MultiSolidCoverageType }{@code >}
+     * {@link JAXBElement }{@code <}{@link AbstractFeatureCollectionType }{@code >} {@link JAXBElement }{@code <}{@link ShipType }{@code >}
+     * {@link JAXBElement }{@code <}{@link AbstractContinuousCoverageType }{@code >} {@link JAXBElement }{@code <}{@link FeatureCollectionType }{@code >}
+     * {@link JAXBElement }{@code <}{@link GridCoverageType }{@code >} {@link JAXBElement }{@code <}{@link OilSpillType }{@code >}
      * 
      * 
      */

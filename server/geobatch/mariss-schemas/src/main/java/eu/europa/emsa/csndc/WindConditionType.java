@@ -5,22 +5,23 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import java.math.BigInteger;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Wind condition associated to the area of the spill
  * 
- * <p>Java class for WindConditionType complex type.
+ * <p>
+ * Java class for WindConditionType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="WindConditionType">
@@ -40,66 +41,47 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "WindConditionType", propOrder = {
-    "dataSource",
-    "dataType",
-    "windIntensity",
-    "windDirection"
-})
+@XmlType(name = "WindConditionType", propOrder = { "dataSource", "dataType", "windIntensity",
+        "windDirection" })
 public class WindConditionType {
 
     protected String dataSource;
+
     protected String dataType;
+
     protected double windIntensity;
+
     @XmlElement(required = true)
     protected BigInteger windDirection;
 
     /**
      * Gets the value of the dataSource property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getDataSource() {
         return dataSource;
     }
 
     /**
-     * Sets the value of the dataSource property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDataSource(String value) {
-        this.dataSource = value;
-    }
-
-    /**
      * Gets the value of the dataType property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getDataType() {
         return dataType;
     }
 
     /**
-     * Sets the value of the dataType property.
+     * Gets the value of the windDirection property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link BigInteger }
+     * 
      */
-    public void setDataType(String value) {
-        this.dataType = value;
+    public BigInteger getWindDirection() {
+        return windDirection;
     }
 
     /**
@@ -111,35 +93,41 @@ public class WindConditionType {
     }
 
     /**
-     * Sets the value of the windIntensity property.
+     * Sets the value of the dataSource property.
+     * 
+     * @param value allowed object is {@link String }
      * 
      */
-    public void setWindIntensity(double value) {
-        this.windIntensity = value;
+    public void setDataSource(String value) {
+        this.dataSource = value;
     }
 
     /**
-     * Gets the value of the windDirection property.
+     * Sets the value of the dataType property.
      * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public BigInteger getWindDirection() {
-        return windDirection;
+    public void setDataType(String value) {
+        this.dataType = value;
     }
 
     /**
      * Sets the value of the windDirection property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     * @param value allowed object is {@link BigInteger }
+     * 
      */
     public void setWindDirection(BigInteger value) {
         this.windDirection = value;
+    }
+
+    /**
+     * Sets the value of the windIntensity property.
+     * 
+     */
+    public void setWindIntensity(double value) {
+        this.windIntensity = value;
     }
 
 }

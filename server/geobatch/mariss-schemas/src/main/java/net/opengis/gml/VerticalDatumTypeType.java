@@ -5,20 +5,20 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Type of a vertical datum. 
+ * Type of a vertical datum.
  * 
- * <p>Java class for VerticalDatumTypeType complex type.
+ * <p>
+ * Java class for VerticalDatumTypeType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="VerticalDatumTypeType">
@@ -34,9 +34,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "VerticalDatumTypeType")
-public class VerticalDatumTypeType
-    extends CodeType
-{
-
+public class VerticalDatumTypeType extends CodeType {
 
 }

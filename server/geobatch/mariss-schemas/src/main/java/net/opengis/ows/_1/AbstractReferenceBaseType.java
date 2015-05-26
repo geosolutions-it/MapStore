@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.ows._1;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,16 +12,18 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3._1999.xlink.ActuateType;
 import org.w3._1999.xlink.ShowType;
 
-
 /**
- * This type contains only a restricted and annotated set of the attributes from the xlink:simpleAttrs attributeGroup. 
+ * This type contains only a restricted and annotated set of the attributes from the xlink:simpleAttrs attributeGroup.
  * 
- * <p>Java class for AbstractReferenceBaseType complex type.
+ * <p>
+ * Java class for AbstractReferenceBaseType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AbstractReferenceBaseType">
@@ -44,33 +45,96 @@ import org.w3._1999.xlink.ShowType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AbstractReferenceBaseType")
-@XmlSeeAlso({
-    ReferenceType.class
-})
+@XmlSeeAlso({ ReferenceType.class })
 public class AbstractReferenceBaseType {
 
     @XmlAttribute(namespace = "http://www.opengis.net/ows/1.1")
     protected String type;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink", required = true)
     protected String href;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String role;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String arcrole;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String title;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected ShowType show;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected ActuateType actuate;
 
     /**
+     * Although allowed, this attribute is not expected to be useful in this application of xlink:simpleAttrs.
+     * 
+     * @return possible object is {@link ActuateType }
+     * 
+     */
+    public ActuateType getActuate() {
+        return actuate;
+    }
+
+    /**
+     * Although allowed, this attribute is not expected to be useful in this application of xlink:simpleAttrs.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getArcrole() {
+        return arcrole;
+    }
+
+    /**
+     * Reference to a remote resource or local payload. A remote resource is typically addressed by a URL. For a local payload (such as a multipart
+     * mime message), the xlink:href must start with the prefix cid:.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getHref() {
+        return href;
+    }
+
+    /**
+     * Reference to a resource that describes the role of this reference. When no value is supplied, no particular role value is to be inferred.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * Although allowed, this attribute is not expected to be useful in this application of xlink:simpleAttrs.
+     * 
+     * @return possible object is {@link ShowType }
+     * 
+     */
+    public ShowType getShow() {
+        return show;
+    }
+
+    /**
+     * Describes the meaning of the referenced resource in a human-readable fashion.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
      * Gets the value of the type property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getType() {
         if (type == null) {
@@ -81,159 +145,73 @@ public class AbstractReferenceBaseType {
     }
 
     /**
-     * Sets the value of the type property.
+     * Sets the value of the actuate property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setType(String value) {
-        this.type = value;
-    }
-
-    /**
-     * Reference to a remote resource or local payload. A remote resource is typically addressed by a URL. For a local payload (such as a multipart mime message), the xlink:href must start with the prefix cid:. 
+     * @param value allowed object is {@link ActuateType }
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
      */
-    public String getHref() {
-        return href;
-    }
-
-    /**
-     * Sets the value of the href property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setHref(String value) {
-        this.href = value;
-    }
-
-    /**
-     * Reference to a resource that describes the role of this reference. When no value is supplied, no particular role value is to be inferred. 
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getRole() {
-        return role;
-    }
-
-    /**
-     * Sets the value of the role property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setRole(String value) {
-        this.role = value;
-    }
-
-    /**
-     * Although allowed, this attribute is not expected to be useful in this application of xlink:simpleAttrs. 
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getArcrole() {
-        return arcrole;
+    public void setActuate(ActuateType value) {
+        this.actuate = value;
     }
 
     /**
      * Sets the value of the arcrole property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setArcrole(String value) {
         this.arcrole = value;
     }
 
     /**
-     * Describes the meaning of the referenced resource in a human-readable fashion. 
+     * Sets the value of the href property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public String getTitle() {
-        return title;
+    public void setHref(String value) {
+        this.href = value;
     }
 
     /**
-     * Sets the value of the title property.
+     * Sets the value of the role property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTitle(String value) {
-        this.title = value;
-    }
-
-    /**
-     * Although allowed, this attribute is not expected to be useful in this application of xlink:simpleAttrs. 
+     * @param value allowed object is {@link String }
      * 
-     * @return
-     *     possible object is
-     *     {@link ShowType }
-     *     
      */
-    public ShowType getShow() {
-        return show;
+    public void setRole(String value) {
+        this.role = value;
     }
 
     /**
      * Sets the value of the show property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ShowType }
-     *     
+     * @param value allowed object is {@link ShowType }
+     * 
      */
     public void setShow(ShowType value) {
         this.show = value;
     }
 
     /**
-     * Although allowed, this attribute is not expected to be useful in this application of xlink:simpleAttrs. 
+     * Sets the value of the title property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ActuateType }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public ActuateType getActuate() {
-        return actuate;
+    public void setTitle(String value) {
+        this.title = value;
     }
 
     /**
-     * Sets the value of the actuate property.
+     * Sets the value of the type property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ActuateType }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public void setActuate(ActuateType value) {
-        this.actuate = value;
+    public void setType(String value) {
+        this.type = value;
     }
 
 }

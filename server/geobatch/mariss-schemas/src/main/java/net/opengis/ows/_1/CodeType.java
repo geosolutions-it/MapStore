@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.ows._1;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,13 +14,15 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-
 /**
- * Type copied from basicTypes.xsd of GML 3 with documentation edited, for possible use outside the ServiceIdentification section of a service metadata document. 
+ * Type copied from basicTypes.xsd of GML 3 with documentation edited, for possible use outside the ServiceIdentification section of a service
+ * metadata document.
  * 
- * <p>Java class for CodeType complex type.
+ * <p>
+ * Java class for CodeType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="CodeType">
@@ -36,63 +37,54 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CodeType", propOrder = {
-    "value"
-})
+@XmlType(name = "CodeType", propOrder = { "value" })
 public class CodeType {
 
     @XmlValue
     protected String value;
+
     @XmlAttribute
     @XmlSchemaType(name = "anyURI")
     protected String codeSpace;
 
     /**
-     * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getValue() {
-        return value;
-    }
-
-    /**
-     * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    /**
      * Gets the value of the codeSpace property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getCodeSpace() {
         return codeSpace;
     }
 
     /**
+     * Gets the value of the value property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
      * Sets the value of the codeSpace property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setCodeSpace(String value) {
         this.codeSpace = value;
+    }
+
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }

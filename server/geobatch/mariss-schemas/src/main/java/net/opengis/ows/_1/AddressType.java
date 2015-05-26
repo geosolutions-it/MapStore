@@ -5,23 +5,24 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.ows._1;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Location of the responsible individual or organization. 
+ * Location of the responsible individual or organization.
  * 
- * <p>Java class for AddressType complex type.
+ * <p>
+ * Java class for AddressType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AddressType">
@@ -43,48 +44,75 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AddressType", propOrder = {
-    "deliveryPoint",
-    "city",
-    "administrativeArea",
-    "postalCode",
-    "country",
-    "electronicMailAddress"
-})
+@XmlType(name = "AddressType", propOrder = { "deliveryPoint", "city", "administrativeArea",
+        "postalCode", "country", "electronicMailAddress" })
 public class AddressType {
 
     @XmlElement(name = "DeliveryPoint")
     protected List<String> deliveryPoint;
+
     @XmlElement(name = "City")
     protected String city;
+
     @XmlElement(name = "AdministrativeArea")
     protected String administrativeArea;
+
     @XmlElement(name = "PostalCode")
     protected String postalCode;
+
     @XmlElement(name = "Country")
     protected String country;
+
     @XmlElement(name = "ElectronicMailAddress")
     protected List<String> electronicMailAddress;
+
+    /**
+     * Gets the value of the administrativeArea property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getAdministrativeArea() {
+        return administrativeArea;
+    }
+
+    /**
+     * Gets the value of the city property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getCity() {
+        return city;
+    }
+
+    /**
+     * Gets the value of the country property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getCountry() {
+        return country;
+    }
 
     /**
      * Gets the value of the deliveryPoint property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the deliveryPoint property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the deliveryPoint property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getDeliveryPoint().add(newItem);
+     * getDeliveryPoint().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * Objects of the following type(s) are allowed in the list {@link String }
      * 
      * 
      */
@@ -96,120 +124,22 @@ public class AddressType {
     }
 
     /**
-     * Gets the value of the city property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCity() {
-        return city;
-    }
-
-    /**
-     * Sets the value of the city property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCity(String value) {
-        this.city = value;
-    }
-
-    /**
-     * Gets the value of the administrativeArea property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getAdministrativeArea() {
-        return administrativeArea;
-    }
-
-    /**
-     * Sets the value of the administrativeArea property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAdministrativeArea(String value) {
-        this.administrativeArea = value;
-    }
-
-    /**
-     * Gets the value of the postalCode property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    /**
-     * Sets the value of the postalCode property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPostalCode(String value) {
-        this.postalCode = value;
-    }
-
-    /**
-     * Gets the value of the country property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCountry() {
-        return country;
-    }
-
-    /**
-     * Sets the value of the country property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCountry(String value) {
-        this.country = value;
-    }
-
-    /**
      * Gets the value of the electronicMailAddress property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the electronicMailAddress property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the electronicMailAddress property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getElectronicMailAddress().add(newItem);
+     * getElectronicMailAddress().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * Objects of the following type(s) are allowed in the list {@link String }
      * 
      * 
      */
@@ -218,6 +148,56 @@ public class AddressType {
             electronicMailAddress = new ArrayList<String>();
         }
         return this.electronicMailAddress;
+    }
+
+    /**
+     * Gets the value of the postalCode property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    /**
+     * Sets the value of the administrativeArea property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setAdministrativeArea(String value) {
+        this.administrativeArea = value;
+    }
+
+    /**
+     * Sets the value of the city property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setCity(String value) {
+        this.city = value;
+    }
+
+    /**
+     * Sets the value of the country property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setCountry(String value) {
+        this.country = value;
+    }
+
+    /**
+     * Sets the value of the postalCode property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setPostalCode(String value) {
+        this.postalCode = value;
     }
 
 }

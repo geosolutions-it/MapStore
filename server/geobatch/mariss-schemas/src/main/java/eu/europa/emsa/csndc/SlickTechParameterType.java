@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for SlickTechParameterType complex type.
+ * <p>
+ * Java class for SlickTechParameterType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="SlickTechParameterType">
@@ -37,115 +37,98 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SlickTechParameterType", propOrder = {
-    "parameter",
-    "value",
-    "description",
-    "importance"
-})
+@XmlType(name = "SlickTechParameterType", propOrder = { "parameter", "value", "description",
+        "importance" })
 public class SlickTechParameterType {
 
     @XmlElement(required = true)
     protected String parameter;
+
     @XmlElement(required = true)
     protected String value;
+
     protected String description;
+
     protected Double importance;
-
-    /**
-     * Gets the value of the parameter property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getParameter() {
-        return parameter;
-    }
-
-    /**
-     * Sets the value of the parameter property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setParameter(String value) {
-        this.parameter = value;
-    }
-
-    /**
-     * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getValue() {
-        return value;
-    }
-
-    /**
-     * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
 
     /**
      * Gets the value of the description property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * Sets the value of the description property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDescription(String value) {
-        this.description = value;
-    }
-
-    /**
      * Gets the value of the importance property.
      * 
-     * @return
-     *     possible object is
-     *     {@link Double }
-     *     
+     * @return possible object is {@link Double }
+     * 
      */
     public Double getImportance() {
         return importance;
     }
 
     /**
+     * Gets the value of the parameter property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getParameter() {
+        return parameter;
+    }
+
+    /**
+     * Gets the value of the value property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * Sets the value of the description property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setDescription(String value) {
+        this.description = value;
+    }
+
+    /**
      * Sets the value of the importance property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link Double }
-     *     
+     * @param value allowed object is {@link Double }
+     * 
      */
     public void setImportance(Double value) {
         this.importance = value;
+    }
+
+    /**
+     * Sets the value of the parameter property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setParameter(String value) {
+        this.parameter = value;
+    }
+
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }

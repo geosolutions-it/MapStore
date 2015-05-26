@@ -5,23 +5,24 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * A prime meridian defines the origin from which longitude values are determined.
  * 
- * <p>Java class for PrimeMeridianType complex type.
+ * <p>
+ * Java class for PrimeMeridianType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="PrimeMeridianType">
@@ -40,39 +41,44 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PrimeMeridianType", propOrder = {
-    "meridianID",
-    "remarks",
-    "greenwichLongitude"
-})
-public class PrimeMeridianType
-    extends PrimeMeridianBaseType
-{
+@XmlType(name = "PrimeMeridianType", propOrder = { "meridianID", "remarks", "greenwichLongitude" })
+public class PrimeMeridianType extends PrimeMeridianBaseType {
 
     protected List<IdentifierType> meridianID;
+
     protected StringOrRefType remarks;
+
     @XmlElement(required = true)
     protected AngleChoiceType greenwichLongitude;
 
     /**
-     * Set of alternative identifications of this prime meridian. The first meridianID, if any, is normally the primary identification code, and any others are aliases. Gets the value of the meridianID property.
+     * Gets the value of the greenwichLongitude property.
+     * 
+     * @return possible object is {@link AngleChoiceType }
+     * 
+     */
+    public AngleChoiceType getGreenwichLongitude() {
+        return greenwichLongitude;
+    }
+
+    /**
+     * Set of alternative identifications of this prime meridian. The first meridianID, if any, is normally the primary identification code, and any
+     * others are aliases. Gets the value of the meridianID property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the meridianID property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the meridianID property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getMeridianID().add(newItem);
+     * getMeridianID().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link IdentifierType }
+     * Objects of the following type(s) are allowed in the list {@link IdentifierType }
      * 
      * 
      */
@@ -84,51 +90,33 @@ public class PrimeMeridianType
     }
 
     /**
-     * Comments on or information about this prime meridian, including source information. 
+     * Comments on or information about this prime meridian, including source information.
      * 
-     * @return
-     *     possible object is
-     *     {@link StringOrRefType }
-     *     
+     * @return possible object is {@link StringOrRefType }
+     * 
      */
     public StringOrRefType getRemarks() {
         return remarks;
     }
 
     /**
-     * Sets the value of the remarks property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link StringOrRefType }
-     *     
-     */
-    public void setRemarks(StringOrRefType value) {
-        this.remarks = value;
-    }
-
-    /**
-     * Gets the value of the greenwichLongitude property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link AngleChoiceType }
-     *     
-     */
-    public AngleChoiceType getGreenwichLongitude() {
-        return greenwichLongitude;
-    }
-
-    /**
      * Sets the value of the greenwichLongitude property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link AngleChoiceType }
-     *     
+     * @param value allowed object is {@link AngleChoiceType }
+     * 
      */
     public void setGreenwichLongitude(AngleChoiceType value) {
         this.greenwichLongitude = value;
+    }
+
+    /**
+     * Sets the value of the remarks property.
+     * 
+     * @param value allowed object is {@link StringOrRefType }
+     * 
+     */
+    public void setRemarks(StringOrRefType value) {
+        this.remarks = value;
     }
 
 }

@@ -41,8 +41,103 @@ public class SARWaveAction extends NetCDFAction {
     }
 
     @Override
-    protected File[] writeNetCDF(File tempDir, String inputFileName, List<String> cfNames)
-            throws IOException, ActionException {
+    protected boolean canProcessFile(File netcdfFile) {
+        if (netcdfFile != null) {
+            String fileName = netcdfFile.getName();
+            if (fileName != null && !fileName.isEmpty()) {
+                return fileName.contains("wave");
+            }
+        }
+        return false;
+    }
+
+    protected double definingOutputVariables(boolean hasDepth, int nLat, int nLon,
+            NetcdfFileWriteable ncFileOut, NetcdfFile ncFileIn, boolean hasTimeDim, int nTime,
+            String varName, AttributeBean attributeBean) {
+        /**
+         * createNetCDFCFGeodeticDimensions( NetcdfFileWriteable ncFileOut, final boolean hasTimeDim, final int tDimLength, final boolean hasZetaDim,
+         * final int zDimLength, final String zOrder, final boolean hasLatDim, final int latDimLength, final boolean hasLonDim, final int
+         * lonDimLength)
+         */
+        final List<Dimension> outDimensions = NetCDFUtils.createNetCDFCFGeodeticDimensions(
+                ncFileOut, true, nLat, true, nLon, DataType.FLOAT, hasTimeDim, nTime);
+        // Adding old dimensions
+        outDimensions.addAll(getOldDimensions(ncFileIn, attributeBean));
+        // Filtering az_size/ra_size dimensions
+        List<Dimension> finalDims = new ArrayList<Dimension>(outDimensions);
+        for (Dimension dim : outDimensions) {
+            String name = dim.getName();
+            if (dim != null
+                    && (name.equalsIgnoreCase("AZ_SIZE") || name.equalsIgnoreCase("RA_SIZE") || name
+                            .equalsIgnoreCase("N_PARTITIONS"))) {
+                finalDims.remove(dim);
+            }
+        }
+        // NoData value to set
+        double noData = Double.NaN;
+
+        // defining output variable
+        // SIMONE: replaced foundVariables.get(varName).getDataType()
+        // with DataType.DOUBLE
+        ncFileOut.addVariable(attributeBean.foundVariableBriefNames.get(varName),
+                attributeBean.foundVariables.get(varName).getDataType(), finalDims);
+        ncFileOut.addVariableAttribute(attributeBean.foundVariableBriefNames.get(varName),
+                "long_name", attributeBean.foundVariableLongNames.get(varName));
+        ncFileOut.addVariableAttribute(attributeBean.foundVariableBriefNames.get(varName), "units",
+                attributeBean.foundVariableUoM.get(varName));
+        ncFileOut.addVariableAttribute(attributeBean.foundVariableBriefNames.get(varName),
+                NetCDFUtilities.DatasetAttribs.MISSING_VALUE, noData);
+
+        return noData;
+    }
+
+    public void fillVariablesMaps(NetcdfFile ncFileIn, Metocs metocDictionary,
+            AttributeBean attributeBean) throws UnsupportedEncodingException {
+        for (Object obj : ncFileIn.getVariables()) {
+            final Variable var = (Variable) obj;
+            final String varName = var.getName();
+            if (!varName.equalsIgnoreCase("longitude") && !varName.equalsIgnoreCase("latitude")
+                    && !varName.equalsIgnoreCase("mask")) {
+
+                if (attributeBean.foundVariables.get(varName) == null) {
+                    String longName = null;
+                    String briefName = null;
+                    String uom = null;
+
+                    for (MetocElementType m : metocDictionary.getMetoc()) {
+                        if ((varName.equalsIgnoreCase("Hs") && m.getName().equals(
+                                "sea surface swell wave significant height"))
+                                || (varName.equalsIgnoreCase("Wl") && m.getName().equals(
+                                        "dominant wave length"))
+                                || (varName.equalsIgnoreCase("Dirmet") && m.getName().equals(
+                                        "sea surface swell wave to direction"))) {
+                            longName = m.getName();
+                            briefName = m.getBrief();
+                            uom = m.getDefaultUom();
+                            uom = uom.indexOf(":") > 0 ? URLDecoder.decode(
+                                    uom.substring(uom.lastIndexOf(":") + 1), "UTF-8") : uom;
+                            break;
+                        }
+                    }
+
+                    if (longName != null && briefName != null) {
+                        attributeBean.foundVariables.put(varName, var);
+                        attributeBean.foundVariableLongNames.put(varName, longName);
+                        attributeBean.foundVariableBriefNames.put(varName, briefName);
+                        attributeBean.foundVariableUoM.put(varName, uom);
+                    }
+                }
+            }
+        }
+    }
+
+    protected String getActionName() {
+        return "wave";
+    }
+
+    @Override
+    protected File[] writeNetCDF(File tempDir, String inputFileName, List<String> cfNames,
+            AttributeBean attributeBean) throws IOException, ActionException {
 
         String fileBaseName = FilenameUtils.getBaseName(inputFileName);
 
@@ -73,7 +168,7 @@ public class SARWaveAction extends NetCDFAction {
             final Array latOriginalData = latOriginalVar.read();
 
             // building envelope
-            env = NetCDFUtils.buildEnvelope(ra_size, az_size, lonOriginalData,
+            attributeBean.env = NetCDFUtils.buildEnvelope(ra_size, az_size, lonOriginalData,
                     latOriginalData);
 
             // Grabbing the Variables Dictionary
@@ -86,22 +181,21 @@ public class SARWaveAction extends NetCDFAction {
             }
 
             // finding specific model variables
-            fillVariablesMaps(ncFileIn, dictionary);
-
+            fillVariablesMaps(ncFileIn, dictionary, attributeBean);
 
             // Getting partitions
             Dimension n_partitions = NetCDFUtils.findDimension(ncFileIn, "n_partitions", true);
             int partLen = n_partitions != null ? n_partitions.getLength() : 0;
 
             // getting Variables number
-            int numVariables = foundVariables.size();
+            int numVariables = attributeBean.foundVariables.size();
             ncFileOut = new NetcdfFileWriteable[numVariables * (n_partitions != null ? partLen : 1)];
             outputFiles = new File[numVariables * (n_partitions != null ? partLen : 1)];
             // Loop through the variables
             if (numVariables > 0) {
                 int index = 0;
-                for (String varName : foundVariables.keySet()) {
-                    
+                for (String varName : attributeBean.foundVariables.keySet()) {
+
                     // Partition
                     for (int part = partLen - 1; part >= 0; part--) {
                         // Append variable name
@@ -109,7 +203,9 @@ public class SARWaveAction extends NetCDFAction {
                         // ////
                         // ... create the output file
                         // ////
-                        outputFiles[index] = new File(directory,  fileBaseName + "___" + varName.trim() + part + ".nc");
+                        outputFiles[index] = new File(directory, fileBaseName + 
+                                CUSTOM_DIM_START_SEPARATOR + "partition" + CUSTOM_DIM_VAL_SEPARATOR + part + CUSTOM_DIM_END_SEPARATOR + 
+                                SEPARATOR + varName.trim() + ".nc");
                         outputFiles[index].createNewFile();
                         // ////
                         // ... create the output file data structure
@@ -125,18 +221,20 @@ public class SARWaveAction extends NetCDFAction {
                         // ////
                         // ... Write data
                         // ////
-                        boolean hasTime = timedim != null;
+                        boolean hasTime = attributeBean.timedim != null;
                         int numTime = hasTime ? 1 : 0;
 
                         // defining the file header and structure
                         double noData = definingOutputVariables(false, az_size.getLength(),
-                                ra_size.getLength(), writable, ncFileIn, hasTime, numTime, varName);
+                                ra_size.getLength(), writable, ncFileIn, hasTime, numTime, varName,
+                                attributeBean);
 
                         // writing bin data ...
                         try {
-                            writingDataSets(varName, part, ra_size, az_size, timedim, hasTime,
-                                    lonOriginalData, latOriginalData, noData, latDataType,
-                                    lonDataType, env, ncFileIn, writable);
+                            writingDataSets(varName, part, ra_size, az_size, attributeBean.timedim,
+                                    hasTime, lonOriginalData, latOriginalData, noData, latDataType,
+                                    lonDataType, attributeBean.env, ncFileIn, writable,
+                                    attributeBean);
                         } catch (InvalidRangeException e) {
                             throw new ActionException(SARWaveAction.class, e.getLocalizedMessage());
                         }
@@ -169,62 +267,11 @@ public class SARWaveAction extends NetCDFAction {
         return outputFiles;
     }
 
-    @Override
-    protected boolean canProcessFile(File netcdfFile) {
-        if (netcdfFile != null) {
-            String fileName = netcdfFile.getName();
-            if (fileName != null && !fileName.isEmpty()) {
-                return fileName.contains("wave");
-            }
-        }
-        return false;
-    }
-
-    public void fillVariablesMaps(NetcdfFile ncFileIn, Metocs metocDictionary)
-            throws UnsupportedEncodingException {
-        for (Object obj : ncFileIn.getVariables()) {
-            final Variable var = (Variable) obj;
-            final String varName = var.getName();
-            if (!varName.equalsIgnoreCase("longitude") && !varName.equalsIgnoreCase("latitude")
-                    && !varName.equalsIgnoreCase("mask")) {
-
-                if (foundVariables.get(varName) == null) {
-                    String longName = null;
-                    String briefName = null;
-                    String uom = null;
-
-                    for (MetocElementType m : metocDictionary.getMetoc()) {
-                        if ((varName.equalsIgnoreCase("Hs") && m.getName().equals(
-                                "sea surface swell wave significant height"))
-                                || (varName.equalsIgnoreCase("Wl") && m.getName().equals(
-                                        "dominant wave length"))
-                                || (varName.equalsIgnoreCase("Dirmet") && m.getName().equals(
-                                        "sea surface swell wave to direction"))) {
-                            longName = m.getName();
-                            briefName = m.getBrief();
-                            uom = m.getDefaultUom();
-                            uom = uom.indexOf(":") > 0 ? URLDecoder.decode(
-                                    uom.substring(uom.lastIndexOf(":") + 1), "UTF-8") : uom;
-                            break;
-                        }
-                    }
-
-                    if (longName != null && briefName != null) {
-                        foundVariables.put(varName, var);
-                        foundVariableLongNames.put(varName, longName);
-                        foundVariableBriefNames.put(varName, briefName);
-                        foundVariableUoM.put(varName, uom);
-                    }
-                }
-            }
-        }
-    }
-
     private void writingDataSets(String varName, int partition, Dimension ra_size,
             Dimension az_size, Date time, boolean hasTime, Array lonOriginalData,
             Array latOriginalData, double noData, DataType latDataType, DataType lonDataType,
-            GeneralEnvelope envelope, NetcdfFile ncFileIn, NetcdfFileWriteable ncFileOut)
-            throws IOException, InvalidRangeException {
+            GeneralEnvelope envelope, NetcdfFile ncFileIn, NetcdfFileWriteable ncFileOut,
+            AttributeBean attributeBean) throws IOException, InvalidRangeException {
 
         double[] bbox = new double[] { envelope.getLowerCorner().getOrdinate(0),
                 envelope.getLowerCorner().getOrdinate(1), envelope.getUpperCorner().getOrdinate(0),
@@ -237,9 +284,6 @@ public class SARWaveAction extends NetCDFAction {
 
         // writing bin data ...
         ncFileOut.create();
-
-        // writing time Variable data
-        // setTime(ncFileOut, referenceTime);
 
         // lat Variable data
         Array lat1Data = NetCDFConverterUtilities.getArray(az_size.getLength(), latDataType);
@@ -257,12 +301,12 @@ public class SARWaveAction extends NetCDFAction {
         }
         ncFileOut.write(NetCDFUtils.LON_DIM, lon1Data);
 
-        final Variable var = foundVariables.get(varName);
+        final Variable var = attributeBean.foundVariables.get(varName);
 
         // time Variable data
         if (hasTime) {
             Array timeData = NetCDFConverterUtilities.getArray(1, DataType.INT);
-            timeData.setObject(0, (int)(time.getTime() / 1000));
+            timeData.setObject(0, (int) (time.getTime() / 1000));
             ncFileOut.write(NetCDFUtils.TIME_DIM, timeData);
         }
 
@@ -282,7 +326,7 @@ public class SARWaveAction extends NetCDFAction {
         int[] dimArray = new int[] { partition };
         // Filling data inside the Raster
         writeRaster(ra_size, az_size, maskOriginalData, originalVarArray, dimArray, userRaster,
-                varIndex, maskIndex);
+                varIndex, maskIndex, attributeBean.maskOneIsValid);
 
         // Resampling to a Regular Grid ...
         if (LOGGER.isInfoEnabled())
@@ -290,7 +334,8 @@ public class SARWaveAction extends NetCDFAction {
         userRaster = NetCDFUtils.warping(bbox, lonOriginalData, latOriginalData,
                 ra_size.getLength(), az_size.getLength(), 2, userRaster, (float) noData, false);
 
-        final Variable outVar = ncFileOut.findVariable(foundVariableBriefNames.get(varName));
+        final Variable outVar = ncFileOut.findVariable(attributeBean.foundVariableBriefNames
+                .get(varName));
         final Array outVarData = outVar.read();
 
         int[] dimensions = new int[hasTime ? 3 : 2];
@@ -304,53 +349,9 @@ public class SARWaveAction extends NetCDFAction {
             }
         }
 
-        ncFileOut.write(foundVariableBriefNames.get(varName), outVarData);
+        ncFileOut.write(attributeBean.foundVariableBriefNames.get(varName), outVarData);
 
         if (LOGGER.isInfoEnabled())
             LOGGER.info("File Resampling completed in file: " + ncFileOut.getDetailInfo());
-    }
-
-    protected double definingOutputVariables(boolean hasDepth, int nLat, int nLon,
-            NetcdfFileWriteable ncFileOut, NetcdfFile ncFileIn, boolean hasTimeDim, int nTime,
-            String varName) {
-        /**
-         * createNetCDFCFGeodeticDimensions( NetcdfFileWriteable ncFileOut, final boolean hasTimeDim, final int tDimLength, final boolean hasZetaDim,
-         * final int zDimLength, final String zOrder, final boolean hasLatDim, final int latDimLength, final boolean hasLonDim, final int
-         * lonDimLength)
-         */
-        final List<Dimension> outDimensions = NetCDFUtils.createNetCDFCFGeodeticDimensions(
-                ncFileOut, true, nLat, true, nLon, DataType.FLOAT, hasTimeDim, nTime);
-        // Adding old dimensions
-        outDimensions.addAll(getOldDimensions(ncFileIn));
-        // Filtering az_size/ra_size dimensions
-        List<Dimension> finalDims = new ArrayList<Dimension>(outDimensions);
-        for (Dimension dim : outDimensions) {
-            String name = dim.getName();
-            if (dim != null
-                    && (name.equalsIgnoreCase("AZ_SIZE") || name.equalsIgnoreCase("RA_SIZE") || name
-                            .equalsIgnoreCase("N_PARTITIONS"))) {
-                finalDims.remove(dim);
-            }
-        }
-        // NoData value to set
-        double noData = Double.NaN;
-
-        // defining output variable
-        // SIMONE: replaced foundVariables.get(varName).getDataType()
-        // with DataType.DOUBLE
-        ncFileOut.addVariable(foundVariableBriefNames.get(varName), foundVariables.get(varName)
-                .getDataType(), finalDims);
-        ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "long_name",
-                foundVariableLongNames.get(varName));
-        ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName), "units",
-                foundVariableUoM.get(varName));
-        ncFileOut.addVariableAttribute(foundVariableBriefNames.get(varName),
-                NetCDFUtilities.DatasetAttribs.MISSING_VALUE, noData);
-
-        return noData;
-    }
-    
-    protected String getActionName(){
-        return "wave";
     }
 }

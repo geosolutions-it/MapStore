@@ -5,20 +5,20 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Property whose content is a Category.
  * 
- * <p>Java class for CategoryPropertyType complex type.
+ * <p>
+ * Java class for CategoryPropertyType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="CategoryPropertyType">
@@ -36,9 +36,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CategoryPropertyType")
-public class CategoryPropertyType
-    extends ValuePropertyType
-{
-
+public class CategoryPropertyType extends ValuePropertyType {
 
 }

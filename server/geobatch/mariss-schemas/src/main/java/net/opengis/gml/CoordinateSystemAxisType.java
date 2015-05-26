@@ -5,11 +5,11 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -17,13 +17,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Definition of a coordinate system axis. 
+ * Definition of a coordinate system axis.
  * 
- * <p>Java class for CoordinateSystemAxisType complex type.
+ * <p>
+ * Java class for CoordinateSystemAxisType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="CoordinateSystemAxisType">
@@ -44,45 +45,62 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CoordinateSystemAxisType", propOrder = {
-    "axisID",
-    "remarks",
-    "axisAbbrev",
-    "axisDirection"
-})
-public class CoordinateSystemAxisType
-    extends CoordinateSystemAxisBaseType
-{
+@XmlType(name = "CoordinateSystemAxisType", propOrder = { "axisID", "remarks", "axisAbbrev",
+        "axisDirection" })
+public class CoordinateSystemAxisType extends CoordinateSystemAxisBaseType {
 
     protected List<IdentifierType> axisID;
+
     protected StringOrRefType remarks;
+
     @XmlElement(required = true)
     protected CodeType axisAbbrev;
+
     @XmlElement(required = true)
     protected CodeType axisDirection;
+
     @XmlAttribute(namespace = "http://www.opengis.net/gml", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String uom;
 
     /**
-     * Set of alternative identifications of this coordinate system axis. The first axisID, if any, is normally the primary identification code, and any others are aliases. Gets the value of the axisID property.
+     * Gets the value of the axisAbbrev property.
+     * 
+     * @return possible object is {@link CodeType }
+     * 
+     */
+    public CodeType getAxisAbbrev() {
+        return axisAbbrev;
+    }
+
+    /**
+     * Gets the value of the axisDirection property.
+     * 
+     * @return possible object is {@link CodeType }
+     * 
+     */
+    public CodeType getAxisDirection() {
+        return axisDirection;
+    }
+
+    /**
+     * Set of alternative identifications of this coordinate system axis. The first axisID, if any, is normally the primary identification code, and
+     * any others are aliases. Gets the value of the axisID property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the axisID property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the axisID property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getAxisID().add(newItem);
+     * getAxisID().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link IdentifierType }
+     * Objects of the following type(s) are allowed in the list {@link IdentifierType }
      * 
      * 
      */
@@ -94,96 +112,60 @@ public class CoordinateSystemAxisType
     }
 
     /**
-     * Comments on or information about this coordinate system axis, including data source information. 
+     * Comments on or information about this coordinate system axis, including data source information.
      * 
-     * @return
-     *     possible object is
-     *     {@link StringOrRefType }
-     *     
+     * @return possible object is {@link StringOrRefType }
+     * 
      */
     public StringOrRefType getRemarks() {
         return remarks;
     }
 
     /**
-     * Sets the value of the remarks property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link StringOrRefType }
-     *     
-     */
-    public void setRemarks(StringOrRefType value) {
-        this.remarks = value;
-    }
-
-    /**
-     * Gets the value of the axisAbbrev property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link CodeType }
-     *     
-     */
-    public CodeType getAxisAbbrev() {
-        return axisAbbrev;
-    }
-
-    /**
-     * Sets the value of the axisAbbrev property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link CodeType }
-     *     
-     */
-    public void setAxisAbbrev(CodeType value) {
-        this.axisAbbrev = value;
-    }
-
-    /**
-     * Gets the value of the axisDirection property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link CodeType }
-     *     
-     */
-    public CodeType getAxisDirection() {
-        return axisDirection;
-    }
-
-    /**
-     * Sets the value of the axisDirection property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link CodeType }
-     *     
-     */
-    public void setAxisDirection(CodeType value) {
-        this.axisDirection = value;
-    }
-
-    /**
      * Gets the value of the uom property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getUom() {
         return uom;
     }
 
     /**
+     * Sets the value of the axisAbbrev property.
+     * 
+     * @param value allowed object is {@link CodeType }
+     * 
+     */
+    public void setAxisAbbrev(CodeType value) {
+        this.axisAbbrev = value;
+    }
+
+    /**
+     * Sets the value of the axisDirection property.
+     * 
+     * @param value allowed object is {@link CodeType }
+     * 
+     */
+    public void setAxisDirection(CodeType value) {
+        this.axisDirection = value;
+    }
+
+    /**
+     * Sets the value of the remarks property.
+     * 
+     * @param value allowed object is {@link StringOrRefType }
+     * 
+     */
+    public void setRemarks(StringOrRefType value) {
+        this.remarks = value;
+    }
+
+    /**
      * Sets the value of the uom property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setUom(String value) {
         this.uom = value;

@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Basic encoding for prime meridian objects, simplifying and restricting the DefinitionType as needed. 
+ * Basic encoding for prime meridian objects, simplifying and restricting the DefinitionType as needed.
  * 
- * <p>Java class for PrimeMeridianBaseType complex type.
+ * <p>
+ * Java class for PrimeMeridianBaseType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="PrimeMeridianBaseType">
@@ -39,12 +39,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PrimeMeridianBaseType")
-@XmlSeeAlso({
-    PrimeMeridianType.class
-})
-public abstract class PrimeMeridianBaseType
-    extends DefinitionType
-{
-
+@XmlSeeAlso({ PrimeMeridianType.class })
+public abstract class PrimeMeridianBaseType extends DefinitionType {
 
 }

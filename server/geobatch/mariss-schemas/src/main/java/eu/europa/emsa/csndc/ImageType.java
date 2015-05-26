@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,13 +13,14 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-
 /**
  * EO Image identifier in which the spill is observed
  * 
- * <p>Java class for ImageType complex type.
+ * <p>
+ * Java class for ImageType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="ImageType">
@@ -35,62 +35,53 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ImageType", propOrder = {
-    "value"
-})
+@XmlType(name = "ImageType", propOrder = { "value" })
 public class ImageType {
 
     @XmlValue
     protected String value;
+
     @XmlAttribute
     protected SensorType type;
 
     /**
-     * Gets the value of the value property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getValue() {
-        return value;
-    }
-
-    /**
-     * Sets the value of the value property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    /**
      * Gets the value of the type property.
      * 
-     * @return
-     *     possible object is
-     *     {@link SensorType }
-     *     
+     * @return possible object is {@link SensorType }
+     * 
      */
     public SensorType getType() {
         return type;
     }
 
     /**
+     * Gets the value of the value property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
      * Sets the value of the type property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link SensorType }
-     *     
+     * @param value allowed object is {@link SensorType }
+     * 
      */
     public void setType(SensorType value) {
         this.type = value;
+    }
+
+    /**
+     * Sets the value of the value property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }

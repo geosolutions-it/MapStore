@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,17 +13,19 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3._1999.xlink.ActuateType;
 import org.w3._1999.xlink.ShowType;
 import org.w3._1999.xlink.TypeType;
 
-
 /**
- * Association to a user-defined coordinate system, either referencing or containing the definition of that coordinate system. 
+ * Association to a user-defined coordinate system, either referencing or containing the definition of that coordinate system.
  * 
- * <p>Java class for UserDefinedCSRefType complex type.
+ * <p>
+ * Java class for UserDefinedCSRefType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="UserDefinedCSRefType">
@@ -42,86 +43,112 @@ import org.w3._1999.xlink.TypeType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "UserDefinedCSRefType", propOrder = {
-    "userDefinedCS"
-})
+@XmlType(name = "UserDefinedCSRefType", propOrder = { "userDefinedCS" })
 public class UserDefinedCSRefType {
 
     @XmlElement(name = "UserDefinedCS")
     protected UserDefinedCSType userDefinedCS;
+
     @XmlAttribute(namespace = "http://www.opengis.net/gml")
     @XmlSchemaType(name = "anyURI")
     protected String remoteSchema;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected TypeType type;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String href;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String role;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String arcrole;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String title;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected ShowType show;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected ActuateType actuate;
 
     /**
-     * Gets the value of the userDefinedCS property.
+     * Gets the value of the actuate property.
      * 
-     * @return
-     *     possible object is
-     *     {@link UserDefinedCSType }
-     *     
+     * @return possible object is {@link ActuateType }
+     * 
      */
-    public UserDefinedCSType getUserDefinedCS() {
-        return userDefinedCS;
+    public ActuateType getActuate() {
+        return actuate;
     }
 
     /**
-     * Sets the value of the userDefinedCS property.
+     * Gets the value of the arcrole property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link UserDefinedCSType }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
-    public void setUserDefinedCS(UserDefinedCSType value) {
-        this.userDefinedCS = value;
+    public String getArcrole() {
+        return arcrole;
+    }
+
+    /**
+     * Gets the value of the href property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getHref() {
+        return href;
     }
 
     /**
      * Gets the value of the remoteSchema property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getRemoteSchema() {
         return remoteSchema;
     }
 
     /**
-     * Sets the value of the remoteSchema property.
+     * Gets the value of the role property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
-    public void setRemoteSchema(String value) {
-        this.remoteSchema = value;
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * Gets the value of the show property.
+     * 
+     * @return possible object is {@link ShowType }
+     * 
+     */
+    public ShowType getShow() {
+        return show;
+    }
+
+    /**
+     * Gets the value of the title property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getTitle() {
+        return title;
     }
 
     /**
      * Gets the value of the type property.
      * 
-     * @return
-     *     possible object is
-     *     {@link TypeType }
-     *     
+     * @return possible object is {@link TypeType }
+     * 
      */
     public TypeType getType() {
         if (type == null) {
@@ -132,159 +159,103 @@ public class UserDefinedCSRefType {
     }
 
     /**
-     * Sets the value of the type property.
+     * Gets the value of the userDefinedCS property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link TypeType }
-     *     
+     * @return possible object is {@link UserDefinedCSType }
+     * 
      */
-    public void setType(TypeType value) {
-        this.type = value;
+    public UserDefinedCSType getUserDefinedCS() {
+        return userDefinedCS;
     }
 
     /**
-     * Gets the value of the href property.
+     * Sets the value of the actuate property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getHref() {
-        return href;
-    }
-
-    /**
-     * Sets the value of the href property.
+     * @param value allowed object is {@link ActuateType }
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
      */
-    public void setHref(String value) {
-        this.href = value;
-    }
-
-    /**
-     * Gets the value of the role property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getRole() {
-        return role;
-    }
-
-    /**
-     * Sets the value of the role property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setRole(String value) {
-        this.role = value;
-    }
-
-    /**
-     * Gets the value of the arcrole property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getArcrole() {
-        return arcrole;
+    public void setActuate(ActuateType value) {
+        this.actuate = value;
     }
 
     /**
      * Sets the value of the arcrole property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setArcrole(String value) {
         this.arcrole = value;
     }
 
     /**
-     * Gets the value of the title property.
+     * Sets the value of the href property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public String getTitle() {
-        return title;
+    public void setHref(String value) {
+        this.href = value;
     }
 
     /**
-     * Sets the value of the title property.
+     * Sets the value of the remoteSchema property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public void setTitle(String value) {
-        this.title = value;
+    public void setRemoteSchema(String value) {
+        this.remoteSchema = value;
     }
 
     /**
-     * Gets the value of the show property.
+     * Sets the value of the role property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ShowType }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public ShowType getShow() {
-        return show;
+    public void setRole(String value) {
+        this.role = value;
     }
 
     /**
      * Sets the value of the show property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ShowType }
-     *     
+     * @param value allowed object is {@link ShowType }
+     * 
      */
     public void setShow(ShowType value) {
         this.show = value;
     }
 
     /**
-     * Gets the value of the actuate property.
+     * Sets the value of the title property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ActuateType }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public ActuateType getActuate() {
-        return actuate;
+    public void setTitle(String value) {
+        this.title = value;
     }
 
     /**
-     * Sets the value of the actuate property.
+     * Sets the value of the type property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ActuateType }
-     *     
+     * @param value allowed object is {@link TypeType }
+     * 
      */
-    public void setActuate(ActuateType value) {
-        this.actuate = value;
+    public void setType(TypeType value) {
+        this.type = value;
+    }
+
+    /**
+     * Sets the value of the userDefinedCS property.
+     * 
+     * @param value allowed object is {@link UserDefinedCSType }
+     * 
+     */
+    public void setUserDefinedCS(UserDefinedCSType value) {
+        this.userDefinedCS = value;
     }
 
 }

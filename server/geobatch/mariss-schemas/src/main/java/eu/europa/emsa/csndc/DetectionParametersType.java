@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Set of parameters calculated for the target during the vessel detection
  * 
- * <p>Java class for DetectionParametersType complex type.
+ * <p>
+ * Java class for DetectionParametersType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="DetectionParametersType">
@@ -37,31 +37,13 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DetectionParametersType", propOrder = {
-    "rcs",
-    "maxPixelValue"
-})
+@XmlType(name = "DetectionParametersType", propOrder = { "rcs", "maxPixelValue" })
 public class DetectionParametersType {
 
     @XmlElement(name = "RCS")
     protected double rcs;
+
     protected double maxPixelValue;
-
-    /**
-     * Gets the value of the rcs property.
-     * 
-     */
-    public double getRCS() {
-        return rcs;
-    }
-
-    /**
-     * Sets the value of the rcs property.
-     * 
-     */
-    public void setRCS(double value) {
-        this.rcs = value;
-    }
 
     /**
      * Gets the value of the maxPixelValue property.
@@ -72,11 +54,27 @@ public class DetectionParametersType {
     }
 
     /**
+     * Gets the value of the rcs property.
+     * 
+     */
+    public double getRCS() {
+        return rcs;
+    }
+
+    /**
      * Sets the value of the maxPixelValue property.
      * 
      */
     public void setMaxPixelValue(double value) {
         this.maxPixelValue = value;
+    }
+
+    /**
+     * Sets the value of the rcs property.
+     * 
+     */
+    public void setRCS(double value) {
+        this.rcs = value;
     }
 
 }

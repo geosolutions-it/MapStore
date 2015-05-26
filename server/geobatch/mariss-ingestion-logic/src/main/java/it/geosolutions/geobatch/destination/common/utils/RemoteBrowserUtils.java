@@ -78,50 +78,75 @@ public class RemoteBrowserUtils {
     private static FileSystemOptions fsOptions;
 
     /**
-     * Initialize the file system manager with a specific timeout
-     * 
-     * @param timeout
-     * @throws FileSystemException
-     */
-    private static void initFsManager(int timeout) throws FileSystemException {
-        // init fsManager
-        if (fsManager == null) {
-            // we first set strict key checking off
-            fsOptions = new FileSystemOptions();
-            SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(fsOptions, "no");
-            // now we create a new file system manager
-            fsManager = (DefaultFileSystemManager) VFS.getManager();
-            SftpFileSystemConfigBuilder.getInstance().setUserDirIsRoot(fsOptions, false);
-        }
-        SftpFileSystemConfigBuilder.getInstance().setTimeout(fsOptions, timeout);
-    }
-
-    /**
-     * Download a file from a remote server
+     * Check if exists a file on a remote folder
      * 
      * @param serverProtocol
      * @param serverUser
-     * @param serverPWD
      * @param serverHost
+     * @param serverPWD
      * @param serverPort
-     * @param remotePath absolute path for the remote file
-     * @param localPath to download the file
+     * @param path
+     * @param fileName
+     * @param connectMode
      * @param timeout
-     * @return File with the remote content
+     * @return true if exists
+     * @throws IOException
+     * @throws FTPException
+     * @throws ParseException
+     */
+    public static boolean checkIfExists(RemoteBrowserProtocol serverProtocol, String serverUser,
+            String serverHost, String serverPWD, int serverPort, String path, String fileName,
+            FTPConnectMode connectMode, int timeout) throws IOException, FTPException,
+            ParseException {
+
+        String child = fileName;
+        String parentFolder = path;
+        if (fileName != null && fileName.contains(SEPARATOR)) {
+            if (!child.startsWith(SEPARATOR)) {
+                parentFolder += SEPARATOR;
+            }
+            parentFolder += child.substring(0, child.lastIndexOf(SEPARATOR));
+            child = child.substring(child.lastIndexOf(SEPARATOR) + 1);
+        } else if (fileName == null && parentFolder.contains(SEPARATOR)) {
+            parentFolder = path.substring(0, path.lastIndexOf(SEPARATOR));
+            child = path.substring(path.lastIndexOf(SEPARATOR) + 1);
+        }
+
+        // obtain filenames
+        List<String> fileNames = RemoteBrowserUtils.ls(serverProtocol, serverUser, serverPWD,
+                serverHost, serverPort, parentFolder, connectMode, timeout, Pattern.compile(child));
+
+        return fileNames != null && fileNames.size() > 0;
+    }
+
+    /**
+     * Clean first separator for {@link RemoteBrowserProtocol#ftp} protocol
+     * 
+     * @param path absolute remote path, for example: '/path/to/file'
+     * @return path without starter '/', for example: 'path/to/file'
+     */
+    private static String cleanRoot(String path) {
+        if (path.startsWith("/")) {
+            return path.replaceFirst("/", "");
+        } else {
+            return path;
+        }
+    }
+
+    /**
+     * Copy a local file to a target folder
+     * 
+     * @param originFile
+     * @param targetPath
+     * @return
      * @throws IOException
      */
-    public static File downloadFile(RemoteBrowserProtocol serverProtocol, String serverUser,
-            String serverPWD, String serverHost, int serverPort, String remotePath,
-            String localPath, int timeout) throws IOException {
-        if (RemoteBrowserProtocol.local.equals(serverProtocol)) {
-            return copyfile(remotePath, localPath);
-        } else {
-            initFsManager(timeout);
-            FileObject file = fsManager.resolveFile(
-                    getURI(serverProtocol, serverUser, serverPWD, serverHost, serverPort,
-                            remotePath), fsOptions);
-            return downloadFile(file, localPath);
-        }
+    private static File copyfile(String originFile, String targetPath) throws IOException {
+
+        // copy to target path
+        FileUtils.copyFile(new File(originFile), new File(targetPath));
+
+        return new File(targetPath);
     }
 
     /**
@@ -159,17 +184,256 @@ public class RemoteBrowserUtils {
     }
 
     /**
-     * Clean first separator for {@link RemoteBrowserProtocol#ftp} protocol
+     * Download a remote file to a local path
      * 
-     * @param path absolute remote path, for example: '/path/to/file'
-     * @return path without starter '/', for example: 'path/to/file'
+     * @param fo
+     * @param localPath
+     * @return File with the content
+     * @throws IOException
      */
-    private static String cleanRoot(String path) {
-        if (path.startsWith("/")) {
-            return path.replaceFirst("/", "");
-        } else {
-            return path;
+    public static File downloadFile(FileObject fo, String localPath) throws IOException {
+
+        // open input stream from the remote file
+        BufferedInputStream is = null;
+        OutputStream os = null;
+
+        try {
+            is = new BufferedInputStream(fo.getContent().getInputStream());
+            // open output stream to local file
+            os = new BufferedOutputStream(new FileOutputStream(localPath));
+            int c;
+            // do copying
+            while ((c = is.read()) != -1) {
+                os.write(c);
+            }
+        } catch (FileSystemException e) {
+            throw new IOException("Can't open input stream", e);
+        } finally {
+            if (os != null) {
+                os.close();
+            }
+            if (is != null) {
+                is.close();
+            }
         }
+
+        return new File(localPath);
+    }
+
+    /**
+     * Download a file from a remote server
+     * 
+     * @param serverProtocol
+     * @param serverUser
+     * @param serverPWD
+     * @param serverHost
+     * @param serverPort
+     * @param remotePath absolute path for the remote file
+     * @param localPath to download the file
+     * @param timeout
+     * @return File with the remote content
+     * @throws IOException
+     */
+    public static File downloadFile(RemoteBrowserProtocol serverProtocol, String serverUser,
+            String serverPWD, String serverHost, int serverPort, String remotePath,
+            String localPath, int timeout) throws IOException {
+        if (RemoteBrowserProtocol.local.equals(serverProtocol)) {
+            return copyfile(remotePath, localPath);
+        } else {
+            initFsManager(timeout);
+            FileObject file = fsManager.resolveFile(
+                    getURI(serverProtocol, serverUser, serverPWD, serverHost, serverPort,
+                            remotePath), fsOptions);
+            return downloadFile(file, localPath);
+        }
+    }
+
+    /**
+     * Create a new folder for a remote server in recursive mode
+     * 
+     * @param serverProtocol
+     * @param serverUser
+     * @param serverHost
+     * @param serverPWD
+     * @param serverPort
+     * @param path
+     * @param fileName
+     * @param connectMode
+     * @param timeout
+     * @return true if create or false otherwise
+     * @throws IOException
+     * @throws FTPException
+     * @throws ParseException
+     */
+    public static boolean forceMkdir(RemoteBrowserProtocol protocol, String serverUser,
+            String serverHost, String serverPWD, int serverPort, String path,
+            String relativeFolder, FTPConnectMode connectMode, int timeout) throws IOException,
+            FTPException, ParseException {
+
+        String currentPath = path;
+
+        for (String subFolder : relativeFolder.split(SEPARATOR)) {
+            if (!RemoteBrowserUtils.checkIfExists(protocol, serverUser, serverHost, serverPWD,
+                    serverPort, currentPath, subFolder, connectMode, timeout)) {
+                RemoteBrowserUtils.mkdir(protocol, serverUser, serverHost, serverPWD, serverPort,
+                        currentPath, subFolder, connectMode, timeout);
+            }
+            currentPath += SEPARATOR + subFolder;
+        }
+
+        return RemoteBrowserUtils.checkIfExists(protocol, serverUser, serverHost, serverPWD,
+                serverPort, path, relativeFolder, connectMode, timeout);
+    }
+
+    /**
+     * FTP protocol ls
+     * 
+     * @param userName
+     * @param password
+     * @param host
+     * @param port
+     * @param path
+     * @param connectMode
+     * @param timeout
+     * @param pattern
+     * @param foldersFlag return only folders (true), only files(false) or everything (null)
+     * @return name of files or directories inside the remote folder
+     * @throws IOException
+     * @throws FTPException
+     * @throws ParseException
+     */
+    private static List<String> ftpLS(String userName, String password, String host, int port,
+            String path, FTPConnectMode connectMode, int timeout, Pattern pattern,
+            Boolean foldersFlag) throws IOException, FTPException, ParseException {
+
+        FTPFile[] files = FTPHelperBare.dirDetails(host, path, SEPARATOR, userName, password, port,
+                FTPTransferType.BINARY, WriteMode.OVERWRITE, connectMode, timeout);
+
+        List<String> names = new LinkedList<String>();
+
+        // For each file on the remote directory
+        for (FTPFile file : files) {
+            boolean mustCheck = true;
+            if (foldersFlag != null) {
+                if (foldersFlag.equals(file.isDir())) {
+                    mustCheck = true;
+                } else {
+                    mustCheck = false;
+                }
+            }
+            if (mustCheck) {
+                String fileName = file.getName();
+                if (pattern != null) {
+                    Matcher m = pattern.matcher(fileName);
+                    if (m.matches()) {
+                        names.add(fileName);
+                    }
+                } else {
+                    names.add(fileName);
+                }
+            }
+        }
+
+        return names;
+    }
+
+    /**
+     * Create a folder for a ftp server
+     * 
+     * @param serverUser
+     * @param serverPWD
+     * @param serverHost
+     * @param serverPort
+     * @param path
+     * @param connectMode
+     * @param timeout
+     * @param folderName
+     * @return
+     * @throws IOException
+     * @throws FTPException
+     * @throws ParseException
+     */
+    private static boolean ftpmkdir(String serverUser, String serverPWD, String serverHost,
+            int serverPort, String path, FTPConnectMode connectMode, int timeout, String folderName)
+            throws IOException, FTPException, ParseException {
+        // just create the folder and check
+        FTPHelperBare.createDirectory(serverHost, path + SEPARATOR + folderName, path + SEPARATOR,
+                serverUser, serverPWD, serverPort, FTPTransferType.BINARY, WriteMode.OVERWRITE,
+                connectMode, timeout);
+        return checkIfExists(RemoteBrowserProtocol.ftp, serverUser, serverHost, serverPWD,
+                serverPort, path, folderName, connectMode, timeout);
+    }
+
+    /**
+     * Get URI for a remote file
+     * 
+     * @param protocol
+     * @param userName
+     * @param password
+     * @param host
+     * @param port
+     * @param path
+     * @return URI for the file
+     */
+    public static String getURI(RemoteBrowserProtocol protocol, String userName, String password,
+            String host, int port, String path) {
+        String uri = protocol.name() + "://" + userName + ":" + password + "@" + host + ":" + port
+                + path;
+        return uri;
+    }
+
+    /**
+     * Initialize the file system manager with a specific timeout
+     * 
+     * @param timeout
+     * @throws FileSystemException
+     */
+    private static void initFsManager(int timeout) throws FileSystemException {
+        // init fsManager
+        if (fsManager == null) {
+            // we first set strict key checking off
+            fsOptions = new FileSystemOptions();
+            SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(fsOptions, "no");
+            // now we create a new file system manager
+            fsManager = (DefaultFileSystemManager) VFS.getManager();
+            SftpFileSystemConfigBuilder.getInstance().setUserDirIsRoot(fsOptions, false);
+        }
+        SftpFileSystemConfigBuilder.getInstance().setTimeout(fsOptions, timeout);
+    }
+
+    /**
+     * List for local protocol
+     * 
+     * @param userName
+     * @param path local path
+     * @param pattern
+     * @param foldersFlag
+     * @return
+     */
+    private static List<String> localLS(String path, Pattern pattern, Boolean foldersFlag) {
+        List<String> names = new LinkedList<String>();
+        final File folder = new File(path);
+        if (folder.exists() && folder.isDirectory()) {
+            for (String fileName : folder.list()) {
+                boolean mustCheck = true;
+                if (foldersFlag != null) {
+                    if (!foldersFlag && new File(path, fileName).isDirectory()) {
+                        mustCheck = false;
+                    }
+                }
+                if (mustCheck) {
+                    if (pattern != null) {
+                        Matcher m = pattern.matcher(fileName);
+                        if (m.matches()) {
+                            names.add(fileName);
+                        }
+                    } else {
+                        names.add(fileName);
+                    }
+                }
+            }
+        }
+        return names;
     }
 
     /**
@@ -254,6 +518,69 @@ public class RemoteBrowserUtils {
     }
 
     /**
+     * Create a new folder for a remote folder
+     * 
+     * @param serverProtocol
+     * @param serverUser
+     * @param serverHost
+     * @param serverPWD
+     * @param serverPort
+     * @param path
+     * @param fileName
+     * @param connectMode
+     * @param timeout
+     * @return true if create or false otherwise
+     * @throws IOException
+     * @throws FTPException
+     * @throws ParseException
+     */
+    public static boolean mkdir(RemoteBrowserProtocol protocol, String serverUser,
+            String serverHost, String serverPWD, int serverPort, String path, String folderName,
+            FTPConnectMode connectMode, int timeout) throws IOException, FTPException,
+            ParseException {
+
+        if (RemoteBrowserProtocol.ftp.equals(protocol)) {
+            return ftpmkdir(serverUser, serverPWD, serverHost, serverPort, path, connectMode,
+                    timeout, folderName);
+        } else {
+            return sftpmkdir(serverUser, serverPWD, serverHost, serverPort, path, connectMode,
+                    timeout, folderName);
+        }
+    }
+
+    /**
+     * Put file on a remote path
+     * 
+     * @param protocol
+     * @param username
+     * @param host
+     * @param password
+     * @param port
+     * @param remotefile absolute path for the remote put
+     * @param localfile to save on remote server
+     * @param connectMode
+     * @param timeout
+     * @throws IOException
+     * @throws FTPException
+     */
+    public static void putFile(RemoteBrowserProtocol protocol, String username, String host,
+            String password, int port, String remotefile, String localfile,
+            FTPConnectMode connectMode, int timeout) throws IOException, FTPException {
+        if (RemoteBrowserProtocol.ftp.equals(protocol)) {
+            // FTP put
+            String remotePath = remotefile.substring(0, remotefile.lastIndexOf("/"));
+            FTPHelperBare.putBinaryFileTo(host, localfile, cleanRoot(remotePath), username,
+                    password, port, WriteMode.OVERWRITE, connectMode, 5000);
+        } else if (RemoteBrowserProtocol.sftp.equals(protocol)) {
+            // SFTP put
+            sftpPutFile(username, host, password, port, remotefile, localfile, timeout);
+        } else {
+            // local copy
+            copyfile(localfile, remotefile);
+        }
+    }
+
+    /**
      * SFTP protocol ls
      * 
      * @param userName
@@ -331,347 +658,6 @@ public class RemoteBrowserUtils {
     }
 
     /**
-     * FTP protocol ls
-     * 
-     * @param userName
-     * @param password
-     * @param host
-     * @param port
-     * @param path
-     * @param connectMode
-     * @param timeout
-     * @param pattern
-     * @param foldersFlag return only folders (true), only files(false) or everything (null)
-     * @return name of files or directories inside the remote folder
-     * @throws IOException
-     * @throws FTPException
-     * @throws ParseException
-     */
-    private static List<String> ftpLS(String userName, String password, String host, int port,
-            String path, FTPConnectMode connectMode, int timeout, Pattern pattern,
-            Boolean foldersFlag) throws IOException, FTPException, ParseException {
-
-        FTPFile[] files = FTPHelperBare.dirDetails(host, path, SEPARATOR, userName, password, port,
-                FTPTransferType.BINARY, WriteMode.OVERWRITE, connectMode, timeout);
-
-        List<String> names = new LinkedList<String>();
-
-        // For each file on the remote directory
-        for (FTPFile file : files) {
-            boolean mustCheck = true;
-            if (foldersFlag != null) {
-                if (foldersFlag.equals(file.isDir())) {
-                    mustCheck = true;
-                } else {
-                    mustCheck = false;
-                }
-            }
-            if (mustCheck) {
-                String fileName = file.getName();
-                if (pattern != null) {
-                    Matcher m = pattern.matcher(fileName);
-                    if (m.matches()) {
-                        names.add(fileName);
-                    }
-                } else {
-                    names.add(fileName);
-                }
-            }
-        }
-
-        return names;
-    }
-
-    /**
-     * List for local protocol
-     * 
-     * @param userName
-     * @param path local path
-     * @param pattern
-     * @param foldersFlag
-     * @return
-     */
-    private static List<String> localLS(String path, Pattern pattern, Boolean foldersFlag) {
-        List<String> names = new LinkedList<String>();
-        final File folder = new File(path);
-        if (folder.exists() && folder.isDirectory()) {
-            for (String fileName : folder.list()) {
-                boolean mustCheck = true;
-                if (foldersFlag != null) {
-                    if (!foldersFlag && new File(path, fileName).isDirectory()) {
-                        mustCheck = false;
-                    }
-                }
-                if (mustCheck) {
-                    if (pattern != null) {
-                        Matcher m = pattern.matcher(fileName);
-                        if (m.matches()) {
-                            names.add(fileName);
-                        }
-                    } else {
-                        names.add(fileName);
-                    }
-                }
-            }
-        }
-        return names;
-    }
-
-    /**
-     * Put file on a remote path
-     * 
-     * @param protocol
-     * @param username
-     * @param host
-     * @param password
-     * @param port
-     * @param remotefile absolute path for the remote put
-     * @param localfile to save on remote server
-     * @param connectMode
-     * @param timeout
-     * @throws IOException
-     * @throws FTPException
-     */
-    public static void putFile(RemoteBrowserProtocol protocol, String username, String host,
-            String password, int port, String remotefile, String localfile,
-            FTPConnectMode connectMode, int timeout) throws IOException, FTPException {
-        if (RemoteBrowserProtocol.ftp.equals(protocol)) {
-            // FTP put
-            String remotePath = remotefile.substring(0, remotefile.lastIndexOf("/"));
-            FTPHelperBare.putBinaryFileTo(host, localfile, cleanRoot(remotePath), username,
-                    password, port, WriteMode.OVERWRITE, connectMode, 5000);
-        } else if (RemoteBrowserProtocol.sftp.equals(protocol)) {
-            // SFTP put
-            sftpPutFile(username, host, password, port, remotefile, localfile, timeout);
-        } else {
-            // local copy
-            copyfile(localfile, remotefile);
-        }
-    }
-
-    /**
-     * Put file on a remote path
-     * 
-     * @param protocol
-     * @param username
-     * @param host
-     * @param password
-     * @param port
-     * @param remotefile absolute path for the remote put
-     * @param localfile to save on remote server
-     * @param timeout
-     * @throws IOException
-     */
-    private static void sftpPutFile(String username, String host, String password, int port,
-            String remotefile, String localfile, int timeout) throws IOException {
-        JSch jsch = new JSch();
-        Session session = null;
-        ChannelSftp sftpChannel = null;
-        try {
-            session = jsch.getSession(username, host, port);
-            session.setConfig("StrictHostKeyChecking", "no");
-            session.setPassword(password);
-            session.setTimeout(timeout);
-            session.connect();
-
-            Channel channel = session.openChannel(RemoteBrowserProtocol.sftp.name());
-            channel.connect();
-            sftpChannel = (ChannelSftp) channel;
-            sftpChannel.put(localfile, remotefile);
-        } catch (Exception e) {
-            throw new IOException("Error putting file", e);
-        } finally {
-            if (sftpChannel != null) {
-                sftpChannel.exit();
-            }
-            if (session != null) {
-                session.disconnect();
-            }
-        }
-    }
-
-    /**
-     * Download a remote file to a local path
-     * 
-     * @param fo
-     * @param localPath
-     * @return File with the content
-     * @throws IOException
-     */
-    public static File downloadFile(FileObject fo, String localPath) throws IOException {
-
-        // open input stream from the remote file
-        BufferedInputStream is = null;
-        OutputStream os = null;
-
-        try {
-            is = new BufferedInputStream(fo.getContent().getInputStream());
-            // open output stream to local file
-            os = new BufferedOutputStream(new FileOutputStream(localPath));
-            int c;
-            // do copying
-            while ((c = is.read()) != -1) {
-                os.write(c);
-            }
-        } catch (FileSystemException e) {
-            throw new IOException("Can't open input stream", e);
-        } finally {
-            if (os != null) {
-                os.close();
-            }
-            if (is != null) {
-                is.close();
-            }
-        }
-
-        return new File(localPath);
-    }
-
-    /**
-     * Copy a local file to a target folder
-     * 
-     * @param originFile
-     * @param targetPath
-     * @return
-     * @throws IOException
-     */
-    private static File copyfile(String originFile, String targetPath) throws IOException {
-
-        // copy to target path
-        FileUtils.copyFile(new File(originFile), new File(targetPath));
-
-        return new File(targetPath);
-    }
-
-    /**
-     * Get URI for a remote file
-     * 
-     * @param protocol
-     * @param userName
-     * @param password
-     * @param host
-     * @param port
-     * @param path
-     * @return URI for the file
-     */
-    public static String getURI(RemoteBrowserProtocol protocol, String userName, String password,
-            String host, int port, String path) {
-        String uri = protocol.name() + "://" + userName + ":" + password + "@" + host + ":" + port
-                + path;
-        return uri;
-    }
-
-    /**
-     * Check if exists a file on a remote folder
-     * 
-     * @param serverProtocol
-     * @param serverUser
-     * @param serverHost
-     * @param serverPWD
-     * @param serverPort
-     * @param path
-     * @param fileName
-     * @param connectMode
-     * @param timeout
-     * @return true if exists
-     * @throws IOException
-     * @throws FTPException
-     * @throws ParseException
-     */
-    public static boolean checkIfExists(RemoteBrowserProtocol serverProtocol, String serverUser,
-            String serverHost, String serverPWD, int serverPort, String path, String fileName,
-            FTPConnectMode connectMode, int timeout) throws IOException, FTPException,
-            ParseException {
-
-        String child = fileName;
-        String parentFolder = path;
-        if (fileName != null && fileName.contains(SEPARATOR)) {
-            if (!child.startsWith(SEPARATOR)) {
-                parentFolder += SEPARATOR;
-            }
-            parentFolder += child.substring(0, child.lastIndexOf(SEPARATOR));
-            child = child.substring(child.lastIndexOf(SEPARATOR) + 1);
-        } else if (fileName == null && parentFolder.contains(SEPARATOR)) {
-            parentFolder = path.substring(0, path.lastIndexOf(SEPARATOR));
-            child = path.substring(path.lastIndexOf(SEPARATOR) + 1);
-        }
-
-        // obtain filenames
-        List<String> fileNames = RemoteBrowserUtils.ls(serverProtocol, serverUser, serverPWD,
-                serverHost, serverPort, parentFolder, connectMode, timeout, Pattern.compile(child));
-
-        return fileNames != null && fileNames.size() > 0;
-    }
-
-    /**
-     * Create a new folder for a remote server in recursive mode
-     * 
-     * @param serverProtocol
-     * @param serverUser
-     * @param serverHost
-     * @param serverPWD
-     * @param serverPort
-     * @param path
-     * @param fileName
-     * @param connectMode
-     * @param timeout
-     * @return true if create or false otherwise
-     * @throws IOException
-     * @throws FTPException
-     * @throws ParseException
-     */
-    public static boolean forceMkdir(RemoteBrowserProtocol protocol, String serverUser,
-            String serverHost, String serverPWD, int serverPort, String path,
-            String relativeFolder, FTPConnectMode connectMode, int timeout) throws IOException,
-            FTPException, ParseException {
-
-        String currentPath = path;
-
-        for (String subFolder : relativeFolder.split(SEPARATOR)) {
-            if (!RemoteBrowserUtils.checkIfExists(protocol, serverUser, serverHost, serverPWD,
-                    serverPort, currentPath, subFolder, connectMode, timeout)) {
-                RemoteBrowserUtils.mkdir(protocol, serverUser, serverHost, serverPWD, serverPort,
-                        currentPath, subFolder, connectMode, timeout);
-            }
-            currentPath += SEPARATOR + subFolder;
-        }
-
-        return RemoteBrowserUtils.checkIfExists(protocol, serverUser, serverHost, serverPWD,
-                serverPort, path, relativeFolder, connectMode, timeout);
-    }
-
-    /**
-     * Create a new folder for a remote folder
-     * 
-     * @param serverProtocol
-     * @param serverUser
-     * @param serverHost
-     * @param serverPWD
-     * @param serverPort
-     * @param path
-     * @param fileName
-     * @param connectMode
-     * @param timeout
-     * @return true if create or false otherwise
-     * @throws IOException
-     * @throws FTPException
-     * @throws ParseException
-     */
-    public static boolean mkdir(RemoteBrowserProtocol protocol, String serverUser,
-            String serverHost, String serverPWD, int serverPort, String path, String folderName,
-            FTPConnectMode connectMode, int timeout) throws IOException, FTPException,
-            ParseException {
-
-        if (RemoteBrowserProtocol.ftp.equals(protocol)) {
-            return ftpmkdir(serverUser, serverPWD, serverHost, serverPort, path, connectMode,
-                    timeout, folderName);
-        } else {
-            return sftpmkdir(serverUser, serverPWD, serverHost, serverPort, path, connectMode,
-                    timeout, folderName);
-        }
-    }
-
-    /**
      * Create a folder for a remote sftp server
      * 
      * @param serverUser
@@ -719,29 +705,43 @@ public class RemoteBrowserUtils {
     }
 
     /**
-     * Create a folder for a ftp server
+     * Put file on a remote path
      * 
-     * @param serverUser
-     * @param serverPWD
-     * @param serverHost
-     * @param serverPort
-     * @param path
-     * @param connectMode
+     * @param protocol
+     * @param username
+     * @param host
+     * @param password
+     * @param port
+     * @param remotefile absolute path for the remote put
+     * @param localfile to save on remote server
      * @param timeout
-     * @param folderName
-     * @return
      * @throws IOException
-     * @throws FTPException
-     * @throws ParseException
      */
-    private static boolean ftpmkdir(String serverUser, String serverPWD, String serverHost,
-            int serverPort, String path, FTPConnectMode connectMode, int timeout, String folderName)
-            throws IOException, FTPException, ParseException {
-        // just create the folder and check
-        FTPHelperBare.createDirectory(serverHost, path + SEPARATOR + folderName, path + SEPARATOR,
-                serverUser, serverPWD, serverPort, FTPTransferType.BINARY, WriteMode.OVERWRITE,
-                connectMode, timeout);
-        return checkIfExists(RemoteBrowserProtocol.ftp, serverUser, serverHost, serverPWD,
-                serverPort, path, folderName, connectMode, timeout);
+    private static void sftpPutFile(String username, String host, String password, int port,
+            String remotefile, String localfile, int timeout) throws IOException {
+        JSch jsch = new JSch();
+        Session session = null;
+        ChannelSftp sftpChannel = null;
+        try {
+            session = jsch.getSession(username, host, port);
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.setPassword(password);
+            session.setTimeout(timeout);
+            session.connect();
+
+            Channel channel = session.openChannel(RemoteBrowserProtocol.sftp.name());
+            channel.connect();
+            sftpChannel = (ChannelSftp) channel;
+            sftpChannel.put(localfile, remotefile);
+        } catch (Exception e) {
+            throw new IOException("Error putting file", e);
+        } finally {
+            if (sftpChannel != null) {
+                sftpChannel.exit();
+            }
+            if (session != null) {
+                session.disconnect();
+            }
+        }
     }
 }

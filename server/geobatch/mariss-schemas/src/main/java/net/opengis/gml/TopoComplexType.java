@@ -5,24 +5,25 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * This type represents a TP_Complex capable of holding topological primitives.
  * 
- * <p>Java class for TopoComplexType complex type.
+ * <p>
+ * Java class for TopoComplexType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="TopoComplexType">
@@ -44,98 +45,51 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TopoComplexType", propOrder = {
-    "maximalComplex",
-    "superComplex",
-    "subComplex",
-    "topoPrimitiveMember",
-    "topoPrimitiveMembers"
-})
-public class TopoComplexType
-    extends AbstractTopologyType
-{
+@XmlType(name = "TopoComplexType", propOrder = { "maximalComplex", "superComplex", "subComplex",
+        "topoPrimitiveMember", "topoPrimitiveMembers" })
+public class TopoComplexType extends AbstractTopologyType {
 
     @XmlElement(required = true)
     protected TopoComplexMemberType maximalComplex;
+
     protected List<TopoComplexMemberType> superComplex;
+
     protected List<TopoComplexMemberType> subComplex;
+
     protected List<TopoPrimitiveMemberType> topoPrimitiveMember;
+
     protected TopoPrimitiveArrayAssociationType topoPrimitiveMembers;
+
     @XmlAttribute
     protected Boolean isMaximal;
 
     /**
      * Gets the value of the maximalComplex property.
      * 
-     * @return
-     *     possible object is
-     *     {@link TopoComplexMemberType }
-     *     
+     * @return possible object is {@link TopoComplexMemberType }
+     * 
      */
     public TopoComplexMemberType getMaximalComplex() {
         return maximalComplex;
     }
 
     /**
-     * Sets the value of the maximalComplex property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TopoComplexMemberType }
-     *     
-     */
-    public void setMaximalComplex(TopoComplexMemberType value) {
-        this.maximalComplex = value;
-    }
-
-    /**
-     * Gets the value of the superComplex property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the superComplex property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getSuperComplex().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TopoComplexMemberType }
-     * 
-     * 
-     */
-    public List<TopoComplexMemberType> getSuperComplex() {
-        if (superComplex == null) {
-            superComplex = new ArrayList<TopoComplexMemberType>();
-        }
-        return this.superComplex;
-    }
-
-    /**
      * Gets the value of the subComplex property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the subComplex property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the subComplex property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getSubComplex().add(newItem);
+     * getSubComplex().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TopoComplexMemberType }
+     * Objects of the following type(s) are allowed in the list {@link TopoComplexMemberType }
      * 
      * 
      */
@@ -147,24 +101,49 @@ public class TopoComplexType
     }
 
     /**
-     * Gets the value of the topoPrimitiveMember property.
+     * Gets the value of the superComplex property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the topoPrimitiveMember property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the superComplex property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getTopoPrimitiveMember().add(newItem);
+     * getSuperComplex().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link TopoPrimitiveMemberType }
+     * Objects of the following type(s) are allowed in the list {@link TopoComplexMemberType }
+     * 
+     * 
+     */
+    public List<TopoComplexMemberType> getSuperComplex() {
+        if (superComplex == null) {
+            superComplex = new ArrayList<TopoComplexMemberType>();
+        }
+        return this.superComplex;
+    }
+
+    /**
+     * Gets the value of the topoPrimitiveMember property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the topoPrimitiveMember property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
+     * getTopoPrimitiveMember().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list {@link TopoPrimitiveMemberType }
      * 
      * 
      */
@@ -178,34 +157,18 @@ public class TopoComplexType
     /**
      * Gets the value of the topoPrimitiveMembers property.
      * 
-     * @return
-     *     possible object is
-     *     {@link TopoPrimitiveArrayAssociationType }
-     *     
+     * @return possible object is {@link TopoPrimitiveArrayAssociationType }
+     * 
      */
     public TopoPrimitiveArrayAssociationType getTopoPrimitiveMembers() {
         return topoPrimitiveMembers;
     }
 
     /**
-     * Sets the value of the topoPrimitiveMembers property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TopoPrimitiveArrayAssociationType }
-     *     
-     */
-    public void setTopoPrimitiveMembers(TopoPrimitiveArrayAssociationType value) {
-        this.topoPrimitiveMembers = value;
-    }
-
-    /**
      * Gets the value of the isMaximal property.
      * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
+     * @return possible object is {@link Boolean }
+     * 
      */
     public boolean isIsMaximal() {
         if (isMaximal == null) {
@@ -218,13 +181,31 @@ public class TopoComplexType
     /**
      * Sets the value of the isMaximal property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
+     * @param value allowed object is {@link Boolean }
+     * 
      */
     public void setIsMaximal(Boolean value) {
         this.isMaximal = value;
+    }
+
+    /**
+     * Sets the value of the maximalComplex property.
+     * 
+     * @param value allowed object is {@link TopoComplexMemberType }
+     * 
+     */
+    public void setMaximalComplex(TopoComplexMemberType value) {
+        this.maximalComplex = value;
+    }
+
+    /**
+     * Sets the value of the topoPrimitiveMembers property.
+     * 
+     * @param value allowed object is {@link TopoPrimitiveArrayAssociationType }
+     * 
+     */
+    public void setTopoPrimitiveMembers(TopoPrimitiveArrayAssociationType value) {
+        this.topoPrimitiveMembers = value;
     }
 
 }

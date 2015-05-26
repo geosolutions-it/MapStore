@@ -5,22 +5,23 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * A geometry collection must include one or more geometries, referenced through geometryMember elements.
  * 
- * <p>Java class for MultiGeometryType complex type.
+ * <p>
+ * Java class for MultiGeometryType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="MultiGeometryType">
@@ -38,36 +39,30 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MultiGeometryType", propOrder = {
-    "geometryMember",
-    "geometryMembers"
-})
-public class MultiGeometryType
-    extends AbstractGeometricAggregateType
-{
+@XmlType(name = "MultiGeometryType", propOrder = { "geometryMember", "geometryMembers" })
+public class MultiGeometryType extends AbstractGeometricAggregateType {
 
     protected List<GeometryPropertyType> geometryMember;
+
     protected GeometryArrayPropertyType geometryMembers;
 
     /**
      * Gets the value of the geometryMember property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the geometryMember property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the geometryMember property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getGeometryMember().add(newItem);
+     * getGeometryMember().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link GeometryPropertyType }
+     * Objects of the following type(s) are allowed in the list {@link GeometryPropertyType }
      * 
      * 
      */
@@ -81,10 +76,8 @@ public class MultiGeometryType
     /**
      * Gets the value of the geometryMembers property.
      * 
-     * @return
-     *     possible object is
-     *     {@link GeometryArrayPropertyType }
-     *     
+     * @return possible object is {@link GeometryArrayPropertyType }
+     * 
      */
     public GeometryArrayPropertyType getGeometryMembers() {
         return geometryMembers;
@@ -93,10 +86,8 @@ public class MultiGeometryType
     /**
      * Sets the value of the geometryMembers property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link GeometryArrayPropertyType }
-     *     
+     * @param value allowed object is {@link GeometryArrayPropertyType }
+     * 
      */
     public void setGeometryMembers(GeometryArrayPropertyType value) {
         this.geometryMembers = value;

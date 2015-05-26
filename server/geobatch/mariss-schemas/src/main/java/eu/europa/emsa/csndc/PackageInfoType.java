@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Specify the data package attributes
  * 
- * <p>Java class for PackageInfoType complex type.
+ * <p>
+ * Java class for PackageInfoType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="PackageInfoType">
@@ -59,116 +59,99 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PackageInfoType", propOrder = {
-    "packageId",
-    "packageType",
-    "operationType",
-    "dataPackageDescription"
-})
+@XmlType(name = "PackageInfoType", propOrder = { "packageId", "packageType", "operationType",
+        "dataPackageDescription" })
 public class PackageInfoType {
 
     @XmlElement(required = true)
     protected String packageId;
+
     @XmlElement(required = true)
     protected String packageType;
+
     @XmlElement(required = true)
     protected String operationType;
+
     protected String dataPackageDescription;
-
-    /**
-     * Gets the value of the packageId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPackageId() {
-        return packageId;
-    }
-
-    /**
-     * Sets the value of the packageId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPackageId(String value) {
-        this.packageId = value;
-    }
-
-    /**
-     * Gets the value of the packageType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPackageType() {
-        return packageType;
-    }
-
-    /**
-     * Sets the value of the packageType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPackageType(String value) {
-        this.packageType = value;
-    }
-
-    /**
-     * Gets the value of the operationType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getOperationType() {
-        return operationType;
-    }
-
-    /**
-     * Sets the value of the operationType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setOperationType(String value) {
-        this.operationType = value;
-    }
 
     /**
      * Gets the value of the dataPackageDescription property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getDataPackageDescription() {
         return dataPackageDescription;
     }
 
     /**
+     * Gets the value of the operationType property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getOperationType() {
+        return operationType;
+    }
+
+    /**
+     * Gets the value of the packageId property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getPackageId() {
+        return packageId;
+    }
+
+    /**
+     * Gets the value of the packageType property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getPackageType() {
+        return packageType;
+    }
+
+    /**
      * Sets the value of the dataPackageDescription property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setDataPackageDescription(String value) {
         this.dataPackageDescription = value;
+    }
+
+    /**
+     * Sets the value of the operationType property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setOperationType(String value) {
+        this.operationType = value;
+    }
+
+    /**
+     * Sets the value of the packageId property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setPackageId(String value) {
+        this.packageId = value;
+    }
+
+    /**
+     * Sets the value of the packageType property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setPackageType(String value) {
+        this.packageType = value;
     }
 
 }

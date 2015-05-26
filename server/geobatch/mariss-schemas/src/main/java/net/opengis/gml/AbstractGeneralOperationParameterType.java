@@ -5,23 +5,24 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.math.BigInteger;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Abstract definition of a parameter or group of parameters used by an operation method. 
+ * Abstract definition of a parameter or group of parameters used by an operation method.
  * 
- * <p>Java class for AbstractGeneralOperationParameterType complex type.
+ * <p>
+ * Java class for AbstractGeneralOperationParameterType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AbstractGeneralOperationParameterType">
@@ -38,16 +39,9 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AbstractGeneralOperationParameterType", propOrder = {
-    "minimumOccurs"
-})
-@XmlSeeAlso({
-    OperationParameterGroupBaseType.class,
-    OperationParameterBaseType.class
-})
-public abstract class AbstractGeneralOperationParameterType
-    extends DefinitionType
-{
+@XmlType(name = "AbstractGeneralOperationParameterType", propOrder = { "minimumOccurs" })
+@XmlSeeAlso({ OperationParameterGroupBaseType.class, OperationParameterBaseType.class })
+public abstract class AbstractGeneralOperationParameterType extends DefinitionType {
 
     @XmlSchemaType(name = "nonNegativeInteger")
     protected BigInteger minimumOccurs;
@@ -55,10 +49,8 @@ public abstract class AbstractGeneralOperationParameterType
     /**
      * Gets the value of the minimumOccurs property.
      * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     * @return possible object is {@link BigInteger }
+     * 
      */
     public BigInteger getMinimumOccurs() {
         return minimumOccurs;
@@ -67,10 +59,8 @@ public abstract class AbstractGeneralOperationParameterType
     /**
      * Sets the value of the minimumOccurs property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     * @param value allowed object is {@link BigInteger }
+     * 
      */
     public void setMinimumOccurs(BigInteger value) {
         this.minimumOccurs = value;

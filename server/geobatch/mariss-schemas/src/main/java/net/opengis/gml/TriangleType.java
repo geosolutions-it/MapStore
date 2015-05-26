@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.JAXBElement;
@@ -15,13 +14,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Represents a triangle as a surface with an outer boundary consisting of a linear ring. Note that this is a polygon (subtype) with no inner boundaries. The number of points in the linear ring must be four.
+ * Represents a triangle as a surface with an outer boundary consisting of a linear ring. Note that this is a polygon (subtype) with no inner
+ * boundaries. The number of points in the linear ring must be four.
  * 
- * <p>Java class for TriangleType complex type.
+ * <p>
+ * Java class for TriangleType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="TriangleType">
@@ -39,51 +40,31 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TriangleType", propOrder = {
-    "exterior"
-})
-public class TriangleType
-    extends AbstractSurfacePatchType
-{
+@XmlType(name = "TriangleType", propOrder = { "exterior" })
+public class TriangleType extends AbstractSurfacePatchType {
 
     @XmlElementRef(name = "exterior", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
     protected JAXBElement<AbstractRingPropertyType> exterior;
+
     @XmlAttribute
     protected SurfaceInterpolationType interpolation;
 
     /**
      * Constraint: The Ring shall be a LinearRing and must form a triangle, the first and the last position must be co-incident.
      * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link AbstractRingPropertyType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractRingPropertyType }{@code >}
-     *     
+     * @return possible object is {@link JAXBElement }{@code <}{@link AbstractRingPropertyType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link AbstractRingPropertyType }{@code >}
+     * 
      */
     public JAXBElement<AbstractRingPropertyType> getExterior() {
         return exterior;
     }
 
     /**
-     * Sets the value of the exterior property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link JAXBElement }{@code <}{@link AbstractRingPropertyType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractRingPropertyType }{@code >}
-     *     
-     */
-    public void setExterior(JAXBElement<AbstractRingPropertyType> value) {
-        this.exterior = ((JAXBElement<AbstractRingPropertyType> ) value);
-    }
-
-    /**
      * Gets the value of the interpolation property.
      * 
-     * @return
-     *     possible object is
-     *     {@link SurfaceInterpolationType }
-     *     
+     * @return possible object is {@link SurfaceInterpolationType }
+     * 
      */
     public SurfaceInterpolationType getInterpolation() {
         if (interpolation == null) {
@@ -94,12 +75,21 @@ public class TriangleType
     }
 
     /**
+     * Sets the value of the exterior property.
+     * 
+     * @param value allowed object is {@link JAXBElement }{@code <}{@link AbstractRingPropertyType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link AbstractRingPropertyType }{@code >}
+     * 
+     */
+    public void setExterior(JAXBElement<AbstractRingPropertyType> value) {
+        this.exterior = ((JAXBElement<AbstractRingPropertyType>) value);
+    }
+
+    /**
      * Sets the value of the interpolation property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link SurfaceInterpolationType }
-     *     
+     * @param value allowed object is {@link SurfaceInterpolationType }
+     * 
      */
     public void setInterpolation(SurfaceInterpolationType value) {
         this.interpolation = value;

@@ -5,24 +5,25 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * This type supports embedding an array of topological primitives in a TopoComplex
  * 
- * <p>Java class for TopoPrimitiveArrayAssociationType complex type.
+ * <p>
+ * Java class for TopoPrimitiveArrayAssociationType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="TopoPrimitiveArrayAssociationType">
@@ -41,9 +42,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TopoPrimitiveArrayAssociationType", propOrder = {
-    "topoPrimitive"
-})
+@XmlType(name = "TopoPrimitiveArrayAssociationType", propOrder = { "topoPrimitive" })
 public class TopoPrimitiveArrayAssociationType {
 
     @XmlElementRef(name = "_TopoPrimitive", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
@@ -53,24 +52,20 @@ public class TopoPrimitiveArrayAssociationType {
      * Gets the value of the topoPrimitive property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the topoPrimitive property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the topoPrimitive property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getTopoPrimitive().add(newItem);
+     * getTopoPrimitive().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link NodeType }{@code >}
-     * {@link JAXBElement }{@code <}{@link FaceType }{@code >}
-     * {@link JAXBElement }{@code <}{@link EdgeType }{@code >}
-     * {@link JAXBElement }{@code <}{@link TopoSolidType }{@code >}
+     * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link NodeType }{@code >} {@link JAXBElement }{@code <}
+     * {@link FaceType }{@code >} {@link JAXBElement }{@code <}{@link EdgeType }{@code >} {@link JAXBElement }{@code <}{@link TopoSolidType }{@code >}
      * {@link JAXBElement }{@code <}{@link AbstractTopoPrimitiveType }{@code >}
      * 
      * 

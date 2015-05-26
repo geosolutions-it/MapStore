@@ -5,19 +5,20 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for SensorType.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
+ * Java class for SensorType.
+ * 
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * 
  * <pre>
  * &lt;simpleType name="SensorType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -33,10 +34,17 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum SensorType {
 
-    SAR("SAR"),
-    @XmlEnumValue("VIS-IR")
-    VIS_IR("VIS-IR"),
-    OTHER("OTHER");
+    SAR("SAR"), @XmlEnumValue("VIS-IR")
+    VIS_IR("VIS-IR"), OTHER("OTHER");
+    public static SensorType fromValue(String v) {
+        for (SensorType c : SensorType.values()) {
+            if (c.value.equals(v)) {
+                return c;
+            }
+        }
+        throw new IllegalArgumentException(v);
+    }
+
     private final String value;
 
     SensorType(String v) {
@@ -45,15 +53,6 @@ public enum SensorType {
 
     public String value() {
         return value;
-    }
-
-    public static SensorType fromValue(String v) {
-        for (SensorType c: SensorType.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
     }
 
 }

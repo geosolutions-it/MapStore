@@ -5,11 +5,11 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -22,15 +22,15 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 /**
- * All complexContent GML elements are directly or indirectly derived from this abstract supertype 
- * 	to establish a hierarchy of GML types that may be distinguished from other XML types by their ancestry. 
- * 	Elements in this hierarchy may have an ID and are thus referenceable.
+ * All complexContent GML elements are directly or indirectly derived from this abstract supertype to establish a hierarchy of GML types that may be
+ * distinguished from other XML types by their ancestry. Elements in this hierarchy may have an ID and are thus referenceable.
  * 
- * <p>Java class for AbstractGMLType complex type.
+ * <p>
+ * Java class for AbstractGMLType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AbstractGMLType">
@@ -48,31 +48,20 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AbstractGMLType", propOrder = {
-    "metaDataProperty",
-    "description",
-    "name"
-})
-@XmlSeeAlso({
-    FeatureStyleType.class,
-    BagType.class,
-    ArrayType.class,
-    AbstractTimeSliceType.class,
-    AbstractTimeObjectType.class,
-    CompositeValueType.class,
-    AbstractStyleType.class,
-    AbstractGeometryType.class,
-    AbstractTopologyType.class,
-    BaseStyleDescriptorType.class,
-    AbstractFeatureType.class,
-    DefinitionType.class
-})
+@XmlType(name = "AbstractGMLType", propOrder = { "metaDataProperty", "description", "name" })
+@XmlSeeAlso({ FeatureStyleType.class, BagType.class, ArrayType.class, AbstractTimeSliceType.class,
+        AbstractTimeObjectType.class, CompositeValueType.class, AbstractStyleType.class,
+        AbstractGeometryType.class, AbstractTopologyType.class, BaseStyleDescriptorType.class,
+        AbstractFeatureType.class, DefinitionType.class })
 public abstract class AbstractGMLType {
 
     protected List<MetaDataPropertyType> metaDataProperty;
+
     protected StringOrRefType description;
+
     @XmlElementRef(name = "name", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
     protected List<JAXBElement<CodeType>> name;
+
     @XmlAttribute(namespace = "http://www.opengis.net/gml")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
@@ -80,24 +69,42 @@ public abstract class AbstractGMLType {
     protected String id;
 
     /**
+     * Gets the value of the description property.
+     * 
+     * @return possible object is {@link StringOrRefType }
+     * 
+     */
+    public StringOrRefType getDescription() {
+        return description;
+    }
+
+    /**
+     * Gets the value of the id property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
      * Gets the value of the metaDataProperty property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the metaDataProperty property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the metaDataProperty property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getMetaDataProperty().add(newItem);
+     * getMetaDataProperty().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link MetaDataPropertyType }
+     * Objects of the following type(s) are allowed in the list {@link MetaDataPropertyType }
      * 
      * 
      */
@@ -109,56 +116,26 @@ public abstract class AbstractGMLType {
     }
 
     /**
-     * Gets the value of the description property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link StringOrRefType }
-     *     
-     */
-    public StringOrRefType getDescription() {
-        return description;
-    }
-
-    /**
-     * Sets the value of the description property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link StringOrRefType }
-     *     
-     */
-    public void setDescription(StringOrRefType value) {
-        this.description = value;
-    }
-
-    /**
-     * Multiple names may be provided.  These will often be distinguished by being assigned by different authorities, as indicated by the value of the codeSpace attribute.  In an instance document there will usually only be one name per authority.Gets the value of the name property.
+     * Multiple names may be provided. These will often be distinguished by being assigned by different authorities, as indicated by the value of the
+     * codeSpace attribute. In an instance document there will usually only be one name per authority.Gets the value of the name property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the name property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the name property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getName().add(newItem);
+     * getName().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link CodeType }{@code >}
-     * {@link JAXBElement }{@code <}{@link CodeType }{@code >}
-     * {@link JAXBElement }{@code <}{@link CodeType }{@code >}
-     * {@link JAXBElement }{@code <}{@link CodeType }{@code >}
-     * {@link JAXBElement }{@code <}{@link CodeType }{@code >}
-     * {@link JAXBElement }{@code <}{@link CodeType }{@code >}
-     * {@link JAXBElement }{@code <}{@link CodeType }{@code >}
-     * {@link JAXBElement }{@code <}{@link CodeType }{@code >}
-     * {@link JAXBElement }{@code <}{@link CodeType }{@code >}
+     * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}
+     * {@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >}
+     * {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}
+     * {@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >}
      * {@link JAXBElement }{@code <}{@link CodeType }{@code >}
      * 
      * 
@@ -171,24 +148,20 @@ public abstract class AbstractGMLType {
     }
 
     /**
-     * Gets the value of the id property.
+     * Sets the value of the description property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link StringOrRefType }
+     * 
      */
-    public String getId() {
-        return id;
+    public void setDescription(StringOrRefType value) {
+        this.description = value;
     }
 
     /**
      * Sets the value of the id property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setId(String value) {
         this.id = value;

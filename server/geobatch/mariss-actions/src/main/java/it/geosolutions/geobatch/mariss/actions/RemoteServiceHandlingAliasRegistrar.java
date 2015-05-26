@@ -21,14 +21,12 @@ import it.geosolutions.geobatch.registry.AliasRegistry;
 
 /**
  * @author Alessio
- *
+ * 
  */
 public class RemoteServiceHandlingAliasRegistrar extends AliasRegistrar {
 
     public RemoteServiceHandlingAliasRegistrar(AliasRegistry registry) {
         LOGGER.info(getClass().getSimpleName() + ": registering alias.");
-        
-        
-        
+
     }
 }

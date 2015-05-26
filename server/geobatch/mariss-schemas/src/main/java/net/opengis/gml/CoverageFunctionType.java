@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.JAXBElement;
@@ -15,14 +14,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * The function or rule which defines the map from members of the domainSet to the range.  
- *       More functions will be added to this list
+ * The function or rule which defines the map from members of the domainSet to the range. More functions will be added to this list
  * 
- * <p>Java class for CoverageFunctionType complex type.
+ * <p>
+ * Java class for CoverageFunctionType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="CoverageFunctionType">
@@ -40,65 +39,55 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CoverageFunctionType", propOrder = {
-    "mappingRule",
-    "gridFunction"
-})
+@XmlType(name = "CoverageFunctionType", propOrder = { "mappingRule", "gridFunction" })
 public class CoverageFunctionType {
 
     @XmlElement(name = "MappingRule")
     protected StringOrRefType mappingRule;
+
     @XmlElementRef(name = "GridFunction", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
     protected JAXBElement<? extends GridFunctionType> gridFunction;
 
     /**
-     * Gets the value of the mappingRule property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link StringOrRefType }
-     *     
-     */
-    public StringOrRefType getMappingRule() {
-        return mappingRule;
-    }
-
-    /**
-     * Sets the value of the mappingRule property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link StringOrRefType }
-     *     
-     */
-    public void setMappingRule(StringOrRefType value) {
-        this.mappingRule = value;
-    }
-
-    /**
      * Gets the value of the gridFunction property.
      * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link IndexMapType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link GridFunctionType }{@code >}
-     *     
+     * @return possible object is {@link JAXBElement }{@code <}{@link IndexMapType }{@code >} {@link JAXBElement }{@code <}{@link GridFunctionType }
+     *         {@code >}
+     * 
      */
     public JAXBElement<? extends GridFunctionType> getGridFunction() {
         return gridFunction;
     }
 
     /**
+     * Gets the value of the mappingRule property.
+     * 
+     * @return possible object is {@link StringOrRefType }
+     * 
+     */
+    public StringOrRefType getMappingRule() {
+        return mappingRule;
+    }
+
+    /**
      * Sets the value of the gridFunction property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link JAXBElement }{@code <}{@link IndexMapType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link GridFunctionType }{@code >}
-     *     
+     * @param value allowed object is {@link JAXBElement }{@code <}{@link IndexMapType }{@code >} {@link JAXBElement }{@code <}{@link GridFunctionType }
+     *        {@code >}
+     * 
      */
     public void setGridFunction(JAXBElement<? extends GridFunctionType> value) {
-        this.gridFunction = ((JAXBElement<? extends GridFunctionType> ) value);
+        this.gridFunction = ((JAXBElement<? extends GridFunctionType>) value);
+    }
+
+    /**
+     * Sets the value of the mappingRule property.
+     * 
+     * @param value allowed object is {@link StringOrRefType }
+     * 
+     */
+    public void setMappingRule(StringOrRefType value) {
+        this.mappingRule = value;
     }
 
 }

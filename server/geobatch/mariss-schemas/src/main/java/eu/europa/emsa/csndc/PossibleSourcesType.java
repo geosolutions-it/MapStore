@@ -5,22 +5,23 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Source of the observed spill
  * 
- * <p>Java class for PossibleSourcesType complex type.
+ * <p>
+ * Java class for PossibleSourcesType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="PossibleSourcesType">
@@ -38,58 +39,30 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PossibleSourcesType", propOrder = {
-    "vesselConnected",
-    "identifier"
-})
+@XmlType(name = "PossibleSourcesType", propOrder = { "vesselConnected", "identifier" })
 public class PossibleSourcesType {
 
     protected Boolean vesselConnected;
+
     protected List<String> identifier;
-
-    /**
-     * Gets the value of the vesselConnected property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    public Boolean isVesselConnected() {
-        return vesselConnected;
-    }
-
-    /**
-     * Sets the value of the vesselConnected property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    public void setVesselConnected(Boolean value) {
-        this.vesselConnected = value;
-    }
 
     /**
      * Gets the value of the identifier property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the identifier property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the identifier property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getIdentifier().add(newItem);
+     * getIdentifier().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * Objects of the following type(s) are allowed in the list {@link String }
      * 
      * 
      */
@@ -98,6 +71,26 @@ public class PossibleSourcesType {
             identifier = new ArrayList<String>();
         }
         return this.identifier;
+    }
+
+    /**
+     * Gets the value of the vesselConnected property.
+     * 
+     * @return possible object is {@link Boolean }
+     * 
+     */
+    public Boolean isVesselConnected() {
+        return vesselConnected;
+    }
+
+    /**
+     * Sets the value of the vesselConnected property.
+     * 
+     * @param value allowed object is {@link Boolean }
+     * 
+     */
+    public void setVesselConnected(Boolean value) {
+        this.vesselConnected = value;
     }
 
 }

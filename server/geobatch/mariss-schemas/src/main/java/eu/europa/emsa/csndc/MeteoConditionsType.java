@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for MeteoConditionsType complex type.
+ * <p>
+ * Java class for MeteoConditionsType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="MeteoConditionsType">
@@ -36,85 +36,71 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MeteoConditionsType", propOrder = {
-    "meteoWind",
-    "sarWind",
-    "sea"
-})
+@XmlType(name = "MeteoConditionsType", propOrder = { "meteoWind", "sarWind", "sea" })
 public class MeteoConditionsType {
 
     protected WindConditionType meteoWind;
+
     @XmlElement(name = "SARWind")
     protected WindConditionType sarWind;
+
     protected SeaConditionType sea;
 
     /**
      * Gets the value of the meteoWind property.
      * 
-     * @return
-     *     possible object is
-     *     {@link WindConditionType }
-     *     
+     * @return possible object is {@link WindConditionType }
+     * 
      */
     public WindConditionType getMeteoWind() {
         return meteoWind;
     }
 
     /**
-     * Sets the value of the meteoWind property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link WindConditionType }
-     *     
-     */
-    public void setMeteoWind(WindConditionType value) {
-        this.meteoWind = value;
-    }
-
-    /**
      * Gets the value of the sarWind property.
      * 
-     * @return
-     *     possible object is
-     *     {@link WindConditionType }
-     *     
+     * @return possible object is {@link WindConditionType }
+     * 
      */
     public WindConditionType getSARWind() {
         return sarWind;
     }
 
     /**
-     * Sets the value of the sarWind property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link WindConditionType }
-     *     
-     */
-    public void setSARWind(WindConditionType value) {
-        this.sarWind = value;
-    }
-
-    /**
      * Gets the value of the sea property.
      * 
-     * @return
-     *     possible object is
-     *     {@link SeaConditionType }
-     *     
+     * @return possible object is {@link SeaConditionType }
+     * 
      */
     public SeaConditionType getSea() {
         return sea;
     }
 
     /**
+     * Sets the value of the meteoWind property.
+     * 
+     * @param value allowed object is {@link WindConditionType }
+     * 
+     */
+    public void setMeteoWind(WindConditionType value) {
+        this.meteoWind = value;
+    }
+
+    /**
+     * Sets the value of the sarWind property.
+     * 
+     * @param value allowed object is {@link WindConditionType }
+     * 
+     */
+    public void setSARWind(WindConditionType value) {
+        this.sarWind = value;
+    }
+
+    /**
      * Sets the value of the sea property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link SeaConditionType }
-     *     
+     * @param value allowed object is {@link SeaConditionType }
+     * 
      */
     public void setSea(SeaConditionType value) {
         this.sea = value;

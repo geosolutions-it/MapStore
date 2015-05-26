@@ -7,3 +7,4 @@
 
 @javax.xml.bind.annotation.XmlSchema(namespace = "http://www.emsa.europa.eu/csndc", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package eu.europa.emsa.csndc;
+

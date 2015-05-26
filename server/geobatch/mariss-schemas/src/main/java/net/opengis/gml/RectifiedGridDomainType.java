@@ -5,18 +5,18 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for RectifiedGridDomainType complex type.
+ * <p>
+ * Java class for RectifiedGridDomainType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="RectifiedGridDomainType">
@@ -35,9 +35,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RectifiedGridDomainType")
-public class RectifiedGridDomainType
-    extends DomainSetType
-{
-
+public class RectifiedGridDomainType extends DomainSetType {
 
 }

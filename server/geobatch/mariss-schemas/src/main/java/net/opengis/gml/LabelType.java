@@ -5,12 +5,12 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,13 +19,14 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Label is mixed -- composed of text and XPath expressions used to extract the useful information from the feature.
  * 
- * <p>Java class for LabelType complex type.
+ * <p>
+ * Java class for LabelType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="LabelType">
@@ -43,37 +44,34 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "LabelType", propOrder = {
-    "content"
-})
+@XmlType(name = "LabelType", propOrder = { "content" })
 public class LabelType {
 
     @XmlElementRef(name = "LabelExpression", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
     @XmlMixed
     protected List<Serializable> content;
+
     @XmlAttribute(namespace = "http://www.opengis.net/gml")
     protected String transform;
 
     /**
-     * Label is mixed -- composed of text and XPath expressions used to extract the useful information from the feature.Gets the value of the content property.
+     * Label is mixed -- composed of text and XPath expressions used to extract the useful information from the feature.Gets the value of the content
+     * property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the content property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the content property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getContent().add(newItem);
+     * getContent().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link String }{@code >}
-     * {@link String }
+     * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link String }{@code >} {@link String }
      * 
      * 
      */
@@ -87,10 +85,8 @@ public class LabelType {
     /**
      * Gets the value of the transform property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getTransform() {
         return transform;
@@ -99,10 +95,8 @@ public class LabelType {
     /**
      * Sets the value of the transform property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setTransform(String value) {
         this.transform = value;

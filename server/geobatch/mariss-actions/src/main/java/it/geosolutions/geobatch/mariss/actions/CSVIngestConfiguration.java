@@ -21,87 +21,78 @@
  */
 package it.geosolutions.geobatch.mariss.actions;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
 import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
 import it.geosolutions.geobatch.mariss.ingestion.csv.configuration.CSVProcessorConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  */
-public class CSVIngestConfiguration extends Ds2dsConfiguration {	
-	
-	private String csvSeparator = ",";
-	
-	/**
-	 * Processor configurations
-	 */
-	private List<CSVProcessorConfiguration> proccesorsConfiguration = new ArrayList<CSVProcessorConfiguration>();
+public class CSVIngestConfiguration extends Ds2dsConfiguration {
 
-	/**
-	 * Time format configuration for the ingestion
-	 */
-	private TimeFormatConfiguration timeFormatConfiguration;
+    private String csvSeparator = ",";
 
-	public CSVIngestConfiguration(String id, String name, String description) {
-		super(id, name, description);
-	}
-	
+    /**
+     * Processor configurations
+     */
+    private List<CSVProcessorConfiguration> proccesorsConfiguration = new ArrayList<CSVProcessorConfiguration>();
+
+    /**
+     * Time format configuration for the ingestion
+     */
+    private TimeFormatConfiguration timeFormatConfiguration;
+
+    public CSVIngestConfiguration(String id, String name, String description) {
+        super(id, name, description);
+    }
 
     @Override
     public CSVIngestConfiguration clone() {
         final CSVIngestConfiguration configuration = (CSVIngestConfiguration) super.clone();
         return configuration;
     }
-	
-	/**
-	 * @return the csvSeparator
-	 */
-	public String getCsvSeparator() {
-		return csvSeparator;
-	}
 
+    /**
+     * @return the csvSeparator
+     */
+    public String getCsvSeparator() {
+        return csvSeparator;
+    }
 
-	/**
-	 * @param csvSeparator the csvSeparator to set
-	 */
-	public void setCsvSeparator(String csvSeparator) {
-		this.csvSeparator = csvSeparator;
-	}
+    /**
+     * @return the proccesorsConfiguration
+     */
+    public List<CSVProcessorConfiguration> getProccesorsConfiguration() {
+        return proccesorsConfiguration;
+    }
 
+    /**
+     * @return the timeFormatConfiguration
+     */
+    public TimeFormatConfiguration getTimeFormatConfiguration() {
+        return timeFormatConfiguration;
+    }
 
-	/**
-	 * @return the proccesorsConfiguration
-	 */
-	public List<CSVProcessorConfiguration> getProccesorsConfiguration() {
-		return proccesorsConfiguration;
-	}
+    /**
+     * @param csvSeparator the csvSeparator to set
+     */
+    public void setCsvSeparator(String csvSeparator) {
+        this.csvSeparator = csvSeparator;
+    }
 
+    /**
+     * @param proccesorsConfiguration the proccesorsConfiguration to set
+     */
+    public void setProccesorsConfiguration(List<CSVProcessorConfiguration> proccesorsConfiguration) {
+        this.proccesorsConfiguration = proccesorsConfiguration;
+    }
 
-	/**
-	 * @param proccesorsConfiguration the proccesorsConfiguration to set
-	 */
-	public void setProccesorsConfiguration(
-			List<CSVProcessorConfiguration> proccesorsConfiguration) {
-		this.proccesorsConfiguration = proccesorsConfiguration;
-	}
-
-
-	/**
-	 * @return the timeFormatConfiguration
-	 */
-	public TimeFormatConfiguration getTimeFormatConfiguration() {
-		return timeFormatConfiguration;
-	}
-
-
-	/**
-	 * @param timeFormatConfiguration the timeFormatConfiguration to set
-	 */
-	public void setTimeFormatConfiguration(
-			TimeFormatConfiguration timeFormatConfiguration) {
-		this.timeFormatConfiguration = timeFormatConfiguration;
-	}
+    /**
+     * @param timeFormatConfiguration the timeFormatConfiguration to set
+     */
+    public void setTimeFormatConfiguration(TimeFormatConfiguration timeFormatConfiguration) {
+        this.timeFormatConfiguration = timeFormatConfiguration;
+    }
 }

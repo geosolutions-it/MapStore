@@ -5,23 +5,24 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * A rectified grid has an origin and vectors that define its post locations.
  * 
- * <p>Java class for RectifiedGridType complex type.
+ * <p>
+ * Java class for RectifiedGridType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="RectifiedGridType">
@@ -39,62 +40,32 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RectifiedGridType", propOrder = {
-    "origin",
-    "offsetVector"
-})
-public class RectifiedGridType
-    extends GridType
-{
+@XmlType(name = "RectifiedGridType", propOrder = { "origin", "offsetVector" })
+public class RectifiedGridType extends GridType {
 
     @XmlElement(required = true)
     protected PointPropertyType origin;
+
     @XmlElement(required = true)
     protected List<VectorType> offsetVector;
-
-    /**
-     * Gets the value of the origin property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link PointPropertyType }
-     *     
-     */
-    public PointPropertyType getOrigin() {
-        return origin;
-    }
-
-    /**
-     * Sets the value of the origin property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PointPropertyType }
-     *     
-     */
-    public void setOrigin(PointPropertyType value) {
-        this.origin = value;
-    }
 
     /**
      * Gets the value of the offsetVector property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the offsetVector property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the offsetVector property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getOffsetVector().add(newItem);
+     * getOffsetVector().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link VectorType }
+     * Objects of the following type(s) are allowed in the list {@link VectorType }
      * 
      * 
      */
@@ -103,6 +74,26 @@ public class RectifiedGridType
             offsetVector = new ArrayList<VectorType>();
         }
         return this.offsetVector;
+    }
+
+    /**
+     * Gets the value of the origin property.
+     * 
+     * @return possible object is {@link PointPropertyType }
+     * 
+     */
+    public PointPropertyType getOrigin() {
+        return origin;
+    }
+
+    /**
+     * Sets the value of the origin property.
+     * 
+     * @param value allowed object is {@link PointPropertyType }
+     * 
+     */
+    public void setOrigin(PointPropertyType value) {
+        this.origin = value;
     }
 
 }

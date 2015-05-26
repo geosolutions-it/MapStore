@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.JAXBElement;
@@ -15,19 +14,22 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import eu.europa.emsa.csndc.OilSpillType;
-import eu.europa.emsa.csndc.ShipType;
+
 import org.w3._1999.xlink.ActuateType;
 import org.w3._1999.xlink.ShowType;
 import org.w3._1999.xlink.TypeType;
 
+import eu.europa.emsa.csndc.OilSpillType;
+import eu.europa.emsa.csndc.ShipType;
 
 /**
  * Container for a feature - follow gml:AssociationType pattern.
  * 
- * <p>Java class for FeaturePropertyType complex type.
+ * <p>
+ * Java class for FeaturePropertyType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="FeaturePropertyType">
@@ -45,118 +47,131 @@ import org.w3._1999.xlink.TypeType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FeaturePropertyType", propOrder = {
-    "feature"
-})
+@XmlType(name = "FeaturePropertyType", propOrder = { "feature" })
 public class FeaturePropertyType {
 
     @XmlElementRef(name = "_Feature", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
     protected JAXBElement<? extends AbstractFeatureType> feature;
+
     @XmlAttribute(namespace = "http://www.opengis.net/gml")
     @XmlSchemaType(name = "anyURI")
     protected String remoteSchema;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected TypeType type;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String href;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String role;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String arcrole;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected String title;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected ShowType show;
+
     @XmlAttribute(namespace = "http://www.w3.org/1999/xlink")
     protected ActuateType actuate;
 
     /**
+     * Gets the value of the actuate property.
+     * 
+     * @return possible object is {@link ActuateType }
+     * 
+     */
+    public ActuateType getActuate() {
+        return actuate;
+    }
+
+    /**
+     * Gets the value of the arcrole property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getArcrole() {
+        return arcrole;
+    }
+
+    /**
      * Gets the value of the feature property.
      * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link RectifiedGridCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractDiscreteCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractFeatureType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link MultiPointCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link MultiCurveCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DirectedObservationAtDistanceType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DirectedObservationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link ObservationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link MultiSurfaceCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link MultiSolidCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractFeatureCollectionType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link ShipType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractContinuousCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link FeatureCollectionType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link GridCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link OilSpillType }{@code >}
-     *     
+     * @return possible object is {@link JAXBElement }{@code <}{@link RectifiedGridCoverageType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link AbstractDiscreteCoverageType }{@code >} {@link JAXBElement }{@code <}{@link AbstractFeatureType }{@code >} {@link JAXBElement }
+     *         {@code <}{@link MultiPointCoverageType }{@code >} {@link JAXBElement }{@code <}{@link MultiCurveCoverageType }{@code >}
+     *         {@link JAXBElement }{@code <}{@link DirectedObservationAtDistanceType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link DirectedObservationType }{@code >} {@link JAXBElement }{@code <}{@link ObservationType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link MultiSurfaceCoverageType }{@code >} {@link JAXBElement }{@code <}{@link AbstractCoverageType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link MultiSolidCoverageType }{@code >} {@link JAXBElement }{@code <}{@link AbstractFeatureCollectionType }{@code >} {@link JAXBElement }
+     *         {@code <}{@link ShipType }{@code >} {@link JAXBElement }{@code <}{@link AbstractContinuousCoverageType }{@code >} {@link JAXBElement }
+     *         {@code <}{@link FeatureCollectionType }{@code >} {@link JAXBElement }{@code <}{@link GridCoverageType }{@code >} {@link JAXBElement }
+     *         {@code <}{@link OilSpillType }{@code >}
+     * 
      */
     public JAXBElement<? extends AbstractFeatureType> getFeature() {
         return feature;
     }
 
     /**
-     * Sets the value of the feature property.
+     * Gets the value of the href property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link JAXBElement }{@code <}{@link RectifiedGridCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractDiscreteCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractFeatureType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link MultiPointCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link MultiCurveCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DirectedObservationAtDistanceType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DirectedObservationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link ObservationType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link MultiSurfaceCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link MultiSolidCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractFeatureCollectionType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link ShipType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link AbstractContinuousCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link FeatureCollectionType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link GridCoverageType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link OilSpillType }{@code >}
-     *     
+     * @return possible object is {@link String }
+     * 
      */
-    public void setFeature(JAXBElement<? extends AbstractFeatureType> value) {
-        this.feature = ((JAXBElement<? extends AbstractFeatureType> ) value);
+    public String getHref() {
+        return href;
     }
 
     /**
      * Gets the value of the remoteSchema property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getRemoteSchema() {
         return remoteSchema;
     }
 
     /**
-     * Sets the value of the remoteSchema property.
+     * Gets the value of the role property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
-    public void setRemoteSchema(String value) {
-        this.remoteSchema = value;
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * Gets the value of the show property.
+     * 
+     * @return possible object is {@link ShowType }
+     * 
+     */
+    public ShowType getShow() {
+        return show;
+    }
+
+    /**
+     * Gets the value of the title property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getTitle() {
+        return title;
     }
 
     /**
      * Gets the value of the type property.
      * 
-     * @return
-     *     possible object is
-     *     {@link TypeType }
-     *     
+     * @return possible object is {@link TypeType }
+     * 
      */
     public TypeType getType() {
         if (type == null) {
@@ -167,159 +182,101 @@ public class FeaturePropertyType {
     }
 
     /**
-     * Sets the value of the type property.
+     * Sets the value of the actuate property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link TypeType }
-     *     
-     */
-    public void setType(TypeType value) {
-        this.type = value;
-    }
-
-    /**
-     * Gets the value of the href property.
+     * @param value allowed object is {@link ActuateType }
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
      */
-    public String getHref() {
-        return href;
-    }
-
-    /**
-     * Sets the value of the href property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setHref(String value) {
-        this.href = value;
-    }
-
-    /**
-     * Gets the value of the role property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getRole() {
-        return role;
-    }
-
-    /**
-     * Sets the value of the role property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setRole(String value) {
-        this.role = value;
-    }
-
-    /**
-     * Gets the value of the arcrole property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getArcrole() {
-        return arcrole;
+    public void setActuate(ActuateType value) {
+        this.actuate = value;
     }
 
     /**
      * Sets the value of the arcrole property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setArcrole(String value) {
         this.arcrole = value;
     }
 
     /**
-     * Gets the value of the title property.
+     * Sets the value of the feature property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link JAXBElement }{@code <}{@link RectifiedGridCoverageType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link AbstractDiscreteCoverageType }{@code >} {@link JAXBElement }{@code <}{@link AbstractFeatureType }{@code >} {@link JAXBElement }
+     *        {@code <}{@link MultiPointCoverageType }{@code >} {@link JAXBElement }{@code <}{@link MultiCurveCoverageType }{@code >} {@link JAXBElement }
+     *        {@code <}{@link DirectedObservationAtDistanceType }{@code >} {@link JAXBElement }{@code <}{@link DirectedObservationType }{@code >}
+     *        {@link JAXBElement }{@code <}{@link ObservationType }{@code >} {@link JAXBElement }{@code <}{@link MultiSurfaceCoverageType }{@code >}
+     *        {@link JAXBElement }{@code <}{@link AbstractCoverageType }{@code >} {@link JAXBElement }{@code <}{@link MultiSolidCoverageType }{@code >}
+     *        {@link JAXBElement }{@code <}{@link AbstractFeatureCollectionType }{@code >} {@link JAXBElement }{@code <}{@link ShipType }{@code >}
+     *        {@link JAXBElement }{@code <}{@link AbstractContinuousCoverageType }{@code >} {@link JAXBElement }{@code <}{@link FeatureCollectionType }
+     *        {@code >} {@link JAXBElement }{@code <}{@link GridCoverageType }{@code >} {@link JAXBElement }{@code <}{@link OilSpillType }{@code >}
+     * 
      */
-    public String getTitle() {
-        return title;
+    public void setFeature(JAXBElement<? extends AbstractFeatureType> value) {
+        this.feature = ((JAXBElement<? extends AbstractFeatureType>) value);
     }
 
     /**
-     * Sets the value of the title property.
+     * Sets the value of the href property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public void setTitle(String value) {
-        this.title = value;
+    public void setHref(String value) {
+        this.href = value;
     }
 
     /**
-     * Gets the value of the show property.
+     * Sets the value of the remoteSchema property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ShowType }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public ShowType getShow() {
-        return show;
+    public void setRemoteSchema(String value) {
+        this.remoteSchema = value;
+    }
+
+    /**
+     * Sets the value of the role property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setRole(String value) {
+        this.role = value;
     }
 
     /**
      * Sets the value of the show property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ShowType }
-     *     
+     * @param value allowed object is {@link ShowType }
+     * 
      */
     public void setShow(ShowType value) {
         this.show = value;
     }
 
     /**
-     * Gets the value of the actuate property.
+     * Sets the value of the title property.
      * 
-     * @return
-     *     possible object is
-     *     {@link ActuateType }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
-    public ActuateType getActuate() {
-        return actuate;
+    public void setTitle(String value) {
+        this.title = value;
     }
 
     /**
-     * Sets the value of the actuate property.
+     * Sets the value of the type property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ActuateType }
-     *     
+     * @param value allowed object is {@link TypeType }
+     * 
      */
-    public void setActuate(ActuateType value) {
-        this.actuate = value;
+    public void setType(TypeType value) {
+        this.type = value;
     }
 
 }

@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,13 +13,17 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-
 /**
- * Integer number of degrees, plus the angle direction. This element can be used for geographic Latitude and Longitude. For Latitude, the XML attribute direction can take the values "N" or "S", meaning North or South of the equator. For Longitude, direction can take the values "E" or "W", meaning East or West of the prime meridian. This element can also be used for other angles. In that case, the direction can take the values "+" or "-" (of SignType), in the specified rotational direction from a specified reference direction.
+ * Integer number of degrees, plus the angle direction. This element can be used for geographic Latitude and Longitude. For Latitude, the XML
+ * attribute direction can take the values "N" or "S", meaning North or South of the equator. For Longitude, direction can take the values "E" or "W",
+ * meaning East or West of the prime meridian. This element can also be used for other angles. In that case, the direction can take the values "+" or
+ * "-" (of SignType), in the specified rotational direction from a specified reference direction.
  * 
- * <p>Java class for DegreesType complex type.
+ * <p>
+ * Java class for DegreesType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="DegreesType">
@@ -52,15 +55,24 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DegreesType", propOrder = {
-    "value"
-})
+@XmlType(name = "DegreesType", propOrder = { "value" })
 public class DegreesType {
 
     @XmlValue
     protected int value;
+
     @XmlAttribute
     protected String direction;
+
+    /**
+     * Gets the value of the direction property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getDirection() {
+        return direction;
+    }
 
     /**
      * Integer number of degrees in a degree-minute-second or degree-minute angular value, without indication of direction.
@@ -71,35 +83,21 @@ public class DegreesType {
     }
 
     /**
+     * Sets the value of the direction property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setDirection(String value) {
+        this.direction = value;
+    }
+
+    /**
      * Sets the value of the value property.
      * 
      */
     public void setValue(int value) {
         this.value = value;
-    }
-
-    /**
-     * Gets the value of the direction property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDirection() {
-        return direction;
-    }
-
-    /**
-     * Sets the value of the direction property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setDirection(String value) {
-        this.direction = value;
     }
 
 }

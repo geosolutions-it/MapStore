@@ -26,69 +26,69 @@ import java.io.Serializable;
 
 /**
  * Generic DAO for CSV ingestion
+ * 
  * @author adiaz
  */
-public interface GenericDAO<T, ID extends Serializable>{
+public interface GenericDAO<T, ID extends Serializable> {
 
-/**
- * Remove a entity by its pk
- * 
- * @return true if removed and false if we have a problem
- */
-public boolean removeByPK(Serializable... pkObjects);
+    public void dispose();
 
-/**
- * Remove a entity by its pk
- * 
- * @return true if removed and false if we have a problem
- */
-public boolean removeByPK(String[] names, Serializable... pkObjects);
+    /**
+     * Obtain array for the pknames ordered to be used in {@link BaseDAO#removeByPK(Serializable...)}
+     * 
+     * @return array with names of the pk aggregated
+     */
+    public String[] getPKNames();
 
-/**
- * Obtain array for the pknames ordered to be used in  {@link BaseDAO#removeByPK(Serializable...)}
- * 
- * @return array with names of the pk aggregated
- */
-public String[] getPKNames();
+    /**
+     * @return schema used on dao
+     */
+    public Object getSchema();
 
-/**
- * Obtain a entity by its pk
- * 
- * @return entity found or null if not found
- */
-public T searchByPK(Serializable... pkObjects);
+    /**
+     * Update an entity
+     * 
+     * @param entity to be merged
+     * @throws IOException
+     */
+    public void merge(T entity) throws IOException;
 
-/**
- * Obtain a entity by its pk
- * 
- * @return entity found or null if not found
- */
-public T searchByPK(String[] names, Serializable... pkObjects);
+    /**
+     * Create a new entity
+     * 
+     * @param entity to create
+     * @throws IOException
+     */
+    public void persist(T entity) throws IOException;
 
+    public void prepare();
 
-/**
- * Update an entity
- * 
- * @param entity to be merged 
- * @throws IOException 
- */
-public void merge(T entity) throws IOException;
+    /**
+     * Remove a entity by its pk
+     * 
+     * @return true if removed and false if we have a problem
+     */
+    public boolean removeByPK(Serializable... pkObjects);
 
-/**
- * Create a new entity
- * 
- * @param entity to create
- * @throws IOException 
- */
-public void persist(T entity) throws IOException;
+    /**
+     * Remove a entity by its pk
+     * 
+     * @return true if removed and false if we have a problem
+     */
+    public boolean removeByPK(String[] names, Serializable... pkObjects);
 
-/**
- * @return schema used on dao
- */
-public Object getSchema();
+    /**
+     * Obtain a entity by its pk
+     * 
+     * @return entity found or null if not found
+     */
+    public T searchByPK(Serializable... pkObjects);
 
-
-public void prepare();
-public void dispose();
+    /**
+     * Obtain a entity by its pk
+     * 
+     * @return entity found or null if not found
+     */
+    public T searchByPK(String[] names, Serializable... pkObjects);
 
 }

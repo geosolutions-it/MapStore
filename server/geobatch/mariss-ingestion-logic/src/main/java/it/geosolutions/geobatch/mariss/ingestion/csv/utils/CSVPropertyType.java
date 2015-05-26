@@ -23,8 +23,8 @@ package it.geosolutions.geobatch.mariss.ingestion.csv.utils;
  * CSV property KNOWN types to parse @see {@link CSVIngestUtils#parse(String, CSVPropertyType)}
  * 
  * @author alediator
- *
+ * 
  */
 public enum CSVPropertyType {
-    IGNORE,INTEGER, DOUBLE, STRING, DATE_TIME, LONG
+    IGNORE, INTEGER, DOUBLE, STRING, DATE_TIME, LONG
 }

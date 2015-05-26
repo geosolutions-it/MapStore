@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for TopoVolumePropertyType complex type.
+ * <p>
+ * Java class for TopoVolumePropertyType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="TopoVolumePropertyType">
@@ -34,9 +34,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TopoVolumePropertyType", propOrder = {
-    "topoVolume"
-})
+@XmlType(name = "TopoVolumePropertyType", propOrder = { "topoVolume" })
 public class TopoVolumePropertyType {
 
     @XmlElement(name = "TopoVolume", required = true)
@@ -45,10 +43,8 @@ public class TopoVolumePropertyType {
     /**
      * Gets the value of the topoVolume property.
      * 
-     * @return
-     *     possible object is
-     *     {@link TopoVolumeType }
-     *     
+     * @return possible object is {@link TopoVolumeType }
+     * 
      */
     public TopoVolumeType getTopoVolume() {
         return topoVolume;
@@ -57,10 +53,8 @@ public class TopoVolumePropertyType {
     /**
      * Sets the value of the topoVolume property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link TopoVolumeType }
-     *     
+     * @param value allowed object is {@link TopoVolumeType }
+     * 
      */
     public void setTopoVolume(TopoVolumeType value) {
         this.topoVolume = value;

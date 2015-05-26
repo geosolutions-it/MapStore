@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package org.w3._2001.smil20;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,15 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3._2001.smil20.language.SetType;
 
-
 /**
- * <p>Java class for setPrototype complex type.
+ * <p>
+ * Java class for setPrototype complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="setPrototype">
@@ -36,73 +37,33 @@ import org.w3._2001.smil20.language.SetType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "setPrototype")
-@XmlSeeAlso({
-    SetType.class
-})
+@XmlSeeAlso({ SetType.class })
 public class SetPrototype {
 
     @XmlAttribute
     protected String to;
+
     @XmlAttribute(required = true)
     protected String attributeName;
+
     @XmlAttribute
     protected String attributeType;
 
     /**
-     * Gets the value of the to property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getTo() {
-        return to;
-    }
-
-    /**
-     * Sets the value of the to property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setTo(String value) {
-        this.to = value;
-    }
-
-    /**
      * Gets the value of the attributeName property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getAttributeName() {
         return attributeName;
     }
 
     /**
-     * Sets the value of the attributeName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setAttributeName(String value) {
-        this.attributeName = value;
-    }
-
-    /**
      * Gets the value of the attributeType property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getAttributeType() {
         if (attributeType == null) {
@@ -113,15 +74,43 @@ public class SetPrototype {
     }
 
     /**
+     * Gets the value of the to property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getTo() {
+        return to;
+    }
+
+    /**
+     * Sets the value of the attributeName property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setAttributeName(String value) {
+        this.attributeName = value;
+    }
+
+    /**
      * Sets the value of the attributeType property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setAttributeType(String value) {
         this.attributeType = value;
+    }
+
+    /**
+     * Sets the value of the to property.
+     * 
+     * @param value allowed object is {@link String }
+     * 
+     */
+    public void setTo(String value) {
+        this.to = value;
     }
 
 }

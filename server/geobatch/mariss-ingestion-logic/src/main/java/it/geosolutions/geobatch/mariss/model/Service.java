@@ -22,20 +22,24 @@ import java.util.List;
 
 /**
  * @author Alessio
- *
+ * 
  */
 public class Service {
-    
+
     private int id;
+
     private String serviceId;
+
     private String parent;
+
     private String user;
+
     private String status;
-    
+
     private AreaOfInterest aoi;
-    
+
     private List<Sensor> sensors = Collections.synchronizedList(new ArrayList<Sensor>());
-    
+
     /**
      * 
      */
@@ -44,118 +48,6 @@ public class Service {
         this.parent = parent;
         this.user = user;
         this.status = status;
-    }
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * @return the serviceId
-     */
-    public String getServiceId() {
-        return serviceId;
-    }
-
-    /**
-     * @param serviceId the serviceId to set
-     */
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    /**
-     * @return the parent
-     */
-    public String getParent() {
-        return parent;
-    }
-
-    /**
-     * @param parent the parent to set
-     */
-    public void setParent(String parent) {
-        this.parent = parent;
-    }
-
-    /**
-     * @return the user
-     */
-    public String getUser() {
-        return user;
-    }
-
-    /**
-     * @param user the user to set
-     */
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    /**
-     * @return the status
-     */
-    public String getStatus() {
-        return status;
-    }
-
-    /**
-     * @param status the status to set
-     */
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    /**
-     * @return the aoi
-     */
-    public AreaOfInterest getAoi() {
-        return aoi;
-    }
-
-    /**
-     * @param aoi the aoi to set
-     */
-    public void setAoi(AreaOfInterest aoi) {
-        this.aoi = aoi;
-    }
-
-    /**
-     * @return the sensors
-     */
-    public List<Sensor> getSensors() {
-        return sensors;
-    }
-
-    /**
-     * @param sensors the sensors to set
-     */
-    public void setSensors(List<Sensor> sensors) {
-        this.sensors = sensors;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((aoi == null) ? 0 : aoi.hashCode());
-        result = prime * result + id;
-        result = prime * result + ((parent == null) ? 0 : parent.hashCode());
-        result = prime * result + ((sensors == null) ? 0 : sensors.hashCode());
-        result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
-        result = prime * result + ((status == null) ? 0 : status.hashCode());
-        result = prime * result + ((user == null) ? 0 : user.hashCode());
-        return result;
     }
 
     @Override
@@ -218,6 +110,118 @@ public class Service {
         return true;
     }
 
+    /**
+     * @return the aoi
+     */
+    public AreaOfInterest getAoi() {
+        return aoi;
+    }
+
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @return the parent
+     */
+    public String getParent() {
+        return parent;
+    }
+
+    /**
+     * @return the sensors
+     */
+    public List<Sensor> getSensors() {
+        return sensors;
+    }
+
+    /**
+     * @return the serviceId
+     */
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    /**
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @return the user
+     */
+    public String getUser() {
+        return user;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((aoi == null) ? 0 : aoi.hashCode());
+        result = prime * result + id;
+        result = prime * result + ((parent == null) ? 0 : parent.hashCode());
+        result = prime * result + ((sensors == null) ? 0 : sensors.hashCode());
+        result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
+        result = prime * result + ((status == null) ? 0 : status.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        return result;
+    }
+
+    /**
+     * @param aoi the aoi to set
+     */
+    public void setAoi(AreaOfInterest aoi) {
+        this.aoi = aoi;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * @param parent the parent to set
+     */
+    public void setParent(String parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * @param sensors the sensors to set
+     */
+    public void setSensors(List<Sensor> sensors) {
+        this.sensors = sensors;
+    }
+
+    /**
+     * @param serviceId the serviceId to set
+     */
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * @param user the user to set
+     */
+    public void setUser(String user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         final int maxLen = 10;
@@ -238,5 +242,5 @@ public class Service {
         builder.append("]");
         return builder.toString();
     }
-    
+
 }

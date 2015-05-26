@@ -23,6 +23,7 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.impl.TimeFormat;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
+import it.geosolutions.geobatch.mariss.actions.netcdf.ShipDetection;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVAcqListProcessor;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes1To3Processor;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes5Processor;
@@ -41,6 +42,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.QNameMap;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
+
 /**
  * Tests for CSV ingestion action
  * 
@@ -48,91 +54,135 @@ import org.slf4j.LoggerFactory;
  */
 public class CSVIngestActionTest {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(CSVIngestAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CSVIngestAction.class);
 
-	public CSVIngestActionTest() {
-		super();
-	}
-	
-	private Map<String, Serializable> getConnectionParameters(){
-		Map<String, Serializable> params = new HashMap<String, Serializable>();
-		params.put("dbtype", "postgis");
-		params.put("host", "localhost");
-		params.put("port", 5432);
-		params.put("schema", "public");
-		params.put("database", "mariss");
-		params.put("user", "mariss");
-		params.put("passwd", "mariss");
-		return params;
-	}
+    public CSVIngestActionTest() {
+        super();
+    }
 
-	/**
-	 * Generate a CSVAcqListProcessor processor to test 
-	 * @return the processor
-	 */
-	private CSVAcqListProcessor getAcqProcessor() {
-		return (CSVAcqListProcessor) getProcessor("acq_list", "CLS", "CLS1");
-	}
+    /**
+     * Generate a CSVAcqListProcessor processor to test
+     * 
+     * @return the processor
+     */
+    private CSVAcqListProcessor getAcqProcessor() {
+        return (CSVAcqListProcessor) getProcessor("acq_list", "CLS", "CLS1");
+    }
 
-	/**
-	 * Generate a MarissCSVServiceProcessor processor to test 
-	 * @return the processor
-	 */
-	private MarissCSVServiceProcessor getProcessor(String typeName, String userName, String serviceName) {
-		MarissCSVServiceProcessor processor = null;
-		try {
-			if("acq_list".equals(typeName)){
-				processor = new CSVAcqListProcessor(getConnectionParameters(), typeName,
-						new TimeFormat(null, null, "Time format default",
-								new TimeFormatConfiguration(null, null,
-										"Time format configuration")));
-			}else if("products_1to3".equals(typeName)){
-				processor = new CSVProductTypes1To3Processor(getConnectionParameters(), typeName,
-						new TimeFormat(null, null, "Time format default",
-								new TimeFormatConfiguration(null, null,
-										"Time format configuration")));
-			}else if("products_5".equals(typeName)){
-				processor = new CSVProductTypes5Processor(getConnectionParameters(), typeName,
-						new TimeFormat(null, null, "Time format default",
-								new TimeFormatConfiguration(null, null,
-										"Time format configuration")));
-			}
-			processor.setUserName(userName);
-			processor.setServiceName(serviceName);
-		} catch (Exception e) {
-			LOGGER.error("Error getting the processor", e);
-		}
-		return processor;
-	}
+    private Map<String, Serializable> getConnectionParameters() {
+        Map<String, Serializable> params = new HashMap<String, Serializable>();
+        params.put("dbtype", "postgis");
+        params.put("host", "84.33.2.25");
+        params.put("port", 5432);
+        params.put("schema", "public");
+        params.put("database", "mariss");
+        params.put("user", "mariss");
+        params.put("passwd", "mariss");
+        return params;
+    }
 
-	/**
-	 * Process CSV files with the default CSV ingest action
-	 * @throws Exception
-	 */
-	@Test
-	public void loadAllAsEvent() throws Exception {
-		CSVAcqListProcessor acqProcessor = getAcqProcessor();
+    /**
+     * Generate a MarissCSVServiceProcessor processor to test
+     * 
+     * @return the processor
+     */
+    private MarissCSVServiceProcessor getProcessor(String typeName, String userName,
+            String serviceName) {
+        MarissCSVServiceProcessor processor = null;
+        try {
+            if ("acq_list".equals(typeName)) {
+                processor = new CSVAcqListProcessor(
+                        getConnectionParameters(),
+                        typeName,
+                        new TimeFormat(
+                                null,
+                                null,
+                                "Time format default",
+                                new TimeFormatConfiguration(null, null, "Time format configuration")));
+            } else if ("products_1to3".equals(typeName)) {
+                processor = new CSVProductTypes1To3Processor(
+                        getConnectionParameters(),
+                        typeName,
+                        new TimeFormat(
+                                null,
+                                null,
+                                "Time format default",
+                                new TimeFormatConfiguration(null, null, "Time format configuration")));
+            } else if ("products_5".equals(typeName)) {
+                processor = new CSVProductTypes5Processor(
+                        getConnectionParameters(),
+                        typeName,
+                        new TimeFormat(
+                                null,
+                                null,
+                                "Time format default",
+                                new TimeFormatConfiguration(null, null, "Time format configuration")));
+            }
+            processor.setUserName(userName);
+            processor.setServiceName(serviceName);
+        } catch (Exception e) {
+            LOGGER.error("Error getting the processor", e);
+        }
+        return processor;
+    }
 
-		if (acqProcessor != null) {
-			CSVIngestAction action = new CSVIngestAction(
-					new CSVIngestConfiguration(null, null, null));
-			action.addProcessor(acqProcessor);
-			action.addProcessor(getProcessor("products_1to3", "CLS", "CLS1"));
-			action.addProcessor(getProcessor("products_5", "CLS", "CLS1"));
-			Queue<EventObject> events = new LinkedList<EventObject>();
+    /**
+     * Process CSV files with the default CSV ingest action
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void loadAllAsEvent() throws Exception {
+        CSVAcqListProcessor acqProcessor = getAcqProcessor();
 
-			for (File file : FileUtils.listFiles(new File("."),
-					new String[] { "csv" }, true)) {
-				LOGGER.info("Loading " + file);
-				FileSystemEvent event = new FileSystemEvent(file,
-						FileSystemEventType.FILE_ADDED);
-				events.add(event);
-				@SuppressWarnings({ "unused", "rawtypes" })
-				Queue result = action.execute(events);
-			}
-		} else {
-			LOGGER.info("The local database is not available");
-		}
-	}
+        if (acqProcessor != null) {
+            CSVIngestAction action = new CSVIngestAction(new CSVIngestConfiguration(null, null,
+                    null));
+            action.addProcessor(acqProcessor);
+            action.addProcessor(getProcessor("products_1to3", "CLS", "CLS1"));
+            action.addProcessor(getProcessor("products_5", "CLS", "CLS1"));
+            Queue<EventObject> events = new LinkedList<EventObject>();
+
+            for (File file : FileUtils.listFiles(new File("."), new String[] { "csv" }, true)) {
+                LOGGER.info("Loading " + file);
+                FileSystemEvent event = new FileSystemEvent(file, FileSystemEventType.FILE_ADDED);
+                events.add(event);
+                @SuppressWarnings({ "unused", "rawtypes" })
+                Queue result = action.execute(events);
+            }
+        } else {
+            LOGGER.info("The local database is not available");
+        }
+    }
+    
+//    @Test
+//    public void testDsMarshalling() throws Exception {
+//        
+//        File fileDsXml = new File("C:\\work\\E-GEOS\\MARISS\\data\\data\\Phase1\\VDS\\NEREIDS_ASA_IMP_1PNIPA20100913_110107_000000162092_00495_44637_0625.N1_GMV_274.xml");
+//        
+//        QNameMap qmap = new QNameMap();
+//        qmap.setDefaultNamespace("http://ignore.namespace/prefix");
+//        qmap.setDefaultPrefix("");
+//        StaxDriver staxDriver = new StaxDriver(qmap); 
+//        XStream xstream = new XStream(staxDriver){
+//            @Override
+//            protected MapperWrapper wrapMapper(MapperWrapper next) {
+//                return new MapperWrapper(next) {
+//                    @Override
+//                    public boolean shouldSerializeMember(Class definedIn, String fieldName) {
+//                        if (definedIn == Object.class) {
+//                            return false;
+//                        }
+//                        return super.shouldSerializeMember(definedIn, fieldName);
+//                    }
+//                };
+//            }
+//        };
+//        
+//        xstream.processAnnotations(ShipDetection.class);     // inform XStream to parse annotations in Data 
+//        
+//        ShipDetection shpDs = (ShipDetection) xstream.fromXML(fileDsXml);
+//        
+//        LOGGER.info(shpDs.toString());
+//    }
 }

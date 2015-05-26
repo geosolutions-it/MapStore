@@ -25,107 +25,110 @@ import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
 import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
 
 /**
- * Configuration for a data package ingestion in a compressed file 
+ * Configuration for a data package ingestion in a compressed file
  * 
  * @author adiaz
  */
 public class DataPackageIngestionConfiguration extends Ds2dsConfiguration {
 
-	private String csvIngestionPath;
-	private String typeName;
-	private String userName; 
-	private String serviceName;
-	private String targetTifFolder;
-	protected ImageMosaicConfiguration imageMosaicConfiguration = null;
+    private String csvIngestionPath;
 
-	public DataPackageIngestionConfiguration(String id, String name,
-			String description) {
-		super(id, name, description);
-	}
+    private String typeName;
 
-	/**
-	 * @return the csvIngestionPath
-	 */
-	public String getCsvIngestionPath() {
-		return csvIngestionPath;
-	}
+    private String userName;
 
-	/**
-	 * @param csvIngestionPath the csvIngestionPath to set
-	 */
-	public void setCsvIngestionPath(String csvIngestionPath) {
-		this.csvIngestionPath = csvIngestionPath;
-	}
+    private String serviceName;
 
-	/**
-	 * @return the typeName
-	 */
-	public String getTypeName() {
-		return typeName;
-	}
+    private String targetTifFolder;
 
-	/**
-	 * @param typeName the typeName to set
-	 */
-	public void setTypeName(String typeName) {
-		this.typeName = typeName;
-	}
+    protected ImageMosaicConfiguration imageMosaicConfiguration = null;
 
-	/**
-	 * @return the userName
-	 */
-	public String getUserName() {
-		return userName;
-	}
+    public DataPackageIngestionConfiguration(String id, String name, String description) {
+        super(id, name, description);
+    }
 
-	/**
-	 * @param userName the userName to set
-	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    /**
+     * @return the csvIngestionPath
+     */
+    public String getCsvIngestionPath() {
+        return csvIngestionPath;
+    }
 
-	/**
-	 * @return the serviceName
-	 */
-	public String getServiceName() {
-		return serviceName;
-	}
+    /**
+     * @return the imageMosaicConfiguration
+     */
+    public ImageMosaicConfiguration getImageMosaicConfiguration() {
+        return imageMosaicConfiguration;
+    }
 
-	/**
-	 * @param serviceName the serviceName to set
-	 */
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-	}
+    /**
+     * @return the serviceName
+     */
+    public String getServiceName() {
+        return serviceName;
+    }
 
-	/**
-	 * @return the targetTifFolder
-	 */
-	public String getTargetTifFolder() {
-		return targetTifFolder;
-	}
+    /**
+     * @return the targetTifFolder
+     */
+    public String getTargetTifFolder() {
+        return targetTifFolder;
+    }
 
-	/**
-	 * @param targetTifFolder the targetTifFolder to set
-	 */
-	public void setTargetTifFolder(String targetTifFolder) {
-		this.targetTifFolder = targetTifFolder;
-	}
+    /**
+     * @return the typeName
+     */
+    public String getTypeName() {
+        return typeName;
+    }
 
-	/**
-	 * @return the imageMosaicConfiguration
-	 */
-	public ImageMosaicConfiguration getImageMosaicConfiguration() {
-		return imageMosaicConfiguration;
-	}
+    /**
+     * @return the userName
+     */
+    public String getUserName() {
+        return userName;
+    }
 
-	/**
-	 * @param imageMosaicConfiguration the imageMosaicConfiguration to set
-	 */
-	public void setImageMosaicConfiguration(
-			ImageMosaicConfiguration imageMosaicConfiguration) {
-		this.imageMosaicConfiguration = imageMosaicConfiguration;
-	}
+    /**
+     * @param csvIngestionPath the csvIngestionPath to set
+     */
+    public void setCsvIngestionPath(String csvIngestionPath) {
+        this.csvIngestionPath = csvIngestionPath;
+    }
+
+    /**
+     * @param imageMosaicConfiguration the imageMosaicConfiguration to set
+     */
+    public void setImageMosaicConfiguration(ImageMosaicConfiguration imageMosaicConfiguration) {
+        this.imageMosaicConfiguration = imageMosaicConfiguration;
+    }
+
+    /**
+     * @param serviceName the serviceName to set
+     */
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    /**
+     * @param targetTifFolder the targetTifFolder to set
+     */
+    public void setTargetTifFolder(String targetTifFolder) {
+        this.targetTifFolder = targetTifFolder;
+    }
+
+    /**
+     * @param typeName the typeName to set
+     */
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    /**
+     * @param userName the userName to set
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
 }

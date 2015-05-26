@@ -5,20 +5,21 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A two- or three-dimensional coordinate system in which position is specified by geodetic latitude, geodetic longitude, and (in the three-dimensional case) ellipsoidal height. An EllipsoidalCS shall have two or three usesAxis associations. 
+ * A two- or three-dimensional coordinate system in which position is specified by geodetic latitude, geodetic longitude, and (in the
+ * three-dimensional case) ellipsoidal height. An EllipsoidalCS shall have two or three usesAxis associations.
  * 
- * <p>Java class for EllipsoidalCSType complex type.
+ * <p>
+ * Java class for EllipsoidalCSType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="EllipsoidalCSType">
@@ -33,9 +34,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "EllipsoidalCSType")
-public class EllipsoidalCSType
-    extends AbstractCoordinateSystemType
-{
-
+public class EllipsoidalCSType extends AbstractCoordinateSystemType {
 
 }

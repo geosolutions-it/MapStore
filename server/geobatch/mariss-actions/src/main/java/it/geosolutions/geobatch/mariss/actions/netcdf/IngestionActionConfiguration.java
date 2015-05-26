@@ -5,22 +5,16 @@ import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
 
 public class IngestionActionConfiguration extends Ds2dsConfiguration {
 
-    public IngestionActionConfiguration(String id, String name, String description) {
-        super(id, name, description);
-    }
-    
     private FeatureConfiguration outputFeature;
-    
+
     private String geoserverDataDirectory;
 
     private String metocDictionaryPath;
-    
+
     private String productsTableName;
-    
+
     private String serviceName;
-    
-    private String uid;
-    
+
     /**
      * Password for the GeoServer instance
      */
@@ -35,86 +29,93 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
      * URL for the GeoServer instance
      */
     private String geoserverURL;
-    
+
     private ConfigurationContainer container;
 
-    public FeatureConfiguration getOutputFeature() {
-        return outputFeature;
-    }
+    private String shipDetectionsTableName;
 
-    public void setOutputFeature(FeatureConfiguration outputFeature) {
-        this.outputFeature = outputFeature;
-    }
-
-    public String getMetocDictionaryPath() {
-        return metocDictionaryPath;
-    }
-
-    public void setMetocDictionaryPath(String metocDictionaryPath) {
-        this.metocDictionaryPath = metocDictionaryPath;
-    }
-
-    public String getProductsTableName() {
-        return productsTableName;
-    }
-
-    public void setProductsTableName(String productsTableName) {
-        this.productsTableName = productsTableName;
-    }
-
-    public String getGeoserverDataDirectory() {
-        return geoserverDataDirectory;
-    }
-
-    public void setGeoserverDataDirectory(String geoserverDataDirectory) {
-        this.geoserverDataDirectory = geoserverDataDirectory;
+    public IngestionActionConfiguration(String id, String name, String description) {
+        super(id, name, description);
     }
 
     public ConfigurationContainer getContainer() {
         return container;
     }
 
-    public void setContainer(ConfigurationContainer container) {
-        this.container = container;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
+    public String getGeoserverDataDirectory() {
+        return geoserverDataDirectory;
     }
 
     public String getGeoserverPWD() {
         return geoserverPWD;
     }
 
-    public void setGeoserverPWD(String geoserverPWD) {
-        this.geoserverPWD = geoserverPWD;
-    }
-
     public String getGeoserverUID() {
         return geoserverUID;
-    }
-
-    public void setGeoserverUID(String geoserverUID) {
-        this.geoserverUID = geoserverUID;
     }
 
     public String getGeoserverURL() {
         return geoserverURL;
     }
 
+    public String getMetocDictionaryPath() {
+        return metocDictionaryPath;
+    }
+
+    public FeatureConfiguration getOutputFeature() {
+        return outputFeature;
+    }
+
+    public String getProductsTableName() {
+        return productsTableName;
+    }
+    
+    public String getShipDetectionsTableName() {
+        return shipDetectionsTableName;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setContainer(ConfigurationContainer container) {
+        this.container = container;
+    }
+
+    public void setGeoserverDataDirectory(String geoserverDataDirectory) {
+        this.geoserverDataDirectory = geoserverDataDirectory;
+    }
+
+    public void setGeoserverPWD(String geoserverPWD) {
+        this.geoserverPWD = geoserverPWD;
+    }
+
+    public void setGeoserverUID(String geoserverUID) {
+        this.geoserverUID = geoserverUID;
+    }
+
     public void setGeoserverURL(String geoserverURL) {
         this.geoserverURL = geoserverURL;
     }
+
+    public void setMetocDictionaryPath(String metocDictionaryPath) {
+        this.metocDictionaryPath = metocDictionaryPath;
+    }
+
+    public void setOutputFeature(FeatureConfiguration outputFeature) {
+        this.outputFeature = outputFeature;
+    }
+
+    public void setProductsTableName(String productsTableName) {
+        this.productsTableName = productsTableName;
+    }
+
+    public void setShipDetectionsTableName(String shipDetectionsTableName) {
+        this.shipDetectionsTableName = shipDetectionsTableName;
+    }
+    
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
 }

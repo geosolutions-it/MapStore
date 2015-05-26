@@ -5,22 +5,24 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A MultiPolygon is defined by one or more Polygons, referenced through polygonMember elements. Deprecated with GML version 3.0. Use MultiSurfaceType instead.
+ * A MultiPolygon is defined by one or more Polygons, referenced through polygonMember elements. Deprecated with GML version 3.0. Use MultiSurfaceType
+ * instead.
  * 
- * <p>Java class for MultiPolygonType complex type.
+ * <p>
+ * Java class for MultiPolygonType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="MultiPolygonType">
@@ -37,12 +39,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MultiPolygonType", propOrder = {
-    "polygonMember"
-})
-public class MultiPolygonType
-    extends AbstractGeometricAggregateType
-{
+@XmlType(name = "MultiPolygonType", propOrder = { "polygonMember" })
+public class MultiPolygonType extends AbstractGeometricAggregateType {
 
     protected List<PolygonPropertyType> polygonMember;
 
@@ -50,21 +48,19 @@ public class MultiPolygonType
      * Gets the value of the polygonMember property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the polygonMember property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the polygonMember property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getPolygonMember().add(newItem);
+     * getPolygonMember().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link PolygonPropertyType }
+     * Objects of the following type(s) are allowed in the list {@link PolygonPropertyType }
      * 
      * 
      */

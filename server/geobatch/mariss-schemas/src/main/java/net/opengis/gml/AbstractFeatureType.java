@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.JAXBElement;
@@ -14,16 +13,20 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+
 import eu.europa.emsa.csndc.OilSpillType;
 import eu.europa.emsa.csndc.ShipType;
 
-
 /**
- * An abstract feature provides a set of common properties, including id, metaDataProperty, name and description inherited from AbstractGMLType, plus boundedBy.    A concrete feature type must derive from this type and specify additional  properties in an application schema. A feature must possess an identifying attribute ('id' - 'fid' has been deprecated).
+ * An abstract feature provides a set of common properties, including id, metaDataProperty, name and description inherited from AbstractGMLType, plus
+ * boundedBy. A concrete feature type must derive from this type and specify additional properties in an application schema. A feature must possess an
+ * identifying attribute ('id' - 'fid' has been deprecated).
  * 
- * <p>Java class for AbstractFeatureType complex type.
+ * <p>
+ * Java class for AbstractFeatureType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AbstractFeatureType">
@@ -41,75 +44,57 @@ import eu.europa.emsa.csndc.ShipType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AbstractFeatureType", propOrder = {
-    "boundedBy",
-    "location"
-})
-@XmlSeeAlso({
-    ShipType.class,
-    OilSpillType.class,
-    ObservationType.class,
-    AbstractCoverageType.class,
-    AbstractFeatureCollectionType.class,
-    DynamicFeatureType.class,
-    BoundedFeatureType.class
-})
-public abstract class AbstractFeatureType
-    extends AbstractGMLType
-{
+@XmlType(name = "AbstractFeatureType", propOrder = { "boundedBy", "location" })
+@XmlSeeAlso({ ShipType.class, OilSpillType.class, ObservationType.class,
+        AbstractCoverageType.class, AbstractFeatureCollectionType.class, DynamicFeatureType.class,
+        BoundedFeatureType.class })
+public abstract class AbstractFeatureType extends AbstractGMLType {
 
     protected BoundingShapeType boundedBy;
+
     @XmlElementRef(name = "location", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
     protected JAXBElement<? extends LocationPropertyType> location;
 
     /**
      * Gets the value of the boundedBy property.
      * 
-     * @return
-     *     possible object is
-     *     {@link BoundingShapeType }
-     *     
+     * @return possible object is {@link BoundingShapeType }
+     * 
      */
     public BoundingShapeType getBoundedBy() {
         return boundedBy;
     }
 
     /**
-     * Sets the value of the boundedBy property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BoundingShapeType }
-     *     
-     */
-    public void setBoundedBy(BoundingShapeType value) {
-        this.boundedBy = value;
-    }
-
-    /**
      * deprecated in GML version 3.1
      * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link PriorityLocationPropertyType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link LocationPropertyType }{@code >}
-     *     
+     * @return possible object is {@link JAXBElement }{@code <}{@link PriorityLocationPropertyType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link LocationPropertyType }{@code >}
+     * 
      */
     public JAXBElement<? extends LocationPropertyType> getLocation() {
         return location;
     }
 
     /**
+     * Sets the value of the boundedBy property.
+     * 
+     * @param value allowed object is {@link BoundingShapeType }
+     * 
+     */
+    public void setBoundedBy(BoundingShapeType value) {
+        this.boundedBy = value;
+    }
+
+    /**
      * Sets the value of the location property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link JAXBElement }{@code <}{@link PriorityLocationPropertyType }{@code >}
-     *     {@link JAXBElement }{@code <}{@link LocationPropertyType }{@code >}
-     *     
+     * @param value allowed object is {@link JAXBElement }{@code <}{@link PriorityLocationPropertyType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link LocationPropertyType }{@code >}
+     * 
      */
     public void setLocation(JAXBElement<? extends LocationPropertyType> value) {
-        this.location = ((JAXBElement<? extends LocationPropertyType> ) value);
+        this.location = ((JAXBElement<? extends LocationPropertyType>) value);
     }
 
 }

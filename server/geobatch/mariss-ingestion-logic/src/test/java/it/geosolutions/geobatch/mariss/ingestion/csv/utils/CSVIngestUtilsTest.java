@@ -34,24 +34,24 @@ import org.junit.Test;
  * @author adiaz
  */
 public class CSVIngestUtilsTest {
-	
-	/**
-	 * Simple test for getParamers in name
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void getParametersInNameTest() throws Exception {
-		Map<String, String> parameters = new HashMap<String, String>();
-		String result = CSVIngestUtils.getParametersInName("name.csv", parameters);
-		assertEquals(result, "name.csv");
-		parameters.put("user", "test");
-		parameters.put("service", "test2");
-		result = CSVIngestUtils.getParametersInName("name.csv", parameters);
-		Map<String, String> parameters2 = CSVIngestUtils.getParametersFromName(result);
-		for(String name: parameters.keySet()){
-			assertEquals(parameters.get(name), parameters2.get(name));
-		}
-	}
+
+    /**
+     * Simple test for getParamers in name
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void getParametersInNameTest() throws Exception {
+        Map<String, String> parameters = new HashMap<String, String>();
+        String result = CSVIngestUtils.getParametersInName("name.csv", parameters);
+        assertEquals(result, "name.csv");
+        parameters.put("user", "test");
+        parameters.put("service", "test2");
+        result = CSVIngestUtils.getParametersInName("name.csv", parameters);
+        Map<String, String> parameters2 = CSVIngestUtils.getParametersFromName(result);
+        for (String name : parameters.keySet()) {
+            assertEquals(parameters.get(name), parameters2.get(name));
+        }
+    }
 
 }

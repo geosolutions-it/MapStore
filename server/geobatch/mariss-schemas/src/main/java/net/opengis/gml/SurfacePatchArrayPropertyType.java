@@ -5,11 +5,11 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,13 +17,14 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * A container for an array of surface patches.
  * 
- * <p>Java class for SurfacePatchArrayPropertyType complex type.
+ * <p>
+ * Java class for SurfacePatchArrayPropertyType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="SurfacePatchArrayPropertyType">
@@ -40,13 +41,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SurfacePatchArrayPropertyType", propOrder = {
-    "surfacePatch"
-})
-@XmlSeeAlso({
-    TrianglePatchArrayPropertyType.class,
-    PolygonPatchArrayPropertyType.class
-})
+@XmlType(name = "SurfacePatchArrayPropertyType", propOrder = { "surfacePatch" })
+@XmlSeeAlso({ TrianglePatchArrayPropertyType.class, PolygonPatchArrayPropertyType.class })
 public class SurfacePatchArrayPropertyType {
 
     @XmlElementRef(name = "_SurfacePatch", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
@@ -56,29 +52,23 @@ public class SurfacePatchArrayPropertyType {
      * Gets the value of the surfacePatch property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the surfacePatch property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the surfacePatch property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getSurfacePatch().add(newItem);
+     * getSurfacePatch().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link RectangleType }{@code >}
-     * {@link JAXBElement }{@code <}{@link AbstractParametricCurveSurfaceType }{@code >}
-     * {@link JAXBElement }{@code <}{@link CylinderType }{@code >}
-     * {@link JAXBElement }{@code <}{@link PolygonPatchType }{@code >}
-     * {@link JAXBElement }{@code <}{@link SphereType }{@code >}
-     * {@link JAXBElement }{@code <}{@link AbstractGriddedSurfaceType }{@code >}
-     * {@link JAXBElement }{@code <}{@link TriangleType }{@code >}
-     * {@link JAXBElement }{@code <}{@link AbstractSurfacePatchType }{@code >}
-     * {@link JAXBElement }{@code <}{@link ConeType }{@code >}
+     * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link RectangleType }{@code >} {@link JAXBElement }{@code <}
+     * {@link AbstractParametricCurveSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CylinderType }{@code >} {@link JAXBElement }{@code <}
+     * {@link PolygonPatchType }{@code >} {@link JAXBElement }{@code <}{@link SphereType }{@code >} {@link JAXBElement }{@code <}
+     * {@link AbstractGriddedSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link TriangleType }{@code >} {@link JAXBElement }{@code <}
+     * {@link AbstractSurfacePatchType }{@code >} {@link JAXBElement }{@code <}{@link ConeType }{@code >}
      * 
      * 
      */

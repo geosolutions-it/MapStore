@@ -13,6 +13,13 @@ import org.w3c.dom.Node;
  * Maps an xpath into a feature attribute. Subclasses might perform data conversions
  */
 class FeatureMapping {
+    public static void mapToFeature(SimpleFeatureBuilder fb, Node node, XPath xpath,
+            List<FeatureMapping> mappings) throws XPathExpressionException {
+        for (FeatureMapping mapping : mappings) {
+            fb.set(mapping.destName, mapping.getValue(xpath, node));
+        }
+    }
+
     String xpath;
 
     String destName;
@@ -38,13 +45,6 @@ class FeatureMapping {
             return node.getTextContent();
         } else {
             return null;
-        }
-    }
-
-    public static void mapToFeature(SimpleFeatureBuilder fb, Node node, XPath xpath,
-            List<FeatureMapping> mappings) throws XPathExpressionException {
-        for (FeatureMapping mapping : mappings) {
-            fb.set(mapping.destName, mapping.getValue(xpath, node));
         }
     }
 

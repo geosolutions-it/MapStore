@@ -9,21 +9,6 @@ public class NetCDFCFGeodetic2GeoTIFFsConfiguration extends MetocActionConfigura
      */
     private String layerParentDirectory;
 
-    /**
-     * @return represents the base directory where to public layers
-     */
-    public String getLayerParentDirectory() {
-        return layerParentDirectory;
-    }
-
-    /**
-     * @param represents
-     *            the base directory where to public layers
-     */
-    public void setLayerParentDirectory(String outputDirectory) {
-        this.layerParentDirectory = outputDirectory;
-    }
-
     public NetCDFCFGeodetic2GeoTIFFsConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
@@ -47,5 +32,19 @@ public class NetCDFCFGeodetic2GeoTIFFsConfiguration extends MetocActionConfigura
         configuration.setLayerParentDirectory(getLayerParentDirectory());
 
         return configuration;
+    }
+
+    /**
+     * @return represents the base directory where to public layers
+     */
+    public String getLayerParentDirectory() {
+        return layerParentDirectory;
+    }
+
+    /**
+     * @param represents the base directory where to public layers
+     */
+    public void setLayerParentDirectory(String outputDirectory) {
+        this.layerParentDirectory = outputDirectory;
     }
 }

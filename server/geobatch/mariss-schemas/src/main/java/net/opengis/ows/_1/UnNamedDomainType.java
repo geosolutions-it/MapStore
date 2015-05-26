@@ -5,24 +5,25 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.ows._1;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Valid domain (or allowed set of values) of one quantity, with needed metadata but without a quantity name or identifier. 
+ * Valid domain (or allowed set of values) of one quantity, with needed metadata but without a quantity name or identifier.
  * 
- * <p>Java class for UnNamedDomainType complex type.
+ * <p>
+ * Java class for UnNamedDomainType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="UnNamedDomainType">
@@ -44,279 +45,110 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "UnNamedDomainType", propOrder = {
-    "allowedValues",
-    "anyValue",
-    "noValues",
-    "valuesReference",
-    "defaultValue",
-    "meaning",
-    "dataType",
-    "uom",
-    "referenceSystem",
-    "metadata"
-})
-@XmlSeeAlso({
-    DomainType.class
-})
+@XmlType(name = "UnNamedDomainType", propOrder = { "allowedValues", "anyValue", "noValues",
+        "valuesReference", "defaultValue", "meaning", "dataType", "uom", "referenceSystem",
+        "metadata" })
+@XmlSeeAlso({ DomainType.class })
 public class UnNamedDomainType {
 
     @XmlElement(name = "AllowedValues")
     protected AllowedValues allowedValues;
+
     @XmlElement(name = "AnyValue")
     protected AnyValue anyValue;
+
     @XmlElement(name = "NoValues")
     protected NoValues noValues;
+
     @XmlElement(name = "ValuesReference")
     protected ValuesReference valuesReference;
+
     @XmlElement(name = "DefaultValue")
     protected ValueType defaultValue;
+
     @XmlElement(name = "Meaning")
     protected DomainMetadataType meaning;
+
     @XmlElement(name = "DataType")
     protected DomainMetadataType dataType;
+
     @XmlElement(name = "UOM")
     protected DomainMetadataType uom;
+
     @XmlElement(name = "ReferenceSystem")
     protected DomainMetadataType referenceSystem;
+
     @XmlElement(name = "Metadata")
     protected List<MetadataType> metadata;
 
     /**
      * Gets the value of the allowedValues property.
      * 
-     * @return
-     *     possible object is
-     *     {@link AllowedValues }
-     *     
+     * @return possible object is {@link AllowedValues }
+     * 
      */
     public AllowedValues getAllowedValues() {
         return allowedValues;
     }
 
     /**
-     * Sets the value of the allowedValues property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link AllowedValues }
-     *     
-     */
-    public void setAllowedValues(AllowedValues value) {
-        this.allowedValues = value;
-    }
-
-    /**
      * Gets the value of the anyValue property.
      * 
-     * @return
-     *     possible object is
-     *     {@link AnyValue }
-     *     
+     * @return possible object is {@link AnyValue }
+     * 
      */
     public AnyValue getAnyValue() {
         return anyValue;
     }
 
     /**
-     * Sets the value of the anyValue property.
+     * This data type metadata should be referenced or included for each quantity.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link AnyValue }
-     *     
-     */
-    public void setAnyValue(AnyValue value) {
-        this.anyValue = value;
-    }
-
-    /**
-     * Gets the value of the noValues property.
+     * @return possible object is {@link DomainMetadataType }
      * 
-     * @return
-     *     possible object is
-     *     {@link NoValues }
-     *     
-     */
-    public NoValues getNoValues() {
-        return noValues;
-    }
-
-    /**
-     * Sets the value of the noValues property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link NoValues }
-     *     
-     */
-    public void setNoValues(NoValues value) {
-        this.noValues = value;
-    }
-
-    /**
-     * Gets the value of the valuesReference property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ValuesReference }
-     *     
-     */
-    public ValuesReference getValuesReference() {
-        return valuesReference;
-    }
-
-    /**
-     * Sets the value of the valuesReference property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ValuesReference }
-     *     
-     */
-    public void setValuesReference(ValuesReference value) {
-        this.valuesReference = value;
-    }
-
-    /**
-     * Optional default value for this quantity, which should be included when this quantity has a default value. 
-     * 
-     * @return
-     *     possible object is
-     *     {@link ValueType }
-     *     
-     */
-    public ValueType getDefaultValue() {
-        return defaultValue;
-    }
-
-    /**
-     * Sets the value of the defaultValue property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ValueType }
-     *     
-     */
-    public void setDefaultValue(ValueType value) {
-        this.defaultValue = value;
-    }
-
-    /**
-     * Meaning metadata should be referenced or included for each quantity. 
-     * 
-     * @return
-     *     possible object is
-     *     {@link DomainMetadataType }
-     *     
-     */
-    public DomainMetadataType getMeaning() {
-        return meaning;
-    }
-
-    /**
-     * Sets the value of the meaning property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DomainMetadataType }
-     *     
-     */
-    public void setMeaning(DomainMetadataType value) {
-        this.meaning = value;
-    }
-
-    /**
-     * This data type metadata should be referenced or included for each quantity. 
-     * 
-     * @return
-     *     possible object is
-     *     {@link DomainMetadataType }
-     *     
      */
     public DomainMetadataType getDataType() {
         return dataType;
     }
 
     /**
-     * Sets the value of the dataType property.
+     * Optional default value for this quantity, which should be included when this quantity has a default value.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link DomainMetadataType }
-     *     
+     * @return possible object is {@link ValueType }
+     * 
      */
-    public void setDataType(DomainMetadataType value) {
-        this.dataType = value;
+    public ValueType getDefaultValue() {
+        return defaultValue;
     }
 
     /**
-     * Identifier of unit of measure of this set of values. Should be included then this set of values has units (and not a more complete reference system). 
+     * Meaning metadata should be referenced or included for each quantity.
      * 
-     * @return
-     *     possible object is
-     *     {@link DomainMetadataType }
-     *     
+     * @return possible object is {@link DomainMetadataType }
+     * 
      */
-    public DomainMetadataType getUOM() {
-        return uom;
+    public DomainMetadataType getMeaning() {
+        return meaning;
     }
 
     /**
-     * Sets the value of the uom property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DomainMetadataType }
-     *     
-     */
-    public void setUOM(DomainMetadataType value) {
-        this.uom = value;
-    }
-
-    /**
-     * Identifier of reference system used by this set of values. Should be included then this set of values has a reference system (not just units). 
-     * 
-     * @return
-     *     possible object is
-     *     {@link DomainMetadataType }
-     *     
-     */
-    public DomainMetadataType getReferenceSystem() {
-        return referenceSystem;
-    }
-
-    /**
-     * Sets the value of the referenceSystem property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DomainMetadataType }
-     *     
-     */
-    public void setReferenceSystem(DomainMetadataType value) {
-        this.referenceSystem = value;
-    }
-
-    /**
-     * Optional unordered list of other metadata about this quantity. A list of required and optional other metadata elements for this quantity should be specified in the Implementation Specification for this service. Gets the value of the metadata property.
+     * Optional unordered list of other metadata about this quantity. A list of required and optional other metadata elements for this quantity should
+     * be specified in the Implementation Specification for this service. Gets the value of the metadata property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the metadata property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the metadata property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getMetadata().add(newItem);
+     * getMetadata().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link MetadataType }
+     * Objects of the following type(s) are allowed in the list {@link MetadataType }
      * 
      * 
      */
@@ -325,6 +157,137 @@ public class UnNamedDomainType {
             metadata = new ArrayList<MetadataType>();
         }
         return this.metadata;
+    }
+
+    /**
+     * Gets the value of the noValues property.
+     * 
+     * @return possible object is {@link NoValues }
+     * 
+     */
+    public NoValues getNoValues() {
+        return noValues;
+    }
+
+    /**
+     * Identifier of reference system used by this set of values. Should be included then this set of values has a reference system (not just units).
+     * 
+     * @return possible object is {@link DomainMetadataType }
+     * 
+     */
+    public DomainMetadataType getReferenceSystem() {
+        return referenceSystem;
+    }
+
+    /**
+     * Identifier of unit of measure of this set of values. Should be included then this set of values has units (and not a more complete reference
+     * system).
+     * 
+     * @return possible object is {@link DomainMetadataType }
+     * 
+     */
+    public DomainMetadataType getUOM() {
+        return uom;
+    }
+
+    /**
+     * Gets the value of the valuesReference property.
+     * 
+     * @return possible object is {@link ValuesReference }
+     * 
+     */
+    public ValuesReference getValuesReference() {
+        return valuesReference;
+    }
+
+    /**
+     * Sets the value of the allowedValues property.
+     * 
+     * @param value allowed object is {@link AllowedValues }
+     * 
+     */
+    public void setAllowedValues(AllowedValues value) {
+        this.allowedValues = value;
+    }
+
+    /**
+     * Sets the value of the anyValue property.
+     * 
+     * @param value allowed object is {@link AnyValue }
+     * 
+     */
+    public void setAnyValue(AnyValue value) {
+        this.anyValue = value;
+    }
+
+    /**
+     * Sets the value of the dataType property.
+     * 
+     * @param value allowed object is {@link DomainMetadataType }
+     * 
+     */
+    public void setDataType(DomainMetadataType value) {
+        this.dataType = value;
+    }
+
+    /**
+     * Sets the value of the defaultValue property.
+     * 
+     * @param value allowed object is {@link ValueType }
+     * 
+     */
+    public void setDefaultValue(ValueType value) {
+        this.defaultValue = value;
+    }
+
+    /**
+     * Sets the value of the meaning property.
+     * 
+     * @param value allowed object is {@link DomainMetadataType }
+     * 
+     */
+    public void setMeaning(DomainMetadataType value) {
+        this.meaning = value;
+    }
+
+    /**
+     * Sets the value of the noValues property.
+     * 
+     * @param value allowed object is {@link NoValues }
+     * 
+     */
+    public void setNoValues(NoValues value) {
+        this.noValues = value;
+    }
+
+    /**
+     * Sets the value of the referenceSystem property.
+     * 
+     * @param value allowed object is {@link DomainMetadataType }
+     * 
+     */
+    public void setReferenceSystem(DomainMetadataType value) {
+        this.referenceSystem = value;
+    }
+
+    /**
+     * Sets the value of the uom property.
+     * 
+     * @param value allowed object is {@link DomainMetadataType }
+     * 
+     */
+    public void setUOM(DomainMetadataType value) {
+        this.uom = value;
+    }
+
+    /**
+     * Sets the value of the valuesReference property.
+     * 
+     * @param value allowed object is {@link ValuesReference }
+     * 
+     */
+    public void setValuesReference(ValuesReference value) {
+        this.valuesReference = value;
     }
 
 }

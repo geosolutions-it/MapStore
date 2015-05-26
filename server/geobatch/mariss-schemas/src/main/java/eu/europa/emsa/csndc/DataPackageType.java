@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for DataPackageType complex type.
+ * <p>
+ * Java class for DataPackageType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="DataPackageType">
@@ -45,219 +45,188 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DataPackageType", propOrder = {
-    "packageInfo",
-    "eoProduct",
-    "oilSpills",
-    "detectedShips",
-    "sarDerivedData",
-    "qualityNotification",
-    "qualityReport",
-    "processRequest"
-})
+@XmlType(name = "DataPackageType", propOrder = { "packageInfo", "eoProduct", "oilSpills",
+        "detectedShips", "sarDerivedData", "qualityNotification", "qualityReport", "processRequest" })
 public class DataPackageType {
 
     @XmlElement(required = true)
     protected PackageInfoType packageInfo;
+
     @XmlElement(required = true)
     protected EOProductType eoProduct;
+
     protected OilSpillsType oilSpills;
+
     protected DetectedShipsType detectedShips;
+
     protected SARDerivedDataType sarDerivedData;
+
     protected QualityType qualityNotification;
+
     protected QualityType qualityReport;
+
     protected ProcessRequestType processRequest;
-
-    /**
-     * Package info
-     * 
-     * @return
-     *     possible object is
-     *     {@link PackageInfoType }
-     *     
-     */
-    public PackageInfoType getPackageInfo() {
-        return packageInfo;
-    }
-
-    /**
-     * Sets the value of the packageInfo property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link PackageInfoType }
-     *     
-     */
-    public void setPackageInfo(PackageInfoType value) {
-        this.packageInfo = value;
-    }
-
-    /**
-     * References of the EO product contained in the package if any.Only one EO product is expected in a package.
-     * 
-     * @return
-     *     possible object is
-     *     {@link EOProductType }
-     *     
-     */
-    public EOProductType getEoProduct() {
-        return eoProduct;
-    }
-
-    /**
-     * Sets the value of the eoProduct property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link EOProductType }
-     *     
-     */
-    public void setEoProduct(EOProductType value) {
-        this.eoProduct = value;
-    }
-
-    /**
-     * Description of the package content in terms of OS found/processed (if any).
-     * 
-     * @return
-     *     possible object is
-     *     {@link OilSpillsType }
-     *     
-     */
-    public OilSpillsType getOilSpills() {
-        return oilSpills;
-    }
-
-    /**
-     * Sets the value of the oilSpills property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link OilSpillsType }
-     *     
-     */
-    public void setOilSpills(OilSpillsType value) {
-        this.oilSpills = value;
-    }
 
     /**
      * Description of the package content in terms of Detected Ships found (if any).
      * 
-     * @return
-     *     possible object is
-     *     {@link DetectedShipsType }
-     *     
+     * @return possible object is {@link DetectedShipsType }
+     * 
      */
     public DetectedShipsType getDetectedShips() {
         return detectedShips;
     }
 
     /**
-     * Sets the value of the detectedShips property.
+     * References of the EO product contained in the package if any.Only one EO product is expected in a package.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link DetectedShipsType }
-     *     
+     * @return possible object is {@link EOProductType }
+     * 
      */
-    public void setDetectedShips(DetectedShipsType value) {
-        this.detectedShips = value;
+    public EOProductType getEoProduct() {
+        return eoProduct;
     }
 
     /**
-     * Description of the package content in terms of SAR derived data.
+     * Description of the package content in terms of OS found/processed (if any).
      * 
-     * @return
-     *     possible object is
-     *     {@link SARDerivedDataType }
-     *     
+     * @return possible object is {@link OilSpillsType }
+     * 
      */
-    public SARDerivedDataType getSarDerivedData() {
-        return sarDerivedData;
+    public OilSpillsType getOilSpills() {
+        return oilSpills;
     }
 
     /**
-     * Sets the value of the sarDerivedData property.
+     * Package info
      * 
-     * @param value
-     *     allowed object is
-     *     {@link SARDerivedDataType }
-     *     
+     * @return possible object is {@link PackageInfoType }
+     * 
      */
-    public void setSarDerivedData(SARDerivedDataType value) {
-        this.sarDerivedData = value;
+    public PackageInfoType getPackageInfo() {
+        return packageInfo;
     }
 
     /**
-     * Description of the image quality notification info contained in the package if any. Only one quality notification file is supposed to be present in a single package.
+     * Description of the process request contained in the package if any. Only one process request file is supposed to be present in a single
+     * package.
      * 
-     * @return
-     *     possible object is
-     *     {@link QualityType }
-     *     
-     */
-    public QualityType getQualityNotification() {
-        return qualityNotification;
-    }
-
-    /**
-     * Sets the value of the qualityNotification property.
+     * @return possible object is {@link ProcessRequestType }
      * 
-     * @param value
-     *     allowed object is
-     *     {@link QualityType }
-     *     
-     */
-    public void setQualityNotification(QualityType value) {
-        this.qualityNotification = value;
-    }
-
-    /**
-     * Description of the quality report contained in the package if any. Only one quality report file is supposed to be present in a single package.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QualityType }
-     *     
-     */
-    public QualityType getQualityReport() {
-        return qualityReport;
-    }
-
-    /**
-     * Sets the value of the qualityReport property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QualityType }
-     *     
-     */
-    public void setQualityReport(QualityType value) {
-        this.qualityReport = value;
-    }
-
-    /**
-     * Description of the process request contained in the package if any. Only one process request file is supposed to be present in a single package.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ProcessRequestType }
-     *     
      */
     public ProcessRequestType getProcessRequest() {
         return processRequest;
     }
 
     /**
+     * Description of the image quality notification info contained in the package if any. Only one quality notification file is supposed to be
+     * present in a single package.
+     * 
+     * @return possible object is {@link QualityType }
+     * 
+     */
+    public QualityType getQualityNotification() {
+        return qualityNotification;
+    }
+
+    /**
+     * Description of the quality report contained in the package if any. Only one quality report file is supposed to be present in a single package.
+     * 
+     * @return possible object is {@link QualityType }
+     * 
+     */
+    public QualityType getQualityReport() {
+        return qualityReport;
+    }
+
+    /**
+     * Description of the package content in terms of SAR derived data.
+     * 
+     * @return possible object is {@link SARDerivedDataType }
+     * 
+     */
+    public SARDerivedDataType getSarDerivedData() {
+        return sarDerivedData;
+    }
+
+    /**
+     * Sets the value of the detectedShips property.
+     * 
+     * @param value allowed object is {@link DetectedShipsType }
+     * 
+     */
+    public void setDetectedShips(DetectedShipsType value) {
+        this.detectedShips = value;
+    }
+
+    /**
+     * Sets the value of the eoProduct property.
+     * 
+     * @param value allowed object is {@link EOProductType }
+     * 
+     */
+    public void setEoProduct(EOProductType value) {
+        this.eoProduct = value;
+    }
+
+    /**
+     * Sets the value of the oilSpills property.
+     * 
+     * @param value allowed object is {@link OilSpillsType }
+     * 
+     */
+    public void setOilSpills(OilSpillsType value) {
+        this.oilSpills = value;
+    }
+
+    /**
+     * Sets the value of the packageInfo property.
+     * 
+     * @param value allowed object is {@link PackageInfoType }
+     * 
+     */
+    public void setPackageInfo(PackageInfoType value) {
+        this.packageInfo = value;
+    }
+
+    /**
      * Sets the value of the processRequest property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link ProcessRequestType }
-     *     
+     * @param value allowed object is {@link ProcessRequestType }
+     * 
      */
     public void setProcessRequest(ProcessRequestType value) {
         this.processRequest = value;
+    }
+
+    /**
+     * Sets the value of the qualityNotification property.
+     * 
+     * @param value allowed object is {@link QualityType }
+     * 
+     */
+    public void setQualityNotification(QualityType value) {
+        this.qualityNotification = value;
+    }
+
+    /**
+     * Sets the value of the qualityReport property.
+     * 
+     * @param value allowed object is {@link QualityType }
+     * 
+     */
+    public void setQualityReport(QualityType value) {
+        this.qualityReport = value;
+    }
+
+    /**
+     * Sets the value of the sarDerivedData property.
+     * 
+     * @param value allowed object is {@link SARDerivedDataType }
+     * 
+     */
+    public void setSarDerivedData(SARDerivedDataType value) {
+        this.sarDerivedData = value;
     }
 
 }

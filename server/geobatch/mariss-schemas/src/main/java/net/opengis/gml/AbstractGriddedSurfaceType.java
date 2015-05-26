@@ -5,12 +5,12 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -18,34 +18,25 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * A gridded surface is a parametric curve
- *    surface derived from a rectangular grid in the parameter
- *    space. The rows from this grid are control points for
- *    horizontal surface curves; the columns are control points
- *    for vertical surface curves. The working assumption is that
- *    for a pair of parametric co-ordinates (s, t) that the
- *    horizontal curves for each integer offset are calculated
- *    and evaluated at "s". The defines a sequence of control
- *    points:
- *    
- *    cn(s) : s  1 .....columns 
+ * A gridded surface is a parametric curve surface derived from a rectangular grid in the parameter space. The rows from this grid are control points
+ * for horizontal surface curves; the columns are control points for vertical surface curves. The working assumption is that for a pair of parametric
+ * co-ordinates (s, t) that the horizontal curves for each integer offset are calculated and evaluated at "s". The defines a sequence of control
+ * points:
  * 
- *    From this sequence a vertical curve is calculated for "s",
- *    and evaluated at "t". In most cases, the order of
- *    calculation (horizontal-vertical vs. vertical-horizontal)
- *    does not make a difference. Where it does, the horizontal-   
- *    vertical order shall be the one used.
+ * cn(s) : s 1 .....columns
  * 
- *    Logically, any pair of curve interpolation types can lead
- *    to a subtype of GriddedSurface. The following clauses
- *    define some most commonly encountered surfaces that can
- *    be represented in this manner.
+ * From this sequence a vertical curve is calculated for "s", and evaluated at "t". In most cases, the order of calculation (horizontal-vertical vs.
+ * vertical-horizontal) does not make a difference. Where it does, the horizontal- vertical order shall be the one used.
  * 
- * <p>Java class for AbstractGriddedSurfaceType complex type.
+ * Logically, any pair of curve interpolation types can lead to a subtype of GriddedSurface. The following clauses define some most commonly
+ * encountered surfaces that can be represented in this manner.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * Java class for AbstractGriddedSurfaceType complex type.
+ * 
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AbstractGriddedSurfaceType">
@@ -64,107 +55,16 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AbstractGriddedSurfaceType", propOrder = {
-    "row",
-    "rows",
-    "columns"
-})
-@XmlSeeAlso({
-    CylinderType.class,
-    ConeType.class,
-    SphereType.class
-})
-public class AbstractGriddedSurfaceType
-    extends AbstractParametricCurveSurfaceType
-{
-
-    @XmlElement(required = true)
-    protected List<AbstractGriddedSurfaceType.Row> row;
-    protected BigInteger rows;
-    protected BigInteger columns;
+@XmlType(name = "AbstractGriddedSurfaceType", propOrder = { "row", "rows", "columns" })
+@XmlSeeAlso({ CylinderType.class, ConeType.class, SphereType.class })
+public class AbstractGriddedSurfaceType extends AbstractParametricCurveSurfaceType {
 
     /**
-     * Gets the value of the row property.
+     * <p>
+     * Java class for anonymous complex type.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the row property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getRow().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link AbstractGriddedSurfaceType.Row }
-     * 
-     * 
-     */
-    public List<AbstractGriddedSurfaceType.Row> getRow() {
-        if (row == null) {
-            row = new ArrayList<AbstractGriddedSurfaceType.Row>();
-        }
-        return this.row;
-    }
-
-    /**
-     * Gets the value of the rows property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getRows() {
-        return rows;
-    }
-
-    /**
-     * Sets the value of the rows property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setRows(BigInteger value) {
-        this.rows = value;
-    }
-
-    /**
-     * Gets the value of the columns property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getColumns() {
-        return columns;
-    }
-
-    /**
-     * Sets the value of the columns property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setColumns(BigInteger value) {
-        this.columns = value;
-    }
-
-
-    /**
-     * <p>Java class for anonymous complex type.
-     * 
-     * <p>The following schema fragment specifies the expected content contained within this class.
+     * The following schema fragment specifies the expected content contained within this class.
      * 
      * <pre>
      * &lt;complexType>
@@ -181,63 +81,32 @@ public class AbstractGriddedSurfaceType
      * 
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
-        "posList",
-        "geometricPositionGroup"
-    })
+    @XmlType(name = "", propOrder = { "posList", "geometricPositionGroup" })
     public static class Row {
 
         protected DirectPositionListType posList;
-        @XmlElements({
-            @XmlElement(name = "pos", type = DirectPositionType.class),
-            @XmlElement(name = "pointProperty", type = PointPropertyType.class)
-        })
+
+        @XmlElements({ @XmlElement(name = "pos", type = DirectPositionType.class),
+                @XmlElement(name = "pointProperty", type = PointPropertyType.class) })
         protected List<Object> geometricPositionGroup;
-
-        /**
-         * Gets the value of the posList property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link DirectPositionListType }
-         *     
-         */
-        public DirectPositionListType getPosList() {
-            return posList;
-        }
-
-        /**
-         * Sets the value of the posList property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link DirectPositionListType }
-         *     
-         */
-        public void setPosList(DirectPositionListType value) {
-            this.posList = value;
-        }
 
         /**
          * Gets the value of the geometricPositionGroup property.
          * 
          * <p>
-         * This accessor method returns a reference to the live list,
-         * not a snapshot. Therefore any modification you make to the
-         * returned list will be present inside the JAXB object.
-         * This is why there is not a <CODE>set</CODE> method for the geometricPositionGroup property.
+         * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+         * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the geometricPositionGroup property.
          * 
          * <p>
          * For example, to add a new item, do as follows:
+         * 
          * <pre>
-         *    getGeometricPositionGroup().add(newItem);
+         * getGeometricPositionGroup().add(newItem);
          * </pre>
          * 
          * 
          * <p>
-         * Objects of the following type(s) are allowed in the list
-         * {@link DirectPositionType }
-         * {@link PointPropertyType }
+         * Objects of the following type(s) are allowed in the list {@link DirectPositionType } {@link PointPropertyType }
          * 
          * 
          */
@@ -248,6 +117,100 @@ public class AbstractGriddedSurfaceType
             return this.geometricPositionGroup;
         }
 
+        /**
+         * Gets the value of the posList property.
+         * 
+         * @return possible object is {@link DirectPositionListType }
+         * 
+         */
+        public DirectPositionListType getPosList() {
+            return posList;
+        }
+
+        /**
+         * Sets the value of the posList property.
+         * 
+         * @param value allowed object is {@link DirectPositionListType }
+         * 
+         */
+        public void setPosList(DirectPositionListType value) {
+            this.posList = value;
+        }
+
+    }
+
+    @XmlElement(required = true)
+    protected List<AbstractGriddedSurfaceType.Row> row;
+
+    protected BigInteger rows;
+
+    protected BigInteger columns;
+
+    /**
+     * Gets the value of the columns property.
+     * 
+     * @return possible object is {@link BigInteger }
+     * 
+     */
+    public BigInteger getColumns() {
+        return columns;
+    }
+
+    /**
+     * Gets the value of the row property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the row property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * 
+     * <pre>
+     * getRow().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list {@link AbstractGriddedSurfaceType.Row }
+     * 
+     * 
+     */
+    public List<AbstractGriddedSurfaceType.Row> getRow() {
+        if (row == null) {
+            row = new ArrayList<AbstractGriddedSurfaceType.Row>();
+        }
+        return this.row;
+    }
+
+    /**
+     * Gets the value of the rows property.
+     * 
+     * @return possible object is {@link BigInteger }
+     * 
+     */
+    public BigInteger getRows() {
+        return rows;
+    }
+
+    /**
+     * Sets the value of the columns property.
+     * 
+     * @param value allowed object is {@link BigInteger }
+     * 
+     */
+    public void setColumns(BigInteger value) {
+        this.columns = value;
+    }
+
+    /**
+     * Sets the value of the rows property.
+     * 
+     * @param value allowed object is {@link BigInteger }
+     * 
+     */
+    public void setRows(BigInteger value) {
+        this.rows = value;
     }
 
 }

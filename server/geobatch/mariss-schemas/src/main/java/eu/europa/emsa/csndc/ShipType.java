@@ -5,12 +5,12 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,16 +18,18 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.datatype.XMLGregorianCalendar;
+
 import net.opengis.gml.AbstractFeatureType;
 import net.opengis.gml.DirectPositionType;
-
 
 /**
  * Ship observed in the original satellite image
  * 
- * <p>Java class for ShipType complex type.
+ * <p>
+ * Java class for ShipType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="ShipType">
@@ -58,75 +60,57 @@ import net.opengis.gml.DirectPositionType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ShipType", propOrder = {
-    "rest"
-})
-public class ShipType
-    extends AbstractFeatureType
-{
+@XmlType(name = "ShipType", propOrder = { "rest" })
+public class ShipType extends AbstractFeatureType {
 
     @XmlElementRefs({
-        @XmlElementRef(name = "confidenceLevel", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
-        @XmlElementRef(name = "speed", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
-        @XmlElementRef(name = "imageIdentifier", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
-        @XmlElementRef(name = "pos", namespace = "http://www.opengis.net/gml", type = JAXBElement.class),
-        @XmlElementRef(name = "detectionParameters", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
-        @XmlElementRef(name = "timeStamp", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
-        @XmlElementRef(name = "includeInReport", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
-        @XmlElementRef(name = "id", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
-        @XmlElementRef(name = "lengthError", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
-        @XmlElementRef(name = "shipThumbnail", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
-        @XmlElementRef(name = "width", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
-        @XmlElementRef(name = "length", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
-        @XmlElementRef(name = "positionAccuracyVector", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
-        @XmlElementRef(name = "heading", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
-        @XmlElementRef(name = "widthError", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class)
-    })
+            @XmlElementRef(name = "confidenceLevel", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
+            @XmlElementRef(name = "speed", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
+            @XmlElementRef(name = "imageIdentifier", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
+            @XmlElementRef(name = "pos", namespace = "http://www.opengis.net/gml", type = JAXBElement.class),
+            @XmlElementRef(name = "detectionParameters", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
+            @XmlElementRef(name = "timeStamp", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
+            @XmlElementRef(name = "includeInReport", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
+            @XmlElementRef(name = "id", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
+            @XmlElementRef(name = "lengthError", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
+            @XmlElementRef(name = "shipThumbnail", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
+            @XmlElementRef(name = "width", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
+            @XmlElementRef(name = "length", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
+            @XmlElementRef(name = "positionAccuracyVector", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
+            @XmlElementRef(name = "heading", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class),
+            @XmlElementRef(name = "widthError", namespace = "http://www.emsa.europa.eu/csndc", type = JAXBElement.class) })
     protected List<JAXBElement<?>> rest;
 
     /**
-     * Gets the rest of the content model. 
+     * Gets the rest of the content model.
      * 
      * <p>
-     * You are getting this "catch-all" property because of the following reason: 
-     * The field name "Id" is used by two different parts of a schema. See: 
-     * line 20 of file:/tmp/jaxb/csndc_ds.xsd
-     * line 74 of http://schemas.opengis.net/gml/3.1.1/base/gmlBase.xsd
+     * You are getting this "catch-all" property because of the following reason: The field name "Id" is used by two different parts of a schema. See:
+     * line 20 of file:/tmp/jaxb/csndc_ds.xsd line 74 of http://schemas.opengis.net/gml/3.1.1/base/gmlBase.xsd
      * <p>
-     * To get rid of this property, apply a property customization to one 
-     * of both of the following declarations to change their names: 
-     * Gets the value of the rest property.
+     * To get rid of this property, apply a property customization to one of both of the following declarations to change their names: Gets the value
+     * of the rest property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the rest property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the rest property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getRest().add(newItem);
+     * getRest().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link Double }{@code >}
-     * {@link JAXBElement }{@code <}{@link Double }{@code >}
-     * {@link JAXBElement }{@code <}{@link ImageType }{@code >}
-     * {@link JAXBElement }{@code <}{@link DirectPositionType }{@code >}
-     * {@link JAXBElement }{@code <}{@link DetectionParametersType }{@code >}
-     * {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}
-     * {@link JAXBElement }{@code <}{@link Boolean }{@code >}
-     * {@link JAXBElement }{@code <}{@link String }{@code >}
-     * {@link JAXBElement }{@code <}{@link Double }{@code >}
-     * {@link JAXBElement }{@code <}{@link String }{@code >}
-     * {@link JAXBElement }{@code <}{@link Double }{@code >}
-     * {@link JAXBElement }{@code <}{@link Double }{@code >}
-     * {@link JAXBElement }{@code <}{@link PositionAccuracyVectorType }{@code >}
-     * {@link JAXBElement }{@code <}{@link BigInteger }{@code >}
-     * {@link JAXBElement }{@code <}{@link Double }{@code >}
+     * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link Double }{@code >} {@link JAXBElement }{@code <}
+     * {@link Double }{@code >} {@link JAXBElement }{@code <}{@link ImageType }{@code >} {@link JAXBElement }{@code <}{@link DirectPositionType }{@code >}
+     * {@link JAXBElement }{@code <}{@link DetectionParametersType }{@code >} {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}
+     * {@link JAXBElement }{@code <}{@link Boolean }{@code >} {@link JAXBElement }{@code <}{@link String }{@code >} {@link JAXBElement }{@code <}
+     * {@link Double }{@code >} {@link JAXBElement }{@code <}{@link String }{@code >} {@link JAXBElement }{@code <}{@link Double }{@code >}
+     * {@link JAXBElement }{@code <}{@link Double }{@code >} {@link JAXBElement }{@code <}{@link PositionAccuracyVectorType }{@code >} {@link JAXBElement }
+     * {@code <}{@link BigInteger }{@code >} {@link JAXBElement }{@code <}{@link Double }{@code >}
      * 
      * 
      */

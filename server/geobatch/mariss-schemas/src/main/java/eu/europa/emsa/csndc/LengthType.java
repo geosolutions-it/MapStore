@@ -5,20 +5,20 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package eu.europa.emsa.csndc;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * Linear length of spill's perimeter. Uses the LengthType with the restriction that the unit of measure referenced by uom must be meters
  * 
- * <p>Java class for LengthType complex type.
+ * <p>
+ * Java class for LengthType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="LengthType">
@@ -33,9 +33,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "LengthType")
-public class LengthType
-    extends net.opengis.gml.LengthType
-{
-
+public class LengthType extends net.opengis.gml.LengthType {
 
 }

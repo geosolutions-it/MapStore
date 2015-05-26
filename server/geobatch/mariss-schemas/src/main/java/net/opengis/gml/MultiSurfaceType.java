@@ -5,22 +5,23 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * A MultiSurface is defined by one or more Surfaces, referenced through surfaceMember elements.
  * 
- * <p>Java class for MultiSurfaceType complex type.
+ * <p>
+ * Java class for MultiSurfaceType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="MultiSurfaceType">
@@ -38,36 +39,30 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MultiSurfaceType", propOrder = {
-    "surfaceMember",
-    "surfaceMembers"
-})
-public class MultiSurfaceType
-    extends AbstractGeometricAggregateType
-{
+@XmlType(name = "MultiSurfaceType", propOrder = { "surfaceMember", "surfaceMembers" })
+public class MultiSurfaceType extends AbstractGeometricAggregateType {
 
     protected List<SurfacePropertyType> surfaceMember;
+
     protected SurfaceArrayPropertyType surfaceMembers;
 
     /**
      * Gets the value of the surfaceMember property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the surfaceMember property.
+     * This accessor method returns a reference to the live list, not a snapshot. Therefore any modification you make to the returned list will be
+     * present inside the JAXB object. This is why there is not a <CODE>set</CODE> method for the surfaceMember property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getSurfaceMember().add(newItem);
+     * getSurfaceMember().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SurfacePropertyType }
+     * Objects of the following type(s) are allowed in the list {@link SurfacePropertyType }
      * 
      * 
      */
@@ -81,10 +76,8 @@ public class MultiSurfaceType
     /**
      * Gets the value of the surfaceMembers property.
      * 
-     * @return
-     *     possible object is
-     *     {@link SurfaceArrayPropertyType }
-     *     
+     * @return possible object is {@link SurfaceArrayPropertyType }
+     * 
      */
     public SurfaceArrayPropertyType getSurfaceMembers() {
         return surfaceMembers;
@@ -93,10 +86,8 @@ public class MultiSurfaceType
     /**
      * Sets the value of the surfaceMembers property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link SurfaceArrayPropertyType }
-     *     
+     * @param value allowed object is {@link SurfaceArrayPropertyType }
+     * 
      */
     public void setSurfaceMembers(SurfaceArrayPropertyType value) {
         this.surfaceMembers = value;

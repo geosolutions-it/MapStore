@@ -5,19 +5,20 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for QueryGrammarEnumeration.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
+ * Java class for QueryGrammarEnumeration.
+ * 
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * 
  * <pre>
  * &lt;simpleType name="QueryGrammarEnumeration">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -34,11 +35,18 @@ import javax.xml.bind.annotation.XmlType;
 public enum QueryGrammarEnumeration {
 
     @XmlEnumValue("xpath")
-    XPATH("xpath"),
-    @XmlEnumValue("xquery")
-    XQUERY("xquery"),
-    @XmlEnumValue("other")
+    XPATH("xpath"), @XmlEnumValue("xquery")
+    XQUERY("xquery"), @XmlEnumValue("other")
     OTHER("other");
+    public static QueryGrammarEnumeration fromValue(String v) {
+        for (QueryGrammarEnumeration c : QueryGrammarEnumeration.values()) {
+            if (c.value.equals(v)) {
+                return c;
+            }
+        }
+        throw new IllegalArgumentException(v);
+    }
+
     private final String value;
 
     QueryGrammarEnumeration(String v) {
@@ -47,15 +55,6 @@ public enum QueryGrammarEnumeration {
 
     public String value() {
         return value;
-    }
-
-    public static QueryGrammarEnumeration fromValue(String v) {
-        for (QueryGrammarEnumeration c: QueryGrammarEnumeration.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
     }
 
 }

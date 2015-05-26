@@ -27,54 +27,54 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Mocked  data dir handler to perform tests
- *
+ * Mocked data dir handler to perform tests
+ * 
  * @author adiaz
  */
-public class MockedDataDirHandler extends DataDirHandler{
-	
-	protected final static Logger LOGGER = LoggerFactory
-			.getLogger(MockedDataDirHandler.class);
+public class MockedDataDirHandler extends DataDirHandler {
 
-	/**
+    protected final static Logger LOGGER = LoggerFactory.getLogger(MockedDataDirHandler.class);
+
+    /**
      * The base directory where the configuration files are located. <br/>
      */
     private String baseConfigPath;
-    
-	/**
-	 * Force use the baseConfigPath if GEOBATCH_CONFIG_DIR is not present in system properties
-	 * @throws Exception
-	 */
-    @Override
-	public void init() throws Exception {
-    	String value = System.getProperty(GEOBATCH_CONFIG_DIR);
-    	if(value == null){
-    		String path = getBaseConfigDirectory().getAbsolutePath();
-        	LOGGER.info("Force base directory for testing: "+ path);
-        	System.setProperty(GEOBATCH_CONFIG_DIR, path);
-    	}
-		super.init();
-	}
 
-	public MockedDataDirHandler() {
+    public MockedDataDirHandler() {
+    }
+
+    @Override
+    public File getBaseConfigDirectory() {
+        return new File(baseConfigPath);
     }
 
     /**
-	 * @return the baseConfigPath
-	 */
-	public String getBaseConfigPath() {
-		return baseConfigPath;
-	}
+     * @return the baseConfigPath
+     */
+    public String getBaseConfigPath() {
+        return baseConfigPath;
+    }
 
-	/**
-	 * @param baseConfigPath the baseConfigPath to set
-	 */
-	public void setBaseConfigPath(String baseConfigPath) {
-		this.baseConfigPath = baseConfigPath;
-	}
-
+    /**
+     * Force use the baseConfigPath if GEOBATCH_CONFIG_DIR is not present in system properties
+     * 
+     * @throws Exception
+     */
     @Override
-	public File getBaseConfigDirectory() {
-		return new File(baseConfigPath);
-	}
+    public void init() throws Exception {
+        String value = System.getProperty(GEOBATCH_CONFIG_DIR);
+        if (value == null) {
+            String path = getBaseConfigDirectory().getAbsolutePath();
+            LOGGER.info("Force base directory for testing: " + path);
+            System.setProperty(GEOBATCH_CONFIG_DIR, path);
+        }
+        super.init();
+    }
+
+    /**
+     * @param baseConfigPath the baseConfigPath to set
+     */
+    public void setBaseConfigPath(String baseConfigPath) {
+        this.baseConfigPath = baseConfigPath;
+    }
 }

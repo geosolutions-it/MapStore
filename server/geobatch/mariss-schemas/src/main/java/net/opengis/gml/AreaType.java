@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,13 +12,15 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * Value of a spatial area quantity, with its units. Uses the MeasureType with the restriction that the unit of measure referenced by uom must be suitable for an area, such as square metres or square miles.
+ * Value of a spatial area quantity, with its units. Uses the MeasureType with the restriction that the unit of measure referenced by uom must be
+ * suitable for an area, such as square metres or square miles.
  * 
- * <p>Java class for AreaType complex type.
+ * <p>
+ * Java class for AreaType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="AreaType">
@@ -34,12 +35,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AreaType")
-@XmlSeeAlso({
-    eu.europa.emsa.csndc.AreaType.class
-})
-public class AreaType
-    extends MeasureType
-{
-
+@XmlSeeAlso({ eu.europa.emsa.csndc.AreaType.class })
+public class AreaType extends MeasureType {
 
 }

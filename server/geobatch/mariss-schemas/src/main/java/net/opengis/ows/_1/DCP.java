@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.ows._1;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,11 +13,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for anonymous complex type.
+ * <p>
+ * Java class for anonymous complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType>
@@ -35,9 +35,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "http"
-})
+@XmlType(name = "", propOrder = { "http" })
 @XmlRootElement(name = "DCP")
 public class DCP {
 
@@ -47,10 +45,8 @@ public class DCP {
     /**
      * Gets the value of the http property.
      * 
-     * @return
-     *     possible object is
-     *     {@link HTTP }
-     *     
+     * @return possible object is {@link HTTP }
+     * 
      */
     public HTTP getHTTP() {
         return http;
@@ -59,10 +55,8 @@ public class DCP {
     /**
      * Sets the value of the http property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link HTTP }
-     *     
+     * @param value allowed object is {@link HTTP }
+     * 
      */
     public void setHTTP(HTTP value) {
         this.http = value;

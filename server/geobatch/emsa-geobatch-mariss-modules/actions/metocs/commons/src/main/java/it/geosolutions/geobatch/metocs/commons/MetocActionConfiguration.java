@@ -32,53 +32,6 @@ import java.util.logging.Logger;
 
 public class MetocActionConfiguration extends ActionConfiguration implements Configuration {
 
-    public MetocActionConfiguration(String id, String name, String description) {
-        super(id, name, description);
-        
-        
-        // //
-        // initialize params...
-        // //
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-        
-    }
-
-    private boolean packComponents;
-
-    private boolean timeUnStampedOutputDir;
-    
-    private boolean flipY;
-
-    private String workingDirectory;
-
-    private String crs;
-
-    private String envelope;
-
-    private String storeFilePrefix;
-    
-    private String metocDictionaryPath;
-
-    private String metocHarvesterXMLTemplatePath;
-    
-    private String cruiseName;
-
-    /**
-     * Default logger
-     */
-    protected final static Logger LOGGER = 
-                            Logger.getLogger(MetocActionConfiguration.class.toString());
-
-    protected final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddmm_HHH");
-
-    public static final long startTime;
-
-    static {
-        GregorianCalendar calendar = new GregorianCalendar(1980, 00, 01, 00, 00, 00);
-        calendar.setTimeZone(TimeZone.getTimeZone("GMT+0"));
-        startTime = calendar.getTimeInMillis();
-    }
-
     /**
      * @param queryParams
      * @return
@@ -96,129 +49,65 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
         return queryString.toString();
     }
 
-    /**
-     * @return the metocDictionaryPath
-     */
-    public String getMetocDictionaryPath() {
-        return metocDictionaryPath;
-    }
+    private boolean packComponents;
+
+    private boolean timeUnStampedOutputDir;
+
+    private boolean flipY;
+
+    private String workingDirectory;
+
+    private String crs;
+
+    private String envelope;
+
+    private String storeFilePrefix;
+
+    private String metocDictionaryPath;
+
+    private String metocHarvesterXMLTemplatePath;
+
+    private String cruiseName;
 
     /**
-     * @param metocDictionaryPath
-     *            the metocDictionaryPath to set
+     * Default logger
      */
-    public void setMetocDictionaryPath(String metocDictionaryPath) {
-        this.metocDictionaryPath = metocDictionaryPath;
+    protected final static Logger LOGGER = Logger.getLogger(MetocActionConfiguration.class
+            .toString());
+
+    protected final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddmm_HHH");
+
+    public static final long startTime;
+
+    static {
+        GregorianCalendar calendar = new GregorianCalendar(1980, 00, 01, 00, 00, 00);
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+        startTime = calendar.getTimeInMillis();
     }
 
-    /**
-     * @return the metocHarvesterXMLTemplatePath
-     */
-    public String getMetocHarvesterXMLTemplatePath() {
-        return metocHarvesterXMLTemplatePath;
-    }
+    public MetocActionConfiguration(String id, String name, String description) {
+        super(id, name, description);
 
-    /**
-     * @param metocHarvesterXMLTemplatePath
-     *            the metocHarvesterXMLTemplatePath to set
-     */
-    public void setMetocHarvesterXMLTemplatePath(String metocHarvesterXMLTemplatePath) {
-        this.metocHarvesterXMLTemplatePath = metocHarvesterXMLTemplatePath;
-    }
+        // //
+        // initialize params...
+        // //
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
 
-    /**
-     * @return the workingDirectory
-     */
-    public String getWorkingDirectory() {
-        return workingDirectory;
-    }
-
-    /**
-     * @param workingDirectory
-     *            the workingDirectory to set
-     */
-    public void setWorkingDirectory(String workingDirectory) {
-        this.workingDirectory = workingDirectory;
-    }
-
-    public boolean isPackComponents() {
-        return packComponents;
-    }
-
-    public void setPackComponents(boolean packComponents) {
-        this.packComponents = packComponents;
-    }
-    
-    /**
-     * Returns true if the image should be flip by Y 
-     * @return boolean
-     */
-    public boolean isFlipY(){
-        return flipY;
-    }
-    
-    public void setFlipY(boolean f){
-        this.flipY=f;
-    }
-
-    public String getCrs() {
-        return crs;
-    }
-
-    public void setCrs(String crs) {
-        this.crs = crs;
-    }
-
-    public String getEnvelope() {
-        return envelope;
-    }
-
-    public void setEnvelope(String envelope) {
-        this.envelope = envelope;
-    }
-
-    public String getStoreFilePrefix() {
-        return storeFilePrefix;
-    }
-
-    public void setStoreFilePrefix(String storeFilePrefix) {
-        this.storeFilePrefix = storeFilePrefix;
-    }
-
-    public String getCruiseName() {
-        return cruiseName;
-    }
-
-    public void setCruiseName(String cruiseName) {
-        this.cruiseName = cruiseName;
-    }
-    /**
-     * @param timeUnStampedOutputDir
-     *            the timeUnStampedOutputDir to set
-     */
-    public void setTimeUnStampedOutputDir(boolean timeUnStampedOutputDir) {
-        this.timeUnStampedOutputDir = timeUnStampedOutputDir;
-    }
-
-    /**
-     * @return the timeUnStampedOutputDir
-     */
-    public boolean isTimeUnStampedOutputDir() {
-        return timeUnStampedOutputDir;
     }
 
     @Override
     public MetocActionConfiguration clone() {
         return copy(this);
     }
-    
+
     /**
      * copy into returned object src
+     * 
      * @param src
      * @return
      */
     protected MetocActionConfiguration copy(MetocActionConfiguration src) {
-        
+
         final MetocActionConfiguration configuration = new MetocActionConfiguration(super.getId(),
                 super.getName(), super.getDescription());
 
@@ -235,6 +124,115 @@ public class MetocActionConfiguration extends ActionConfiguration implements Con
         configuration.setCruiseName(src.cruiseName);
 
         return configuration;
+    }
+
+    public String getCrs() {
+        return crs;
+    }
+
+    public String getCruiseName() {
+        return cruiseName;
+    }
+
+    public String getEnvelope() {
+        return envelope;
+    }
+
+    /**
+     * @return the metocDictionaryPath
+     */
+    public String getMetocDictionaryPath() {
+        return metocDictionaryPath;
+    }
+
+    /**
+     * @return the metocHarvesterXMLTemplatePath
+     */
+    public String getMetocHarvesterXMLTemplatePath() {
+        return metocHarvesterXMLTemplatePath;
+    }
+
+    public String getStoreFilePrefix() {
+        return storeFilePrefix;
+    }
+
+    /**
+     * @return the workingDirectory
+     */
+    public String getWorkingDirectory() {
+        return workingDirectory;
+    }
+
+    /**
+     * Returns true if the image should be flip by Y
+     * 
+     * @return boolean
+     */
+    public boolean isFlipY() {
+        return flipY;
+    }
+
+    public boolean isPackComponents() {
+        return packComponents;
+    }
+
+    /**
+     * @return the timeUnStampedOutputDir
+     */
+    public boolean isTimeUnStampedOutputDir() {
+        return timeUnStampedOutputDir;
+    }
+
+    public void setCrs(String crs) {
+        this.crs = crs;
+    }
+
+    public void setCruiseName(String cruiseName) {
+        this.cruiseName = cruiseName;
+    }
+
+    public void setEnvelope(String envelope) {
+        this.envelope = envelope;
+    }
+
+    public void setFlipY(boolean f) {
+        this.flipY = f;
+    }
+
+    /**
+     * @param metocDictionaryPath the metocDictionaryPath to set
+     */
+    public void setMetocDictionaryPath(String metocDictionaryPath) {
+        this.metocDictionaryPath = metocDictionaryPath;
+    }
+
+    /**
+     * @param metocHarvesterXMLTemplatePath the metocHarvesterXMLTemplatePath to set
+     */
+    public void setMetocHarvesterXMLTemplatePath(String metocHarvesterXMLTemplatePath) {
+        this.metocHarvesterXMLTemplatePath = metocHarvesterXMLTemplatePath;
+    }
+
+    public void setPackComponents(boolean packComponents) {
+        this.packComponents = packComponents;
+    }
+
+    public void setStoreFilePrefix(String storeFilePrefix) {
+        this.storeFilePrefix = storeFilePrefix;
+    }
+
+    /**
+     * @param timeUnStampedOutputDir the timeUnStampedOutputDir to set
+     */
+    public void setTimeUnStampedOutputDir(boolean timeUnStampedOutputDir) {
+        this.timeUnStampedOutputDir = timeUnStampedOutputDir;
+    }
+
+    /**
+     * @param workingDirectory the workingDirectory to set
+     */
+    public void setWorkingDirectory(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
     }
 
     @Override

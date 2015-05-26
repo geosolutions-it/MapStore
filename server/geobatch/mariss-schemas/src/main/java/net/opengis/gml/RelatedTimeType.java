@@ -5,7 +5,6 @@
 // Generated on: 2014.06.13 at 10:49:44 AM CEST 
 //
 
-
 package net.opengis.gml;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,11 +12,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for RelatedTimeType complex type.
+ * <p>
+ * Java class for RelatedTimeType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="RelatedTimeType">
@@ -51,9 +51,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RelatedTimeType")
-public class RelatedTimeType
-    extends TimePrimitivePropertyType
-{
+public class RelatedTimeType extends TimePrimitivePropertyType {
 
     @XmlAttribute
     protected String relativePosition;
@@ -61,10 +59,8 @@ public class RelatedTimeType
     /**
      * Gets the value of the relativePosition property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getRelativePosition() {
         return relativePosition;
@@ -73,10 +69,8 @@ public class RelatedTimeType
     /**
      * Sets the value of the relativePosition property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * @param value allowed object is {@link String }
+     * 
      */
     public void setRelativePosition(String value) {
         this.relativePosition = value;
