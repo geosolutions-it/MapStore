@@ -155,6 +155,19 @@
                             </entry>
                          </params>
                      </container>
+                     <container>
+                     	 <maskOneIsValid>false</maskOneIsValid>
+                         <pattern>.*([0-9]{8}T[0-9]{6})_([0-9]{8}T[0-9]{6})_.*</pattern>
+                         <defaultNameSpace>sde</defaultNameSpace>
+                         <defaultNameSpaceURI></defaultNameSpaceURI>
+                         <actionClass>it.geosolutions.geobatch.mariss.actions.sartiff.SARGeoTiffAction</actionClass>
+                         <params>
+                            <entry>
+                                <string>NetCDFDir.key</string>
+                                <string>/home/geosolutions/work/data/netcdfdatadir</string>
+                            </entry>
+                         </params>
+                     </container>
                    </entry>  
             </subconfigurations>
 
