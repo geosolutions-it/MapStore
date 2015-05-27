@@ -192,37 +192,37 @@ gxp.plugins.npa.CartGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                             var recDownloadFilePath = recs[r].data.outfilelocation;
                             requestBody[recServiceId][recProdId].push(recDownloadFilePath);
                         }
-                        var win = new Ext.Window({
-                            title: 'Download data - Request payload',
-                            modal: true,
-                            layout: 'fit',
-                            height: 400,
-                            width: 400,
-                            items: [{
-                                xtype: 'textarea',
-                                readOnly: true,
-                                value: Ext.util.JSON.encode(requestBody)
-                            }],
-                            buttons: [{
-                                text: 'Ok',
-                                handler: function(btn){
-                                    btn.ownerCt.ownerCt.close();
-                                }
-                            }]
-                        });
-                        win.show();
-                        Ext.Ajax.request({
-                            method: 'POST',
-                            url: 'ajax_demo/sample.json',
+                         Ext.Ajax.request ({
+                            url     : this.downloadService + "order",
+                            timeout : 60 * 1000, // 1 Minute should be OK.
+                            scope   : this,
+                            method:'POST',
                             jsonData: requestBody,
+                            headers:{
+                                "Content-Type":"application/json",
+                                //TODO add authentication parameters
+                            },
+                            //accepts the object with status progress and id
                             success: function(response, opts) {
                                 var obj = Ext.decode(response.responseText);
-                                console.dir(obj);
+                                var downloadUrl = this.downloadService + "get/"+ obj.id;
+                                if(obj.status && obj.status =="READY"){
+                                    Ext.DomHelper.append(Ext.getBody(), {
+                                        tag: 'iframe',
+                                        frameBorder: 0,
+                                        width: 0,
+                                        height: 0,
+                                        css: 'display:none;visibility:hidden;height:0px;',
+                                        src: downloadUrl
+                                    });
+                                }
                             },
                             failure: function(response, opts) {
-                                console.log('server-side failure with status code ' + response.status);
+                                Ext.Msg.alert("Error occurred for this download");
                             }
-                        });
+
+                            });  
+                        
                     }
                 },
                 scope: this

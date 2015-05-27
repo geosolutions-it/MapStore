@@ -442,6 +442,7 @@
         {
             "ptype": "npa_cart_grid",
             "id": "cart",
+            "downloadService":"/opensdi2-manager/mvc/download/",
             "outputConfig": {
                 "viewConfig": {
                     "forceFit": true
