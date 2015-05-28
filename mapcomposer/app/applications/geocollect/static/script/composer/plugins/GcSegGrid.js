@@ -812,7 +812,8 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 },
                 scope:this
             },{
-                text: this.zoomToFeature,
+                text: this.zoomToFeature,                                
+                ref:'/../zToF',
                 tooltip: this.zoomToFeature,
                 iconCls: 'gxp-icon-zoom-to',
                 scope: this,
@@ -903,7 +904,8 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
       //  this.segGrid.getSelectionModel().lock(); 
        
         featureGrid.selModel.on('rowselect',function(sm, rowIndex, r ){
-                                    
+                       if(!r.data.feature.geometry) this.segGrid.zToF.disable();
+                       else if(this.segGrid.zToF.disabled)this.segGrid.zToF.enable();            
                      if(this.showInfo==true)this.segdet.showMe(r);
                      
             },this);
