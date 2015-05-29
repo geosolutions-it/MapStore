@@ -103,15 +103,7 @@ public abstract class NetCDFAction extends MarissBaseAction {
         }
     }
 
-    protected static final String SEPARATOR = "_Var_";
-
-    protected static final String CUSTOM_DIM_START_SEPARATOR = "_Dim_";    
-    protected static final String CUSTOM_DIM_VAL_SEPARATOR = "_DimVal_";
-    protected static final String CUSTOM_DIM_END_SEPARATOR = "_DimEnd_";
-
-    private static final String SERVICE_SEPARATOR = "_s_";
-
-    private static final String IDENTIFIER_SEPARATOR = "_I_";
+ 
 
     private static final String PATHSEPARATOR = File.separator;
 
@@ -161,34 +153,7 @@ public abstract class NetCDFAction extends MarissBaseAction {
         }
     }
 
-    protected void createRegexFiles(File mosaicDir, String varName,
-            Map<String, String> additionalDimensions) throws IOException {
-        // REGEX for Service Name
-        File serviceRegex = new File(mosaicDir, "serviceregex.properties");
-        serviceRegex.createNewFile();
-        // String properties = "regex=" + "(?<=" + SERVICE_SEPARATOR + ")[a-zA-Z]*" + "(?="
-        // + SERVICE_SEPARATOR + ")";
-        String properties = "regex=" + "(?<=" + SERVICE_SEPARATOR + ").*" + "(?="
-                + SERVICE_SEPARATOR + ")";
-        FileUtils.write(serviceRegex, properties);
-        // REGEX for Identifier
-        File identifierRegex = new File(mosaicDir, "identifierregex.properties");
-        identifierRegex.createNewFile();
-        String identifierProperties = "regex=" + "(?<=" + IDENTIFIER_SEPARATOR + ").*" + "(?="
-                + IDENTIFIER_SEPARATOR + ")";
-        FileUtils.write(identifierRegex, identifierProperties);
-
-        // --------------
-        if (additionalDimensions != null && additionalDimensions.size() > 0) {
-            for (Entry<String, String> entry : additionalDimensions.entrySet()) {
-                File customPropRegex = new File(mosaicDir, entry.getKey() + "regex.properties");
-                customPropRegex.createNewFile();
-                String customPropRegexProperties = "regex=" + "(?<=" + CUSTOM_DIM_START_SEPARATOR
-                        + entry.getKey() + CUSTOM_DIM_VAL_SEPARATOR +").*" + "(?=" + CUSTOM_DIM_END_SEPARATOR + ")";
-                FileUtils.write(customPropRegex, customPropRegexProperties);
-            }
-        }
-    }
+    
 
     protected double definingOutputVariables(boolean hasDepth, int nLat, int nLon,
             NetcdfFileWriteable ncFileOut, NetcdfFile ncFileIn, boolean hasTimeDim, int nTime,
@@ -605,175 +570,9 @@ public abstract class NetCDFAction extends MarissBaseAction {
         return published;
     }
 
-    /**
-     * 
-     * @param attributeBean
-     * @param outFileLocation
-     * @param namespace
-     * @param layerName
-     * @param cfName
-     * @param geo
-     * @return
-     * @throws ActionException
-     */
-    public boolean insertDb(AttributeBean attributeBean, String outFileLocation, String namespace, String layerName,
-            String cfName, Geometry geo) throws ActionException {
-        boolean result = false;
+    
 
-        String sql = "INSERT INTO " + configuration.getProductsTableName() 
-                + "(servicename, identifier, bbox, \"time\", variable, sartype, outfilelocation, originalfilepath, layername, partition, numoilspill, numshipdetect)"
-                + " VALUES (?,?,ST_GeomFromText(?),?,?,?,?,?,?,?,?,?)";
-
-        Connection conn = null;
-
-        try {
-            conn = attributeBean.dataStore.getDataSource().getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, configuration.getServiceName());
-            ps.setString(2, attributeBean.identifier);
-            ps.setString(3, geo.toText());
-            if (attributeBean.timedim != null) {
-                ps.setDate(4, new java.sql.Date(attributeBean.timedim.getTime()));
-            } else {
-                ps.setDate(4, new java.sql.Date(1));
-            }
-            ps.setString(5, cfName);
-            ps.setString(6, attributeBean.type.name());
-            ps.setString(7, outFileLocation);
-            ps.setString(8, configuration.getServiceName() + "/PRODUCTS/" + FilenameUtils.getName(attributeBean.absolutePath));
-            ps.setString(9, namespace + ":" + layerName);
-            
-            String partition = null;
-            final String outputFileVaseName = FilenameUtils.getBaseName(outFileLocation);
-            if (outputFileVaseName.contains("partition")) {
-                partition = outputFileVaseName.substring(outputFileVaseName.indexOf(CUSTOM_DIM_VAL_SEPARATOR) + CUSTOM_DIM_VAL_SEPARATOR.length(), outputFileVaseName.indexOf(CUSTOM_DIM_END_SEPARATOR));
-            }
-            ps.setString(10, partition);
-            ps.setString(11, String.valueOf(attributeBean.numOilSpills));
-            ps.setString(12, String.valueOf(attributeBean.numShipDetections));
-
-            result = ps.execute() && ps.getUpdateCount() > 0;
-            ps.close();
-        } catch (SQLException e) {
-            throw new ActionException(this, e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * 
-     * @param attributeBean
-     * @param shipDetections
-     * @return
-     * @throws ActionException
-     */
-    public boolean insertShipDetectionsIntoDb(AttributeBean attributeBean, List<ShipDetection> shipDetections) throws ActionException {
-        boolean result = false;
-
-        /*
-         ship_detections(         
-                
-                servicename, identifier, dsid, "timeStamp", heading, speed, length, 
-                
-                "MMSI", confidencelevel, imageidentifier, imagetype, "RCS", maxpixelvalue, 
-                
-                shipcategory, confidencelevelcat, the_geom
-         )
-        */
-        
-        String sql = "INSERT INTO " + configuration.getShipDetectionsTableName()
-                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromText(?))";
-
-        Connection conn = null;
-
-        try {
-            conn = attributeBean.dataStore.getDataSource().getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
-            
-            for (ShipDetection ds : shipDetections) {
-                ps.setString(1, configuration.getServiceName()); // servicename
-                ps.setString(2, attributeBean.identifier); // identifier
-                ps.setString(3, ds.getId()); // dsid
-                if (ds.getTimeStamp() != null) { // "timeStamp"
-                    SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss'Z'");
-                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                    try {
-                        ps.setDate(4, new java.sql.Date(sdf.parse(ds.getTimeStamp()).getTime()));
-                    } catch (ParseException e) {
-                        LOGGER.warn(e.getMessage(), e);
-                        ps.setDate(4, new java.sql.Date(1));
-                    }
-                } else {
-                    ps.setDate(4, new java.sql.Date(1));
-                }
-                
-                if (ds.getHeading() != null) ps.setDouble(5, ds.getHeading()); // heading
-                else ps.setNull(5, java.sql.Types.DOUBLE);
-                
-                if (ds.getSpeed() != null) ps.setDouble(6, ds.getSpeed()); // speed
-                else ps.setNull(6, java.sql.Types.DOUBLE);
-                
-                if (ds.getLength() != null) ps.setDouble(7, ds.getLength()); // length
-                else ps.setNull(7, java.sql.Types.DOUBLE);
-                
-                ps.setString(8, ds.getMMSI()); // "MMSI"
-                
-                if (ds.getConfidenceLevel() != null)  ps.setDouble(9, ds.getConfidenceLevel()); // confidencelevel
-                else ps.setNull(9, java.sql.Types.DOUBLE);
-                
-                ps.setString(10, ds.getImageIdentifier()); // imageidentifier
-                ps.setString(11, ds.getImageType()); // imagetype
-                
-                Double RCS = null;
-                Double maxPixelValue = null;
-                if (ds.getDetectionParameters() != null) {
-                    RCS = ds.getDetectionParameters().getRCS();
-                
-                    if (RCS != null) ps.setDouble(12, RCS); // "RCS"
-                    else ps.setNull(12, java.sql.Types.DOUBLE);
-                    
-                    maxPixelValue = ds.getDetectionParameters().getMaxPixelValue();
-                    
-                    if (maxPixelValue != null) ps.setDouble(13, maxPixelValue); // maxpixelvalue
-                    else ps.setNull(13, java.sql.Types.DOUBLE);
-                } else {
-                    ps.setNull(12, java.sql.Types.DOUBLE); // "RCS"
-                    ps.setNull(13, java.sql.Types.DOUBLE); // maxpixelvalue
-                }
-                
-                if (ds.getShipCategory() != null) ps.setDouble(14, ds.getShipCategory()); // shipcategory
-                else ps.setNull(14, java.sql.Types.DOUBLE);
-                
-                ps.setString(15, ds.getConfidenceLevelCat()); // confidencelevelcat
-                ps.setString(16, ds.getPosition()); // the_geom
-                
-                ps.addBatch();
-            }
-            
-            int[] ids = ps.executeBatch();
-            result = ids != null && ids.length > 0;
-            ps.close();
-        } catch (SQLException e) {
-            throw new ActionException(this, e.getMessage());
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                }
-            }
-        }
-
-        return result;
-    }
+    
     
     /**
      * Check if the NetCDF ImageMosaic Layer has been already configured

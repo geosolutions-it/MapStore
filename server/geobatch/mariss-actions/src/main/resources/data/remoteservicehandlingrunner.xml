@@ -102,7 +102,7 @@
             <metocDictionaryPath>/home/geosolutions/Nicola/mariss/E-GEOS-MARISS/2015_03_03/gb_data_dir/dictionary/metoc-dictionary.xml</metocDictionaryPath>
             <geoserverPWD>geoserver</geoserverPWD>
             <geoserverUID>admin</geoserverUID>
-            <geoserverURL>http://localhost:8085/geoserver</geoserverURL>
+            <geoserverURL>http://localhost:8080/geoserver</geoserverURL>
             <productsTableName>ingestionproducts</productsTableName>
             <geoserverDataDirectory>/home/geosolutions/Nicola/DLR/test_data_dir</geoserverDataDirectory>
             
@@ -163,8 +163,23 @@
                          <actionClass>it.geosolutions.geobatch.mariss.actions.sartiff.SARGeoTiffAction</actionClass>
                          <params>
                             <entry>
-                                <string>NetCDFDir.key</string>
-                                <string>/home/geosolutions/work/data/netcdfdatadir</string>
+                                <string>GeoTiffDir.key</string>
+                                <string>/home/geosolutions/work/data/geotiffs</string>
+                            </entry>
+                             <entry>
+                                <string>importer_options.key</string>
+                                <string>
+                                	{
+									  "type": "GdalWarpTransform",
+									  "options": [ "-t_srs", "EPSG:4326"]
+									},{
+									"type": "GdalTranslateTransform", "options": [ "-co", "TILED=YES", "-co", "BLOCKXSIZE=512", "-co", "BLOCKYSIZE=512"]
+									},{
+									  "type": "GdalAddoTransform",
+									  "options": [ "-r", "average"],
+									  "levels" : [2, 4, 8, 16]
+									}
+								</string>
                             </entry>
                          </params>
                      </container>

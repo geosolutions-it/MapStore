@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
+import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.mariss.actions.MarissBaseAction.AttributeBean;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
@@ -24,12 +25,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.EventObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.TimeZone;
 
 import org.apache.commons.io.FileUtils;
+import org.geotools.data.DataStore;
+import org.geotools.jdbc.JDBCDataStore;
 import org.junit.Test;
 
 
@@ -93,6 +99,11 @@ public class SARGeoTIFFActionTest {
 		File dir = null;
 		FileSystemEvent event = new FileSystemEvent(f,FileSystemEventType.FILE_ADDED );
 		assertTrue(action.canProcess(event));
+		/*
+		Queue<EventObject> q = new PriorityQueue<EventObject>();
+		q.add(event);
+		action.execute(q);
+		*/
 		try {
 			dir = action.unzipFile(f);
 			assertTrue("Could not create the directory",dir.exists());
@@ -102,7 +113,13 @@ public class SARGeoTIFFActionTest {
 			assertTrue(tif != null);
 			convalidateFileDate(FILE_NAME,ab.timedim);
 			assertTrue(ab.numShipDetections == result.getShipDetections().size());
-			
+			// initialize data store
+			DataStore ds = FeatureConfigurationUtil.createDataStore(action.configuration
+					.getOutputFeature());
+			assertTrue(ds != null);
+			assertTrue (ds instanceof JDBCDataStore);
+			ab.dataStore = (JDBCDataStore) ds;
+			//action.publishShipDetections(ab, result);
 		} catch (ActionException e) {
 			throw e;
 		}catch (Exception e){
@@ -140,13 +157,21 @@ public class SARGeoTIFFActionTest {
 		};
 		
 		container.setPattern(".*([0-9]{8}T[0-9]{6})_([0-9]{8}T[0-9]{6})_.*");
+		String tranformOpts ="{\"type\": \"GdalWarpTransform\",\"options\": [ \"-t_srs\", \"EPSG:4326\"]},{\"type\": \"GdalTranslateTransform\", \"options\": [ \"-co\", \"TILED=YES\", \"-co\", \"BLOCKXSIZE=512\", \"-co\", \"BLOCKYSIZE=512\"]},{\"type\": \"GdalAddoTransform\",\"options\": [ \"-r\", \"average\"],\"levels\" : [2, 4, 8, 16]}";
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(ConfigurationUtils.NETCDF_DIRECTORY_KEY, "dummy");
+		params.put(ConfigurationUtils.OPTIMIZATION_OPTION, tranformOpts);
+		params.put(ConfigurationUtils.GEOTIFF_DIRECTORY_KEY, "geotiff");
 		container.setParams(params);
+		container.setDefaultNameSpace("sde");
+		
 		IngestionActionConfiguration config = new IngestionActionConfiguration(
-				"Test", "name", "tet configuration");
+				"Test", "name", "test configuration");
 		config.setContainer(container);
 		FeatureConfiguration fc = setupDummyDataStore();
+		config.setGeoserverURL("http://localhost:8080/geoserver/");
+		config.setGeoserverUID("admin");
+		config.setGeoserverPWD("geoserver");
 		
 		config.setOutputFeature(fc);
 		return config;
@@ -156,9 +181,14 @@ public class SARGeoTIFFActionTest {
 		FeatureConfiguration fc = new FeatureConfiguration();
 		Map<String,Serializable> parameters=new HashMap<String,Serializable>();
 		parameters.put("dbtype", "h2");
-		parameters.put("database", "mem:test");
+		parameters.put("database", "mariss");
+		parameters.put("schema", "public");
+		parameters.put("host", "localhost");
+		parameters.put("user", "postgres");
+		parameters.put("passwd", "postgres");
+		parameters.put( "port", "5432");
 		fc.setDataStore(parameters);
-		fc.setTypeName("test_datastore");
+		
 		return fc;
 	}
 	
