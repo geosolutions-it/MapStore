@@ -52,7 +52,8 @@ public abstract class MarissCSVServiceProcessor extends GenericCSVProcessor<Simp
     /*
      * GeometryFactory will be used to create the geometry attribute of each feature (a Point object for the location)
      */
-    protected GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+    protected GeometryFactory geometryFactory = 
+            JTSFactoryFinder.getGeometryFactory(null);
 
     // user and service name
     protected String userName;

@@ -312,7 +312,7 @@ public class CSVAcqListProcessor extends MarissCSVServiceProcessor {
             // "Service Provider"
             feature.setAttribute("service_provider", properties[idx++]);
 
-            feature.setAttribute("service_name", getUserName() + "@" + getServiceName());
+            feature.setAttribute("service_name", /*getUserName() + "@" + */getServiceName());
 
             // create the geometry
             if (nwLat != null && nwLon != null && neLat != null && neLon != null && seLat != null

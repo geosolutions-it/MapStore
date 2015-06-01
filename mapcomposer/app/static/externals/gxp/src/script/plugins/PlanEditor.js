@@ -1458,7 +1458,8 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         var failedExport = String.format(this.failedExport, outputFormat);
 
         var user = this.target.userDetails.user.name;
-        var service = this.currentServiceName.substring(user.length +1);
+        //var service = this.currentServiceName.substring(user.length +1);
+        var service = this.currentServiceName;
 
         var cql_filter;
         if(fids){
