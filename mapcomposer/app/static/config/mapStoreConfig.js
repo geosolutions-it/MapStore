@@ -7,7 +7,7 @@
             "ptype": "gxp_wmssource",
             "title": "MARISS",
             "version": "1.1.1",
-            "url": "/geoserver/mariss/ows",
+            "url": "http://mariss.geo-solutions.it/geoserver/mariss/ows",
             "layerBaseParams": {
                 "TILED": true,
                 "TILESORIGIN": "-20037508.34,-20037508.34"
@@ -17,7 +17,7 @@
             "ptype": "gxp_wmssource",
             "title": "SDE",
             "version": "1.1.1",
-            "url": "/geoserver/ows",
+            "url": "http://mariss.geo-solutions.it/geoserver/ows",
             "layerBaseParams": {
                 "TILED": true,
                 "TILESORIGIN": "-20037508.34,-20037508.34"
@@ -442,7 +442,7 @@
         {
             "ptype": "npa_cart_grid",
             "id": "cart",
-            "downloadService":"/opensdi2-manager/mvc/download/",
+            "downloadService":"http://mariss.geo-solutions.it/opensdi2-manager/mvc/download/",
             "outputConfig": {
                 "viewConfig": {
                     "forceFit": true
@@ -508,8 +508,8 @@
         {
             "ptype": "gxp_wpsmanager",
             "id": "wpsSPM",
-            "url": "/geoserver/wps",
-            "geostoreUrl": "http://localhost/opensdi2-manager/facade/geostore/rest",
+            "url": "http://mariss.geo-solutions.it/geoserver/wps",
+            "geostoreUrl": "http://mariss.geo-solutions.it/opensdi2-manager/facade/geostore/rest",
             "geostoreProxy": "/proxy?url=",
             "silentErrors": true,
             "checkLocation": true,

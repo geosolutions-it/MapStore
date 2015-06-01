@@ -4,7 +4,7 @@ var localConfig = {
    
    proxy:"/http_proxy/proxy/?url=",
    defaultLanguage: "en",
-   adminUrl:"/opensdi2-manager/",
-   geoStoreBase:"/opensdi2-manager/facade/geostore/rest/",
+   adminUrl:"http://mariss.geo-solutions.it/opensdi2-manager/",
+   geoStoreBase:"http://mariss.geo-solutions.it/opensdi2-manager/facade/geostore/rest/",
    externalLogoutUrl:"/logout",
 };
