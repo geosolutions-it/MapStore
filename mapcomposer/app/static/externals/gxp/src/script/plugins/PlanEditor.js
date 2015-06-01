@@ -170,7 +170,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
     // Known status of AOIs
     STATUS:{
         DRAFT: "DRAFT",
-        COMMITED: "COMMITED",
+        COMMITED: "COMMITTED",
         ACQ_LIST_SAVED: "ACQ_LIST_SAVED"
     },
     
