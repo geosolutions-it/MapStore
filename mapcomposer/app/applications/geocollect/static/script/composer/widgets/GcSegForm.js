@@ -427,6 +427,7 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
      *  several state changes.
      */
     getDirtyState: function() {
+
         return this.feature.state === OpenLayers.State.INSERT ?
             this.feature.state : OpenLayers.State.UPDATE;
     },
@@ -444,17 +445,55 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
             this.saveButton.show();
             this.cancelButton.show();
             this.cancelButton.ownerCt.doLayout();
-            this.geometry = this.feature.geometry.clone();
+            this.geometry = (this.feature.geometry)? this.feature.geometry.clone():null;
             this.attributes = Ext.apply({}, this.feature.attributes);
 
-            this.modifyControl = new OpenLayers.Control.ModifyFeature(
-                this.feature.layer,
-                {standalone: true, vertexRenderIntent: this.vertexRenderIntent}
-            );
-            this.feature.layer.map.addControl(this.modifyControl);
-            this.modifyControl.activate();
-            this.modifyControl.selectFeature(this.feature);
-            
+           if(this.geometry)
+           {
+                this.modifyControl = new OpenLayers.Control.ModifyFeature(
+                                this.feature.layer,
+                                {standalone: true, vertexRenderIntent: this.vertexRenderIntent});
+                this.feature.layer.map.addControl(this.modifyControl);
+                this.modifyControl.activate();
+                this.modifyControl.selectFeature(this.feature);
+            }
+            else
+            {
+                this.modifyControl=  new OpenLayers.Control.DrawFeature(
+                    this.feature.layer,
+                    OpenLayers.Handler.Point, 
+                    {
+                        eventListeners: {
+                            featureadded: function(evt) {
+                                this.feature.geometry=evt.feature.geometry.clone();
+                                 this.feature.state = OpenLayers.State.UPDATE;
+                                evt.feature.destroy();
+                                if(this.modifyControl){
+                                    this.modifyControl.deactivate();
+                                    this.modifyControl.destroy();
+                                };
+                                this.modifyControl = new OpenLayers.Control.ModifyFeature(
+                                    this.feature.layer,
+                                    {standalone: true, vertexRenderIntent: this.vertexRenderIntent}
+                                );
+                                this.feature.layer.map.addControl(this.modifyControl);
+                                this.modifyControl.activate();
+                                this.modifyControl.selectFeature(this.feature);
+                        },
+                         activate: function() {
+                                            },
+                         deactivate: function() {
+                        
+                            },
+                    scope: this
+                }
+            }
+        );
+                    this.feature.layer.map.addControl(this.modifyControl);
+   
+                    this.modifyControl.activate();
+
+            }
         }
     },
     
@@ -469,9 +508,9 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
             if(!this.validateSeg())return;
             //TODO remove the line below when
             // http://trac.openlayers.org/ticket/2210 is fixed.
-            this.modifyControl.deactivate();
+            if(this.modifyControl){this.modifyControl.deactivate();
             this.modifyControl.destroy();
-            
+            };
            var feature = this.feature;
             if (feature.state === this.getDirtyState()) {
                 if (save === true) {
