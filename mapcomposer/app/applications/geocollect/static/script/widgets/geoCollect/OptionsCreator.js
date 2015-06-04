@@ -33,7 +33,7 @@ mxp.widgets.OptionsCreator = Ext.extend(Ext.form.CompositeField, {
     btnRemoveTooltip : "Remove Options",
     fieldLabel : 'Options',
     deleteMsgTitle: 'Delete Options?',
-    deleteMsg: 'Are you sure you want to delete this feature?', 
+    deleteMsg: 'Are you sure you want to delete all the predefined values?', 
     
 
     initComponent : function() {
