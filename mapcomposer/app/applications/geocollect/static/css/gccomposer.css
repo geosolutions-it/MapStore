@@ -2,6 +2,9 @@
 {
     background-image: url(../externals/gxp/src/theme/img/silk/map.png);
 }
+.x-btn .reload {
+    background-image: url(../externals/ext/resources/images/gray/grid/refresh.gif);
+}
 .gc-icon-notice
 {
     background-image: url(../images/report.png);
