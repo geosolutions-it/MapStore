@@ -135,7 +135,9 @@ GeoExt.Lang.add("en", {
         insertLabel: "Values",
         btnAddTooltip: "Add Value",
         btnRemoveTooltip: "Delete Value",
-        fieldLabel: "Predefined Values"
+        fieldLabel: "Predefined Values",
+        deleteMsgTitle: 'Delete Values?',
+        deleteMsg: 'Are you sure you want to delete all the predefined values?'
     },
     "mxp.widgets.XtypeSpinner.prototype": {
         idFieldLabel: "Field",
@@ -321,4 +323,5 @@ GeoExt.Lang.add("en", {
         tooltipMapPermissionText: "Edit mission permissions by group",
         mapPermissionTitleText: "Mission Permissions"
     }
+    
 });
