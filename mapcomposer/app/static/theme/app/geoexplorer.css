@@ -63,6 +63,10 @@ body {
     background-image: url(img/mapstore-logo.png);
 }
 
+.x-btn .icon-privacy{
+    background-image: url(img/silk/do-not-disturb-sign-cross.png);
+}
+
 .x-btn .icon-about {
     background-image: url(img/silk/help.png);
 }
