@@ -133,7 +133,7 @@ getXtype:function(){
    };
    var opt=this.optField.getOptions();
   if(opt.length)o.options=opt;
-   else if(this.valueField.getValue())o.value=this.valueField.getValue();
+   if(this.valueField.getValue())o.value=this.valueField.getValue();
 
 	
 	return o;

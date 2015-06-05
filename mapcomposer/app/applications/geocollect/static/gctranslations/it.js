@@ -136,7 +136,9 @@ GeoExt.Lang.add("it", {
         insertLabel:"Valori",
         btnAddTooltip:"Aggiungi Valori",
         btnRemoveTooltip:"Elimina Valori",
-        fieldLabel:'Valori Predefiniti'   
+        fieldLabel:'Valori Predefiniti',
+        deleteMsgTitle: 'Eliminare Valori?',
+        deleteMsg: 'Eliminare tutti i valori aggiunti?'
     },
     "mxp.widgets.XtypeSpinner.prototype":{
         idFieldLabel:"Campo",

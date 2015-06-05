@@ -117,9 +117,9 @@ getXtype:function(){
    };
    var opt=this.optField.getOptions();
   if(opt.length)o.options=opt;
-   else if(this.valueField.getValue())o.value=this.valueField.getValue();
+ //  else if(this.valueField.getValue())o.value=this.valueField.getValue();
 
-	return o
+	return o;
 },
 /**
  * api: method[isValid]
