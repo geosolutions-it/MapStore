@@ -1187,7 +1187,15 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         var extraTargets;
         var allowExtraTargetsUpdate = false;
         if(type === 'init') {
-            extraTargets = this.status.simulation.targetsInfo;
+            extraTargets = [];
+            for(var i = 0; i < this.status.simulation.targetsInfo.length; i++) {
+                var record = Ext.apply({}, this.status.simulation.targetsInfo[i]);
+                if(record.gridId.indexOf('target') !== 0) {
+                    record.gridId = 'target' + record.gridId;
+                }
+                extraTargets.push(record);
+            }
+            
             allowExtraTargetsUpdate = true;
         }
         if(this.isSingleTarget(status)) {
@@ -1750,10 +1758,16 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                                     } 
                                 }
                             }
-                            
-                            // targets
+                            var gridId;
+                           
                             if(recordInfo.oldgeometry || recordInfo.geometry) {
-                                recordInfo.gridId = grid.id;
+                                // targets
+                                gridId = grid.id;
+                                if(gridId.indexOf('target') === 0) {
+                                    gridId = gridId.substring(6);
+                                }
+                                recordInfo.gridId = gridId;
+                                
                                 obj.simulation.targetsInfo.push(recordInfo);
                                 obj.simulation.exportInfo.push({
                                     id: recordInfo.id,
@@ -1766,11 +1780,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                             }
                             if(recordInfo.oldgeometry) {
                                 // remove
-                                obj.simulation.targets.push('-'+grid.id+','+(recordInfo.oldvalue || 0)+','+recordInfo.oldgeometry.toString());
+                                obj.simulation.targets.push('-'+gridId+','+(recordInfo.oldvalue || 0)+','+recordInfo.oldgeometry.toString());
                             }
                             if(recordInfo.geometry) {
                                 // add
-                                obj.simulation.targets.push(grid.id+','+(recordInfo.value || 0)+','+recordInfo.geometry.toString());
+                                obj.simulation.targets.push(gridId+','+(recordInfo.value || 0)+','+recordInfo.geometry.toString());
                             }
                         }
                     }
