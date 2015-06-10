@@ -422,8 +422,14 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
      *  
      *  Send get all resources by category request
      */
-    getCategoryResources: function (categoryName, success, failure, scope){
-        var restPath="/misc/category/name/"+categoryName+"/resources";
+    getCategoryResources: function (categoryName, success, failure, scope, withAttributes){
+        var restPath;
+        if(withAttributes) {
+            restPath = "/misc/category/name/"+categoryName+"/fullresources?includeAttributes=true";
+        } else {
+            restPath = "/misc/category/name/"+categoryName+"/resources";
+        }
+        
         var method= "GET";
         var callFailure;
 

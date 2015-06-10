@@ -1017,7 +1017,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.loadWin.show();
     },
 
-    loadProcessing: function() {         
+    loadProcessing: function() {   
         this.geoStore.getCategoryResources("processing",this.searchAttributesSuccess.createDelegate(this, "processing", 0), function(){
             Ext.Msg.show({
                 title: this.failureAchieveResourceTitle,
@@ -1026,7 +1026,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 icon: Ext.MessageBox.INFO,
                 scope: this
             });
-        }, this);
+        }, this, true);
     },
     
     deleteDownload: function(downloadUrl, removeResource, callback) {
@@ -1063,41 +1063,23 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     
     searchAttributesSuccess : function(category,resourceList) {
-        var coll = new Ext.util.MixedCollection();
-        coll.addAll(resourceList);
-        resourceList = coll.filter('canEdit', true).getRange();
-        var asyncForEach = function () {
-            function processOne(count) {
-                var item = resourceList[count];
-                var geostoreAttribute = new OpenLayers.GeoStore.Resource({
-                    type: "attribute",
-                    category: category,
-                    id: item.id
-                });                                            
-                this.geoStore.getEntityByID(geostoreAttribute, function(result) {
-                    var attributes = Ext.isArray(result.AttributeList.Attribute) ? result.AttributeList.Attribute : [result.AttributeList.Attribute];
-                    Ext.each(attributes, function(attribute) {
-                        if(attribute.name === 'valid') {
-                            resourceList[count].valid = attribute.value;
-                        } else {
-                            resourceList[count].attributeDesc = attribute.value;
-                        }
-                    });
-                    if((count + 1) < resourceList.length) {
-                        processOne.call(this, count + 1);
-                    } else {
-                        category === 'processing' ? this.showLoadedProcessings(resourceList) : this.showDownloads(resourceList); // Done!
-                    }
-                }, undefined, this);
-            }
-            if(resourceList.length  > 0) {
-                processOne.call(this, 0);
-            } else {
-                category === 'processing' ? this.showLoadedProcessings(resourceList) : this.showDownloads(resourceList); // Done!
-            }
-        };
+        Ext.each(resourceList, function(item) {
+            var attributes = Ext.isArray(item.Attributes.attribute) ? item.Attributes.attribute : [item.Attributes.attribute];
+            Ext.each(attributes, function(attribute) {
+                if(attribute.name === 'valid') {
+                    item.valid = attribute.value;
+                } else {
+                    item.attributeDesc = attribute.value;
+                }
+            });
+        }, this);
         
-        asyncForEach.call(this);
+        if(category === 'processing') {
+            this.showLoadedProcessings(resourceList);
+        } else {
+            this.showDownloads(resourceList);
+        }
+        
     },
     
     /** private: method[addOutput]
@@ -1311,6 +1293,29 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 handler: this.saveProcessing
         
             },{
+                xtype: 'button',
+                text: this.saveDownloadMenuButton,
+                iconCls: 'save-download-button',
+                id: "save-download-proc-geostore",
+                scope: this,
+                width: 75,
+                disabled: true,
+                handler: function(){
+                    if(this.showDisclaimerBeforeExport) {
+                        this.exportDisclaimer();
+                    } else {
+                        this.exportProcessing();
+                    }                            
+                }
+            }, {
+                xtype: 'button',
+                iconCls: 'load-download-button',
+                text: this.loadDownloadButton,
+                scope: this,
+                name: "load-download-proc-geostore",
+                width: 75,
+                handler: this.onLoadDownload
+            }/*,{
                 xtype: 'splitbutton',
                 text: this.saveDownloadMenuButton,
                 iconCls: 'save-download-button',
@@ -1336,7 +1341,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                         this.exportProcessing();
                     }                            
                 }
-            }]
+            }*/]
         });
              
         
@@ -1774,7 +1779,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     onLoadDownload: function() {
-        this.geoStore.getCategoryResources("download",this.searchAttributesSuccess.createDelegate(this, "download", 0), this.failureDownload, this);
+        this.geoStore.getCategoryResources("download",this.searchAttributesSuccess.createDelegate(this, "download", 0), this.failureDownload, this, true);
     },
     
     onCancelProcessing: function() {
@@ -1985,7 +1990,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				}
 			}
 			
-			var downloadProcess = this.wpsClient.getProcess('destination', 'gs:DestinationDownload');  
+			var downloadProcess = this.wpsClient.getProcess('destination', 'gs:DestinationDownload');
 			var bounds;
 			if(status && status.roi) {
 				bounds = new OpenLayers.Bounds.fromString(status.roi.bbox.toBBOX());
@@ -1993,12 +1998,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				bounds = map.getExtent();
 			}         
 			var scale = me.getScaleFromBounds(bounds);
-			var filter = new OpenLayers.Filter.Spatial({ 
-			  type: OpenLayers.Filter.Spatial.BBOX,
-			  property: 'geometria',
-			  value: bounds, 
-			  projection: map.getProjection() 
-			});
+            var filter;
+            if(status && status.roi && status.roi.type === 'aoi') {
+                filter = new OpenLayers.Filter.Spatial({ 
+                  type: OpenLayers.Filter.Spatial.BBOX,
+                  property: 'geometria',
+                  value: bounds, 
+                  projection: map.getProjection() 
+                });
+            } else {
+                filter = this.getLimitiFilter(status.roi.type, status.roi.id);
+            }
+
 			var cff;
 			var padr;
 			var pis;
@@ -2043,7 +2054,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 					distanceNames: new OpenLayers.WPSProcess.LiteralData({value: distanceNames.join(',')}),
 					fp: new OpenLayers.WPSProcess.LiteralData({value:status.temporal.value}),
 					language: new OpenLayers.WPSProcess.LiteralData({value:GeoExt.Lang.locale}),
-					onlyarcs: new OpenLayers.WPSProcess.LiteralData({value:scale > me.analiticViewScale}),
+					//onlyarcs: new OpenLayers.WPSProcess.LiteralData({value:scale > me.analiticViewScale}),
+					onlyarcs: new OpenLayers.WPSProcess.LiteralData({value: aggregation > 2 || !status.formulaInfo.dependsOnTarget || !status.formulaInfo.dependsOnArcs}),
 					damageArea: status.processing === 4 ? new OpenLayers.WPSProcess.LiteralData({value:status.damageArea}) : undefined,
 					cff: cff,
 					padr: padr,
@@ -2236,7 +2248,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                                     [2, me.meter500Text],
                                     [3, me.GrigliaText],
                                     [4, me.comuniText],
-                                    [3, me.provinceText]
+                                    [5, me.provinceText]
                                 ]
 							}),
 							value: currentResolution,
@@ -2584,7 +2596,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
         
     
-    loadTargetGrids: function(viewParams, extraTargets) {
+    loadTargetGrids: function(viewParams, additionalTargets) {
         if(!viewParams) {
             var map = this.target.mapPanel.map;        
             var status = this.getStatus();        
@@ -2607,9 +2619,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
             viewParams = this.getRoiViewParams(this.status, bounds, true) + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman + ';wkt:' + wkt;
         }
-        if(!extraTargets && this.status) {
-            extraTargets = this.status.simulation.targetsInfo;
+        if(!additionalTargets && this.status) {
+            additionalTargets = this.status.simulation.targetsInfo;
         }
+        var extraTargets = [];
+        for(var i = 0; i < additionalTargets.length; i++) {
+            var record = Ext.apply({}, additionalTargets[i]);
+            if(record.gridId.indexOf('target') !== 0) {
+                record.gridId = parseInt(record.gridId, 10);
+            }
+            extraTargets.push(record);
+        }
+        
         var wfsGrid = Ext.getCmp("featuregrid");
         if(this.isSingleTarget()) {
             wfsGrid.loadGrids("id", this.status.target['id_bersaglio'], this.selectionLayerProjection, viewParams, null, extraTargets);                                
@@ -2857,7 +2878,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.extractLayersByName(layers, this.modifiedLayer, "title");                
     },
     
-    analyticView: function() {    
+    analyticView: function() {
+        Ext.getCmp("featurelist").getLayout().setActiveItem(0);
         var featureManager = this.target.tools["featuremanager"];            
         var map = this.target.mapPanel.map;
         
