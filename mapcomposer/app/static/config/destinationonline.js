@@ -1,5 +1,5 @@
 {
-	"geoStoreBase": "http://localhost:8080/geostore/rest/",
+	"geoStoreBase": "http://destination.geo-solutions.it/geostore_plus",
     "proxy":"/http_proxy/proxy/?url=",
 	"defaultLanguage": "it",
 	"embedding": false,
@@ -19,38 +19,31 @@
 		"ol": {
 			"ptype": "gxp_olsource"
 		},
-		"destination": {
-            "ptype": "gxp_wmssource",
-            "title": "Destination GeoServer",
-            "version":"1.1.1",
-            "url": "http://destination.geo-solutions.it/geoserver_destination/destination/ows",
-            "layerBaseParams": {
-                "TILED": true,                
-                "format": "image/png8"
-            },
-			"loadingProgress": true
-        },
+        
         "destinationtiled": {
             "ptype": "gxp_wmscsource",
             "title": "Destination GeoServer Tiled",
             "version":"1.1.1",
-            "url": "http://destination.geo-solutions.it/geoserver_destination/destination/wms",
+            "url": "http://destination.geo-solutions.it/geoserver_destination_plus/destination/wms",
             "layerBaseParams": {
                 "TILED": true,                
                 "format": "image/png8"
             },
-			"loadingProgress": true
+            "prependPrefix": "destination:",
+			"loadingProgress": true,
+            "useCapabilities": false
         },
         "externalstiled": {
             "ptype": "gxp_wmscsource",
             "title": "External WMS Tiled",
             "version":"1.1.1",
-            "url": "http://destination.geo-solutions.it/geoserver_destination/externals/wms",
+            "url": "http://destination.geo-solutions.it/geoserver_destination_plus/externals/wms",
             "layerBaseParams": {
                 "TILED": true,                
                 "format": "image/png8"
             },
-			"loadingProgress": true
+			"loadingProgress": true,
+            "useCapabilities": false
         }
 	},
 	"map": {
@@ -74,7 +67,7 @@
 		{
 			"source": "ol",
 			"group": "background",
-            "title": ["Nessuno sfondo", "Nessuno sfondo", "Nessuno sfondo", "Kein Hintergrund"],
+            "title": ["No background", "Nessuno sfondo", "aucune connaissance", "Kein Hintergrund"],
 			"fixed": true,
 			"type": "OpenLayers.Layer",
 			"visibility": false,
@@ -98,28 +91,28 @@
 		},
 		{
             "source": "externalstiled",
-			"title": "Ambiti Amministrativi",
+            "title": ["Administrative Limits","Ambiti Amministrativi","limites administratives","Verwaltungsgrenzen"],
 			"name": "LimitiAmministrativi",
             "group": ["Basic Data","Dati di base","données de base","Basisdaten PTA"],
 			"visibility": false
 		},
 		{
             "source": "externalstiled",
-			"title": "Tessuto Urbanizzato",
+            "title": ["Urbanized area", "Tessuto Urbanizzato","zone urbanisée","Urbanisierte Gebiete"],
 			"name": "TessutoUrbanizzato",
             "group": ["Basic Data","Dati di base","données de base","Basisdaten PTA"],
 			"visibility": false
 		},
 		{
             "source": "externalstiled",
-			"title": "Trasporti",
+            "title": ["Freight","Trasporti","fret","Transportinfrastruktur"],
 			"name": "Trasporti",
             "group": ["Basic Data","Dati di base","données de base","Basisdaten PTA"],
 			"visibility": false
 		},
 		{
             "source": "externalstiled",
-			"title": "Idrografia",
+            "title": ["Hydrography","Idrografia","hydrographie","Hydrologie"],
 			"name": "Idrografia",
             "group": ["Basic Data","Dati di base","données de base","Basisdaten PTA"],
 			"visibility": false
@@ -141,135 +134,196 @@
 			"name": "HYBRID",
 			"group": "background"
         },{
-			"source": "destination",
-			"title": "Rischio Totale Ambientale",
+            "source": "destinationtiled",
+            "title": ["Environment Risk","Rischio Ambientale","risque environnemental","Umweltrisiko"],
 			"name": "rischio_totale_ambientale",
 			"displayInLayerSwitcher": true,
 			"tiled": false,
             "env":"low:100;medium:500;max:1000",
             "riskPanel":true,
             "exclusive":"SIIG",			
+            "queryable": true,            
 			"forceOneVisible": false
         },{
-			"source": "destination",
-			"title": "Rischio Totale Sociale",
+            "source": "destinationtiled",
+            "title": ["Social Risk","Rischio Sociale","risque social","Anthropologischen Risiko"],
 			"name": "rischio_totale_sociale",
 			"displayInLayerSwitcher": true,
 			"tiled": false,
             "env":"low:100;medium:500;max:1000",
             "riskPanel":true,
             "exclusive":"SIIG",
+			"queryable": true,
 			
 			"forceOneVisible": false
         },{
-			"source": "destination",
-			"title": "Rischio Totale Sociale - Ambientale",
+            "source": "destinationtiled",
+            "title": ["Social - Environmental Risk","Rischio Sociale - Ambientale","risque sociale - environnemental","Gesamtrisiko"],
 			"name": "rischio_totale",
 			"displayInLayerSwitcher": true,
 			"tiled": false,
             "env":"lowsociale:100;mediumsociale:500;maxsociale:1000;lowambientale:100;mediumambientale:500;maxambientale:1000",
             "riskPanel":true,
             "exclusive":"SIIG",
+			"queryable": true,
 			
 			"forceOneVisible": false
 		},
 		{
             "source": "destinationtiled",
-            "title": "Beni culturali",
+            "title": ["Cultural heritage","Beni culturali","patrimoine culturel","Kulturerbe"],
             "name": "beni_culturali_all",
+            "queryLayers":"v_geo_beni_culturali_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
             "visibility": false
         },
         {
             "source": "destinationtiled",
-			"title": "Zone urbanizzate",
+            "title": ["Urbanized Zones","Zone urbanizzate","zones urbanisées","Urbanisierte Gebiete"],
 			"name": "zone_urbanizzate_all",
+            "queryLayers":"v_geo_zone_urbanizzate_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
-			"title": "Acque sotterranee",
+            "title": ["Ground Water","Acque sotterranee","eaux souterraines","Tiefbrunnen"],
 			"name": "acque_sotterranee_all",
+            "queryLayers":"v_geo_acque_sotterranee_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
-			"title": "Acque superficiali",
+            "title": ["Surface Waters","Acque superficiali","eau de surface","Oberflächengewässer"],
 			"name": "acque_superficiali_all",
+            "queryLayers":"v_geo_acque_superficiali_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
-			"title": "Aree protette",
+            "title": ["Protected Areas","Aree protette","zones protégées","Schutzgebiete"],
 			"name": "aree_protette_all",
+            "queryLayers":"v_geo_aree_protette_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
-			"title": "Aree boscate",
+            "title": ["Forest Area","Aree boscate","zones boisées","Waldflächen"],
 			"name": "aree_boscate_all",
+            "queryLayers":"v_geo_aree_boscate_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
-			"title": "Aree agricole",
+            "title": ["Agricultural areas","Aree agricole","zones agricoles","Landwirtschaftliche Flächen"],
 			"name": "aree_agricole_all",
+            "queryLayers":"v_geo_aree_agricole_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
-			"title": "Addetti/utenti centri commerciali",
+            "title": ["Supermarket Customers and Employees","Addetti/utenti centri commerciali","clients et employés des Supermarché","Einkaufszentren und Großmärkte"],
 			"name": "centri_commerciali_all",
+            "queryLayers":"v_geo_commercio_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
-			"title": "Addetti/utenti strutture scolastiche",
+            "title": ["Scolastic Structures Employees and Users","Addetti/utenti strutture scolastiche","employés et utilisateurs des écoles","Schulen und Kindergärten"],
 			"name": "strutture_scolastiche_all",
+            "queryLayers":"v_geo_scuola_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
-			"title": "Addetti/utenti strutture sanitarie",
+            "title": ["Sanitary Structures Employees and Customers","Addetti/utenti strutture sanitarie","employés et clientsdes structures sanitaires","Sanitäre Strukturen"],
 			"name": "strutture_sanitarie_all",
+            "queryLayers":"v_geo_ospedale_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
-			"title": "Addetti industria e servizi",
+            "title": ["Industry and Service Employees","Addetti industria e servizi","employés Industrie et services","Industrie und Dienstleistungen"],
 			"name": "industria_servizi_all",
+            "queryLayers":"v_geo_industria_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
+			
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
-			"title": "Popolazione turistica",
+            "title": ["Tourist population","Popolazione turistica","population touristique","Tourismus"],
 			"name": "popolazione_turistica_all",
+            "queryLayers":"v_geo_popolazione_turistica_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
 			"visibility": false
 		},
 		{
             "source": "destinationtiled",
-			"title": "Popolazione residente",
+            "title": ["Resident population","Popolazione residente","population résidente","Wohnbevölkerung"],
 			"name": "popolazione_residente_all",
+            "queryLayers":"v_geo_popolazione_residente_pl",
             "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
+            "queryable": true,
 			"visibility": false
         },{
             "source": "destinationtiled",
-			"title": "Grafo stradale",
+            "title": ["Roads Graph","Grafo stradale","Graphique de la route","Straßennetz"],
 			"name": "grafo_stradale",
 			"displayInLayerSwitcher": true,
 			"tiled": true,
             "group": ["Roads","Strade","Routes"," Straßen"],
+            "queryable": true,
+            "visibility": false
+        },{
+            "source": "destinationtiled",
+            "title": ["Provinces","Province","Provinces","Provinzen"],
+            "name": "siig_geo_pl_province",
+            "displayInLayerSwitcher": true,
+            "tiled": true,
+            "group": ["Administrative limits","Limiti Amministrativi","Limites administratives"," Verwaltungsgrenzen"],
+            "queryable": true,
+			
+            "visibility": false
+        },{
+            "source": "destinationtiled",
+            "title": ["Municipalities","Comuni","Municipalité","Gemeinde"],
+            "name": "siig_geo_pl_comuni",
+            "displayInLayerSwitcher": true,
+            "tiled": true,
+            "group": ["Administrative limits","Limiti Amministrativi","Limites administratives"," Verwaltungsgrenzen"],
+            "queryable": true,
+			
 			"visibility": false
         },{
 			"source": "destinationtiled",
@@ -278,9 +332,11 @@
 			"displayInLayerSwitcher": true,
 			"tiled": true,
             "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
+            "queryable": true,
+			
 			"visibility": false
         },{
-			"source": "destination",
+			"source": "destinationtiled",
 			"title": "Obu",
 			"name": "siig_geo_obu",
 			"styles": "obu-point",
@@ -288,6 +344,8 @@
 			"tiled": false,
             "time" : "2014-01-31T14:50:10.229Z",
             "group": ["Real time data","Dati in tempo reale","Données en temps réel","Echtzeitdaten"],
+            "queryable": true,
+			"dimensions": {"time":{"name":"time","units":"ISO8601","unitsymbol":null,"nearestVal":false,"multipleVal":false,"current":false,"default":"current","values":["2000-01-29T01:45:06.000Z/2013-09-30T15:13:43.000Z/PT1S"]}},
 			"visibility": false
         }
         ]
@@ -386,32 +444,37 @@
         "actionTarget": ["tree.tbar", "layertree.contextMenu"]
 	},
 	{
-		"ptype": "gxp_zoomtolayerextent",
-		"actionTarget": {
-			"target": "layertree.contextMenu",
-			"index": 0
+        "ptype":"gxp_zoomtolayerextent",
+        "actionTarget":{
+            "target":"layertree.contextMenu",
+            "index":0
 		}
 	},
 	{
-		"ptype": "gxp_zoomtoextent",
-		"actionTarget": {
-			"target": "paneltbar",
-			"index": 15
+        "ptype":"gxp_zoomtoextent",
+        "actionTarget":{
+            "target":"paneltbar",
+            "index":15
 		}
 	},
 	{
 		"ptype": "gxp_aoi",
 		"id": "aoi",
-		"outputConfig": {
-			"outputSRS": "EPSG:4326"
+        "outputConfig":{
+             "outputSRS": "EPSG:4326",
+             "searchByFeature": true,
+             "wfsUrl":"http://destination.geo-solutions.it/geoserver_destination_plus/ows",
+             "wfsVersion": "1.1.0"
 		},
 		"container": "fieldset"
+
 	},
 	{
 		"ptype": "gxp_seldamage",
 		"id": "seldamage",
 		"outputConfig": {
 			"outputSRS": "EPSG:4326",
+            "destinationNS": "destination",
             "bufferOptions":{
                 "minValue": 0,
                 "maValue":100000,
@@ -425,63 +488,83 @@
 		"actionTarget": {
 			"target": "paneltbar",
 			"index": 2
-		}
+		},
+        "layerTreeGroup": ["Targets","Bersagli","Cibles","Vulnerable Elemente"]
     },
 	{
-		"ptype": "gxp_navigation",
-		"toggleGroup": "toolGroup",
-		"actionTarget": {
-			"target": "paneltbar",
-			"index": 16
+        "ptype":"gxp_navigation",
+        "toggleGroup":"toolGroup",
+        "actionTarget":{
+            "target":"paneltbar",
+            "index":16
 		}
 	},
 	{
         "actions":[
         "-"
         ],
-		"actionTarget": "paneltbar"
+        "actionTarget":"paneltbar"
 	},
 	{
-		"ptype": "gxp_zoombox",
-		"toggleGroup": "toolGroup",
-		"actionTarget": {
-			"target": "paneltbar",
-			"index": 17
+        "ptype":"gxp_zoombox",
+        "toggleGroup":"toolGroup",
+        "actionTarget":{
+            "target":"paneltbar",
+            "index":17
 		}
 	},
 	{
-		"ptype": "gxp_zoom",
-		"actionTarget": {
-			"target": "paneltbar",
-			"index": 18
-		}
-	},
-	{
-        "actions":[
-        "-"
-        ],
-		"actionTarget": "paneltbar"
-	},
-	{
-		"ptype": "gxp_navigationhistory",
-		"actionTarget": {
-			"target": "paneltbar",
-			"index": 19
+        "ptype":"gxp_zoom",
+        "actionTarget":{
+            "target":"paneltbar",
+            "index":18
 		}
 	},
 	{
         "actions":[
         "-"
         ],
-		"actionTarget": "paneltbar"
+        "actionTarget":"paneltbar"
 	},
 	{
-		"ptype": "gxp_wmsgetfeatureinfo",
+        "ptype":"gxp_navigationhistory",
+        "actionTarget":{
+            "target":"paneltbar",
+            "index":19
+		}
+	},
+	{
+        "actions":[
+        "-"
+        ],
+        "actionTarget":"paneltbar"
+	},
+	{
+        "ptype":"gxp_wmsgetfeatureinfo",
 		"useTabPanel": true,
-		"toggleGroup": "toolGroup",
-		"actionTarget": {
-			"target": "paneltbar",
-			"index": 20
+        "layerParams": [
+            "TIME",
+            "ELEVATION",
+            "QUERY_LAYERS"
+        ],
+        "toggleGroup":"toolGroup",
+        "actionTarget":{
+            "target":"paneltbar",
+            "index":20
+		}
+	},
+	{
+        "actions":[
+        "-"
+        ],
+        "actionTarget":"paneltbar"
+	},
+	{
+        "ptype":"gxp_measure",
+        "toggleGroup":"toolGroup",
+        "actionTarget":{
+            "target":"paneltbar",
+            "index":21
 		}
 	},
 	{
@@ -489,21 +572,7 @@
         "-"
         ],
 		"actionTarget": "paneltbar"
-	},
-	{
-		"ptype": "gxp_measure",
-		"toggleGroup": "toolGroup",
-		"actionTarget": {
-			"target": "paneltbar",
-			"index": 21
-		}
-	},
-	{
-        "actions":[
-        "-"
-        ],
-		"actionTarget": "paneltbar"
-	}, {
+	},{
         "ptype":"gxp_playback",
 		"id": "destination_playback",
 		"toolbarHidden": true,
@@ -530,12 +599,12 @@
 	},
 	{
 		"ptype": "gxp_dynamicgeocoder",
-		"outputTarget": "paneltbar",
+        "outputTarget":"paneltbar",
 		"index": 22
 	},
 	{
 		"ptype": "gxp_reversegeocoder",
-		"outputTarget": "paneltbar",
+        "outputTarget":"paneltbar",
 		"outputConfig": {
 			"width": "200"
 		},
@@ -552,16 +621,22 @@
         "actions":[
         "-"
         ],
-		"actionTarget": "paneltbar"
+        "actionTarget":"paneltbar"
 	},
 	{
         "ptype":"gxp_print",
+        "providerOptions": {
+            "replaceURL": [{
+                "from": "http://localhost:8080/geoserver",
+                "to": "http://destination.geo-solutions.it/geoserver_destination_plus"
+            }]
+        },
         "customParams":{
             "outputFilename":"mapstore-print",
-            "forwardHeaders":["Authorization"]
+            "forwardHeaders":["Authorization", "Shib-Iride-IdentitaDigitale"]
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Nessuno sfondo,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
-        "printService":"http://destination.geo-solutions.it/geoserver_destination/pdf/",
+        "printService":"http://destination.geo-solutions.it/geoserver_destination_plus/pdf/",
         "legendPanelId":"legendPanel",
         "actionTarget":{
             "target":"paneltbar",
@@ -569,12 +644,13 @@
         }
     },
     {
-		"ptype": "gxp_georeferences",
-		"actionTarget": {
-			"target": "paneltbar",
-			"index": 25
+        "ptype":"gxp_georeferences",
+        "actionTarget":{
+            "target":"paneltbar",
+            "index":25
 		}
-	},{
+    },
+    {
 		"ptype": "gxp_syntheticview",
 		"outputTarget": "east",
 		"id": "syntheticview",
@@ -582,27 +658,25 @@
         "seldamage": "seldamage",
 		"selectionLayerName": "aggregated_data_selection",
 		"selectionLayerTitle": "Rischio Totale",
-		"bufferLayerNameHuman": "buffer_human",
-		"bufferLayerNameNotHuman": "buffer_not_human",
-		"selectionLayerBaseURL": "http://destination.geo-solutions.it/geoserver_destination/destination/wms",
+		"selectionLayerBaseURL": "http://destination.geo-solutions.it/geoserver_destination_plus/destination/wms",
 		"selectionLayerProjection": "EPSG:32632",
 		"geometryName": "geometria",
 		"accidentTipologyName": "tipologia",
-		"wfsURL": "http://destination.geo-solutions.it/geoserver_destination/destination/wfs",
-		"wpsURL": "http://destination.geo-solutions.it/geoserver_destination/wps",
-		"downloadBaseUrl": "http://destination.geo-solutions.it/geoserver_destination/www/downloads/",
+		"wfsURL": "http://destination.geo-solutions.it/geoserver_destination_plus/destination/wfs",
+		"wpsURL": "http://destination.geo-solutions.it/geoserver_destination_plus/wps",
+		"downloadBaseUrl": "http://destination.geo-solutions.it/geoserver_destination_plus/www/downloads/",
 		"wpsStore": "destination",
-		"wfsVersion": "1.1.0",
+        "wfsVersion" : "1.1.0",
 		"destinationNS": "destination",
 		"index": 28,
-        "geoStoreBase":"http://destination.geo-solutions.it/geostore/rest/",
-        "proxy":"/http_proxy/proxy/?url=",
+        "geoStoreBase":"http://destination.geo-solutions.it/geostore_plus/rest/",
+        "proxy":"/proxy/?url=",
 		"showDisclaimerBeforeExport": true
 	},
 	{
 		"ptype": "gxp_gatetimeslidertab",
         "id": "gatetimeslidertab",
-        "wfsUrl":"http://destination.geo-solutions.it/geoserver_destination/ows",
+        "wfsUrl":"http://destination.geo-solutions.it/geoserver_destination_plus/ows",
         "wfsVersion": "1.1.0",
         "destinationNS": "destination",
         "statisticFeature": "gate_stats",
@@ -615,10 +689,10 @@
 	}, {
         "ptype": "gxp_featuremanager",
         "id": "featuremanager",
-        "wfsUrl":"http://destination.geo-solutions.it/geoserver_destination/ows",
+        "wfsUrl":"http://destination.geo-solutions.it/geoserver_destination_plus/ows",
         "paging": false,
         "layer": {
-            "source": "destination",
+            "source": "destinationtiled",
             "name": "siig_gate_geo_gate"
         }
     },
@@ -626,11 +700,11 @@
 		"ptype": "gxp_obu",
         "id": "destinationobu",
         "outputTarget": "east",
-		"layerToFilter": "OBU",
+		"layerToFilter": "Obu",
 		"layerTrackTitle": "obu_track",
 		"layerTrackName": "siig_geo_obu_line",
-		"layerTrackUrl": "http://destination.geo-solutions.it/geoserver_destination/destination/ows",
-		"wfsUrl": "http://destination.geo-solutions.it/geoserver_destination/ows?",
+		"layerTrackUrl": "http://destination.geo-solutions.it/geoserver_destination_plus/destination/ows",
+		"wfsUrl": "http://destination.geo-solutions.it/geoserver_destination_plus/ows?",
         "styleRenamedStore": [
             ["Obu points","Obu punti","Obu points","Obu punkte"],
             ["Obu points speed","Obu punti velocità","Obu points vitesse","Obu punkte Geschwindigkeit"],
@@ -668,7 +742,7 @@
 		"ptype": "gxp_tabpanelwfsgrids",
 		"outputTarget": "featurelist",
 		"srsName": "EPSG:32632",
-		"wfsURL": "http://destination.geo-solutions.it/geoserver_destination/wfs",
+		"wfsURL": "http://destination.geo-solutions.it/geoserver_destination_plus/wfs",
 		"panels": {
 			"targets": {
 				"Popolazione residente": {
@@ -1693,6 +1767,66 @@
                     "type": "all"
 				}
 			},
+            
+            "damage": {
+                "Aree di danno": {
+                    "featureType": "buffer_1",
+                    "fields": [
+                        {
+                            "name": "id",              
+                            "mapping": "id_geo_arco"
+                        },
+                        {
+                            "name": "geometry",        
+                            "mapping": "geometria"
+                        },
+                        {
+                            "name": "name",         
+                            "mapping": "name"
+                        },
+                        {
+                            "name": "distanza",         
+                            "mapping": "distance"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "header": ["Area", "Fascia",  "Bande", "Bereich"],
+                            "dataIndex": "name"
+                        },
+                        {
+                            "header": ["Distance", "Distanza", "Distance", "Distanz"],
+                            "dataIndex": "distanza"
+                        }
+                    ],
+                    "title": ["Damage areas", "Aree di danno",  "Des zones de dommages", "Schadensbereiche"],
+                    "id": 1,
+                    "name": "DAMAGEAREA",
+                    "type": "all",
+                    "noPaging": true
+                }
+            }
+        },
+        "currentPanel": "targets",
+                "actionColumns" : [ 
+                    {
+                      "type": "checkDisplay",
+                      "layerName": "Bersaglio Selezionato",
+                      "sourceSRS": "EPSG:32632"
+        },
+                    {
+                     "type": "zoom",
+                     "sourceSRS": "EPSG:32632"
+                    }],
+        "index": 29
+    }, {
+        "ptype": "gxp_tabpanelwfsgrids",
+        "outputTarget": "featurelist",
+        "id": "simulationgrid",
+        "withSwitchButtons": false,
+        "srsName" : "EPSG:32632",
+        "wfsURL": "http://localhost:8080/geoserver/destination/wfs",
+        "panels": {
             "simulation": {
                 "Grafo Stradale": {
 					"featureType": "grafo_simulazione",
@@ -1764,7 +1898,7 @@
 					"Archi",
 					"Archi",
                     "Segmente"],
-                    "id": 100,
+                    "id": "archi",
 					"name": "ARCHI",
 					"type": "all",
 					"noPaging": true,
@@ -1828,7 +1962,7 @@
                     ],
                     "title": ["Resident Population", "Popolazione residente", "Population résidente", "Anwohnerzahlen"],
                     "name": "POPOLAZIONE RESIDENTE",
-                    "id": 1,
+                    "id": "target1",
                     "type": "umano",
                     "noPaging": true,
                     "allowEdit": true,
@@ -1903,7 +2037,7 @@
                     ],
                     "title": ["Tourist population", "Popolazione fluttuante turistica", "Population touristique", "Tourismuszahlen"],
                     "name": "POPOLAZIONE FLUTTUANTE TURISTICA (MAX)",
-                    "id": 2,
+                    "id": "target2",
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -1998,7 +2132,7 @@
                     ],
                     "title": ["Industry and services", "Addetti industria e servizi", "Industrie et services", "Industrie und Dienstleistungen"],
                     "name": "ADDETTI INDUSTRIA E SERVIZI",
-                    "id": 4,
+                    "id": "target4",
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2112,7 +2246,7 @@
                     ],
                     "title": ["Health facilities", "Addetti/utenti strutture sanitarie", "Structures sanitaires", "Sanitäre Strukturen"],
                     "name": "ADDETTI/UTENTI STRUTTURE SANITARIE",
-                    "id": 5,
+                    "id": "target5",
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2210,7 +2344,7 @@
                     ],
                     "title": ["School Facilities", "Addetti/utenti strutture scolastiche", "Établissements scolaires", "Bildungseinrichtungen"],
                     "name": "ADDETTI/UTENTI STRUTTURE SCOLASTICHE",
-                    "id": 6,
+                    "id": "target6",
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2316,7 +2450,7 @@
                     ],
                     "title": ["medium and large retailers", "Addetti/utenti centri commerciali", "Moyennes et grandes surfaces", "Strukturen mittlerer und großer Verteilung"],
                     "name": "ADDETTI/UTENTI CENTRI COMMERCIALI",
-                    "id": 7,
+                    "id": "target7",
                     "type": "umano",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2389,7 +2523,7 @@
                     ],
                     "title": ["Urban Areas", "Zone urbanizzate", "Zones urbanisées", "Urbane Zonen/Flächen"],
                     "name": "ZONE URBANIZZATE",
-                    "id": 10,
+                    "id": "target10",
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2462,7 +2596,7 @@
                     ],
                     "title": ["Wooded Areas", "Aree boscate", "Zones forestières", "Bewaldete Flächen"],
                     "name": "AREE BOSCATE",
-                    "id": 11,
+                    "id": "target11",
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2543,7 +2677,7 @@
                     ],
                     "title": ["Protected Areas", "Aree protette", "Zones protégées", "Naturschutzflächen"],
                     "name": "AREE PROTETTE",
-                    "id": 12,
+                    "id": "target12",
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2616,7 +2750,7 @@
                     ],
                     "title": ["Agricultural Areas", "Aree agricole", "Zones agricoles", "Landwirtschaftliche Flächen"],
                     "name": "AREE AGRICOLE",
-                    "id": 13,
+                    "id": "target13",
                     "type": "ambientale",
                     "noPaging": true,
                     "layerEditName": "Bersaglio Selezionato Editing",
@@ -2720,7 +2854,7 @@
                         }
                     ],
                     "title": ["Surface waters", "Acque superficiali", "Eaux superficielles", "Oberflächengewässer"],
-                    "id": 15,
+                    "id": "target15",
                     "name": "ACQUE SUPERFICIALI",
                     "type": "ambientale",
                     "noPaging": true,
@@ -2801,7 +2935,7 @@
                         }
                     ],
                     "title": ["Groundwater", "Acque sotterranee", "Eaux souterraines", "unterirdische Gewässer (Tiefbrunnen)"],
-                    "id": 14,
+                    "id": "target14",
                     "name": "ACQUE SOTTERRANEE",
                     "type": "ambientale",
                     "noPaging": true,
@@ -2874,7 +3008,7 @@
                         }
                     ],
                     "title": ["Cultural Areas", "Beni culturali", "Patrimoine culturel", "Kulturelle Güter "],
-                    "id": 16,
+                    "id": "target16",
                     "name": "BENI CULTURALI",
                     "type": "ambientale",
                     "noPaging": true,
@@ -2896,58 +3030,8 @@
                         "width": 20
                     }]
                 }
-            },
-            "damage": {
-                "Aree di danno": {
-                    "featureType": "buffer_1",
-                    "fields": [
-                        {
-                            "name": "id",              
-                            "mapping": "id_geo_arco"
-                        },
-                        {
-                            "name": "geometry",        
-                            "mapping": "geometria"
-                        },
-                        {
-                            "name": "name",         
-                            "mapping": "name"
-                        },
-                        {
-                            "name": "distanza",         
-                            "mapping": "distance"
                         }
-                    ],
-                    "columns": [
-                        {
-                            "header": ["Area", "Fascia",  "Bande", "Bereich"],
-                            "dataIndex": "name"
-                        },
-                        {
-                            "header": ["Distance", "Distanza", "Distance", "Distanz"],
-                            "dataIndex": "distanza"
                         }
-                    ],
-                    "title": ["Damage areas", "Aree di danno",  "Des zones de dommages", "Schadensbereiche"],
-                    "id": 1,
-                    "name": "DAMAGEAREA",
-                    "type": "all",
-                    "noPaging": true
-                }
-            }
-        },
-        "currentPanel": "targets",
-                "actionColumns" : [ 
-                    {
-                      "type": "checkDisplay",
-                      "layerName": "Bersaglio Selezionato",
-                      "sourceSRS": "EPSG:32632"
-        },
-                    {
-                     "type": "zoom",
-                     "sourceSRS": "EPSG:32632"
-		}],
-		"index": 29
     }
     ]
 }

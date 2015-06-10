@@ -135,7 +135,7 @@
             "group": "background"
         },{
             "source": "destinationtiled",
-            "title": ["Environment Risk","Rischio Ambientale","risque environnemental","Umweltrisiken"],
+            "title": ["Environment Risk","Rischio Ambientale","risque environnemental","Umweltrisiko"],
             "name": "rischio_totale_ambientale",
             "displayInLayerSwitcher": true,                
             "tiled": false,
@@ -146,7 +146,7 @@
 			"forceOneVisible": false
         },{
             "source": "destinationtiled",
-            "title": ["Social Risk","Rischio Sociale","risque social","Anthropologischen Risiken"],
+            "title": ["Social Risk","Rischio Sociale","risque social","Anthropologischen Risiko"],
             "name": "rischio_totale_sociale",
             "displayInLayerSwitcher": true,
             "tiled": false,
@@ -158,7 +158,7 @@
 			"forceOneVisible": false
         },{
             "source": "destinationtiled",
-            "title": ["Social - Environmental Risk","Rischio Sociale - Ambientale","risque sociale - environnemental","Risiko"],
+            "title": ["Social - Environmental Risk","Rischio Sociale - Ambientale","risque sociale - environnemental","Gesamtrisiko"],
             "name": "rischio_totale",
             "displayInLayerSwitcher": true,
             "tiled": false,
