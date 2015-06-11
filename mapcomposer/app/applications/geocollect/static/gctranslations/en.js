@@ -266,7 +266,7 @@ GeoExt.Lang.add("en", {
         saveOrCancelEdit: "Save Or Cancel Edits",
         commitErrorTitle: "Error Saving Survey",
         commitErrorMsg: "Changes not saved!",
-        refreshButtonTooltip:"Reload Survays"
+        refreshButtonTooltip:"Reload Surveys"
     },
     "mxp.plugins.MapManager.prototype":{
         buttonText: "Mission Manager",

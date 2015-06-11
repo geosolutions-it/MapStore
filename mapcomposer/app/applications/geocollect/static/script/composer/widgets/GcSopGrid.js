@@ -30,7 +30,7 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
     editButtonTooltip:'Edit slected row',
     saveButtonText:'Save',
     saveButtonTooltip:'Save changes',
-    refreshButtonTooltip:"Reload Survays",
+    refreshButtonTooltip:"Reload Surveys",
     cancelButtonText:'Cancel',
     cancelButtonTooltip:'Cancel changes',
     saveOrCancelEdit:'Save or cancel changes',
