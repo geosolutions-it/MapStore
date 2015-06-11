@@ -30,6 +30,7 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
     editButtonTooltip:'Edit slected row',
     saveButtonText:'Save',
     saveButtonTooltip:'Save changes',
+    refreshButtonTooltip:"Reload Survays",
     cancelButtonText:'Cancel',
     cancelButtonTooltip:'Cancel changes',
     saveOrCancelEdit:'Save or cancel changes',
@@ -209,13 +210,17 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
             },
             scope: this,
             ref:'/saveButton'
+        },
+        {
+            tooltip: this.refreshButtonTooltip,
+            iconCls: "reload",
+            hidden: false,
+            handler: function() {
+                 this.store.reload();
+            },
+            scope: this,
+            ref:'/refreshButton'
         }
-      
-            
-            
-            
-            
-            
             ];
         this.on('render',function(){
             if(!this.mask) this.mask=  new Ext.LoadMask(this.id, {msg:"Please wait...",store:this.store});
@@ -230,7 +235,6 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
         
       },3000);*/
      this.getSchema(this.createStore,this);
-      
     },
     getSchema: function(callback,scope){
         var schema = new GeoExt.data.AttributeStore({
@@ -261,12 +265,10 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
                                      });
                                        
                                        return false;   
-                                       }                                                                  
-
+                                       }
         this.disableEditing();
         this.deleteButton.disable();
          this.editButton.disable();
-          
         var params={};
         if(this.oldParam===param)return;//If oalready loaded skip!
         this.filter=new OpenLayers.Filter.Comparison({
@@ -274,24 +276,20 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
             property: this.queriableAttribute,
             value:param
             });
-        
         this.store.setOgcFilter(this.filter);
          this.store.load();
        this.oldParam=param;
    },
-    
      setSopLayer:function(layerRecord){
         this.layerRecord=layerRecord;           
         this.createStore();
     },
-    
     /** private: method[onDestroy]
      *  Clean up anything created here before calling super onDestroy.
      */
     onDestroy: function() {
         gxp.grid.GcSopGrid.superclass.onDestroy.apply(this, arguments);
     },
-  
 
 createStore: function(schema) {
         
@@ -486,7 +484,8 @@ createStore: function(schema) {
             this.editButton.hide();
             this.deleteButton.hide();
             this.saveButton.show();
-            this.cancelButton.show();     
+            this.cancelButton.show();  
+            this.refreshButton.disable();  
             this.fireEvent( "startsopediting",this);
     },
      disableEditing: function() {
@@ -496,8 +495,9 @@ createStore: function(schema) {
             this.editButton.show();
             this.deleteButton.show();
             this.saveButton.hide();
+            this.refreshButton.enable();
             this.cancelButton.hide();
-              this.fireEvent( "stopsopediting",this);                   
+            this.fireEvent( "stopsopediting",this);                   
        
     },
      /** private: method[stopEditing]

@@ -265,7 +265,8 @@ GeoExt.Lang.add("it", {
         cancelButtonTooltip:'Annulla Modifiche',
         saveOrCancelEdit:'Salva O Annulla Modifiche',
         commitErrorTitle:'Errore Durantre Il Salvataggio',
-        commitErrorMsg:'Modifiche Non Salvate!'
+        commitErrorMsg:'Modifiche Non Salvate!',
+        refreshButtonTooltip:"Ricarica Sopralluoghi"
     },
     "mxp.plugins.MapManager.prototype":{
         buttonText: "Gestione Missioni",
