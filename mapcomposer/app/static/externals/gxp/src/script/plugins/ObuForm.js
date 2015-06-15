@@ -165,7 +165,9 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
                         this.formPanel.optionsPanel.playbackToolbar = this.playbackTool.playbackToolbar;
                         
 						this.playbackTool.playbackToolbar.show();
-                        
+                        if(this.playbackTool.playbackToolbar.slider && this.playbackTool.playbackToolbar.slider.sliderTip && this.playbackTool.playbackToolbar.slider.sliderTip.getEl()) {
+                            this.playbackTool.playbackToolbar.slider.sliderTip.getEl().show();
+                        }
                         var end = OpenLayers.Date.parse(this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][1]);
                         var start = OpenLayers.Date.parse(this.playbackTool.playbackToolbar.control.layers[0].metadata.timeInterval[0][0]);
                         
@@ -187,6 +189,9 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					this.playbackTool = this.target.tools["destination_playback"];
 					if(this.playbackTool && this.playbackTool.playbackToolbar){
 						this.playbackTool.playbackToolbar.hide();
+                        if(this.playbackTool.playbackToolbar.slider && this.playbackTool.playbackToolbar.slider.sliderTip) {
+                            this.playbackTool.playbackToolbar.slider.sliderTip.getEl().hide();
+                        }
 					}
                     
 					//
