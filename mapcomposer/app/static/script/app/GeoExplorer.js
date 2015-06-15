@@ -1406,11 +1406,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 					if(geometryArray[i]){
 						var geometry = geometryArray[i].geometry;
 						if(geometry.x < minx)	minx = geometry.x;
-						else
+						//else
 						if(geometry.x > maxx)	maxx = geometry.x;
-						else
+						//else
 						if(geometry.y < miny)	miny = geometry.y;
-						else
+						//else
 						if(geometry.y > maxy)	maxy = geometry.y;
 					}
 				}	

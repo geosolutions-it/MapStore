@@ -821,7 +821,19 @@ gxp.plugins.MarkerEditor = Ext.extend(gxp.plugins.Tool, {
 		
 		if(store){
 			var markers = store.getGeoJson();		
-			newState.markers = markers
+			
+			try {
+			  markers = Ext.util.JSON.decode(markers);
+			} catch (err) {
+				console.log("Errore decoding markers config");
+			}
+				
+		    if(markers.features.length > 0){
+				newState.markers = markers
+			}else{
+				newState.markers = undefined;
+			}
+			
 		}
         
         return newState;
