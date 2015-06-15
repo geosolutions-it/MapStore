@@ -200,8 +200,8 @@ loadXtype:function(o){
 	this.jObj=o;
 	if(o.attributes){	
 		if(o.attributes.editable) this.editCk.setValue(o.attributes.editable);
-		if(o.attributes.disablePan) this.panCk.setValue(!o.attributes.disablePan);
-		if(o.attributes.disableZoom) this.zoomCk.setValue(!o.attributes.disableZoom);
+		if(o.attributes.hasOwnProperty('disablePan')) this.panCk.setValue(!o.attributes.disablePan);
+		if(o.attributes.hasOwnProperty('disableZoom')) this.zoomCk.setValue(!o.attributes.disableZoom);
 		if(o.attributes.displayOriginalValue) this.origValCk.setValue(o.attributes.displayOriginalValue);
 		if(o.attributes.description)this.descriptionField.setValue(o.attributes.description);
 		if(o.attributes.height)this.heigthFild.setValue(o.attributes.height);
