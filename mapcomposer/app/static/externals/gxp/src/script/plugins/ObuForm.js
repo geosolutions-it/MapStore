@@ -92,7 +92,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					"descrizione_${locale}"
 				],
 				sortBy: "id_tipo",
-				displayField: "descrizione_${locale}",
+				displayField: "descrizione",
 				tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{descrizione}</span></h3></div></tpl>",
 				recordModel:[
 					{

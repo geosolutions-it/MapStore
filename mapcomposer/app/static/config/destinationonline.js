@@ -1656,11 +1656,11 @@
 					},
 					{
                             "name": "partner",         
-                            "mapping": "partner_it"
+                            "mapping": "partner_${locale}"
                         },
                         {
                             "name": "tipo_densita",         
-                            "mapping": "tipo_densita_veicolare_leggeri_pesanti_it"
+                            "mapping": "tipo_densita_veicolare_leggeri_pesanti_${locale}"
                         },
                         {
                             "name": "densita_veicolare",         
@@ -1668,7 +1668,7 @@
                         },
                         {
                             "name": "tipo_velocita",         
-                            "mapping": "tipo_velocita_media_leggeri_pesanti_it"
+                            "mapping": "tipo_velocita_media_leggeri_pesanti_${locale}"
                         },
                         {
                             "name": "velocita_media",         
@@ -1676,7 +1676,7 @@
                         },
                         {
                             "name": "fl_nr_corsie",         
-                            "mapping": "flg_nr_corsie"
+                            "mapping": "flg_nr_corsie_${locale}"
                         },
                         {
                             "name": "nr_corsie",         
@@ -1684,7 +1684,7 @@
                         },
                         {
                             "name": "flg_nr_incidenti",         
-                            "mapping": "flg_nr_incidenti"
+                            "mapping": "flg_nr_incidenti_${locale}"
                         },
                         {
                             "name": "nr_incidenti",         
@@ -1704,7 +1704,7 @@
 					},
 					{
                             "name": "elenco_dissesti",         
-                            "mapping": "elenco_dissesti"
+                            "mapping": "elenco_dissesti_${locale}"
                         }
                     ],
                     "columns": [
@@ -1825,7 +1825,7 @@
         "id": "simulationgrid",
         "withSwitchButtons": false,
         "srsName" : "EPSG:32632",
-        "wfsURL": "http://localhost:8080/geoserver/destination/wfs",
+        "wfsURL": "http://destination.geo-solutions.it/geoserver_destination_plus/destination/wfs",
         "panels": {
             "simulation": {
                 "Grafo Stradale": {
