@@ -424,14 +424,16 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  :arg schema: ``GeoExt.data.AttributeStore``
      */
     onLayerChange: function(mgr, layer, schema) {
-        var snapId = this.snappingAgent;
+	
+		var auth = this.target.getAuth();
+		var snapId = this.snappingAgent;
         
 		if (snapId){
             var snappingAgent = this.target.tools[snapId]; 
 		}
 		
         this.schema = schema;
-        var disable = !schema || !this.target.isAuthorized();
+        var disable = !schema || !auth; // !this.target.isAuthorized();
         this.actions[0].setDisabled(disable);
         this.actions[1].setDisabled(disable);
         if (disable) {
