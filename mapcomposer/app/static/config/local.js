@@ -146,7 +146,7 @@
 			"forceOneVisible": false
         },{
             "source": "destinationtiled",
-            "title": ["Social Risk","Rischio Sociale","risque social","Anthropologischen Risiko"],
+            "title": ["Social Risk","Rischio Sociale","risque social","Anthropologisches Risiko"],
             "name": "rischio_totale_sociale",
             "displayInLayerSwitcher": true,
             "tiled": false,
@@ -736,12 +736,12 @@
             "id_gate": ["Id","Id","Id","Id"],
             "fk_partner": ["Partner","Partner","Partner","Partner"],
             "fk_server": ["Server","Server","Server","Server"],
-            "concessionaria_sito": ["Concessionaria","Concessionaria","Concessionaria","Concessionaria"],
-            "nr_corsie_carreggiata": ["Corsie","Corsie","Corsie","Corsie"],
+            "concessionaria_sito": ["Concessionaria","Concessionaria","Concessionaria","Konzessionär"],
+            "nr_corsie_carreggiata": ["Corsie","Corsie","Corsie","Spuren"],
             "descrizione": ["Description","Descrizione","Description","Beschreibung"],
-            "collocazione": ["Collocation","Collocazione","Collocation","Collocation"],
-            "data_inizio_validita": ["Start Validity","Inizio Validita","Lancer Validité","Starten Gültigkeit"],
-            "data_fine_validita": ["End Validity","Fine Validita","Validité de Fin","End Gültigkeit"]
+            "collocazione": ["Collocation","Collocazione","Collocation","Lokalisierung"],
+            "data_inizio_validita": ["Start Validity","Inizio Validita","Lancer Validité","Start der Gültigkeit"],
+            "data_fine_validita": ["End Validity","Fine Validita","Validité de Fin","Ende der Gültigkeit"]
         },
         "fidFields": {
             "siig_gate_geo_gate": "id_gate"
