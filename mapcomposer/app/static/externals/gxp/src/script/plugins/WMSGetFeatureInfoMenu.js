@@ -343,7 +343,7 @@ if(this.infoAction=='click'){
 
             queryableLayers.each(function(x){                
                 var l = x.getLayer();
-			
+
             var vendorParams = {};
             Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
                 if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
@@ -446,6 +446,8 @@ if(this.infoAction=='click'){
                             if(this.drillDown === true || this.urlMatches(url)) {
                                 layers.push(layer);
                             }
+                            //Add CQL FILTER IF exist
+                            Ext.apply(this.vendorParams,{CQL_FILTER:layer.params.CQL_FILTER});
                         }
                     }
                 return layers;
@@ -872,6 +874,8 @@ if(this.infoAction=='click'){
                             if(this.drillDown === true || this.urlMatches(url)) {
                                 layers.push(layer);
                             }
+                             //Add CQL FILTER IF exist
+                            Ext.apply(this.vendorParams,{CQL_FILTER:layer.params.CQL_FILTER});
                         }
                     }
                 return layers;

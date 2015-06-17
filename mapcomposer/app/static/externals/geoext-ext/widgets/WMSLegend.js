@@ -274,17 +274,16 @@ GeoExt.WMSLegend = Ext.extend(GeoExt.LayerLegend, {
             this.remove(cmp);
             cmp.destroy();
         }
-var cmpId = this.id;
-var skip=false;
-		this.ownerCt.items.each(function(it){
-
-			if(it.items.get(0).text==textCmp.text && it.id != cmpId && !it.hidden ){
-				skip=true;
-				return false;
-			}
-			
-		});
-		if(skip) this.hide();
+        var cmpId = this.id;
+        var skip=false;
+        if(this.ownerCt)
+        this.ownerCt.items.each(function(it){
+        if(it.items.get(0).text==textCmp.text && it.id != cmpId && !it.hidden ){
+            skip=true;
+            return false;
+        }
+});
+        if(skip) this.hide();
         for(i = 0, len = layerNames.length; i<len; i++) {
             layerName = layerNames[i];
             if(!this.items || !this.getComponent(layerName)) {
