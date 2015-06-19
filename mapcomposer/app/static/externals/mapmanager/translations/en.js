@@ -104,7 +104,7 @@ GeoExt.Lang.add("en", {
     "UserManagerView.prototype":{
         textGeneral:"General",
         textAttributes:"Attributes",
-        textGroups:"Groups",
+        textGroups:"Companies",
 		textName: 'Name',
 		textPassword: 'Password',
 		textPasswordEdit: 'New Password',
@@ -135,25 +135,25 @@ GeoExt.Lang.add("en", {
 		textSelectRole: 'Select a role...',
 		titleConfirmDeleteMsg: "Confirm delete user",
 		textConfirmDeleteMsg: "Are you sure you want to delete this user?",
-        textManageGroups: "Manage Groups"
+        textManageGroups: "Manage Companies"
 	},
     "MSMUserGroupManager.prototype":{
-        textGroupName: "Group Name",
+        textGroupName: "Company Name",
         textId: "Id",
         textDescription: "Description",
-        textAddGroupButton: "Create A New Group",
-        groupNameAlreadyTaken: "Group Name already taken",
-        titleConfirmDeleteMsg: "Confirm delete group",
-        textConfirmDeleteMsg: "Are you sure you want to delete this group?",
+        textAddGroupButton: "Create A New Company",
+        groupNameAlreadyTaken: "Company Name already taken",
+        titleConfirmDeleteMsg: "Confirm delete Company",
+        textConfirmDeleteMsg: "Are you sure you want to delete this Company?",
         textName: "Name",
         textRole: "Role",
-        textGroup: "Group",
+        textGroup: "Company",
         textUsers: "Users",
         textSave: "Save",
         textClose: "Close",
         textDetails: "Details",
-        tooltipGroupInfo: "Informations about this group",
-        tooltipDelete: "Delete this Group"
+        tooltipGroupInfo: "Informations about this Company",
+        tooltipDelete: "Delete this Company"
     },
 	"EmbedMapDialog.prototype": {
         publishMessage: "Your map is ready to be published to the web! Simply copy the following HTML to embed the map in your website:",
@@ -181,11 +181,11 @@ GeoExt.Lang.add("en", {
         notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>If you are an administrator please insert your credentials to create these categories: '{0}'</div>"
 	},
     "mxp.form.UserGroupComboBox.prototype":{
-        fieldLabel: "User Group"
+        fieldLabel: "User Company"
     },
     "mxp.widgets.ResourceGroupPermissionGrid.prototype":{
         refreshText: "Refresh grid",
-        addText: "Add a new security rule based on user groups",
+        addText: "Add a new security rule based on user companies",
         addNewSecurityRuleTitleText: "Create A New Security Rule",
         editSecurityRuleTitleText: "Edit Security Rule for group '{0}'",
         groupNameTitleText: "Error", 
