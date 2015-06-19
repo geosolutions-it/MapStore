@@ -75,7 +75,11 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	 * If false context menu item is not shown (defaults to true)
 	 */
 	,enableOpen:true
-
+    
+    /**
+     *  @cfg {String) hideMode offsets to avoid hiding problems on iframes
+     */
+    ,hideMode:'offsets'
 	/**
 	 * @cfg {Boolean} enableProgress true to enable querying server for progress information
 	 * Passed to underlying uploader. Included here for convenience.
