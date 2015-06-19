@@ -223,6 +223,7 @@ createStore:function(){
             mapPanel:this.mapPanel,
             url: this.wfsURL,
             vendorParams: this.vendorParams,
+            proxy : new Ext.data.HttpProxy({url: this.wfsURL, method: "GET"}),
             paramNames:{
                 start: "startindex",
                 limit: "maxfeatures",
