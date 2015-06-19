@@ -8,7 +8,7 @@
       "via":"geosolutions_it",
       "hashtags":""
    },
-   "loginDataStorage" : "sessionStorage",
+
    "mediaContent":"./externals/mapmanager/theme/media",
    "ASSET":{
         "delete_icon": "./externals/mapmanager/theme/img/user_delete.png",
@@ -46,6 +46,7 @@
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
+        "statelessSession":false,
         "externalHeaders": true,
         "actionTarget":{
           "target": "north.tbar",
@@ -66,6 +67,7 @@
     },{
         "ptype": "mxp_usermanager",
         "loginManager": "loginTool",
+        "statelessSession":false,
         "addManageGroupsButton": false,
         "actionTarget":{
           "target": "north.tbar",
@@ -80,6 +82,7 @@
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
+        "statelessSession":false,
         "externalHeaders": true,
         "actionTarget":{
           "target": "north.tbar",

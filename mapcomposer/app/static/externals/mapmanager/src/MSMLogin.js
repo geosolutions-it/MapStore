@@ -245,11 +245,12 @@ MSMLogin = Ext.extend(Ext.FormPanel, {
 						provider: "geostore"
 					};
 					
+					var auth = userDetails.token;
 					sessionStorage.removeItem("userDetails");
 					sessionStorage["userDetails"] = Ext.util.JSON.encode(userDetails);
 					
                     this.showLogout(user.User.name);
-                    this.fireEvent("login", this.username);
+                    this.fireEvent("login", this.username, auth, user.User);
                 }else{
                     // invalid user state
                     this.showLogin();

@@ -271,6 +271,7 @@ Ext.extend(Ext.ux.fileBrowser, Ext.Panel, {
     			border:			this.folderBorder,
     			width:			this.folderWidth,
     			split:			this.folderSplit,
+                hideMode:		'offsets',
     			region:			'west',
     			enableDD:		false,
     			ddGroup:		'fileMove',
