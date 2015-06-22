@@ -180,7 +180,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
             },
             gate:{
                 queriableAttributes:[
-                    "descrizione"                
+                    "descrizione_" + GeoExt.Lang.locale               
                  ],
                  recordModel:[
                     {
