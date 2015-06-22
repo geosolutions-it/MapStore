@@ -695,7 +695,7 @@ GeoExt.Lang.add("it", {
         saveButtonTooltip: 'Salva le modifiche'
     },
     
-    "gxp.gxp.plugins.ObuForm.prototype":{
+    "gxp.plugins.ObuForm.prototype":{
         title: "Dati in tempo reale-Obu",
         filterTitle: "Filtro",
         fieldIDLabel: "Semirimorchio",

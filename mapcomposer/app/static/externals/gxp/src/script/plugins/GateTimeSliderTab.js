@@ -111,39 +111,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
         pointRadius: 10
     },    
 
-	featureSelectorConfigs:{
-        base:{
-            toggleGroup:'toolGroup',
-            xtype: 'gxp_searchboxcombo',
-            anchor:'100%',
-            fieldLabel: 'Gate',
-            predicate:"ILIKE",
-            sortBy:"id_gate",
-            ref:'singleSelector',
-            displayField:"descrizione",
-            pageSize:10            
-        },
-        gate:{
-            queriableAttributes:[
-                "descrizione"                
-             ],
-             recordModel:[
-                {
-                  name:"id_gate",
-                   mapping:"id_gate"
-                },
-                {
-                   name:"geometry",
-                   mapping:"geometry"
-                },
-                {
-                   name:"descrizione",
-                   mapping:"properties.descrizione"
-                } 
-            ],
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{descrizione}</span></h3>({descrizione})</div></tpl>"       
-        }   
-    },    
+	 
     
     /** private: method[constructor]
      *  :arg config: ``Object``
@@ -198,7 +166,39 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-    
+        this.featureSelectorConfigs = {
+            base:{
+                toggleGroup:'toolGroup',
+                xtype: 'gxp_searchboxcombo',
+                anchor:'100%',
+                fieldLabel: 'Gate',
+                predicate:"ILIKE",
+                sortBy:"id_gate",
+                ref:'singleSelector',
+                displayField:"descrizione",
+                pageSize:10            
+            },
+            gate:{
+                queriableAttributes:[
+                    "descrizione"                
+                 ],
+                 recordModel:[
+                    {
+                      name:"id_gate",
+                       mapping:"id_gate"
+                    },
+                    {
+                       name:"geometry",
+                       mapping:"geometry"
+                    },
+                    {
+                       name:"descrizione",
+                       mapping:"properties.descrizione_" + GeoExt.Lang.locale
+                    } 
+                ],
+                tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{descrizione}</span></h3>({descrizione})</div></tpl>"       
+            }   
+        };
         var me = this;
         
         this.summaryLabels = {

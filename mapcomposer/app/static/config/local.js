@@ -177,91 +177,91 @@
             "source": "destinationtiled",
             "title": "Beni culturali",
             "name": "beni_culturali_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Zone urbanizzate",
             "name": "zone_urbanizzate_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Acque sotterranee",
             "name": "acque_sotterranee_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Acque superficiali",
             "name": "acque_superficiali_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Aree protette",
             "name": "aree_protette_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Aree boscate",
             "name": "aree_boscate_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Aree agricole",
             "name": "aree_agricole_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Addetti/utenti centri commerciali",
             "name": "centri_commerciali_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Addetti/utenti strutture scolastiche",
             "name": "strutture_scolastiche_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Addetti/utenti strutture sanitarie",
             "name": "strutture_sanitarie_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Addetti industria e servizi",
             "name": "industria_servizi_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Popolazione turistica",
             "name": "popolazione_turistica_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },
         {
             "source": "destinationtiled",
             "title": "Popolazione residente",
             "name": "popolazione_residente_all",
-            "group": ["Targets","Bersagli","Cibles","Betroffene Elemente"],
+            "group": ["Targets","Bersagli","Cibles","Vulnerable Elemente"],
             "visibility": false
         },{
             "source": "destinationtiled",
@@ -303,7 +303,7 @@
         {
             "name": "Provincia di Bolzano", 
             "url": "http://sdi.provincia.bz.it/geonetwork/srv/it/csw", 
-            "description": "Provincia di Bolzano"
+            "description": "Autonome Provinz Bozen"
         },{
             "name": "PTA", 
             "url": "http://www.gruppoiit.lispa.it/geoportal/csw",
@@ -665,17 +665,23 @@
         "autoLoadFeatures": true,
         "actionTarget":"editorfieldset.bbar",
         "toggleGroup": "toolGroup",
-        "excludeFields": ["data_cancellazione"],
+        "excludeFields": ["data_cancellazione", "concessionaria_sito", "descrizione"],
         "renamedFields": {
             "id_gate": ["Id","Id","Id","Id"],
             "fk_partner": ["Partner","Partner","Partner","Partner"],
             "fk_server": ["Server","Server","Server","Server"],
-            "concessionaria_sito": ["Concessionaria","Concessionaria","Concessionaria","Concessionaria"],
-            "nr_corsie_carreggiata": ["Corsie","Corsie","Corsie","Corsie"],
-            "descrizione": ["Description","Descrizione","Description","Beschreibung"],
-            "collocazione": ["Collocation","Collocazione","Collocation","Collocation"],
-            "data_inizio_validita": ["Start Validity","Inizio Validita","Lancer Validité","Starten Gültigkeit"],
-            "data_fine_validita": ["End Validity","Fine Validita","Validité de Fin","End Gültigkeit"]
+            "concessionaria_sito_it": ["Concessionaria (IT)","Concessionaria (IT)","Concessionaria (IT)","Konzessionär (IT)"],
+            "concessionaria_sito_en": ["Concessionaria (EN)","Concessionaria (EN)","Concessionaria (EN)","Konzessionär (EN)"],
+            "concessionaria_sito_fr": ["Concessionaria (FR)","Concessionaria (FR)","Concessionaria (FR)","Konzessionär (FR)"],
+            "concessionaria_sito_de": ["Concessionaria (DE)","Concessionaria (DE)","Concessionaria (DE)","Konzessionär (DE)"],
+            "nr_corsie_carreggiata": ["Corsie","Corsie","Corsie","Spuren"],
+            "descrizione_it": ["Description (IT)","Descrizione (IT)","Description (IT)","Beschreibung (IT)"],
+            "descrizione_en": ["Description (EN)","Descrizione (EN)","Description (EN)","Beschreibung (EN)"],
+            "descrizione_fr": ["Description (FR)","Descrizione (FR)","Description (FR)","Beschreibung (FR)"],
+            "descrizione_de": ["Description (DE)","Descrizione (DE)","Description (DE)","Beschreibung (DE)"],
+            "collocazione": ["Collocation","Collocazione","Collocation","Lokalisierung"],
+            "data_inizio_validita": ["Start Validity","Inizio Validita","Lancer Validité","Start der Gültigkeit"],
+            "data_fine_validita": ["End Validity","Fine Validita","Validité de Fin","Ende der Gültigkeit"]
         },
         "fidFields": {
             "siig_gate_geo_gate": "id_gate"
@@ -1603,7 +1609,7 @@
                         },
                         {
                             "name": "tipo_densita",         
-                            "mapping": "tipo_densita_veicolare_leggeri_pesanti_it"
+                            "mapping": "tipo_densita_veicolare_leggeri_pesanti_${locale}"
                         },
                         {
                             "name": "densita_veicolare",         
@@ -1611,7 +1617,7 @@
                         },
                         {
                             "name": "tipo_velocita",         
-                            "mapping": "tipo_velocita_media_leggeri_pesanti_it"
+                            "mapping": "tipo_velocita_media_leggeri_pesanti_${locale}"
                         },
                         {
                             "name": "velocita_media",         
@@ -1619,7 +1625,7 @@
                         },
                         {
                             "name": "fl_nr_corsie",         
-                            "mapping": "flg_nr_corsie"
+                            "mapping": "fl_nr_corsie_${locale}"
                         },
                         {
                             "name": "nr_corsie",         
@@ -1627,7 +1633,7 @@
                         },
                         {
                             "name": "flg_nr_incidenti",         
-                            "mapping": "flg_nr_incidenti"
+                            "mapping": "flg_nr_incidenti_${locale}"
                         },
                         {
                             "name": "nr_incidenti",         
@@ -1647,7 +1653,7 @@
                         },
                         {
                             "name": "elenco_dissesti",         
-                            "mapping": "elenco_dissesti"
+                            "mapping": "elenco_dissesti_${locale}"
                         }
                     ],
                     "columns": [
