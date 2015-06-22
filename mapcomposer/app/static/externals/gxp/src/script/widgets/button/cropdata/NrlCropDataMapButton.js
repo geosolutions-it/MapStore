@@ -132,6 +132,7 @@ gxp.widgets.button.NrlCropDataMapButton = Ext.extend(Ext.Button, {
             
             var source = this.target.tools.addlayer.checkLayerSource(this.url);
             var record = source.createLayerRecord(layerProps);
+            record.set('queryable', false);
             this.filterStyles(values,areatype,varparam,crop,viewParams,record);
             var wms = record.getLayer();
             
