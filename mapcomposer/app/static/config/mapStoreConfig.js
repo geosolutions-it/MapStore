@@ -358,19 +358,29 @@
             "province": "nrl:province_select",
             "district": "nrl:district_select"
         }
-	  },{
-		"ptype":"nrl_crop_status",
-            "layerStyle":{"strokeColor":"blue","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"},
-		 "factorsurl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
-         "rangesUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
-		 "dataUrl":"http://84.33.2.75/geoserver/ows",
-		 "highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
-		  "outputConfig":{
-			 "id":"nrlCropStatus"
-			 
-		  },
-		  "outputTarget":"nrl"
-	  },{
+    }, {
+            "ptype":"nrl_crop_status",
+            "layerStyle": {
+                "strokeColor": "blue",
+                "strokeWidth": 1,
+                "fillOpacity": 0.2,
+                "cursor": "pointer"
+            },
+            "factorsurl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
+            "rangesUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
+            "dataUrl": "http://84.33.2.75/geoserver/ows",
+            "highChartExportUrl": "http://84.33.2.75/highcharts-export/",
+            "outputConfig":
+            {
+                "id": "nrlCropStatus"
+            },
+            "outputTarget":"nrl",
+            "layers": {
+                "province": "nrl:province_select",
+                "district": "nrl:district_select"
+            },
+            "areaFilter": "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')"
+    }, {
             "ptype":"nrl_fertilizers",
             "layerStyle":{
                 "strokeColor":"purple",

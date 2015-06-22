@@ -117,6 +117,8 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
         var data = this.form.output.getForm().getValues();
         var fields = this.form.output.getForm().getFieldValues();
         var regionList = "'" + data.region_list.toLowerCase() +"'" ;
+        regionList = regionList.replace("'khyber pakhtunkhwa'","'kpk'\\,'fata'");
+
         var crop = this.form.output.form.getValues().crop;
         numRegion.push(regionList);
         
