@@ -58,14 +58,24 @@
          "skipFlowsNotInRunConfigs": true,
          "runConfigs": {
 
-            "csvingestion":{
-                "xtype":"geobatch_run_local_form",
+            "csvingestion": {
+                "xtype": "geobatch_csv_ingestion_run_form",
                 "baseDir": "/home/geosolutions/admin",
                 "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
                 "fileRegex": "\\.csv$",
-                "path":"/test_csv/"
-            },            
-            "ndviingestion":{
+                "path": "/test_csv/",
+                "ingestionSources": [
+                    "Cropdata",
+                    "Agromet",
+                    "Fertilizer",
+                    "Market Prices"
+                ],
+                "propertiesLists": {
+                    "marketPrices": ["denominator", "exchangeRate"]
+                },
+                "factorUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:measure_units_for_crop&outputFormat=json"
+            },
+            "ndviingestion": {
                 "xtype": "geobatch_run_local_form",
                 "baseDir": "/home/geosolutions/admin",
                 "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
@@ -82,7 +92,14 @@
 				    "dataUrl": "http://84.33.2.75/geoserver/ndvi/ows",
 					"layer": "ndvi:ndvi"
 				}
-            }           
+            },
+            "createupdatelayer":{
+                "xtype":"geobatch_run_local_form",
+                "baseDir": "/home/geosolutions/admin",
+                "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
+                "fileRegex": "\\.zip$",
+                "path":"/shapes/"
+            }
          },
          "actionTarget":{
            "target": "north.tbar",

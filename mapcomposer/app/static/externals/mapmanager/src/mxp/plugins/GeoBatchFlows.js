@@ -295,7 +295,7 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
 			iconCls:'update_manager_ic',
 			xtype:'form',
 			title:this.runButtonText + " " + flowName,
-			width: 300,
+			width: 325,
 			height: config.height || 400, 
 			//path:'csv/New Folder',
 			minWidth:250,
