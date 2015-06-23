@@ -58,8 +58,6 @@ gxp.plugins.printreport.ExtraInformationGenerator = Ext.extend(gxp.plugins.print
         this.printConfig = {};
         // add selected regions
         var values = this.form.output.getForm().getValues();
-        // add selected regions
-        var values = this.form.output.getForm().getValues();
         if(!this.form.aoiSimpleSelection){
             if(values.areatype == 'province' || values.areatype == 'district'){
                 this.printConfig.region = this.cleanAndCapitalize(values.region_list);

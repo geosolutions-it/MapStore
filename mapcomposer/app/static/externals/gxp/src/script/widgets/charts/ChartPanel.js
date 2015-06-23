@@ -166,6 +166,7 @@ Ext.namespace('gxp.charts');
         var units = this.target.tools["CropData"].output.units;
         
         var regionList = data.region_list.toLowerCase();
+        regionList = regionList.replace("'khyber pakhtunkhwa'","'kpk'\\,'fata'");
         var commodity = data2.crop; // fixes #66 issue;
         var season = data.season.toLowerCase();
         var granType = data.areatype.toLowerCase() == "pakistan" ? "province": data.areatype.toLowerCase();

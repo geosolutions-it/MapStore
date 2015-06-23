@@ -85,6 +85,7 @@ gxp.plugins.printreport.MapGenerator = Ext.extend(gxp.plugins.printreport.Genera
             case "Yield" : varparam= 'yield';break;
         }
         var region_list=values.region_list.replace(/\\,/g   ,',');
+        region_list=values.region_list.replace("'KHYBER PAKHTUNKHWA'","'Khyber Pakhtunkhwa','FATA'");
         var yieldFactor = fieldValues.production_unit == "000 bales" ? 170 : 1000;
         //set up cql_filter
         var cql_filter="1=1";

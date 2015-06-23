@@ -107,6 +107,9 @@ Ext.namespace('gxp.charts');
         
         var data = this.form.output.getForm().getValues();
         var regionList = data.region_list ? data.region_list.toLowerCase() : null;
+        if (regionList != null){
+            regionList = regionList.replace("'khyber pakhtunkhwa'","'kpk'\\,'fata'");
+        }
         var season = data.season.toLowerCase();
         var granType = data.areatype.toLowerCase();
         var fromYear = data.startYear;
