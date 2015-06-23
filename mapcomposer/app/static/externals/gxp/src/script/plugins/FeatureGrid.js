@@ -470,9 +470,13 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     featureManager.setPage({index: "last"});
                 }
             }, {
-				xtype: 'tbspacer', 
-				width: 10
-			}, 
+                iconCls: "x-tbar-loading",
+                ref: "../refreshButton",
+                disabled: false,
+                handler: function() {
+                    featureManager.setPage({index: featureManager.pageIndex});
+                }
+            },
 			this.displayItem
 		);
 		

@@ -91,7 +91,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 	 * {boolean} include a row body with run details for each run
 	 */
     showDetails: false,
-    
+    archivedVisible: true,
     autoExpandColumn: 'task',
     
     /* i18n */
@@ -217,7 +217,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
                 iconCls:'archive_ic',
                 xtype:'button',
 				ref:'../archive',
-				hidden: this.mode === 'archived',
+				hidden: this.mode === 'archived' || !this.archivedVisible ,
                 text:this.archiveText,
 				disabled:true,
                 scope:this,

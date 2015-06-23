@@ -317,6 +317,16 @@ gxp.plugins.npa.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
                         index: "last"
                     });
                 }
+            },{
+                xtype: 'tbspacer',
+                width: 10
+            },{
+                iconCls: "x-tbar-loading",
+                ref: "../refreshButton",
+                disabled: false,
+                handler: function() {
+                    featureManager.setPage({index: featureManager.pageIndex});
+                }
             }, {
                 xtype: 'tbspacer',
                 width: 10

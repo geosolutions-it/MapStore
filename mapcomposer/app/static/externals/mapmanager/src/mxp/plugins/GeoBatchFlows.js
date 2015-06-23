@@ -53,7 +53,7 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
         closable: if true the output element is closable
     */
     closable: true,
-	
+	archivedVisible: true,
     /* api configuration
     baseDir: '/home/geosolutions/admin/',
     
@@ -124,6 +124,9 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
                     var flowid = record.get('id');
                     var flowName = record.get('name');
                     flowsgrid.grid.refOwner.consumers.changeFlowId(flowid);
+                    if(!this.archivedVisible){
+                        flowsgrid.grid.refOwner.tabs.hideTabStripItem(flowsgrid.grid.refOwner.archived);
+                    }
                     flowsgrid.grid.refOwner.archived.changeFlowId(flowid);
                     flowsgrid.grid.refOwner.tabs.activate(flowsgrid.grid.refOwner.consumers);
                 } 
@@ -180,6 +183,7 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
                         geoBatchRestURL: this.geoBatchRestURL,
                         geoStoreRestURL: this.geoStoreRestURL,
                         title: this.consumersGridTitle,
+                        archivedVisible: this.archivedVisible,
                         layout:'fit',
                         autoScroll:true,
                         flowId: this.flowId,
@@ -195,6 +199,8 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
                         xtype:'mxp_geobatch_consumer_grid',
                         geoStoreRestURL: this.geoStoreRestURL,
                         title: this.archivedGridTitle,
+                        hidden:!this.archivedVisible,
+                        archivedVisible: this.archivedVisible,
                         layout:'fit',
                         autoScroll:true,
                         flowId: this.flowId,
