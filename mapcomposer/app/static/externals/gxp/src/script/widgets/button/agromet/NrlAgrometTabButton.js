@@ -50,6 +50,9 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 		var target = this.target;
 		var form = this.form.output.getForm();
 		var values =  this.form.output.getForm().getValues();
+        values.region_list = values.region_list.toLowerCase();
+        values.region_list = values.region_list.replace("'khyber pakhtunkhwa'", "'kpk'\\,'fata'");
+
 		var fieldValues = form.getFieldValues();
 		
         //this is still necessary ???
@@ -167,7 +170,10 @@ gxp.widgets.button.NrlAgrometTabButton = Ext.extend(Ext.Button, {
 	createResultPanel: function(store, fieldValues, values, isProvince){
 		var tabPanel = Ext.getCmp(this.tabPanel);
         
-        var region = values.region_list.split("\,");
+        //var region = values.region_list.split("\,");
+        var region = values.numRegion.map(function(s){
+            return nrl.chartbuilder.util.toTitleCase(s);
+        });
 
         var chartTitle = "";
         var splitRegion;

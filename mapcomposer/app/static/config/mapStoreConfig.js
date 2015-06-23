@@ -73,6 +73,18 @@
 				"displayInLayerSwitcher":false,
 				"visibility": false
 			},{
+                "source": "nrl",
+                "title": "nrl:district_select",
+                "name": "nrl:district_select",
+                "displayInLayerSwitcher":false,
+                "visibility": false
+            },{
+                "source": "nrl",
+                "title": "nrl:province_select",
+                "name": "nrl:province_select",
+                "displayInLayerSwitcher":false,
+                "visibility": false
+            },{
 				"source": "mapquest",
 				"title": "MapQuest OpenStreetMap",
 				"name": "osm",
@@ -327,30 +339,48 @@
 		  "outputTarget":"nrl"
 	   },{
 	    "ptype":"nrl_agromet",
-            "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
+        "layerStyle":{
+            "strokeColor": "green",
+            "strokeWidth": 1,
+            "fillOpacity": 0.2,
+            "cursor": "pointer"
+        }, 
         "dataUrl":"http://84.33.2.75/geoserver/ows",
 		"factorsurl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
 		"highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
 		"areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')",
 		"titleText": "Agromet Variables",
-		  "outputConfig":{
-			 "id":"Agromet"
-			 
-		  },
-		  "outputTarget":"nrl"
-	  },{
-		"ptype":"nrl_crop_status",
-            "layerStyle":{"strokeColor":"blue","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"},
-		 "factorsurl":"http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
-         "rangesUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
-		 "dataUrl":"http://84.33.2.75/geoserver/ows",
-		 "highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
-		  "outputConfig":{
-			 "id":"nrlCropStatus"
-			 
-		  },
-		  "outputTarget":"nrl"
-	  },{
+		"outputConfig":{
+		    "id":"Agromet"
+		},
+		"outputTarget":"nrl",
+        "layers": {
+            "province": "nrl:province_select",
+            "district": "nrl:district_select"
+        }
+    }, {
+            "ptype":"nrl_crop_status",
+            "layerStyle": {
+                "strokeColor": "blue",
+                "strokeWidth": 1,
+                "fillOpacity": 0.2,
+                "cursor": "pointer"
+            },
+            "factorsurl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
+            "rangesUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
+            "dataUrl": "http://84.33.2.75/geoserver/ows",
+            "highChartExportUrl": "http://84.33.2.75/highcharts-export/",
+            "outputConfig":
+            {
+                "id": "nrlCropStatus"
+            },
+            "outputTarget":"nrl",
+            "layers": {
+                "province": "nrl:province_select",
+                "district": "nrl:district_select"
+            },
+            "areaFilter": "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')"
+    }, {
             "ptype":"nrl_fertilizers",
             "layerStyle":{
                 "strokeColor":"purple",
@@ -367,7 +397,12 @@
             "outputConfig":{
                 "id":"Fertilizers"
             },
-            "outputTarget":"nrl"
+            "outputTarget":"nrl",
+            "layers": {
+                "province": "nrl:province_select",
+                "district": "nrl:district_select"
+            },
+            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')"
       },{
 		  "ptype":"nrl_report_crop_data",
           "cropPluginRef":"CropData",

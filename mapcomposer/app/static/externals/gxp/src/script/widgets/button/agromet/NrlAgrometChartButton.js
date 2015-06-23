@@ -161,6 +161,8 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
         
         var data = this.form.output.getForm().getValues();
         var regionList = data.region_list.toLowerCase();
+        regionList = regionList.replace("'khyber pakhtunkhwa'", "'kpk'\\,'fata'");
+
         var season = data.season.toLowerCase();
         var granType = data.areatype;
         var fromYear = data.startYear;

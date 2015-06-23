@@ -488,6 +488,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 disclaimerText: this.disclaimerText,
                 vendorParams: {cql_filter:this.areaFilter},
                 layers:this.layers,
+                selectableLayer: this.layers.province,
                 layerStyle: this.layerStyle,
                 comboConfigs:this.comboConfigs,
                 target:this.target,
@@ -509,6 +510,8 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 featureSelectorConfigs:this.featureSelectorConfigs,
                 hilightLayerName:this.hilightLayerName,
                 vendorParams: {cql_filter:this.areaFilter},
+                layers:this.layers,
+                selectableLayer: this.layers.province,
                 listeners: {
                     select: function(store){
                         this.selectedProvince = store.getAt(0);

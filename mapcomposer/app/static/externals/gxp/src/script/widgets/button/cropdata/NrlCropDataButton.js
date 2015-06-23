@@ -282,6 +282,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
         var units = this.form.output.units;
         
         var regionList = data.region_list.toLowerCase();
+        regionList = regionList.replace("'khyber pakhtunkhwa'","'fata'\\,'kpk'");
+
         var commodity = data2.crop; // fixes #66 issue;
         var season = data.season.toLowerCase();
         var granType = data.areatype;

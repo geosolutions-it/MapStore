@@ -59,6 +59,10 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 			case "Yield" : varparam= 'yield';break;
 		}
 		
+        if (values.region_list){
+            values.region_list = values.region_list.toLowerCase();
+            values.region_list = values.region_list.replace('khyber pakhtunkhwa', 'kpk');
+        }
 		
 			
 		var viewParams = 
@@ -181,7 +185,14 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 				id:'region',
 				header:'Region',
 				name: 'region',
-				dataIndex: 'region'
+				dataIndex: 'region',
+                renderer: function(val){
+                    var retval = '';
+                    if (val.toLowerCase() == 'kpk'){
+                        val = 'Khyber Pakhtunkhwa'
+                    }
+                    return nrl.chartbuilder.util.toTitleCase(val);
+                }
 			},{
 				sortable: true, 
 				header:'Crop',

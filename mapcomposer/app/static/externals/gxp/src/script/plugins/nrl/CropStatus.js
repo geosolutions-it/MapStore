@@ -44,7 +44,6 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
  /** api: ptype = nrl_crop_status */
     ptype: "nrl_crop_status",
 
-	areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
     radioQtipTooltip: "You have to be logged in to use this method",
     factorsurl:"http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&outputFormat=json",
 	rangesUrl: "http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
@@ -64,7 +63,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
             
         },
         DISTRICT:{
-            typeName:"nrl:district_boundary",
+            typeName:"nrl:district_select",
             queriableAttributes:[
                 "district",
                 "province"
@@ -94,7 +93,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
         },
         PROVINCE:{ 
             fieldLabel: 'Province',
-            typeName:"nrl:province_boundary",
+            typeName:"nrl:province_select",
             recordModel:[
                 {
                    name:"id",
@@ -130,6 +129,9 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
         var startYear = this.startYear;
         var now = new Date();
 		var currentYear= now.getFullYear();
+        this.featureSelectorConfigs.DISTRICT.typeName = this.layers.district;
+        this.featureSelectorConfigs.PROVINCE.typeName = this.layers.province;
+
 		var cropStatus  = {
 					xtype:'form',
 					title: 'Crop Status',
@@ -221,7 +223,9 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 							ref:'singleFeatureSelector',
 							featureSelectorConfigs:this.featureSelectorConfigs,
 							hilightLayerName: 'hilight_layer_selectAction',
-							vendorParams: {cql_filter:this.areaFilter}
+							vendorParams: {
+                                cql_filter: this.areaFilter
+                            }
 						},{
                             name:'year',
                             disabled:true,

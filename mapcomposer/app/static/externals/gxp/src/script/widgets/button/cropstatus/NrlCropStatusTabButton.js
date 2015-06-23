@@ -75,6 +75,8 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
 		
 		//view params generation
 		var region_list = "'" + values.region_list + "'";
+        region_list = region_list.replace("'KHYBER PAKHTUNKHWA'","'KPK'\\,'FATA'");
+
 		var viewParams = 
 				(values.crop     ? "crop:" + values.crop.toLowerCase() + ";" : "") +
 				(values.areatype ? "gran_type:" + values.areatype.toLowerCase() + ";" : "") +

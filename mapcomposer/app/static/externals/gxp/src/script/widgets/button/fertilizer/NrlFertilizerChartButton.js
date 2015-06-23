@@ -249,6 +249,7 @@ gxp.widgets.button.NrlFertilizerChartButton = Ext.extend(Ext.SplitButton, {
 
             // gets the list of selected regions
             var region_list = form.aoiFieldSet.selectedRegions.getValue();
+            region_list = region_list.replace("'KHYBER PAKHTUNKHWA'","'FATA'\\,'KPK'");
 
             if (gran_type == 'pakistan'){
                 return 'grouping_opt:'   + grouping_opt   + ';' +
