@@ -30,14 +30,14 @@ mxp.widgets.GcExportLayers = Ext.extend(Ext.form.CompositeField, {
 	xtype:"mxp_gc_export_layers",
 	exportFormatsLabel:"Export Formats",
 	exportBtnTooltip:"Export Layers",
-	width:250,
+	width:260,
 	baseUrl:null,
 	typeName:null,
 	exFormat:null,
 	invalidParameterValueErrorText:"Export Error!",
 	/** api:config[exportFormats]
 	 */	
-	exportFormats:[["SHAPE-ZIP","Shape-Zip"],["CSV","CSV"],["EXCEL","Excel"],["GML2","GML 2"],["GML3","GML 3"]],
+	exportFormats:[["SHAPE-ZIP","Shape-Zip"],["EXCEL","Excel"],["GML2","GML 2"],["GML3","GML 3"]],
 
 	initComponent : function() {
 
@@ -71,6 +71,7 @@ mxp.widgets.GcExportLayers = Ext.extend(Ext.form.CompositeField, {
 
         this.exportBtn= new Ext.Button({
             xtype : "button",
+            width:80,
             disabled:true,
             tooltip : this.exportBtnTooltip,
             text:"Export",

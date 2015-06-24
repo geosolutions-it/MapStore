@@ -323,6 +323,11 @@ GeoExt.Lang.add("en", {
         mapPermissionText: "Permissions",
         tooltipMapPermissionText: "Edit mission permissions by group",
         mapPermissionTitleText: "Mission Permissions"
+    },
+     "mxp.widgets.GcExportLayers.prototype":{
+        exportFormatsLabel:"Export Formats",
+        exportBtnTooltip:"Export Layers",
+        invalidParameterValueErrorText:"Export Error!"
     }
     
 });
