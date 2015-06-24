@@ -30,7 +30,7 @@ mxp.widgets.GcExportLayers = Ext.extend(Ext.form.CompositeField, {
 	xtype:"mxp_gc_export_layers",
 	exportFormatsLabel:"Export Formats",
 	exportBtnTooltip:"Export Layers",
-	width:260,
+	width:270,
 	baseUrl:null,
 	typeName:null,
 	exFormat:null,
