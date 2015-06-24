@@ -80,7 +80,7 @@ mxp.plugins.GWCTileCacheManage = Ext.extend(mxp.plugins.Tool, {
         var login = this.target.login ? this.target.login: 
                 this.loginManager && this.target.currentTools[this.loginManager] 
                 ? this.target.currentTools[this.loginManager] : null;
-        this.auth = this.target.auth;
+        this.auth = this.target.authHeader;
         
         this.outputConfig = this.outputConfig || {};
 

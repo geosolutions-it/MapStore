@@ -96,7 +96,7 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
         var login = this.target.login ? this.target.login: 
                 this.loginManager && this.target.currentTools[this.loginManager] 
                 ? this.target.currentTools[this.loginManager] : null;
-
+        var auth = login.login && login.login.getAuthHeader ? login.login.getAuthHeader() : this.target.auth;
         // create a user manager panel
         var usermanager = {
             region:'center',
@@ -106,8 +106,8 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             iconCls: "open_usermanager",
             id: this.target.userMamanagerId,
             ASSET: this.target.config.ASSET,
-            auth: login.login.getToken(),
-            login: login.login,
+            auth: auth,
+            login: login.login || this.target.user,
             searchUrl: this.target.geoSearchUsersUrl,
             url: this.target.geoBaseUsersUrl,
             geoStoreBase: this.target.config.geoStoreBase,
@@ -129,8 +129,8 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             title: this.groupsText,
             id: this.target.userMamanagerId,
             ASSET: this.target.config.ASSET,
-            auth: login.login.getToken(),
-            login: login.login,
+            auth: auth,
+            login: login.login || this.target.user,
             searchUrl: this.target.geoSearchUsersUrl,
             url: this.target.geoBaseUsersUrl,
             geoStoreBase: this.target.config.geoStoreBase,
@@ -145,8 +145,8 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             id: this.target.userMamanagerId,
             xtype: 'panel',
             layout: 'border',
-            auth: login.login.getToken(),
-            login: login.login,
+            auth: auth,
+            login: login.login || this.target.user,
             items:[usermanager/*,groupManager*/]
     	});
 

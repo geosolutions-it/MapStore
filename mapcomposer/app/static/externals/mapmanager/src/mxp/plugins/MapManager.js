@@ -100,7 +100,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
             langSelector: this.target.config.langSelector,
             ASSET: this.target.config.ASSET,
             login: login.login,
-            auth: this.target.auth,
+            auth: this.target.authHeader,
             searchUrl: this.target.geoSearchUsersUrl,
             url: this.target.geoBaseUsersUrl,
             geoStoreBase: this.target.config.geoStoreBase,
@@ -129,7 +129,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
         if(this.output){
             for(var i = 0; i < this.output.length; i++){
                 this.output[i].login = this.login.login;
-                this.output[i].auth = this.login.login.getToken();
+                this.output[i].auth = this.login.login.getAuthHeader();
 
                 if(this.login.login && this.login.login.username){
                     this.applyLoggedState(this.output[i]);
@@ -150,7 +150,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
                 output.getBottomToolbar().bindStore(output.store, true);
                 output.getBottomToolbar().doRefresh();
                 output.plugins.collapseAll();
-                if(this.target.auth){
+                if(this.target.authHeader){
                     output.getBottomToolbar().openMapComposer.enable();
                     output.openUserManagerButton.enable();
                 }else{
@@ -165,7 +165,7 @@ mxp.plugins.MapManager = Ext.extend(mxp.plugins.Tool, {
                     output.getBottomToolbar().bindStore(output.store, true);
                     output.getBottomToolbar().doRefresh();
                     output.plugins.collapseAll();
-                    if(this.target.auth){
+                    if(this.target.authHeader){
                         output.getBottomToolbar().openMapComposer.enable();
                         output.openUserManagerButton.enable();
                     }else{

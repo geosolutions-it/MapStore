@@ -106,6 +106,9 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         // this.geoSearchUrl = geoStoreBase + 'extjs/search/';
         this.geoSearchUsersUrl = geoStoreBase + 'extjs/search/users';
         this.geoSearchCategoriesUrl = geoStoreBase + 'extjs/search/category';
+        this.authenticationMethod = config.authenticationMethod || 'basic';
+        this.sessionLogin = config.sessionLogin || false;
+        
         //this.items=[];
         var mergedItems = [];
         
@@ -130,15 +133,17 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         this.fireEvent("portalready");
         var user = this.restoreLoginState();
         if(!this.logged && user){
-            var auth = user.token;
+            var auth = user.authHeader;
+            var token = user.token;
             this.cleanTools();
             this.user = user.user;
-            this.auth = auth ? auth: this.auth;
+            this.authHeader = auth ? auth: this.authHeader;
+            this.token = token || this.token;
             this.logged = true;
 
             this.defaultHeaders = {
                 'Accept': 'application/json', 
-                'Authorization' : this.auth
+                'Authorization' : this.authHeader
             };
 
             
@@ -171,7 +176,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
             for (var i=0, len=tools.length; i<len; i++) {
                 try {
 
-                    if(tools[i].needsAuthorization && !this.auth)
+                    if(tools[i].needsAuthorization && !this.authHeader)
                         continue;
                     
                     tool = Ext.ComponentMgr.createPlugin(
@@ -207,9 +212,11 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
                     restful: true,
                     method : 'GET',
                     disableCaching: true,
-                    headers:{
+                    headers: this.authHeader ? {
                         'Accept': 'application/json', 
-                        'Authorization' : this.auth
+                        'Authorization' : this.authHeader
+                    } : {
+                        'Accept': 'application/json'
                     },
                     failure: function (response) {
                         Ext.Msg.show({
@@ -354,18 +361,18 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
     /** private: method[onLogin]
      *  Listener with actions to be executed when an user makes login.
      */
-    onLogin: function(user, auth, details){
+    onLogin: function(user, auth, token, details){
         if(!this.logged && user){
             this.cleanTools();
             this.user = details;
-            this.auth = auth ? auth: this.auth;
+            this.authHeader = auth ? auth: this.authHeader;
             this.logged = true;
 
             this.defaultHeaders = {
                 'Accept': 'application/json', 
-                'Authorization' : this.auth
+                'Authorization' : this.authHeader
             };
-            this.saveLoginState();
+            this.saveLoginState(this.authHeader, token);
             // reload config
             this.reloadConfig();
         }
@@ -377,12 +384,11 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
      */
     onLogout: function(){
         if(this.logged){
-            this.auth = null;
+            this.authHeader = null;
 
             // Remove headers
             this.defaultHeaders = {
-                'Accept': 'application/json',
-                'Authorization' : ""
+                'Accept': 'application/json'
             };
 
             this.cleanTools();
@@ -396,12 +402,15 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
     /** private: method[saveLoginState]
      *  Save the login status in the session Storage.
      */
-    saveLoginState: function(){
-      //TODO Update user data
+    saveLoginState: function(auth, token){
       if(sessionStorage && this.config.loginDataStorage){
-        sessionStorage["userDetails"] = this.user;
-      }
-      
+        
+        sessionStorage["userDetails"] = Ext.util.JSON.encode({
+            user: this.user,
+            token: token,
+            authHeader: auth 
+        })
+      }      
     },
     
     /** private: method[resetLoginState]

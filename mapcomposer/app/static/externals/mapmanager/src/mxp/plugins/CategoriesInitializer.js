@@ -88,7 +88,7 @@ mxp.plugins.CategoriesInitializer = Ext.extend(mxp.plugins.Tool, {
         if(!this.adminAuthorization && this.adminCredentials){
             this.adminAuthorization = 'Basic ' + Base64.encode(this.adminCredentials.user+':'+this.adminCredentials.pass);
         }
-        var auth = this.adminAuthorization ? this.adminAuthorization : this.target.auth;
+        var auth = this.adminAuthorization ? this.adminAuthorization : this.target.authHeader;
         var me = this;
         this.categories = new GeoStore.Categories({
             authorization: auth,
