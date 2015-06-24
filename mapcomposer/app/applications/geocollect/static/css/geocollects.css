@@ -62,6 +62,10 @@
 	 background-image: url(../images/phone.png);
 
 }
+/* csv_export */
+.gc-icon-export{
+    background: transparent url(../images/page_white_put.png) no-repeat;
+}
 .addgc{
 background:url(../images/add.png) no-repeat 10px 8px;
 display:block;

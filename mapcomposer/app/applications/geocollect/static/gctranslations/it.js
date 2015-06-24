@@ -271,5 +271,10 @@ GeoExt.Lang.add("it", {
     "mxp.plugins.MapManager.prototype":{
         buttonText: "Gestione Missioni",
         tooltipText: "Apri Gestore Missioni"
+    },
+     "mxp.widgets.GcExportLayers.prototype":{
+        exportFormatsLabel:"Formato Export",
+        exportBtnTooltip:"Scarica Layers",
+        invalidParameterValueErrorText:"Errore Export!"
     }
 });

@@ -244,8 +244,10 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
             listeners : {
                 select : function(a, rec, c) {
                     //è la source attiva!!
-                    this.typeName = rec.get('typeName');
 
+                    this.typeName = rec.get('typeName');
+                    this.exportTool.setUrl(rec.data.owsURL);
+                    this.exportTool.setTypeNames(this.typeName);
                     //rimuovo gli elementi già caricati!!
                     if (this.seg_fieldStore)
                         this.seg_fieldStore.removeAll();
@@ -488,6 +490,7 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
 
         var comboTemplate = {
             xtype : 'compositefield',
+            width:600,        
             items : [{
                 xtype : "label",
                 text : this.selectDbLabel,
@@ -560,23 +563,19 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
 
         //Setto le impostazioni di base del panel!!
         this.frame = true;
-        this.layout = 'anchor';
+        this.layout = 'fit';
         this.iconCls = 'gc_db_resource_edit';
-
+        this.tbar=[comboTemplate,
+                    '->',
+                    {
+                    xtype:"mxp_gc_export_layers",
+                    ref:"../exportTool"
+                }];
         this.border = false;
         this.autoScroll = true;
-        this.items = [{
+        this.items = [ {
             xtype : 'panel',
             frame : true,
-            layout : 'fit',
-            anchor : '100%, 10%',
-
-            border : false,
-            items : [comboTemplate]
-        }, {
-            xtype : 'panel',
-            frame : true,
-            anchor : '100%, 90%',
             layout : {
                 type : 'hbox',
                 align : 'stretch'
