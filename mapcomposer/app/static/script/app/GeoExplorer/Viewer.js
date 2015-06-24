@@ -99,7 +99,9 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
      * Create the various parts that compose the layout.
      */
     initPortal: function() {
-
+        this.appMask = new Ext.LoadMask(Ext.getBody(), {msg: this.mainLoadingMask});
+		this.appMask.show();
+		
         this.toolbar = new Ext.Toolbar({
             disabled: true,
             id: "paneltbar",
@@ -149,6 +151,9 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
 				   }
 				}); 
 			}
+			
+			this.appMask.hide();
+			
         }, this);
 
         this.mapPanelContainer = new Ext.Panel({
@@ -192,7 +197,6 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         }];
         
         GeoExplorer.superclass.initPortal.apply(this, arguments);        
-
     },
 
     /**

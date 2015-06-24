@@ -97,7 +97,7 @@
 			// /////////////////////////////////////////////////////
 			// Extra parameters to add layers at startup
 			// /////////////////////////////////////////////////////
-			var layName; var layTitle; var wmsurl; var gsturl;
+			var layName; var layTitle; var wmsurl; var gsturl; var urlformat;
 		
 			// ///////////////////////////////////////////////////////////////
             // Custom variables from the mapStoreConfig user configuration file 
@@ -151,6 +151,9 @@
 									break;
                         case "config":
 									customConfigName = param[1];
+									break;
+						case "format":
+									urlformat = param[1];
 									break;
 						default : 
 									//mapIdentifier = -1;
@@ -250,6 +253,27 @@
 				if(gsturl){
 					serverConfig.geoStoreBase = gsturl;
 				}
+				
+				// //////////////////////////////////////////////////
+				// Check if content data has been provided via POST
+				// //////////////////////////////////////////////////
+				if(content.data){
+					var dataConfig = unescape(content.data);
+					try{
+						dataConfig = Ext.util.JSON.decode(dataConfig);
+						var customConfig = dataConfig.map_config;
+						if(customConfig){
+							// ////////////////////////////////////////////////////////////
+							// Properties of the internal configuration will be replaced 
+							// by those specified for the custom configuration
+							// ////////////////////////////////////////////////////////////
+							serverConfig = Ext.apply(serverConfig, customConfig);
+							sources = serverConfig.sources || serverConfig.gsSources;
+						}					
+					}catch(e){
+						console.log(e);
+					}
+				}
                 
                 app = new GeoExplorer.Viewer({
 					markers: serverConfig.markers,
@@ -273,7 +297,7 @@
                         'abstract': "Custom Map",
                         contact: "<a href='#'>#</a>."
                     },
-                    sources: serverConfig.gsSources || {
+                    sources: serverConfig.sources || serverConfig.gsSources || {
                         google: {
                             ptype: "gxp_googlesource"
                         }
@@ -282,7 +306,7 @@
                     map: serverConfig.map,
 					customTools: serverConfig.customTools
                 }, mapIdentifier, false, fullScreen);   
-                
+			
                 app.on({
                     'portalready' : function(){                    	
                         if(fullScreen){
@@ -299,7 +323,7 @@
 						// ///////////////////////////////////////////////////
 						var addLayer = app.tools["addlayer"];
 						
-						if(addLayer){
+						if(addLayer){							
 							if(useCookies || content.data){
 								var layersList;
 								
@@ -320,7 +344,7 @@
 									
 								if(layersList){
 									var layers = layersList.split("#");
-									var resources = [];
+									var resources = [];								
 									
 									for(var i=0; i<layers.length; i++){
 										var keys = layers[i];
@@ -328,36 +352,44 @@
 										keys = unescape(keys);
 										keys = Ext.util.JSON.decode(keys);
 										
-										var lname = keys.layer;
-										var lwms = decodeURIComponent(keys.wms);
-										var pname = keys.pname;
+										var format = keys.format;
 										
-										resources.push({
-											msLayerTitle: lname,
-											msLayerName: lname,
-											msGroupName: pname,
-											wmsURL: lwms
-										});
+										if(format == "wms" || format == "wmts"){
+											var lname = keys.layer;
+											var lwms = decodeURIComponent(keys.wms);
+											var pname = keys.pname;
+											
+											resources.push({
+												msLayerTitle: lname,
+												msLayerName: lname,
+												msGroupName: pname,
+												wmsURL: lwms,
+												format: format
+											});
+										}
 									}
 									
-									addMSLayer(resources);
+									if(resources.length > 0){
+										addMSLayer(resources);
+									}
 								}
 							}else if(layName && wmsurl){
 								var title = layTitle ? layTitle : layName;
-								
+
 								addMSLayer([{
 									msLayerTitle: unescape(title),
 									msLayerName: unescape(layName),
 									msGroupName: undefined, // TODO: not supported yet
-									wmsURL: wmsurl
+									wmsURL: wmsurl,
+									format: urlformat
 								}]);
 							}
 						}else{
 							Ext.Msg.show({
-								title: "Add Layer",
-								msg: "AddLayer plugin missing in configuration!",
-								width: 300,
-								icon: Ext.MessageBox.ALERT
+								 title: "Add Layer",
+								 msg: "AddLayer plugin missing in configuration!",
+								 width: 300,
+								 icon: Ext.MessageBox.ALERT
 							});  
 						}
 					

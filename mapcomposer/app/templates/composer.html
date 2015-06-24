@@ -361,12 +361,37 @@
 			}			
 			
 			var appViewport = new Ext.Viewport(viewport);
-            
-            // /////////////////////////////////////////////////////////////
+
+			if(gsturl){
+				serverConfig.geoStoreBase = gsturl;
+			}
+
+			// //////////////////////////////////////////////////
+			// Check if content data has been provided via POST
+			// //////////////////////////////////////////////////
+			if(content.data){
+				var dataConfig = unescape(content.data);
+				try{
+					dataConfig = Ext.util.JSON.decode(dataConfig);
+					var customConfig = dataConfig.map_config;
+					if(customConfig){
+						// ////////////////////////////////////////////////////////////
+						// Properties of the internal configuration will be replaced 
+						// by those specified for the custom configuration
+						// ////////////////////////////////////////////////////////////
+						serverConfig = Ext.apply(serverConfig, customConfig);
+						sources = serverConfig.sources || serverConfig.gsSources;
+					}					
+				}catch(e){
+					console.log(e);
+				}
+			}
+			
+			// /////////////////////////////////////////////////////////////
             // Parsing WMS servers Sources for getCapabilities operation
             // /////////////////////////////////////////////////////////////
             try{
-                var sources = serverConfig.gsSources;
+                var sources = serverConfig.sources || serverConfig.gsSources;
             }catch(e){
                 sources = {
                     mapquest: {
@@ -393,15 +418,6 @@
                       icon: Ext.MessageBox.ERROR
                 });
             }
- 
-			/*var auth = 'Basic ' + Base64.encode('admin:admin');
-			      Ext.Ajax.defaultHeaders = {
-                'Authorization' : auth
-            };*/
-
-			if(gsturl){
-				serverConfig.geoStoreBase = gsturl;
-			}
 			
             app = new GeoExplorer.Composer({
 				markers: serverConfig.markers,
@@ -431,7 +447,7 @@
                 map: serverConfig.map,
 				customTools: serverConfig.customTools
             }, mapIdentifier, authorization && authorization == "false" ? null: authorization, fullScreen, templateId);   
-            
+			
             app.on({
                 'portalready' : function() {              	
                     if(fullScreen) {
@@ -469,7 +485,7 @@
 								
 							if(layersList){
 								var layers = layersList.split("#");
-								var resources = [];
+								var resources = [];								
 								
 								for(var i=0; i<layers.length; i++){
 									var keys = layers[i];
@@ -477,21 +493,26 @@
 									keys = unescape(keys);
 									keys = Ext.util.JSON.decode(keys);
 									
-									var lname = keys.layer;
-									var lwms = decodeURIComponent(keys.wms);
-									var pname = keys.pname;
 									var format = keys.format;
 									
-									resources.push({
-										msLayerTitle: lname,
-										msLayerName: lname,
-										msGroupName: pname,
-										wmsURL: lwms,
-										format: format
-									});
+									if(format == "wms" || format == "wmts"){
+										var lname = keys.layer;
+										var lwms = decodeURIComponent(keys.wms);
+										var pname = keys.pname;
+										
+										resources.push({
+											msLayerTitle: lname,
+											msLayerName: lname,
+											msGroupName: pname,
+											wmsURL: lwms,
+											format: format
+										});
+									}
 								}
-								
-								addMSLayer(resources);
+
+								if(resources.length > 0){
+									addMSLayer(resources);
+								}		
 							}
 						}else if(layName && wmsurl){
 							var title = layTitle ? layTitle : layName;
@@ -537,8 +558,8 @@
 	    if(!serverConfig){
 	    	serverConfig = {};
 	    }
-		
-        serverConfig = Ext.applyIf(serverConfig, localConfig);
+        
+		serverConfig = Ext.applyIf(serverConfig, localConfig);
 		serverConfig.geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');
         serverConfig.adminUrl = serverConfig.adminUrl || ('http://' + window.location.host + '/admin/');
 

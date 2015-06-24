@@ -435,15 +435,25 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         }
           
         var layerTree = Ext.getCmp('tree');
-        layerTree.destroy();
+        if(layerTree)layerTree.destroy();
         
+		var isViewer = false;
+		if(app instanceof GeoExplorer.Viewer){
+			isViewer = true;
+		}
+					
         app.destroy();
         
-        var config = Ext.util.JSON.decode(json);        
+        var config = Ext.util.JSON.decode(json);    
         if(config && config.map){
             config.isLoadedFromConfigFile = true;
 			config = Ext.applyIf(config, this.initialConfig);
-            app = new GeoExplorer.Composer(config, this.mapId, this.auth, this.fScreen);
+			
+			if(isViewer){
+				app = new GeoExplorer.Viewer(config, this.mapId, this.auth, this.fScreen);
+			}else{
+				app = new GeoExplorer.Composer(config, this.mapId, this.auth, this.fScreen);
+			}
         }else{
             Ext.Msg.show({
                 title: this.userConfigLoadTitle,
@@ -530,8 +540,6 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
                 item.disable();
             });		
 			
-			this.appMask.hide();
-			
 			// //////////////////////////////////////////////////////////////////
 			// Automatically inject markers if present in loaded configuration
 			// //////////////////////////////////////////////////////////////////
@@ -570,6 +578,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 				   }
 				}); 
 			}
+			
+			this.appMask.hide();
 		});
 
        var googleEarthPanel = new gxp.GoogleEarthPanel({
