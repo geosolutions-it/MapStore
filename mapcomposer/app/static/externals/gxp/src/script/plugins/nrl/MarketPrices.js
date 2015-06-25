@@ -370,7 +370,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 }
             }, { // CROPS grid ------------------------------------------
                 xtype: 'nrl_checkboxcelectiongrid',
-                title: 'Crops',
+                title: 'Commodity',
                 enableHdMenu: false,
                 hideHeaders: false,
                 hidden: false,
@@ -472,12 +472,12 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                     ref: '../exchangeRateRadio',
                     hidden: true,
                     items: [{
-                        boxLabel: 'Fixed',
+                        boxLabel: 'Custom',
                         name: 'exchangerateradio',
                         inputValue: 'custom',
                         checked: true
                     },{
-                        boxLabel: 'Ingestion Time',
+                        boxLabel: 'Ingestion Date',
                         name: 'exchangerateradio',
                         inputValue: 'ingestion',
                         checked: false

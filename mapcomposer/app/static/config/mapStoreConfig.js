@@ -481,7 +481,7 @@
                 ]
             ],
             "defaultCurrency": "pkr",
-            "defaultDenominator": "1",
+            "defaultDenominator": "0.4",
             "dataUrl": "http://84.33.2.75/geoserver/ows",
             "factorsurl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:measure_units_for_crop&outputFormat=json",
             "metadataUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:marketprices_metadata&outputFormat=json",
