@@ -30,7 +30,7 @@ mxp.widgets.GcExportLayers = Ext.extend(Ext.form.CompositeField, {
 	xtype:"mxp_gc_export_layers",
 	exportFormatsLabel:"Export Formats",
 	exportBtnTooltip:"Export Layers",
-	width:270,
+	width:280,
 	baseUrl:null,
 	typeName:null,
 	exFormat:null,
@@ -108,7 +108,7 @@ mxp.widgets.GcExportLayers = Ext.extend(Ext.form.CompositeField, {
 	createUrl:function(){
 
 			var url =this.baseUrl +
-                "&version=" + "1.1.0" +
+                "&version=" + "1.0.0" +
                 "&request=GetFeature" +
                 "&typeName=" + this.typeName +','+this.typeName + "_sop" +
                 "&exceptions=application/json" +
