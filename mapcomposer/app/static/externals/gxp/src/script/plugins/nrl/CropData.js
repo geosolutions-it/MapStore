@@ -100,10 +100,11 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                    mapping:"properties"
                 } 
             ],
+            displayField:"district",
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"
         },
         province:{             
-            typeName:"nrl:province_crop",
+            typeName:"nrl:province_view",
             recordModel:[
                 {
                    name:"id",
@@ -125,7 +126,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
             queriableAttributes:[
                 "province"
             ],
-            displayField:"name",
+            displayField:"fname",
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
         }    
     },
@@ -367,7 +368,8 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     target:this.target,
                     areaFilter:this.areaFilter, 
                     hilightLayerName:this.hilightLayerName,
-                    layers:this.layers
+                    layers: this.layers,
+                    selectableLayer: this.layers.province
                 },{ 
                     fieldLabel: 'Mode',
                     xtype: 'radiogroup',

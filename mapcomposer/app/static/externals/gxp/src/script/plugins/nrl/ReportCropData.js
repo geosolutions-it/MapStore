@@ -105,10 +105,11 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                    mapping:"properties"
                 } 
             ],
+            displayField:"district",
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
         },
         province:{             
-            typeName:"nrl:province_crop",
+            typeName:"nrl:province_view",
             recordModel:[
                 {
                    name:"id",
@@ -130,13 +131,13 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             queriableAttributes:[
                 "province"
             ],
-            displayField:"name",
+            displayField:"fname",
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"                            
         }    
     },
 
     // area filter
-    areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
+    //areaFilter: "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
 
     /** config:[defaultAreaTypeMap]
      *  ``String`` for the area type for the map generation for Pakistan. Can be 'province' or 'district' .Default it's 'province'.
@@ -488,6 +489,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 disclaimerText: this.disclaimerText,
                 vendorParams: {cql_filter:this.areaFilter},
                 layers:this.layers,
+                selectableLayer: this.layers.province,
                 layerStyle: this.layerStyle,
                 comboConfigs:this.comboConfigs,
                 target:this.target,

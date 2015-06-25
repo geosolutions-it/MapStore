@@ -81,10 +81,11 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 name: "properties",
                 mapping: "properties"
             }],
+            displayField: "district",
             tpl: "<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"
         },
         province: {
-            typeName: "nrl:province_select",
+            typeName: "nrl:province_view",
             recordModel: [{
                 name: "id",
                 mapping: "id"
@@ -102,7 +103,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
             queriableAttributes: [
                 "province"
             ],
-            displayField: "name",
+            displayField: "fname",
             tpl: "<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
         }
     },

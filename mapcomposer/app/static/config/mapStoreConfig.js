@@ -62,17 +62,29 @@
 				"visibility": false
 			},{
 				"source": "nrl",
-				"title": "nrl:province_boundary",
-				"name": "nrl:province_boundary",
+				"title": "nrl:province_view",
+				"name": "nrl:province_view",
 				"displayInLayerSwitcher":false,
 				"visibility": false
 			},	{
 				"source": "nrl",
-				"title": "nrl:district_boundary",
-				"name": "nrl:district_boundary",
+				"title": "nrl:district_view",
+				"name": "nrl:district_view",
 				"displayInLayerSwitcher":false,
 				"visibility": false
 			},{
+                "source": "nrl",
+                "title": "nrl:district_select",
+                "name": "nrl:district_select",
+                "displayInLayerSwitcher":false,
+                "visibility": false
+            },{
+                "source": "nrl",
+                "title": "nrl:province_select",
+                "name": "nrl:province_select",
+                "displayInLayerSwitcher":false,
+                "visibility": false
+            },{
 				"source": "mapquest",
 				"title": "MapQuest OpenStreetMap",
 				"name": "osm",
@@ -318,7 +330,7 @@
 		  "highChartExportUrl" :"http://84.33.2.75/highcharts-export/",
 		  "layers":{
 			"district":"nrl:district_crop",
-			"province":"nrl:province_crop"
+			"province":"nrl:province_view"
 			},
 		  "outputConfig":{
 			 "itemId":"nrlCropData"
@@ -337,7 +349,11 @@
 			 "id":"Agromet"
 			 
 		  },
-		  "outputTarget":"nrl"
+		  "outputTarget":"nrl",
+          "layers":{
+            "district":"nrl:district_select",
+            "province":"nrl:province_view"
+            }
 	  },{
 		"ptype":"nrl_crop_status",
             "layerStyle":{"strokeColor":"blue","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"},
@@ -367,7 +383,11 @@
             "outputConfig":{
                 "id":"Fertilizers"
             },
-            "outputTarget":"nrl"
+            "outputTarget":"nrl",
+            "layers":{
+                "district":"nrl:district_select",
+                "province":"nrl:province_view"
+            }
       },{
             "ptype":"nrl_market_prices",
             "layerStyle":{
@@ -392,7 +412,7 @@
             },
             "outputTarget":"nrl",
             "layers": {
-                "province": "nrl:province_select",
+                "province": "nrl:province_view",
                 "district": "nrl:district_select"
             },
             "areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')"
@@ -410,7 +430,7 @@
 		  },
 		  "layers":{
 			"district":"nrl:district_crop",
-			"province":"nrl:province_crop"
+			"province":"nrl:province_view"
 			},
 		    "targetLayerStyle":{
 		        "strokeColor": "green",
@@ -419,7 +439,7 @@
 		    },
 		  "defaultAreaTypeMap": "district",
 		  "disclaimerText": "Disclaimer: Data, information and products in this report are provided \"as is\", without warranty of any kind, either express or implied. All rights are reserved by the Government of Pakistan",
-
+          "areaFilter": "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
 		  "outputTarget":"nrl"
 	   },{
 		  "ptype":"gxp_printreporthelper",

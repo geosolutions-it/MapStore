@@ -51,6 +51,10 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
 		var target = this.target;
 		var form = this.form.output.getForm();
 		var values = this.form.output.getForm().getValues();
+        var granType = values.areatype;
+        var district = this.form.output.singleFeatureSelector.singleSelector.selectButton.store.data.items[0].data.attributes.district;
+        var province = this.form.output.singleFeatureSelector.singleSelector.selectButton.store.data.items[0].data.attributes.province;
+        var region_list = "'" + (granType == 'PROVINCE' ? province : district).toLowerCase() +"'" ;
 		var fieldValues = form.getFieldValues();
 		var season_flag = values.season.toLowerCase() == "rabi" ? "season_flag:NOT;" : "";
 		var factorList = "";
@@ -74,7 +78,6 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
 		}
 		
 		//view params generation
-		var region_list = "'" + values.region_list + "'";
 		var viewParams = 
 				(values.crop     ? "crop:" + values.crop.toLowerCase() + ";" : "") +
 				(values.areatype ? "gran_type:" + values.areatype.toLowerCase() + ";" : "") +

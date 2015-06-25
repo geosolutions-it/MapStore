@@ -116,13 +116,17 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
         var numRegion = [];
         var data = this.form.output.getForm().getValues();
         var fields = this.form.output.getForm().getFieldValues();
-        var regionList = "'" + data.region_list.toLowerCase() +"'" ;
+        var granType = data.areatype;
+
+        var district = this.form.output.singleFeatureSelector.singleSelector.selectButton.store.data.items[0].data.attributes.district;
+        var province = this.form.output.singleFeatureSelector.singleSelector.selectButton.store.data.items[0].data.attributes.province;
+        
+        var regionList = "'" + (granType == 'PROVINCE' ? province : district).toLowerCase() +"'" ;
         var crop = this.form.output.form.getValues().crop;
         numRegion.push(regionList);
         
         
         var season = data.season.toLowerCase();
-        var granType = data.areatype;
         var year = data.year;
         var toYear = data.endYear;
 
@@ -146,8 +150,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
             }
         }
         
-        var district = this.form.output.singleFeatureSelector.singleSelector.selectButton.store.data.items[0].data.attributes.district;
-        var province = this.form.output.singleFeatureSelector.singleSelector.selectButton.store.data.items[0].data.attributes.province;
+        
 
         var listVar = {
             numRegion: numRegion,

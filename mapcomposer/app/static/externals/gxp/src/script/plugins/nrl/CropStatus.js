@@ -64,7 +64,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
             
         },
         DISTRICT:{
-            typeName:"nrl:district_boundary",
+            typeName:"nrl:district_crop",
             queriableAttributes:[
                 "district",
                 "province"
@@ -80,7 +80,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                    mapping:"geometry"
                 },
                 {
-                   name:"name",
+                   name:"district",
                    mapping:"properties.district"
                 },{
                    name:"province",
@@ -90,11 +90,12 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                    mapping:"properties"
                 } 
             ],
+            displayField:"district",
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
         },
         PROVINCE:{ 
             fieldLabel: 'Province',
-            typeName:"nrl:province_boundary",
+            typeName:"nrl:province_view",
             recordModel:[
                 {
                    name:"id",
@@ -105,7 +106,11 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                    mapping:"geometry"
                 },
                 {
-                   name:"name",
+                    name: 'fname',
+                    mapping: 'properties.fname'
+                },
+                {
+                   name:"province",
                    mapping:"properties.province"
                 },{
                    name:"properties",
@@ -116,7 +121,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
             queriableAttributes:[
                 "province"
             ],
-            displayField:"name",
+            displayField:"fname",
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
                             
         }
