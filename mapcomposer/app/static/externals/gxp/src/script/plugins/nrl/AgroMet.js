@@ -78,7 +78,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
             
         },
         district:{
-            typeName:"nrl:district_crop",
+            typeName:"nrl:district_select",
             queriableAttributes:[
                 "district",
                 "province"
@@ -104,11 +104,12 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                    mapping:"properties"
                 } 
             ],
+            displayField:"district",
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
         },
         province:{ 
             
-            typeName:"nrl:province_crop",
+            typeName:"nrl:province_view",
             recordModel:[
                 {
                    name:"id",
@@ -130,7 +131,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
             queriableAttributes:[
                 "province"
             ],
-            displayField:"name",
+            displayField:"fname",
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
                             
         }
@@ -270,10 +271,8 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					comboConfigs:this.comboConfigs,
 					areaFilter:this.areaFilter, 
 					hilightLayerName:this.hilightLayerName,
-					layers:{
-						district:'nrl:district_boundary',
-						province:'nrl:province_boundary'
-					}
+					layers: this.layers,
+                    selectableLayer: this.layers.province
 					
 				},{
 					xtype: 'label',

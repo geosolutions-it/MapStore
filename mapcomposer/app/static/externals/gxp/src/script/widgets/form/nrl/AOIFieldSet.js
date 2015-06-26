@@ -145,7 +145,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 						
 						var newLayerName = cbg.ownerCt.layers[val];
                         if(newLayerName){
-                            as.displayField = val;
+                            as.displayField = cbg.ownerCt.comboConfigs[val].displayField;
                             as.changeLayer(newLayerName);
                             as.comboConfig  = Ext.apply(
                                 {},
