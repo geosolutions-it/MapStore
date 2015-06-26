@@ -261,10 +261,7 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
         if (pat.test(mUrl)){
             return mUrl
         }
-        var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
-        var mHost = pattern.exec(mUrl);
-
-        return (mHost[2] == location.host ? mUrl : this.target.proxy + encodeURIComponent(mUrl));
+        return OpenLayers.Request.makeSameOrigin(mUrl);
     },
     
     initLoginService: function() {},
