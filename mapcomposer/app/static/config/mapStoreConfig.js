@@ -1831,7 +1831,7 @@
         "id": "simulationgrid",
         "withSwitchButtons": false,
         "srsName" : "EPSG:32632",
-        "wfsURL": "http://localhost:8080/geoserver/destination/wfs",
+        "wfsURL": "http://@@@@domain_url@@@@/geoserver/destination/wfs",
         "panels": {
             "simulation": {
                 "Grafo Stradale": {
