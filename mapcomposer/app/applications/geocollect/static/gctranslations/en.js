@@ -328,6 +328,11 @@ GeoExt.Lang.add("en", {
         exportFormatsLabel:"Export Formats",
         exportBtnTooltip:"Export Layers",
         invalidParameterValueErrorText:"Export Error!"
+    },
+    "MSMPagingToolbar.prototype":{
+        resizerText: "Missions per page"
+
     }
+
     
 });

@@ -276,5 +276,8 @@ GeoExt.Lang.add("it", {
         exportFormatsLabel:"Formato Export",
         exportBtnTooltip:"Scarica Layers",
         invalidParameterValueErrorText:"Errore Export!"
+    },
+     "MSMPagingToolbar.prototype":{
+        resizerText: "Missioni per pagina"
     }
 });
