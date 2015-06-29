@@ -197,11 +197,11 @@
    "embedLink": {
 		"embeddedTemplateName": "viewer",
 		"showDirectURL": true,
-        "showQRCode":true,
+        "showQRCode":false,
         "qrCodeSize":128,
         "showMapStoreMobileSource":false,
-        "appDownloadUrl":"http://build.geo-solutions.it/mapstoremobile/downloads/releases/1.0.0/developement/GeoCollect.apk"
-
+        "appDownloadUrl":"http://build.geo-solutions.it/mapstoremobile/downloads/releases/1.0.0/developement/GeoCollect.apk",
+        "googlePlayLink":"https://play.google.com/store/apps"
 	},
     "availableMapButtons":[
         "editinfo",

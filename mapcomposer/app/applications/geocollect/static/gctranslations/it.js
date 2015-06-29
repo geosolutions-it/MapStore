@@ -279,5 +279,8 @@ GeoExt.Lang.add("it", {
     },
      "MSMPagingToolbar.prototype":{
         resizerText: "Missioni per pagina"
-    }
+    },
+      "MSMGridPanel.prototype": {
+        googleTooltip:"Scarica L'App Per Android Da Google Play™"
+      }
 });

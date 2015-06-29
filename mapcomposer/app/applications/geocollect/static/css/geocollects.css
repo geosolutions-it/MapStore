@@ -58,13 +58,19 @@
 	 background-image: url(../images/wrench.png);
 
 }
-.gc-mobile-resource-edit,.x-panel-tl .x-panel-header.gc-mobile-resource-edit{
+.gc-mobile-resource-edit,.gc-mobile-resource-edit .x-btn-hover{
 	 background-image: url(../images/phone.png);
 
 }
 /* csv_export */
-.gc-icon-export{
+.gc-icon-export {
     background: transparent url(../images/page_white_put.png) no-repeat;
+}
+.gc-icon-googleplay,.x-btn-icon .x-btn-small .x-btn-text .gc-icon-googleplay {
+    background:url(../images/googleplay.png)  no-repeat ;
+    background-size: 64px 22px;
+     width:64px!important; height:22px!important;
+
 }
 .addgc{
 background:url(../images/add.png) no-repeat 10px 8px;

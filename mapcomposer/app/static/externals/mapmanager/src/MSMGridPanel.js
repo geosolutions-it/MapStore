@@ -431,6 +431,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
     scanThisApplicationText:"Scan this QR code to Install MapStore for Android",
     scanThisSourceText:"Scan this QR code to add this source to your MapStore Mobile application. You need to install MapStore for Android before",
     
+    googleTooltip:"Download Mobile App From Google Play™",
+    
     /**
      * Property: lang
      * {string} set the language of the grid
@@ -724,6 +726,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
         this.QRCodeMenu=Ext.apply({config:config}, {
         text: this.mobileText,
         disabled: !showQR,
+        hidden:true,
         iconCls: 'ic_mobile',
         menu: {
             xtype: 'menu',
@@ -1985,7 +1988,25 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                     grid.getBottomToolbar().doRefresh();
                     expander.collapseAll();
                 } 
-            },this.QRCodeMenu,'->',
+            },this.QRCodeMenu,
+            '-',
+            {
+           
+           
+            enableToggle: false,
+            iconCls : 'gc-icon-googleplay',
+            scale: 'large',
+            autoWidth : true,
+            autoHeight : true,
+            tooltip: this.googleTooltip,
+            hidden:(config.embedLink &&config.embedLink.googlePlayLink)?false:true,
+            gUrl:(config.embedLink && config.embedLink.googlePlayLink)?config.embedLink.googlePlayLink:null,
+            handler: function(btn, state) {
+                window.open (btn.gUrl,"");
+            },
+            scope: this
+            }
+            
 			// this.login.userLabel,
 			// // '-',
 			// // this.openUserManagerButton,
@@ -1993,7 +2014,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			// this.login.loginButton,
 			// '-',
 			// this.langSelector,
-			'-'
+
         ];
         
 		// //////////////////////////////////////////////////
