@@ -1634,7 +1634,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         var totalHandler = function(total, callback){
             
             var finalColumns = me.wfsColumns.slice();
-            if(parseInt(total,10) > 0 || (me.extraRecords && me.extraRecords.length > 0)) {
+            if(parseInt(total,10) > 0 || (me.extraRecords && me.extraRecords.length > 0) || me.allowEdit) {
                 me.loadFeatureFields(function(){
                     if(me.columns){
                         for(kk=0; kk<me.columns.length; kk++){
