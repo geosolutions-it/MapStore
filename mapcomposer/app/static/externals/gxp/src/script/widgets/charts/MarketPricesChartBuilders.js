@@ -270,7 +270,10 @@ nrl.chartbuilder.marketprices.commodity = {
         var getXAxisLabel = function(xVal) {
             var mills = parseInt(xVal);
             var date = new Date(mills);
-            var lbl = date.dateFormat('M(Y)');
+            var monthStr = date.dateFormat('M');
+            var yearStr = date.dateFormat('(Y)');
+
+            var lbl = monthStr;
 
             if (queryParams.time_opt != 'month') {
                 var dayInMonth = parseInt(date.dateFormat('d'));
@@ -282,8 +285,10 @@ nrl.chartbuilder.marketprices.commodity = {
                 else
                     dec = 1;
 
-                lbl += ' dec-' + dec;
+                lbl += '-' + dec;
             }
+
+            lbl += '<br>' + yearStr;
 
             return lbl;
         };
@@ -352,7 +357,9 @@ nrl.chartbuilder.marketprices.commodity = {
                         labels: {
                             formatter: function() {
                                 return getXAxisLabel(this.value);
-                            }
+                            },
+                            rotation: -45,
+                            y: 24
                         }
                     }],
                     yAxis: chartConfig.yAxis,
@@ -538,7 +545,10 @@ nrl.chartbuilder.marketprices.region = {
         var getXAxisLabel = function(xVal) {
             var mills = parseInt(xVal);
             var date = new Date(mills);
-            var lbl = date.dateFormat('M(Y)');
+            var monthStr = date.dateFormat('M');
+            var yearStr = date.dateFormat('(Y)');
+
+            var lbl = monthStr;
 
             if (queryParams.time_opt != 'month') {
                 var dayInMonth = parseInt(date.dateFormat('d'));
@@ -550,8 +560,10 @@ nrl.chartbuilder.marketprices.region = {
                 else
                     dec = 1;
 
-                lbl += ' dec-' + dec;
+                lbl += '-' + dec;
             }
+
+            lbl += '<br>' + yearStr;
 
             return lbl;
         };
@@ -620,7 +632,9 @@ nrl.chartbuilder.marketprices.region = {
                         labels: {
                             formatter: function() {
                                 return getXAxisLabel(this.value);
-                            }
+                            },
+                            rotation: -45,
+                            y: 24
                         }
                     }],
                     yAxis: chartConfig.yAxis,
