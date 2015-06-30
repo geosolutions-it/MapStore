@@ -54,7 +54,8 @@ gxp.plugins.nrl.NRL = Ext.extend(gxp.plugins.Tool, {
         var target = this.target, me = this;
 		
         config = Ext.apply({
-			xtype: 'tabpanel',
+            xtype: 'multirowtabpanel',
+            multipleRows: true,
 			id:'modulewrapper',
 			border: false,
 			split: true,
