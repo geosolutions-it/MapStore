@@ -498,6 +498,32 @@
             "areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')"
         },
         {
+            "ptype": "nrl_irrigation",
+            "layerStyle": {
+                "strokeColor": "aqua",
+                "strokeWidth": 1,
+                "fillOpacity": 0.3,
+                "cursor": "pointer"
+            },
+            "dataUrl": "http://84.33.2.75/geoserver/ows",
+            "factorsurl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:measure_units_for_crop&outputFormat=json",
+            "defaultUOMFlow":"1",
+            "defaultUOMSupply":"1",
+            "metadataFlowUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:irrigation_metadata_flow&outputFormat=json",
+            "metadataSupplyUrl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:irrigation_metadata_supply&outputFormat=json",
+            "highChartExportUrl": "http://84.33.2.75/highcharts-export/",
+            "titleText": "Water Resources",
+            "outputConfig": {
+                "id": "Irrigation"
+            },
+            "outputTarget": "nrl",
+            "layers": {
+                "province": "nrl:province_view",
+                "district": "nrl:district_select"
+            },
+            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')"
+        },
+        {
             "ptype": "nrl_report_crop_data",
             "cropPluginRef": "CropData",
             "factorsurl": "http://84.33.2.75/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
