@@ -249,7 +249,7 @@ gxp.widgets.button.NrlMarketPricesChartButton = Ext.extend(Ext.SplitButton, {
             switch (form.currency.getValue()) {
                 case 'usd':{
                     currencyOpt = 'market_price_usd';
-                    if (form.exchangeRateRadio.getValue().length != 0){
+                    if (form.exchangeRateRadio.getValue().inputValue == 'custom'){
                         currency = 'market_price_kpr';
                         exrate = parseFloat(form.customExchangeRate.getValue());
                     }else{

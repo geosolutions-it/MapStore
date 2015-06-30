@@ -238,12 +238,12 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 disabled: false,
                 columns: 2,
                 items: [{
-                    boxLabel: 'Annual',
+                    boxLabel: 'Monthly',
                     name: 'timerange',
                     inputValue: 'annual',
                     checked: true
                 }, {
-                    boxLabel: 'Monthly',
+                    boxLabel: '10-Days Period',
                     name: 'timerange',
                     inputValue: 'monthly'
                 }],
