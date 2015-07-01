@@ -1674,7 +1674,7 @@
                         },
                         {
                             "header": ["Lanes Flag","Flag Corsie","Lanes de drapeau","Quelle Fahrbahnen"],
-                            "dataIndex": "flg_nr_corsie"
+                            "dataIndex": "fl_nr_corsie"
                         },
                         {
                             "header": ["Lanes #","N. Corsie","Nombre de voies","Anzahl der Fahrbahnen"],
