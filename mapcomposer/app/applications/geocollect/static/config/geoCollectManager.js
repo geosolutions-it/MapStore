@@ -201,7 +201,7 @@
         "qrCodeSize":128,
         "showMapStoreMobileSource":false,
         "appDownloadUrl":"http://build.geo-solutions.it/mapstoremobile/downloads/releases/1.0.0/developement/GeoCollect.apk",
-        "googlePlayLink":"https://play.google.com/store/apps"
+        "googlePlayLink":"https://play.google.com/apps/testing/it.geosolutions.geocollect.android.app"
 	},
     "availableMapButtons":[
         "editinfo",
