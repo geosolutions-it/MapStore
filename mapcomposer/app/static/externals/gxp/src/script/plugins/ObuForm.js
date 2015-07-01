@@ -55,6 +55,10 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 	
 	applyText: "Applica",
     
+	resetText: "Reset",
+
+	clearFieldTooltip: "Clear Field",
+    
     timeSliderDataTitle: "Data",
 	
     // End i18n.
@@ -90,7 +94,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					"descrizione_${locale}"
 				],
 				sortBy: "id_tipo",
-				displayField: "descrizione_${locale}",
+				displayField: "descrizione",
 				tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{descrizione}</span></h3></div></tpl>",
 				recordModel:[
 					{
@@ -316,7 +320,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 				{
 					xtype: 'button',
 					id: "infoBtn",
-					tooltip: "Clear Field",
+					tooltip: this.clearFieldTooltip,
 					iconCls: "obu-clear-button",
 					width: 23,
 					scope: this,
@@ -334,7 +338,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 				{
 					xtype: 'button',
 					id: "infoBtn",
-					tooltip: "Clear Field",
+					tooltip: this.clearFieldTooltip,
 					iconCls: "obu-clear-button",
 					width: 23,
 					scope: this,
@@ -674,7 +678,7 @@ gxp.plugins.ObuForm = Ext.extend(gxp.plugins.Tool, {
 					}
 				},
 				{
-					text: "Reset",
+					text: this.resetText,
 					iconCls: "obu-filter-reset",
 					scope: this,
 					handler: function(){

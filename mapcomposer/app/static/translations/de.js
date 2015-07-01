@@ -133,6 +133,7 @@ GeoExt.Lang.add("de", {
         allTargetOption: "Alle Ziele",
         allHumanTargetOption: "Alle anthropologischen Ziele",
         allNotHumanTargetOption: "Alle Umweltziele",
+        areaTooBigMessage: "Ausflug Region zu groß für diese Formel / Auflösung",
         entLieve: "mäßig",
         entGrave: "schwer",
         humanRiskLabel: "Anthropologisches Risiko",
@@ -718,7 +719,9 @@ GeoExt.Lang.add("de", {
         graphicStyle: "Tematisierung",
         showTrack: "Route anzeigen",
         styleData: "Richtung",
-        applyText: "Anwenden"
+        applyText: "Anwenden",
+        resetText: "Zurücksetzen",
+        clearFieldTooltip: "Feld löschen"
     },
     "gxp.PlaybackToolbar.prototype": {
         playLabel: "Wiedergabe",
