@@ -618,14 +618,16 @@ GeoExt.Lang.add("fr", {
         selAreaDamageEmptyText: "--- Choisissez le type ---",
         comboPolygonSelection: 'Polygon',
         comboCircleSelection: 'Arrondissez',
-        comboBufferSelection: "Buffer"
+        comboBufferSelection: "Buffer",
+        comboScenarioSelection: "Choisissez Substance / Scénario"
     },
 
     "gxp.widgets.form.BufferFieldset.prototype": {
 		bufferFieldLabel: "Gamme de tampon",
 		bufferFieldSetTitle: "Tampon",
 		coordinatePickerLabel: "Coordonnées",
-		draweBufferTooltip: "Dessinez le tampon"
+		draweBufferTooltip: "Dessinez le tampon",
+        selectScenarioLabel: "Choisissez Substance / Scénario"
 	},
 
 	"gxp.widgets.form.CoordinatePicker.prototype":{

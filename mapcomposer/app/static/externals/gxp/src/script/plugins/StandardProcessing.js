@@ -507,6 +507,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.aoiFieldset = this.appTarget.tools[this.aoi].getAOI();
         this.syntView = this.appTarget.tools[this.syntheticView];
         this.selDamage=this.appTarget.tools[this.seldamage].getSelDamage();
+        this.selDamage.processingPane = this;
         this.selDamage.hide();
             
         this.buildForm(this.map);
@@ -820,6 +821,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     this.updateTargetCombo(type);
                     var processingCombo = this.elaborazione.getValue();
                     this.enableDisableSimulation(processingCombo === 3,type,startValue);
+                    this.updateBufferFieldSet();
                 }
             }              
         });
@@ -846,7 +848,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     var type = 'bers';
                     var startValue = cb.startValue;
                     var processingCombo = this.elaborazione.getValue();
-                    this.enableDisableSimulation(processingCombo === 3,type,startValue, "target" + record.get("id_bersaglio"));                    
+                    this.enableDisableSimulation(processingCombo === 3,type,startValue, "target" + record.get("id_bersaglio")); 
+                    this.updateBufferFieldSet();                
                 },
                 expand: function(combo) {
                     //this.loadUserElab = false;
@@ -913,6 +916,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         this.sostanzeStore.clearFilter();
                     }
                     this.resetCombos([this.sostanze]);
+                    this.updateBufferFieldSet();
                 },
                 scope: this
             }              
@@ -959,6 +963,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     }
 
                     this.resetCombos([this.accident]);
+                    this.updateBufferFieldSet();
                 },
                 scope: this
             }              
@@ -987,6 +992,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     combo.innerList.setWidth( 'auto' );
                 },
                 select: function(cb, record, index) {
+                    this.updateBufferFieldSet();
                     this.resetCombos([this.seriousness]);                           
                 },
                 scope: this
@@ -1007,7 +1013,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             editable: false,
             resizable: true,
             value: this.allEntOption,
-            lazyInit: false          
+            lazyInit: false,
+            listeners: {
+                select: function(cb, record, index) {
+                    this.updateBufferFieldSet();
+                },
+                scope: this
+            }        
         });
         
         this.accidentSet = new Ext.form.FieldSet({
@@ -1028,7 +1040,20 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         return this.accidentSet;
     },
-    
+    /**
+     * Calculates the automatic radius for "Valutazione del danno" processing, from current form status.
+     */
+    getRadius: function() {
+        var radiusObj = this.syntView.getRadius(this.getStatus());
+        return radiusObj.max || 0;
+    },
+    /**
+     * Updates the automatic radius for "Valutazione del danno" processing, when enabled.
+     */
+    updateBufferFieldSet: function() {
+        this.selDamage.bufferFieldset.updateRadius(this.getRadius());
+    },
+
     filterComboFormulaScale: function(combo) {
         var store = combo.getStore();
         /**
@@ -1488,7 +1513,14 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     getAOI: function() {
         var processing = this.getComboRecord(this.elaborazione, "id").get("id");
         if(processing === 4) {
-            return this.selDamage.getDamageArea().getBounds();
+            if(this.selDamage.getDamageArea()) {
+                return this.selDamage.getDamageArea().getBounds();    
+            } else {
+                return {
+                    type: 'none',
+                    bbox: null
+                };
+            }
         } else {
             return this.aoiFieldset.getAOIMapBounds();
         }

@@ -195,6 +195,7 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
         lonlat.transform(map.getProjectionObject(),new OpenLayers.Projection(this.outputSRS));
         this.latitudeField.setValue(lonlat.lat);
         this.longitudeField.setValue(lonlat.lon);
+        this.fireEvent("update");
 		this.clickToggle.toggle();      
     },
 
@@ -207,6 +208,7 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
 			var lonlat = new OpenLayers.LonLat(lon,lat);
 			lonlat.transform(new OpenLayers.Projection(this.outputSRS),map.getProjectionObject() );
 			this.updateMapPoint(lonlat,check);
+      this.fireEvent("update");
 		}
     },
 
@@ -243,7 +245,7 @@ gxp.widgets.form.CoordinatePicker = Ext.extend(Ext.form.CompositeField,{
             this.layer.displayInLayerSwitcher = this.displayInLayerSwitcher;
             map.addLayer(this.layer);  
 
-			this.fireEvent("update");
+			
         }    
     },
 

@@ -73,6 +73,14 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
      */  
 	comboBufferSelection: "Buffer",    
 
+    /** api: config[comboScenarioSelection]
+     * ``String``
+     * Text for Label comboScenarioSelection (i18n).
+     */  
+    comboScenarioSelection: "Scegli Sostanza/Scenario", 
+
+    processingPane: null,   
+
     initComponent: function () {
 
         var me = this;
@@ -149,6 +157,10 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
                         name: 'Buffer',
                         label: this.comboBufferSelection,
                         value: 'buffer'
+                    }, {
+                        name: 'Scenario',
+                        label: this.comboScenarioSelection,
+                        value: 'scenario'
                     }]
                 }),
                 listeners: {
@@ -227,9 +239,13 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
         return areaDamage;
     },
     
+    getRadius: function() {
+        return this.processingPane.getRadius();
+    },
+
     enableDrawing: function(type, geometry) {
         if(type === 'circle' || type === 'polygon') {
-            this.bufferFieldset.disable();
+            this.bufferFieldSet.disable();
 
             this.drawings = new OpenLayers.Layer.Vector({}, {
                 displayInLayerSwitcher: false
@@ -269,7 +285,10 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
             
         } else {
             this.bufferFieldSet.enable();
-            this.bufferFieldset.doLayout(true,false);
+            this.bufferFieldSet.bufferField.setValue('');
+            var mode = type === 'buffer' ? 'user' : 'scenario';
+            this.bufferFieldSet.setRadiusMode(mode, this.getRadius());
+            this.bufferFieldSet.doLayout(true,false);
         }
         
     },
@@ -287,7 +306,7 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
     
     setDamageArea: function(geometry, type) {
         type = type || 'polygon';
-        if(type === 'buffer') {
+        if(type === 'buffer' || type === 'scenario') {
             type = 'circle';
         }
         Ext.getCmp('selectionMethod_id').setValue(type);

@@ -621,14 +621,16 @@ GeoExt.Lang.add("en", {
         selAreaDamageEmptyText: "--- Choose type ---",
         comboPolygonSelection: 'Polygon',
         comboCircleSelection: 'Circle',
-        comboBufferSelection: "Buffer"
+        comboBufferSelection: "Buffer",
+        comboScenarioSelection: "Choose Material/Accident"
     },
 
     "gxp.widgets.form.BufferFieldset.prototype": {
 		bufferFieldLabel: "Buffer Range",
 		bufferFieldSetTitle: "Buffer",
 		coordinatePickerLabel: "Coordinates",
-		draweBufferTooltip: "Draw the Buffer"
+		draweBufferTooltip: "Draw the Buffer",
+        selectScenarioLabel: "Choose Material/Accident"
 	},
 
 	"gxp.widgets.form.CoordinatePicker.prototype":{

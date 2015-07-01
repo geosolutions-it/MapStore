@@ -395,16 +395,19 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return parseInt(this.status.target['id_bersaglio'],10) > 0;
     },
     
-    isHumanTarget: function() {
-        return this.status.target.humans;
+    isHumanTarget: function(status) {
+        status = status || this.status;
+        return status.target.humans;
     },
     
-    isNotHumanTarget: function() {
-        return !this.status.target.humans;
+    isNotHumanTarget: function(status) {
+        status = status || this.status;
+        return !status.target.humans;
     },
     
-    isMixedTargets: function() {
-        return this.status.target.humans === null;
+    isMixedTargets: function(status) {
+        status = status || this.status;
+        return status.target.humans === null;
     },
     
     addTargets: function(layers, bounds, radius, extraTargets, roi, resolution) { 
@@ -3442,50 +3445,53 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return null;
     },
         
-    getRadius: function(){
+    getRadius: function(status){
         var radius={};
 
-        if(this.isHumanTarget() || this.isMixedTargets())
+        if(this.isHumanTarget(status) || this.isMixedTargets(status))
             radius.radiusHum=[null,null,null,null];
         
-        if(this.isNotHumanTarget() || this.isMixedTargets())
+        if(this.isNotHumanTarget(status) || this.isMixedTargets(status))
             radius.radiusNotHum=null;
 
         radius.max = 0;
         radius.maxHuman = 0;
         radius.maxNotHuman = 0;
             
-        this.parseSost(radius);
+        this.parseSost(radius, status);
         return radius;
     },
     
-    parseSost: function(radius){                
+    parseSost: function(radius, status){                
+        status = status || this.status;
         for (sost in this.radiusData){
-            if(this.status.sostanza.value === "0" || sost === this.status.sostanza.value + "") {
-                this.parseAcc(sost,radius);
+            if(status.sostanza.value === "0" || sost === status.sostanza.value + "") {
+                this.parseAcc(sost,radius,status);
             }           
         } 
     },
     
-    parseAcc: function(sost,radius){
+    parseAcc: function(sost,radius, status){
+        status = status || this.status;
         for (acc in this.radiusData[sost]){
-            if(this.status.accident.value == "0" || acc === this.status.accident.id +""){
-                this.parseSer(sost,acc,radius);
+            if(status.accident.value == "0" || acc === status.accident.id +""){
+                this.parseSer(sost,acc,radius,status);
             }
         }                   
     },
     
-    parseSer: function(sost,acc,radius){
+    parseSer: function(sost,acc,radius,status){
+        status = status || this.status;
         for (ser in this.radiusData[sost][acc]) {
-            if(this.status.seriousness.value == "0" || ser === this.status.seriousness.value){
+            if(status.seriousness.value == "0" || ser === status.seriousness.value){
                 if(typeof(radius.radiusHum) !== "undefined") {
                     this.setRadHum(this.radiusData[sost][acc][ser].humans, radius);
                 }
                 
                 if(typeof(radius.radiusNotHum) !== "undefined"){
-                    if(this.status.target.code != '-1' && this.status.target.code != '-2') {
+                    if(status.target.code != '-1' && status.target.code != '-2') {
                         this.setRadNotHum(
-                            this.radiusData[sost][acc][ser].notHumans[this.status.target.code],radius, ser);
+                            this.radiusData[sost][acc][ser].notHumans[status.target.code],radius, ser);
                     } else {
                         this.setRadNotHum(
                             this.radiusData[sost][acc][ser].notHumans,radius, ser);

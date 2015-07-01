@@ -69,6 +69,11 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
      * Text for draw buffer button tooltip.
      */ 
 	draweBufferTooltip: "Draw the Buffer",
+	/** api: config[selectScenarioLabel]
+     * ``String``
+     * Text for the scenario mode tooltip.
+     */ 
+	selectScenarioLabel: "Scegli Sostanza / Scenario",
 
     /** api: config[errorBufferText]
      * ``String``
@@ -98,10 +103,10 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
      * Default Style.
      */ 
 	selectStyle: {
-		strokeColor: "#FF0000",
-		handlerFillColor: "#FFFFFF",
-		fillColor: "#FFFFFF",
-		fillOpacity: 0,
+		strokeColor: "#DF9206",
+		handlerFillColor: "#DF9206",
+		fillColor: "#DF9206",
+		fillOpacity: 0.7,
 		strokeWidth: 2
 	},
 
@@ -123,6 +128,12 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
      */ 
 	decimalPrecision: 0,
 
+	/** api: config[radiusMode]
+     * ``String``
+     * Radius selection mode (user / scenario).
+     */ 
+	radiusMode: 'user',
+
     /** 
 	 * private: method[initComponent]
      */
@@ -137,12 +148,18 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 			listeners: {
 				scope: this,
 				update: function(){
-					this.bufferField.enable();
-                    this.resetBuffer();
+					if(this.radiusMode === 'user') {
+						this.bufferField.enable();
+						this.resetBuffer();	
+					} else if(this.bufferField.getValue()) {
+						this.drawNewBuffer(false);
+					}
 				},				
 				reset: function(){
-					this.bufferField.disable();
-					this.bufferField.reset();
+					if(this.radiusMode === 'user') {
+						this.bufferField.disable();
+						this.bufferField.reset();
+					}
 				}
 			}
 		});
@@ -185,32 +202,21 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
                         toggle: function(button, pressed) {  
 							if(pressed){
 								if(this.isValid()){									
-									var coords = this.coordinatePicker.getCoordinate();
-									var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
-                                    
-                                    lonlat.transform(new OpenLayers.Projection(this.outputSRS),map.getProjectionObject());
-
-									var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
-
-									var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
-										point,
-										this.bufferField.getValue(),
-										100, 
-										null
-									);
-
-									this.drawBuffer(regularPolygon);
-
-									var bounds = regularPolygon.getBounds();
-									this.map.zoomToExtent(bounds);
+									this.drawNewBuffer(true);
 								}else{
 									this.compositeField.clickToggle.toggle(false);
 								}
-                            }else{
+					        }else{
 								this.resetBuffer();
-                            }
-                        }
+					        }
+					    }
                     }
+                }, {
+                	xtype: 'label',
+                	height: 30,
+                	ref: 'scenarioLabel',
+                	text: this.selectScenarioLabel,
+                	hidden: true
                 }
 			]
 		});
@@ -223,6 +229,55 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 		this.title = this.bufferFieldSetTitle;
 
 		gxp.widgets.form.BufferFieldset.superclass.initComponent.call(this);
+    },
+
+    setRadiusMode: function(mode, radius) {
+    	this.radiusMode = mode;
+    	if(mode === 'user') {
+    		this.bufferField.disable();
+    		this.bufferField.setReadOnly(false);
+    		this.compositeField.clickToggle.show();
+    		this.compositeField.scenarioLabel.hide();
+    	} else {
+    		this.bufferField.enable();
+    		this.bufferField.setReadOnly(true);
+    		this.updateRadius(radius);
+    		this.compositeField.clickToggle.hide();
+    		this.compositeField.scenarioLabel.show();
+    	}
+    },
+
+    updateRadius: function(radius) {
+    	if(this.radiusMode === 'scenario') {
+    		this.bufferField.setValue(radius);
+    		this.drawNewBuffer(false);
+    	}
+
+    },
+
+    drawNewBuffer: function(zoom) {  
+		if(this.isValid()) {
+			var coords = this.coordinatePicker.getCoordinate();
+			var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
+	        
+	        lonlat.transform(new OpenLayers.Projection(this.outputSRS),map.getProjectionObject());
+
+			var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
+
+			var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+				point,
+				this.bufferField.getValue(),
+				100, 
+				null
+			);
+
+			this.drawBuffer(regularPolygon);
+
+			var bounds = regularPolygon.getBounds();
+			if(zoom) {
+				this.map.zoomToExtent(bounds);		
+			}
+		}
     },
 
     drawBuffer: function(regularPolygon){
