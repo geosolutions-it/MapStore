@@ -1029,5 +1029,13 @@ GeoExt.Lang.add("de", {
 		showExecutionIdText: "Zeige ID",
 		processIdentifierText: "Kennzeichnung",
 		downloadIdTitle: "Download ID"
-    }
+    },
+
+    "cookieChoices": {
+        "cookieText": "Cookies erleichtern die Bereitstellung unserer Dienste. Mit der Nutzung unserer Dienste erklären Sie sich damit einverstanden, dass wir Cookies verwenden.",
+        "dismissText": "OK",
+        "linkText":"Weitere Informationen",
+        "linkHref":"http://google.com"
+
+  }
 });
