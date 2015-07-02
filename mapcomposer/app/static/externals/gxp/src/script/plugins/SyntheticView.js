@@ -2957,17 +2957,25 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         var roi = this.getRoi();
         
+        var formulaDescTot = status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle,
+            formulaDescHum = status.formulaDesc + ' ' + this.humanTitle,
+            formulaDescNotHum = status.formulaDesc + ' ' + this.notHumanTitle;
+        
+        if(GeoExt.Lang.locale === 'de' && (status.formula === 26 || status.formula === 29)) {
+            formulaDescTot = status.formulaDesc;
+        }
+
         if(status.formulaInfo.dependsOnTarget) {
             if(this.isSingleTarget()) {
-                this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc + ' ' + (this.isHumanTarget() ? this.humanTitle : this.notHumanTitle), this.isHumanTarget() ? formulaUdmSoc : formulaUdmEnv, env, roi, true);
+                this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, this.isHumanTarget() ? formulaDescHum : formulaDescNotHum, this.isHumanTarget() ? formulaUdmSoc : formulaUdmEnv, env, roi, true);
             } else if(this.isAllHumanTargets()) {
-                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, env, roi, true);
+                this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, formulaDescHum, formulaUdmSoc, env, roi, true);
             } else if(this.isAllNotHumanTargets()) {
-                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, env, roi, true);
+                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, formulaDescNotHum, formulaUdmEnv, env, roi, true);
             } else {
                 this.addFormula(layers, bounds, status, 98, this.formulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle, formulaUdmSoc, envhum, roi, false);
-                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, status.formulaDesc + ' ' + this.notHumanTitle, formulaUdmEnv, envamb, roi, false);                    
-                this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, status.formulaDesc + ' ' + this.humanTitle + ' - ' + this.notHumanTitle, formulaUdm, mixedenv, roi, true);
+                this.addFormula(layers, bounds, status, 99, this.formulaRiskLayer, formulaDescNotHum, formulaUdmEnv, envamb, roi, false);                    
+                this.addFormula(layers, bounds, status, 100, this.mixedFormulaRiskLayer, formulaDescTot, formulaUdm, mixedenv, roi, true);
             }
         } else {
             this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer, status.formulaDesc, formulaUdm, env, roi, true);   
