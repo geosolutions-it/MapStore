@@ -1682,7 +1682,7 @@
                         },
                         {
                             "name": "fl_nr_corsie",         
-                            "mapping": "flg_nr_corsie_${locale}"
+                            "mapping": "fl_nr_corsie_${locale}"
                         },
                         {
                             "name": "nr_corsie",         
@@ -1740,7 +1740,7 @@
                         },
                         {
                             "header": ["Lanes Flag","Flag Corsie","Lanes de drapeau","Quelle Fahrbahnen"],
-                            "dataIndex": "flg_nr_corsie"
+                            "dataIndex": "fl_nr_corsie"
                         },
                         {
                             "header": ["Lanes #","N. Corsie","Nombre de voies","Anzahl der Fahrbahnen"],

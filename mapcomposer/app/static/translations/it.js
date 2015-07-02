@@ -737,7 +737,9 @@ GeoExt.Lang.add("it", {
         graphicStyle: "Tematizzazione",
         showTrack: "Mostra traccia",
         styleData: "Visualizzazione",
-        applyText: "Applica"
+        applyText: "Applica",
+        resetText: "Reset",
+        clearFieldTooltip: "Pulisci Campo"
     },
     "gxp.PlaybackToolbar.prototype": {
         playLabel: "Play",

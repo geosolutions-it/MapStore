@@ -29,8 +29,8 @@ GeoExt.Lang.add("de", {
         temporalLabel: "Zeitliche Bedingungen",
         elabStandardLabel: "Standardbearbeitung",
         totalRiskLabel: "Gesamtrisiko",
-        humanTitle:'Anthropologisches', 
-        notHumanTitle:'Umwelt', 
+        humanTitle:'anthropologische Elemente', 
+        notHumanTitle:'Umweltelemente', 
         defaultExtentLabel: "Das ganze Gebiet",
         
         wpsTitle: "Fehler",
@@ -741,7 +741,8 @@ GeoExt.Lang.add("de", {
         showTrack: "Route anzeigen",
         styleData: "Richtung",
         applyText: "Anwenden",
-        resetText: "Reset"
+        resetText: "Zurücksetzen",
+        clearFieldTooltip: "Feld löschen"
     },
     "gxp.PlaybackToolbar.prototype": {
         playLabel: "Wiedergabe",
