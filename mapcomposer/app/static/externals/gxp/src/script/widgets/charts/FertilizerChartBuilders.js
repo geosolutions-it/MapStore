@@ -46,7 +46,13 @@ nrl.chartbuilder.fertilizer = {
                 case 'district': return dist + ' (' + prov + ')'; break;
                 case 'pakistan': return 'Pakistan'; break;
             }
-        }
+        };
+        var getTimeFromTimeHash = function(th){
+            var y = Math.floor(th/12);
+            var m = th%12 + 1;
+            var date = new Date(y+'/'+m+'/01');
+            return date.getTime();
+        };
 
         // for each feature in json data...
         for (var i=0; i<json.features.length; i++){
@@ -72,18 +78,20 @@ nrl.chartbuilder.fertilizer = {
 
             var rowEntry = undefined;
             for(var j=0; j<chartData.rows.length; j++){
-                if (chartData.rows[j].time == feature.time){
+                var epochTime = getTimeFromTimeHash(feature.time);
+
+                if (chartData.rows[j].time == epochTime){
                     rowEntry = chartData.rows[j];
                     break;
                 }
             }
             if (!rowEntry){
                 rowEntry = {
-                    time: feature.time
+                    time: getTimeFromTimeHash(feature.time)
                 };
                 chartData.rows.push(rowEntry);
             }
-            rowEntry[feature.nutrient] = feature.tons/1000;
+            rowEntry[feature.nutrient] = feature.tons;
         }
 
         // it doesn't copute aggregate data if there is only one chart
@@ -169,7 +177,7 @@ nrl.chartbuilder.fertilizer = {
         }
         ret.yAxis = [{ // AREA
             title: {
-                text: customOpt.stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : 'Offtake (000 tons)'
+                text: customOpt.stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : 'Total Offtake (tons)'
             },
             labels: {
                 formatter: function () {
@@ -180,6 +188,12 @@ nrl.chartbuilder.fertilizer = {
                 }
             }
         }];
+
+        //sort series in an array (lines on top, than bars then areas)
+        ret.series.sort(function(a,b){
+            //area,bar,line,spline are aphabetically ordered as we want
+            return a.type < b.type ? -1 : 1;
+        });
 /*
         for(var s=0; s<ret.series.length; s++){
             if (s>0){
@@ -234,19 +248,20 @@ nrl.chartbuilder.fertilizer = {
             }
             info += '<span style="font-size:10px;">Region: '+ aoi + '</span><br />'
 
+            var fromYear = Math.floor(queryParams.from_time_hash/12);
+            var fromMonth = nrl.chartbuilder.util.numberToMonthName(queryParams.from_time_hash%12 + 1);
+
+            var toYear = Math.floor(queryParams.to_time_hash/12);
+            var toMonth = nrl.chartbuilder.util.numberToMonthName(queryParams.to_time_hash%12 + 1);
+
             switch (queryParams.timerange){
                 case 'annual': {
-                    var fromYear = queryParams.from_year;
-                    var toYear = queryParams.to_year;
-                    info += '<span style="font-size:10px;">Years: '+ fromYear + '-' + toYear + '</span><br />'
+                    info += '<span style="font-size:10px;">Years: '+ fromYear + '-' + toYear + '</span><br />';
                 }break;
                 case 'monthly': {
-                    var referenceYear = queryParams.from_year;
-                    info += '<span style="font-size:10px;">Year: '+ referenceYear + '</span><br />'
-
-                    var fromMonth = nrl.chartbuilder.util.numberToMonthName(queryParams.from_month);
-                    var toMonth = nrl.chartbuilder.util.numberToMonthName(queryParams.to_month);
-                    info += '<span style="font-size:10px;">Months: '+ fromMonth + '-' + toMonth + '</span><br />'
+                    var referenceYear = fromYear;
+                    info += '<span style="font-size:10px;">Year: '+ referenceYear + '</span><br />';
+                    info += '<span style="font-size:10px;">Months: '+ fromMonth + '('+ fromYear + ')' + ' - ' + toMonth + '('+ toYear + ')' + '</span><br />';
                 }break;
             }
 
@@ -254,12 +269,24 @@ nrl.chartbuilder.fertilizer = {
         };
 
         var getChartTitle = function(chartData, chartIndex){
-            var title = 'Fertilizer: ';
+            var title = 'Fertilizers: ';
             var region = (chartData[chartIndex].title == 'aggregate' ? 'REGION' : chartData[chartIndex].title);
             title += region;
             return title;
         };
-
+        var xLabelFormatter = (queryParams.timerange == 'monthly' ? 
+            function(){
+                var x = parseInt(this.value);
+                var date = new Date(x);
+                return date.format('M<br>(Y)');
+            }
+        :
+            function(arg){
+                var x = parseInt(this.value);
+                var date = new Date(x);
+                return date.format('Y');
+            }
+        );
         var charts = [];
 
         for (var r=0; r<data.length; r++){
@@ -324,18 +351,21 @@ nrl.chartbuilder.fertilizer = {
                         tickWidth: 0,
                         gridLineWidth: 1,
                         labels: {
-                            formatter: function(){
-                                var time = parseInt(this.value);
-                                return (time <= 12 ? nrl.chartbuilder.util.numberToMonthName(time, false) : time);
-                            }
+                            formatter: xLabelFormatter
+//                            formatter: function(){
+
+//                                var time = parseInt(this.value);
+//                                return (time <= 12 ? nrl.chartbuilder.util.numberToMonthName(time, false) : time);
+//                            }
                         }
                     }],
                     yAxis: chartConfig.yAxis,
                     plotOptions: chartConfig.plotOptions,
                     tooltip: {
                         formatter: function() {
-                            var time = parseInt(this.x);
-                            var xVal = (time <= 12 ? nrl.chartbuilder.util.numberToMonthName(time, true) : time);
+                            var x = parseInt(this.x);
+                            var date = new Date(x);
+                            var xVal = (queryParams.timerange == 'monthly' ? date.format('Y - M') : date.format('Y'));
                             var s = '<b>'+ xVal +'</b>';
 
                             Ext.each(this.points, function(i, point) {

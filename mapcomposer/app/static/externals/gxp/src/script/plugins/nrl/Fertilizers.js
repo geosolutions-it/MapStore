@@ -279,6 +279,9 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                     initTimeSelection: function(){
                         this.setAnnualMode();
                         this.ownerCt.setShowNoDataInfo(true);
+                        this.ownerCt.monthRangeSelector.show();
+                        this.ownerCt.monthRangeSelector.slider.setValue(1, 11);
+                        this.ownerCt.monthRangeSelector.hide();
                     }
                 },{ // YEAR compobox ---------------------------------------
                     name: 'year',
@@ -291,7 +294,7 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                     ref: 'monthRangeSelector',
                     xtype: 'monthyearrangeselector',
                     anchor: '100%',
-                    noCrossYear: true,
+                    noCrossYear: false,
                     disabled: true
                 },{ // YEAR range selector ---------------------------------
                     ref: 'yearRangeSelector',

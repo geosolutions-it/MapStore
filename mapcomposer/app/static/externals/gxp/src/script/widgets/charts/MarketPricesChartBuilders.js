@@ -193,6 +193,11 @@ nrl.chartbuilder.marketprices.commodity = {
                 }
             }
         }];
+        //sort series in an array (lines on top, than bars then areas)
+        ret.series.sort(function(a,b){
+            //area,bar,line,spline are aphabetically ordered as we want
+            return a.type < b.type ? -1 : 1;
+        });
         return ret;
     },
     makeChart: function(data, opt, customOpt, queryParams) {
@@ -470,6 +475,11 @@ nrl.chartbuilder.marketprices.region = {
                 }
             }
         }];
+        //sort series in an array (lines on top, than bars then areas)
+        ret.series.sort(function(a,b){
+            //area,bar,line,spline are aphabetically ordered as we want
+            return a.type < b.type ? -1 : 1;
+        });
         return ret;
     },
     makeChart: function(data, opt, customOpt, queryParams) {
@@ -622,7 +632,7 @@ nrl.chartbuilder.marketprices.region = {
                         verticalAlign: 'bottom',
                         useHTML: true,
                         x: 30,
-                        y: 16
+                        y: 30
                     },
                     xAxis: [{
                         type: 'datetime',
@@ -655,6 +665,10 @@ nrl.chartbuilder.marketprices.region = {
                         crosshairs: true
                     },
                     legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0,
                         labelFormatter: function() {
                             if (this.name == 'Area (000 hectares)') {
                                 return 'Area (000 ha)';
