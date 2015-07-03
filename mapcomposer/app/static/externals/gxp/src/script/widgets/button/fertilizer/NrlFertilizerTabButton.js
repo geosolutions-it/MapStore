@@ -39,10 +39,18 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
      * config [windowManagerOptions]
      * Options for the window manager
      */
-    windowManagerOptions:{title:"Fertilizer"},
+    windowManagerOptions:{title:"Fertilizers"},
     text: 'Generate Table',
     queryOptions: {},
     handler: function () {
+        var getTypeName = function(form){
+            if (form.timerange.getValue().inputValue == 'monthly'){
+                return 'nrl:fertilizers_month_data';
+            }else{
+                return 'nrl:fertilizers_year_data';
+            }
+        };
+
         var getViewParams = function(form){
             // gets a list of nutrients selected
             var fertSelected = form.fertilizers.getSelections();
@@ -59,18 +67,26 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
             // gets max & min month
             var from_year, to_year;
             var from_month_num, to_month_num;
+
+            var from_time_hash, to_time_hash;
             switch (grouping_opt){
                 case 'year': {
                     from_year = form.yearRangeSelector.slider.getValues()[0];
                       to_year = form.yearRangeSelector.slider.getValues()[1];
                     from_month_num = 1;
                       to_month_num = 12;
+
+                    from_time_hash = 12 * from_year +  0;
+                    to_time_hash   = 12 * to_year   + 11;
                 }break;
                 case 'month_num': {
                     from_year = form.yearSelector.getValue();
                       to_year = form.yearSelector.getValue();
                     from_month_num = form.monthRangeSelector.slider.getValues()[0]+1;
                       to_month_num = form.monthRangeSelector.slider.getValues()[1]+1;
+
+                    from_time_hash = 12 * (from_year + Math.floor((from_month_num-1)/12)) + (from_month_num-1)%12;
+                      to_time_hash = 12 * (  to_year + Math.floor((  to_month_num-1)/12)) + (  to_month_num-1)%12;
                 }break;
             }
             form.submitButton.queryOptions.from_year = from_year;
@@ -78,6 +94,8 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
             form.submitButton.queryOptions.from_month = from_month_num;
             form.submitButton.queryOptions.to_month = to_month_num;
 
+            form.submitButton.queryOptions.from_time_hash = from_time_hash;
+            form.submitButton.queryOptions.to_time_hash = to_time_hash;
             // gets the gran type parameter
             var gran_type = form.aoiFieldSet.gran_type.getValue().inputValue;
             form.submitButton.queryOptions.gran_type = gran_type;
@@ -89,28 +107,23 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
             var region_list = form.aoiFieldSet.selectedRegions.getValue();
 
             if (gran_type == 'pakistan'){
-                return 'grouping_opt:'   + grouping_opt   + ';' +
-                       'from_year:'      + from_year      + ';' +
-                       'to_year:'        + to_year        + ';' +
-                       'from_month_num:' + from_month_num + ';' +
-                       'to_month_num:'   + to_month_num   + ';' +
-                       'nutrient_list:'  + nutrient_list  + ';' +
+                return 'nutrient_list:'  + nutrient_list  + ';' +
                        'region_list:'    + "''"           + ';' +
                        'gran_type_str:'  + gran_type_str  + ';' +
+                       'from_time_hash:' + from_time_hash + ';' +
+                       'to_time_hash:'   + to_time_hash   + ';' +
                        'gran_type:'      + 'province'     + ';' ;
             }else{
-                return 'grouping_opt:'   + grouping_opt   + ';' +
-                       'from_year:'      + from_year      + ';' +
-                       'to_year:'        + to_year        + ';' +
-                       'from_month_num:' + from_month_num + ';' +
-                       'to_month_num:'   + to_month_num   + ';' +
-                       'nutrient_list:'  + nutrient_list  + ';' +
+                return 'nutrient_list:'  + nutrient_list  + ';' +
                        'region_list:'    + region_list    + ';' +
                        'gran_type_str:'  + gran_type_str  + ';' +
+                       'from_time_hash:' + from_time_hash + ';' +
+                       'to_time_hash:'   + to_time_hash   + ';' +
                        'gran_type:'      + gran_type      + ';' ;
             }
         };
         var viewparams = getViewParams(this.refOwner);
+        var typeName = getTypeName(this.refOwner);
 
         var store = new Ext.data.JsonStore({
             url: this.url,
@@ -160,7 +173,7 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
                 service: "WFS",
                 version: "1.0.0",
                 request: "GetFeature",
-                typeName: this.typeName,
+                typeName: typeName,
                 outputFormat: "json",
                 propertyName: "time,nutrient,province,district,tons",
                 viewparams: viewparams
@@ -171,12 +184,19 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
 
     createResultPanel: function(store, queryOptions){
         var gran_type = queryOptions.gran_type;
-        var timeHeader = (queryOptions.timerange == 'monthly' ? 'Month' : 'Year');
+        var timeHeader = (queryOptions.timerange == 'monthly' ? 'Month (Year)' : 'Year');
         var tabPanel = Ext.getCmp(this.tabPanel);
         var regionList = this.refOwner.aoiFieldSet.selectedRegions.getValue().replace(/[']/g,'').split('\\,');
 
         var yearOrMonthName = function(value){
-            return (value < 13 ? nrl.chartbuilder.util.numberToMonthName(value, true) : value);
+            var x = parseInt(value);
+            var year = Math.floor(x/12);
+            var month = nrl.chartbuilder.util.numberToMonthName(x%12 + 1);
+            if (queryOptions.timerange == 'monthly'){
+                return month + ' (' + year + ')';
+            }else{
+                return year;
+            }
         };
         var zeroPadding = function(n, padding){
             var nstr = n + '';
@@ -208,19 +228,20 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
             
             info += '<span style="font-size:10px;">Region: '+ aoi + '</span><br />'
 
+            var fromYear = Math.floor(queryParams.from_time_hash/12);
+            var fromMonth = nrl.chartbuilder.util.numberToMonthName(queryParams.from_time_hash%12 + 1);
+
+            var toYear = Math.floor(queryParams.to_time_hash/12);
+            var toMonth = nrl.chartbuilder.util.numberToMonthName(queryParams.to_time_hash%12 + 1);
+
             switch (queryParams.timerange){
                 case 'annual': {
-                    var fromYear = queryParams.from_year;
-                    var toYear = queryParams.to_year;
-                    info += '<span style="font-size:10px;">Years: '+ fromYear + '-' + toYear + '</span><br />'
+                    info += '<span style="font-size:10px;">Years: '+ fromYear + '-' + toYear + '</span><br />';
                 }break;
                 case 'monthly': {
-                    var referenceYear = queryParams.from_year;
-                    info += '<span style="font-size:10px;">Year: '+ referenceYear + '</span><br />'
-
-                    var fromMonth = nrl.chartbuilder.util.numberToMonthName(queryParams.from_month);
-                    var toMonth = nrl.chartbuilder.util.numberToMonthName(queryParams.to_month);
-                    info += '<span style="font-size:10px;">Months: '+ fromMonth + '-' + toMonth + '</span><br />'
+                    var referenceYear = fromYear;
+                    info += '<span style="font-size:10px;">Year: '+ referenceYear + '</span><br />';
+                    info += '<span style="font-size:10px;">Months: '+ fromMonth + '('+ fromYear + ')' + ' - ' + toMonth + '('+ toYear + ')' + '</span><br />';
                 }break;
             }
 
@@ -265,7 +286,7 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
                 },{
                     sortable: true,
                     id: 'tons',
-                    header:'Offtake (tons)',
+                    header:'Total Offtake (tons)',
                     name: 'tons',
                     dataIndex: 'tons',
                     //width: 100,
@@ -308,7 +329,7 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
                 },{
                     sortable: true,
                     id: 'tons',
-                    header:'Offtake (tons)',
+                    header:'Total Offtake (tons)',
                     name: 'tons',
                     dataIndex: 'tons',
                     //width: 100,
@@ -345,7 +366,7 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
             columns: gridCols
         });
 
-        var tabelTitle = 'Fertilizer: ';
+        var tabelTitle = 'Fertilizers: ';
         if (queryOptions.gran_type == 'pakistan'){
             tabelTitle += 'Pakistan'
         }else if (regionList.length == 1){
