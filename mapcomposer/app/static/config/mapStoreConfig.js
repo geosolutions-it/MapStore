@@ -96,6 +96,7 @@
             "activeItem": 0,
             "header": true,
             "hideMode": "offsets",
+			"floatable": false,
             "items": [
 				{
 					"xtype": "container",
@@ -116,7 +117,8 @@
         },
         {
               "xtype": "panel",
-              "title": "Pannello Ricerche",        
+              "title": "Pannello Ricerche",  
+			  "floatable": false,			  
               "border": false,
               "id": "east",
               "width": 400,
@@ -521,5 +523,19 @@
 	}, {
 		"ptype": "gxp_languageselector",
 		"actionTarget": {"target": "panelbbar", "index": 3}
-	}]
+	}, {
+        "ptype":"gxp_playback",
+        "playbackMode": "range",
+        "labelButtons": false,
+        "timeFormat": "l, F d, Y g:i:s A",
+        "outputTarget": "map",
+        "outputConfig": {
+            "controlConfig":{
+                "step": 1,
+                "units": "Hours",
+                "range": ["2012-09-02T13:55:15.000Z", "2012-09-23T07:02:12.000Z"],
+                "frameRate": 1
+            }
+        }
+    }]
 }

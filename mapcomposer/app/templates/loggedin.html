@@ -102,7 +102,7 @@
 		}*/   
 		
 		var app;        
-        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox; var useCookies; var templateId;
+        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox; var useCookies; var templateId; var _public;
 		
 		// /////////////////////////////////////////////////////
 		// Extra parameters to add layers at startup
@@ -181,6 +181,9 @@
 									break;
 					case "format":
 									urlformat = param[1];
+									break;
+					case "public":
+									_public = param[1];
 									break;
 					default :       
 									//mapIdentifier = -1;
@@ -543,6 +546,10 @@
 		serverConfig.geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');
 
 		var configuration = customConfigName ? customConfigName : "mapStoreConfig";
+		
+		if(_public == "yes"){
+			configuration = "publicConfig";
+		}
 		
 		// use GeoExplorerLoader to load configuration files
 		var loader = new GeoExplorerLoader(serverConfig, configuration, mapStoreDebug, mapIdentifier, 
