@@ -393,7 +393,8 @@
     	},{
         "ptype":"gxp_print",
         "customParams":{
-            "outputFilename":"mapstore-print"
+            "outputFilename":"mapstore-print",
+			"geodetic": true
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
         "printService":"http://mappe.comune.genova.it/geoserver/pdf/",
