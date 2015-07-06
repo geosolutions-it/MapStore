@@ -101,7 +101,7 @@ nrl.chartbuilder.fertilizer = {
         var aggregated = {
             title: 'aggregate',
             rows: []
-        }
+        };
         // this object maps time value on row index for aggregated data
         var timeToRowIndex = {};
 
@@ -246,7 +246,7 @@ nrl.chartbuilder.fertilizer = {
             }else{
                 aoi = chartData[chartIndex].title;
             }
-            info += '<span style="font-size:10px;">Region: '+ aoi + '</span><br />'
+            info += '<span style="font-size:10px;">Region: '+ aoi + '</span><br />';
 
             var fromYear = Math.floor(queryParams.from_time_hash/12);
             var fromMonth = nrl.chartbuilder.util.numberToMonthName(queryParams.from_time_hash%12 + 1);
@@ -352,11 +352,6 @@ nrl.chartbuilder.fertilizer = {
                         gridLineWidth: 1,
                         labels: {
                             formatter: xLabelFormatter
-//                            formatter: function(){
-
-//                                var time = parseInt(this.value);
-//                                return (time <= 12 ? nrl.chartbuilder.util.numberToMonthName(time, false) : time);
-//                            }
                         }
                     }],
                     yAxis: chartConfig.yAxis,
@@ -395,4 +390,4 @@ nrl.chartbuilder.fertilizer = {
         }
         return charts;
     }
-}
+};

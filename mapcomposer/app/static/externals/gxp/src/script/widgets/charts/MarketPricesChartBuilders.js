@@ -112,9 +112,9 @@ nrl.chartbuilder.marketprices.commodity = {
 
         // creates a new data entry for the aggregate velues
         var aggregated = {
-                title: 'aggregate',
-                rows: []
-            }
+            title: 'aggregate',
+            rows: []
+        };
             // this object maps time value on row index for aggregated data
         var timeToRowIndex = {};
 
@@ -151,10 +151,16 @@ nrl.chartbuilder.marketprices.commodity = {
         for (var i = 0; i < aggregated.rows.length; i++) {
             var row = aggregated.rows[i];
             for (var crop in row) {
-                if (crop != 'time')
-                    row[crop] = row[crop].reduce(function(preAVG, x, preAVGItems) {
-                        return (preAVG * preAVGItems + x) / (preAVGItems + 1);
-                    }, 0);
+                if (crop != 'time'){
+                    var avg = 0;
+                    for(var j=0; j<row[crop].length; j++){
+                        avg += row[crop][j];
+                    }
+                    row[crop] = avg/row[crop].length;
+                    //row[crop] = row[crop].reduce(function(preAVG, x, preAVGItems) {
+                    //    return (preAVG * preAVGItems + x) / (preAVGItems + 1);
+                    //}, 0);
+                }
             }
         }
         data.push(aggregated);
@@ -182,7 +188,7 @@ nrl.chartbuilder.marketprices.commodity = {
         }
         ret.yAxis = [{ // AREA
             title: {
-                text: customOpt.stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : customOpt.uomLabel
+                text: customOpt.stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : 'Price (' + customOpt.uomLabel + ')'
             },
             labels: {
                 formatter: function() {
@@ -236,7 +242,7 @@ nrl.chartbuilder.marketprices.commodity = {
             } else {
                 aoi = chartData[chartIndex].title;
             }
-            info += '<span style="font-size:10px;">Region: ' + aoi + '</span><br />'
+            info += '<span style="font-size:10px;">Region: ' + aoi + '</span><br />';
 
             var fromData = nrl.chartbuilder.util.getDekDate(queryParams.start_abs_dec_year);
             var toData = nrl.chartbuilder.util.getDekDate(queryParams.end_abs_dec_year);
@@ -246,9 +252,9 @@ nrl.chartbuilder.marketprices.commodity = {
                         var fromYear = fromData.year;
                         var toYear = toData.year;
                         if (toYear - fromYear == 0) {
-                            info += '<span style="font-size:10px;">Year: ' + fromYear + '</span><br />';
+                            //info += '<span style="font-size:10px;">Year: ' + fromYear + '</span><br />';
                         } else {
-                            info += '<span style="font-size:10px;">Years: ' + fromYear + ' - ' + toYear + '</span><br />';
+                            //info += '<span style="font-size:10px;">Years: ' + fromYear + ' - ' + toYear + '</span><br />';
                         }
                     }
                     break;
@@ -257,9 +263,16 @@ nrl.chartbuilder.marketprices.commodity = {
                         var from = nrl.chartbuilder.util.numberToMonthName(fromData.month) + '(' + fromData.year + ')';
                         var to = nrl.chartbuilder.util.numberToMonthName(toData.month) + '(' + toData.year + ')';
 
-                        info += '<span style="font-size:10px;">Time Range: ' + from + ' - ' + to + '</span><br />'
+                        info += '<span style="font-size:10px;">Time Range: ' + from + ' - ' + to + '</span><br />';
                     }
                     break;
+            }
+            if (queryParams.currency == 'market_price_usd'){
+                if (queryParams.exrate == 1){
+                    info += '<span style="font-size:10px;">Exchange rate: variable (ingestion date)</span><br />';
+                }else{
+                    info += '<span style="font-size:10px;">Exchange rate: fixed ('+ queryParams.exrate + ' Pakistan Rupee/'+ queryParams.denominatorLbl +')</span><br />';
+                }
             }
 
             return info;
@@ -373,7 +386,7 @@ nrl.chartbuilder.marketprices.commodity = {
                         formatter: function() {
                             var xVal = getXAxisLabel(this.x);
                             var s = '<b>' + xVal + '</b>';
-
+                            s = s.replace('<br>', ' ');
                             Ext.each(this.points, function(i, point) {
                                 s += '<br/><span style="color:' + i.series.color + '">' + i.series.name + ': </span>' +
                                     '<span style="font-size:12px;">' + i.y.toFixed(2) + '</span>';
@@ -464,7 +477,7 @@ nrl.chartbuilder.marketprices.region = {
         }
         ret.yAxis = [{ // AREA
             title: {
-                text: customOpt.stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : customOpt.uomLabel
+                text: customOpt.stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : 'Price (' + customOpt.uomLabel + ')'
             },
             labels: {
                 formatter: function() {
@@ -516,8 +529,8 @@ nrl.chartbuilder.marketprices.region = {
             } else {
                 crops = chartData[chartIndex].title;
             }
-            info += '<span style="font-size:10px;">Commodity: ' + crops + '</span><br />'
-
+            //info += '<span style="font-size:10px;">Commodity: ' + crops + '</span><br />';
+/*
             var fromData = nrl.chartbuilder.util.getDekDate(queryParams.start_abs_dec_year);
             var toData = nrl.chartbuilder.util.getDekDate(queryParams.end_abs_dec_year);
             switch (queryParams.time_opt) {
@@ -537,9 +550,17 @@ nrl.chartbuilder.marketprices.region = {
                         var from = nrl.chartbuilder.util.numberToMonthName(fromData.month) + '(' + fromData.year + ')';
                         var to = nrl.chartbuilder.util.numberToMonthName(toData.month) + '(' + toData.year + ')';
 
-                        info += '<span style="font-size:10px;">Time Range: ' + from + ' - ' + to + '</span><br />'
+                        info += '<span style="font-size:10px;">Time Range: ' + from + ' - ' + to + '</span><br />';
                     }
                     break;
+            }
+*/
+            if (queryParams.currency == 'market_price_usd'){
+                if (queryParams.exrate == 1){
+                    info += '<span style="font-size:10px;">Exchange rate: variable (ingestion date)</span><br />';
+                }else{
+                    info += '<span style="font-size:10px;">Exchange rate: fixed ('+ queryParams.exrate + ' Pakistan Rupee/'+ queryParams.denominatorLbl +')</span><br />';
+                }
             }
 
             return info;
@@ -653,6 +674,7 @@ nrl.chartbuilder.marketprices.region = {
                         formatter: function() {
                             var xVal = getXAxisLabel(this.x);
                             var s = '<b>' + xVal + '</b>';
+                            s = s.replace('<br>', ' ');
 
                             Ext.each(this.points, function(i, point) {
                                 s += '<br/><span style="color:' + i.series.color + '">' + i.series.name + ': </span>' +
@@ -670,10 +692,10 @@ nrl.chartbuilder.marketprices.region = {
                         verticalAlign: 'middle',
                         borderWidth: 0,
                         labelFormatter: function() {
-                            if (this.name == 'Area (000 hectares)') {
-                                return 'Area (000 ha)';
-                            } else {
-                                return this.name;
+                            if (this.options.granType == 'district'){
+                                return this.options.district + ' (' + this.options.province + ')';
+                            }else{
+                                return this.options.name;
                             }
                         }
                     }
