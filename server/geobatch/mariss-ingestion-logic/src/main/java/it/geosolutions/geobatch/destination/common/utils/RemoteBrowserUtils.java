@@ -238,6 +238,7 @@ public class RemoteBrowserUtils {
             String serverPWD, String serverHost, int serverPort, String remotePath,
             String localPath, int timeout) throws IOException {
         if (RemoteBrowserProtocol.local.equals(serverProtocol)) {
+        	
             return copyfile(remotePath, localPath);
         } else {
             initFsManager(timeout);

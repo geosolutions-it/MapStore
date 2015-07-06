@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -70,9 +69,11 @@ public class SARGeoTIFFActionTest {
 		}
 
 	}
+	
+	
 
 	/**
-	 * Test some execution steps
+	 * Test some execution single steps
 	 * @throws Exception 
 	 */
 	@Test
@@ -104,6 +105,9 @@ public class SARGeoTIFFActionTest {
 		q.add(event);
 		action.execute(q);
 		*/
+		Queue<EventObject> q = new PriorityQueue<EventObject>();
+		q.add(event);
+		action.execute(q);
 		try {
 			dir = action.unzipFile(f);
 			assertTrue("Could not create the directory",dir.exists());
@@ -119,6 +123,8 @@ public class SARGeoTIFFActionTest {
 			assertTrue(ds != null);
 			assertTrue (ds instanceof JDBCDataStore);
 			ab.dataStore = (JDBCDataStore) ds;
+			String requestBody = action.createImporterRequestBody(tif);
+			System.out.println(requestBody);
 			//action.publishShipDetections(ab, result);
 		} catch (ActionException e) {
 			throw e;
@@ -180,7 +186,7 @@ public class SARGeoTIFFActionTest {
 	private FeatureConfiguration setupDummyDataStore() {
 		FeatureConfiguration fc = new FeatureConfiguration();
 		Map<String,Serializable> parameters=new HashMap<String,Serializable>();
-		parameters.put("dbtype", "h2");
+		parameters.put("dbtype", "postgis");
 		parameters.put("database", "mariss");
 		parameters.put("schema", "public");
 		parameters.put("host", "localhost");

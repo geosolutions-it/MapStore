@@ -23,6 +23,8 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.impl.TimeFormat;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
+import it.geosolutions.geobatch.mariss.actions.csv.CSVIngestAction;
+import it.geosolutions.geobatch.mariss.actions.csv.CSVIngestConfiguration;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ShipDetection;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVAcqListProcessor;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes1To3Processor;

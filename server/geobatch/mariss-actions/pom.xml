@@ -144,10 +144,30 @@
             <scope>test</scope>
             <version>1.1-SNAPSHOT</version>
         </dependency>
+        
+        
+        <dependency>
+            <groupId>it.geosolutions.imageio-ext</groupId>
+            <artifactId>imageio-ext-streams</artifactId>
+            <scope>test</scope>
+            <version>${imageio-ext.version}</version>
+        </dependency>
+        <dependency>
+        	<groupId>it.geosolutions.imageio-ext</groupId>
+  			<artifactId>imageio-ext-tiff</artifactId>
+  			<version>${imageio-ext.version}</version>
+        </dependency>
         <dependency>
             <groupId>it.geosolutions.jaiext.scheduler</groupId>
             <artifactId>jt-scheduler</artifactId>
         </dependency>
+        
+        <dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+        
         <dependency>
 			<groupId>it.geosolutions.imageio-ext</groupId>
 			<artifactId>netcdf-converters</artifactId>

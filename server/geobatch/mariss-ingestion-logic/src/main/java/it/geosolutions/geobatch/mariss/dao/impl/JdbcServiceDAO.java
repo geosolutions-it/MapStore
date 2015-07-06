@@ -171,7 +171,7 @@ public class JdbcServiceDAO implements ServiceDAO {
                 String serviceId = userId + "@" + ss.getServiceId();
 
                 // Retrieve the AOI
-                sql = "SELECT fid, \"desc\", service_name, asewkt(the_geom) as thegeom, start, \"end\", status FROM AOIS WHERE service_name = ?";
+                sql = "SELECT fid, \"desc\", service_name, st_asewkt(the_geom) as thegeom, start, \"end\", status FROM AOIS WHERE service_name = ?";
 
                 ps = conn.prepareStatement(sql);
                 ps.setString(1, serviceId);
