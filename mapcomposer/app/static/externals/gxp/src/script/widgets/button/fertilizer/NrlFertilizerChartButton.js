@@ -111,7 +111,7 @@ gxp.widgets.button.NrlFertilizerChartButton = Ext.extend(Ext.SplitButton, {
                     }
                 }
             ]
-        }
+        };
         return fieldSet;
     },
     createStackChartsOptions: function(stackedCharts){
@@ -318,7 +318,7 @@ gxp.widgets.button.NrlFertilizerChartButton = Ext.extend(Ext.SplitButton, {
                 var customOpt = {
                     stackedCharts: this.stackedCharts,
                     highChartExportUrl: this.target.highChartExportUrl
-                }
+                };
                 var gran_type = this.refOwner.aoiFieldSet.gran_type.getValue().inputValue;
 
                 var data = nrl.chartbuilder.fertilizer.getData(jsonData, gran_type);
@@ -342,7 +342,7 @@ gxp.widgets.button.NrlFertilizerChartButton = Ext.extend(Ext.SplitButton, {
         var ret = {
             height: 500,
             series: {}
-        }
+        };
 
         for(var i = 0; i < selectedNutrients.length; i++){
             var selNut = selectedNutrients[i];
@@ -354,7 +354,7 @@ gxp.widgets.button.NrlFertilizerChartButton = Ext.extend(Ext.SplitButton, {
                 type: 'column',
                 dataIndex: selNut.data.nutrient,
                 unit: '(000 tons)'
-            }
+            };
         }
         Ext.apply(options, ret);
         return ret;

@@ -218,7 +218,7 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                                 ref: '../submitButton',
                                 highChartExportUrl: this.highChartExportUrl,
                                 target:this.target,
-                                form: this,
+                                form: this
                             });
 
                             var store = areaSelector.store;
@@ -386,7 +386,7 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                 },{ // INFO fieldset ---------------------------------------
                     title: 'Note',
                     style: {
-                        marginTop: '12px',
+                        marginTop: '12px'
                     },
                     xtype: 'fieldset',
                     ref: 'infofieldset',
@@ -581,7 +581,7 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                 var id  = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
                 Ext.QuickTips.register({ target:  id.elements[id.elements.length-1].id, text: t});
             }
-        }
+        };
         return o;
     }
 });

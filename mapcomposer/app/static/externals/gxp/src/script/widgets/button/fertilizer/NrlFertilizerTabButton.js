@@ -292,7 +292,7 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
                     //width: 100,
                     renderer: Ext.util.Format.numberRenderer('0.00')
                 }
-            ]
+            ];
         }else{
             gridCols = [
                 {
@@ -335,7 +335,7 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
                     //width: 100,
                     renderer: Ext.util.Format.numberRenderer('0.00')
                 }
-            ]
+            ];
         }
         var grid = new Ext.grid.GridPanel({
             bbar:["->",
@@ -368,7 +368,7 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
 
         var tabelTitle = 'Fertilizers: ';
         if (queryOptions.gran_type == 'pakistan'){
-            tabelTitle += 'Pakistan'
+            tabelTitle += 'Pakistan';
         }else if (regionList.length == 1){
             tabelTitle += regionList[0];
         }else{
