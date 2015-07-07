@@ -518,6 +518,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             autoScroll: true,
             title: this.title,
             bbar: bbar,
+			dateFormat: this.dateFormat,
             listeners: {
                 "added": function(cmp, ownerCt) {
                     var onClear = OpenLayers.Function.bind(function() {

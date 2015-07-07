@@ -4,7 +4,7 @@
    		"comunege": {
 			"ptype": "gxp_wmssource",
 			"title": "Comune Genova",
-			"url": "http://mappe.comune.genova.it/geoserver/ows",
+			"url": "http://mappe.comune.genova.it/geoserver/ows"
 			"SRS": "EPSG:900913",
 			"version":"1.1.1",
 			"layerBaseParams":{
@@ -213,7 +213,8 @@
             "outputTarget": "featuregrid",
 			"exportFormats": ["CSV","shape-zip","excel", "excel2007"],
 			"exportAction": "window",
-			"showNumberOfRecords": true
+			"showNumberOfRecords": true,
+			"dateFormat": "d-m-Y"
         }, {
 			"ptype": "gxp_categoryinitializer",
             "silentErrors": true
@@ -405,7 +406,7 @@
         },
         "addLandscapeControl": true,
         "appendLegendOptions": true,
-        "addGraticuleControl": true
+        "addGraticuleControl": false
     },{
     	"ptype": "gxp_spatial_selector_locator",
         "outputTarget": "west",
@@ -521,9 +522,6 @@
 		"ptype": "gxp_privacy",
 		"privacyURL": "http://www.comune.genova.it/content/note-legali-e-privacy",
 		"actionTarget": {"target": "panelbbar", "index": 5}
-	}, {
-		"ptype": "gxp_languageselector",
-		"actionTarget": {"target": "panelbbar", "index": 3}
 	}, {
         "ptype":"gxp_playback",
         "playbackMode": "range",
