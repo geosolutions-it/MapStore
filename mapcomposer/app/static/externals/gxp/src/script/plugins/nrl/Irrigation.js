@@ -402,8 +402,10 @@ gxp.plugins.nrl.Irrigation = Ext.extend(gxp.plugins.Tool, {
                         }
                         this.refOwner.updateSubmitBtnState();
                         var outputtype = this.refOwner.outputType.getValue().inputValue;
-                        if (outputtype != 'data')
+                        if (outputtype != 'data'){
                             this.refOwner.submitButton.initChartOpt(this.refOwner);
+                        }
+                        this.refOwner.doLayout();
                     }
                 }
             }, { // AOI selector ----------------------------------------
