@@ -157,8 +157,16 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                     }
                 }
                 this.output.fertilizers.metadata[fertLbl] = fertMetadata;
-
             }
+            var max = -1, min = 999999;
+            for(var f in this.output.fertilizers.metadata){
+                var oldestY = this.output.fertilizers.metadata[f].dataProvincialYears.oldest;
+                var newestY = this.output.fertilizers.metadata[f].dataProvincialYears.newest;
+                max = Math.max(max, newestY);
+                min = Math.min(min, oldestY);
+            }
+            this.output.yearRangeSelector.setMaxValue(max);
+            this.output.yearRangeSelector.setMinValue(min);
         };
 
         this.comboConfigs.base.url = this.dataUrl;
