@@ -342,7 +342,7 @@ GeoExt.Lang.add("de", {
         "cookieText": "Cookies erleichtern die Bereitstellung unserer Dienste. Mit der Nutzung unserer Dienste erklären Sie sich damit einverstanden, dass wir Cookies verwenden.",
         "dismissText": "OK",
         "linkText":"Weitere Informationen",
-        "linkHref":"http://google.com"
+        "linkHref":"cookies-policy-en.html"
 
   }
 });

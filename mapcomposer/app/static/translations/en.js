@@ -1019,9 +1019,9 @@ GeoExt.Lang.add("en", {
     }, 
     "cookieChoices": {
         "cookieText": "Cookies help us deliver our services. By using our services, you agree to our use of cookies.",
-        "dismissText": "Got it",
+        "dismissText": "I Agree",
         "linkText":"Learn more",
-        "linkHref":"http://google.com"
+        "linkHref":"cookies-policy-en.html"
 
   }
 });

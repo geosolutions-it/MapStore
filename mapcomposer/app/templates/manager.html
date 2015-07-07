@@ -147,7 +147,7 @@
             /*Consent cookie text and link from transaltion files, google cookieChoices.js lib must be added to page's body*/
             if(serverConfig.cookieConsent && cookieChoices.cookieText){
             cookieChoices.showCookieConsentBar(cookieChoices.cookieText,
-            cookieChoices.dismissText, (serverConfig.cookieConsent.link)?cookieChoices.linkText:null, cookieChoices.linkHref);
+            cookieChoices.dismissText, cookieChoices.linkText, cookieChoices.linkHref);
             }
         };
         

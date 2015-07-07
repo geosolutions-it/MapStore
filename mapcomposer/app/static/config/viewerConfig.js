@@ -23,7 +23,7 @@
         "center": [1250000.000000, 5370000.000000],
         "zoom": 5
     },
-   	"cookieConsent":{"link":false},
+   	"cookieConsent":true,
 
 	"loadingPanel": {
 		"width": 100,

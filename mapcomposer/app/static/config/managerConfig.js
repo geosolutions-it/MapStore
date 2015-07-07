@@ -36,7 +36,7 @@
          "Español"
       ]
    ],
-   "cookieConsent":{"link":true},
+   "cookieConsent":true,
    "tools":[{
         "ptype": "mxp_mapmanager",
         "loginManager": "loginTool",
