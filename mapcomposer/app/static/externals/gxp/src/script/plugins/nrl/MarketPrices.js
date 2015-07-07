@@ -142,6 +142,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
 
                 this.output.crops.metadata[dataItem.crop] = cropMetadata;
             }
+            this.output.setUpMaxAndMin();
         };
 
         this.comboConfigs.base.url = this.dataUrl;
@@ -263,8 +264,8 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                                 break;
                         }
                         var selectedCrops = this.ownerCt.crops.getSelections();
-                        if (selectedCrops.length != 0)
-                            this.ownerCt.setUpMaxAndMin(selectedCrops);
+                        //if (selectedCrops.length != 0)
+                        //    this.ownerCt.setUpMaxAndMin(selectedCrops);
                         this.ownerCt.doLayout();
                     }
                 },
@@ -402,8 +403,8 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 listeners: {
                     scope: this,
                     selectionchange: function(records) {
-                        if (records.length != 0)
-                            this.output.setUpMaxAndMin(records);
+                        //if (records.length != 0)
+                        //    this.output.setUpMaxAndMin(records);
                         this.output.updateSubmitBtnState();
 
                         var outputtype = this.output.outputType.getValue().inputValue;
@@ -687,12 +688,11 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 var startRange = (Number.MAX_SAFE_INTEGER ? Number.MAX_SAFE_INTEGER : Math.pow(2,53)-1);
                 var endRange = (Number.MIN_SAFE_INTEGER ? Number.MIN_SAFE_INTEGER : -(Math.pow(2, 53) - 1));
 
-                for (var rIndex = 0; rIndex < records.length; rIndex++) {
-                    var recData = records[rIndex].data;
-                    startRange = recData.min_dec_abs < startRange ? recData.min_dec_abs : startRange;
-                    endRange = recData.max_dec_abs > endRange ? recData.max_dec_abs : endRange;
+                for(var crop in this.crops.metadata){
+                    var data = this.crops.metadata[crop];
+                    startRange = data.min_dec_abs < startRange ? data.min_dec_abs : startRange;
+                    endRange = data.max_dec_abs > endRange ? data.max_dec_abs : endRange;
                 }
-
                 // gets min and max year from absolute decade
                 var minYear = nrl.chartbuilder.util.getDekDate(startRange).year;
                 var maxYear = nrl.chartbuilder.util.getDekDate(endRange).year;
@@ -710,38 +710,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 else
                     this.yearSelector.setValue(refYear);
 
-                // sets the range for monthRangeSelector
-                var currentRefYear = parseInt(this.yearSelector.getValue());
-                // the max and min absolute decades that can be selected by monthRangeSelector
-                // for the reference year choosen
-                var minDesiredAbsDec = (currentRefYear    ) * 36 +  1; // jan-dek1 of the current year
-                var maxDesiredAbsDec = (currentRefYear + 1) * 36 + 36; // dec-dek3 of the next    year
-
-                // sets the largest month range which contains data for the crops selected.
-                var minToSet, maxToSet;
-                if (startRange > minDesiredAbsDec)
-                    minToSet = nrl.chartbuilder.util.getDekDate(startRange);
-                else
-                    minToSet = nrl.chartbuilder.util.getDekDate(minDesiredAbsDec);
-
-                if (endRange < maxDesiredAbsDec)
-                    maxToSet = nrl.chartbuilder.util.getDekDate(endRange);
-                else
-                    maxToSet = nrl.chartbuilder.util.getDekDate(maxDesiredAbsDec);
-
-                var minMonth, maxMonth;
-                if (minToSet.year > currentRefYear)
-                    minMonth = minToSet.month-1 + 12;
-                else
-                    minMonth = minToSet.month-1;
-
-                if (maxToSet.year > currentRefYear)
-                    maxMonth = maxToSet.month-1 + 12;
-                else
-                    maxMonth = maxToSet.month-1;
-
-                this.monthRangeSelector.setValue(1, maxMonth);
-                this.monthRangeSelector.setValue(0, minMonth);
+                this.monthRangeSelector.setValue(1, 11);
             },
             updateSubmitBtnState: function(){
                 var gran_type = this.aoiFieldSet.gran_type.getValue().inputValue;
