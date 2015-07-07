@@ -199,7 +199,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                             ref: '../submitButton',
                             highChartExportUrl: this.highChartExportUrl,
                             target: this.target,
-                            form: this,
+                            form: this
                         });
 
                         var store = areaSelector.store;
@@ -228,7 +228,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 style: {
                     marginTop: '6px'
                 },
-                fieldLabel: 'Time Range',
+                fieldLabel: 'Data Aggregation',
                 xtype: 'radiogroup',
                 anchor: '100%',
                 autoHeight: true,
@@ -243,7 +243,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                     inputValue: 'annual',
                     checked: true
                 }, {
-                    boxLabel: '10-Days Period',
+                    boxLabel: '10-day',
                     name: 'timerange',
                     inputValue: 'monthly'
                 }],
@@ -265,6 +265,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                         var selectedCrops = this.ownerCt.crops.getSelections();
                         if (selectedCrops.length != 0)
                             this.ownerCt.setUpMaxAndMin(selectedCrops);
+                        this.ownerCt.doLayout();
                     }
                 },
                 // shows controllers for select a years range.
@@ -286,6 +287,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                     this.setAnnualMode();
                 }
             }, { // YEAR compobox ---------------------------------------
+                fieldLabel: 'Data series',
                 name: 'year',
                 disabled: false,
                 xtype: 'singleyearcombobox',
@@ -293,12 +295,14 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 ref: 'yearSelector',
                 disabled: false
             }, { // MONTH range selector --------------------------------
+                fieldLabel: 'Time span',
                 ref: 'monthRangeSelector',
                 xtype: 'monthyearrangeselector',
                 anchor: '100%',
                 noCrossYear: false,
                 disabled: false
             }, { // YEAR range selector ---------------------------------
+                fieldLabel: 'Data series',
                 ref: 'yearRangeSelector',
                 xtype: 'yearrangeselector',
                 anchor: '100%',
@@ -425,7 +429,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 }
             }, { // PRICE OPTIONS fieldset ------------------------------
                 style: {
-                    marginTop: '12px',
+                    marginTop: '12px'
                 },
                 xtype: 'fieldset',
                 title: 'Price Options',
@@ -472,12 +476,12 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                     ref: '../exchangeRateRadio',
                     hidden: true,
                     items: [{
-                        boxLabel: 'Custom',
+                        boxLabel: 'Fixed',
                         name: 'exchangerateradio',
                         inputValue: 'custom',
                         checked: true
                     },{
-                        boxLabel: 'Ingestion Date',
+                        boxLabel: 'Variable (ingestion date)',
                         name: 'exchangerateradio',
                         inputValue: 'ingestion',
                         checked: false
@@ -648,7 +652,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                         var currCombo = fieldset.getComponent(0);
                         var denoCombo = fieldset.getComponent(4);
                         var lbl = fieldset.getComponent(5);
-                        lbl.setText(currCombo.getRawValue() + '/' + denoCombo.getRawValue())
+                        lbl.setText(currCombo.getRawValue() + '/' + denoCombo.getRawValue());
                     }
                 }
             }],
@@ -680,8 +684,9 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
             //  - yearSelector
             setUpMaxAndMin: function(records) {
 
-                var startRange = Number.MAX_SAFE_INTEGER;
-                var endRange = Number.MIN_SAFE_INTEGER;
+                var startRange = (Number.MAX_SAFE_INTEGER ? Number.MAX_SAFE_INTEGER : Math.pow(2,53)-1);
+                var endRange = (Number.MIN_SAFE_INTEGER ? Number.MIN_SAFE_INTEGER : -(Math.pow(2, 53) - 1));
+
                 for (var rIndex = 0; rIndex < records.length; rIndex++) {
                     var recData = records[rIndex].data;
                     startRange = recData.min_dec_abs < startRange ? recData.min_dec_abs : startRange;
@@ -709,8 +714,8 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 var currentRefYear = parseInt(this.yearSelector.getValue());
                 // the max and min absolute decades that can be selected by monthRangeSelector
                 // for the reference year choosen
-                var minDesiredAbsDec = (currentRefYear-1) * 36 +  1; // jan-dek1 of the previous year
-                var maxDesiredAbsDec =  currentRefYear    * 36 + 36; // dec-dek3 of the current  year
+                var minDesiredAbsDec = (currentRefYear    ) * 36 +  1; // jan-dek1 of the current year
+                var maxDesiredAbsDec = (currentRefYear + 1) * 36 + 36; // dec-dek3 of the next    year
 
                 // sets the largest month range which contains data for the crops selected.
                 var minToSet, maxToSet;
@@ -725,18 +730,18 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                     maxToSet = nrl.chartbuilder.util.getDekDate(maxDesiredAbsDec);
 
                 var minMonth, maxMonth;
-                if (minToSet.year < currentRefYear)
-                    minMonth = minToSet.month-1;
-                else
+                if (minToSet.year > currentRefYear)
                     minMonth = minToSet.month-1 + 12;
-
-                if (maxToSet.year < currentRefYear)
-                    maxMonth = maxToSet.month-1;
                 else
+                    minMonth = minToSet.month-1;
+
+                if (maxToSet.year > currentRefYear)
                     maxMonth = maxToSet.month-1 + 12;
-                
-                this.monthRangeSelector.setValue(0, minMonth);
+                else
+                    maxMonth = maxToSet.month-1;
+
                 this.monthRangeSelector.setValue(1, maxMonth);
+                this.monthRangeSelector.setValue(0, minMonth);
             },
             updateSubmitBtnState: function(){
                 var gran_type = this.aoiFieldSet.gran_type.getValue().inputValue;
@@ -812,7 +817,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                     text: t
                 });
             }
-        }
+        };
         return o;
     }
 });
