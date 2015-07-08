@@ -1016,5 +1016,12 @@ GeoExt.Lang.add("en", {
 		showExecutionIdText: "Show Execution ID",	
 		processIdentifierText: "Identifier",	
 		downloadIdTitle: "Download ID"
-    }
+    }, 
+    "cookieChoices": {
+        "cookieText": "Cookies help us deliver our services. By using our services, you agree to our use of cookies.",
+        "dismissText": "I Agree",
+        "linkText":"Learn more",
+        "linkHref":"cookies-policy-en.html"
+
+  }
 });

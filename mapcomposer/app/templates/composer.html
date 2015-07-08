@@ -552,6 +552,11 @@
 					resources
 				);
 			};
+	    	/*Consent cookie text and link from transaltion files, google cookieChoices.js lib must be added to page's body*/
+            if(serverConfig.cookieConsent && cookieChoices.cookieText && !parent.manager){
+            cookieChoices.showCookieConsentBar(cookieChoices.cookieText,
+            cookieChoices.dismissText, cookieChoices.linkText, cookieChoices.linkHref);
+            };
 	    };
 
 	    // geostore base

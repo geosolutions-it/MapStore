@@ -7,6 +7,7 @@
 */
 
 GeoExt.Lang.add("it", {
+
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Livello di Zoom: {zoom}</div><div>Scala: 1:{scale}</div>",
         loadConfigErrorText: "Impossibile leggere la configurazione salvata : <br />",
@@ -1030,5 +1031,13 @@ GeoExt.Lang.add("it", {
 		showExecutionIdText: "Mostra ID",
 		processIdentifierText: "Identificatore",
 		downloadIdTitle: "ID Download"
-    }
+    },
+    "cookieChoices": {
+        "cookieText": "I cookie ci aiutano ad erogare servizi di qualità. Utilizzando i nostri servizi, l'utente accetta le nostre modalità d'uso dei cookie.",
+        "dismissText": "Accetto",
+        "linkText":"Dettagli",
+        "linkHref":"cookies-policy-it.html"
+
+  }
+
 });

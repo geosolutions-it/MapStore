@@ -336,5 +336,12 @@ GeoExt.Lang.add("it", {
         successText: "Successo",
         errorText:"Errore",
         runSuccessText: "Il flusso è stato avviato correttamente<br/>"
-    }
+    }, 
+        "cookieChoices": {
+        "cookieText": "I cookie ci aiutano ad erogare servizi di qualità. Utilizzando i nostri servizi, l'utente accetta le nostre modalità d'uso dei cookie.",
+        "dismissText": "Accetto",
+        "linkText":"Dettagli",
+        "linkHref":"cookies-policy-it.html"
+
+  }
 });

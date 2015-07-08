@@ -336,5 +336,12 @@ GeoExt.Lang.add("fr", {
         successText: "Succès",
         errorText:"Error",
         runSuccessText: "Le flux de travail a été lancé avec succès<br/>"
-    }
+    },
+      
+    "cookieChoices": {
+        "cookieText": "Les cookies nous permettent de vous proposer nos services plus facilement. En utilisant nos services, vous nous donnez expressément votre accord pour exploiter ces cookies.",
+        "dismissText": "OK",
+        "linkText":"En Savoir plus",
+        "linkHref":"cookies-policy-en.html"
+  }  
 });

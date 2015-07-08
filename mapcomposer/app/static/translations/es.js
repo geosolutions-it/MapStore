@@ -858,5 +858,12 @@ GeoExt.Lang.add("es", {
 	
 	"gxp.plugins.StaticPage.prototype": {
         tabTitle: "Página estática"
-    }  
+    }, 
+    "cookieChoices": {
+        "cookieText": "Las cookies nos ayudan a ofrecer nuestros servicios. Al utilizarlos, usted acepta el uso de cookies.",
+        "dismissText": "Entendido",
+        "linkText":"Más información",
+        "linkHref":"cookies-policy-en.html"
+
+  }  
 });
