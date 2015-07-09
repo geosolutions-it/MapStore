@@ -40,7 +40,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     macroTargetLabel: "Categoria",
     targetSetLabel: "Tipo bersaglio",
     adrLabel: "Classe ADR",
+    sostanzeSingoleLabel: "Sostanza Singola",
     sostanzeLabel: "Sostanza",
+    sostanzeSingoleWarningLabel: "Alert:la selezione della sostanza è finalizzata alla ricerca della classe di pericolo corrispondente utile al calcolo.",
     accidentLabel: "Incidente",
     accidentSetLabel: "Tipo Incidente",
     seriousnessLabel: "Entità",
@@ -401,6 +403,23 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             str.insert(0, new str.recordType({name: this.allClassOption, value:'0'}, 1000));
         }, this);
         this.classiADRStore.load();
+
+        this.sostanzeSingoleStore = new GeoExt.data.FeatureStore({
+            id: "singoleStore",
+            fields: [{
+                        "name": "name",              
+                        "mapping": "descrizione_onu_" + GeoExt.Lang.locale
+              },{
+                        "name": "value",        
+                        "mapping": "codice_kemler"
+              }],
+             proxy: this.getWFSStoreProxy("sostanze_singole")
+        });
+
+        this.sostanzeSingoleStore.on('load', function(str, records) {
+            str.insert(0, new str.recordType({name: this.allSostOption, value:'0'}, 1000));
+        }, this);
+        this.sostanzeSingoleStore.load();
        
         //
         // Sostanze
@@ -414,20 +433,37 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 "name": "value",        
                 "mapping": "id_sostanza"
             },{
+                "name": "originalid",        
+                "mapping": "id_sostanza"
+            },{
                 "name": "class",        
                 "mapping": "fk_classe_adr"
+            },{
+                "name": "kemler",        
+                "mapping": "numero_kemler"
+            }, {
+                "name": "modello",
+                "mapping": "fk_modello"
             }],
-            proxy: this.getWFSStoreProxy("siig_t_sostanza")
+            proxy: this.getWFSStoreProxy("siig_t_sostanza", undefined, "id_sostanza")
         });
                     
         this.sostanzeStore.on('load', function(str, records) {
-            var allIDsArray= new Array(); 
+            var allIDsArray= []; 
             Ext.each(records,function(record){
                 var id = parseInt(record.get("value"), 10);
-                allIDsArray.push(id);
-                record.set( "id", [id]);
+                var modello = record.get("modello");
+                var isModello = modello === id;
+                if(isModello) {
+                    allIDsArray.push(id);   
+                    record.set( "id", [id]); 
+                } else {
+                    record.set( "value", modello); 
+                    record.set( "id", [modello]); 
+                }
+                
             },this);
-            str.insert(0, new str.recordType({name: this.allSostOption, value:'0', id: allIDsArray}, 1000));
+            str.insert(0, new str.recordType({name: this.allClassOption, value:'0', id: allIDsArray}, 1000));
         }, this);
         this.sostanzeStore.load();
         
@@ -893,6 +929,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             selectOnFocus:true,
             editable: false,
             resizable: true,
+            hidden: true,
             value: this.allClassOption,
             lazyInit: false,
             listeners: {
@@ -920,8 +957,58 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 },
                 scope: this
             }              
-        });            
+        });      
+
+        this.sostanzeSingole = new Ext.form.ComboBox({
+            fieldLabel: this.sostanzeSingoleLabel,
+            id: "sostanzesingolecb",
+            width: 150,
+            hideLabel : false,
+            store: this.sostanzeSingoleStore,    
+            displayField: 'name',    
+            mode: 'local',
+            forceSelection: true,
+            triggerAction: 'all',
+            selectOnFocus:true,
+            editable: true,
+            typeAhead: true,
+            resizable: true,
+            value: this.allSostOption,
+            lazyInit: false,
+            listeners: {
+                "expand": function(combo) {
+                    //this.loadUserElab = false;
+                    var store=combo.getStore();
+                    delete store.baseParams.filter;
+                    combo.getStore().reload();
+                    combo.list.setWidth( 'auto' );
+                    combo.innerList.setWidth( 'auto' );
+                },                
+                select: function(cb, record, index) {
+                    var kemler = record.get('value');
+                    if(kemler) {
+                        var rec = this.sostanzeStore.getAt(this.sostanzeStore.findExact('kemler', kemler));
+                        if(rec) {
+                            var combo = this.sostanze;
+                            this.selectingSostanzaSingola = true;
+                            combo.setValue(rec.get('name'));
+                            combo.fireEvent('select',combo, rec);
+                        }
+                    }
+                },
+                scope: this
+            }    
+        });
         
+        this.sostanzeSingoleWarning = new Ext.form.Label({
+            text: this.sostanzeSingoleWarningLabel,
+            style: {
+                fontSize: 13,
+                marginBottom: 15,
+                display: 'inline-block'
+            }
+        });
+
         this.sostanze = new Ext.form.ComboBox({
             fieldLabel: this.sostanzeLabel,
             id: "sostanzecb",
@@ -933,10 +1020,11 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             forceSelection: true,
             triggerAction: 'all',
             selectOnFocus:true,
-            editable: false,
+            editable: true,
             resizable: true,    
-            lazyInit: false,            
-            value: this.allSostOption,
+            lazyInit: false,        
+            typeAhead: true,    
+            value: this.allClassOption,
             listeners: {
                 "expand": function(combo) {
                     //this.loadUserElab = false;
@@ -945,7 +1033,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 },
                 
                 select: function(cb, record, index) {
-                    var sost = record.get('value');
+                    var sost = record.get('originalid') || "0";
                     if(sost != "0") {
                         this.sostanzeToAccidentStore.filter('sostanza', sost);
                         var fids = {};
@@ -961,8 +1049,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     } else {
                         this.accidentStore.clearFilter();
                     }
-
-                    this.resetCombos([this.accident]);
+                    if(this.selectingSostanzaSingola) {
+                        this.selectingSostanzaSingola = false;
+                        this.resetCombos([this.accident]);    
+                    } else {
+                        this.resetCombos([this.accident, this.sostanzeSingole]);
+                    }
+                    
                     this.updateBufferFieldSet();
                 },
                 scope: this
@@ -1032,6 +1125,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             },
             items: [
                 this.classi,
+                this.sostanzeSingole,
+                this.sostanzeSingoleWarning,
                 this.sostanze,
                 this.accident,
                 this.seriousness
@@ -1467,6 +1562,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         if(record){
             var hasScenario = record.get('sostanze') || record.get('incidenti') || record.get('gravita');
             this.enableDisable(hasScenario, this.classi);
+            this.enableDisable(hasScenario, this.sostanzeSingole);
             this.enableDisable(hasScenario, this.sostanze);
             this.enableDisable(hasScenario, this.accident);
             this.enableDisable(hasScenario, this.seriousness);
@@ -1487,7 +1583,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
      *    resets the given combos to their initial value ("all values")
      */
     resetCombos: function(combos) {
-        combos = combos || [this.sostanze, this.accident, this.seriousness];
+        combos = combos || [this.sostanzeSingole, this.sostanze, this.accident, this.seriousness];
         Ext.each(combos, function(combo) {
             var record = combo.store.getAt(0);
             combo.setValue(record.get('name'));

@@ -157,6 +157,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     
     formulaPrecision: 4,
+    optimizedRischioFormula: 141,
     
     originalRiskLayers: null,    
     severeness: [["High mortality","Starting lethality","IRREVERSIBLE INJURIES","REVERSIBLE INJURIES","Environmental"], ["ELEVATA LETALITA","INIZIO LETALITA","LESIONI IRREVERSIBILI","LESIONI REVERSIBILI","Ambientale"],     ["MORTALITÉ ÉLEVÉE","DÉBUT DE MORTALITÉ","LÉSIONS IRRÉVERSIBLES","LÉSIONS RÉVERSIBLES","Environmental"], ["Hohe Letalität","Beginn Letalität","Irreversible Verletzungen","Reversiblie Verletzungen","Umweltschäden"]],
@@ -1170,7 +1171,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
               fieldLabel: this.substanceLabel,
               id: "substance",
               width: 200,
-              value: gxp.plugins.StandardProcessing.prototype.allSostOption
+              value: gxp.plugins.StandardProcessing.prototype.allClassOption
         });
         
 
@@ -1365,7 +1366,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                  this.extent,
                  this.temporal,
                  this.trg,
-                 this.adrClass,
+                 //this.adrClass,
                  this.substance,
                  this.accident,
                  this.seriousness,
@@ -1897,8 +1898,10 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             this.processingPane.resetCombos();
             // Classe ADR
             this.processingPane.classi.setValue(this.processingPane.allClassOption);                        
+            // Sostanze Singole
+            this.processingPane.sostanzeSingole.setValue(this.processingPane.allSostOption);                        
             // Sostanza
-            this.processingPane.sostanze.setValue(this.processingPane.allSostOption);
+            this.processingPane.sostanze.setValue(this.processingPane.allClassOption);
             // Incidente
             this.processingPane.accident.setValue(this.processingPane.allScenOption);
             // Entità
@@ -2050,6 +2053,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 					formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
 					target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
 					materials: new OpenLayers.WPSProcess.LiteralData({value:status.sostanza.id.join(',')}),
+                    kemler: new OpenLayers.WPSProcess.LiteralData({value:(status.sostanza.originalid || 0)}),
 					scenarios: new OpenLayers.WPSProcess.LiteralData({value:status.accident.id.join(',')}),
 					entities: new OpenLayers.WPSProcess.LiteralData({value:status.seriousness.id.join(',')}),
 					severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'}),
@@ -2759,6 +2763,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             + ';superficiali:' + (this.status.target.id.indexOf(15) === -1 ? 0 : 1) 
             + ';culturali:' + (this.status.target.id.indexOf(16) === -1 ? 0 : 1)             
             + ';sostanze:' + this.status.sostanza.id.join('\\,')
+            + ';kemler:' + (this.status.sostanza.originalid || this.status.sostanza.id.join('\\,'))
             + ';scenari:' + this.status.accident.id.join('\\,')
             + ';gravita:' + this.status.seriousness.id.join('\\,')
             + ';resolution:' + this.status.resolution;
@@ -2786,9 +2791,19 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			visibility: visible
         }));
     },
-    
+    optimizeFormula: function(status) {
+        if(status.processing === 1 && status.formula === 26) {
+            if(status.accident.value === '0' && 
+                status.seriousness.value === '0' &&
+                status.sostanza.value === '0' &&
+                status.target.id_bersaglio < 0) {
+                return this.optimizedRischioFormula;
+            }
+        }
+        return status.formula;
+    },
     getFormulaEnv: function(status, targetId) {
-        var env = "formula:"+status.formula+";resolution:"+status.resolution+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing+";precision:"+this.formulaPrecision;
+        var env = "formula:"+this.optimizeFormula(status)+";resolution:"+status.resolution+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+';kemler:' + (this.status.sostanza.originalid || this.status.sostanza.id.join('\\,')) +";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing+";precision:"+this.formulaPrecision;
         if(status.processing === 3) {
             var simulation = status.simulation;            
             env += ';pis:'+simulation.pis.join('_') + ';padr:'+simulation.padr.join('_') + ';cff:'+simulation.cff.join('_');
@@ -3214,6 +3229,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
                 formula: new OpenLayers.WPSProcess.LiteralData({value:status.formula}),
                 target: new OpenLayers.WPSProcess.LiteralData({value:targetId}),
                 materials: new OpenLayers.WPSProcess.LiteralData({value:status.sostanza.id.join(',')}),
+                kemler: new OpenLayers.WPSProcess.LiteralData({value:(status.sostanza.originalid || 0)}),
                 scenarios: new OpenLayers.WPSProcess.LiteralData({value:status.accident.id.join(',')}),
                 entities: new OpenLayers.WPSProcess.LiteralData({value:status.seriousness.id.join(',')}),
                 severeness: new OpenLayers.WPSProcess.LiteralData({value:status.formulaInfo.dependsOnTarget ? status.target.severeness : '0'}),
