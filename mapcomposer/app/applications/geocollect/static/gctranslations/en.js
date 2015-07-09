@@ -322,12 +322,19 @@ GeoExt.Lang.add("en", {
         scanThisApplicationText:"Scan this QR code to Install GeoCollect for Android",
         mapPermissionText: "Permissions",
         tooltipMapPermissionText: "Edit mission permissions by group",
-        mapPermissionTitleText: "Mission Permissions"
+        mapPermissionTitleText: "Mission Permissions",
+        googleTooltip:"Download Android Mobile App From Google Play™"
+
     },
      "mxp.widgets.GcExportLayers.prototype":{
         exportFormatsLabel:"Export Formats",
         exportBtnTooltip:"Export Layers",
         invalidParameterValueErrorText:"Export Error!"
+    },
+    "MSMPagingToolbar.prototype":{
+        resizerText: "Missions per page"
+
     }
+
     
 });
