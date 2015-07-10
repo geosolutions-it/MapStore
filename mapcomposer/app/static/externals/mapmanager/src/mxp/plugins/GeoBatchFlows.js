@@ -111,7 +111,7 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
         var login = this.target.login ? this.target.login: 
                 this.loginManager && this.target.currentTools[this.loginManager] 
                 ? this.target.currentTools[this.loginManager] : null;
-        this.auth = this.target.auth;
+        this.auth = this.target.authHeader;
         this.geoStoreRestURL = this.geoStoreRestURL || this.target.config.geoStoreBase || "/geostore/rest/";
         this.outputConfig = this.outputConfig || {};
         // create the selection model

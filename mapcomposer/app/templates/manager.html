@@ -129,7 +129,8 @@
                 langData: langData,
                 initialLanguageString: initialLanguageString,
                 lang: code || defaultLanguage || "en",
-                code: code
+                code: code,
+                authenticationMethod: config.authenticationMethod || 'basic'
             });
             manager = new mxp.widgets.ManagerViewport({
                 layout:'border',
@@ -214,4 +215,3 @@
         <script  type="text/javascript" src="script/cookiechoices.js"></script>
     </body>
 </html>
-   

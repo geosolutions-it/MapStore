@@ -313,7 +313,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 									anchor:'90%',
 									autoload:true,
 									url: this.geoStoreBase + "usergroups/",
-									auth: me.target.auth,
+									auth: me.target.authHeader,
 									defaultSelection:'everyone',
 									hiddenName:'groupId',
 									maxLength:200,
@@ -356,7 +356,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 										   method: 'PUT',
 										   headers:{
 											  'Content-Type' : 'text/xml',
-											  'Authorization' : me.target.auth
+											  'Authorization' : me.target.authHeader
 										   },
 										   params: reqBody,
 										   scope: this,
@@ -423,7 +423,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
            headers:{
               'Content-Type' : contentType,
               'Accept' : 'application/json, text/plain, text/xml',
-              'Authorization' : this.target.auth
+              'Authorization' : this.target.authHeader
            },
            params: blob,
            scope: this,
