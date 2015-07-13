@@ -221,13 +221,16 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 
 		// If no filter has been set, builds the query as to select every record,
 		// otherwise the conditions are applied as filters
-		if (filters.length != 0) {
+		if (filters.length > 1){
 			options.filter = new OpenLayers.Filter.Logical({
 				type : OpenLayers.Filter.Logical.AND,
 				filters : filters
 			});
 			options.emptySearch = false;
-		} else {
+		} else if (filters.length == 1){
+			options.filter=filters.pop();
+			options.emptySearch = false;
+		}else {
 			options.emptySearch = true;
 		}
 		
