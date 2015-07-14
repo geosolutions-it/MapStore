@@ -228,6 +228,10 @@
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/translations">
             <fileset dir="mapcomposer/app/static/externals/mapmanager/translations"/>
         </copy>		
+        <!-- copy CookieNotice resources -->
+        <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/cookiechoices">
+            <fileset dir="mapcomposer/app/static/externals/cookiechoices"/>
+        </copy>
     </target>
 
     <target name="war" depends="dist">
