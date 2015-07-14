@@ -1,5 +1,5 @@
 {
-
+   "cookieConsent":true,
    "scaleOverlayMode": "basic",
    "gsSources":{ 
    	"geosolutions":

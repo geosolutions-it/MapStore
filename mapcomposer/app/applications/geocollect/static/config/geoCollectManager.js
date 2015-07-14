@@ -1,4 +1,5 @@
 {
+   "cookieConsent":true,
    "composerUrl":"",
    "socialUrl":"",
    "start":0,

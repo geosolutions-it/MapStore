@@ -1,16 +1,5 @@
-﻿<!DOCTYPE html>
-<html>
-    <head>
-        <!--meta http-equiv="X-UA-Compatible" content="IE=8" /-->
-        <title>Map Viewer</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="shortcut icon" href="theme/app/img/favicon.ico">
-		
-        <!-- Ext resources -->
-        <link rel="stylesheet" type="text/css" href="externals/ext/resources/css/ext-all.css">
-        <link rel="stylesheet" type="text/css" href="externals/ext/resources/css/xtheme-gray.css">
-        <script type="text/javascript" src="externals/ext/adapter/ext/ext-base.js"></script>
-        <script type="text/javascript" src="externals/ext/ext-all.js"></script>
+﻿<% extends ./base.html %>
+<% subskin extrahead %>
         
 		<!-- OpenLayers resources -->
         <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
@@ -372,6 +361,11 @@
 						resources
 					);
 				};
+            /*Consent cookie text and link from transaltion files, google cookieChoices.js lib must be added to page's body*/
+            if(serverConfig.cookieConsent && cookieChoices.cookieText){
+            cookieChoices.showCookieConsentBar(cookieChoices.cookieText,
+            cookieChoices.dismissText, cookieChoices.linkText, cookieChoices.linkHref);
+            };
             };			
                 
 			Ext.Ajax.request({
@@ -412,9 +406,3 @@
 			});
         
     </script>
-    </head>
-    <body>
-        <% render content %>
-		<div style="visibility:hidden"><canvas id="printcanvas" /></div>
-    </body>
-</html>
