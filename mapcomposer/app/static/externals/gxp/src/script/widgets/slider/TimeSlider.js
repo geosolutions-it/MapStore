@@ -17,7 +17,7 @@ gxp.slider.TimeSlider = Ext.extend(Ext.slider.MultiSlider, {
     ref : 'slider',
     cls : 'gx_timeslider',
     indexMap : null,
-    width : 200,
+    width : 300,
     animate : false,
     timeFormat : "l, F d, Y g:i:s A",
     timeManager : null,

@@ -430,64 +430,66 @@ div.olMap div.gx-overlay-playback {
 
 /** gx_playbacktoolbar**/
 .x-btn .gxp-icon-reset{
-    background-image:url('img/time/control_start_blue.png')
+    background-image:url('img/time/control_start_blue_medium.png')
 }
 .x-btn .gxp-icon-back{
-    background-image:url('img/time/control_start_blue.png')
+    background-image:url('img/time/control_start_blue_medium.png')
 }
 .x-btn .gxp-icon-currenttime{
-    background-image:url('img/time/time.png')
+    background-image:url('img/time/time_medium.png')
+;
+    padding-left: 2px;
 }
 .x-btn .gxp-icon-settings{
-    background-image:url('img/time/control_equalizer_blue.png')
+    background-image:url('img/time/control_equalizer_blue_medium.png')
 }
 .x-btn .gxp-icon-next{
-    background-image:url('img/time/control_end_blue.png')
+    background-image:url('img/time/control_end_blue_medium.png')
 }
 .x-btn .gxp-icon-last{
-    background-image:url('img/time/control_end_blue.png')
+    background-image:url('img/time/control_end_blue_medium.png')
 }
 .x-btn .gxp-icon-play{
-    background-image:url('img/time/control_play_blue.png')
+    background-image:url('img/time/control_play_blue_medium.png')
 }
 .x-btn .gxp-icon-pause{
-    background-image:url('img/time/control_pause_blue.png')
+    background-image:url('img/time/control_pause_blue_medium.png')
 }
 .x-btn .gxp-icon-stop{
-    background-image:url('img/time/control_stop_blue.png')
+    background-image:url('img/time/control_stop_blue_medium.png')
 }
 .x-btn .gxp-icon-loop{
-    background-image:url('img/time/control_repeat_blue.png')
+    background-image:url('img/time/control_repeat_blue_medium.png')
 }
 .x-btn .gxp-icon-ffwd{
-    background-image:url('img/time/control_fastforward_blue.png')
+    background-image:url('img/time/control_fastforward_blue_medium.png')
 }
 .x-btn-over .gxp-icon-reset{
-    background-image:url('img/time/control_start.png')
+    background-image:url('img/time/control_start_medium.png')
 }
 .x-btn-over .gxp-icon-settings{
-    background-image:url('img/time/control_equalizer.png')
+    background-image:url('img/time/control_equalizer_medium.png')
 }
 .x-btn-over .gxp-icon-next{
-    background-image:url('img/time/control_end_blue.png')
+    background-image:url('img/time/control_end_blue_medium.png')
 }
 .x-btn-over .gxp-icon-last{
-    background-image:url('img/time/control_end.png')
+    background-image:url('img/time/control_end_medium.png')
 }
 .x-btn-over .gxp-icon-play{
-    background-image:url('img/time/control_play.png')
+    background-image:url('img/time/control_play_medium.png')
 }
 .x-btn-over .gxp-icon-pause{
-    background-image:url('img/time/control_pause.png')
+    background-image:url('img/time/control_pause_medium.png')
 }
 .x-btn-over .gxp-icon-stop{
-    background-image:url('img/time/control_stop.png')
+    background-image:url('img/time/control_stop_medium.png')
 }
 .x-btn-over .gxp-icon-loop{
-    background-image:url('img/time/control_repeat.png')
+    background-image:url('img/time/control_repeat_medium.png')
 }
 .x-btn-over .gxp-icon-ffwd,.x-item-disabled .gxp-icon-ffwd{
-    background-image:url('img/time/control_fastforward.png')
+    background-image:url('img/time/control_fastforward_medium.png')
 }
 
 .gx_timeslider div.x-slider-thumb{
@@ -501,12 +503,40 @@ div.olMap div.gx-overlay-playback {
     background-image:url('img/time/resultset_previous.png');
 }
 .gx_timeslider div.x-slider-tail-thumb{
-    background-image:url('img/time/stop.png');
+    background-image:url('img/time/stop_medium.png');
     background-position:0;
-    width: 14px;
-    height: 14px;
+    width: 24px;
+    height: 24px;
     top: 4px;
-    left:-14px;
+    left: 0px;
+}
+.gx_timeslider .x-slider-inner {  
+  height: 33px;
+}
+ .gx_timeslider .x-slider-end {
+  padding-right: 15px;
+  zoom: 1;
+  background: transparent no-repeat right -58px;
+}
+.gx_timeslider .x-slider-thumb{
+    background-image:url('img/time/slider-thumb_medium.png');
+    width: 21px;
+    height: 23px;
+    position: absolute;
+    top: 4px;
+   }
+
+.gx_timeslider .x-slider-thumb-drag{background-position:-42px -46px}
+
+.gx_timeslider .x-slider-thumb-over{background-position:-21px -23px}
+
+.gx_timeslider.x-slider.x-slider-horz, .x-slider-horz .x-slider-end, .x-slider-horz .x-slider-inner {
+     background-image:url(img/time/slider-bg_medium.png); 
+}
+.gx_timeslider.x-slider-horz {
+  padding-left: 6px;
+  padding-right: 10px;
+  background: transparent no-repeat 0 -29px;
 }
 
 /* csv_export */
