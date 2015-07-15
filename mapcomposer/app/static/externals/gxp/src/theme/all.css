@@ -512,11 +512,12 @@ div.olMap div.gx-overlay-playback {
 }
 .gx_timeslider .x-slider-inner {  
   height: 33px;
+  top: 2px;
 }
  .gx_timeslider .x-slider-end {
   padding-right: 15px;
   zoom: 1;
-  background: transparent no-repeat right -58px;
+  background: transparent no-repeat right -56px;
 }
 .gx_timeslider .x-slider-thumb{
     background-image:url('img/time/slider-thumb_medium.png');
@@ -536,7 +537,7 @@ div.olMap div.gx-overlay-playback {
 .gx_timeslider.x-slider-horz {
   padding-left: 6px;
   padding-right: 10px;
-  background: transparent no-repeat 0 -29px;
+  background: transparent no-repeat 0 -27px;
 }
 
 /* csv_export */
