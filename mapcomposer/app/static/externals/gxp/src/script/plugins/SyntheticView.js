@@ -2745,7 +2745,31 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         
         this.target.mapPanel.layers.add([record]);
     },
-    
+
+    addRoutingLayer: function(title, formula, start, end, bbox) {
+        if(this.routingLayer) {
+            this.removeLayersByName(this.target.mapPanel.map,[this.routingLayer]);
+        }
+
+        this.routingLayer = "routing";
+        var env = ["forumula:" + formula, start, end].join(";");
+        var record = this.createLayerRecord({
+            name: this.routingLayer,
+            title: title,
+            tiled: false,
+            params: {
+                env: env,
+                defaultenv: env
+            }
+        }, {
+            singleTile: true,
+            bounds: OpenLayers.Bounds.fromString(bbox),
+            visibility: true
+        });
+
+        this.target.mapPanel.layers.add([record]);
+    },
+
     addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, formulaUdm, env, roi, visible) {
         this.currentRiskLayers.push(layer);
         var viewParams = this.getRoiViewParams(status, bounds, true)
