@@ -39,7 +39,7 @@ gxp.widgets.button.NrlIrrigationTabButton = Ext.extend(Ext.Button, {
      * config [windowManagerOptions]
      * Options for the window manager
      */
-    windowManagerOptions:{title:"Irrigation"},
+    windowManagerOptions:{title:"Water Resources"},
     text: 'Generate Table',
     queryOptions: {},
     handler: function () {

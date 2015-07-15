@@ -148,30 +148,7 @@ nrl.chartbuilder.fertilizer = {
             yAxis: [],
             plotOptions: customOpt.stackedCharts
         };
-        /*
-        for (var nutrient in opt.series){
-            ret.series.push(opt.series[nutrient]);
-            var yAxisConfig = {
-                labels: {
-                    formatter: function () {
-                        return this.value;
-                    },
-                    style: {
-                        color: opt.series[nutrient].color
-                    }
-                },
-                title: {
-                    text: opt.series[nutrient].name + ' ' + opt.series[nutrient].unit,
-                    rotation: 270,
-                    style: {
-                        color: opt.series[nutrient].color,
-                        backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
-                    }
-                }
-            };
-            ret.yAxis.push(yAxisConfig);
-        }
-        */
+
         for (var nutrient in opt.series){
             ret.series.push(opt.series[nutrient]);
         }
@@ -194,14 +171,7 @@ nrl.chartbuilder.fertilizer = {
             //area,bar,line,spline are aphabetically ordered as we want
             return a.type < b.type ? -1 : 1;
         });
-/*
-        for(var s=0; s<ret.series.length; s++){
-            if (s>0){
-                ret.series[s].yAxis = s;
-                ret.yAxis[s].opposite = true;
-            }
-        }
-*/
+
         return ret;
     },
 
@@ -215,15 +185,6 @@ nrl.chartbuilder.fertilizer = {
             }
             return nstr;
         };
-        // this function assums that the aggregate data chart are as last
-        // in the chartData array.
-        //  queryParams = {
-        //      timerange,
-        //      from_year,
-        //      from_month,
-        //      to_year,
-        //      to_month
-        //  }
         var getChartInfo = function(chartData, chartIndex, queryParams){
             var info = '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />';
 
@@ -246,7 +207,7 @@ nrl.chartbuilder.fertilizer = {
             }else{
                 aoi = chartData[chartIndex].title;
             }
-            info += '<span style="font-size:10px;">Region: '+ aoi + '</span><br />';
+            //info += '<span style="font-size:10px;">Region: '+ aoi + '</span><br />';
 
             var fromYear = Math.floor(queryParams.from_time_hash/12);
             var fromMonth = nrl.chartbuilder.util.numberToMonthName(queryParams.from_time_hash%12 + 1);
@@ -256,12 +217,12 @@ nrl.chartbuilder.fertilizer = {
 
             switch (queryParams.timerange){
                 case 'annual': {
-                    info += '<span style="font-size:10px;">Years: '+ fromYear + '-' + toYear + '</span><br />';
+                    //info += '<span style="font-size:10px;">Years: '+ fromYear + '-' + toYear + '</span><br />';
                 }break;
                 case 'monthly': {
                     var referenceYear = fromYear;
-                    info += '<span style="font-size:10px;">Year: '+ referenceYear + '</span><br />';
-                    info += '<span style="font-size:10px;">Months: '+ fromMonth + '('+ fromYear + ')' + ' - ' + toMonth + '('+ toYear + ')' + '</span><br />';
+                    //info += '<span style="font-size:10px;">Year: '+ referenceYear + '</span><br />';
+                    //info += '<span style="font-size:10px;">Months: '+ fromMonth + '('+ fromYear + ')' + ' - ' + toMonth + '('+ toYear + ')' + '</span><br />';
                 }break;
             }
 
@@ -274,11 +235,11 @@ nrl.chartbuilder.fertilizer = {
             title += region;
             return title;
         };
-        var xLabelFormatter = (queryParams.timerange == 'monthly' ? 
+        var xLabelFormatter = (queryParams.timerange == 'monthly' ?
             function(){
                 var x = parseInt(this.value);
                 var date = new Date(x);
-                return date.format('M<br>(Y)');
+                return date.format('M-Y');
             }
         :
             function(arg){
@@ -351,7 +312,9 @@ nrl.chartbuilder.fertilizer = {
                         tickWidth: 0,
                         gridLineWidth: 1,
                         labels: {
-                            formatter: xLabelFormatter
+                            formatter: xLabelFormatter,
+                            rotation: -45,
+                            y: 32
                         }
                     }],
                     yAxis: chartConfig.yAxis,
@@ -374,6 +337,7 @@ nrl.chartbuilder.fertilizer = {
                         crosshairs: true
                     },
                     legend: {
+                        margin: queryParams.timerange == 'monthly' ? 16 : 24,
                         labelFormatter: function() {
                             if (this.name == 'Area (000 hectares)'){
                                 return 'Area (000 ha)';

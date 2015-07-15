@@ -36,48 +36,48 @@ Ext.namespace("gxp.plugins");
  *  .. class:: StaticPage(config)
  *
  *  Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
- */ 
+ */
 gxp.plugins.StaticPage = Ext.extend(gxp.plugins.Tool, {
 
     ptype:'gxp_staticpage',
 
 	tabTitle: "Static Page",
-	
+
 	url: null,
-	
+
 	tabPosition: 0,
-	
+
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-		var page_url = this.url;		
+		var page_url = this.url;
 		var appTabs = Ext.getCmp(this.target.renderToTab);
-		
-		if(appTabs instanceof Ext.TabPanel && page_url){					
+
+		if(appTabs instanceof Ext.TabPanel && page_url){
 			this.staticPanel = new Ext.Panel({
-				id: 'staticPanel',
+                id: 'staticPanel-' + this.tabPosition,
 				title: this.tabTitle,
-				layout: 'fit', 
-				items: [ 
-					new Ext.ux.IFrameComponent({ 
-						id: 'static-panel',
-						url: page_url 
-					}) 
+				layout: 'fit',
+				items: [
+					new Ext.ux.IFrameComponent({
+                        id: 'static-panel-' + this.tabPosition,
+						url: page_url
+					})
 				]
 			});
-	
+
 			appTabs.insert(this.tabPosition, this.staticPanel);
 		}else{
 			Ext.Msg.show({
 				title: "Static Page Plugin",
 				msg: "The 'StaticPage' plugin cannot be enabled because you're not in 'tab' mode ('tab: true' in configuration) or the URL is not available.",
 				buttons: Ext.Msg.OK,
-				icon: Ext.MessageBox.INFO  
-			});	
+				icon: Ext.MessageBox.INFO
+			});
 		}
 
         return gxp.plugins.StaticPage.superclass.addOutput.apply(this, []);
-    } 
+    }
 });
 
 Ext.preg(gxp.plugins.StaticPage.prototype.ptype, gxp.plugins.StaticPage);

@@ -185,6 +185,7 @@ gxp.plugins.nrl.Irrigation = Ext.extend(gxp.plugins.Tool, {
             minWidth: 180,
             autoScroll: true,
             frame: true,
+            buttonAlign: 'left',
             items: [{ // OUTPUT TYPE radiogroup ------------------------------
                 fieldLabel: this.outputTypeText,
                 xtype: 'radiogroup',
@@ -241,8 +242,15 @@ gxp.plugins.nrl.Irrigation = Ext.extend(gxp.plugins.Tool, {
 
                         this.output.submitButton.setDisabled(submitButtonState);
 
-                        if (outputValue != 'data')
+                        if (outputValue != 'data'){
                             this.output.submitButton.initChartOpt(this.output);
+                        }
+
+                        if(this.output.submitButton.xtype == 'gxp_nrlIrrigationChartButton'){
+                            this.output.optBtn.setDisabled(this.output.submitButton.disabled);
+                        }else{
+                            this.output.optBtn.disable();
+                        }
                     },
                     scope: this
                 }
@@ -323,6 +331,7 @@ gxp.plugins.nrl.Irrigation = Ext.extend(gxp.plugins.Tool, {
                     scope: this
                 }
             }, { // MONTH range selector --------------------------------
+                fieldLabel: 'Time Span',
                 ref: 'monthRangeSelector',
                 xtype: 'monthyearrangeselector',
                 anchor: '100%',
@@ -353,7 +362,7 @@ gxp.plugins.nrl.Irrigation = Ext.extend(gxp.plugins.Tool, {
                     name: 'source',
                     inputValue: 'supply',
                     dataUrl: this.metadataSupplyUrl
-                    
+
                 }],
                 listeners: {
                     change: function(radioGroup, checked){
@@ -429,7 +438,7 @@ gxp.plugins.nrl.Irrigation = Ext.extend(gxp.plugins.Tool, {
                     grantypeChange: function(itemSelected) {
                         var granType = itemSelected.inputValue;
                         var outputtype = this.ownerCt.outputType.getValue().inputValue;
-                        
+
                         this.refOwner.updateSubmitBtnState();
                         this.refOwner.setUpMaxAndMin();
                        if (outputtype != 'data')
@@ -581,7 +590,16 @@ gxp.plugins.nrl.Irrigation = Ext.extend(gxp.plugins.Tool, {
                     }                                     //
                                                     ////////
             },
-            buttons: [{
+            buttons: ['->', {
+                iconCls:'ic_wrench',
+                ref: '../optBtn',
+                disabled: true,
+                listeners: {
+                    click: function () {
+                        this.refOwner.submitButton.chartoptions.fireEvent('click');
+                    }
+                }
+            }, {
                 url: this.dataUrl,
                 xtype: 'gxp_nrlIrrigationChartButton',
                 typeName: this.typeNameData,
@@ -636,9 +654,23 @@ gxp.plugins.nrl.Irrigation = Ext.extend(gxp.plugins.Tool, {
 
                 var disableBtn = (sourceIsFlow ? (selectedRivers.length == 0) : (gran_type != 'pakistan' && regionList.length == 0) );
                 this.submitButton.setDisabled(disableBtn);
+
+                if(this.submitButton.xtype == 'gxp_nrlIrrigationChartButton'){
+                    this.optBtn.setDisabled(this.submitButton.disabled);
+                }else{
+                    this.optBtn.disable();
+                }
             },
             outputMode: 'chart'
         };
+
+        if (this.helpPath && this.helpPath != ''){
+            Irrigation.buttons.unshift({
+                xtype: 'gxp_nrlHelpModuleButton',
+                portalRef: this.portalRef,
+                helpPath: this.helpPath
+            });
+        }
 
         config = Ext.apply(Irrigation, config || {});
         this.output = gxp.plugins.nrl.Irrigation.superclass.addOutput.call(this, config);

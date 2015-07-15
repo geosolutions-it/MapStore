@@ -39,7 +39,7 @@ Ext.namespace("gxp.plugins.nrl");
  *  .. class:: AgroMet(config)
  *
  *    Plugin for adding NRL CropData Module to a :class:`gxp.Viewer`.
- */   
+ */
 gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
  /** api: ptype = nrl_agromet */
     ptype: "nrl_agromet",
@@ -59,9 +59,9 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 	/** i18n **/
 	outputTypeText:'Output Type',
     radioQtipTooltip: "You have to be logged in to use this method",
-	
+
     factorsurl:"http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&outputFormat=json",
-    
+
     dataUrl: null, //'http://84.33.2.24/geoserver/ows',
 	startYear: 2000,
 	comboConfigs:{
@@ -75,14 +75,14 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 			ref:'singleSelector',
             displayField:"name",
             pageSize:10
-            
+
         },
         district:{
             typeName:"nrl:district_select",
             queriableAttributes:[
                 "district",
                 "province"
-                
+
              ],
              recordModel:[
                 {
@@ -102,13 +102,13 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                 },{
                    name:"properties",
                    mapping:"properties"
-                } 
+                }
             ],
             displayField:"district",
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"
         },
-        province:{ 
-            
+        province:{
+
             typeName:"nrl:province_view",
             recordModel:[
                 {
@@ -133,9 +133,9 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
             ],
             displayField:"fname",
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
-                            
+
         }
-    
+
     },
     /** private: method[addOutput]
      *  :arg config: ``Object``
@@ -153,14 +153,15 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 			minWidth:180,
 			autoScroll:true,
 			frame:true,
+            buttonAlign: 'left',
 			items:[
-				{ 
+				{
 					fieldLabel: this.outputTypeText,
 					xtype: 'radiogroup',
 					anchor:'100%',
 					autoHeight:true,
 					name:'outputType',
-					ref:'outputType',                    
+					ref:'outputType',
 					checkboxToggle:true,
 					title: this.outputTypeText,
 					autoHeight: true,
@@ -168,35 +169,35 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					items:[
 						{boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: true},
 						{boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true}
-					],                 
-                    listeners: {           
+					],
+                    listeners: {
                         change: function(c,checked){
                             var outputValue = c.getValue().inputValue;
                             var submitButton = this.output.submitButton;
 							var aoiFieldSet = this.output.aoiFieldSet;
-                            var areaSelector = aoiFieldSet.AreaSelector;   
-							var gran_type = aoiFieldSet.gran_type.getValue().inputValue;							
-							
+                            var areaSelector = aoiFieldSet.AreaSelector;
+							var gran_type = aoiFieldSet.gran_type.getValue().inputValue;
+
                             if(outputValue == 'data'){
                                 submitButton.destroy();
                                 delete submitButton;
-                                this.output.addButton({              
-									url: this.dataUrl, 
+                                this.output.addButton({
+									url: this.dataUrl,
                                     xtype: 'gxp_nrlAgrometTabButton',
                                     ref: '../submitButton',
                                     highChartExportUrl: this.highChartExportUrl,
                                     target:this.target,
                                     form: this
                                 });
-								
+
 								// Avoid 'pakistan' checked when 'outputValue' = 'data'
 								if(gran_type == "pakistan"){
 									aoiFieldSet.gran_type.reset();
 								}
-								
+
                                 var store = areaSelector.store;
                                 this.output.fireEvent('update',store);
-                                this.output.fireEvent('show');                                
+                                this.output.fireEvent('show');
 
                                 c.ownerCt.referenceYear.show();
                                 c.ownerCt.yearRangeSelector.show();
@@ -218,7 +219,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                     highChartExportUrl: this.highChartExportUrl,
                                     target:this.target,
                                     form: this
-                                })
+                                });
                                 var store = areaSelector.store;
                                 this.output.fireEvent('update',store);
                                 this.output.fireEvent('show');
@@ -227,18 +228,24 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 
                                 this.output.doLayout();
                                 this.output.syncSize();
-                            } 
-							
+                            }
+
 							var pakenabled = outputValue != 'data';
                             aoiFieldSet.gran_type.eachItem(function(item){
 								if(item.inputValue=="pakistan"){
-									item.setDisabled(!pakenabled);							
-								}               
-                            },this);							
-                        },                        
-                        scope: this                        
+									item.setDisabled(!pakenabled);
+								}
+                            },this);
+
+                            if (this.output.submitButton.xtype == 'gxp_nrlAgrometChartButton'){
+                                this.output.optBtn.setDisabled(this.output.submitButton.disabled);
+                            }else{
+                                this.output.optBtn.disable();
+                            }
+                        },
+                        scope: this
                     }
-				},{ 
+				},{
 					fieldLabel: 'Season',
 					xtype: 'nrl_seasonradiogroup',
 					anchor:'100%',
@@ -269,11 +276,11 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					anchor:'100%',
 					target:this.target,
 					comboConfigs:this.comboConfigs,
-					areaFilter:this.areaFilter, 
+					areaFilter:this.areaFilter,
 					hilightLayerName:this.hilightLayerName,
 					layers: this.layers,
                     selectableLayer: this.layers.province
-					
+
 				},{
 					xtype: 'label',
 					anchor:'100%',
@@ -301,12 +308,12 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					    scope: this,
 						change:function(start,end){
 							this.output.referenceYear.setText(end);
-							
+
 						}
 					}
-					
+
 				},
-                { 
+                {
                     fieldLabel: 'Mode',
                     xtype: 'radiogroup',
                     anchor:'100%',
@@ -449,7 +456,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                     }],
                     autoScroll:true,
                     store: new Ext.data.JsonStore({
-                       
+
                         url:this.factorsurl,
 						root:'features',
 						idProperty:'factor',
@@ -462,7 +469,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                             {name:'max', mapping: 'properties.max'},
                             {name:'min', mapping: 'properties.min'}
 						]
-						
+
                     }),
                     listeners:{
                         selectionchange:function(records){
@@ -482,7 +489,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                     }
                                     if(curmin < min){
                                         min = curmin;
-                                    }  
+                                    }
                                 }
                                 if(max==99999|| min == -99999){
                                      yearRangeSelector.setDisabled(true);
@@ -512,57 +519,81 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                             button.optionsCompareComposite = optionsCompare;
                         }
                     }
-                    
-                
+
+
                 })
 			],
-			buttons:[{
+			buttons:['->', {
+                iconCls:'ic_wrench',
+                ref: '../optBtn',
+                disabled: true,
+                listeners: {
+                    click: function () {
+                        this.refOwner.submitButton.chartoptions.fireEvent('click');
+                    }
+                }
+            }, {
                 url: this.dataUrl,
                 xtype:'gxp_nrlAgrometChartButton',
 				ref: '../submitButton',
                 highChartExportUrl: this.highChartExportUrl,
                 target:this.target,
 				form: this,
-                disabled:true                
-            }]            
+                disabled:true
+            }]
 		};
+
+        if (this.helpPath && this.helpPath != ''){
+            agroMet.buttons.unshift({
+                xtype: 'gxp_nrlHelpModuleButton',
+                portalRef: this.portalRef,
+                helpPath: this.helpPath
+            });
+        }
+
 		config = Ext.apply(agroMet,config || {});
-		
+
 		this.output = gxp.plugins.nrl.AgroMet.superclass.addOutput.call(this, config);
-		
+
 		this.output.on('update',function(store){
             var button = this.output.submitButton.getXType();
-			
+
 			var values = this.output.getForm().getValues();
 			var gran_type = values.areatype;
-			
+
             if (button == "gxp_nrlAgrometChartButton" || button == "gxp_nrlAgrometTabButton"){
                 this.output.submitButton.setDisabled(store.getCount()<=0 && gran_type != "pakistan")
             }
-		},this);      
-		
+
+            if(button == 'gxp_nrlAgrometChartButton'){
+                this.output.optBtn.setDisabled(this.output.submitButton.disabled);
+            }else{
+                this.output.optBtn.disable();
+            }
+		},this);
+
 		this.output.on('beforehide',function(){
 			var button = this.output.aoiFieldSet.AreaSelector.selectButton;
 			button.toggle(false);
 			var lyr = button.hilightLayer;
 			if(!lyr) return;
 			lyr.setVisibility(false);
-			
+
 		},this);
-		
+
 		this.output.on('show',function(){
 			var button = this.output.aoiFieldSet.AreaSelector.selectButton;
-			
+
 			var lyr = button.hilightLayer;
 			if(!lyr) return;
 			lyr.setVisibility(true);
-			
+
 		},this);
-		
+
 		return this.output;
 	},
-    setRadioQtip: function (t){ 
-        var o = { 
+    setRadioQtip: function (t){
+        var o = {
             afterrender: function() {
                 //Ext.QuickTips.init();
                 var id  = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
@@ -571,7 +602,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
             destroy:function(){
                 var id = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
                 Ext.QuickTips.unregister(id.elements[id.elements.length-1].id);
-            },                                
+            },
             enable: function() {
                 var id = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
                 Ext.QuickTips.unregister(id.elements[id.elements.length-1].id);
@@ -581,8 +612,8 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                 var id  = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
                 Ext.QuickTips.register({ target:  id.elements[id.elements.length-1].id, text: t});
             }
-        }        
+        }
         return o;
-    } 
+    }
  });
  Ext.preg(gxp.plugins.nrl.AgroMet.prototype.ptype, gxp.plugins.nrl.AgroMet);

@@ -58,7 +58,7 @@ nrl.chartbuilder.irrigation.commons = {
         return lbl;
     },
     getChartTitle: function(chartData, chartIndex, sourceType) {
-        var title = (sourceType == 'flow' ? 'River Water Flow' : 'Irrigation Water Supply') + ': ';
+        var title = (sourceType == 'flow' ? 'River Water Inflow' : 'Irrigation Water Supply') + ': ';
         var subtitle = chartData[chartIndex].title;
         title += subtitle;
         return title;

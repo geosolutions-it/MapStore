@@ -48,7 +48,7 @@ gxp.widgets.button.NrlIrrigationChartButton = Ext.extend(Ext.SplitButton, {
      * Options for the window manager
      */
     windowManagerOptions: {
-        title: "Irrigation"
+        title: "Water Resources"
     },
     /**
      * private method[createOptionsFildset]
@@ -279,8 +279,8 @@ gxp.widgets.button.NrlIrrigationChartButton = Ext.extend(Ext.SplitButton, {
                 var region_list = form.aoiFieldSet.selectedRegions.getValue();
                 form.submitButton.queryOptions.region_list = region_list;
 
-                var factor = form.uomFlow.getValue();
-                var uomLabel = form.uomFlow.getRawValue();
+                var factor = form.uomSupply.getValue();
+                var uomLabel = form.uomSupply.getRawValue();
                 form.submitButton.queryOptions.factor = factor;
                 form.submitButton.queryOptions.uomLabel = uomLabel;
 

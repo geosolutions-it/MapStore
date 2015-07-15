@@ -39,7 +39,7 @@ Ext.namespace("gxp.plugins.nrl");
  *  .. class:: NRL_Modules(config)
  *
  *    Plugin for adding NRL CropStatus Module to a :class:`gxp.Viewer`.
- */   
+ */
 gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
  /** api: ptype = nrl_crop_status */
     ptype: "nrl_crop_status",
@@ -61,14 +61,14 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 			ref:'singleSelector',
             displayField:"name",
             pageSize:10
-            
+
         },
         DISTRICT:{
             typeName:"nrl:district_crop",
             queriableAttributes:[
                 "district",
                 "province"
-                
+
              ],
              recordModel:[
                 {
@@ -88,12 +88,12 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                 },{
                    name:"properties",
                    mapping:"properties"
-                } 
+                }
             ],
             displayField:"district",
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"
         },
-        PROVINCE:{ 
+        PROVINCE:{
             fieldLabel: 'Province',
             typeName:"nrl:province_view",
             recordModel:[
@@ -123,9 +123,9 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
             ],
             displayField:"fname",
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
-                            
+
         }
-    
+
     },
     /** private: method[addOutput]
      *  :arg config: ``Object``
@@ -142,14 +142,15 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 					minWidth:180,
 					autoScroll:true,
 					frame:true,
+                    buttonAlign: 'left',
 					items:[
-						{ 
+						{
 							fieldLabel: 'Output Type',
 							xtype: 'radiogroup',
 							anchor:'100%',
 							autoHeight:true,
                             name:'outputType',
-                            ref:'outputType',                            
+                            ref:'outputType',
 							checkboxToggle:true,
 							//title: this.outputTypeText,
 							autoHeight: true,
@@ -158,18 +159,18 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 							items:[
 								{boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: true},
 								{boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true}
-							],                 
-                            listeners: {           
+							],
+                            listeners: {
                                 change: function(c,checked){
                                     var outputValue = c.getValue().inputValue;
                                     var submitButton = this.output.submitButton;
-                                    var areaSelector = this.output.singleFeatureSelector;  
-                                    
+                                    var areaSelector = this.output.singleFeatureSelector;
+
                                     if(outputValue == 'data'){
                                         areaSelector.enable();
                                         submitButton.destroy();
                                         delete submitButton;
-                                        this.output.addButton({              
+                                        this.output.addButton({
                                             url: this.dataUrl,
                                             xtype: 'gxp_nrlCropStatusTabButton',
                                             ref: '../submitButton',
@@ -179,7 +180,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                         })
                                         var store = areaSelector.currentCombo.selectButton.store;
                                         this.output.fireEvent('update',store);
-                                        this.output.fireEvent('show');                                
+                                        this.output.fireEvent('show');
                                         this.output.doLayout();
                                         this.output.syncSize();
 
@@ -187,7 +188,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                         areaSelector.enable();
                                         submitButton.destroy();
                                         delete submitButton;
-                                        this.output.addButton({               
+                                        this.output.addButton({
                                             xtype: 'gxp_nrlCropStatusChartButton',
                                             url: this.dataUrl,
                                             ref: '../submitButton',
@@ -200,11 +201,17 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                         this.output.fireEvent('show');
                                         this.output.doLayout();
                                         this.output.syncSize();
-                                    }                               
-                                },                        
-                                scope: this                        
+                                    }
+
+                                    if(this.output.submitButton.xtype == 'gxp_nrlCropStatusChartButton'){
+                                        this.output.optBtn.setDisabled(this.output.submitButton.disabled);
+                                    }else{
+                                        this.output.optBtn.disable();
+                                    }
+                                },
+                                scope: this
                             }
-						},{ 
+						},{
 							fieldLabel: 'Season',
 							xtype: 'nrl_seasonradiogroup',
 							ref:'season',
@@ -257,19 +264,19 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                         url: this.rangesUrl,
                         root: 'features',
                         idProperty:'crop'
-                        
+
                     }),
                     listeners: {
                         expand: function( combo ){
                             var season = this.ownerCt.season;
 							var radio = season.getValue();
-							
+
 							if (radio && radio.getValue()){
                                this.seasonFilter(radio.inputValue);
-                               
+
                             }
                             var selectedRecord= combo.getStore().getById(combo.getValue());
-                            
+
                         }
                     }
 				},
@@ -312,7 +319,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                         selectionchange:function(records){
                             var yearSelector =this.refOwner.yearSelector;
                             if(records.length<=0){
-                               yearSelector.setDisabled(true); 
+                               yearSelector.setDisabled(true);
                             }else{
                                 var max=-99999,min=99999;
                                 for(var i=0;i<records.length ;i++){
@@ -324,7 +331,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                     }
                                     if(curmin < min){
                                         min = curmin;
-                                    }  
+                                    }
                                 }
                                 if(max==99999|| min == -99999){
                                      yearSelector.setDisabled(true);
@@ -336,8 +343,17 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                         }
                     }
                 })
-            ],	
-			buttons:[{               
+            ],
+            buttons:['->', {
+                iconCls:'ic_wrench',
+                ref: '../optBtn',
+                disabled: true,
+                listeners: {
+                    click: function () {
+                        this.refOwner.submitButton.chartoptions.fireEvent('click');
+                    }
+                }
+            }, {
                 xtype: 'gxp_nrlCropStatusChartButton',
 				ref: '../submitButton',
                 highChartExportUrl: this.highChartExportUrl,
@@ -345,19 +361,34 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                 target:this.target,
 				form: this,
                 disabled:true
-                
+
             }]
 		};
+
+        if (this.helpPath && this.helpPath != ''){
+            cropStatus.buttons.unshift({
+                xtype: 'gxp_nrlHelpModuleButton',
+                portalRef: this.portalRef,
+                helpPath: this.helpPath
+            });
+        }
+
 		config = Ext.apply(cropStatus,config || {});
-		
+
 		this.output = gxp.plugins.nrl.CropStatus.superclass.addOutput.call(this, config);
 		this.output.on('update',function(store){
             var button = this.output.submitButton.getXType();
             if (button == "gxp_nrlCropStatusChartButton" || button == 'gxp_nrlCropStatusTabButton'){
                 this.output.submitButton.setDisabled(store.getCount()<=0)
             }
-		},this);	
-        
+
+            if(this.output.submitButton.xtype == 'gxp_nrlCropStatusChartButton'){
+                this.output.optBtn.setDisabled(this.output.submitButton.disabled);
+            }else{
+                this.output.optBtn.disable();
+            }
+		},this);
+
 		//hide selection layer on tab change
 		this.output.on('beforehide',function(){
 			var button = this.output.singleFeatureSelector.singleSelector.selectButton;
@@ -365,21 +396,21 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
 			var lyr = button.hilightLayer;
 			if(!lyr) return;
 			lyr.setVisibility(false);
-			
+
 		},this);
 		this.output.on('show',function(){
 			var button = this.output.singleFeatureSelector.singleSelector.selectButton;
-			
+
 			var lyr = button.hilightLayer;
 			if(!lyr) return;
 			lyr.setVisibility(true);
-			
+
 		},this);
 		return this.output;
-		
+
 	},
-    setRadioQtip: function (t){ 
-        var o = { 
+    setRadioQtip: function (t){
+        var o = {
             afterrender: function() {
                 //Ext.QuickTips.init();
                 var id  = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
@@ -388,7 +419,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
             destroy:function(){
                 var id = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
                 Ext.QuickTips.unregister(id.elements[id.elements.length-1].id);
-            },                                
+            },
             enable: function() {
                 var id = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
                 Ext.QuickTips.unregister(id.elements[id.elements.length-1].id);
@@ -398,8 +429,8 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                 var id  = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
                 Ext.QuickTips.register({ target:  id.elements[id.elements.length-1].id, text: t});
             }
-        }        
+        }
         return o;
-    } 
+    }
  });
  Ext.preg(gxp.plugins.nrl.CropStatus.prototype.ptype, gxp.plugins.nrl.CropStatus);

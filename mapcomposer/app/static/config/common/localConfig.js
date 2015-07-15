@@ -1,8 +1,8 @@
 /** This file contains the common configuration options 
  *  that can be overridden by the serverConfig objects in templates */
 var localConfig = {
- geoStoreBase:"http://84.33.2.75/geostore/rest/",
- adminUrl: "http://84.33.2.75/opensdi2-manager/",
+ geoStoreBase:"http://cip-pakistan.geo-solutions.it/geostore/rest/",
+ adminUrl: "http://cip-pakistan.geo-solutions.it/opensdi2-manager/",
    proxy:"/http_proxy/proxy/?url=",
    loginDataStorage : sessionStorage,
    defaultLanguage: "en",

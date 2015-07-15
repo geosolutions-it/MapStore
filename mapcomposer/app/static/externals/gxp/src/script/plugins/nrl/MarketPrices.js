@@ -156,6 +156,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
             minWidth: 180,
             autoScroll: true,
             frame: true,
+            buttonAlign: 'left',
             items: [{ // OUTPUT TYPE radiogroup ------------------------------
                 fieldLabel: this.outputTypeText,
                 xtype: 'radiogroup',
@@ -207,7 +208,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                         this.output.fireEvent('update', store);
                         this.output.fireEvent('show');
 
-                        
+
                         this.output.comparisonby.setDisabled(outputValue == 'data');
                         if (outputValue == 'data'){
                             this.output.comparisonby.oldValue = this.output.comparisonby.getValue().inputValue;
@@ -220,8 +221,15 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
 
                         this.output.submitButton.setDisabled(submitButtonState);
 
-                        if (outputValue != 'data')
+                        if (outputValue != 'data'){
                             this.output.submitButton.initChartOpt(this.output);
+                        }
+
+                        if(this.output.submitButton.xtype == 'gxp_nrlMarketPricesChartButton'){
+                            this.output.optBtn.setDisabled(this.output.submitButton.disabled);
+                        }else{
+                            this.output.optBtn.disable();
+                        }
                     },
                     scope: this
                 }
@@ -328,7 +336,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                         var granType = itemSelected.inputValue;
                         var records = this.ownerCt.crops.getSelections();
                         var outputtype = this.ownerCt.outputType.getValue().inputValue;
-                        
+
                         this.refOwner.updateSubmitBtnState();
                         if (outputtype != 'data')
                             this.ownerCt.submitButton.initChartOpt(this.ownerCt);
@@ -448,7 +456,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                     listeners: {
                         'select': function(combo, record, index) {
                             this.ownerCt.fireEvent('afterlayout', this.ownerCt);
-                            
+
                             var selectedVal = combo.value;
                             if (selectedVal == 'usd'){
                                 this.ownerCt.ownerCt.customExchangeRate.show();
@@ -476,6 +484,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                     autoHeight: true,
                     ref: '../exchangeRateRadio',
                     hidden: true,
+                    columns: 1,
                     items: [{
                         boxLabel: 'Fixed',
                         name: 'exchangerateradio',
@@ -646,7 +655,10 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                     anchor: '100%',
                     fieldLabel: 'Output',
                     ref: '../lblOutput',
-                    text: ''
+                    text: '',
+                    style: {
+                        lineHeight: '20px'
+                    }
                 }],
                 listeners: {
                     'afterlayout': function(fieldset) {
@@ -670,7 +682,16 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                     }                                     //
                                                     ////////
             },
-            buttons: [{
+            buttons: ['->', {
+                iconCls:'ic_wrench',
+                ref: '../optBtn',
+                disabled: true,
+                listeners: {
+                    click: function () {
+                        this.refOwner.submitButton.chartoptions.fireEvent('click');
+                    }
+                }
+            }, {
                 url: this.dataUrl,
                 xtype: 'gxp_nrlMarketPricesChartButton',
                 typeName: this.typeNameData,
@@ -698,8 +719,14 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 var maxYear = nrl.chartbuilder.util.getDekDate(endRange).year;
 
                 // sets up yearRangeSelector max & min values
+                this.yearRangeSelector.startValue.setValue(minYear);
+                this.yearRangeSelector.endValue.setValue(maxYear);
+
                 this.yearRangeSelector.setMaxValue(maxYear);
+                this.yearRangeSelector.slider.setValue(1, maxYear);
+
                 this.yearRangeSelector.setMinValue(minYear);
+                this.yearRangeSelector.slider.setValue(0, minYear);
 
                 // sets year values for yearSelector combobox
                 // if it's possible it keeps the previous selected year
@@ -729,9 +756,23 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
 
                 var disableBtn = (!exchangeRateOk || selectedCrops.length == 0 || gran_type != 'pakistan' && regionList.length == 0);
                 this.submitButton.setDisabled(disableBtn);
+
+                if(this.submitButton.xtype == 'gxp_nrlMarketPricesChartButton'){
+                    this.optBtn.setDisabled(this.submitButton.disabled);
+                }else{
+                    this.optBtn.disable();
+                }
             },
             outputMode: 'chart'
         };
+
+        if (this.helpPath && this.helpPath != ''){
+            MarketPrices.buttons.unshift({
+                xtype: 'gxp_nrlHelpModuleButton',
+                portalRef: this.portalRef,
+                helpPath: this.helpPath
+            });
+        }
 
         config = Ext.apply(MarketPrices, config || {});
         this.output = gxp.plugins.nrl.MarketPrices.superclass.addOutput.call(this, config);

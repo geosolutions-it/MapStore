@@ -1,14 +1,14 @@
 /* crop data table */
 .cropdatatooltip{
     border-collapse: collapse;
-	
+
 	font-size:12px;
 	margin: 0 auto;
-	
+
 }
 .cropdatatooltip tr{
 	padding:2px;
-    
+
 	font-family: arial serif;
 	font-size: 11px;
 }
@@ -18,7 +18,7 @@
 .cropdatatooltip th,.cropdatatooltip td{
 	padding:2px;
     border: 1px solid gray;
-	
+
 }
 
 .cropdatatooltip  strong {
@@ -42,6 +42,10 @@
 /* gxp_nrlTabButton */
 .x-btn  .gxp-icon-nrl-tab,  .x-menu-item  .gxp-icon-nrl-tab,.x-tree-node .gxp-icon-nrl-tab,.x-panel-icon.gxp-icon-nrl-tab {
     background-image: url(img/silk/table.png);
+}
+/* gxp_nrlHelpModuleButton */
+.x-btn .gxp-icon-nrl-help, .x-menu-item .gxp-icon-nrl-help, .x-tree-node .gxp-icon-nrl-help,.x-panel-icon.gxp-icon-nrl-help {
+    background-image: url(img/silk/help.png) !important;
 }
 
 .ic_wrench{

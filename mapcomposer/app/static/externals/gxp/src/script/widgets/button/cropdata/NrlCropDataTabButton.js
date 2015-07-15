@@ -32,7 +32,7 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
     xtype: 'gxp_nrlCropDataTabButton',
     iconCls: "gxp-icon-nrl-tab",
     tabPanel:'id_mapTab',
-    targetTab: 'cropData_tab',  
+    targetTab: 'cropData_tab',
     form: null,
     url: null,
 	text: 'Generate Table',
@@ -51,31 +51,36 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
         var uoms = units.getSelectedUnits();
 		var nextYr = parseInt(values.endYear)%100 +1;
 		var crop = values.crop;
-		
+
 		var varparam = "";
 		switch(values.variable) {
 			case "Area" : varparam='area';break;
 			case  "Production" : varparam ='prod';break;
 			case "Yield" : varparam= 'yield';break;
 		}
-		
-		
-			
-		var viewParams = 
-			(values.crop        ? "crop:" + values.crop.toLowerCase() + ";" : "" ) +
+
+        var selectedSources = this.form.output.src.getSelections();
+        var srcList = [];
+        for(var i=0; i<selectedSources.length; i++){
+            srcList.push("'" + selectedSources[i].data.src.toLowerCase() + "'");
+        }
+        var sources = srcList.join('\\,');
+
+		var viewParams =
+			(values.crop        ? "crops:" + "'" + values.crop.toLowerCase() + "';" : "" ) +
 			(values.areatype    ? "gran_type:" + values.areatype.toLowerCase() + ";" : "" ) +
 			(values.startYear   ? "start_year:" + values.startYear +";" : "" ) + //same year for start and end.
-			(values.endYear     ? "end_year:" + values.endYear +";" : "" ) + 
-			
+			(values.endYear     ? "end_year:" + values.endYear +";" : "" ) +
+
             "yield_factor:" + uoms.yield_factor + ";" +
             "area_factor:" + uoms.area_factor + ";" +
             "prod_factor:" + uoms.prod_factor + ";" +
-			(values.region_list ? "region_list:" + values.region_list.toLowerCase() + ";" : "" );
-					
+			(values.region_list ? "region_list:" + values.region_list.toLowerCase() + ";" : "" ) +
+            "sources:" + sources + ';';
+
 		var store = new Ext.data.JsonStore({
 			url: this.url,
-			sortInfo: {field: "s_dec", direction: "ASC"},
-			root: 'features',			
+			root: 'features',
 			fields: [{
 				name: 'region',
 				mapping: 'properties.region'
@@ -97,32 +102,43 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 			},{
 				name: 'yield',
 				mapping: 'properties.yield'
-			}]			
+			},{
+                name: 'src',
+                mapping: 'properties.src'
+            }],
+            listeners: {
+                load: function(){
+                    this.sort([
+                        {field: "s_dec", direction: "ASC"},
+                        {field: "src", direction: "ASC"}
+                    ]);
+                }
+            }
 		});
-		
+
 		var isProvince = values.areatype.toLowerCase() == "province";
 		this.createResultPanel(store, fieldValues, values, isProvince);
-		
+
 		store.load({
 			callback:function(records,req){
 				this.lastParams = req.params;
 			},
 			params :{
-				propertyName: "region,crop,year,production,area,yield",
+				propertyName: "region,crop,year,production,area,yield,src",
 				service: "WFS",
 				version: "1.0.0",
 				request: "GetFeature",
-				typeName: "nrl:CropData",
+                typeName: this.typeName,
 				outputFormat: "json",
 				viewparams: viewParams
 			}
-		});         
+		});
     },
-	
+
 	createResultPanel: function(store, fieldValues, values, isProvince){
 		var tabPanel = Ext.getCmp('id_mapTab');
         var tabs = Ext.getCmp('cropDataTable_tab');
-		
+
 		var grid = new Ext.grid.GridPanel({
 			bbar:[
 				"->",
@@ -134,19 +150,19 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 					iconCls: 'icon-disk-multiple',
 					handler:function(){
 						var store = this.ownerCt.ownerCt.getStore();
-						var lastParams = Ext.applyIf({}, store.lastParams);						
-						
+						var lastParams = Ext.applyIf({}, store.lastParams);
+
 						var dwl = store.url + "?";
 						lastParams.outputFormat = "CSV";
-						
+
 						if(lastParams.typeName && isProvince){
 							lastParams.typeName = "nrl:CropDataDistrict";
 						}
-						
+
 						for (var i in lastParams){
 							dwl += i + "=" +encodeURIComponent(lastParams[i])+"&";
 						}
-						
+
 						window.open(dwl);
 					}
 				}, {
@@ -172,30 +188,30 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 			layout:'fit',
 			store:store,
 			autoExpandColumn:'region',
-			
+
 			title:'',
 
-		
+
 			columns:[{
-				sortable: true, 
+				sortable: true,
 				id:'region',
 				header:'Region',
 				name: 'region',
 				dataIndex: 'region'
 			},{
-				sortable: true, 
+				sortable: true,
 				header:'Crop',
 				name: 'crop',
 				dataIndex: 'crop',
 				width:70
 			},{
-				sortable: true, 
+				sortable: true,
 				header:'Year',
 				name: 'year',
 				dataIndex: 'year',
 				width:50
 			}, {
-				sortable: true, 
+				sortable: true,
 				header:'Production('+fieldValues.production_unit+')',
 				name: 'production',
 				dataIndex: 'production',
@@ -203,7 +219,7 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 				align: 'right',
 				width:130
 			},{
-				sortable: true, 
+				sortable: true,
 				header:'Area('+fieldValues.area_unit+')',
 				name: 'area',
 				dataIndex: 'area',
@@ -211,22 +227,25 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 				align: 'right',
 				width:130
 			},{
-				sortable: true, 
+				sortable: true,
 				header:'Yield('+fieldValues.yield_unit+')',
 				name: 'yield',
 				dataIndex: 'yield',
 				renderer: Ext.util.Format.numberRenderer('0.00'),
 				align: 'right',
 				width:90
-			}
-			
-			
-			]
-		
-		
+			},{
+                sortable: true,
+                header:'Data Source',
+                name: 'src',
+                dataIndex: 'src',
+                align: 'left'
+            }]
+
+
 		});
 		var oldPosition = tabs && tabs.items && tabs.items.getCount() ? [tabs.items.getCount()*20,tabs.items.getCount()*20]:[0,0]
-		
+
 		var win = new Ext.Window({
 			title:'Pakistan - Crop Data - Commodity: ' + fieldValues.crop.toUpperCase() +  " - Season: " + values.season.toUpperCase() + " - Years: "+ values.startYear + "-"+ values.endYear,
 			collapsible: true,
@@ -238,22 +257,22 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 			x:oldPosition[0] +20,y:oldPosition[1]+20,
 			autoScroll:false,
 			header:true,
-			
+
 			layout:'fit',
 			items:grid,
 			//floating: {shadow: false},
 			tools: [{
                 id: 'help',
                 handler: function () {
-                    var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+                    var iframe = "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" +
                             "<ol>" +
                                 "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
                                 "<li><p><em> Commodity: </em>" + fieldValues.crop.toUpperCase() + "</p></li>" +
                                 "<li><p><em> Season: </em>" + values.season + "</p></li>" +
                                 "<li><p><em> Years: </em>" + values.startYear + "-" + values.endYear + "</p></li>" +
-                            "</ol>" +                                        
+                            "</ol>" +
                             "</div>";
-                 
+
                     var appInfo = new Ext.Panel({
                         header: false,
                         html: iframe
@@ -267,9 +286,9 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
                         height: 180,
                         items: [appInfo]
                     });
-                    
-                    win.show(); 
-                                                            
+
+                    win.show();
+
                 },
                 scope: this
             }]
