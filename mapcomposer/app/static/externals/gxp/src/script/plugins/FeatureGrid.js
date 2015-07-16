@@ -519,6 +519,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             title: this.title,
             bbar: bbar,
 			dateFormat: this.dateFormat,
+            featureMaxZoomLevel:(this.featureMaxZoomLevel)?this.featureMaxZoomLevel:null,
             listeners: {
                 "added": function(cmp, ownerCt) {
                     var onClear = OpenLayers.Function.bind(function() {
