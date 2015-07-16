@@ -150,11 +150,16 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
         this.activeIndex = 0;
         
 		var items = [new Ext.menu.CheckItem({
+			id: "info-click",
             tooltip: this.infoActionTip,
 			text: this.infoActionTip,
             iconCls: "gxp-icon-getfeatureinfo",
             toggleGroup: this.toggleGroup,
             group: this.toggleGroup,
+			//
+			// If queryLayer is probvided only the info-hover tool will be enabled
+			//
+			hidden: this.queryLayer ? true : false,
 			listeners: {
 				checkchange: function(item, checked) {
 					this.activeIndex = 0;
@@ -163,7 +168,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 						this.button.setIconClass(item.iconCls);
 					}
 					for (var i = 0, len = info.controls.length; i < len; i++){
-                    if (checked) {
+						if (checked) {
 							info.controls[i].activate();
 						} else {
 							info.controls[i].deactivate();
@@ -174,13 +179,13 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 				scope: this
 			}
 		}),new Ext.menu.CheckItem({
+			id: "info-hover",
             tooltip: this.activeActionTip,
 			text: this.activeActionTip,
-            iconCls: "gxp-icon-mouse-map",
-			
+            iconCls: "gxp-icon-mouse-map",			
             toggleGroup: this.toggleGroup,
             group: this.toggleGroup,
-			allowDepress:false,
+			allowDepress: false,
 			listeners: {
 				checkchange: function(item, checked) {
 					this.activeIndex = 1;
@@ -195,7 +200,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 		})];
 		
 		this.button = new Ext.SplitButton({
-            iconCls: "gxp-icon-getfeatureinfo",
+            iconCls: this.queryLayer ? "gxp-icon-mouse-map" : "gxp-icon-getfeatureinfo",
             tooltip: this.measureTooltip,
             enableToggle: true,
             toggleGroup: this.toggleGroup,
@@ -356,6 +361,17 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             });
         }, this);
         
+		this.target.on("ready", function(){ 
+			
+			if(this.defaultActive){
+				this.button.menu.items.each(function(i) {
+					if(i.id == this.defaultActive){
+						i.setChecked(true);
+					}
+				}, this);
+			}
+		}, this);
+		
         return actions;
     },
 
@@ -619,27 +635,39 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 	 *  toggles the active control (on Mouse Hover).
      */
 	toggleActiveControl: function(checked){
+	
+		var ltree = Ext.getCmp('layertree');
+		if(!ltree || this.queryLayer){
+			var layer = this.target.mapPanel.layers.queryBy(function(x){
+				return (this.queryLayer == x.get("name")) && x.get("queryable");
+			}, this);
+			
+			layer = layer.itemAt(0).get("layer");
+			if(layer){
+				this.activateActiveControl(layer, this.queryLayer);
+			}			
+		}else{
+			//get selectionModel of layer tree
+			var sm = ltree.getSelectionModel();
 
-		//get selectionModel of layer tree
-		var sm = Ext.getCmp('layertree').getSelectionModel();
-
-		if(checked){
-			var sel = sm.getSelectedNode() ;
-			//if a layer is selected create and activate the layer
-			if(sel){
-			 var layer = sel.layer
-			 if(layer){
-				this.activateActiveControl(layer,sel.text);
+			if(checked){
+				var sel = sm.getSelectedNode() ;
+				//if a layer is selected create and activate the layer
+				if(sel){
+					 var layer = sel.layer
+					 if(layer){
+						this.activateActiveControl(layer,sel.text);
+					}
+				}
+				//bind event selection change to create new control			
+				sm.on('selectionchange',this.changeSelected,this);
+			}else{
+				this.cleanActiveControl();
+				sm.un('selectionchange',this.changeSelected,this);
 			}
 		}
-		//bind event selection change to create new control
-		
-			sm.on('selectionchange',this.changeSelected,this);
-		}else{
-			this.cleanActiveControl();
-			sm.un('selectionchange',this.changeSelected,this);
-		}
 	},
+	
     /** private: method[activateActiveControl] 
      *  activate the active control. called on tool activation
      *  if a layer is selected, or on selectionchangeEvent
@@ -676,7 +704,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 hover: true,
                 queryVisible: true,
                 handlerOptions:{    
-                    hover: {delay: 200,pixelTolerance:2}
+                    "hover": {delay: this.delay || 200, pixelTolerance: this.pixelTolerance || 2}
                 },
                 eventListeners:{
                     scope:this,

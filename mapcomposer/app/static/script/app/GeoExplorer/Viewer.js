@@ -142,13 +142,13 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
             disabled: true,
             id: 'panelbbar',
 			enableOverflow: true
-        });
+        });	
 		
         this.portalItems = [{
             region: "center",
             layout: "border",
-            tbar: this.toolbar,
-			bbar: this.bottom_toolbar,
+            tbar: this.hideTopToolbar === true ? undefined : this.toolbar,
+			bbar: this.hideBottomToolbar === true ? undefined : this.bottom_toolbar,
             items: portalItems
         }];
         

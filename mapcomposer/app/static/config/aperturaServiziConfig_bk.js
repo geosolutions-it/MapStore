@@ -105,7 +105,11 @@
 				"group": "background",
 				"transparent": false,
 				"format": "image/jpeg"
-			}
+			},{
+                "source": "bolzano",
+				"title": "servizi_apertura",
+				"name": "Cartografia:servizi_apertura"
+            }
 		]
 	},
 	
@@ -246,33 +250,12 @@
 				"index":4
 			}
 		}, {
-			"ptype": "gxp_searchvia",
-			"outputTarget": "searchpanel",
-			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
-			"firstTb": true,			
-			"selectionProperties": {
-				"wmsURL": "http://sit.comune.bolzano.it/geoserver/ows",
-				"selectionLayerTitle": "Selection Layer",
-				"selectionLayerCiviciName": "Cartografia:civici",
-				"selectionLayerViaName": "ctn_base:grafo_vie",
-				"filterCiviciAttribute": "ID",
-				"selectionCiviciStyle": "highlight_point",
-				"filterViaAttribute": "ID_STRASSE",
-				"selectionViaStyle": "highlight"
-			}
-		}, {
-			"ptype": "gxp_searchcatasto",
-			"outputTarget": "searchpanel",
-			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
-			"selectionProperties": {
-				"wmsURL": "http://sit.comune.bolzano.it/geoserver/ows",
-				"selectionLayerTitle": "Selection Layer"
-			}
+			"ptype": "gxp_searchservizioapertura",
+			"outputTarget": "searchpanel"
 		}, {
 			"ptype": "gxp_addlayer",
-			"showCapabilitiesGrid": true,
-			"id": "addlayer",
-			"useEvents": true
+			"showCapabilitiesGrid": false,
+			"id": "addlayer"
 		}, {
 			"ptype": "gxp_featuremanager",
 			"id": "featuremanager",
@@ -409,12 +392,16 @@
 			]
 		}, {
 			"ptype": "gxp_help",
-			"fileDocURL": "http://sit.comune.bolzano.it/GeoInfo/help/",
-			"fileName": "help",
+			"link": "http://sit.comune.bolzano.it/GeoInfo/help/",
 			"actionTarget": {"target": "paneltbar", "index": 22}
 		}, {
-			"ptype": "gxp_clr",			
+			"ptype": "gxp_complain",
+			"link": "http://sit.comune.bolzano.it/GeoInfo/help/",
 			"actionTarget": {"target": "paneltbar", "index": 23}
+		
+		}, {
+			"ptype": "gxp_clr",			
+			"actionTarget": {"target": "paneltbar", "index": 24}
 		}, {
 			"ptype": "gxp_embedmapdialog",
 			"actionTarget": {"target": "paneltbar", "index": 2},
@@ -423,49 +410,6 @@
 		}, {
 			"ptype": "gxp_languageselector",
 			"actionTarget": {"target": "panelbbar", "index": 3}
-		}, {
-			"ptype": "gxp_download",
-            "featureManager": "featuremanager",
-			"readOnlyLayerSelection": false,
-			"removePreviousLayerOnSelection": false,
-			"id": "download",
-			"layersFromAllCapabilities": false,
-			"outputTarget": "west",
-            "wpsUrl": "http://localhost:8080/geoserver/ows?service=WPS",
-			"sridLinkTpl": "http://spatialreference.org/ref/#AUTH#/#SRID#/",
-			"autoComplete": {
-				"sources": ["bolzano"],
-				"pageSize": 10
-			}, 
-			"formats": {
-				"wfs":[
-					["application/zip", "ESRI Shapefile", "wfs", "zip"],
-					["application/dxf", "DXF", "wfs", "dxf"],
-					["text/xml; subtype=wfs-collection/1.0", "GML2", "wfs", "gml"],
-					["text/xml; subtype=wfs-collection/1.1", "GML3", "wfs", "gml"],
-					["application/vnd.google-earth.kml+xml", "KML", "wfs", "kml"],
-					["application/gpx+xml", "GPX", "wfs", "gpx"]
-				],
-				"wcs":[
-					["image/tiff", "GeoTIFF", "wcs", "tif"]
-				]
-			},
-			"targetCSR": [
-				["Native", "", "", ""],
-				["EPSG:26713", "EPSG:26713", "epsg", "26713"],
-				["EPSG:25832", "EPSG:25832", "epsg", "25832"],
-				["EPSG:32632", "EPSG:32632", "epsg", "32632"],
-                ["EPSG:3034",  "EPSG:3034", "epsg", "3034"],
-				["EPSG:3035",  "EPSG:3035", "epsg", "3035"],
-				["EPSG:3416",  "EPSG:3416", "epsg", "3416"],
-				["EPSG:4258",  "EPSG:4258", "epsg", "4258"],
-				["EPSG:4326",  "EPSG:4326", "epsg", "4326"],
-				["EPSG:3857",  "EPSG:900913", "sr-org", "7483"]
-			]
-		}, {
-			"ptype":"gxp_downloadtoolaction",
-			"downloadTool": "download",
-			"actionTarget": ["layertree.contextMenu"]
 		}
     ]
 }

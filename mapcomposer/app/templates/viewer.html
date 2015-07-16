@@ -246,9 +246,11 @@
 				if(gsturl){
 					serverConfig.geoStoreBase = gsturl;
 				}
-                
+
                 app = new GeoExplorer.Viewer({
                     scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
+					hideTopToolbar: serverConfig.hideTopToolbar || false,
+					hideBottomToolbar: serverConfig.hideBottomToolbar || false,
 				    defaultLanguage: serverConfig.defaultLanguage,	
 					actionToolScale: serverConfig.actionToolScale || "small",
                     customPanels: serverConfig.customPanels,
@@ -265,7 +267,7 @@
                         'abstract': "Comune di Bolzano - Stadtgemeinde Bozen",
                         contact: "<a href='#'>#</a>."
                     },
-                    sources: {
+                    sources: serverConfig.gsSources || {
                         google: {
                             ptype: "gxp_googlesource"
                         }
@@ -285,6 +287,9 @@
                     }, 
                     'ready' : function(){
                         app.modified = false;
+						
+						//Ext.getCmp('paneltbar').hide();
+						//Ext.getCmp('panelbbar').hide();
 						
 						// ///////////////////////////////////////////////////
 						// Visualizing metadata tab and layer at startup 

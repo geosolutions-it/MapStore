@@ -42,14 +42,10 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
      * api: method[addActions]
      */
     addOutput: function() {
-        var apptarget = this.target;        					
-		
-		
-		
+        var apptarget = this.target;     		
+
 		//CQL Filter: DATE_COL AFTER 2012-01-01T00:00:00Z AND DATE_COL BEFORE 2012-12-31T23:59:59Z
-		
 		/*
-		
 		      APER_DATA_INIZIO BEFORE 2013-02-31T00:00:00Z AND APER_DATA_FINE AFTER 2013-02-01T00:00:00Z
 		*/
 		
@@ -83,7 +79,7 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
 			}
 		};
 	
-		var formPanel =  {
+		/*var formPanel =  {
 			xtype       : 'panel',
 			height:      35,
 			border:0,
@@ -120,7 +116,7 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
 							}
 						}
 				   ]
-			};
+			};*/
 	
 		
 		var serviziForm = new Ext.form.FormPanel({
@@ -128,130 +124,161 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
 			border: true,
 			title: 'Ricerca Apertura Servizi',
 			labelWidth: 80,
-			bodyStyle:'padding:5px 5px 0',  
+			bodyStyle:'padding:5px 5px 0', 
+			tbar:[				   
+						{
+							xtype: 'button',
+							id: 'ckBtn',
+							text: 'Seleziona tutto',
+							iconCls: 'icon-addlayers',
+							width: 50,
+							handler: function(){
+								Ext.getCmp('serviziCheck').items.each(function(oEl) {
+									oEl.setValue(true);
+								});
+							}
+						},
+						//verLine,
+						'-',
+						{
+							xtype: 'button',
+							id: 'unckBtn',
+							text: 'Deseleziona tutto',
+							iconCls: 'icon-removelayers',
+							width: 50,
+							handler: function(){
+								Ext.getCmp('serviziCheck').items.each(function(oEl) {
+									oEl.setValue(false);
+								});
+							}
+						}
+		    ],			
 			items: [
-				formPanel,
-			    {
-				xtype: 'checkboxgroup',
-				fieldLabel: 'Tipo Servizi',
-				// Arrange checkboxes into two columns, distributed vertically
-				columns: 1,
-				vertical: true,
-				id: 'serviziCheck',
-				labelStyle:'font-weight:bold;',					
-				items: [{
-					boxLabel: 'Amministrativo',
-					name: 'rbAmm',
-					inputValue: '01',
-					checked: true
-				}, {
-					boxLabel: 'Chiese',
-					name: 'rbAmm',
-					inputValue: '04',
-					checked: true
-				}, {
-					boxLabel: 'Commercio',
-					name: 'rbAmm',
-					inputValue: '10',
-					checked: true
-				}, {
-					boxLabel: 'Cultura',
-					name: 'rbAmm',
-					inputValue: '05',
-					checked: true
-				}, {
-					boxLabel: 'Finanziari',
-					name: 'rbAmm',
-					inputValue: '11',
-					checked: true
-				}, {
-					boxLabel: 'Giustizia',
-					name: 'rbAmm',
-					inputValue: '02',
-					checked: true
-				}, {
-					boxLabel: 'Informazione',
-					name: 'rbAmm',
-					inputValue: '13',
-					checked: true
-				}, {
-					boxLabel: 'Istruzione',
-					name: 'rbAmm',
-					inputValue: '06',
-					checked: true
-				}, {
-					boxLabel: 'Libera Prof.',
-					name: 'rbAmm',
-					inputValue: '12',
-					checked: true
-				}, {
-					boxLabel: 'Sanita',
-					name: 'rbAmm',
-					inputValue: '07',
-					checked: true
-				}, {
-					boxLabel: 'Sicurezza',
-					name: 'rbAmm',
-					inputValue: '03',
-					checked: true
-				}, {
-					boxLabel: 'Sociali',
-					name: 'rbAmm',
-					inputValue: '14',
-					checked: true
-				}, {
-					boxLabel: 'Sport',
-					name: 'rbAmm',
-					inputValue: '09',
-					checked: true
-				}]
+				//formPanel,
+				{
+					xtype: "fieldset",
+					items:[{
+						xtype: 'checkboxgroup',
+						fieldLabel: 'Tipo Servizi',
+						// Arrange checkboxes into two columns, distributed vertically
+						columns: 1,
+						vertical: true,
+						id: 'serviziCheck',
+						labelStyle:'font-weight:bold;',					
+						items: [{
+							boxLabel: 'Amministrativo',
+							name: 'rbAmm',
+							inputValue: '01',
+							checked: true
+						}, {
+							boxLabel: 'Chiese',
+							name: 'rbAmm',
+							inputValue: '04',
+							checked: true
+						}, {
+							boxLabel: 'Commercio',
+							name: 'rbAmm',
+							inputValue: '10',
+							checked: true
+						}, {
+							boxLabel: 'Cultura',
+							name: 'rbAmm',
+							inputValue: '05',
+							checked: true
+						}, {
+							boxLabel: 'Finanziari',
+							name: 'rbAmm',
+							inputValue: '11',
+							checked: true
+						}, {
+							boxLabel: 'Giustizia',
+							name: 'rbAmm',
+							inputValue: '02',
+							checked: true
+						}, {
+							boxLabel: 'Informazione',
+							name: 'rbAmm',
+							inputValue: '13',
+							checked: true
+						}, {
+							boxLabel: 'Istruzione',
+							name: 'rbAmm',
+							inputValue: '06',
+							checked: true
+						}, {
+							boxLabel: 'Libera Prof.',
+							name: 'rbAmm',
+							inputValue: '12',
+							checked: true
+						}, {
+							boxLabel: 'Sanita',
+							name: 'rbAmm',
+							inputValue: '07',
+							checked: true
+						}, {
+							boxLabel: 'Sicurezza',
+							name: 'rbAmm',
+							inputValue: '03',
+							checked: true
+						}, {
+							boxLabel: 'Sociali',
+							name: 'rbAmm',
+							inputValue: '14',
+							checked: true
+						}, {
+							boxLabel: 'Sport',
+							name: 'rbAmm',
+							inputValue: '09',
+							checked: true
+						}]
+					}]
 				},				
-				lineconfig,
-				
+				//lineconfig,
 				{
-					xtype: 'timefield',
-					fieldLabel: 'Da',
-					labelStyle:'font-weight:bold;',					
-					emptyText: 'Orario Da',
-					minValue: '7:00',
-     				maxValue: '22:00',
-					format: 'H:i',
-					increment: 30,
-					width: 150,
-					id: 'daBox',
-					scope: this					
-				},
-				{
-					xtype: 'timefield',
-					fieldLabel: 'A',
-					labelStyle:'font-weight:bold;',					
-					emptyText: 'Orario A',
-					minValue: '7:00',
-     				maxValue: '22:00',
-					format: 'H:i',
-					increment: 30,
-					width: 150,
-					id: 'aBox',
-					scope: this	
-				}, 			
-				{
-					xtype: 'datefield',
-					anchor: '100%',
-					fieldLabel: 'Data',
-					labelStyle:'font-weight:bold;',					
-					name: 'date',
-					id: 'searchDate',
-					format: 'd/m/Y'
-				},				
+					xtype: "fieldset",
+					items:[{
+						xtype: 'timefield',
+						fieldLabel: 'Da',
+						labelStyle:'font-weight:bold;',					
+						emptyText: 'Orario Da',
+						minValue: '7:00',
+						maxValue: '22:00',
+						format: 'H:i',
+						increment: 30,
+						width: 150,
+						id: 'daBox',
+						scope: this					
+					},
+					{
+						xtype: 'timefield',
+						fieldLabel: 'A',
+						labelStyle:'font-weight:bold;',					
+						emptyText: 'Orario A',
+						minValue: '7:00',
+						maxValue: '22:00',
+						format: 'H:i',
+						increment: 30,
+						width: 150,
+						id: 'aBox',
+						scope: this	
+					}, 			
+					{
+						xtype: 'datefield',
+						//anchor: '100%',
+						width: 150,
+						fieldLabel: 'Data',
+						labelStyle:'font-weight:bold;',					
+						name: 'date',
+						id: 'searchDate',
+						format: 'd/m/Y'
+					}]
+				},		
 				{
 					xtype: 'button',
 					text: 'Aggiorna',
 					scope: this,
-					handler: function(){	
-					   
-					   
-					   aggiornaServizi();
-					   
+					handler: function(){					   
+					   aggiornaServizi();					   
 					   /*serviziLayer.mergeNewParams({
 					       "viewparams": "begin_datetime:2014-11-03 20:00:00;end_datetime:2014-11-03 22:30:00"
 					   });*/
@@ -259,8 +286,7 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
 					}
 				}
             ]
-		});
-		
+		});		
 		
 		var actualDate = new Date();
 		Ext.getCmp("searchDate").setValue(actualDate);
@@ -315,7 +341,7 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
 			var params = {
 			   "viewparams": "begin_datetime:" + aDate.format("Y-m-d") + " " + startTime + ":00;end_datetime:" + aDate.format("Y-m-d") + " " + endTime + ":00",
 			   //"cql_filter": "CATE_ROOT_CODE IN (" + inServices + ")"
-                "cql_filter": inServices
+                "cql_filter": inServices == "" ? "INCLUDE" : inServices
 		    };
 		   
 		   
@@ -332,14 +358,18 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
 			if (e.layer.params && e.layer.params.LAYERS ==  'Cartografia:servizi_apertura'){
 				aggiornaServizi(e.layer);
 			}
-		});
-		
-        
-		// Imposto il tab di ricerca come tab attivo
-		Ext.getCmp("west").setActiveTab(2);				
+		});				
 		
 		var panel = gxp.plugins.SearchServizioApertura.superclass.addOutput.call(this, serviziForm);
-        return panel;
+		
+		// Imposto il tab di ricerca come tab attivo
+		var container = Ext.getCmp(this.initialConfig.outputTarget);
+		
+		if(container instanceof Ext.TabPanel){
+			container.setActiveTab(panel);
+		}	
+        
+		return panel;
     }
         
 });
