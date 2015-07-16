@@ -361,8 +361,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             });
         }, this);
         
-		this.target.on("ready", function(){ 
-			
+		this.target.on("ready", function(){ 			
 			if(this.defaultActive){
 				this.button.menu.items.each(function(i) {
 					if(i.id == this.defaultActive){
@@ -635,22 +634,20 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 	 *  toggles the active control (on Mouse Hover).
      */
 	toggleActiveControl: function(checked){
-	
-		var ltree = Ext.getCmp('layertree');
-		if(!ltree || this.queryLayer){
-			var layer = this.target.mapPanel.layers.queryBy(function(x){
-				return (this.queryLayer == x.get("name")) && x.get("queryable");
-			}, this);
-			
-			layer = layer.itemAt(0).get("layer");
-			if(layer){
-				this.activateActiveControl(layer, this.queryLayer);
-			}			
-		}else{
-			//get selectionModel of layer tree
-			var sm = ltree.getSelectionModel();
-
-			if(checked){
+		if(checked){
+			var ltree = Ext.getCmp('layertree');
+			if(!ltree || this.queryLayer){
+				var layer = this.target.mapPanel.layers.queryBy(function(x){
+					return (this.queryLayer == x.get("name")) && x.get("queryable");
+				}, this);
+				
+				layer = layer.itemAt(0).get("layer");
+				if(layer){
+					this.activateActiveControl(layer, this.queryLayer);
+				}			
+			}else{
+				//get selectionModel of layer tree
+				var sm = ltree.getSelectionModel();			
 				var sel = sm.getSelectedNode() ;
 				//if a layer is selected create and activate the layer
 				if(sel){
@@ -661,8 +658,13 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 				}
 				//bind event selection change to create new control			
 				sm.on('selectionchange',this.changeSelected,this);
-			}else{
-				this.cleanActiveControl();
+			}
+		}else{
+			this.cleanActiveControl();
+			
+			var ltree = Ext.getCmp('layertree');
+			if(ltree){
+				var sm = ltree.getSelectionModel();	
 				sm.un('selectionchange',this.changeSelected,this);
 			}
 		}

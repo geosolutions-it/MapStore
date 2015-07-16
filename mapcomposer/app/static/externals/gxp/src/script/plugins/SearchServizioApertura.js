@@ -351,6 +351,23 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
 		   apptarget.mapPanel.layers.getAt(index).getLayer().vendorParams = params;
 		   apptarget.mapPanel.layers.getAt(index).getLayer().mergeNewParams(params);		  
 		   
+		   // /////////////////////////////////////////////////////////////////////////////
+		   // We need to deactivate and then reactivate the info-hover control if active 
+		   // in order to refresh the vendorParams
+		   // /////////////////////////////////////////////////////////////////////////////
+		    for(var tool in apptarget.tools){
+				if(apptarget.tools[tool].ptype == "gxp_wmsgetfeatureinfo_menu"){
+					apptarget.tools[tool].button.menu.items.each(function(i) {
+						if(i.id == "info-hover" && i.checked){
+							//apptarget.tools[tool].toggleActiveControl();
+							i.setChecked(false);
+							i.setChecked(true);
+						}
+					}, this);
+					
+					break;
+				}
+			}   
 		}
 		
 		apptarget.mapPanel.map.events.register('preaddlayer', apptarget.mapPanel.map, function (e) {
