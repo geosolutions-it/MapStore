@@ -93,10 +93,20 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
      */
     addOutput: function(config) {
 
+
+        var me=this;
         var login = this.target.login ? this.target.login: 
                 this.loginManager && this.target.currentTools[this.loginManager] 
                 ? this.target.currentTools[this.loginManager] : null;
         var auth = login.login && login.login.getAuthHeader ? login.login.getAuthHeader() : this.target.auth;
+        
+        //If autoopen is true but we aren't logged we have to wait for login
+        if(this.autoOpen==true && !auth){
+            login.on("login",function(){
+                me.addOutput(config);
+            })
+            return;
+        }
         // create a user manager panel
         var usermanager = {
             region:'center',
