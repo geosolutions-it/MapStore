@@ -4,7 +4,7 @@
    		"comunege": {
 			"ptype": "gxp_wmssource",
 			"title": "Comune Genova",
-			"url": "http://mappe.comune.genova.it/geoserver/ows"
+			"url": "http://mappe.comune.genova.it/geoserver/ows",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1",
 			"layerBaseParams":{
