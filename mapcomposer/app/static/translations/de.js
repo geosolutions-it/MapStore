@@ -804,6 +804,6 @@ GeoExt.Lang.add("de", {
         missingParametersMsg: "Geben Formel, Start und Ziel",
         selectOneMsg: "Wählen Sie eine Option",
         fieldRequiredMsg: "Dieses Feld wird benötigt",
-        lunghezzaFormula: "Länge",
+        lengthFormula: "Länge",
     }
 });

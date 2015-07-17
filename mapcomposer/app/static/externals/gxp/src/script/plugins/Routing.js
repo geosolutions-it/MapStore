@@ -53,6 +53,10 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
 
     calculateText: "Calcola",
 
+    socRiskText: "Sociale",
+
+    envRiskText: "Ambientale",
+
     lonText: "Lon",
 
     latText: "Lat",
@@ -90,7 +94,8 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addActions]
      */
     addActions: function () {
-
+        var humanRiskLabel = gxp.plugins.StandardProcessing.prototype.humanRiskLabel;
+        var notHumanRiskLabel = gxp.plugins.StandardProcessing.prototype.notHumanRiskLabel;
         var actions = gxp.plugins.Routing.superclass.addActions.apply(this, [{
             text: this.buttonText,
             menuText: this.menuText,
@@ -101,6 +106,8 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                 var routePoints = this.getOrCreateRoutePointsLayer();
                 var me = this;
                 var formulaStore = app.tools["syntheticview"].processingPane.formulaStore;
+                var formulaELabel =  formulaStore.getAt(formulaStore.find('id_formula', 32)).get('name');
+                var formulaPisLabel =  formulaStore.getAt(formulaStore.find('id_formula', 22)).get('name');
                 
                 var clickHandler = new OpenLayers.Handler.Click({}, {
                     "click": function(event) { }
@@ -137,6 +144,29 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                     }
                 };
                 
+                var formulaData = [
+                    ['R-SOC', 141, 'R - ' + humanRiskLabel, 98],
+                    ['R-ENV', 141, 'R - ' + notHumanRiskLabel, 99],
+                    ['E-SOC', 32, formulaELabel + ' (' + humanRiskLabel + ')', 98],
+                    ['E-ENV', 32, formulaELabel + ' (' + notHumanRiskLabel + ')', 99],
+                    ['PIS', 22, formulaPisLabel, 98],
+                    ['L', 142, this.lengthFormula, null]
+                ];
+                var comboStore = new Ext.data.ArrayStore({
+                    // store configs
+                    autoDestroy: true,
+                    storeId: 'routingFormulaStore',
+                    // reader configs
+                    idIndex: 0,
+                    fields: [
+                       {name: 'id', type: 'string'},
+                       {name: 'id_formula', type: 'int'},
+                       {name: 'name', type: 'string'},
+                       {name: 'target', type: 'int'}
+                    ],
+                    data: formulaData
+                });
+                
                 var formPanel = new Ext.FormPanel({
                     id: 'route-formpanel',
                     labelAlign: 'top',
@@ -147,20 +177,28 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                         title: this.formulaText,
                         layout: 'form',
                         items: [{
-                            id: 'formula-group',
-                            xtype: 'radiogroup',
+                            id: 'formula-combo',
+                            xtype: 'combo',
                             hideLabel: true,
-                            itemCls: 'x-check-group-alt',
+                            forceSelection: true,
                             allowBlank: false,
                             blankText: this.selectOneMsg,
-                            // Put all controls in a single column with width 100%
-                            columns: 1,
-                            items: [
-                                {boxLabel: formulaStore.getAt(formulaStore.find('id_formula', 26)).get('name'), name: 'formula', inputValue: 141, checked: true},
-                                {boxLabel: formulaStore.getAt(formulaStore.find('id_formula', 32)).get('name'), name: 'formula', inputValue: 32},
-                                {boxLabel: formulaStore.getAt(formulaStore.find('id_formula', 22)).get('name'), name: 'formula', inputValue: 22},
-                                {boxLabel: this.lengthFormula, name: 'formula', inputValue: 142}
-                            ]
+                            mode: 'local',
+                            triggerAction: 'all',
+                            store: comboStore,
+                            anchor: '95%',
+                            valueField: 'id_formula',
+                            displayField: 'name',
+                            listeners: {
+                                render: function(cmb) {
+                                    var r = comboStore.getAt(comboStore.find('id', 'R-SOC'));
+                                    cmb.setValue(r.get('id_formula'));
+                                    cmb.selectedRecord = r;
+                                },
+                                select: function(cmb, record) {
+                                    cmb.selectedRecord = record;
+                                }
+                            }
                         }]
                     }, {
                         xtype: 'fieldset',
@@ -289,7 +327,7 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                         }]
                     }],
                     getFormula: function() {
-                        return this.getForm().findField('formula-group').getValue();
+                        return this.getForm().findField('formula-combo').selectedRecord;
                     },
                     getStartX: function() {
                         return this.getForm().findField('x_start');
@@ -312,7 +350,7 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                 var win = new Ext.Window({
                     title: me.menuText,
                     width: 400,
-                    height: 510,
+                    height: 420,
                     layout: 'fit',
                     renderTo: app.mapPanel.body,
                     modal: false,
@@ -346,7 +384,8 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                                     scope: this
                                 });
                             } else {
-                                var formula = formPanel.getFormula().getGroupValue();
+                                var formula = formPanel.getFormula().get('id_formula');
+                                var target = formPanel.getFormula().get('target');
                                 var startX = formPanel.getStartX().getValue();
                                 var startY = formPanel.getStartY().getValue();
                                 var endX = formPanel.getEndX().getValue();
@@ -364,7 +403,7 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                                         endPoint.lonlat.lon, endPoint.lonlat.lat);
                                 
                                 var syntView = app.tools["syntheticview"];
-                                syntView.addRoutingLayer(descr, formula, start, end, bbox);
+                                syntView.addRoutingLayer(descr, formula, start, end, target, bbox);
                                 
                                 // clear markers
                                 routePoints.clearMarkers();
@@ -402,7 +441,7 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
         var formPanel = Ext.getCmp('route-formpanel');
         var formulaField = formPanel && formPanel.getFormula();
         if (formulaField) {
-            return this.routingText + " (" + formulaField.boxLabel + ")";
+            return this.routingText + ": " + formulaField.get('name');
         }
     },
 

@@ -803,6 +803,6 @@ GeoExt.Lang.add("fr", {
         missingParametersMsg: "Spécifiez formule, départ et la destination",
         selectOneMsg: "Sélectionnez une option",
         fieldRequiredMsg: "Ce champ est obligatoire",
-        lunghezzaFormula: "Longueur",
+        lengthFormula: "Longueur",
     }
 });

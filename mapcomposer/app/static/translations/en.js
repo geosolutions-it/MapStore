@@ -143,8 +143,8 @@ GeoExt.Lang.add("en", {
         allNotHumanTargetOption: "All environmental targets",
         entLieve: "slight",
         entGrave: "serious",
-        humanRiskLabel: "Total Risk",
-        notHumanRiskLabel: "environamental risk",
+        humanRiskLabel: "Social Risk",
+        notHumanRiskLabel: "Environmental risk",
         lowRiskLabel: "low risk",
         mediumRiskLabel: "average Risk",
         highRiskLabel: "high Risk",
@@ -804,7 +804,7 @@ GeoExt.Lang.add("en", {
         missingParametersMsg: "Specify formula, start and destination",
         selectOneMsg: "Select an option",
         fieldRequiredMsg: "This field is required",
-        lunghezzaFormula: "Length",
+        lengthFormula: "Length",
     }
 
 });
