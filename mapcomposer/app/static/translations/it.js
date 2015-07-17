@@ -785,5 +785,25 @@ GeoExt.Lang.add("it", {
         daysText: 'Giorni', 
         monthsText: 'Mesi', 
         yearsText: 'Anni'
-    }    
+    },
+    "gxp.plugins.Routing.prototype": {
+        menuText: "Calcola percorso",
+        tooltip: "Calcola percorso",
+        formulaText: "Formula",
+        routeStartText: "Partenza",
+        routeEndText: "Destinazione",
+        descriptionText: "Descrizione",
+        routePointsText: "Estremi del percorso",
+        selectPointText: "Seleziona punto da mappa",
+        calculateText: "Calcola",
+        lonText: "Lon",
+        latText: "Lat",
+        routingText: "Routing",
+        errorTitle: "Errore",
+        missingParametersMsg: "Specificare tipo di formula, partenza e destinazione",
+        selectOneMsg: "Selezionare una opzione",
+        fieldRequiredMsg: "Il campo è obbligatorio",
+        lunghezzaFormula: "Lunghezza",
+    }
+
 });

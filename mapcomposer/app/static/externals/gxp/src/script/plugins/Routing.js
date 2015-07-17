@@ -39,15 +39,35 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
      */
     iconCls: "icon-route",
 
+    formulaText: "Formula",
+
+    routeStartText: "Partenza",
+
+    routeEndText: "Destinazione",
+
+    descriptionText: "Descrizione",
+
+    routePointsText: "Estremi del percorso",
+
+    selectPointText: "Seleziona punto da mappa",
+
+    calculateText: "Calcola",
+
+    lonText: "Lon",
+
+    latText: "Lat",
+
+    routingText: "Routing",
+
     errorTitle: "Errore",
 
-    selectPoint: "Seleziona punto da mappa",
-
-    missingParametersError: "Specificare tipo di formula, partenza e destinazione",
+    missingParametersMsg: "Specificare tipo di formula, partenza e destinazione",
 
     selectOneMsg: "Selezionare una opzione",
 
     fieldRequiredMsg: "Il campo è obbligatorio",
+
+    lengthFormula: "Lunghezza",
 
     /** private: method[constructor]
      */
@@ -80,6 +100,7 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                 var map = this.target.mapPanel.map;
                 var routePoints = this.getOrCreateRoutePointsLayer();
                 var me = this;
+                var formulaStore = app.tools["syntheticview"].processingPane.formulaStore;
                 
                 var clickHandler = new OpenLayers.Handler.Click({}, {
                     "click": function(event) { }
@@ -107,16 +128,23 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                     allowDecimals: true,
                     autoStripChars: true,
                     decimalPrecision: 4,
-                    anchor:'95%'
+                    anchor:'95%',
+                    enableKeyEvents: true,
+                    listeners: {
+                        "keyup": function() {
+                            me.enableOrDisableCalculateBtn();
+                        }
+                    }
                 };
                 
                 var formPanel = new Ext.FormPanel({
+                    id: 'route-formpanel',
                     labelAlign: 'top',
                     frame:true,
                     bodyStyle:'padding:5px 5px 0',
                     items: [{
                         xtype: 'fieldset',
-                        title: 'Formula',
+                        title: this.formulaText,
                         layout: 'form',
                         items: [{
                             id: 'formula-group',
@@ -128,27 +156,28 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                             // Put all controls in a single column with width 100%
                             columns: 1,
                             items: [
-                                {boxLabel: 'Formula 26', name: 'formula', inputValue: 26},
-                                {boxLabel: 'Formula 32', name: 'formula', inputValue: 32},
-                                {boxLabel: 'Formula 141', name: 'formula', inputValue: 141}
+                                {boxLabel: formulaStore.getAt(formulaStore.find('id_formula', 26)).get('name'), name: 'formula', inputValue: 141, checked: true},
+                                {boxLabel: formulaStore.getAt(formulaStore.find('id_formula', 32)).get('name'), name: 'formula', inputValue: 32},
+                                {boxLabel: formulaStore.getAt(formulaStore.find('id_formula', 22)).get('name'), name: 'formula', inputValue: 22},
+                                {boxLabel: this.lengthFormula, name: 'formula', inputValue: 142}
                             ]
                         }]
                     }, {
                         xtype: 'fieldset',
-                        title: 'Route start',
+                        title: this.routeStartText,
                         layout:'column',
                         items:[{
                             columnWidth:.45,
                             layout: 'form',
                             items: [Ext.apply({
-                                fieldLabel: 'X',
+                                fieldLabel: this.lonText,
                                 name: 'x_start',
                             }, numberFieldDefaults)]
                         },{
                             columnWidth:.45,
                             layout: 'form',
                             items: [Ext.apply({
-                                fieldLabel: 'Y',
+                                fieldLabel: this.latText,
                                 name: 'y_start',
                             }, numberFieldDefaults)]
                         },{
@@ -159,22 +188,29 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                                 fieldLabel: '&nbsp;',
                                 labelSeparator: '',
                                 iconCls: 'icon-pick',
-                                tooltip: this.selectPoint,
+                                tooltip: this.selectPointText,
                                 text: '',
                                 enableToggle: true,
                                 toggleGroup: 'pick_point',
                                 toggleHandler: function(btn, pressed) {
                                     if (pressed) {
                                         clickHandler.callbacks["click"] = function(event) {
-                                            var lonLat = map.getLonLatFromPixel(event.xy);
-                                            createMarker("start", lonLat);
+                                            var xy = map.getLonLatFromPixel(event.xy);
+                                            createMarker("start", xy);
                                             
                                             var xField = formPanel.getStartX();
                                             var yField = formPanel.getStartY();
+                                            var lonLat = me.toLonLat(xy.lon, xy.lat);
                                             xField.setValue(lonLat.lon);
                                             yField.setValue(lonLat.lat);
+                                            
+                                            me.enableOrDisableCalculateBtn();
+                                            win.expand();
+                                            btn.toggle();
                                         }
-                                        clickHandler.activate();
+                                        if (clickHandler.activate()) {
+                                            win.collapse();
+                                        }
                                     } else {
                                         clickHandler.deactivate();
                                     }
@@ -183,20 +219,20 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                         }]
                     }, {
                         xtype: 'fieldset',
-                        title: 'Route end',
+                        title: this.routeEndText,
                         layout:'column',
                         items:[{
                             columnWidth:.45,
                             layout: 'form',
                             items: [Ext.apply({
-                                fieldLabel: 'X',
+                                fieldLabel: this.lonText,
                                 name: 'x_end'
                             }, numberFieldDefaults)]
                         },{
                             columnWidth:.45,
                             layout: 'form',
                             items: [Ext.apply({
-                                fieldLabel: 'Y',
+                                fieldLabel: this.latText,
                                 name: 'y_end',
                             }, numberFieldDefaults)]
                         },{
@@ -207,26 +243,48 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                                 fieldLabel: '&nbsp;',
                                 labelSeparator: '',
                                 iconCls: 'icon-pick',
-                                tooltip: this.selectPoint,
+                                tooltip: this.selectPointText,
                                 text: '',
                                 enableToggle: true,
                                 toggleGroup: 'pick_point',
                                 toggleHandler: function(btn, pressed) {
                                     if (pressed) {
                                         clickHandler.callbacks["click"] = function(event) {
-                                            var lonLat = map.getLonLatFromPixel(event.xy);
-                                            createMarker("end", lonLat);
+                                            var xy = map.getLonLatFromPixel(event.xy);
+                                            createMarker("end", xy);
                                             
                                             var xField = formPanel.getEndX();
                                             var yField = formPanel.getEndY();
+                                            var lonLat = me.toLonLat(xy.lon, xy.lat);
                                             xField.setValue(lonLat.lon);
                                             yField.setValue(lonLat.lat);
+                                            
+                                            me.enableOrDisableCalculateBtn();
+                                            win.expand();
+                                            btn.toggle();
                                         }
-                                        clickHandler.activate();
+                                        if (clickHandler.activate()) {
+                                            win.collapse();
+                                        }
                                     } else {
                                         clickHandler.deactivate();
                                     }
                                 }
+                            }]
+                        }]
+                    }, {
+                        xtype: 'fieldset',
+                        title: this.descriptionText,
+                        layout:'column',
+                        items:[{
+                            columnWidth: 1,
+                            layout: 'form',
+                            items: [{
+                                xtype: "textfield",
+                                name: "description",
+                                hideLabel: true,
+                                allowBlank: true,
+                                anchor:'95%'
                             }]
                         }]
                     }],
@@ -244,6 +302,9 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                     },
                     getEndY: function() {
                         return this.getForm().findField('y_end');
+                    },
+                    getDescription: function() {
+                        return this.getForm().findField('description');
                     }
                 });
                 
@@ -251,7 +312,7 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                 var win = new Ext.Window({
                     title: me.menuText,
                     width: 400,
-                    height: 400,
+                    height: 510,
                     layout: 'fit',
                     renderTo: app.mapPanel.body,
                     modal: false,
@@ -269,16 +330,18 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                         }
                     },
                     bbar: ["->", {
+                        id: 'route-calculate',
                         xtype: 'button',
-                        text: 'Calculate',
+                        text: this.calculateText,
                         iconCls: 'icon-calculate-route',
                         scope: me,
+                        disabled: true,
                         handler: function() {
                             if (!formPanel.getForm().isValid()) {
                                 Ext.Msg.show({
                                     title: this.errorTitle,
                                     buttons: Ext.Msg.OK,
-                                    msg: this.missingParametersError,
+                                    msg: this.missingParametersMsg,
                                     icon: Ext.MessageBox.ERROR,
                                     scope: this
                                 });
@@ -288,13 +351,20 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                                 var startY = formPanel.getStartY().getValue();
                                 var endX = formPanel.getEndX().getValue();
                                 var endY = formPanel.getEndY().getValue();
+                                var descr = formPanel.getDescription().getValue();
+                                if (!descr) {
+                                    descr = me.getDefaultDescription();
+                                }
                                 
                                 var start = this.toRoutePointParam("start", startX, startY);
                                 var end = this.toRoutePointParam("end", endX, endY);
-                                var bbox = me.toBBoxParam(startX, startY, endX, endY);
+                                var startPoint = routePoints.points["start"];
+                                var endPoint = routePoints.points["end"];
+                                var bbox = me.toBBoxParam(startPoint.lonlat.lon, startPoint.lonlat.lat,
+                                        endPoint.lonlat.lon, endPoint.lonlat.lat);
                                 
                                 var syntView = app.tools["syntheticview"];
-                                syntView.addRoutingLayer("Routing (formula " + formula + ")", formula, start, end, bbox);
+                                syntView.addRoutingLayer(descr, formula, start, end, bbox);
                                 
                                 // clear markers
                                 routePoints.clearMarkers();
@@ -316,13 +386,42 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
         return actions;
     },
 
+    enableOrDisableCalculateBtn: function() {
+        var formPanel = Ext.getCmp('route-formpanel');
+        var calculateBtn = Ext.getCmp('route-calculate');
+        if (formPanel && calculateBtn) {
+            if (formPanel.getForm().isValid()) {
+                calculateBtn.setDisabled(false);
+            } else {
+                calculateBtn.setDisabled(true);
+            }
+        }
+    },
+
+    getDefaultDescription: function() {
+        var formPanel = Ext.getCmp('route-formpanel');
+        var formulaField = formPanel && formPanel.getFormula();
+        if (formulaField) {
+            return this.routingText + " (" + formulaField.boxLabel + ")";
+        }
+    },
+
     getOrCreateRoutePointsLayer: function() {
         var routePointsLayer = null;
         var map = this.target.mapPanel.map;
-        var layers = map.getLayersByName("Route points");
+        var layers = map.getLayersByName(this.routePointsText);
         if (layers.length === 0) {
-            routePointsLayer = new OpenLayers.Layer.Markers("Route points");
+            routePointsLayer = new OpenLayers.Layer.Markers(this.routePointsText);
+            routePointsLayer.displayInLayerSwitcher = false;
             routePointsLayer.points = {};
+            
+            /*var Record = GeoExt.data.LayerRecord.create([{ name: "group", type: "string" }]);
+            this.target.mapPanel.layers.add([new Record({
+                title: this.routePointsText,
+                layer: routePointsLayer,
+                group: "routing"
+            }, routePointsLayer.id)]);*/
+            
             map.addLayer(routePointsLayer);
         } else {
             routePointsLayer = layers[0];
@@ -331,15 +430,14 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
         return routePointsLayer;
     },
 
-    toRoutePointParam: function(name, x, y) {
+    toLonLat: function(x, y) {
         var map = this.target.mapPanel.map;
-        var toLonLat = function(x, y) {
-            var lonLat = new OpenLayers.LonLat(x, y);
-            return lonLat.transform(map.projection, new OpenLayers.Projection("EPSG:4326"));
-        }
-        
-        var lonLat = toLonLat(x, y);
-        return name + ":" + lonLat.lon + "," +  lonLat.lat;
+        var lonLat = new OpenLayers.LonLat(x, y);
+        return lonLat.transform(map.projection, new OpenLayers.Projection("EPSG:4326"));
+    },
+
+    toRoutePointParam: function(name, lon, lat) {
+        return name + ":" + lon + "," +  lat;
     },
 
     toBBoxParam: function(startx, starty, endx, endy) {

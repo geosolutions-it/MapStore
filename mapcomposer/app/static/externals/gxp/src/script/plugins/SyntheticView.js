@@ -2747,14 +2747,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
 
     addRoutingLayer: function(title, formula, start, end, bbox) {
-        if(this.routingLayer) {
-            this.removeLayersByName(this.target.mapPanel.map,[this.routingLayer]);
-        }
-
-        this.routingLayer = "routing";
-        var env = ["forumula:" + formula, start, end].join(";");
+        var env = ["title:" + title, "formula:" + formula, start, end].join(";");
         var record = this.createLayerRecord({
-            name: this.routingLayer,
+            name: "routing",
             title: title,
             tiled: false,
             params: {
@@ -2763,6 +2758,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             }
         }, {
             singleTile: true,
+            group: "routing",
             bounds: OpenLayers.Bounds.fromString(bbox),
             visibility: true
         });

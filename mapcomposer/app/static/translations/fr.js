@@ -785,5 +785,24 @@ GeoExt.Lang.add("fr", {
         daysText: 'Journées', 
         monthsText: 'Mois', 
         yearsText: 'Ans'        
-    }    
+    },
+    "gxp.plugins.Routing.prototype": {
+        menuText: "Calculer l'itinéraire",
+        tooltip: "Calculer l'itinéraire",
+        formulaText: "Formule",
+        routeStartText: "Départ",
+        routeEndText: "Destination",
+        descriptionText: "Description",
+        routePointsText: "Points de terminaison",
+        selectPointText: "Sélectionnez le point de la carte",
+        calculateText: "Calculer",
+        lonText: "Longitude",
+        latText: "Latitude",
+        routingText: "Routage",
+        errorTitle: "Erreur",
+        missingParametersMsg: "Spécifiez formule, départ et la destination",
+        selectOneMsg: "Sélectionnez une option",
+        fieldRequiredMsg: "Ce champ est obligatoire",
+        lunghezzaFormula: "Longueur",
+    }
 });
