@@ -4,13 +4,17 @@
    		"comunege": {
 			"ptype": "gxp_wmssource",
 			"title": "Comune Genova",
-			"url": "http://mappe.comune.genova.it/geoserver/ows",
+			"url": "http://mappe.comune.genova.it/geoserver/wms",
 			"SRS": "EPSG:900913",
 			"version":"1.1.1",
+			"layersCachedExtent": [
+				-20037508.34, -20037508.34, 
+				20037508.34, 20037508.34
+			],
 			"layerBaseParams":{
 				"FORMAT": "image/png8",
 				"TILED": true,
-			   "TILESORIGIN": "-20037508.34, -20037508.34"
+				"TILESORIGIN": "-20037508.34, -20037508.34"
 			},
             "authParam":"authkey"
 		},
@@ -41,10 +45,12 @@
 		"zoom": 5,
         "numZoomLevels": 21,
 		"extent": [
-			962337.0596294437, 5523110.328076044, 1014934.9764326633, 5547342.6306190565
+				939258.2034374997, 5479006.186718751,
+				1017529.7203906253, 5557277.703671876
 		],
 		"restrictedExtent": [
-			962337.0596294437, 5523110.328076044, 1014934.9764326633, 5547342.6306190565
+				939258.2034374997, 5479006.186718751,
+				1017529.7203906253, 5557277.703671876
 		],
 		"layers": [
 			{
@@ -213,7 +219,9 @@
             "outputTarget": "featuregrid",
 			"exportFormats": ["CSV","shape-zip","excel", "excel2007"],
 			"exportAction": "window",
-			"showNumberOfRecords": true
+			"showNumberOfRecords": true,
+			"dateFormat": "d-m-Y",
+			"featureMaxZoomLevel": 18
         }, {
 			"ptype": "gxp_categoryinitializer",
             "silentErrors": true
@@ -387,7 +395,8 @@
     	},{
         "ptype":"gxp_print",
         "customParams":{
-            "outputFilename":"mapstore-print"
+            "outputFilename":"mapstore-print",
+			"geodetic": true
         },
         "ignoreLayers": "Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
         "printService":"http://mappe.comune.genova.it/geoserver/pdf/",
@@ -398,7 +407,7 @@
         },
         "addLandscapeControl": true,
         "appendLegendOptions": true,
-        "addGraticuleControl": true
+        "addGraticuleControl": false
     },{
     	"ptype": "gxp_spatial_selector_locator",
         "outputTarget": "west",
@@ -515,9 +524,6 @@
 		"privacyURL": "http://www.comune.genova.it/content/note-legali-e-privacy",
 		"actionTarget": {"target": "panelbbar", "index": 5}
 	}, {
-		"ptype": "gxp_languageselector",
-		"actionTarget": {"target": "panelbbar", "index": 3}
-	}, {
         "ptype":"gxp_playback",
         "playbackMode": "range",
         "labelButtons": false,
@@ -527,8 +533,8 @@
             "controlConfig":{
                 "step": 1,
                 "units": "Hours",
-                "range": ["2012-09-02T13:55:15.000Z", "2012-09-23T07:02:12.000Z"],
-                "frameRate": 1
+                "range": ["2015-01-01T00:00:00.000Z", "2015-12-31T00:00:00.000Z"],
+                "frameRate": 5
             }
         }
     }]
