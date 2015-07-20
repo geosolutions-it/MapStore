@@ -2746,10 +2746,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         this.target.mapPanel.layers.add([record]);
     },
 
-    addRoutingLayer: function(title, formula, start, end, target, bbox) {
+    addRoutingLayer: function(title, formula, start, end, target, bbox, blocked) {
         var envParams = ["title:" + title, "formula:" + formula, start, end];
         if (target) {
             envParams.push("target:" + target);
+        }
+        if (blocked) {
+            envParams.push("blocked:" + blocked.join(','));
         }
         var env = envParams.join(";");
         var record = this.createLayerRecord({

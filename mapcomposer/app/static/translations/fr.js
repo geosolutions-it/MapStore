@@ -804,5 +804,10 @@ GeoExt.Lang.add("fr", {
         selectOneMsg: "Sélectionnez une option",
         fieldRequiredMsg: "Ce champ est obligatoire",
         lengthFormula: "Longueur",
+        blockRoadsText: "Bloquer les routes",
+        zoomToRoadsText: "Zoom sur la sélection",
+        addRoadsText: "Ajouter routes pour bloquer",
+        removeRoadsText: "Enlever la sélection",
+        resetRoadsText: "Enlever tout"
     }
 });
