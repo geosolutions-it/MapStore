@@ -572,6 +572,16 @@
         "-"
         ],
 		"actionTarget": "paneltbar"
+    },
+    {
+        "ptype": "gxp_routing",
+        "actionTarget": "paneltbar"
+    },
+	{
+        "actions":[
+        "-"
+        ],
+		"actionTarget": "paneltbar"
 	},{
         "ptype":"gxp_playback",
 		"id": "destination_playback",
