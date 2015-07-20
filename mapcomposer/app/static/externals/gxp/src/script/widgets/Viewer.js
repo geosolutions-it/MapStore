@@ -499,6 +499,9 @@ gxp.Viewer = Ext.extend(Ext.util.Observable, {
                         var groups = {
                             "default": {
                                 title: tool.overlayNodeText
+                            },
+                            "routing": {
+                                title: ["Routing", "Routing", "Routage", "Routenplaner"]
                             }
                         };
 

@@ -570,7 +570,17 @@
             "target":"paneltbar",
             "index":21
         }
-	},
+    },
+    {
+        "actions":[
+        "-"
+        ],
+        "actionTarget": "paneltbar"
+    },
+    {
+        "ptype": "gxp_routing",
+        "actionTarget": "paneltbar"
+    },
 	{
         "actions":[
         "-"
