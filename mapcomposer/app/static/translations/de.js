@@ -805,5 +805,10 @@ GeoExt.Lang.add("de", {
         selectOneMsg: "Wählen Sie eine Option",
         fieldRequiredMsg: "Dieses Feld wird benötigt",
         lengthFormula: "Länge",
+        blockRoadsText: "Block Straßen",
+        zoomToRoadsText: "Zoom auf Auswahl",
+        addRoadsText: "In Straßen zu blockieren",
+        removeRoadsText: "Ausgewählte entfernen",
+        resetRoadsText: "Alle entfernen"
     }
 });

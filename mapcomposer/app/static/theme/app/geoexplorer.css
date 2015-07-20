@@ -102,11 +102,27 @@ font-family: tahoma, arial, helvetica, sans-serif;
 }
 
 .x-btn .icon-calculate-route {
-    background-image: url(img/silk/add.png);
+    background-image: url(../../externals/gxp/src/theme/img/accept.png);
 }
 
 .x-btn .icon-pick {
     background-image: url(img/silk/cursor.png);
+}
+
+.x-btn .icon-add-roads {
+    background-image: url(img/silk/add.png);
+}
+
+.x-btn .icon-remove-roads {
+    background-image: url(img/silk/delete.png);
+}
+
+.x-btn .icon-zoom-roads {
+    background-image: url(img/silk/magnifier.png);
+}
+
+.x-btn .icon-reset-roads {
+    background-image: url(../../externals/gxp/src/theme/img/decline.png);
 }
 
 .x-btn .refresh-grid-button {
