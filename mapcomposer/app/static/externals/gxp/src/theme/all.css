@@ -544,3 +544,15 @@ div.olMap div.gx-overlay-playback {
 .crsInfoButton {
    background-image: url(img/silk/information.png) !important;
 }
+/* Background for items selected in multiselect */
+.ux-mselect-selected{
+    background-color: rgb(204, 204, 204);
+}
+/** NEEDED TO MAKE MULTISELECT SCROLL **/
+.ux-mselect{
+    overflow:auto;
+    background:white;
+    position:relative; /* for calculating scroll offsets */
+    zoom:1;
+    overflow:auto;  
+}

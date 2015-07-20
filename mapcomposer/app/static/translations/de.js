@@ -308,7 +308,7 @@ GeoExt.Lang.add("de", {
 	    removeGroupConfirmationText: "Sind Sie sicher die ausgewählte Gruppe entfernen zu wollen? Alle beinhalteten Schichten werden von der Karte entfernt."
     },
     
-    "gxp.plugins.SaveDefaultContext.prototype": { 
+    "gxp.plugins.SaveMapPlugin.prototype": { 
 	    saveDefaultContextMenuText: "Kontext speichern",
 	    saveDefaultContextActionTip: "Karten-Kontext speichern",
 	    contextSaveSuccessString: "Kontext richtig gespeichert",
@@ -322,7 +322,11 @@ GeoExt.Lang.add("de", {
 		mapNameLabel: "Name",	
 		mapDescriptionLabel: "Beschreibung",
 		addResourceButtonText: "In Map",
-		conflictErrMsg: "Eine Karte mit dem gleichen Namen ist bereits vorhanden"
+		conflictErrMsg: "Eine Karte mit dem gleichen Namen ist bereits vorhanden",
+        selectionErrorTitle:"Fehler",
+        groupSelectionError:"Wählen Sie mindestens eine Gruppe",
+        permissionsLabel:"Zulassung",
+        groupsLabel:"Benutzergruppen"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {

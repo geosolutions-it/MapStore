@@ -1431,11 +1431,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     
     /** private: method[setAuthHeader]
      *
-     * Set Authorization Headers in gxp_saveDefaultContext.
+     * Set Authorization Headers in gxp_saveMapPlugin.
      */ 
     setAuthHeaders: function(auth) {
         for(var tool in this.tools){
-            if(this.tools[tool].ptype == "gxp_saveDefaultContext"){
+            if(this.tools[tool].ptype == "gxp_saveMapPlugin"){
                 this.tools[tool].authHeader = auth;
             }
         }
