@@ -562,8 +562,9 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                                     
                                     var start = this.toRoutePointParam("start", startX, startY);
                                     var end = this.toRoutePointParam("end", endX, endY);
-                                    var bbox = me.toBBoxParam(startProj.lon, startProj.lat,
-                                            endProj.lon, endProj.lat);
+                                    var bbox = me.toBBoxParam(map.getMaxExtent());
+                                    //me.toBBoxParam(startProj.lon, startProj.lat,
+                                            //endProj.lon, endProj.lat);
                                     
                                     var blocked = [];
                                     var records = excludedRoadsStore.getRange();
@@ -649,11 +650,11 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
         return name + ":" + lon + "," +  lat;
     },
 
-    toBBoxParam: function(startx, starty, endx, endy) {
-        var minX = Math.min(startx, endx);
-        var maxX = Math.max(startx, endx);
-        var minY = Math.min(starty, endy);
-        var maxY = Math.max(starty, endy);
+    toBBoxParam: function(extent) {
+        var minX = extent.left;
+        var maxX = extent.right;
+        var minY = extent.bottom;
+        var maxY = extent.top;
         
         var bbox = [minX, minY, maxX, maxY].join(",");
         return bbox;
