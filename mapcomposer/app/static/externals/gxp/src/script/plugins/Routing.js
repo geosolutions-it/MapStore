@@ -260,14 +260,14 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                                     layout: 'form',
                                     items: [Ext.apply({
                                         fieldLabel: this.lonText,
-                                        name: 'x_start',
+                                        name: 'x_start'
                                     }, numberFieldDefaults)]
                                 },{
                                     columnWidth:.45,
                                     layout: 'form',
                                     items: [Ext.apply({
                                         fieldLabel: this.latText,
-                                        name: 'y_start',
+                                        name: 'y_start'
                                     }, numberFieldDefaults)]
                                 },{
                                     columnWidth:.1,
@@ -323,7 +323,7 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                                     layout: 'form',
                                     items: [Ext.apply({
                                         fieldLabel: this.latText,
-                                        name: 'y_end',
+                                        name: 'y_end'
                                     }, numberFieldDefaults)]
                                 },{
                                     columnWidth:.1,
