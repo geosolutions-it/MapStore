@@ -705,8 +705,17 @@
             "source": "destinationtiled",
             "name": "siig_gate_geo_gate"
         }
-    },
-    {
+    }, {
+        "ptype": "gxp_featuremanager",
+        "maxFeatures": 1000,
+        "id": "routing_featuremanager",
+        "wfsUrl":"http://@@@@domain_url@@@@/geoserver/ows",
+        "paging": false,
+        "layer": {
+            "source": "destinationtiled",
+            "name": "v_grafo_minimal"
+        }
+    }, {
 		"ptype": "gxp_obu",
         "id": "destinationobu",
         "outputTarget": "east",
