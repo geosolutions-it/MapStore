@@ -14,6 +14,50 @@
  */
 Ext.namespace("gxp.plugins");
 
+GeoExt.data.FeatureReader.prototype.readRecords = function(features) {
+    var records = [];
+
+    if (features) {
+        var recordType = this.recordType, fields = recordType.prototype.fields;
+        var i, lenI, j, lenJ, feature, values, field, v;
+        for (i = 0, lenI = features.length; i < lenI; i++) {
+            feature = features[i];
+            values = {};
+            if (feature.attributes) {
+                for (j = 0, lenJ = fields.length; j < lenJ; j++){
+                    field = fields.items[j];
+                    if (/[\[\.]/.test(field.mapping)) {
+                        try {
+                            v = new Function("obj", "return obj." + field.mapping)(feature.attributes);
+                        } catch(e){
+                            v = field.defaultValue;
+                        }
+                    }
+                    else {
+                        v = feature.attributes[field.mapping || field.name] || field.defaultValue;
+                    }
+                    if (field.convert) {
+                        v = field.convert(v, feature.attributes);
+                    }
+                    values[field.name] = v;
+                }
+            }
+            values.feature = feature;
+            values.state = feature.state;
+            values.fid = feature.fid;
+
+            // newly inserted features need to be made into phantom records
+            var id = (feature.state === OpenLayers.State.INSERT) ? undefined : feature.id;
+            records[records.length] = new recordType(values, id);
+        }
+    }
+
+    return {
+        records: records,
+        totalRecords: this.totalRecords != null ? this.totalRecords : records.length
+    };
+};
+
 /** api: constructor
  *  .. class:: StandardProcessing(config)
  *
@@ -407,13 +451,18 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.sostanzeSingoleStore = new GeoExt.data.FeatureStore({
             id: "singoleStore",
             fields: [{
-                        "name": "name",              
-                        "mapping": "descrizione_onu_" + GeoExt.Lang.locale
+                        "name": "codice_onu",              
+                        "mapping": "codice_onu"
+              },{
+                        "name": "name",
+                        "convert": function(v, record) {
+                            return record["codice_onu"] + " - " + record["descrizione_onu_" + GeoExt.Lang.locale];
+                        }
               },{
                         "name": "value",        
                         "mapping": "codice_kemler"
               }],
-             proxy: this.getWFSStoreProxy("sostanze_singole")
+             proxy: this.getWFSStoreProxy("sostanze_singole", null, "codice_onu")
         });
 
         this.sostanzeSingoleStore.on('load', function(str, records) {
@@ -445,7 +494,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 "name": "modello",
                 "mapping": "fk_modello"
             }],
-            proxy: this.getWFSStoreProxy("siig_t_sostanza", undefined, "id_sostanza")
+            proxy: this.getWFSStoreProxy("siig_t_sostanza", undefined, "nome_sostanza_" + GeoExt.Lang.locale)
         });
                     
         this.sostanzeStore.on('load', function(str, records) {
