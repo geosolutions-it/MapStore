@@ -287,7 +287,7 @@ GeoExt.Lang.add("es", {
 	    removeGroupConfirmationText: "¿Está seguro de que quiere borrar el grupo seleccionado? Todas las capas contenidas en el mismo se borrarán del mapa."
     },
     
-    "gxp.plugins.SaveDefaultContext.prototype": { 
+    "gxp.plugins.SaveMapPlugin.prototype": { 
 	    saveDefaultContextMenuText: "Guardar contexto por defecto",
 	    saveDefaultContextActionTip: "Guardar contexto del mapa",
 	    contextSaveSuccessString: "Contexto salvado correctamente",
@@ -298,10 +298,14 @@ GeoExt.Lang.add("es", {
 		loginLabel: "Login",	
 		mapMetadataTitle: "Insertar Metadatos del Mapa",	
 		mapMedatataSetTitle: "Metadatos del Mapa",	
-		mapNombreLabel: "Nombre",	
-		mapDescripciónLabel: "Descripción",
+		mapNameLabel: "Nombre",	
+		mapDescriptionLabel: "Descripción",
 		addResourceButtonText: "Añadir Mapa",
-		conflictErrMsg: "Un mapa con el mismo nombre ya existe"
+		conflictErrMsg: "Un mapa con el mismo nombre ya existe",
+        selectionErrorTitle:"Error",
+        groupSelectionError:"Seleccione al menos un grupo",
+        permissionsLabel:"Permisos",
+        groupsLabel:"Grupos"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
