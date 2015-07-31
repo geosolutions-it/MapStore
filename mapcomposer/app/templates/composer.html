@@ -33,7 +33,7 @@
 	
     <!-- canvg-1.2 resources -->
 	<script type="text/javascript" src="script/canvg-1.2.js"></script> 
-	
+	<script type="text/javascript" src="script/ux.js"></script>
     <!-- gxp resources -->
     <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
 
@@ -53,7 +53,7 @@
     <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->        
 
     <script type="text/javascript" src="script/GeoExplorer.js"></script>
-    <script type="text/javascript" src="script/ux.js"></script>
+   
    
     <!-- csw resources -->
     <link rel="stylesheet" type="text/css" href="externals/csw/css/csw.css">
@@ -104,12 +104,12 @@
 		}*/   
 		
 		var app;        
-        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox; var useCookies; var templateId;
+        var modified = false, mapIdentifier = -1, authorization = false, fullScreen = false, bbox, useCookies, templateId, markersurl;
 		
 		// /////////////////////////////////////////////////////
 		// Extra parameters to add layers at startup
 		// /////////////////////////////////////////////////////
-		var layName; var layTitle; var wmsurl; var gsturl;
+		var layName; var layTitle; var wmsurl; var gsturl; var urlformat;
 		
         // ///////////////////////////////////////////////////////////////
         // Custom variables from the mapStoreConfig user configuration file 
@@ -157,6 +157,10 @@
 									wmsurl = param[1]; 
 									wmsurl = decodeURIComponent(wmsurl);
 									break;
+					case "markersurl" : 
+									markersurl = param[1]; 
+									markersurl = decodeURIComponent(markersurl);
+									break;
 					case "gsturl" : 
 									gsturl = param[1]; 
 									gsturl = decodeURIComponent(gsturl);
@@ -180,6 +184,9 @@
 									}catch(e){
 										templateId = -1;
 									} 
+									break;
+					case "format":
+									urlformat = param[1];
 									break;
 					default :       
 									//mapIdentifier = -1;
@@ -305,10 +312,14 @@
 				}
 				return section;
 			}
+
+			var parseHeader = function(section) {
+				return (section && section.header !== undefined && section.header !== null) ? section.header : false;
+			}
 			
 			if(header || footer){
 				var north = {
-					header: false,
+					header: parseHeader(header.container),
 					region: 'north',
 					id: 'msheader'
 				};
@@ -319,14 +330,18 @@
 				}
 				
 			    var south = {
-					header: false,
+					header: parseHeader(footer.container),
 					region: 'south',
 					id: 'msfooter'
 				};
 				
 				if(footer){
 					south = Ext.applyIf(south, (footer.container ? parseKnowIntegers(footer.container) : {}));
-					south.html = (footer.css || '') + (footer.html || '');
+                    var html = footer.html;
+                    if(footer.html instanceof Array){
+                        html = footer.html.join("");
+                    }
+					south.html = (footer.css || '') + (html || '');
 				}
 				
 				viewport.items = [{
@@ -347,12 +362,37 @@
 			}			
 			
 			var appViewport = new Ext.Viewport(viewport);
-            
-            // /////////////////////////////////////////////////////////////
+
+			if(gsturl){
+				serverConfig.geoStoreBase = gsturl;
+			}
+
+			// //////////////////////////////////////////////////
+			// Check if content data has been provided via POST
+			// //////////////////////////////////////////////////
+			if(content.data){
+				var dataConfig = unescape(content.data);
+				try{
+					dataConfig = Ext.util.JSON.decode(dataConfig);
+					var customConfig = dataConfig.map_config;
+					if(customConfig){
+						// ////////////////////////////////////////////////////////////
+						// Properties of the internal configuration will be replaced 
+						// by those specified for the custom configuration
+						// ////////////////////////////////////////////////////////////
+						serverConfig = Ext.apply(serverConfig, customConfig);
+						sources = serverConfig.sources || serverConfig.gsSources;
+					}					
+				}catch(e){
+					console.log(e);
+				}
+			}
+			
+			// /////////////////////////////////////////////////////////////
             // Parsing WMS servers Sources for getCapabilities operation
             // /////////////////////////////////////////////////////////////
             try{
-                var sources = serverConfig.gsSources;
+                var sources = serverConfig.sources || serverConfig.gsSources;
             }catch(e){
                 sources = {
                     mapquest: {
@@ -379,17 +419,10 @@
                       icon: Ext.MessageBox.ERROR
                 });
             }
- 
-			/*var auth = 'Basic ' + Base64.encode('admin:admin');
-			      Ext.Ajax.defaultHeaders = {
-                'Authorization' : auth
-            };*/
-
-			if(gsturl){
-				serverConfig.geoStoreBase = gsturl;
-			}
 			
             app = new GeoExplorer.Composer({
+				markers: serverConfig.markers,
+				markersURL: markersurl || serverConfig.markersURL,
                 scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
 				defaultLanguage: serverConfig.defaultLanguage,	
 				actionToolScale: serverConfig.actionToolScale || "small",
@@ -399,7 +432,9 @@
 				tools: serverConfig.tools,
 				removeTools: serverConfig.removeTools,
 				geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),
+				adminUrl: serverConfig.adminUrl || ('http://' + window.location.host + '/admin/'),
                 portalConfig: serverConfig.portalConfig,
+				loadingPanel: serverConfig.loadingPanel || {},
                 defaultSourceType: "gxp_wmssource",
                 renderToTab : 'appTabs',
                 about: {
@@ -414,7 +449,7 @@
                 map: serverConfig.map,
 				customTools: serverConfig.customTools
             }, mapIdentifier, authorization && authorization == "false" ? null: authorization, fullScreen, templateId);   
-            
+			
             app.on({
                 'portalready' : function() {              	
                     if(fullScreen) {
@@ -457,30 +492,45 @@
 								
 							if(layersList){
 								var layers = layersList.split("#");
+								var resources = [];								
+								
 								for(var i=0; i<layers.length; i++){
 									var keys = layers[i];
 									
 									keys = unescape(keys);
 									keys = Ext.util.JSON.decode(keys);
 									
-									var lname = keys.layer;
-									var lwms = decodeURIComponent(keys.wms);
+									var format = keys.format;
 									
-									addMSLayer(
-										lname,
-										lname,
-										lwms
-									);
+									if(format == "wms" || format == "wmts"){
+										var lname = keys.layer;
+										var lwms = decodeURIComponent(keys.wms);
+										var pname = keys.pname;
+										
+										resources.push({
+											msLayerTitle: lname,
+											msLayerName: lname,
+											msGroupName: pname,
+											wmsURL: lwms,
+											format: format
+										});
+									}
 								}
+
+								if(resources.length > 0){
+									addMSLayer(resources);
+								}		
 							}
 						}else if(layName && wmsurl){
 							var title = layTitle ? layTitle : layName;
-							
-							addMSLayer(
-								title,
-								layName,
-								wmsurl
-							);
+
+							addMSLayer([{
+								msLayerTitle: unescape(title),
+								msLayerName: unescape(layName),
+								msGroupName: undefined, // TODO: not supported yet
+								wmsURL: wmsurl,
+								format: urlformat
+							}]);
 						}
 					}else{
 						Ext.Msg.show({
@@ -502,31 +552,33 @@
 			*
 			* TODO: Check the API using a MapServer URL as wmsURL.
 			*/
-			addMSLayer = function(msLayerTitle, msLayerName, wmsURL){
+			addMSLayer = function(resources){
 				var addLayer = app.tools["addlayer"];
 				
-				var options = {
-					msLayerTitle: unescape(msLayerTitle),
-					msLayerName: unescape(msLayerName),
-					wmsURL: wmsURL
-				};
-				
 				addLayer.addLayer(
-					options
+					resources
 				);
 			};
+	    	/*Consent cookie text and link from transaltion files, google cookieChoices.js lib must be added to page's body*/
+            if(serverConfig.cookieConsent && cookieChoices.cookieText && !parent.manager){
+            cookieChoices.showCookieConsentBar(cookieChoices.cookieText,
+            cookieChoices.dismissText, cookieChoices.linkText, cookieChoices.linkHref);
+            };
 	    };
 
 	    // geostore base
 	    if(!serverConfig){
 	    	serverConfig = {};
 	    }
-		
-        serverConfig = Ext.applyIf(serverConfig, localConfig);
+        
+		serverConfig = Ext.applyIf(serverConfig, localConfig);
 		serverConfig.geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');
+        serverConfig.adminUrl = serverConfig.adminUrl || ('http://' + window.location.host + '/admin/');
 
+		var configuration = customConfigName ? customConfigName : "bolzanoQueryConfig";
+		
 		// use GeoExplorerLoader to load configuration files
-		var loader = new GeoExplorerLoader(serverConfig, customConfigName, mapStoreDebug, mapIdentifier, 
+		var loader = new GeoExplorerLoader(serverConfig, configuration, mapStoreDebug, mapIdentifier, 
 			authorization, fullScreen, templateId);
 		
 		loader.on("configfinished", function (config){
@@ -539,4 +591,4 @@
 		});
     </script>
 
-	<div style="visibility:hidden"><canvas id="printcanvas" /></div>
+	<div style="position:absolute; top:-10000px; left:-10000px; visibility:hidden"><canvas id="printcanvas" /></div>

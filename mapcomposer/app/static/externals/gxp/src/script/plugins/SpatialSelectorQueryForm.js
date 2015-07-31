@@ -52,7 +52,15 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
     
     invalidRegexFieldMsgTitle: "Invalid Fields",
     
-    invalidRegexFieldMsgText: "One or more fields are incorrect!",    
+    invalidRegexFieldMsgText: "One or more fields are incorrect!",
+    
+    unknownErrorMsgTitle: 'Error',
+    
+    unknownErrorMsgText: 'Unknown error occurred',
+    
+    errorCode: 'Error Code',
+    
+    errorText: 'Error Text',
     
     /** api: config[spatialSelectorsConfig]
      * ``Object``
@@ -157,7 +165,6 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                             //get native srs
                             var rec  = this.featureManagerTool.layerRecord;
                             var bbox = rec.get('bbox');
-                            
                             var nativeSRS;
                             for(var c in bbox) {                                
                                 if(c && c.indexOf('EPSG')==0) nativeSRS = c;
@@ -210,7 +217,9 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                                 var node =selmodel.getSelectedNode();
                                 node.setIconCls('gx-tree-filterlayer-icon');
                             }
-                        
+                            if(!this.featureManagerTool.layerRecord.getLayer().vendorParams){
+                                this.featureManagerTool.layerRecord.getLayer().vendorParams = {};
+                            }
                             this.featureManagerTool.layerRecord.getLayer().mergeNewParams({cql_filter:filter.toString()}); 
                             this.featureManagerTool.layerRecord.getLayer().vendorParams.cql_filter = filter.toString();
                     }else{
@@ -233,6 +242,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 this.resetFeatureManager();
                 this.spatialSelector.reset();
 
+				this.spatialSelector.selectionMethodCombo.reset();
+				
                 var methodSelection = this.output[0].outputType;
 
                 if (me.draw) {me.draw.deactivate();};
@@ -451,6 +462,33 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         var queryForm = gxp.plugins.QueryForm.superclass.addOutput.call(this, config);        
         var methodSelection = this.output[0].outputType;
         
+        this.exceptionCallback = function(errorResponse) {
+            var errMsgTemplate = new Ext.Template(
+            '<b>' + me.errorCode + '</b>: {exceptionCode}<br><b>' + me.errorText + '</b>: {exceptionText}',
+            {
+            	compiled: true,
+            	disableFormats: true
+            });
+            var errMsgText = '';
+            var exceptions = errorResponse && errorResponse.exceptionReport && errorResponse.exceptionReport.exceptions;
+            
+            if (exceptions && Ext.isArray(exceptions)) {
+            	Ext.each(exceptions, function(exception) {
+            		errMsgText += errMsgTemplate.applyTemplate({
+            			exceptionCode: exception.code,
+            			exceptionText: exception.texts.join("; ")
+            			});
+            		});
+            	}
+            
+            Ext.Msg.show({
+            	title: me.unknownErrorMsgTitle,
+            	msg: errMsgText || me.unknownErrorMsgText,
+            	buttons: Ext.Msg.OK,
+            	icon: Ext.Msg.ERROR
+            });
+        };
+        
         this.addFilterBuilder = function(mgr, rec, schema) {			
             // is current source enabled for autoComplete ?
             var autoComplete = rec && me.autoComplete && me.autoComplete.sources && me.autoComplete.sources.indexOf(rec.get('source')) !== -1;
@@ -458,13 +496,22 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             queryForm.setDisabled(!schema);
 			
             if (schema) {
+                var autoCompleteCfg = me.autoComplete || {};
+                // configure exception listener, leaving existing listeners untouched
+                var autoCompleteListeners = autoCompleteCfg.listeners || {};
+                Ext.applyIf(autoCompleteListeners, {
+                	"exception": function(proxy, type, action, params, errorResponse, arg) {
+                		me.exceptionCallback(errorResponse);
+                	}
+                });
+                autoCompleteCfg.listeners = autoCompleteListeners;
                 queryForm.attributeFieldset.add({
                     xtype: "gxp_filterbuilder",
                     ref: "../filterBuilder",
                     attributes: schema,
                     validators: me.validators,
                     autoComplete: autoComplete,
-                    autoCompleteCfg: me.autoComplete || {},
+                    autoCompleteCfg: autoCompleteCfg,
                     allowBlank: true,
                     allowGroups: false
                 });
@@ -473,7 +520,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 				* Overriding the removeCondition method in order to manage the 
 				* single filterfield reset.
 				*/
-				 queryForm.filterBuilder.removeCondition = function(item, filter) {
+				queryForm.filterBuilder.removeCondition = function(item, filter) {
 					var parent = this.filter.filters[0].filters;
 					if(parent.length > 1) {
 						parent.remove(filter);
@@ -546,13 +593,35 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 && this.featureStore.geometryName
                 ? this.featureStore.geometryName : null;
         };
-		
+        
         this.featureManagerTool.on("layerchange", this.addFilterBuilder);
+        
+        this.featureManagerTool.on({
+            "layerchange": function() {
+                this.featureManagerTool.featureStore.on({
+                    "exception": function(proxy, params, response) {
+                        if (response && response instanceof OpenLayers.Protocol.Response) {
+                            me.exceptionCallback(response.error);
+                        }
+                    },
+                    "loadexception": function() {
+                        // convert deprecated "loadexception" event in "exception" event,
+                        // which is necessary to unmask the query panel in case of error
+                        var relayedArguments = ["exception"];
+                        for (var i=0; i<arguments.length; i++) {
+                            relayedArguments.push(arguments[i]);
+                        }
+                        this.fireEvent.apply(this, relayedArguments);
+                    }
+                });
+            },
+            scope: this
+        });
 		
         this.addFilterBuilder(this.featureManagerTool,
             this.featureManagerTool.layerRecord, this.featureManagerTool.schema
         );
-		
+        
         this.featureManagerTool.on({
             "beforequery": function() {
                 new Ext.LoadMask(queryForm.getEl(), {

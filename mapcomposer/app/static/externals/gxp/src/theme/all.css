@@ -1,3 +1,9 @@
+/* this is a hack! In order to show always the Message box on top (to use it define a cls: 'msg_floating' to the 'Ext.Msg.show' statement)*/
+.msg_floating {
+    position: absolute !important;
+    z-index: 1000000 !important;
+}
+
 .x-tree-node-leaf  .gx-tree-layer-icon {
     background-image: url(img/geosilk/vector.png);
 }
@@ -24,6 +30,24 @@
 
 .x-tree-node-leaf  .gx-tree-resource-folder-icon{
 	background-image: url(img/silk/folder.png);
+}
+
+.x-tree-node .service_error a span{
+	color: #ABAAA7;
+	font-style: italic;
+}
+
+.tree-icon-collapse-all {
+	background-image:url(img/collapse-all.gif) !important;
+}
+
+.tree-icon-expand-all {
+	background-image:url(img/expand-all.gif) !important;
+}
+
+/*gxp_advancedsnappingagent*/
+.snapping-button{
+    background-image: url(img/magnet.png) !important;
 }
 
 /* position the zoom slider within map panel */
@@ -167,6 +191,15 @@
 .x-btn .gxp-icon-mouse-map, .x-menu-item .gxp-icon-mouse-map, .x-tree-node .gxp-icon-mouse-map {
     background-image: url(img/map_cursor.png) !important;
 }
+
+.x-btn .gx-map-link, .x-menu-item .gx-map-link, .x-tree-node .gx-map-link {
+    background-image: url(img/link.png)  !important;
+}
+
+.x-btn .gx-map-edit, .x-menu-item .gx-map-edit, .x-tree-node .gx-map-edit {
+    background-image: url(img/silk/map_edit.png)  !important;
+}
+
 
 /* gxp_featureeditor */
 .x-btn .gxp-icon-addfeature, .x-menu-item .gxp-icon-addfeature {
@@ -379,6 +412,103 @@ div.map-overlay div.overlay-element {
 	background-image: url(img/geosilk/vector_add.png) !important;
 }
 
+/* gxp_playback */
+div.olMap div.gx-overlay-playback {
+    position: absolute;
+    z-index: 1000;
+    top: 22px;
+    left: 80px;
+}
+.gx-overlay-playback.x-toolbar {
+    background: none;
+    border: none;
+}
+.gx-overlay-playback .x-btn{
+    width:16px !important;height:16px !important;
+    background-repeat: no-repeat;
+}
+
+/** gx_playbacktoolbar**/
+.x-btn .gxp-icon-reset{
+    background-image:url('img/time/control_start_blue.png')
+}
+.x-btn .gxp-icon-back{
+    background-image:url('img/time/control_start_blue.png')
+}
+.x-btn .gxp-icon-currenttime{
+    background-image:url('img/time/time.png')
+}
+.x-btn .gxp-icon-settings{
+    background-image:url('img/time/control_equalizer_blue.png')
+}
+.x-btn .gxp-icon-next{
+    background-image:url('img/time/control_end_blue.png')
+}
+.x-btn .gxp-icon-last{
+    background-image:url('img/time/control_end_blue.png')
+}
+.x-btn .gxp-icon-play{
+    background-image:url('img/time/control_play_blue.png')
+}
+.x-btn .gxp-icon-pause{
+    background-image:url('img/time/control_pause_blue.png')
+}
+.x-btn .gxp-icon-stop{
+    background-image:url('img/time/control_stop_blue.png')
+}
+.x-btn .gxp-icon-loop{
+    background-image:url('img/time/control_repeat_blue.png')
+}
+.x-btn .gxp-icon-ffwd{
+    background-image:url('img/time/control_fastforward_blue.png')
+}
+.x-btn-over .gxp-icon-reset{
+    background-image:url('img/time/control_start.png')
+}
+.x-btn-over .gxp-icon-settings{
+    background-image:url('img/time/control_equalizer.png')
+}
+.x-btn-over .gxp-icon-next{
+    background-image:url('img/time/control_end_blue.png')
+}
+.x-btn-over .gxp-icon-last{
+    background-image:url('img/time/control_end.png')
+}
+.x-btn-over .gxp-icon-play{
+    background-image:url('img/time/control_play.png')
+}
+.x-btn-over .gxp-icon-pause{
+    background-image:url('img/time/control_pause.png')
+}
+.x-btn-over .gxp-icon-stop{
+    background-image:url('img/time/control_stop.png')
+}
+.x-btn-over .gxp-icon-loop{
+    background-image:url('img/time/control_repeat.png')
+}
+.x-btn-over .gxp-icon-ffwd,.x-item-disabled .gxp-icon-ffwd{
+    background-image:url('img/time/control_fastforward.png')
+}
+
+.gx_timeslider div.x-slider-thumb{
+    background-position:1;
+    cursor: pointer;
+}
+.gx_timeslider div.x-slider-min-thumb{
+    background-image:url('img/time/resultset_next.png');
+}
+.gx_timeslider div.x-slider-max-thumb{
+    background-image:url('img/time/resultset_previous.png');
+}
+.gx_timeslider div.x-slider-tail-thumb{
+    background-image:url('img/time/stop.png');
+    background-position:0;
+    width: 14px;
+    height: 14px;
+    top: 4px;
+    left:-14px;
+}
+
 /* csv_export */
 .x-btn .gxp-icon-csvexport, .x-menu-item .gxp-icon-csvexport {
     background-image: url(img/geosilk/disk.png) !important;
@@ -413,4 +543,16 @@ div.map-overlay div.overlay-element {
 
 .crsInfoButton {
    background-image: url(img/silk/information.png) !important;
+}
+/* Background for items selected in multiselect */
+.ux-mselect-selected{
+    background-color: rgb(204, 204, 204);
+}
+/** NEEDED TO MAKE MULTISELECT SCROLL **/
+.ux-mselect{
+    overflow:auto;
+    background:white;
+    position:relative; /* for calculating scroll offsets */
+    zoom:1;
+    overflow:auto;  
 }

@@ -49,7 +49,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
      * {string} sets the type of layout
      * 
      */ 
-    layout:'fit',
+    layout:'border',
 
     /** api: config[tools]
      *  ``Array`` Custom tools to include by default
@@ -74,8 +74,15 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
      */
     pluggableByUserGroupConfig: false,
     
+    /**
+     * api: config[loginDataStorage]
+     * {string} actually supports null or a value: "sessionStorage" to emulate the session
+     * persistence using the session storage object
+     */
+    loginDataStorage:null,
+    
     initComponent : function() {
-
+        
         // save initial config
         this.initialConfig = {};
         Ext.apply(this.initialConfig, this);
@@ -92,34 +99,55 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         this.murl = config.composerUrl;
         this.socialUrl = config.socialUrl;
         this.adminUrl = config.adminUrl;
-        
+        this.geoStoreBase = config.geoStoreBase;
         this.geoBaseUsersUrl= geoStoreBase + 'users';
         this.geoBaseMapsUrl = geoStoreBase + 'resources';
         this.geoSearchUrl = geoStoreBase + 'extjs/search/category/MAP/';
         // this.geoSearchUrl = geoStoreBase + 'extjs/search/';
         this.geoSearchUsersUrl = geoStoreBase + 'extjs/search/users';
         this.geoSearchCategoriesUrl = geoStoreBase + 'extjs/search/category';
-
+        this.authenticationMethod = config.authenticationMethod || 'basic';
+        this.sessionLogin = config.sessionLogin || false;
+        
+        //this.items=[];
         var mergedItems = [];
-
+        
         // this component is the tool bar at top
-        var north = {
-            region: "north",
-            layout: "fit",
+        var center = {
+            region: "center",
+            layout:'fit',
             id: this.id + "_north",
             border: false,
             tbar: ["-", "->", "-"],
             items: this.items
         };
 
-        mergedItems.push(north);
-
+        
+        
+        mergedItems.push(center);
+        mergedItems.push(this.getDecoration());
         this.items = mergedItems;
         
         mxp.widgets.ManagerViewport.superclass.initComponent.call(this, arguments);
 
         this.fireEvent("portalready");
+        var user = this.restoreLoginState();
+        if(!this.logged && user){
+            var auth = user.authHeader;
+            var token = user.token;
+            this.cleanTools();
+            this.user = user.user;
+            this.authHeader = auth ? auth: this.authHeader;
+            this.token = token || this.token;
+            this.logged = true;
 
+            this.defaultHeaders = {
+                'Accept': 'application/json', 
+                'Authorization' : this.authHeader
+            };
+
+            
+        }
         // load config if present
         this.reloadConfig();
     },
@@ -148,7 +176,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
             for (var i=0, len=tools.length; i<len; i++) {
                 try {
 
-                    if(tools[i].needsAuthorization && !this.auth)
+                    if(tools[i].needsAuthorization && !this.authHeader)
                         continue;
                     
                     tool = Ext.ComponentMgr.createPlugin(
@@ -184,6 +212,12 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
                     restful: true,
                     method : 'GET',
                     disableCaching: true,
+                    headers: this.authHeader ? {
+                        'Accept': 'application/json', 
+                        'Authorization' : this.authHeader
+                    } : {
+                        'Accept': 'application/json'
+                    },
                     failure: function (response) {
                         Ext.Msg.show({
                            title: "Error",
@@ -198,10 +232,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
                     scope: this
                 }
             });
-            this.adminConfigStore.proxy.getConnection().defaultHeaders= {
-                'Accept': 'application/json', 
-                'Authorization' : this.auth
-            };
+            
             this.adminConfigStore.load();
         }else{
             // Load default config
@@ -247,7 +278,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
         }else{
             // load default logged tools
             var applyConfig = this.logged ? this.initialConfig.loggedTools : this.initialConfig.tools;
-            if(this.initialConfig.adminTools && this.user && this.user.role=='ADMIN'){
+            if( this.initialConfig.adminTools && this.user && this.user.role == 'ADMIN'){
                 applyConfig =this.initialConfig.adminTools;
             }
             this.applyUserConfig(0,applyConfig);
@@ -330,21 +361,22 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
     /** private: method[onLogin]
      *  Listener with actions to be executed when an user makes login.
      */
-    onLogin: function(user, auth, details){
+    onLogin: function(user, auth, token, details){
         if(!this.logged && user){
             this.cleanTools();
             this.user = details;
-            this.auth = auth ? auth: this.auth;
+            this.authHeader = auth ? auth: this.authHeader;
             this.logged = true;
 
             this.defaultHeaders = {
                 'Accept': 'application/json', 
-                'Authorization' : this.auth
+                'Authorization' : this.authHeader
             };
-
+            this.saveLoginState(this.authHeader, token);
             // reload config
             this.reloadConfig();
         }
+        
     },
 
     /** private: method[onLogout]
@@ -352,19 +384,116 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
      */
     onLogout: function(){
         if(this.logged){
-            this.auth = null;
+            this.authHeader = null;
 
             // Remove headers
             this.defaultHeaders = {
-                'Accept': 'application/json',
-                'Authorization' : ""
+                'Accept': 'application/json'
             };
 
             this.cleanTools();
             this.initTools();
             this.logged = false;
+            this.resetLoginState();
             this.fireEvent("portalready");   
         }
+    },
+
+    /** private: method[saveLoginState]
+     *  Save the login status in the session Storage.
+     */
+    saveLoginState: function(auth, token){
+      if(sessionStorage && this.config.loginDataStorage){
+        
+        sessionStorage["userDetails"] = Ext.util.JSON.encode({
+            user: this.user,
+            token: token,
+            authHeader: auth 
+        })
+      }      
+    },
+    
+    /** private: method[resetLoginState]
+     *  Reset the login status (on Logout)
+     */
+    resetLoginState: function(){
+      if(sessionStorage ){
+        sessionStorage.removeItem("userDetails");
+      }
+      
+    },
+    
+    /** private: method[restoreLoginState]
+     *  Load login status from the session storage.
+     */
+    restoreLoginState: function(){
+      if(sessionStorage && this.config.loginDataStorage){
+      var ud = sessionStorage["userDetails"];
+      
+        if(ud){
+          return Ext.util.JSON.decode(ud) ;
+        }
+      }
+      return null;
+        
+    },
+    getDecoration: function(){
+         //Manage Header and Footer
+        var header = this.config.header;
+        var footer = this.config.footer;
+        var panels = [];  
+
+        var parseKnowIntegers = function(section){
+            var knownInteger = {'height':true, 'maxHeight': true, 'minWidth':true};
+            for(var key in knownInteger){
+                if(section[key]){
+                    try{
+                        section[key] = parseInt(section[key]);	
+                    }catch (e){
+                        // unknown parameter value
+                    }
+                }	
+            }
+            return section;
+        }
+        
+        var parseHeader = function(section) {
+			return (section && section.header !== undefined && section.header !== null) ? section.header : false;
+		}
+
+        if(header){
+            var north = {
+                header: parseHeader(header.container),
+                region: 'north',
+                id: 'msheader'
+            };
+            north = Ext.applyIf(north, (header.container ? parseKnowIntegers(header.container) : {}));
+            var html = header.html;
+            if(header.html instanceof Array){
+                html = header.html.join("");
+            }
+            north.html = (header.css || '') + (html || '');
+            panels.push(north);
+        }
+
+
+
+        if(footer){
+             var south = {
+                header: parseHeader(footer.container),
+                region: 'south',
+                id: 'msfooter'
+            };
+            south = Ext.applyIf(south, (footer.container ? parseKnowIntegers(footer.container) : {}));
+            var html = footer.html;
+            if(footer.html instanceof Array){
+                html = footer.html.join("");
+            }
+            south.html = (footer.css || '') + (html || '');
+            panels.push(south);
+        }
+        return panels;
+
     }
 });
 

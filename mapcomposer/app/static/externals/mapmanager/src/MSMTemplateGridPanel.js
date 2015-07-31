@@ -81,6 +81,8 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
     initComponent : function() {
     	var me = this;
 
+		this.addEvents('delete_template');
+		
     	// search box
     	var searchField = new Ext.form.TextField({
 			name: "templateSearch"
@@ -139,7 +141,6 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
             
             sortInfo: { field: "name", direction: "ASC" }
 		 });
-        
 
 		var expander = new Ext.ux.grid.RowExpander({
             /**
@@ -184,7 +185,7 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									// //////////////////////////////////
 									// Get info about logged user if any
 									// //////////////////////////////////
-									var auth = me.login.getToken();
+									var auth = me.login.getAuthHeader();
 									
 									// ////////////////////
 									// Fetch base url
@@ -208,6 +209,7 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									
 									geostore.deleteByPk(id, function(response){
 										me.searchTemplate();
+										me.fireEvent("delete_template", response);
 									});
 									
                                     return true;

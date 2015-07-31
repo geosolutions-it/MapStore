@@ -76,6 +76,7 @@ gxp.plugins.OSMSource = Ext.extend(gxp.plugins.LayerSource, {
      */
     osmarenderAttribution: "Data CC-By-SA by <a href='http://openstreetmap.org/' target='_blank'>OpenStreetMap</a>",
 
+    ocmAttribution: 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest</a>, ' + 'Data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> ',
     /** api: method[createStore]
      *
      *  Creates a store of layer records.  Fires "ready" when store is loaded.
@@ -108,7 +109,18 @@ gxp.plugins.OSMSource = Ext.extend(gxp.plugins.LayerSource, {
                     attribution: this.mapnikAttribution,
                     type: "mapnik"
                 }, options)
-            )
+            ),new OpenLayers.Layer.OSM(
+                "OpenCycleMap",
+                [
+                    "http://a.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png",
+                    "http://b.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png",
+                    "http://c.tile.opencyclemap.org/cycle/${z}/${x}/${y}.png"
+                ],OpenLayers.Util.applyDefaults({                
+                    attribution: this.ocmAttribution,
+                    type: "opencyclemap"
+                }, options)
+                   
+           )
         ];
         
         this.store = new GeoExt.data.LayerStore({

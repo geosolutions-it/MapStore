@@ -24,7 +24,7 @@ GeoExt.Lang.add("nl", {
     },
     
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Toon op kaart",
+        displayFeatureText: "Toon",
         firstPageTip: "Eerste pagina",
         previousPageTip: "Vorige pagina",
         zoomPageExtentTip: "Zoom naar de uitsnede van de pagina",

@@ -1,16 +1,5 @@
-﻿<!DOCTYPE html>
-<html>
-    <head>
-        <!--meta http-equiv="X-UA-Compatible" content="IE=8" /-->
-        <title>Map Viewer</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="shortcut icon" href="theme/app/img/favicon.ico">
-		
-        <!-- Ext resources -->
-        <link rel="stylesheet" type="text/css" href="externals/ext/resources/css/ext-all.css">
-        <link rel="stylesheet" type="text/css" href="externals/ext/resources/css/xtheme-gray.css">
-        <script type="text/javascript" src="externals/ext/adapter/ext/ext-base.js"></script>
-        <script type="text/javascript" src="externals/ext/ext-all.js"></script>
+<% extends ./base.html %>
+<% subskin extrahead %>
         
 		<!-- OpenLayers resources -->
         <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
@@ -92,12 +81,12 @@
 			}*/ 
 		
             var app;
-            var modified = false; var mapIdentifier = -1; var fullScreen = false; var bbox; var languageSelector = true; var useCookies;
+            var modified = false; var mapIdentifier = -1; var fullScreen = false; var bbox; var languageSelector = true; var useCookies, markersurl;
 			
 			// /////////////////////////////////////////////////////
 			// Extra parameters to add layers at startup
 			// /////////////////////////////////////////////////////
-			var layName; var layTitle; var wmsurl; var gsturl;
+			var layName; var layTitle; var wmsurl; var gsturl; var urlformat;
 		
 			// ///////////////////////////////////////////////////////////////
             // Custom variables from the mapStoreConfig user configuration file 
@@ -138,6 +127,10 @@
 									wmsurl = param[1]; 
 									wmsurl = decodeURIComponent(wmsurl);
 									break;
+						case "markersurl" : 
+									markersurl = param[1]; 
+									markersurl = decodeURIComponent(markersurl);
+									break;
 						case "gsturl" : 
 									gsturl = param[1]; 
 									gsturl = decodeURIComponent(gsturl);
@@ -147,6 +140,9 @@
 									break;
                         case "config":
 									customConfigName = param[1];
+									break;
+						case "format":
+									urlformat = param[1];
 									break;
 						default : 
 									//mapIdentifier = -1;
@@ -247,7 +243,30 @@
 					serverConfig.geoStoreBase = gsturl;
 				}
 
+				// //////////////////////////////////////////////////
+				// Check if content data has been provided via POST
+				// //////////////////////////////////////////////////
+				if(content.data){
+					var dataConfig = unescape(content.data);
+					try{
+						dataConfig = Ext.util.JSON.decode(dataConfig);
+						var customConfig = dataConfig.map_config;
+						if(customConfig){
+							// ////////////////////////////////////////////////////////////
+							// Properties of the internal configuration will be replaced 
+							// by those specified for the custom configuration
+							// ////////////////////////////////////////////////////////////
+							serverConfig = Ext.apply(serverConfig, customConfig);
+							sources = serverConfig.sources || serverConfig.gsSources;
+						}					
+					}catch(e){
+						console.log(e);
+					}
+				}
+
                 app = new GeoExplorer.Viewer({
+					markers: serverConfig.markers,
+					markersURL: markersurl || serverConfig.markersURL,
                     scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
 					hideTopToolbar: serverConfig.hideTopToolbar || false,
 					hideBottomToolbar: serverConfig.hideBottomToolbar || false,
@@ -261,13 +280,15 @@
                     defaultSourceType: "gxp_wmssource",
                     renderToTab : 'appTabs',
                     portalConfig: serverConfig.portalConfig,
+					loadingPanel: serverConfig.loadingPanel || {},
 					geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),	 
+                    adminUrl: serverConfig.adminUrl || ('http://' + window.location.host + '/admin/'),
                     about: {
                         title: "Comune di Bolzano - Stadtgemeinde Bozen",
                         'abstract': "Comune di Bolzano - Stadtgemeinde Bozen",
                         contact: "<a href='#'>#</a>."
                     },
-                    sources: serverConfig.gsSources || {
+                    sources: serverConfig.sources || serverConfig.gsSources || {
                         google: {
                             ptype: "gxp_googlesource"
                         }
@@ -276,7 +297,7 @@
                     map: serverConfig.map,
 					customTools: serverConfig.customTools
                 }, mapIdentifier, false, fullScreen);   
-                
+			
                 app.on({
                     'portalready' : function(){                    	
                         if(fullScreen){
@@ -296,7 +317,7 @@
 						// ///////////////////////////////////////////////////
 						var addLayer = app.tools["addlayer"];
 						
-						if(addLayer){
+						if(addLayer){							
 							if(useCookies || content.data){
 								var layersList;
 								
@@ -317,37 +338,52 @@
 									
 								if(layersList){
 									var layers = layersList.split("#");
+									var resources = [];								
+									
 									for(var i=0; i<layers.length; i++){
 										var keys = layers[i];
 										
 										keys = unescape(keys);
 										keys = Ext.util.JSON.decode(keys);
 										
-										var lname = keys.layer;
-										var lwms = decodeURIComponent(keys.wms);
+										var format = keys.format;
 										
-										addMSLayer(
-											lname,
-											lname,
-											lwms
-										);
+										if(format == "wms" || format == "wmts"){
+											var lname = keys.layer;
+											var lwms = decodeURIComponent(keys.wms);
+											var pname = keys.pname;
+											
+											resources.push({
+												msLayerTitle: lname,
+												msLayerName: lname,
+												msGroupName: pname,
+												wmsURL: lwms,
+												format: format
+											});
+										}
+									}
+									
+									if(resources.length > 0){
+										addMSLayer(resources);
 									}
 								}
 							}else if(layName && wmsurl){
 								var title = layTitle ? layTitle : layName;
-								
-								addMSLayer(
-									title,
-									layName,
-									wmsurl
-								);
+
+								addMSLayer([{
+									msLayerTitle: unescape(title),
+									msLayerName: unescape(layName),
+									msGroupName: undefined, // TODO: not supported yet
+									wmsURL: wmsurl,
+									format: urlformat
+								}]);
 							}
 						}else{
 							Ext.Msg.show({
-								title: "Add Layer",
-								msg: "AddLayer plugin missing in configuration!",
-								width: 300,
-								icon: Ext.MessageBox.ALERT
+								 title: "Add Layer",
+								 msg: "AddLayer plugin missing in configuration!",
+								 width: 300,
+								 icon: Ext.MessageBox.ALERT
 							});  
 						}
 					
@@ -362,19 +398,18 @@
 				*
 				* TODO: Check the API using a MapServer URL as wmsURL.
 				*/
-				addMSLayer = function(msLayerTitle, msLayerName, wmsURL){
+				addMSLayer = function(resources){
 					var addLayer = app.tools["addlayer"];
 					
-					var options = {
-						msLayerTitle: unescape(msLayerTitle),
-						msLayerName: unescape(msLayerName),
-						wmsURL: wmsURL
-					};
-					
 					addLayer.addLayer(
-						options
+						resources
 					);
 				};
+            /*Consent cookie text and link from transaltion files, google cookieChoices.js lib must be added to page's body*/
+            if(serverConfig.cookieConsent && cookieChoices.cookieText){
+            cookieChoices.showCookieConsentBar(cookieChoices.cookieText,
+            cookieChoices.dismissText, cookieChoices.linkText, cookieChoices.linkHref);
+            };
             };			
                 
 			Ext.Ajax.request({
@@ -415,9 +450,3 @@
 			});
         
     </script>
-    </head>
-    <body>
-        <% render content %>
-		<div style="visibility:hidden"><canvas id="printcanvas" /></div>
-    </body>
-</html>

@@ -46,7 +46,24 @@ gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.widg
 	/* xtype = gxp_spatial_bbox_selector */
 	xtype : 'gxp_spatial_bbox_selector',
 
-	/** api: config[name]
+  /** api: config[metricUnit]
+	 *  ``Object``
+	 *  The metric unit to display summary
+	 */
+  metricUnit :"km",
+  
+   /** api: config[displayProjection]
+	 *  ``Object``
+	 *  The projection for coordinate display (if null, the map one) default null
+	 */
+  displayProjection: null,
+  /** api: property[infoEPSG]
+     *  ``Boolean``
+     *  Display information about current reference system
+     */
+    infoSRS: true,
+  
+  /** api: config[name]
 	 *  ``String``
 	 *  Name to show on the combo box of the spatial selected.
 	 */
@@ -115,17 +132,18 @@ gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.widg
      *  Override
      */
     initComponent: function() {   
-
+    var displayProjection = this.displayProjection;
 		// ///////////////////////////////////////////
 		// Spatial AOI Selector FieldSet
 		// ///////////////////////////////////////////
 		var confbbox = {
             map: this.target.mapPanel.map,
-            outputSRS : this.target.mapPanel.map.projection,
+            outputSRS : this.displayProjection  || this.target.mapPanel.map.projection,
             spatialFilterOptions: this.spatialFilterOptions,
             // checkboxToggle: false,
             ref: "spatialFieldset",
             id: this.id + "_bbox",
+            infoSRS: this.infoSRS,
             defaultStyle: this.defaultStyle,
             selectStyle: this.selectStyle,
             temporaryStyle: this.temporaryStyle,
@@ -143,7 +161,13 @@ gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.widg
 		    waitEPSGMsg: "Please Wait...",
 		    listeners : {
 		    	"onChangeAOI" : function(bounds) {
-					this.setCurrentGeometry(bounds.toGeometry());
+            var geom = bounds.toGeometry();
+            if(displayProjection){
+              geom = bounds.toGeometry().transform(new  OpenLayers.Projection(displayProjection),this.target.mapPanel.map.projection  );
+              this.setCurrentGeometry(geom);
+            }else{
+              this.setCurrentGeometry(geom);
+            }
 		    	},
 		    	scope: this
 		    }
@@ -187,7 +211,7 @@ gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod = Ext.extend(gxp.widg
     getSummary: function(geometry){
 
 		var summary = gxp.widgets.form.spatialselector.BBOXSpatialSelectorMethod.superclass.getSummary.call(this, geometry);
-		var metricUnit = "km";
+		var metricUnit = this.metricUnit;
 
 		var perimeter = this.getLength(geometry, metricUnit);
 		if (perimeter) {

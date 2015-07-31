@@ -56,7 +56,7 @@ GeoExt.Lang.add("es", {
     "gxp.plugins.AddLayers.prototype": {
         addActionMenuText: "Añadir capas",
         addActionTip: "Añadir capas",
-        addServerText: "Añadir un nuevo servidor",
+        addServerText: "Añadir Servidor",
         addButtonText: "Añadir capas",
         untitledText: "Sin nombre",
         addLayerSourceErrorText: "Error obteniento capabilities del WMS ({msg}).\nPor favor, compruebe la url y vuelva a intentarlo.",
@@ -168,7 +168,13 @@ GeoExt.Lang.add("es", {
         infoActionTip: "Obtener Feature Info",
         popupTitle: "Feature Info",
 		noDataMsg: "El servidor no devolvió datos",
-		maskMessage: "Recuperando el Feature Info..."
+		maskMessage: "Recuperando el Feature Info...",
+		firstFtTip: "Primera Feature",
+        previousPageTip: "Feature Anterior",
+        nextPageTip: "Siguiente Feature",
+        lastPageTip: "Ultima Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "de"
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
@@ -176,7 +182,13 @@ GeoExt.Lang.add("es", {
         popupTitle: "Feature Info",
 		noDataMsg: "El servidor no devolvió datos",
 		maskMessage: "Recuperando Feature Info...",
-		activeActionTip:"Activar información de la capa seleccionada"
+		activeActionTip:"Activar información de la capa seleccionada",
+		firstFtTip: "Primera Feature",
+        previousPageTip: "Feature Anterior",
+        nextPageTip: "Siguiente Feature",
+        lastPageTip: "Ultima Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "de", 
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -221,11 +233,37 @@ GeoExt.Lang.add("es", {
     },
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Añadir un nuevo servidor...",
+        title: "Añadir un servidor",
         cancelText: "Cancelar",
         addServerText: "Añadir Server",
         invalidURLText: "Introducir una URL válida de un servicio WMS (por ejemplo: http://example.com/geoserver/wms)",
-        contactingServerText: "Contactando con el servidor..."
+        contactingServerText: "Contactando con el servidor...",
+		sourceTypeLabel: "Type",
+		advancedOptionsTitle: "Advanced Options",
+		generalTabTitle: "General",
+		titleLabel: "Title",
+		versionLabel: "Version (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Params",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Add",
+		propNameLabel: "Name",
+		propValueLabel: "Value",
+		paramsWinTitle: "Params Options",
+		okButtonText: "Ok",
+		addPropDialogTitle: "Add Property",
+		addPropDialogMsg: "Property name or his value are not valid",
+		cancelButtonText: "Cancel",
+		removeButtonText: "Remove",
+		removePropDialogTitle: "Remove Property",
+		removePropDialogMsg: "This property cannot be removed: ",
+		newSourceDialogTitle: "New Source",
+		newSourceDialogMsg: "Some source selected properties are invalid.",
+		mandatoryLabelText: "All fields marked with (*) are mandatory."
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -249,7 +287,7 @@ GeoExt.Lang.add("es", {
 	    removeGroupConfirmationText: "¿Está seguro de que quiere borrar el grupo seleccionado? Todas las capas contenidas en el mismo se borrarán del mapa."
     },
     
-    "gxp.plugins.SaveDefaultContext.prototype": { 
+    "gxp.plugins.SaveMapPlugin.prototype": { 
 	    saveDefaultContextMenuText: "Guardar contexto por defecto",
 	    saveDefaultContextActionTip: "Guardar contexto del mapa",
 	    contextSaveSuccessString: "Contexto salvado correctamente",
@@ -260,21 +298,35 @@ GeoExt.Lang.add("es", {
 		loginLabel: "Login",	
 		mapMetadataTitle: "Insertar Metadatos del Mapa",	
 		mapMedatataSetTitle: "Metadatos del Mapa",	
-		mapNombreLabel: "Nombre",	
-		mapDescripciónLabel: "Descripción",
-		addResourceButtonText: "Añadir Mapa"
+		mapNameLabel: "Nombre",	
+		mapDescriptionLabel: "Descripción",
+		addResourceButtonText: "Añadir Mapa",
+		conflictErrMsg: "Un mapa con el mismo nombre ya existe",
+        selectionErrorTitle:"Error",
+        groupSelectionError:"Seleccione al menos un grupo",
+        permissionsLabel:"Permisos",
+        groupsLabel:"Grupos"
     },
+	
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Seleccionar un área",
         menuText: "GeoReferencias",
         tooltip: "GeoReferencias"
     },
+	
     "gxp.plugins.ZoomBox.prototype":{
         zoomInMenuText: "Zoom Box Siguiente",
         zoomOutMenuText: "Zoom Box Anterior",
         zoomInTooltip: "Zoom Box Siguiente",
         zoomOutTooltip: "Zoom Box Anterior"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Capa no está disponible en la proyección cartográfica",
+		wfsDescribeFeatureTypeError: "Error al obtener los atributos de tipo de entidad",
+		errorTitle: "Error"
+	},
+	
     "GeoExt.ux.PrintPreview.prototype":{
         paperSizeText: "Tamaño del folio:",
         resolutionText: "Resolución:",
@@ -330,7 +382,7 @@ GeoExt.Lang.add("es", {
         ContraseñaFieldText: "Contraseña"
     },
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Ver en el mapa",
+        displayFeatureText: "Ver",
         firstPageTip: "Primera página",
         previousPageTip: "Siguiente página",
         zoomPageExtentTip: "Zoom a la extensión de la página",
@@ -340,7 +392,7 @@ GeoExt.Lang.add("es", {
         totalMsg: "Total: {0} entidades",
         displayExportCSVText: "Exportar a CSV",
         exportCSVSingleText: "Página actual",
-        exportCSVMultipleText: "Toda la página",
+        exportCSVMultipleText: "Todas las páginas",
         failedExportCSV: "Error al encontrar una respuesta para la exportación a CSV",
         invalidParameterValueErrorText: "Valor de los parámetros inválido",
 		zoomToFeature: "Zoom a Entidad",
@@ -348,7 +400,10 @@ GeoExt.Lang.add("es", {
         comboFormatEmptyText: "Por favor, seleccione un formato",
         noFormatTitleText: "Formato inválido",
         noFormatBodyText: "Por favor, seleccione un formato válido",
-        exportTitleText: "Exportar"
+        exportTitleText: "Exportar",
+		pageLabel: "Página",
+		pageOfLabel: "de",
+		totalRecordsLabel: "Registros Totales"
     },
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Consultar",
@@ -606,7 +661,8 @@ GeoExt.Lang.add("es", {
 		previewText: "Vista previa",				
 		embedCodeTitle: "Código embebido",
 		embedURL: "URL directa",		
-		urlLabel: "URL",
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
 		showMapTooltip: "Mostar en una nueva ventana",
         loadMapText: "Cargar el mapa", 
         downloadAppText: "Cargar este mapa (instalar la aplicación primero)", 
@@ -757,15 +813,21 @@ GeoExt.Lang.add("es", {
 		rootNodeText: "Recursos Import",
 		serviceErrorTitle: "Error de Servicio",
 		tabTitle: "Importado",
-		layerNodeName: "Niveles",
-		serviceNodeName: "Servicio"
+		layerNodeName: "Recursos",
+		waitMsg: "Cargar Recursos ...",
+		expandAllText: "Expandir Todos Los Nodos",
+		collapseAllText: "Contraer Todos Los Nodos"
     },
 	
 	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
         noFilterSelectedMsgTitle: "No hay filtros seleccionados",    
         noFilterSelectedMsgText: "Debe seleccionar al menos un filtro",    
         invalidRegexFieldMsgTitle: "Dominios no válidoss",    
-        invalidRegexFieldMsgText: "Uno o más dominios están rellenados correctamente!"
+        invalidRegexFieldMsgText: "Uno o más dominios están rellenados correctamente!",
+        unknownErrorMsgTitle: 'Error',
+        unknownErrorMsgText: 'Error desconocido',
+        errorCode: 'Código de error',
+        errorText: 'Texto de error'
     },
 	
 	"gxp.plugins.FeatureManager.prototype":{
@@ -782,5 +844,30 @@ GeoExt.Lang.add("es", {
         acceptText: "Crear",
         cancelText: "Cancelar",
         notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>Si es administrador introduzca sus credenciales para crear las categorías: '{0}'</div>"
-    }
+    },
+	
+    "gxp.data.WMTSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "No layer in the current map projection is available on this server",
+        warningTitle: "advertencia"
+    },
+	
+    "gxp.data.TMSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "No layer in the current map projection is available on this server",
+        warningTitle: "advertencia"
+    },
+	
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Activar/Desactivar Snapping"
+    },
+	
+	"gxp.plugins.StaticPage.prototype": {
+        tabTitle: "Página estática"
+    }, 
+    "cookieChoices": {
+        "cookieText": "Las cookies nos ayudan a ofrecer nuestros servicios. Al utilizarlos, usted acepta el uso de cookies.",
+        "dismissText": "Entendido",
+        "linkText":"Más información",
+        "linkHref":"cookies-policy-en.html"
+
+  }  
 });

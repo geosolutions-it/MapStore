@@ -8,7 +8,7 @@ exports.app = function(req) {
 	
 	if(request.isPost){
 		var content = JSON.stringify(request.postParams);
-		print("Post Content is : " + content);
+		//print("Post Content is : " + content);
 		var response = Response.skin(module.resolve("../templates/composer.html"), {status: details.status || 404, content: content});
 	}else{
 		var response = Response.skin(module.resolve("../templates/composer.html"), {status: details.status || 404, content: "{}"});

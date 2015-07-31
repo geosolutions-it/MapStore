@@ -99,7 +99,9 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
      * Create the various parts that compose the layout.
      */
     initPortal: function() {
-
+        this.appMask = new Ext.LoadMask(Ext.getBody(), {msg: this.mainLoadingMask});
+		this.appMask.show();
+		
         this.toolbar = new Ext.Toolbar({
             disabled: true,
             id: "paneltbar",
@@ -110,6 +112,48 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         this.on("ready", function() {
         	this.toolbar.enable();
 			this.bottom_toolbar.enable();
+			
+			// //////////////////////////////////////////////////////////////////
+			// Automatically inject markers if present in loaded configuration
+			// //////////////////////////////////////////////////////////////////
+			if(this.markers){
+				this.showMarkerGeoJSON("Markers", this.markers);
+			}else if(this.markersURL){
+				var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
+				var mHost = pattern.exec(this.markersURL);
+
+				var mUrl = this.markersURL;
+
+				Ext.Ajax.request({
+				   url: mHost[2] == location.host ? mUrl : proxy + mUrl,
+				   method: 'GET',
+				   scope: this,
+				   headers:{
+					  'Accept': "application/json"
+				   },
+				   success: function(response, opts){  						
+						var markersConfig = response.responseText;
+						
+						if(markersConfig){
+							this.markers = markersConfig;
+							this.showMarkerGeoJSON("Markers", this.markers, true);
+							
+							this.fireEvent("markersloadend", this.markers);
+						}
+				   },
+				   failure: function(response, opts){
+					  Ext.Msg.show({
+							 title: this.urlMarkersTitle,
+							 msg: response.responseText,
+							 width: 300,
+							 icon: Ext.MessageBox.ERROR
+					  });
+				   }
+				}); 
+			}
+			
+			this.appMask.hide();
+			
         }, this);
 
         this.mapPanelContainer = new Ext.Panel({
@@ -153,7 +197,6 @@ GeoExplorer.Viewer = Ext.extend(GeoExplorer, {
         }];
         
         GeoExplorer.superclass.initPortal.apply(this, arguments);        
-
     },
 
     /**

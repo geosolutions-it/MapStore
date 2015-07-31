@@ -372,7 +372,11 @@ OpenLayers.Control.WMSGetFeatureInfo = OpenLayers.Class(OpenLayers.Control, {
         }
         OpenLayers.Util.applyDefaults(params, this.vendorParams);
         var headers;
-        if(this.authentication) {
+        if(this.authentication && this.authentication.token) {
+            headers = {
+                "Authorization":  this.authentication.token
+            };
+        } else if(this.authentication && this.authentication.user) {
             headers = {
                 "Authorization":  "Basic " + Base64.encode(this.authentication.user + ":" + this.authentication.password)
             };

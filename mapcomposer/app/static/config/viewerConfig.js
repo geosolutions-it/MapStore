@@ -3,9 +3,9 @@
 		"header":false
 	},
     "gsSources": {
-        "google": {
-            "ptype": "gxp_googlesource"
-        }
+		"bing": {
+			"ptype": "gxp_bingsource" 
+		}
     },
     "map":{
         "projection": "EPSG:900913",
@@ -15,15 +15,21 @@
             20037508.34, 20037508.34
         ],
         "layers": [{
-            "source": "google",
-            "title": "Google Hybrid",
-            "name": "HYBRID",
-            "group": "background"
-        }],
+			"source": "bing",
+			"title": "Bing Aerial",
+			"name": "AerialWithLabels",
+			"group": "background"
+		}],
         "center": [1250000.000000, 5370000.000000],
         "zoom": 5
     },
-	
+   	"cookieConsent":true,
+
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
+	},
 	"customTools":[
 		{
 		   "ptype": "gxp_mouseposition",
@@ -42,7 +48,7 @@
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,
-			"showReport": false,
+			"showReport": "never",
 			"directAddLayer": false,
 			"id": "addlayer"
 		}, {

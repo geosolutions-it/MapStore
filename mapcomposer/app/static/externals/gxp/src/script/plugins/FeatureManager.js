@@ -95,6 +95,17 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  each with a valid symbolizer object for OpenLayers. Will be used to
      *  render features.
      */
+     /** api: config[selectedSymbolizer]
+     *  ``Object`` An object with "Point", "Line" and "Polygon" properties,
+     *  each with a valid symbolizer object for OpenLayers. Will be used to
+     *  render selected features.
+     */
+    /** api: config[vecLayerOptions]
+     *  ``Object`` Optional object with non-default properties to set on the
+     *  OpenLayers.Layer.Vector used to render features
+     *  i.e. to have zindex use  "vecLayerOptions": {"rendererOptions":{"zIndexing": true}}
+     *  in composer configuration
+     */
     
     /** api: config[format]
      *  ``String`` Optional response format to use for WFS GetFeature requests.
@@ -346,20 +357,20 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                     }
                 })]
             }),
-            "selected": new OpenLayers.Style(null, {
-                rules: [new OpenLayers.Rule({symbolizer: {display: "none"}})]
+             "selected": new OpenLayers.Style(null, {
+              rules: [new OpenLayers.Rule({symbolizer: this.initialConfig.selectedSymbolizer || {display: "none"}})]
             })
         };
         
-        this.featureLayer = new OpenLayers.Layer.Vector(this.id, {
+        this.featureLayer = new OpenLayers.Layer.Vector(this.id, Ext.apply({
             displayInLayerSwitcher: false,
             visibility: false,
             styleMap: new OpenLayers.StyleMap({
-                "select": OpenLayers.Util.extend({display: ""},
+                 "select": this.initialConfig.selectedSymbolizer ? this.style["selected"] :  OpenLayers.Util.extend({display: ""},
                     OpenLayers.Feature.Vector.style["select"]),
                 "vertex": this.style["all"]
             }, {extendDefault: false})    
-        });
+        },this.vecLayerOptions||{}));
         
         this.target.on({
             ready: function() {
@@ -705,6 +716,8 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         maxFeatures: this.maxFeatures,
                         layer: this.featureLayer,
                         ogcFilter: filter,
+                        sortBy: this.sortBy,
+                        remoteSort:this.remoteSort,
                         autoLoad: autoLoad,
                         autoSave: false,
                         listeners: {

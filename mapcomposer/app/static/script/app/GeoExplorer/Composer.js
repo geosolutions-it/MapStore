@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Copyright (c) 2009-2010 The Open Planning Project
  *
  * @requires GeoExplorer.js
@@ -148,14 +148,6 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     id: "measure_plugin",
                     toggleGroup: this.toggleGroup,
 		            actionTarget: {target: "paneltbar", index: 21}
-		        }, {
-                    id: "googleearth_separator",
-		            actions: ["-"], 
-                    actionTarget: "paneltbar"
-		        }, {
-		            ptype: "gxp_googleearth",
-                    id: "googleearth_plugin",
-		            actionTarget: {target: "paneltbar", index: 25}
 		        }
 		    ];
 
@@ -212,7 +204,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		// ////////////////////////////////////////////////////////////
 		var savePlugin = false;
 		for(i=0; i<config.tools.length; i++){
-			if(config.tools[i]["ptype"] == "gxp_saveDefaultContext"){
+			if(config.tools[i]["ptype"] == "gxp_saveMapPlugin"){
 				var savePlugin = true;
 				break;
 			}
@@ -220,7 +212,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		
 		if(!savePlugin){
 			config.tools.push({
-				ptype: "gxp_saveDefaultContext",
+				ptype: "gxp_saveMapPlugin",
                 id: "saveDefaultContext_plugin",
 				actionTarget: {target: "paneltbar", index: 21},
 				needsAuthorization: true
@@ -252,46 +244,59 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 id: "full-screen-button",
                 iconCls: "icon-fullscreen",
                 enableToggle: true,
+				state:{},
+				tools:{},
 				scale: this.actionToolScale,
                 handler: function(button, evt){
                     if(button.pressed){
                        var tree = Ext.getCmp('tree');
+					   
 						if(tree){
 							var panel = tree.findParentByType('panel');
 							if(panel){
-								panel.collapse();
-							}							
+								button.saveState(panel);
+								panel.collapse(true);
+							}
 						}	
 						
 						var east = Ext.getCmp('east');
 						if(east){
-							east.collapse();
+							button.saveState(east);
+							east.collapse(true);
+							
 						}
 						
 						var south = Ext.getCmp('south');
 						if(south){
-							south.collapse();
+							button.saveState(south);
+							south.collapse(true);
 						}
                     } else {
-                        var tree = Ext.getCmp('tree');
-						if(tree){
-							var panel = tree.findParentByType('panel');
-							if(panel){
-								panel.expand();
-							}							
-						}						
-						
-						var east = Ext.getCmp('east');
-						if(east){
-							east.expand();
-						}
-						
-						var south = Ext.getCmp('south');
-						if(south){
-							south.expand();
-						}
+						for(var tool in button.tools){
+							button.restoreState(button.tools[tool]);
+						}                        
                     }
-                }
+                },
+				//restore the previous state of the button
+				restoreState: function(panel){
+					if(!this.state) return;
+					var id = panel.getId();
+					var wasVisible = this.state[id];
+					if(panel && wasVisible){
+						panel.expand(true);
+					}
+				},
+				//save the state of the button
+				saveState: function(panel){
+					if(!this.state) return;
+					var id =panel.getId();
+					if(id){
+						this.state[id] = panel.isVisible();
+					}
+					if(!this.tools[id]){
+						this.tools[id] = panel;
+					}
+				}
             });
 
             tools.unshift(fullScreen);

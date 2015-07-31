@@ -21,6 +21,11 @@
 			"ptype": "gxp_olsource" 
 		}
 	},
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
+	},
 	"map": {
 		"projection": "EPSG:900913",
 		"units": "m",
@@ -112,7 +117,7 @@
                         {"name": "SOPAC", "url": "http://geonetwork.sopac.org/geonetwork/srv/en/csw", "description" : "SOPAC"},
                         {"name": "SADC", "url": "http://www.sadc.int/geonetwork/srv/en/csw", "description" : "SADC"},
                         {"name": "MAPAS", "url": "http://mapas.mma.gov.br/geonetwork/srv/en/csw", "description" : "MAPAS"}
-                    ],
+                ],
                 "dcProperty": "title",
                 "initialBBox": {
                     "minx": 11.145,
@@ -137,6 +142,16 @@
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"id": "addlayer"
+		}, {
+			"ptype": "gxp_about",
+			"poweredbyURL": "null",
+			"actionTarget": {"target": "panelbbar", "index": 1}
+		}, {
+			"ptype": "gxp_wmsgetfeatureinfo_menu", 
+			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
+			"useTabPanel": true,
+			"toggleGroup": "toolGroup",
+			"actionTarget": {"target": "paneltbar", "index": 20}
 		}
 	]
 }

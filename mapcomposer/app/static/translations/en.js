@@ -168,7 +168,13 @@ GeoExt.Lang.add("en", {
         infoActionTip: "Get Feature Info",
         popupTitle: "Feature Info",
 		noDataMsg: "No data returned from the server",
-		maskMessage: "Getting Feature Info..."
+		maskMessage: "Getting Feature Info...",
+		firstFtTip: "First Feature",
+        previousPageTip: "Previuos Feature",
+        nextPageTip: "Next Feature",
+        lastPageTip: "Last Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "of"
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
@@ -176,7 +182,13 @@ GeoExt.Lang.add("en", {
         popupTitle: "Feature Info",
 		noDataMsg: "No data returned from the server",
 		maskMessage: "Getting Feature Info...",
-		activeActionTip:"Active info on selected layer"
+		activeActionTip:"Active info on selected layer",
+		firstFtTip: "First Feature",
+        previousPageTip: "Previuos Feature",
+        nextPageTip: "Next Feature",
+        lastPageTip: "Last Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "of"
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -221,11 +233,37 @@ GeoExt.Lang.add("en", {
     },
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Add New Server...",
+        title: "Add Server",
         cancelText: "Cancel",
         addServerText: "Add Server",
         invalidURLText: "Enter a valid URL to a WMS endpoint (e.g. http://example.com/geoserver/wms)",
-        contactingServerText: "Contacting Server..."
+        contactingServerText: "Contacting Server...",
+		sourceTypeLabel: "Type",
+		advancedOptionsTitle: "Advanced Options",
+		generalTabTitle: "General",
+		titleLabel: "Title",
+		versionLabel: "Version (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Params",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Add",
+		propNameLabel: "Name",
+		propValueLabel: "Value",
+		paramsWinTitle: "Params Options",
+		okButtonText: "Ok",
+		addPropDialogTitle: "Add Property",
+		addPropDialogMsg: "Property name or his value are not valid",
+		cancelButtonText: "Cancel",
+		removeButtonText: "Remove",
+		removePropDialogTitle: "Remove Property",
+		removePropDialogMsg: "This property cannot be removed: ",
+		newSourceDialogTitle: "New Source",
+		newSourceDialogMsg: "Some source properties are invalid.",
+		mandatoryLabelText: "All fields marked with (*) are mandatory."
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -249,20 +287,25 @@ GeoExt.Lang.add("en", {
 	    removeGroupConfirmationText: "Are you sure you want to remove the selected group ? The all layers inside this group will be removed from the map."
     },
     
-    "gxp.plugins.SaveDefaultContext.prototype": { 
-	    saveDefaultContextMenuText: "Save default context",
-	    saveDefaultContextActionTip: "Save Map context",
-	    contextSaveSuccessString: "Context saved succesfully",
-	    contextSaveFailString: "Context not saved succesfully",
-	    contextMsg: "Loading...",
-		userLabel: "User",	
-		passwordLabel: "Password", 	
-		loginLabel: "Login",	
-		mapMetadataTitle: "Insert Map Metadata",	
-		mapMedatataSetTitle: "Map Metadata",	
-		mapNameLabel: "Name",	
-		mapDescriptionLabel: "Description",
-		addResourceButtonText: "Add Map"
+    "gxp.plugins.SaveMapPlugin.prototype": { 
+        saveDefaultContextMenuText: "Save default context",
+        saveDefaultContextActionTip: "Save Map context",
+        contextSaveSuccessString: "Context saved succesfully",
+        contextSaveFailString: "Context not saved succesfully",
+        contextMsg: "Loading...",
+        userLabel: "User",  
+        passwordLabel: "Password",  
+        loginLabel: "Login",    
+        mapMetadataTitle: "Insert Map Metadata",    
+        mapMedatataSetTitle: "Map Metadata",    
+        mapNameLabel: "Name",   
+        mapDescriptionLabel: "Description",
+        addResourceButtonText: "Add Map",
+        conflictErrMsg: "A map with the same name already exists",
+        selectionErrorTitle:"Error",
+        groupSelectionError:"Select at least one group",
+        permissionsLabel:"Permissions",
+        groupsLabel:"User groups"
     },
     "gxp.plugins.GeoReferences.prototype": {
         initialText: "Select an area",
@@ -275,6 +318,13 @@ GeoExt.Lang.add("en", {
         zoomInTooltip: "Zoom Box In",
         zoomOutTooltip: "Zoom Box Out"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Layer is not available in the map projection",
+		wfsDescribeFeatureTypeError: "Error getting attributes of feature type",
+		errorTitle: "Error"
+	},
+	
     "GeoExt.ux.PrintPreview.prototype":{
         paperSizeText: "Paper size:",
         resolutionText: "Resolution:",
@@ -308,8 +358,7 @@ GeoExt.Lang.add("en", {
         fontFamilyText: "Font Family",
         fontStyleText: "Font style",
         fontEditorText: "Label config"
-    },
-	
+    },	
     "gxp.plugins.GeonetworkSearch.prototype":{
         geonetworkSearchText: "View metadata",
         geonetworkSearchActionTip: "View metadata"
@@ -330,7 +379,7 @@ GeoExt.Lang.add("en", {
         passwordFieldText: "Password"
     },
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Display on map",
+        displayFeatureText: "Display",
         firstPageTip: "First page",
         previousPageTip: "Previous page",
         zoomPageExtentTip: "Zoom to page extent",
@@ -340,7 +389,7 @@ GeoExt.Lang.add("en", {
         totalMsg: "Total: {0} records",
         displayExportCSVText: "Export to CSV",
         exportCSVSingleText: "Single Page",
-        exportCSVMultipleText: "Whole Page",
+        exportCSVMultipleText: "All Pages",
         failedExportCSV: "Failed to find response for output format CSV",
         invalidParameterValueErrorText: "Invalid Parameter Value",
 		zoomToFeature: "Zoom To Feature",
@@ -348,7 +397,10 @@ GeoExt.Lang.add("en", {
         comboFormatEmptyText: "Please, select format",
         noFormatTitleText: "Incorrect format",
         noFormatBodyText: "Please, select a valid format",
-        exportTitleText: "Export"
+        exportTitleText: "Export",
+		pageLabel: "Page",
+		pageOfLabel: "of",
+		totalRecordsLabel: "Total Records"
     },
     "gxp.plugins.QueryForm.prototype": {
         queryActionText: "Query",
@@ -481,7 +533,18 @@ GeoExt.Lang.add("en", {
 		imageUrlText:'Image URL',
 		importGeoJsonText:'Import GeoJson',
 		errorText:"Error",
-		notWellFormedText:"The Text you added is not well formed. Please check it"
+		notWellFormedText:"The Text you added is not well formed. Please check it",    
+		invalidURLText: "Enter a valid URL to endpoint (e.g. http://example.com/)",
+		contactingServerText: "Contacting Server...",
+		okButtonText: "OK",
+		cancelButtonText: "Cancel",	
+		urlMarkersTitle: "Load Markers from URL",    
+		urlMarkersMsg: "The provided URL is not valid",	
+		importTooltipButton: "Import Text",
+		importTextButton: "Import Text",
+		importURLTooltipButton: "Impora from URL",
+		importURLTextButton: "Importa from URL",
+		importURLWinTitle: "External Markers Link"
 	},
 	
 	"gxp.widgets.form.CoordinatePicker.prototype":{
@@ -606,7 +669,8 @@ GeoExt.Lang.add("en", {
 		previewText: "Preview",				
 		embedCodeTitle: "Embed Code",
 		embedURL: "Direct URL",		
-		urlLabel: "URL",
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
 		showMapTooltip: "Show in a new Window",
         loadMapText: "Load this Map (install application first)",
         downloadAppText: "Install Application",
@@ -757,17 +821,23 @@ GeoExt.Lang.add("en", {
 		rootNodeText: "Imported Resources",
 		serviceErrorTitle: "Service Error",
 		tabTitle: "Imported",
-		layerNodeName: "Layers",
-		serviceNodeName: "Services"
+		layerNodeName: "Resources",
+		waitMsg: "Loading Resources ...",
+		expandAllText: "Expand All Nodes",
+		collapseAllText: "Collapse All Nodes"
     },
 	
 	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
         noFilterSelectedMsgTitle: "No filter selected",    
         noFilterSelectedMsgText: "You must select at least one filter",    
         invalidRegexFieldMsgTitle: "Invalid Fields",    
-        invalidRegexFieldMsgText: "One or more fields are incorrect!"
+        invalidRegexFieldMsgText: "One or more fields are incorrect!",
+        unknownErrorMsgTitle: 'Error',
+        unknownErrorMsgText: 'Unknown error occurred',
+        errorCode: 'Error Code',
+        errorText: 'Error Text'
     },
-	
+
 	"gxp.plugins.FeatureManager.prototype":{
         noValidWmsVersionMsgTitle: 'No valid WMS version',    
         noValidWmsVersionMsgText: "The queryForm plugin doesn't work with WMS Source version: "
@@ -782,5 +852,180 @@ GeoExt.Lang.add("en", {
         acceptText: "Create",
         cancelText: "Cancel",
         notInitializedCategoriesWithCredentials: "<div class='initCategoriesMessage'>If you are an administrator please insert your credentials to create these categories: '{0}'</div>"
-    }
+    },
+	
+    "gxp.data.WMTSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "No layer in the current map projection is available on this server",
+        warningTitle: "Warning"
+    },
+	
+    "gxp.data.TMSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "No layer in the current map projection is available on this server",
+        warningTitle: "Warning"
+    },
+	
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Enable/Disable Snapping"
+    },
+	
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Play",
+        playTooltip: "Play",
+        stopLabel: "Stop",
+        stopTooltip: "Stop",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Double Speed Playback",
+        backLabel:'Back',
+        backTooltip:'Draw back One Frame',            
+        nextLabel: "Next",
+        nextTooltip: "Advance One Frame",
+        resetLabel: "Reset",
+        resetTooltip: "Whole interval",
+        loopLabel: "Loop",
+        loopTooltip: "Continously loop the animation",
+        normalTooltip: "Return to normal playback",
+        pauseLabel: "Pause",
+        pauseTooltip: "Pause"
+    },
+	
+    "gxp.PlaybackOptionsPanel.prototype": {
+        optionTitleText: "Date & Time Options",
+        rangeFieldsetText: "Time Range",
+        animationFieldsetText: "Animation Options",
+        startText: "Start",
+        endText: "End",
+        saveText: 'Save',
+        cancelText: 'Cancel',         
+        listOnlyText: "Use Exact List Values Only",
+        stepText: "Animation Step",
+        unitsText: "Animation Units",
+        frameRateText:'Animation Delay (s)',        
+        noUnitsText: "Snap To Time List",
+        loopText: "Loop Animation",
+        reverseText: "Reverse Animation",
+        rangeChoiceText: "Choose the range for the time control",
+        rangedPlayChoiceText: "Playback Mode",
+        secondsText: 'Seconds', 
+        minutesText: 'Minutes', 
+        hoursText: 'Hours', 
+        daysText: 'Days', 
+        monthsText: 'Months', 
+        yearsText: 'Years'        
+    },
+	
+	"gxp.plugins.StaticPage.prototype": {
+        tabTitle: "Static Page"
+    },
+	
+    "gxp.plugins.DownloadPanel.prototype":{
+	    initialText: "Select an item ...",
+        tabTitle: "Download",    
+		dselTitle: "Data Selection",	
+		dselLayer: "Layer",	
+		dselCRS: "Target CRS",
+		dselFormat: "Format",    
+		settingTitle: "Spatial Settings",	
+		settingSel: "Selection Mode",	
+		settingCut: "Cut Mode",    
+		emailNotificationTitle: "Email notification",	
+		emailFieldLabel: "Email",
+		vectorFilterTitle: "Vector Filter",    
+		placeSearchLabel: "Place",
+		resTitle: "Results",	
+		resID: "ID",	
+		resExecID: "execID",	
+		resProcStatus: "Process Status",	
+		resGet: "Get",	
+		resDelete: "Delete",	
+		resPhase: "Phase",	
+		resProgress: "Progress",	
+		resResult: "Result",    
+		btnRefreshTxt: "Refresh",	
+		btnDeleteTxt: "Delete the selected processes",	
+		btnResetTxt: "Reset",	
+		btnDownloadTxt: "Download",    
+		errMissParamsTitle: "Missing parameters",	
+		errMissParamsMsg: "Please fill all the mandatory fields",    
+		errMissGeomTitle: "Missing feature",	
+		errMissGeomMsg: "Please draw the Area of Interest before submitting",
+		msgRemRunningTitle:"Remove Running Instance",	
+		msgRemRunningMsg:  "You are about to delete a running instance, you will not be able to retreave the result<br/>Do you really want to delete instance ?",	
+		msgRemTitle: "Remove Instance",	
+		msgRemMsg: "Do you want to delete instance ?",	
+		msgRemDone: "Instance removed.",    
+		errWPSTitle: "DownloadProcess not supported",	
+		errWPSMsg: "This WPS server does not support gs:Download process",	
+		wpsErrorMsg: "The WPS reports the following error",    
+		errBufferTitle: "Buffer failed",	
+		errBufferMsg: "Error buffering feature",    
+		errUnknownLayerTypeTitle: "Unknown layer type",    
+		errUnknownLayerTypeMsg: "Cannot estabilish the type of the selected layer. Please select another layer to download",
+		errLayerGroupTypeTitle: "Layergroup detected",    
+		errLayerGroupTypeMsg: "Layergroups cannot be downloaded. Please select another layer to download",
+		msgEmptyEmailTitle: "Empty email",	
+		msgEmptyEmailMsg: "The email notification is enabled, but the email field is not filled. Continue wihout email notification?",    
+		msgEmptyFilterTitle: "Empty filter",	
+		msgEmptyFilterMsg: "The filter is enabled, but the filter is not filled. Continue wihout filter?",    
+		msgWrongCRSTitle: "Projection Mismatch",    
+		msgWrongCRSMsg: "The selected projection will be overridden by the Output Format specifications (EPSG:4326). Continue anyway?",    
+		msgTooltipPending: 'Pending',	
+		msgTooltipSuccess: 'Success',	
+		msgTooltipExecuting: 'Executing',	
+		msgTooltipFailed: 'Failed',	
+		msgTooltipAccepted: 'Accepted',    
+		msgGeostoreException: "Geostore Exception",	
+		msgNone: 'None',    
+		msgBox: 'Box',	
+		msgPolygon: 'Polygon',	
+		msgCircle: 'Circle',	
+		msgPlace: 'Place',
+		msgIntersection: 'Intersection',	
+		msgClip: 'Clip',    
+		msgInstance: 'Instance',    
+		msgName: 'Name',	
+		msgCreation: 'Creation',	
+		msgDescription: 'Description',    
+		msgCategory: 'Category',	
+		msgMetadata: 'Metadata',	
+		msgAttributes: 'Attributes',    
+		errExceptionTextTitle: "Exception",    
+		errWrongResponseMsg: "Got wrong respone from server",	
+		executionIdField: "Execution ID",	
+		executionIdFieldEmptyText: "Insert an execution ID",	
+		executionIdFieldTooltip: "Insert an execution ID to follow the process status",	
+		executionIdFieldTooltipDelete: "Delete the execution ID field",	
+		executionIdPresentErrorMsg: "The provided execution ID is already present inside the Grid",	
+		executionIdEmptyErrorMsg: "The server has returned an empty execution ID",	
+		executionIdInvalidErrorMsg: "Invalid execution Id !",	
+		processExecutionEmpty: "Remote data are no longer available.",	
+		processExecutions: "Download Summary",	
+		processExecutionsLoadText: "Previous Download",	
+		processResponseErrorTitle: "Process Response Error",	
+		processResponseErrorMsg: "The process did not properly respond",	
+		describeProcessErrorMsg: "Cannot read response",	
+		bufferFieldLabel: "Approximate Buffer (m)",	
+		downloadFormFieldSetTitle: "Download Form",	
+		loadMaskMsg: "Please wait...",	
+		requiredFieldsLabel: "* These fields are mandatory for the download process.",	
+		infoBtnTooltip: "Show info about this CRS",	
+		readOnlyLayerSelection: false,	
+		selectionSummary: "Selection Summary",	
+		selectedProcessIdString: "Selected process ID: ",	
+		selectedProcessIdStringUndef: "Unknown",	
+		areaLabel: "Area",	
+		perimeterLabel: "Perimeter",	
+		radiusLabel: "Radius",	
+		centroidLabel: "Centroid",	
+		closeText: "Close",	
+		showExecutionIdText: "Show Execution ID",	
+		processIdentifierText: "Identifier",	
+		downloadIdTitle: "Download ID"
+    }, 
+    "cookieChoices": {
+        "cookieText": "Cookies help us deliver our services. By using our services, you agree to our use of cookies.",
+        "dismissText": "I Agree",
+        "linkText":"Learn more",
+        "linkHref":"cookies-policy-en.html"
+
+  }
 });

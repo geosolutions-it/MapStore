@@ -104,11 +104,10 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
     description: '<h2> Help window</h2><p>This is a sample help window</p>',
     dontShowThisMessageAgainText: "Don't show this message again",
     
-    // width and height are not configurable at the moment
-    // TODO investigate why this happens.
-    windowHeight: 600,
-    windowWidth: 600,
-	
+   // width and height are not configurable at the moment
+   // TODO investigate why this happens.
+   windowHeight: 600,
+   windowWidth: 600,
     /** api: config[showOnStartup]
      *  ``Boolean`` Show the window on startup if true
      */
@@ -181,6 +180,7 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
                     }
                 });
             }
+
         };
 		
 		if(this.fileDocURL && this.fileName){
@@ -221,6 +221,7 @@ gxp.plugins.HelpButton = Ext.extend(gxp.plugins.Tool, {
             autoScroll:false,
             maximizable:true,
             items: this.fileDocURL ? iframeconfig : {html: this.description, autoScroll:true, bodyStyle:'padding:10px'},
+
             bbar:[{
                 xtype: 'checkbox',
                 boxLabel: this.dontShowThisMessageAgainText,
