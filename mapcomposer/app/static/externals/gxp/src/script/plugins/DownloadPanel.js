@@ -410,18 +410,18 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 			'ready' : function(){
 			    this.addLayerTool = this.target.tools["addlayer"];
 				this.addLayerTool.on({
-					'ready' : function(layerRecord){
-						this.selectedLayer = layerRecord;
+					'ready' : function(layerRecords){
+						this.selectedLayer = layerRecords[0].record;
 						// ///////////////////////////////////
 						// As usual reload the Formats store
 						// ///////////////////////////////////
 						this.formatStore.removeAll();
-						if(layerRecord && layerRecord.data.wcs === true){
+						if(this.selectedLayer && this.selectedLayer.data.wcs === true){
 							this.formatStore.loadData(this.formats.wcs, false);
 						}else{
 							this.formatStore.loadData(this.formats.wfs, false);
                             this.showMask();
-                            this.featureManager.setLayer(layerRecord);
+                            this.featureManager.setLayer(this.selectedLayer);
 						}
 					},
 					scope: this
@@ -537,7 +537,9 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
                 this.featureManager.on({
                     scope: this,
                     layerchange: function(fm, record, schema) {
-                        this.createVectorFilterForm(record, schema);
+						if(!record.get("wcs")){
+							this.createVectorFilterForm(record, schema);
+						}
                         this.hideMask();
                     }
                 });
@@ -1254,7 +1256,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
 							// Add the new selected layer.
 							// ////////////////////////////
 							var addLayer = function(record, layerType) {							
-                                var options = {
+                                var options = [{
                                     msLayerTitle: record.data.title,
                                     msLayerName: record.data.name,
                                     source: record.data.source,
@@ -1263,7 +1265,7 @@ gxp.plugins.DownloadPanel = Ext.extend(gxp.plugins.Tool, {
                                     customParams: {
                                         wcs: (layerType == 'WCS')
                                     }
-                                };
+                                }];
                                 
                                 this.addLayerTool.addLayer(
                                     options

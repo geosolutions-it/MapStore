@@ -205,6 +205,7 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
     initialize_uploader: function () {
         var runtimes = 'gears,browserplus,html5,silverlight,flash';
         this.uploader = new plupload.Uploader({
+            headers : this.auth ? {'Authorization': this.auth}: null,
             url: this.url,
             runtimes: this.runtimes || runtimes,
             browse_button: this.getTopToolbar().getComponent('addButton').getEl().dom.id,

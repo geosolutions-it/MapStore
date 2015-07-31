@@ -24,6 +24,11 @@
 			"ptype": "gxp_olsource" 
 		}
 	},
+	"loadingPanel": {
+		"width": 100,
+		"height": 100,
+		"center": true
+	},
 	"map": {
 		"projection": "EPSG:900913",
 		"units": "m",
@@ -173,6 +178,7 @@
 		  "showSelectionSummary": true,
 		  "actions": null,
 		  "id": "bboxquery",
+          "filterLayer": true,
           "autoComplete": {
             "sources": ["default"],
             "url": "http://localhost:8080/geoserver/wps",

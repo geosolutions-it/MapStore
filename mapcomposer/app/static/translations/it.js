@@ -7,6 +7,7 @@
 */
 
 GeoExt.Lang.add("it", {
+
     "GeoExplorer.prototype": {
         zoomSliderText: "<div>Livello di Zoom: {zoom}</div><div>Scala: 1:{scale}</div>",
         loadConfigErrorText: "Impossibile leggere la configurazione salvata : <br />",
@@ -54,7 +55,7 @@ GeoExt.Lang.add("it", {
     "gxp.plugins.AddLayers.prototype": {
         addActionMenuText: "Aggiungi livello",
         addActionTip: "Aggiungi livello",
-        addServerText: "Aggiungi un nuovo Server",
+        addServerText: "Aggiungi Server",
         addButtonText: "Aggiungi livelli",
         untitledText: "Senza Titolo",
         addLayerSourceErrorText: "Errore nel recuperare le WMS capabilities ({msg}).\nSi prega di controllare l'URL e di riprovare ancora.",
@@ -165,7 +166,13 @@ GeoExt.Lang.add("it", {
         infoActionTip: "Recupera Informazioni",
         popupTitle: "Informazioni Feature",
 		noDataMsg: "Nessun dato è stato ritornato dal server",
-		maskMessage: "Recupero Informazioni..."
+		maskMessage: "Recupero Informazioni...",
+		firstFtTip: "Prima Feature",
+        previousPageTip: "Feature Precedente",
+        nextPageTip: "Prossima Feature",
+        lastPageTip: "Ultima Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "di" 
     },
 	
 	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
@@ -173,7 +180,13 @@ GeoExt.Lang.add("it", {
         popupTitle: "Informazioni Feature",
 		noDataMsg: "Nessun dato è stato ritornato dal server",
 		maskMessage: "Recupero Informazioni...",
-		activeActionTip:"Informazioni sul layer selezionato"
+		activeActionTip:"Informazioni sul layer selezionato",
+		firstFtTip: "Prima Feature",
+		previousPageTip: "Feature Precedente",
+        nextPageTip: "Prossima Feature",
+        lastPageTip: "Ultima Feature",
+        ftLabel: "Feature",
+        ftOfLabel: "di"
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -245,11 +258,37 @@ GeoExt.Lang.add("it", {
     },
 
     "gxp.NewSourceWindow.prototype": {
-        title: "Aggiungi nuovo Server...",
+        title: "Aggiungi Server",
         cancelText: "Cancella",
         addServerText: "Aggiungi Server",
         invalidURLText: "Inserisci un URL valido come WMS endpoint (e.g. http://example.com/geoserver/wms)",
-        contactingServerText: "Si cerca di contattare il Server..."
+        contactingServerText: "Si cerca di contattare il Server...",
+		sourceTypeLabel: "Tipo",
+		advancedOptionsTitle: "Opzioni Avanzate",
+		generalTabTitle: "Generale",
+		titleLabel: "Titolo",
+		versionLabel: "Versione (*)",
+		authParamLabel: "Auth Param",
+		minXLabel: "MinX",
+		minYLabel: "MinY",
+		maxXLabel: "MaxX",
+		maxYLabel: "MaxY",
+		paramsTabTitle: "Parametri",
+		cacheTabTitle: "Cache",
+		addParamButtonText: "Aggiungi",
+		propNameLabel: "Nome",
+		propValueLabel: "Valore",
+		paramsWinTitle: "Opzioni Parametri",
+		okButtonText: "Conferma",
+		addPropDialogTitle: "Aggiungi Proprietà",
+		addPropDialogMsg: "Il nome della proprietà o il suo valore non sono validi",
+		cancelButtonText: "Cancella",
+		removeButtonText: "Rimuovi",
+		removePropDialogTitle: "Rimuovi Proprietà",
+		removePropDialogMsg: "questa proprietà non può essere rimossa: ",
+		newSourceDialogTitle: "Nuova Sorgente",
+		newSourceDialogMsg: "Alcune proprietà della sorgente selezionatasono invalide.",
+		mandatoryLabelText: "Tutti i campi contrassegnati con (*) sono obbligatori.",
     },
 
     "gxp.ScaleOverlay.prototype": { 
@@ -273,20 +312,25 @@ GeoExt.Lang.add("it", {
 	    removeGroupConfirmationText: "Sei sicuro di voler rimuovere il gruppo selezionato ? Tutti i livelli in esso presenti saranno rimossi dalla mappa."
     },
     
-    "gxp.plugins.SaveDefaultContext.prototype": { 
-	    saveDefaultContextMenuText: "Salva il contesto",
-	    saveDefaultContextActionTip: "Salva il contesto della Mappa",
-	    contextSaveSuccessString: "Contesto salvato con successo",
-	    contextSaveFailString: "Contesto non salvato con successo",
-	    contextMsg: "Caricamento...",
-		userLabel: "Utente",	
-		passwordLabel: "Password", 	
-		loginLabel: "Accesso",	
-		mapMetadataTitle: "Inserimento dei metadati",	
-		mapMedatataSetTitle: "Metadati della Mappa",	
-		mapNameLabel: "Nome",	
-		mapDescriptionLabel: "Descrizione",
-		addResourceButtonText: "Salva Mappa"
+    "gxp.plugins.SaveMapPlugin.prototype": { 
+        saveDefaultContextMenuText: "Salva il contesto",
+        saveDefaultContextActionTip: "Salva il contesto della Mappa",
+        contextSaveSuccessString: "Contesto salvato con successo",
+        contextSaveFailString: "Contesto non salvato con successo",
+        contextMsg: "Caricamento...",
+        userLabel: "Utente",    
+        passwordLabel: "Password",  
+        loginLabel: "Accesso",  
+        mapMetadataTitle: "Inserimento dei metadati",   
+        mapMedatataSetTitle: "Metadati della Mappa",    
+        mapNameLabel: "Nome",   
+        mapDescriptionLabel: "Descrizione",
+        addResourceButtonText: "Salva Mappa",
+        conflictErrMsg: "Una mappa con lo stesso nome esiste già",
+        selectionErrorTitle:"Errore",
+        groupSelectionError:"Selezionare almeno un gruppo",
+        permissionsLabel:"Permessi",
+        groupsLabel:"Gruppi"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
@@ -301,6 +345,12 @@ GeoExt.Lang.add("it", {
         zoomInTooltip: "Zoom Box Avanti",
         zoomOutTooltip: "Zoom Box Indietro"
     },
+	
+	"gxp.plugins.WMSSource.prototype": {
+		noCompatibleProjectionError: "Il layer non è disponibile nella proiezione della mappa",
+		wfsDescribeFeatureTypeError: "Errore nel recupero degli attributi per il tipo di oggetto",
+		errorTitle: "Errore"
+	},
 
     "GeoExt.ux.PrintPreview.prototype":{
 	    paperSizeText: "Dimensioni del foglio:",
@@ -360,7 +410,7 @@ GeoExt.Lang.add("it", {
     },
 
     "gxp.plugins.FeatureGrid.prototype": {
-        displayFeatureText: "Visualizza in mappa",
+        displayFeatureText: "Visualizza",
         firstPageTip: "Prima pagina",
         previousPageTip: "Pagina precedente",
         zoomPageExtentTip: "Zoom all'estensione della pagina",
@@ -373,7 +423,11 @@ GeoExt.Lang.add("it", {
         exportCSVMultipleText: "Tutte le pagine",
         failedExportCSV: "Impossibile esportare nel formato CSV",
         invalidParameterValueErrorText: "Valore parametro non valido",
-		zoomToFeature: "Zoom alla Feature"            
+		zoomToFeature: "Zoom alla Feature",
+		exportTitleText: "Esporta",
+		pageLabel: "Pagina",
+		pageOfLabel: "di",
+		totalRecordsLabel: "Elementi Totali"		
     },
 	
     "gxp.plugins.QueryForm.prototype": {
@@ -507,7 +561,18 @@ GeoExt.Lang.add("it", {
 		imageUrlText:'URL immagine',
 		importGeoJsonText:'Importa GeoJson',
 		errorText:"Errore",
-		notWellFormedText:"Il testo che hai inserito non è ben formato."
+		notWellFormedText:"Il testo che hai inserito non è ben formato.",
+		invalidURLText: "Inserire un URL valido (esempio http://example.com/)",
+		contactingServerText: "In attesa del Server...",
+		okButtonText: "OK",
+		cancelButtonText: "Chiudi",	
+		urlMarkersTitle: "Carica Marchers da URL",    
+		urlMarkersMsg: "Lo URL inserito non è valido",	
+		importTooltipButton: "Importa con Testo",
+		importTextButton: "Importa Testo",
+		importURLTooltipButton: "Impora da URL",
+		importURLTextButton: "Importa da URL",
+		importURLWinTitle: "Collegamento esterno ai Markers"
 	},
 	
 	"gxp.widgets.form.CoordinatePicker.prototype":{
@@ -728,7 +793,8 @@ GeoExt.Lang.add("it", {
 		previewText: "Anteprima",				
 		embedCodeTitle: "Codice da Incorporare",
 		embedURL: "URL diretto",		
-		urlLabel: "URL",
+		embedUrlLabel: "EMBED",
+		composerUrlLabel: "FULL",
 		showMapTooltip: "Mostra in una nuova finestra",
         loadMapText: "Carica Mappa",
         downloadAppText: "Installa Applicazione Android",
@@ -880,22 +946,91 @@ GeoExt.Lang.add("it", {
 		rootNodeText: "Risorse Importate",
 		serviceErrorTitle: "Errore Servizio",
 		tabTitle: "Importati",
-		layerNodeName: "Livelli",
-		serviceNodeName: "Servizi"
+		layerNodeName: "Risorse",
+		waitMsg: "Caricamento Risorse ...",
+		expandAllText: "Espandi Tutti i Nodi",
+		collapseAllText: "Collassa Tutti i Nodi"
     },
 	
 	"gxp.plugins.SpatialSelectorQueryForm.prototype":{
         noFilterSelectedMsgTitle: "Nessun filtro selezionato",    
         noFilterSelectedMsgText: "Devi selezionare almeno un filtro",    
         invalidRegexFieldMsgTitle: "Campo non valido",    
-        invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!"
+        invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!",
+        unknownErrorMsgTitle: 'Errore',
+        unknownErrorMsgText: 'Errore sconosciuto',
+        errorCode: 'Condice errore',
+        errorText: 'Testo errore'
     },
 	
 	"gxp.plugins.FeatureManager.prototype":{
         noValidWmsVersionMsgTitle: 'Versione WMS non valida',    
         noValidWmsVersionMsgText: "Il plugin queryForm non funziona con una sorgente WMS versione: "
     },
-    
+	
+    "gxp.data.WMTSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "Nessun layer disponibile su questo server nel sistema di coordinate della mappa",
+        warningTitle: "Attenzione"
+    },
+	
+    "gxp.data.TMSCapabilitiesReader.prototype" : {
+        noLayerInProjectionError: "Nessun layer disponibile su questo server nel sistema di coordinate della mappa",
+        warningTitle: "Attenzione"
+    },
+
+	"gxp.plugins.AdvancedSnappingAgent.prototype":{
+        tooltipText: "Abilita/Disabilita Aggancio"
+    },
+	
+    "gxp.PlaybackToolbar.prototype": {
+        playLabel: "Play",
+        playTooltip: "Play",
+        stopLabel: "Stop",
+        stopTooltip: "Stop",
+        fastforwardLabel: "FFWD",
+        fastforwardTooltip: "Doppia velocità di animazione",
+        backLabel:'Indietro',
+        backTooltip:'Diminuisci di uno step',            
+        nextLabel: "Avanti",
+        nextTooltip: "Avanza di uno step",
+        resetLabel: "Reset",
+        resetTooltip: "Tutto l'intervallo",
+        loopLabel: "Loop",
+        loopTooltip: "Animazione continua",
+        normalTooltip: "Ritorno alla riproduzione normale",
+        pauseLabel: "Pausa",
+        pauseTooltip: "Pausa"
+    },
+	
+    "gxp.PlaybackOptionsPanel.prototype": {
+        optionTitleText: "Opzioni Data e Tempo",
+        rangeFieldsetText: "Intervallo di tempo",
+        animationFieldsetText: "Opzioni di animazione",
+        startText: "Inizio",
+        endText: "Fine",
+        saveText: 'Salva',
+        cancelText: 'Cancella',        
+        listOnlyText: "Utilizzare solamente l'elenco dei valori esatti",
+        stepText: "Step animazione",
+        unitsText: "Unità animazione",
+        frameRateText:'Velocità animazione (s)',
+        noUnitsText: "Snap To Time List",
+        loopText: "Animazione continua",
+        reverseText: "Inverti animazione",
+        rangeChoiceText: "Choose the range for the time control",
+        rangedPlayChoiceText: "Playback Mode",
+        secondsText: 'Secondi', 
+        minutesText: 'Minuti', 
+        hoursText: 'Ore', 
+        daysText: 'Giorni', 
+        monthsText: 'Mesi', 
+        yearsText: 'Anni'
+    },
+	
+	"gxp.plugins.StaticPage.prototype": {
+        tabTitle: "Pagina Statica"
+	},
+	
     "gxp.plugins.DownloadPanel.prototype":{
 	    initialText: "Seleziona elemento ...",
         tabTitle: "Download",    
@@ -999,5 +1134,13 @@ GeoExt.Lang.add("it", {
 		showExecutionIdText: "Mostra ID",
 		processIdentifierText: "Identificatore",
 		downloadIdTitle: "ID Download"
-    }
+    },
+    "cookieChoices": {
+        "cookieText": "I cookie ci aiutano ad erogare servizi di qualità. Utilizzando i nostri servizi, l'utente accetta le nostre modalità d'uso dei cookie.",
+        "dismissText": "Accetto",
+        "linkText":"Dettagli",
+        "linkHref":"cookies-policy-it.html"
+
+  }
+
 });
