@@ -85,6 +85,11 @@ Ext.namespace("gxp.plugins");
 	*  allowed values: false (null), 'start','end'
 	*/
     separator:false,
+    /** api: 
+	*  create btn and combo in a container
+	*/
+    itemsContainer:false,
+   
     init: function(target) {
 
         var combo = new gxp.form.WFSSearchComboBox(Ext.apply({
@@ -124,8 +129,13 @@ Ext.namespace("gxp.plugins");
     /** api: method[addOutput]
      */
     addOutput: function(config) {
-        
-    	var controls = (!this.markerFadeoutEnable && !this.noButton) ? [ this.removeMarkerBtn, this.combo] : [this.combo];
+    	var controls;
+    	if(this.itemsContainer && (!this.markerFadeoutEnable && !this.noButton) )
+    		controls = [ new Ext.form.CompositeField( { 
+    			//layout:'hbox',
+    			items:[this.removeMarkerBtn, this.combo]})];	
+        else
+    	 controls = (!this.markerFadeoutEnable && !this.noButton) ? [ this.removeMarkerBtn, this.combo] : [this.combo];
         if(this.separator){
             switch(this.separator){
                 case 'start':
