@@ -2,10 +2,10 @@ package it.geosolutions.geobatch.mariss.actions.netcdf;
 
 import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
 import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
-import it.geosolutions.rendered.viewer.RenderedImageBrowser;
 
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
@@ -32,10 +32,12 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
 
-@Action(configurationClass = IngestionActionConfiguration.class)
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+@XStreamAlias("SARWind")
+@Action(configurationClass = SARWindActionConfiguration.class)
 public class SARWindAction extends NetCDFAction {
 
-    public SARWindAction(IngestionActionConfiguration actionConfiguration) {
+    public SARWindAction(SARWindActionConfiguration actionConfiguration) {
         super(actionConfiguration);
     }
 

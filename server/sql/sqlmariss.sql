@@ -174,8 +174,8 @@ CREATE TABLE ingestionproducts (
     originalfilepath character varying,
     layername character varying,
     partition character varying(10),
-    numoilspill character varying(10),
-    numshipdetect character varying(10)
+    numoilspill integer,
+    numshipdetect integer
 );
 
 

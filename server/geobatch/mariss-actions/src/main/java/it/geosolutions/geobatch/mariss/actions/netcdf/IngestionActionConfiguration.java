@@ -34,6 +34,11 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
 
     private String shipDetectionsTableName;
 
+    /**
+     * The file name to get the Product Attributes
+     */
+	private String attributeFileName;
+
     public IngestionActionConfiguration(String id, String name, String description) {
         super(id, name, description);
     }
@@ -117,5 +122,14 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
+
+	public String getAttributeFileName() {
+		return this.attributeFileName;
+		
+	}
+	
+	public void setAttributeFileName(String attributeFileName){
+		this.attributeFileName = attributeFileName;
+	}
 
 }

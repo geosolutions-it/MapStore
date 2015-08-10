@@ -2,6 +2,7 @@ package it.geosolutions.geobatch.mariss.actions.netcdf;
 
 import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
 import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
 import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
 import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
@@ -31,10 +32,12 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
 
-@Action(configurationClass = IngestionActionConfiguration.class)
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+@XStreamAlias("SARWnf")
+@Action(configurationClass = SARWnfActionConfiguration.class)
 public class SARWnfAction extends NetCDFAction {
 
-    public SARWnfAction(IngestionActionConfiguration actionConfiguration) {
+    public SARWnfAction(SARWnfActionConfiguration actionConfiguration) {
         super(actionConfiguration);
     }
 

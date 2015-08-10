@@ -1,5 +1,6 @@
 package it.geosolutions.geobatch.mariss.actions.netcdf;
 
+import java.util.List;
 import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -18,6 +19,8 @@ public class ConfigurationContainer {
     private boolean maskOneIsValid;
 
     private Map<String, String> params;
+    
+    private List<String> dateFormats;
 
     protected ConfigurationContainer() {
     }
@@ -68,5 +71,13 @@ public class ConfigurationContainer {
 
     public void setMaskOneIsValid(boolean maskOneIsValid) {
         this.maskOneIsValid = maskOneIsValid;
+    }
+
+    public List<String> getDateFormats() {
+        return this.dateFormats;
+    }
+
+    public void setDateFormats(List<String> dateFormats) {
+        this.dateFormats = dateFormats;
     }
 }

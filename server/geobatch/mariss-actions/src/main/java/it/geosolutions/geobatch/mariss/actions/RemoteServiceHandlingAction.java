@@ -634,6 +634,18 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
         listenerForwarder.setTask(msg);
         listenerForwarder.progressing();
     }
+    
+    /**
+     * Save progress information for a task
+     * 
+     * @param progress
+     * @param msg
+     */
+    protected void updateProgress(String msg) {
+        listenerForwarder.setTask(msg);
+        listenerForwarder.progressing();
+    }
+    
 
     /**
      * Update the status of the listener

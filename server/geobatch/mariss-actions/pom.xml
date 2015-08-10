@@ -74,6 +74,12 @@
         <groupId>it.geosolutions</groupId>
         <artifactId>geoserver-manager</artifactId>
         <version>${gs-manager.version}</version>
+        <exclusions>
+        <exclusion>  <!-- declare the exclusion here -->
+          <groupId>org.geoserver</groupId>
+          <artifactId>gs-main</artifactId>
+        </exclusion>
+      </exclusions> 
       </dependency>
       
         <!-- =========================================================== -->
@@ -118,6 +124,15 @@
             <groupId>it.geosolutions.geobatch</groupId>
             <artifactId>gb-action-ds2ds</artifactId>
         </dependency>
+        
+      <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-xstream</artifactId>
+      </dependency>
+	  <dependency>
+          <groupId>it.geosolutions.geobatch</groupId>
+          <artifactId>gb-action-scripting</artifactId>
+      </dependency>
 
         <dependency>
             <groupId>junit</groupId>

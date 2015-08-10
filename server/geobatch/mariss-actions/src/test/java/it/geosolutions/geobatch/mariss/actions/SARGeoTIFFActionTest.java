@@ -8,10 +8,10 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.actions.ds2ds.dao.FeatureConfiguration;
 import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.mariss.actions.MarissBaseAction.AttributeBean;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationUtils;
-import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfiguration;
+import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
+import it.geosolutions.geobatch.mariss.actions.sartiff.SARGeoTiffActionConfiguration;
 import it.geosolutions.geobatch.mariss.actions.sartiff.SarGeoTIFFAction;
 import it.geosolutions.geobatch.mariss.actions.sartiff.SarGeoTiffProcessingResult;
 
@@ -45,32 +45,36 @@ public class SARGeoTIFFActionTest {
 					"TSX1_SAR__MGD_SE___SM_S_SRA_20100304T165258_20100304T165306_DER.zip");
 	private static final String FILE_NAME = "TDX1_SAR__MGD_RE___SM_S_SRA_20111026T175726_20111026T175734_DER.zip";
 
-	/**
-	 * Test the parsing of the input files
-	 */
-	@Test
-	public void testCanProcess() {
-		// create dummy config
-		IngestionActionConfiguration config = createDummyConfig();
-		// create dummyAction
-		SarGeoTIFFAction action = new SarGeoTIFFAction(config) {
-
-			@Override
-			public boolean checkConfiguration() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-		};
-		for (String name : testNames) {
-			// create dummy event
-			FileSystemEvent event = new FileSystemEvent(new File(name),
-					FileSystemEventType.FILE_ADDED);
-			assertTrue(action.canProcess(event));
-		}
-
-	}
+	private static final String transforms = "{"
+	                                + " \"transforms\":["
+	                                + "{" 
+	                                + "  \"type\":\"GdalWarpTransform\", " 
+                                    + "  \"options\":[ "
+                                    + "    \"-t_srs\" ,"
+                                    + "    \"EPSG:4326\" "
+                                    +         "]"
+                                        /*  },
+                                          {
+                                             "type":"GdalTranslateTransform",
+                                             "options":[
+                                                    "-co", "TILED=YES", 
+                                                    "-co", "BLOCKXSIZE=512",
+                                                     "-co", "BLOCKYSIZE=512"
+                                             ]
+                                          },
+                                          {
+                                             "type":"GdalAddoTransform",
+                                             "options":[
+                                                "-r",
+                                                "average"
+                                             ],
+                                             "levels":[2, 4, 8, 16]
+                                         */
+                                    +" }"
+                                    + " ]"  
+                                    + "  }";
 	
-	
+
 
 	/**
 	 * Test some execution single steps
@@ -78,7 +82,7 @@ public class SARGeoTIFFActionTest {
 	 */
 	@Test
 	public void testExecutionSteps() throws Exception{
-		IngestionActionConfiguration config = createDummyConfig();
+	    SARGeoTiffActionConfiguration config = createDummyConfig();
 		//create dummyAction
 		SarGeoTIFFAction action = new SarGeoTIFFAction(config) {
 			
@@ -98,7 +102,10 @@ public class SARGeoTIFFActionTest {
 			fail(e.getMessage());
 		}
 		File dir = null;
-		FileSystemEvent event = new FileSystemEvent(f,FileSystemEventType.FILE_ADDED );
+		
+		dir = action.unzipFile(f);
+        assertTrue("Could not create the directory",dir.exists());
+        FileSystemEvent event = new FileSystemEvent(dir,FileSystemEventType.FILE_ADDED );
 		assertTrue(action.canProcess(event));
 		/*
 		Queue<EventObject> q = new PriorityQueue<EventObject>();
@@ -107,23 +114,21 @@ public class SARGeoTIFFActionTest {
 		*/
 		Queue<EventObject> q = new PriorityQueue<EventObject>();
 		q.add(event);
-		action.execute(q);
+		
 		try {
-			dir = action.unzipFile(f);
-			assertTrue("Could not create the directory",dir.exists());
+			
 			AttributeBean ab = new AttributeBean();
 			SarGeoTiffProcessingResult result = action.processFile(f,ab);
 			File tif  = result.getGeoTiff();
 			assertTrue(tif != null);
-			convalidateFileDate(FILE_NAME,ab.timedim);
-			assertTrue(ab.numShipDetections == result.getShipDetections().size());
+			
 			// initialize data store
 			DataStore ds = FeatureConfigurationUtil.createDataStore(action.configuration
 					.getOutputFeature());
 			assertTrue(ds != null);
 			assertTrue (ds instanceof JDBCDataStore);
 			ab.dataStore = (JDBCDataStore) ds;
-			String requestBody = action.createImporterRequestBody(tif);
+			String requestBody = action.createImporterRequestBody(tif, "{}");
 			System.out.println(requestBody);
 			//action.publishShipDetections(ab, result);
 		} catch (ActionException e) {
@@ -147,8 +152,6 @@ public class SARGeoTIFFActionTest {
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd'T'HHmmss");
 		format.setTimeZone(TimeZone.getTimeZone("UTC"));
 		Date d = format.parse("20111026T175726");
-		
-		
 		assertEquals(d, timedim);
 		
 	}
@@ -158,20 +161,20 @@ public class SARGeoTIFFActionTest {
 	 * 
 	 * @return
 	 */
-	private IngestionActionConfiguration createDummyConfig() {
+	private SARGeoTiffActionConfiguration createDummyConfig() {
 		ConfigurationContainer container = new ConfigurationContainer() {
 		};
 		
 		container.setPattern(".*([0-9]{8}T[0-9]{6})_([0-9]{8}T[0-9]{6})_.*");
-		String tranformOpts ="{\"type\": \"GdalWarpTransform\",\"options\": [ \"-t_srs\", \"EPSG:4326\"]},{\"type\": \"GdalTranslateTransform\", \"options\": [ \"-co\", \"TILED=YES\", \"-co\", \"BLOCKXSIZE=512\", \"-co\", \"BLOCKYSIZE=512\"]},{\"type\": \"GdalAddoTransform\",\"options\": [ \"-r\", \"average\"],\"levels\" : [2, 4, 8, 16]}";
+		//String tranformOpts ="{\"type\": \"GdalWarpTransform\",\"options\": [ \"-t_srs\", \"EPSG:4326\"]},{\"type\": \"GdalTranslateTransform\", \"options\": [ \"-co\", \"TILED=YES\", \"-co\", \"BLOCKXSIZE=512\", \"-co\", \"BLOCKYSIZE=512\"]},{\"type\": \"GdalAddoTransform\",\"options\": [ \"-r\", \"average\"],\"levels\" : [2, 4, 8, 16]}";
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(ConfigurationUtils.NETCDF_DIRECTORY_KEY, "dummy");
-		params.put(ConfigurationUtils.OPTIMIZATION_OPTION, tranformOpts);
+		params.put(ConfigurationUtils.OPTIMIZATION_OPTION, transforms);
 		params.put(ConfigurationUtils.GEOTIFF_DIRECTORY_KEY, "geotiff");
 		container.setParams(params);
 		container.setDefaultNameSpace("sde");
 		
-		IngestionActionConfiguration config = new IngestionActionConfiguration(
+		SARGeoTiffActionConfiguration config = new SARGeoTiffActionConfiguration(
 				"Test", "name", "test configuration");
 		config.setContainer(container);
 		FeatureConfiguration fc = setupDummyDataStore();

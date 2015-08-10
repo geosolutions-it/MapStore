@@ -23,14 +23,14 @@ package it.geosolutions.geobatch.mariss.actions.product;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
+import it.geosolutions.geobatch.actions.sync.model.FileMetadataWrapper;
 import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.destination.common.utils.RemoteBrowserProtocol;
 import it.geosolutions.geobatch.destination.common.utils.RemoteBrowserUtils;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.mariss.actions.MarissConstants;
 import it.geosolutions.geobatch.mariss.actions.RemoteServiceHandlingAction;
-import it.geosolutions.geobatch.mariss.actions.RemoteServiceHandlingConfiguration;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
 import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfiguration;
 import it.geosolutions.geobatch.mariss.dao.ServiceDAO;
@@ -39,28 +39,30 @@ import it.geosolutions.geobatch.mariss.ingestion.product.DataPackageIngestionPro
 import it.geosolutions.geobatch.mariss.model.Service;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventObject;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.geotools.data.DataStore;
-import org.geotools.jdbc.JDBCDataStore;
 
 import com.enterprisedt.net.ftp.FTPConnectMode;
 import com.enterprisedt.net.ftp.FTPException;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 
 /**
  * GeoBatch service data ingestion remote file handling action
@@ -72,10 +74,11 @@ public class ProductRemoteServiceHandlingAction extends
 		RemoteServiceHandlingAction {
 
 	private static final String PACKAGEREADY_TXT = "packageready.txt";
-
+	private ProductActionConfiguration productConfiguration;
 	public ProductRemoteServiceHandlingAction(
 			ProductActionConfiguration configuration) throws IOException {
 		super(configuration);
+		productConfiguration = configuration;
 	}
 
 	private final String PRODUCTS_FOLDER = "PRODUCTS";
@@ -200,22 +203,37 @@ public class ProductRemoteServiceHandlingAction extends
 						+ ". Another CSV file is not included in the package");
 				error = true;
 			} else {
-				try {
-					String csvFileName = CSVIngestUtils.getUserServiceFileName(
-							inputFile.getName(), user, service.getServiceId());
-					File targetFile = new File(relativeFolder + File.separator
-							+ csvFileName);
-					FileUtils.copyFile(inputFile, targetFile);
-					FileSystemEvent event = new FileSystemEvent(targetFile,
-							FileSystemEventType.FILE_ADDED);
-					msg = "Processed " + inputFile
-							+ ". Check the CSV ingestion related";
-					resultList.add(event);
-				} catch (IOException e) {
-					LOGGER.error("Error processing acquisition list ingestion",
-							e);
-					error = true;
-				}
+				String csvFileName = CSVIngestUtils.getUserServiceFileName(
+                		inputFile.getName(), user, service.getServiceId());
+                File targetFile = new File(relativeFolder,csvFileName);
+                if(productConfiguration.getCreateFileEventWrapperTo() != null){
+                	String writeTo =productConfiguration.getCreateFileEventWrapperTo();
+                	boolean matched = false;
+                	matched = true;
+                	String destinationDir = null;
+                	destinationDir = writeTo.replace("${GEOBATCH_CONFIG_DIR}",this.getConfigDir().getAbsolutePath());
+                	
+                	FileUtils.forceMkdir(new File(destinationDir));
+                	targetFile = new File(destinationDir,csvFileName + ".xml");
+                	try {
+                        createProductAttributeFile(targetFile,filePath,user,service);
+                    } catch (ActionException e) {
+                        LOGGER.error("Unable to create product ingestion for service:" +service.toString() );
+                    }
+                	FileSystemEvent event = new FileSystemEvent(targetFile,
+                			FileSystemEventType.FILE_ADDED);
+                	resultList.add(event);
+                
+                	
+                	
+                } else {
+                	
+                	FileSystemEvent event = new FileSystemEvent(targetFile,
+                			FileSystemEventType.FILE_ADDED);
+                	resultList.add(event);
+                	
+                }
+                msg = "Scheduled " + inputFile.getName();
 			}
 			// Post process.
 			if (!actionMap.isEmpty()) {
@@ -224,13 +242,19 @@ public class ProductRemoteServiceHandlingAction extends
 						1000000);
 				events.add(new FileSystemEvent(inputFile,
 						FileSystemEventType.FILE_ADDED));
+				if(productConfiguration.getExecuteActions() == true){
 				for (BaseAction<EventObject> action : actionMap) {
 					try {
-						events.addAll(action.execute(events));
+						
+							events.addAll(action.execute(events));
+						
 					} catch (ActionException e) {
 						LOGGER.error(e.getMessage(), e);
+						error = true;
 					}
 				}
+				}
+				
 				// Filling the ResultList
 				resultList.addAll(events);
 			}
@@ -250,7 +274,49 @@ public class ProductRemoteServiceHandlingAction extends
 		return resultList;
 	}
 
-	/**
+	private void createProductAttributeFile(File outputFile, String filePath, String user,
+            Service service) throws ActionException {
+	    FileWriter fw = null;       
+	    FileMetadataWrapper attributeObject = new FileMetadataWrapper();
+	    List<String> files = new ArrayList<String>();
+	    files.add(filePath);
+	    File inputFile = new File(filePath);
+	    
+	    attributeObject.setFiles(files);
+	    attributeObject.addMetadata(MarissConstants.ORIGINAL_FILE_PATH_KEY,filePath);
+	    attributeObject.addMetadata(MarissConstants.SERVICE_KEY,service.getServiceId());
+	    attributeObject.addMetadata(MarissConstants.USER_KEY, service.getUser());
+	    attributeObject.addMetadata(MarissConstants.PRODUCTID_KEY,inputFile.getName().substring(0,inputFile.getName().length() - 8));
+	    
+	    XStream xstream = new XStream();
+        try {
+            
+            fw = new FileWriter(outputFile);
+            xstream.toXML(attributeObject, fw);
+
+        } catch (XStreamException e) {
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("The passed event object cannot be serialized to: "
+                                 + outputFile.getAbsolutePath(), e);
+            if (!configuration.isFailIgnored()) {
+                listenerForwarder.failed(e);
+                throw new ActionException(this, e.getLocalizedMessage());
+            }
+        } catch (Throwable e) {
+            // the object cannot be deserialized
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error(e.getLocalizedMessage(), e);
+            if (!configuration.isFailIgnored()){
+                listenerForwarder.failed(e);
+                throw new ActionException(this, e.getLocalizedMessage());
+            }
+        } finally {
+            IOUtils.closeQuietly(fw);
+        }
+
+    }
+
+    /**
 	 * Ingest new data for a service
 	 * 
 	 * @param user
@@ -317,28 +383,20 @@ public class ProductRemoteServiceHandlingAction extends
 				final String serviceIDFtpPath = remotePath + separator
 						+ user + separator + service.getServiceId();
 
-				List<String> serviceFolders = RemoteBrowserUtils.ls(
-						serverProtocol, serverUser, serverPWD, serverHost,
-						serverPort, serviceIDFtpPath, connectMode, timeout,
-						null, true);
-				
 				//
 				//CHECK PACKAGE READY
 				//
 				if (checkPackageReady(serverProtocol, serverUser, serverHost,
 						serverPWD, serverPort, serviceIDFtpPath,
 						resultConnectMode, resultTimeout)) {
-					String folder = PRODUCTS_FOLDER;
 					
 					
 					// create path for remote and local folders
 					// NOTE: this is a workaround, a better implementation should avoid ftp and move the files
 					String localRelativeFolder = user + LOCAL_SEPARATOR
-							+ service.getServiceId() + LOCAL_SEPARATOR + folder;
+							+ service.getServiceId() + LOCAL_SEPARATOR + PRODUCTS_FOLDER;
 					
 					
-					String productFolder = user + separator
-							+ service.getServiceId() + separator + folder;
 
 					List<String> pendingProductFiles = new LinkedList<String>();
 					String remoteProductFolder = serviceIDFtpPath + separator + PRODUCTS_FOLDER;
@@ -350,11 +408,13 @@ public class ProductRemoteServiceHandlingAction extends
 							serverProtocol, serverUser, serverPWD, serverHost,
 							serverPort, remoteProductFolder, connectMode,
 							timeout, null, Boolean.FALSE);
-					LOGGER.info("\n******* PACKAGE READY *******" +
-								"\n USER: "+ user + "" +
-								"\n SERVICE: " + service.getServiceId() +
-								"\n PRODUCTS:  " + (fileNames.size() -1) + "\n" +
-								"\n*****************************");
+					String message = "\n******* PACKAGE READY *******" +
+							"\n USER: "+ user + "" +
+							"\n SERVICE: " + service.getServiceId() +
+							"\n PRODUCTS:  " + (fileNames.size() -1) + 
+							"\n*****************************";
+					notifyPackageReady(message);
+					LOGGER.info(message);
 					
 					//
 					//DELETE PACKAGE READY
@@ -407,8 +467,9 @@ public class ProductRemoteServiceHandlingAction extends
 										+ FTP_SEPARATOR + fileName, timeout);
 
 						// process the file
+						List<String> availableProducts = new ArrayList<String>();
 						if (inputFile.exists()) {
-							
+							availableProducts.add(inputFile.getAbsolutePath());
 							// delete downloaded file
 							RemoteBrowserUtils.deleteFile(serverProtocol,
 									serverUser, serverPWD, serverHost,
@@ -434,20 +495,24 @@ public class ProductRemoteServiceHandlingAction extends
 								}
 							}
 
-						} 
+						} else {
+							String msg = "Unable to retrieve file: " + fileName;
+							updateProgress(usersSize, userIndex,
+									serviceSize, serviceIndex, 1, 1,
+									serviceFolderFilesSize,
+									serviceFolderFileIndex, true, msg,
+									inputFile.getAbsolutePath());
+							LOGGER.error(msg);
+							
+						}
 
-						List<String> availableProducts = RemoteBrowserUtils
-								.ls(serverProtocol, serverUser,
-										serverPWD, serverHost,
-										serverPort, inputDir.getAbsolutePath(),
-										connectMode, timeout, null,
-										true);
-						String productsFtpFolder = inputDir.getAbsolutePath();
+						
+						
 						
 						
 						for (String productFile : availableProducts) {
 
-							pendingProductFiles.add(new File(inputDir,productFile).getAbsolutePath());
+							pendingProductFiles.add(new File(productFile).getAbsolutePath());
 							}
 							// add the targetFile to the list
 						}
@@ -458,8 +523,7 @@ public class ProductRemoteServiceHandlingAction extends
 					// Creation of the Actions
 					Map<String, ConfigurationContainer> subconfigurations = configuration
 							.getSubconfigurations();
-					if (subconfigurations != null
-							&& !subconfigurations.isEmpty()) {
+					if (subconfigurations != null && !subconfigurations.isEmpty()) {
 						// Loop on the containers
 						for (String key : subconfigurations.keySet()) {
 							// Getting configuration container
@@ -507,7 +571,7 @@ public class ProductRemoteServiceHandlingAction extends
 					// Ready event has been received ...
 					resultList.addAll(getPostProcessEvents(pendingProductFiles,
 							dataStore, user, service, localRelativeFolder,
-							serverResultProtocol, folder, folder, folder,
+							serverResultProtocol, PRODUCTS_FOLDER, PRODUCTS_FOLDER, PRODUCTS_FOLDER,
 							resultTimeout, resultConnectMode, resultTimeout,
 							usersSize, userIndex, serviceSize, serviceIndex, 1,
 							1, actionMap));
@@ -521,6 +585,11 @@ public class ProductRemoteServiceHandlingAction extends
 		}
 
 		return resultList;
+	}
+
+	private void notifyPackageReady(String message) {
+		updateProgress(message);
+		
 	}
 
 	private IngestionActionConfiguration setupSubConfiguration(Service service,
@@ -560,6 +629,7 @@ public class ProductRemoteServiceHandlingAction extends
 						+ PRODUCTS_FOLDER, PACKAGEREADY_TXT);
 			}
 		} else {
+		    
 			if (checkIfExists(serverProtocol, serverUser, serverHost,
 					serverPWD, serverPort, serviceIDFtpPath, PRODUCTS_FOLDER,
 					resultConnectMode, resultTimeout)) {
