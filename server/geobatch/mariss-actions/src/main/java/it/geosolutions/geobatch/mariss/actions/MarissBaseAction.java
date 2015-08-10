@@ -790,7 +790,7 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
             ps.setString(5, cfName);
             ps.setString(6, attributeBean.type == null ? null : attributeBean.type.name());
             ps.setString(7, outFileLocation);
-            ps.setString(8, attributeBean.serviceName + "/PRODUCTS/" + FilenameUtils.getName(attributeBean.absolutePath));
+            ps.setString(8, attributeBean.absolutePath);
             ps.setString(9, namespace + ":" + layerName);
             
             String partition = null;

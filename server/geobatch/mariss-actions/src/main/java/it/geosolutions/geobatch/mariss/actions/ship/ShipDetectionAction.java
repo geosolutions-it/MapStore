@@ -129,7 +129,7 @@ public class ShipDetectionAction extends MarissBaseAction {
                                             + "Ships";
                                     File targetZipFile = new File(netcdfDir,filename + ".zip");
                                     zipFile(files, targetZipFile);
-                                    insertDb(attributeBean, targetZipFile.getAbsolutePath(), configuration.getContainer().getDefaultNameSpace(), "ship_detections", null, null);
+                                    insertDb(attributeBean, targetZipFile.getAbsolutePath(), configuration.getContainer().getDefaultNameSpace(), "SHIP_DETECTION", null, null);
                                     // Append to the event list
                                     ret.add(new FileSystemEvent(targetZipFile,
                                             FileSystemEventType.FILE_ADDED));
@@ -198,9 +198,9 @@ public class ShipDetectionAction extends MarissBaseAction {
                 ps.setTimestamp(5,null);
             }
             ps.setString(6, cfName);
-            ps.setString(7, null/*attributeBean.type.name()*/);
+            ps.setString(7, null);
             ps.setString(8, outFileLocation);
-            ps.setString(9, attributeBean.serviceName + "/PRODUCTS/" + FilenameUtils.getName(attributeBean.absolutePath));
+            ps.setString(9,attributeBean.absolutePath);
             ps.setString(10, namespace + ":" + layerName);
             
             String partition = null;
