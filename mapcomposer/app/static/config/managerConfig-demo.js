@@ -70,7 +70,7 @@
          }
     },{
          "ptype": "mxp_geobatch_flows",
-         "geoBatchRestURL":"http://84.33.2.75/geobatch/rest/",
+         "geoBatchRestURL":"http://cip-pakistan.geo-solutions.it/geobatch/rest/",
          "runConfigs": {
             "csvingestion":{
                 "xtype":"geobatch_run_local_form",

@@ -81,7 +81,7 @@
 		    "customParams":{
 				"outputFilename":"mapstore-print"
 		    },
-		    "printService":"http://84.33.2.75/geoserver/pdf/",
+		    "printService":"http://cip-pakistan.geo-solutions.it/geoserver/pdf/",
 		    "legendPanelId":"legendPanel",
 		    "ignoreLayers":["WFSSearch","Marker"],
 		    "appendLegendOptions":true,

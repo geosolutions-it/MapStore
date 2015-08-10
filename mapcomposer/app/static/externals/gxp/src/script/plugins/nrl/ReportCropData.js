@@ -40,7 +40,7 @@ Ext.namespace("gxp.plugins.nrl");
  *  .. class:: ReportCropData(config)
  *
  *    Plugin for print NRL CropData report Module to a :class:`gxp.Viewer`.
- */   
+ */
 gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
 	/** api: ptype = nrl_report_crop_data */
     ptype: "nrl_report_crop_data",
@@ -77,13 +77,13 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             sortBy:"province",
             ref:'singleSelector',
             displayField:"name",
-            pageSize:10            
+            pageSize:10
         },
         district:{
             typeName:"nrl:district_crop",
             queriableAttributes:[
                 "district",
-                "province"                
+                "province"
              ],
              recordModel:[
                 {
@@ -103,12 +103,12 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 },{
                    name:"properties",
                    mapping:"properties"
-                } 
+                }
             ],
             displayField:"district",
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"
         },
-        province:{             
+        province:{
             typeName:"nrl:province_view",
             recordModel:[
                 {
@@ -132,8 +132,8 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 "province"
             ],
             displayField:"fname",
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"                            
-        }    
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
+        }
     },
 
     // area filter
@@ -153,7 +153,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             {name:'prod_default_unit',    mapping:'properties.prod_default_unit' },
             {name:'area_default_unit',    mapping:'properties.area_default_unit' },
             {name:'yield_default_unit',    mapping:'properties.yield_default_unit' }
-    ],    
+    ],
     /** fields for unit of measure combo boxes **/
 	uomFields:[
 	        {name:'id',mapping:'properties.id'},
@@ -163,7 +163,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             {name:'coefficient', mapping:'properties.coefficient', type: Ext.data.Types.FLOAT},
             {name:'shortname',  mapping: 'properties.shortname'},
             {name:'description', mapping: 'properties.description'},
-            {name:'class',  mapping :'properties.cls'},   
+            {name:'class',  mapping :'properties.cls'},
             {name:'cid',   mapping: 'properties.cid'}
     ],
     /** private: method[addOutput]
@@ -171,21 +171,27 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
      */
     addOutput: function(config) {
         this.featureSelectorConfigs.base.url = this.dataUrl;
-        
+
         //Override the comboconfig url;
         this.comboConfigs.base.url = this.dataUrl;
 
         var cropStatus = this.getTabPanel();
-        
+
         config = Ext.apply(cropStatus,config || {});
-        
+
         this.output = gxp.plugins.nrl.CropStatus.superclass.addOutput.call(this, config);
         this.output.on('update',function(store){
             var button = this.output.submitButton.getXType();
             if (button == "gxp_nrlReportCropStatusChartButton" || button == 'gxp_nrlReportCropStatusChartButton'){
                 this.output.submitButton.setDisabled(store.getCount()<=0)
             }
-        },this);    
+
+            if(this.output.submitButton.xtype == 'gxp_nrlReportCropStatusChartButton'){
+                this.output.optBtn.setDisabled(this.output.submitButton.disabled);
+            }else{
+                this.output.optBtn.disable();
+            }
+        },this);
 
         if(this.aoiSimpleSelection){
             //hide selection layer on tab change
@@ -195,15 +201,15 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 var lyr = button.hilightLayer;
                 if(!lyr) return;
                 lyr.setVisibility(false);
-                
+
             },this);
             this.output.on('show',function(){
                 var button = this.output.singleFeatureSelector.singleSelector.selectButton;
-                
+
                 var lyr = button.hilightLayer;
                 if(!lyr) return;
                 lyr.setVisibility(true);
-                
+
             },this);
         }else{
             //hide selection layer on tab change
@@ -213,18 +219,18 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 var lyr = button.hilightLayer;
                 if(!lyr) return;
                 lyr.setVisibility(false);
-                
+
             },this);
             this.output.on('show',function(){
                 var button = this.output.aoiFieldSet.AreaSelector.selectButton;
-                
+
                 var lyr = button.hilightLayer;
                 if(!lyr) return;
                 lyr.setVisibility(true);
-                
+
             },this);
         }
-        
+
         this.prodUnitStore = new Ext.data.JsonStore({
              baseParams:{
                 viewParams: 'class:production'
@@ -235,7 +241,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             root: 'features',
             idProperty:'uid'
         });
-            
+
         this.areaUnitStore = new Ext.data.JsonStore({
              baseParams:{
                 viewParams: 'class:area'
@@ -257,7 +263,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             idProperty:'uid'
         });
         return this.output;
-        
+
     },
 
     /** private: method[getTabPanel]
@@ -265,20 +271,38 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
      *  Obtain panel for the tab
      */
     getTabPanel: function(){
-        return {
+        var retval = {
             xtype:'form',
             title: this.titleText,
             layout: "form",
             minWidth:180,
             autoScroll:true,
             frame:true,
-            items:this.generateAllFieldItems(),  
-            buttons:[this.getTabButtons()]
+            buttonAlign: 'left',
+            items:this.generateAllFieldItems(),
+            buttons:['->', {
+                iconCls:'ic_wrench',
+                ref: '../optBtn',
+                disabled: true,
+                listeners: {
+                    click: function () {
+                        this.refOwner.submitButton.chartoptions.fireEvent('click');
+                    }
+                }
+            }, this.getTabButtons()]
         };
+        if (this.helpPath && this.helpPath != ''){
+            retval.buttons.unshift({
+                xtype: 'gxp_nrlHelpModuleButton',
+                portalRef: this.portalRef,
+                helpPath: this.helpPath
+            });
+        }
+        return retval;
     },
 
     getTabButtons: function(){
-        return this.submitButton = {               
+        return this.submitButton = {
                 xtype: 'gxp_nrlReportCropStatusChartButton',
                 ref: '../submitButton',
                 hilightLayerName: this.hilightLayerName,
@@ -298,7 +322,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                     root: 'features',
                     idProperty:'uid'
                 }),
-            
+
                 areaUnitStore : new Ext.data.JsonStore({
                      baseParams:{
                         viewParams: 'class:area'
@@ -349,14 +373,14 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
     },
 
     getOutputFieldItem: function(){
-        return { 
+        return {
             fieldLabel: 'Output Type',
             xtype: 'radiogroup',
             visible:false,
             anchor:'100%',
             autoHeight:true,
             name:'outputType',
-            ref:'outputType',                            
+            ref:'outputType',
             checkboxToggle:true,
             //title: this.outputTypeText,
             autoHeight: true,
@@ -365,10 +389,10 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             items:[
                 {boxLabel: 'Data' , name: 'outputtype', listeners: this.setRadioQtip(this.radioQtipTooltip), inputValue: 'data', disabled: true},
                 {boxLabel: 'Chart', name: 'outputtype', inputValue: 'chart', checked: true}
-            ],                 
-            listeners: {           
-                change: this.outputRadioChange,                        
-                scope: this                        
+            ],
+            listeners: {
+                change: this.outputRadioChange,
+                scope: this
             }
         };
     },
@@ -377,15 +401,15 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
         var outputValue = c.getValue().inputValue;
         var submitButton = this.output.submitButton;
         var areaSelector = this.output.singleFeatureSelector;
-        //console.log("Radio change!!");  
+        //console.log("Radio change!!");
 
         this.selectedProvince = null;
-        
+
         if(outputValue == 'data'){
             areaSelector.enable();
             submitButton.destroy();
             delete submitButton;
-            this.output.addButton({              
+            this.output.addButton({
                 url: this.dataUrl,//TODO externalize this
                 xtype: 'gxp_nrlReportCropStatusChartButton',
                 ref: '../submitButton',
@@ -401,7 +425,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             var store = areaSelector.currentCombo.selectButton.store;
             //console.log(store);
             this.output.fireEvent('update',store);
-            this.output.fireEvent('show');                                
+            this.output.fireEvent('show');
             this.output.doLayout();
             this.output.syncSize();
 
@@ -409,7 +433,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             areaSelector.enable();
             submitButton.destroy();
             delete submitButton;
-            this.output.addButton({               
+            this.output.addButton({
                 xtype: 'gxp_nrlReportCropStatusChartButton',
                 ref: '../submitButton',
                 hilightLayerName: this.hilightLayerName,
@@ -426,11 +450,17 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             this.output.fireEvent('show');
             this.output.doLayout();
             this.output.syncSize();
-        }                               
+        }
+
+        if(this.output.submitButton.xtype == 'gxp_nrlReportCropStatusChartButton'){
+            this.output.optBtn.setDisabled(this.output.submitButton.disabled);
+        }else{
+            this.output.optBtn.disable();
+        }
     },
 
     getSeasonFieldItem: function(){
-        return { 
+        return {
             fieldLabel: 'Season',
             xtype: 'nrl_seasonradiogroup',
             ref:'season',
@@ -441,7 +471,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             }
         };
     },
-    
+
     getMonthRangeSelectorItem: function(){
         return {
             ref: 'monthRangeSelector',
@@ -455,14 +485,14 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
         commodity.seasonFilter(checked.inputValue);
         var selectedCommodity = commodity.getStore().getAt(0);
         commodity.setValue(selectedCommodity.get(commodity.valueField));
-        
+
         if(selectedCommodity){
             var yrs= commodity.ownerCt.yearRangeSelector;
             yrs.setMaxValue(selectedCommodity.get('max'));
             yrs.setMinValue(selectedCommodity.get('min'));
-            
+
         }
-        
+
         if(checked.inputValue == 'RABI'){
             //Nov-Apr
             this.refOwner.monthRangeSelector.setValue(0,10,true);
@@ -471,7 +501,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
             //May-Oct
             this.refOwner.monthRangeSelector.setValue(1,21,true);
             this.refOwner.monthRangeSelector.setValue(0,16,true);
-        }        
+        }
     },
 
     getAoIFieldItem: function(){
@@ -493,7 +523,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 layerStyle: this.layerStyle,
                 comboConfigs:this.comboConfigs,
                 target:this.target,
-                areaFilter:this.areaFilter, 
+                areaFilter:this.areaFilter,
                 listeners: {
                     regionsChange: function(store){
                         this.selectedProvince = store.getAt(0);
@@ -538,9 +568,9 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                     this.output.referenceYear.setText(end);
                 },
                 afterrender: function(component) {
-                    if(this.output.yearRangeSelector!=component)return;           
+                    if(this.output.yearRangeSelector!=component)return;
                 }
-            }         
+            }
         }];
     },
 
@@ -558,19 +588,19 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 url: this.rangesUrl,
                 root: 'features',
                 idProperty:'crop'
-                
+
             }),
             listeners: {
                 expand: function( combo ){
                     var season = this.ownerCt.season;
                     var radio = season.getValue();
-                    
+
                     if (radio && radio.getValue()){
                        this.seasonFilter(radio.inputValue);
-                       
+
                     }
                     var selectedRecord= combo.getStore().getById(combo.getValue());
-                    
+
                 },
                 select: function(cb,record,index){
                     //set year range for the selected crop
@@ -581,7 +611,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                         yrs.setMinValue(selectedCommodity.get('min'));
                         cb.ownerCt.referenceYear.setText(yrs.endValue.getValue());
                     }
-                    
+
                 }
             }
         };
@@ -627,7 +657,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 selectionchange:function(records){
                     var yearSelector = this.ownerCt.yearRangeSelector;
                     if(records.length<=0){
-                       yearSelector.setDisabled(true); 
+                       yearSelector.setDisabled(true);
                     }else{
                         var max=-99999,min=99999;
                         for(var i=0;i<records.length ;i++){
@@ -639,7 +669,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                             }
                             if(curmin < min){
                                 min = curmin;
-                            }  
+                            }
                         }
                         if(max==99999|| min == -99999){
                              yearSelector.setDisabled(true);
@@ -656,5 +686,5 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
     }
 
  });
- 
+
  Ext.preg(gxp.plugins.nrl.ReportCropData.prototype.ptype, gxp.plugins.nrl.ReportCropData);

@@ -107,7 +107,7 @@ gxp.widgets.button.NrlMarketPricesChartButton = Ext.extend(Ext.SplitButton, {
                     }
                 }
             }]
-        }
+        };
         return fieldSet;
     },
     createStackChartsOptions: function(stackedCharts) {
@@ -217,8 +217,8 @@ gxp.widgets.button.NrlMarketPricesChartButton = Ext.extend(Ext.SplitButton, {
                 case 'decade_year':
                     {
                         var refYear = parseInt(form.yearSelector.getValue());
-                        start_abs_dec_year = (refYear - 1) * 36 + 3 * form.monthRangeSelector.slider.getValues()[0] + 1; // 1st dek of the selected month
-                        end_abs_dec_year = (refYear - 1) * 36 + 3 * form.monthRangeSelector.slider.getValues()[1] + 3; // 3rd dek of the selected month
+                        start_abs_dec_year = (refYear) * 36 + 3 * form.monthRangeSelector.slider.getValues()[0] + 1; // 1st dek of the selected month
+                        end_abs_dec_year   = (refYear) * 36 + 3 * form.monthRangeSelector.slider.getValues()[1] + 3; // 3rd dek of the selected month
                     }
                     break;
                 case 'month':
@@ -269,6 +269,8 @@ gxp.widgets.button.NrlMarketPricesChartButton = Ext.extend(Ext.SplitButton, {
                 }
             }
             form.submitButton.queryOptions.currency = currencyOpt;
+            form.submitButton.queryOptions.exrate = exrate;
+            form.submitButton.queryOptions.denominatorLbl = form.denominator.getRawValue();
 
             var factor = form.denominator.getValue();
             form.submitButton.queryOptions.factor = factor;
@@ -309,7 +311,7 @@ gxp.widgets.button.NrlMarketPricesChartButton = Ext.extend(Ext.SplitButton, {
             } else {
                 return 'province,region,crop,abs_dek,value';
             }
-        }
+        };
 
         var viewparams = getViewParams(this.refOwner);
         var typeName = getTypeName(this.queryOptions.gran_type);
@@ -387,38 +389,57 @@ gxp.widgets.button.NrlMarketPricesChartButton = Ext.extend(Ext.SplitButton, {
                     data: [],
                     color: colorHEX[i],
                     lcolor: 'rgb(' + colorRGB[i] + ')',
-                    type: 'column',
+                    type: 'line',
                     dataIndex: selCrop.data.crop,
                     unit: uomLabel
-                }
+                };
             }
         } else {
             // one serie for each selected region
             var selectedRegions, lenSelectedRegions;
             var granType = this.form.output.aoiFieldSet.gran_type.getValue().inputValue;
             if (granType == 'pakistan') {
-                selectedRegions = [granType];
+                selectedRegions = [{
+                    granType: granType,
+                    name: 'pakistan',
+                    province: undefined,
+                    district: undefined
+                }];
                 lenSelectedRegions = selectedRegions.length;
             } else {
-                selectedRegions = form.aoiFieldSet.selectedRegions.getValue().replace(/['\\]/g, '').split(',');
-                lenSelectedRegions = form.aoiFieldSet.AreaSelector.getStore().getCount();
+                selectedRegions = [];
+                for(var i=0; i<form.aoiFieldSet.AreaSelector.store.data.items.length; i++){
+                    var item = form.aoiFieldSet.AreaSelector.store.data.items[i].data.attributes;
+                    selectedRegions.push({
+                        granType: granType,
+                        name: granType == 'province' ? item.province : item.district,
+                        province: item.province,
+                        district: granType == 'province' ? undefined : item.district
+                    });
+                }
+                lenSelectedRegions = selectedRegions.length;
+                //selectedRegions = form.aoiFieldSet.selectedRegions.getValue().replace(/['\\]/g, '').split(',');
+                //lenSelectedRegions = form.aoiFieldSet.AreaSelector.getStore().getCount();
             }
 
             var colorRGB = nrl.chartbuilder.util.randomColorsRGB(lenSelectedRegions);
             var colorHEX = nrl.chartbuilder.util.randomColorsHEX(lenSelectedRegions);
 
             for (var i = 0; i < lenSelectedRegions; i++) {
-                var selReg = selectedRegions[i];
+                var selReg = selectedRegions[i].name;
 
                 ret.series[selReg] = {
+                    granType: selectedRegions[i].granType,
                     name: selReg,
+                    district: selectedRegions[i].district,
+                    province: selectedRegions[i].province,
                     data: [],
                     color: colorHEX[i],
                     lcolor: 'rgb(' + colorRGB[i] + ')',
-                    type: 'column',
+                    type: 'line',
                     dataIndex: selReg,
                     unit: uomLabel
-                }
+                };
             }
         }
 

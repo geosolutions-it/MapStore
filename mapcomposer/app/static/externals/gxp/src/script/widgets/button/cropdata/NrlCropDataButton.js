@@ -54,26 +54,26 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
     windowManagerOptions:{title:"Crop Data"},
     /**
      * private method[createOptionsFildset]
-     * ``String`` title the title of the fieldset 
+     * ``String`` title the title of the fieldset
      * ``Object`` opts the chartopts object to manage
      * ``String`` prefix the prefix to use in radio names
      */
     createOptionsFildset: function(title,opts,prefix){
-        
+
         var fieldSet = {
                 xtype:'fieldset',
                 title:title,
                 items:[{
                     //type
                     fieldLabel:"Type",
-                    xtype:"radiogroup", 
+                    xtype:"radiogroup",
                     columns:2,
                      items:[
                         {  boxLabel:"<span class=\"icon_span ic_chart-line\">Line</span>",name:prefix+"_chart_type",inputValue:"line", checked : opts.type == "line"},
                         {  boxLabel:"<span class=\"icon_span ic_chart-spline\">Curve</span>",name:prefix+"_chart_type",inputValue:"spline", checked : opts.type == "spline"},
                         {  boxLabel:"<span class=\"icon_span ic_chart-bar\">Bar</span>",name:prefix+"_chart_type", inputValue:"column",checked : opts.type == "column"},
                         {  boxLabel:"<span class=\"icon_span ic_chart-area\">Area</span>",name:prefix+"_chart_type", inputValue:"area",checked : opts.type == "area"}
-                        
+
                     ],
                     listeners: {
                         change: function(group,checked){
@@ -83,7 +83,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                         }
                     }
                 },{ //color
-                    fieldLabel: 'Color', 
+                    fieldLabel: 'Color',
                     xtype:'colorpickerfield',
                     anchor:'100%',
                     value : opts.color.slice(1),
@@ -97,11 +97,11 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                         }
                     }
                 }]
-        }
+        };
         return fieldSet;
     },
     createStackChartsOptions: function(stackedCharts, cmpVar){
-		
+
         var stackFielSetContent;
         if (cmpVar != 'yield'){
             stackFielSetContent = [{
@@ -148,10 +148,10 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 			items: stackFielSetContent
 		};
 		return fieldSet;
-		
-	},	
+
+	},
     menu : {
-        
+
         items:[{
             ref:'../chartoptions',
             iconCls:'ic_wrench',
@@ -163,20 +163,28 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 				var data = form.getValues();
 				var mode = data.mode;
 				var options = mainButton.chartOpt;
-				var optionsCompare = mode == 'compareRegion' ? mainButton.chartOptCompare : mainButton.optionsCompareCommodities;
+				//var optionsCompare = mode == 'compareRegion' ? mainButton.chartOptCompare : mainButton.optionsCompareCommodities;
+                var optionsCompare;
+                if (mode == 'compareRegion'){
+                    optionsCompare = mainButton.chartOptCompare;
+                }else if(mode == 'compareSources'){
+                    optionsCompare = mainButton.optionsCompareSources;
+                }else{
+                    optionsCompare = mainButton.optionsCompareCommodities;
+                }
 				var stackedCharts = mainButton.stackedCharts;
 				var fieldSetList = [];
-				
-				
-				
+
+
+
 				if (mode === 'composite'){
-					
+
 					var prodOpt =  mainButton.createOptionsFildset("Production",options.series['prod'],'prod');
 					var areaOpt =  mainButton.createOptionsFildset("Area",options.series['area'],'area');
 					var yieldOpt =  mainButton.createOptionsFildset("Yield",options.series['yield'],'yield');
-					
+
 					fieldSetList = [prodOpt,areaOpt,yieldOpt];
-					
+
 				} else if(mode === 'compareRegion'){
 					for (var compareRegion in optionsCompare.series){
 						fieldSetList.push(mainButton.createOptionsFildset(compareRegion,optionsCompare.series[compareRegion],compareRegion));
@@ -187,17 +195,22 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 						fieldSetList.push(mainButton.createOptionsFildset(compareRegion,optionsCompare.series[compareRegion],compareRegion));
 					}
 					fieldSetList.push(mainButton.createStackChartsOptions(stackedCharts, data.compare_variable));
+                }else if(mode === 'compareSources'){
+                    for (var source in optionsCompare.series){
+                        fieldSetList.push(mainButton.createOptionsFildset(source,optionsCompare.series[source],source));
+                    }
+                    //fieldSetList.push(mainButton.createStackChartsOptions(stackedCharts, data.compare_variable));
                 }
                 var win = new Ext.Window({
                     iconCls:'ic_wrench',
                     title:   mainButton.optionsTitle,
                     height: 400,
-                    width:  350, 
+                    width:  350,
                     minWidth:250,
                     minHeight:200,
                     layout:'fit',
                     autoScroll:true,
-                    maximizable: true, 
+                    maximizable: true,
                     modal:true,
                     resizable:true,
                     draggable:true,
@@ -210,23 +223,23 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                         layout:'form',
                         items: fieldSetList
                     }
-                    
-                    
+
+
                 });
                 win.show();
-				
+
             }
         }]
     },
-	
-	chartOptCompare:{},	
-	
+
+	chartOptCompare:{},
+
     chartOpt:{
 		series:{
 			prod:{
 				name: 'Production (000 tons)',
 				color: '#89A54E',
-				lcolor: 'rgb(207,235,148)',                    
+				lcolor: 'rgb(207,235,148)',
 				type: 'column',
 				yAxis: 1,
 				dataIndex: 'prod',
@@ -245,7 +258,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 			area:{
 				name: 'Area (000 hectares)',
 				color: '#AA4643',
-				lcolor: 'rgb(240,140,137)',                    
+				lcolor: 'rgb(240,140,137)',
 				type: 'column',
 				dataIndex: 'area',
 				unit:'(000 ha)'
@@ -257,30 +270,30 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
      * api method[handler]
      * generate the chart
      */
-    handler: function () {   
-    
+    handler: function () {
+
         var today = new Date();
         var dd = today.getDate();
         var mm = today.getMonth()+1; //January is 0!
 
         var yyyy = today.getFullYear();
-        if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} var today = mm+'/'+dd+'/'+yyyy; 
-        
+        if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} var today = mm+'/'+dd+'/'+yyyy;
+
         var numRegion = [];
         var regStore = this.form.output.aoiFieldSet.AreaSelector.store
         var records = regStore.getRange();
-		
+
         for (var i=0;i<records.length;i++){
 			var attrs = records[i].get("attributes");
             var region = attrs.district ? attrs.district + "," + attrs.province : attrs.province;
             numRegion.push(region.toLowerCase());
         }
-		
+
         var form = this.form.output.getForm();
         var data = form.getValues();
         var data2 = form.getFieldValues();
         var units = this.form.output.units;
-        
+
         var regionList = data.region_list.toLowerCase();
         var commodity = data2.crop; // fixes #66 issue;
         var season = data.season.toLowerCase();
@@ -290,17 +303,17 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 
         var compositeMode = data.outputmode;
 		/* START COMPARE SECTION*/
-		
-		this.mode = data.mode;		
+
+		this.mode = data.mode;
 		this.variableCompare = data.compare_variable;
-		
+
 		var selectedCommodities  = this.form.output.commodities.getSelectionModel().getSelections();
 		var crops;
         cropTitles = [];
         // get selected crops to genereate the proper viewparam
 		if (this.mode === 'compareCommodity'){
             cropIds = [];
-            
+
 			if (selectedCommodities.length === 0){
 				Ext.Msg.alert("Grid Commodities","Must be selected at least one Commodity!");
 				return;
@@ -325,22 +338,22 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 		## new var for compareRegion ##
 		###############################
 		*/
-        
+
         //get unit of measure id
         var prodUnits = data2.production_unit;
         var areaUnit = data2.area_unit;
         var yieldUnit = data2.yield_unit;
-        //get the full record 
+        //get the full record
         var getSelectedRecord = function(combo,uid){
             var store = combo.getStore();
             var i = store.findExact('uid',uid);
             return store.getAt(i);
-        }
+        };
         // get selected record for each combo
         var prodRec = units.production.getUnitRecordById( prodUnits );
         var areaRec = units.area.getUnitRecordById( areaUnit );
         var yieldRec = units.yield.getUnitRecordById( yieldUnit );
-        
+
         if(!(prodRec && areaRec && yieldRec)){
             //DEBUG
             console.log(prodRec);
@@ -348,19 +361,19 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
             console.log(yieldRec);
             //alert("prod "+prodCoeffUnits+"area "+ areaCoeffUnits+ "yield "+ yieldCoeffUnits)
         }
-        
+
         // get coefficient for yield,area and production
         var prodCoeffUnits = prodRec &&  prodRec.get('coefficient');
         var areaCoeffUnits = areaRec && areaRec.get('coefficient');
         var yieldCoeffUnits = yieldRec && yieldRec.get('coefficient');
-        
-		
+
+
         //set labels for chart opts
         if (compositeMode == 'percent'){
         	this.chartOpt.series.prod.unit  = '(%)';
 	        this.chartOpt.series.area.unit = '(%)';
 	        this.chartOpt.series.yield.unit = '(%)';
-	        
+
 	        this.chartOpt.series.prod.name  = 'Production (%)';
 	        this.chartOpt.series.area.name = 'Area (%)';
 	        this.chartOpt.series.yield.name = 'Yield (%)';
@@ -368,7 +381,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 	        this.chartOpt.series.prod.unit  = '('+prodRec.get('shortname')+')';
 	        this.chartOpt.series.area.unit = '('+areaRec.get('shortname')+')';
 	        this.chartOpt.series.yield.unit = '('+yieldRec.get('shortname')+')';
-	        
+
 	        this.chartOpt.series.prod.name  = 'Production ('+prodRec.get('name')+')';
 	        this.chartOpt.series.area.name = 'Area ('+areaRec.get('name')+')';
 	        this.chartOpt.series.yield.name = 'Yield ('+yieldRec.get('name')+')';
@@ -388,32 +401,40 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
 					this.chartOptCompare.name = 'Yield ('+yieldRec.get('name')+')';
 					break;
 			}
-		}	
-		
+		}
+
+        this.optionsCompareSources = this.optionsCompareSources || {};
+        this.optionsCompareSources.uomLabel  = this.chartOpt.series[this.variableCompare];
+        this.optionsCompareSources.today     = today;
+        this.optionsCompareSources.season    = season;
+        this.optionsCompareSources.fromYear  = data.startYear;
+        this.optionsCompareSources.toYear    = data.endYear;
+        this.optionsCompareSources.commodity = this.refOwner.Commodity.getSelectedRecord().data.label;
+
         var chartTitle = "";
         var splitRegion;
-        
+
         for (var i = 0;i<numRegion.length;i++){
             if (granType == "province"){
                 if(i==numRegion.length-1){
                     chartTitle += numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1);
                 }else{
                     chartTitle += numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1) + ", ";
-                }                
+                }
             }else{
                 splitRegion = numRegion[i].split(',');
                 if(i==numRegion.length-1){
                     chartTitle += splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + ")";
                 }else{
                     chartTitle += splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + "), ";
-                }                       
-            }            
+                }
+            }
         }
-        
+
 		// check if composite or compareRegion
 		var viewParamsCrop = crops ? crops : "'" + commodity+  "'";
 		//var viewParamsCrop = commodities ? commodities.crop : commodity;
-		
+
         var listVar = {
             today: today,
             chartTitle: chartTitle,
@@ -424,21 +445,38 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
             commodity: viewParamsCrop,
 			variableCompare: this.variableCompare,
             cropTitles: cropTitles
-        };       
-        
+        };
+
         var tabPanel = Ext.getCmp('id_mapTab');
 
         var tabs = Ext.getCmp('cropData_tab');
-		
-		var viewparams = (viewParamsCrop     ? "crops:" + viewParamsCrop + ";" : "") +
+
+        var srcList = undefined;
+        var variable = undefined;
+        switch (this.refOwner.compare_variable.getValue().inputValue.toLowerCase()){
+            case 'prod': variable = 'production'; break;
+            case 'area': variable = 'area'; break;
+            case 'yield': variable = 'yield'; break;
+        }
+
+        if(this.refOwner.mode.getValue().inputValue == 'compareSources'){
+            var sourceRecs = this.refOwner.src.getSelections();
+            var sourceList = [];
+            for(var i=0; i<sourceRecs.length; i++){
+                sourceList.push("'" + (sourceRecs[i].data.src).toLowerCase() + "'");
+            }
+            srcList = sourceList.join('\\,');
+        }
+		var viewparams = (viewParamsCrop  ? "crops:" + viewParamsCrop + ";" : "") +
                          (granType        ? (granType != "pakistan" ? "gran_type:" + granType + ";" : "gran_type:province;") : "") +
                          (fromYear        ? "start_year:" + fromYear + ";" : "") +
                          (toYear          ? "end_year:" + toYear + ";" : "") +
                          (regionList      ? "region_list:" + regionList + ";" : "") +
                          (prodCoeffUnits  ? "prod_factor:" + prodCoeffUnits + ";" : "") +
                          (areaCoeffUnits  ? "area_factor:" + areaCoeffUnits + ";" : "") +
-                         (yieldCoeffUnits ? "yield_factor:" + yieldCoeffUnits + ";" : "");
-			
+                         (yieldCoeffUnits ? "yield_factor:" + yieldCoeffUnits + ";" : "") +
+                         (srcList         ? "sources:" + srcList + ";" : "");
+
         Ext.Ajax.request({
             scope:this,
             url : this.url,
@@ -449,8 +487,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                 request: "GetFeature",
                 typeName: this.typeName,
                 outputFormat: "json",
-                propertyName: "region,crop,year,production,area,yield",
-                viewparams: viewparams 
+                propertyName: "region,crop,year,production,area,yield" + (srcList ? ',src' : ''),
+                viewparams: viewparams
             },
             success: function ( result, request ) {
                 try{
@@ -463,15 +501,15 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                     Ext.Msg.alert("No data","Data not available for these search criteria");
                     return;
                 }
-				
+
 				var aggregatedDataOnly = (granType == "pakistan");
 				var customOpt = {
                     stackedCharts: this.stackedCharts,
                     highChartExportUrl: this.target.highChartExportUrl,
                     variableCompare: this.variableCompare,
                     compositeMode: compositeMode
-                }
-				
+                };
+
 				if (this.mode === 'composite'){
 					var data = nrl.chartbuilder.crop.composite.getData(jsonData, aggregatedDataOnly,customOpt);
 					var charts  = nrl.chartbuilder.crop.composite.makeChart(data, this.chartOpt, listVar, aggregatedDataOnly,customOpt);
@@ -502,6 +540,9 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                         }
                     }
 					var charts  = nrl.chartbuilder.crop.compareCommodity.makeChart(data, this.optionsCompareCommodities, listVar, aggregatedDataOnly, customOpt);
+                }else if (this.mode === 'compareSources'){
+                    var data = nrl.chartbuilder.crop.compareSources.getData(jsonData, variable, this.refOwner.aoiFieldSet.AreaSelector.store, customOpt);
+                    var charts = nrl.chartbuilder.crop.compareSources.makeChart(data, this.optionsCompareSources, customOpt);
                 }
 
                 var wins = gxp.WindowManagerPanel.Util.createChartWindows(charts,listVar);
@@ -510,11 +551,11 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
             failure: function ( result, request ) {
                 Ext.Msg.alert("Error","Server response error");
             }
-        });       
-        
+        });
+
     }
-	
-    
+
+
 });
 
 

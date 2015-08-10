@@ -27,7 +27,7 @@
 
 /** api: (define)
  *  module = gxp.plugins
- *  class = MarketPrices
+ *  class = Irrigation
  */
 
 /** api: (extends)
@@ -36,17 +36,17 @@
 Ext.namespace("gxp.plugins.nrl");
 
 /** api: constructor
- *  .. class:: MarketPrices(config)
+ *  .. class:: Irrigation(config)
  *
- *    Plugin for adding NRL MarketPrices Module to a : class:`gxp.Viewer`.
+ *    Plugin for adding NRL Irrigation Module to a : class:`gxp.Viewer`.
  */
-gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
+gxp.plugins.nrl.Irrigation = Ext.extend(gxp.plugins.Tool, {
 
-    /** api: ptype = nrl_market_prices */
-    titleText: 'MarketPrices',
+    /** api: ptype = nrl_irrigation */
+    titleText: 'Irrigation',
     outputTypeText: 'Output Type',
-    ptype: "nrl_market_prices",
-    hilightLayerName: "MarketPrices_Selection_Layer",
+    ptype: "nrl_irrigation",
+    hilightLayerName: "Irrigation_Selection_Layer",
     comboConfigs: {
         base: {
             anchor: '100%',
@@ -107,48 +107,77 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
             tpl: "<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
         }
     },
-    metadataUrl: "http://84.33.2.24/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:crops_metadata&outputFormat=json",
-    metadataFields: [{
-        name: 'crop',
-        mapping: 'properties.crop'
-    }, {
-        name: 'label',
-        mapping: 'properties.crop',
-        convert: function(v, rec){
-            return nrl.chartbuilder.util.toTitleCase(v);
+    metadataFlowFields: [
+        {
+            name: 'river',
+            mapping: 'properties.river'
+        }, {
+            name: 'label',
+            mapping: 'properties.river',
+            convert: function(v, rec){
+                return nrl.chartbuilder.util.toTitleCase(v);
+            }
+        }, {
+            name: 'max_dec_abs',
+            mapping: 'properties.max_dec_abs'
+        }, {
+            name: 'min_dec_abs',
+            mapping: 'properties.min_dec_abs'
         }
-    }, {
-        name: 'max_dec_abs',
-        mapping: 'properties.max_dec_abs'
-    }, {
-        name: 'min_dec_abs',
-        mapping: 'properties.min_dec_abs'
-    }],
+    ],
+    uomFields: [
+        {
+            name: 'id',
+            mapping: 'properties.uid'
+        }, {
+            name: 'cid',
+            mapping: 'properties.cid'
+        }, {
+            name: 'cls',
+            mapping: 'properties.cls'
+        }, {
+            name: 'coefficient',
+            mapping: 'properties.coefficient'
+        }, {
+            name: 'description',
+            mapping: 'properties.description'
+        }, {
+            name: 'filter',
+            mapping: 'properties.filter'
+        }, {
+            name: 'name',
+            mapping: 'properties.name'
+        }, {
+            name: 'shortname',
+            mapping: 'properties.shortname'
+        }
+    ],
     radioQtipTooltip: "You have to be logged in to use this method",
     /**
      * api: method[addActions]
      */
     addOutput: function(config) {
-        var loadStoreTrigger = function() {
-            var dataStore = this.output.crops.getStore();
-            // keep in mind: there is only one record for each crop
+        var loadFlowStoreTrigger = function() {
+            var dataStore = this.output.riversGrid.getStore();
+            // keep in mind: there is only one record for each river
             for (var i = 0; i < dataStore.data.items.length; i++) {
                 var dataItem = dataStore.data.items[i].data;
 
-                var cropMetadata = {};
+                var riverMetadata = {};
                 for (var prop in dataItem)
-                    if (prop != 'crop')
-                        cropMetadata[prop] = dataItem[prop];
+                    if (prop != 'river')
+                        riverMetadata[prop] = dataItem[prop];
 
-                this.output.crops.metadata[dataItem.crop] = cropMetadata;
+                if (this.output.metadata.flow == undefined)
+                    this.output.metadata.flow = {};
+                this.output.metadata.flow[dataItem.river] = riverMetadata;
             }
-            this.output.setUpMaxAndMin();
         };
 
         this.comboConfigs.base.url = this.dataUrl;
         var apptarget = this.target;
 
-        var MarketPrices = {
+        var Irrigation = {
             isRendered: false,
             xtype: 'form',
             title: this.titleText,
@@ -188,7 +217,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                         var areaSelector = aoiFieldSet.AreaSelector;
                         var gran_type = aoiFieldSet.gran_type.getValue().inputValue;
                         var submitButtonState = submitButton.disabled;
-                        var xType = 'gxp_nrlMarketPrices' + (outputValue == 'data' ? 'Tab' : 'Chart') + 'Button';
+                        var xType = 'gxp_nrlIrrigation' + (outputValue == 'data' ? 'Tab' : 'Chart') + 'Button';
 
                         this.output.outputMode = outputValue;
                         submitButton.destroy();
@@ -208,14 +237,6 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                         this.output.fireEvent('update', store);
                         this.output.fireEvent('show');
 
-
-                        this.output.comparisonby.setDisabled(outputValue == 'data');
-                        if (outputValue == 'data'){
-                            this.output.comparisonby.oldValue = this.output.comparisonby.getValue().inputValue;
-                            this.output.comparisonby.setValue('commodity');
-                        }else{
-                            this.output.comparisonby.setValue(this.output.comparisonby.oldValue);
-                        }
                         this.output.doLayout();
                         this.output.syncSize();
 
@@ -225,7 +246,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                             this.output.submitButton.initChartOpt(this.output);
                         }
 
-                        if(this.output.submitButton.xtype == 'gxp_nrlMarketPricesChartButton'){
+                        if(this.output.submitButton.xtype == 'gxp_nrlIrrigationChartButton'){
                             this.output.optBtn.setDisabled(this.output.submitButton.disabled);
                         }else{
                             this.output.optBtn.disable();
@@ -271,23 +292,20 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                                 }
                                 break;
                         }
-                        var selectedCrops = this.ownerCt.crops.getSelections();
-                        //if (selectedCrops.length != 0)
-                        //    this.ownerCt.setUpMaxAndMin(selectedCrops);
-                        this.ownerCt.doLayout();
+                        if (this.ownerCt.source.getValue().inputValue == 'flow'){
+                            var selectedRivers = this.ownerCt.riversGrid.getSelections();
+                            if (selectedRivers.length != 0)
+                                this.ownerCt.setUpMaxAndMin(selectedRivers);
+                        }
                     }
                 },
                 // shows controllers for select a years range.
                 setAnnualMode: function() {
-                    this.ownerCt.yearRangeSelector.show();
-                    this.ownerCt.yearSelector.hide();
                     this.ownerCt.monthRangeSelector.hide();
                 },
                 // shows controller to select a month range
                 // from a selected reference year.
                 setMonthlyMode: function() {
-                    this.ownerCt.yearRangeSelector.hide();
-                    this.ownerCt.yearSelector.show();
                     this.ownerCt.monthRangeSelector.show();
                 },
                 // sets the initial state for the components
@@ -295,32 +313,116 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 initTimeSelection: function() {
                     this.setAnnualMode();
                 }
-            }, { // YEAR compobox ---------------------------------------
-                fieldLabel: 'Data series',
-                name: 'year',
-                disabled: false,
-                xtype: 'singleyearcombobox',
-                anchor: '100%',
-                ref: 'yearSelector',
-                disabled: false
-            }, { // MONTH range selector --------------------------------
-                fieldLabel: 'Time span',
-                ref: 'monthRangeSelector',
-                xtype: 'monthyearrangeselector',
-                anchor: '100%',
-                noCrossYear: false,
-                disabled: false
             }, { // YEAR range selector ---------------------------------
-                fieldLabel: 'Data series',
+                fieldLabel: 'Data Series',
                 ref: 'yearRangeSelector',
                 xtype: 'yearrangeselector',
                 anchor: '100%',
-                disabled: false
+                disabled: false,
+                hidden: false,
+                listeners: {
+                    change: function(from, to){
+                        if (this.output.outputType.getValue()){
+                            var outputtype = this.output.outputType.getValue().inputValue;
+                            if (outputtype != 'data')
+                                this.output.submitButton.initChartOpt(this.output);
+                        }
+                    },
+                    scope: this
+                }
+            }, { // MONTH range selector --------------------------------
+                fieldLabel: 'Time Span',
+                ref: 'monthRangeSelector',
+                xtype: 'monthyearrangeselector',
+                anchor: '100%',
+                noCrossYear: true,
+                disabled: false,
+                hidden: true
+            }, { // SOURCE radio ----------------------------------------
+                style: {
+                    marginTop: '6px'
+                },
+                fieldLabel: 'Source',
+                xtype: 'radiogroup',
+                anchor: '100%',
+                autoHeight: true,
+                ref: 'source',
+                title: this.outputTypeText,
+                defaultType: 'radio',
+                disabled: false,
+                columns: 1,
+                items: [{
+                    boxLabel: 'River Water Inflow at Rim Stations',
+                    name: 'source',
+                    inputValue: 'flow',
+                    checked: true,
+                    dataUrl: this.metadataFlowUrl
+                }, {
+                    boxLabel: 'Irrigation Water Supply from Canal Head Works',
+                    name: 'source',
+                    inputValue: 'supply',
+                    dataUrl: this.metadataSupplyUrl
+
+                }],
+                listeners: {
+                    change: function(radioGroup, checked){
+                        this.refOwner.aoiFieldSet.setVisible(checked.inputValue == 'supply');
+                        this.refOwner.riversGrid.setVisible(checked.inputValue == 'flow');
+                        this.refOwner.uomFlow.setVisible(checked.inputValue == 'flow');
+                        this.refOwner.uomSupply.setVisible(checked.inputValue == 'supply');
+                        // TODO: remove selection on map when river source is activate !
+                        if (this.refOwner.metadata[checked.inputValue] == undefined){
+                            // TODO: load metadata to init time selection controls
+                            var url = checked.dataUrl;
+                            if (checked.inputValue == 'supply'){
+                                Ext.Ajax.request({
+                                    url: url,
+                                    success: function(response, opts) {
+                                        var obj = Ext.decode(response.responseText);
+                                        var data = obj.features[0].properties;
+                                        this.refOwner.metadata.supply = {};
+                                        this.refOwner.metadata.supply.district = {
+                                            min_dec_abs: data.min_district,
+                                            max_dec_abs: data.max_district
+                                        };
+                                        this.refOwner.metadata.supply.province = {
+                                            min_dec_abs: data.min_province,
+                                            max_dec_abs: data.max_province
+                                        };
+                                        this.ownerCt.setUpMaxAndMin();
+                                    },
+                                    failure: function(response, opts) {
+                                        console.log('server-side failure with status code ' + response.status);
+                                    },
+                                    scope: radioGroup
+                                });
+                            }else{
+                                // DO NOTHING: metadata related to rivers flow are loaded
+                                //             at riversGrid store load time.
+                            }
+                        }else{
+                            if (checked.inputValue == 'flow'){
+                                var selectedRivers = this.ownerCt.riversGrid.getSelections();
+                                if (selectedRivers.length != 0)
+                                    this.ownerCt.setUpMaxAndMin(selectedRivers);
+                            }else{
+                                this.ownerCt.setUpMaxAndMin();
+                            }
+                        }
+                        this.refOwner.updateSubmitBtnState();
+                        var outputtype = this.refOwner.outputType.getValue().inputValue;
+                        if (outputtype != 'data'){
+                            this.refOwner.submitButton.initChartOpt(this.refOwner);
+                        }
+                        this.refOwner.doLayout();
+                    }
+                }
             }, { // AOI selector ----------------------------------------
                 style: {
                     marginTop: '6px'
                 },
                 xtype: 'nrl_aoifieldset',
+                hidden: true,
                 name: 'region_list',
                 ref: 'aoiFieldSet',
                 layerStyle: this.layerStyle,
@@ -331,98 +433,65 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 hilightLayerName: this.hilightLayerName,
                 layers: this.layers,
                 selectableLayer: this.layers.province,
+                disabledGrantype: ['pakistan'],
                 listeners: {
                     grantypeChange: function(itemSelected) {
                         var granType = itemSelected.inputValue;
-                        var records = this.ownerCt.crops.getSelections();
                         var outputtype = this.ownerCt.outputType.getValue().inputValue;
 
                         this.refOwner.updateSubmitBtnState();
-                        if (outputtype != 'data')
-                            this.ownerCt.submitButton.initChartOpt(this.ownerCt);
+                        this.refOwner.setUpMaxAndMin();
+                       if (outputtype != 'data')
+                           this.ownerCt.submitButton.initChartOpt(this.ownerCt);
                     },
                     regionsChange: function(s) {
                         var granType = this.gran_type.getValue().inputValue;
-                        var records = this.ownerCt.crops.getSelections();
                         var outputtype = this.ownerCt.outputType.getValue().inputValue;
 
                         this.refOwner.updateSubmitBtnState();
-                        if (outputtype != 'data')
-                            this.ownerCt.submitButton.initChartOpt(this.ownerCt);
+                       if (outputtype != 'data')
+                           this.ownerCt.submitButton.initChartOpt(this.ownerCt);
                     }
                 }
-            }, { // COMPARISON radio ------------------------------------
-                style: {
-                    marginTop: '6px'
-                },
-                fieldLabel: 'Comparision by',
-                xtype: 'radiogroup',
-                anchor: '100%',
-                autoHeight: true,
-                ref: 'comparisonby',
-                title: this.outputTypeText,
-                defaultType: 'radio',
-                disabled: false,
-                columns: 2,
-                items: [{
-                    boxLabel: 'Commodity',
-                    name: 'comparisonby',
-                    inputValue: 'commodity',
-                    checked: true
-                }, {
-                    boxLabel: 'Region',
-                    name: 'comparisonby',
-                    inputValue: 'region'
-                }],
-                listeners: {
-                    change: function(b){
-                        var outputtype = this.ownerCt.outputType.getValue().inputValue;
-                        if (outputtype != 'data')
-                            this.ownerCt.submitButton.initChartOpt(this.ownerCt);
-                    }
-                }
-            }, { // CROPS grid ------------------------------------------
+            }, { // RIVES grid ------------------------------------------
                 xtype: 'nrl_checkboxcelectiongrid',
-                title: 'Commodity',
+                title: 'Rivers at Rim Station',
                 enableHdMenu: false,
                 hideHeaders: false,
                 hidden: false,
-                ref: 'crops',
+                ref: 'riversGrid',
                 height: 160,
                 store: new Ext.data.JsonStore({
-                    fields: this.metadataFields,
+                    fields: this.metadataFlowFields,
                     autoLoad: true,
-                    url: this.metadataUrl,
+                    url: this.metadataFlowUrl,
                     root: 'features',
-                    idProperty: 'crop',
+                    idProperty: 'river',
                     listeners: {
                         scope: this,
-                        load: loadStoreTrigger
+                        load: loadFlowStoreTrigger
                     }
                 }),
                 columns: {
-                    id: 'crop_lbl',
+                    id: 'river_lbl',
                     header: '',
                     dataIndex: 'label'
                 },
                 allowBlank: false,
-                name: 'crops',
+                name: 'rivers',
                 anchor: '100%',
                 listeners: {
                     scope: this,
                     selectionchange: function(records) {
-                        //if (records.length != 0)
-                        //    this.output.setUpMaxAndMin(records);
+                        if (records.length != 0)
+                            this.output.setUpMaxAndMin(records);
                         this.output.updateSubmitBtnState();
 
                         var outputtype = this.output.outputType.getValue().inputValue;
-                        if (outputtype != 'data')
-                            this.output.submitButton.initChartOpt(this.output);
+                       if (outputtype != 'data')
+                           this.output.submitButton.initChartOpt(this.output);
                     }
                 },
-                // it'll contain, for each fertilizers, start and end year for
-                // national data, province data and district data.
-                metadata: {},
                 setDisabledTimeOptions: function(boolVal) {
                     var timeWidgets = [
                         this.ownerCt.timerange,
@@ -436,238 +505,77 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                         else
                             timeWidgets[i].enable();
                 }
-            }, { // PRICE OPTIONS fieldset ------------------------------
+            }, { // UOM fieldset ----------------------------------------
                 style: {
                     marginTop: '12px'
                 },
                 xtype: 'fieldset',
-                title: 'Price Options',
+                title: 'Unit Of Measure',
                 items: [{
                     xtype: 'combo',
-                    fieldLabel: 'Currency',
+                    fieldLabel: 'Water Flow',
                     editable: false,
-                    ref: '../currency',
+                    ref: '../uomFlow',
                     anchor: '100%',
-                    store: this.currencies,
-                    triggerAction: 'all',
-                    autoLoad: true,
-                    allowBlank: false,
-                    value: this.defaultCurrency,
-                    listeners: {
-                        'select': function(combo, record, index) {
-                            this.ownerCt.fireEvent('afterlayout', this.ownerCt);
-
-                            var selectedVal = combo.value;
-                            if (selectedVal == 'usd'){
-                                this.ownerCt.ownerCt.customExchangeRate.show();
-                                this.ownerCt.ownerCt.exchangeRateRadio.show();
-                                this.ownerCt.ownerCt.exchangeRateRadio.doLayout();
-                                this.ownerCt.hr.show();
-                            }else{
-                                this.ownerCt.ownerCt.customExchangeRate.hide();
-                                this.ownerCt.ownerCt.exchangeRateRadio.hide();
-                                this.ownerCt.hr.hide();
-                            }
-
-                            var outputtype = this.ownerCt.ownerCt.outputType.getValue().inputValue;
-                            if (outputtype != 'data')
-                                this.ownerCt.ownerCt.submitButton.initChartOpt(this.ownerCt.ownerCt);
-
-                            this.ownerCt.ownerCt.updateSubmitBtnState();
-                            this.refOwner.doLayout();
-                        }
-                    }
-                }, {
-                    fieldLabel: 'Exchange Rate',
-                    xtype: 'radiogroup',
-                    anchor: '100%',
-                    autoHeight: true,
-                    ref: '../exchangeRateRadio',
-                    hidden: true,
-                    columns: 1,
-                    items: [{
-                        boxLabel: 'Fixed',
-                        name: 'exchangerateradio',
-                        inputValue: 'custom',
-                        checked: true
-                    },{
-                        boxLabel: 'Variable (ingestion date)',
-                        name: 'exchangerateradio',
-                        inputValue: 'ingestion',
-                        checked: false
-                    }],
-                    listeners: {
-                        'change': function(c, checked) {
-                            var checkedVal = checked.inputValue;
-                            var exchangeRateTxt = this.ownerCt.ownerCt.customExchangeRate;
-                            var coefficient = this.refOwner.customExchangeRate.store.query('id', 'pkr_usd').items[0].get('coefficient');
-                            this.refOwner.customExchangeRate.setValue(coefficient);
-
-                            this.ownerCt.ownerCt.updateSubmitBtnState();
-                            if (checkedVal == 'custom'){
-                                // 'custom' checkbox is checked
-                                exchangeRateTxt.enable();
-                            }else{
-                                exchangeRateTxt.disable();
-                            }
-                        }
-                    }
-                }, {
-                    fieldLabel: 'PKR/USD',
-                    xtype: 'textfield',
-                    enableKeyEvents: true,
-                    anchor: '100%',
-                    ref: '../customExchangeRate',
-                    disabled: false,
-                    hidden: true,
-                    regex: /^[0-9]+$|^[0-9][.][0-9]+$|^[1-9][0-9]+[.][0-9]+$/i, //only match integer or float numbers.
-                    regexText: 'Invalid number',
-                    allowBlank: false,
-                    listeners: {
-                        'keyup': function(){
-                            this.refOwner.updateSubmitBtnState();
-                        },
-                        'change': function(textfield, value){
-                            this.setValue(isNaN(value) ? value : parseFloat(value));
-                        }
-                    },
                     store: new Ext.data.JsonStore({
                         baseParams: {
-                            viewParams: 'class:exchangerate'
+                            viewParams: 'class:waterflow'
                         },
-                        fields: [{
-                            name: 'id',
-                            mapping: 'properties.uid'
-                        }, {
-                            name: 'label',
-                            mapping: 'properties.label'
-                        }, {
-                            name: 'cid',
-                            mapping: 'properties.cid'
-                        }, {
-                            name: 'cls',
-                            mapping: 'properties.cls'
-                        }, {
-                            name: 'coefficient',
-                            mapping: 'properties.coefficient'
-                        }, {
-                            name: 'description',
-                            mapping: 'properties.description'
-                        }, {
-                            name: 'filter',
-                            mapping: 'properties.filter'
-                        }, {
-                            name: 'name',
-                            mapping: 'properties.name'
-                        }, {
-                            name: 'shortname',
-                            mapping: 'properties.shortname'
-                        }],
-                        autoLoad: true,
-                        url: this.factorsurl,
-                        root: 'features',
-                        idProperty: 'uid',
-                        listeners: {
-                            load: function(theStore, records, opts){
-                                var coefficient = theStore.query('id', 'pkr_usd').items[0].get('coefficient');
-                                this.output.customExchangeRate.setValue(coefficient);
-                            },
-                            scope: this
-                        }
-                    })
-                }, {
-                    xtype: 'fieldset',
-                    ref: 'hr',
-                    style: {
-                        borderTop: '0',
-                        borderBottom: 'solid 1px #CCCCCC',
-                        borderLeft: '0',
-                        borderRight: '0',
-                        height: '1px',
-                        padding: '0 10px',
-                        marginTop: '8px'
-                    },
-                    hidden: true
-                }, {
-                    xtype: 'combo',
-                    fieldLabel: 'Denominator',
-                    editable: false,
-                    ref: '../denominator',
-                    anchor: '100%',
-                    triggerAction: 'all',
-                    mode: 'local',
-                    typeAhead: true,
-                    lazyRender: false,
-                    hiddenName: 'production_unit',
-                    forceSelected: true,
-                    allowBlank: false,
-                    displayField: 'name',
-                    valueField: 'coefficient',
-                    value: this.defaultDenominator,
-                    store: new Ext.data.JsonStore({
-                        baseParams: {
-                            viewParams: 'class:denominator'
-                        },
-                        fields: [{
-                            name: 'id',
-                            mapping: 'properties.uid'
-                        }, {
-                            name: 'label',
-                            mapping: 'properties.label'
-                        }, {
-                            name: 'cid',
-                            mapping: 'properties.cid'
-                        }, {
-                            name: 'cls',
-                            mapping: 'properties.cls'
-                        }, {
-                            name: 'coefficient',
-                            mapping: 'properties.coefficient'
-                        }, {
-                            name: 'description',
-                            mapping: 'properties.description'
-                        }, {
-                            name: 'filter',
-                            mapping: 'properties.filter'
-                        }, {
-                            name: 'name',
-                            mapping: 'properties.name'
-                        }, {
-                            name: 'shortname',
-                            mapping: 'properties.shortname'
-                        }],
+                        fields: this.uomFields,
                         autoLoad: true,
                         url: this.factorsurl,
                         root: 'features',
                         idProperty: 'uid'
                     }),
+                    displayField: 'shortname',
+                    valueField: 'coefficient',
+                    triggerAction: 'all',
+                    mode: 'local',
+                    autoLoad: true,
+                    allowBlank: false,
+                    value: this.defaultUOMFlow,
+                    hidden: false,
                     listeners: {
-                        'select': function() {
-                            this.ownerCt.fireEvent('afterlayout', this.ownerCt);
-
+                        select: function(){
                             var outputtype = this.ownerCt.ownerCt.outputType.getValue().inputValue;
                             if (outputtype != 'data')
                                 this.ownerCt.ownerCt.submitButton.initChartOpt(this.ownerCt.ownerCt);
-                        }
+                        },
+                        scope: this.refOwner
                     }
                 }, {
-                    xtype: 'label',
+                    xtype: 'combo',
+                    fieldLabel: 'Water Supply',
+                    editable: false,
+                    ref: '../uomSupply',
                     anchor: '100%',
-                    fieldLabel: 'Output',
-                    ref: '../lblOutput',
-                    text: '',
-                    style: {
-                        lineHeight: '20px'
+                    store: new Ext.data.JsonStore({
+                        baseParams: {
+                            viewParams: 'class:watersupply'
+                        },
+                        fields: this.uomFields,
+                        autoLoad: true,
+                        url: this.factorsurl,
+                        root: 'features',
+                        idProperty: 'uid'
+                    }),
+                    displayField: 'shortname',
+                    valueField: 'coefficient',
+                    triggerAction: 'all',
+                    mode: 'local',
+                    autoLoad: true,
+                    allowBlank: false,
+                    value: this.defaultUOMSupply,
+                    hidden: true,
+                    listeners: {
+                        select: function(){
+                            var outputtype = this.ownerCt.ownerCt.outputType.getValue().inputValue;
+                            if (outputtype != 'data')
+                                this.ownerCt.ownerCt.submitButton.initChartOpt(this.ownerCt.ownerCt);
+                        },
+                        scope: this.refOwner
                     }
-                }],
-                listeners: {
-                    'afterlayout': function(fieldset) {
-                        var currCombo = fieldset.getComponent(0);
-                        var denoCombo = fieldset.getComponent(4);
-                        var lbl = fieldset.getComponent(5);
-                        lbl.setText(currCombo.getRawValue() + '/' + denoCombo.getRawValue());
-                    }
-                }
+                }]
             }],
             listeners: {
                                                     ////////
@@ -693,71 +601,61 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                 }
             }, {
                 url: this.dataUrl,
-                xtype: 'gxp_nrlMarketPricesChartButton',
+                xtype: 'gxp_nrlIrrigationChartButton',
                 typeName: this.typeNameData,
                 ref: '../submitButton',
                 target: this,
                 form: this,
                 disabled: true
             }],
+            metadata: {
+                flow: undefined,
+                supply: undefined
+            },
             // set the max and min values for
             //  - yearRangeSelector
             //  - monthRangeSelector
             //  - yearSelector
             setUpMaxAndMin: function(records) {
+                var startRange;
+                var endRange;
 
-                var startRange = (Number.MAX_SAFE_INTEGER ? Number.MAX_SAFE_INTEGER : Math.pow(2,53)-1);
-                var endRange = (Number.MIN_SAFE_INTEGER ? Number.MIN_SAFE_INTEGER : -(Math.pow(2, 53) - 1));
+                if (records){
+                    startRange = (Number.MAX_SAFE_INTEGER ? Number.MAX_SAFE_INTEGER : Math.pow(2,53)-1);
+                    endRange = (Number.MIN_SAFE_INTEGER ? Number.MIN_SAFE_INTEGER : -(Math.pow(2, 53) - 1));
 
-                for(var crop in this.crops.metadata){
-                    var data = this.crops.metadata[crop];
-                    startRange = data.min_dec_abs < startRange ? data.min_dec_abs : startRange;
-                    endRange = data.max_dec_abs > endRange ? data.max_dec_abs : endRange;
+                    for (var rIndex = 0; rIndex < records.length; rIndex++) {
+                       var recData = records[rIndex].data;
+                        startRange = recData.min_dec_abs < startRange ? recData.min_dec_abs : startRange;
+                        endRange = recData.max_dec_abs > endRange ? recData.max_dec_abs : endRange;
+                    }
+                }else{
+                    var gran_type = this.aoiFieldSet.gran_type.getValue().inputValue;
+                    startRange = parseInt(this.metadata.supply[gran_type].min_dec_abs);
+                    endRange = parseInt(this.metadata.supply[gran_type].max_dec_abs);
                 }
+
                 // gets min and max year from absolute decade
                 var minYear = nrl.chartbuilder.util.getDekDate(startRange).year;
                 var maxYear = nrl.chartbuilder.util.getDekDate(endRange).year;
 
                 // sets up yearRangeSelector max & min values
-                this.yearRangeSelector.startValue.setValue(minYear);
-                this.yearRangeSelector.endValue.setValue(maxYear);
-
                 this.yearRangeSelector.setMaxValue(maxYear);
-                this.yearRangeSelector.slider.setValue(1, maxYear);
-
                 this.yearRangeSelector.setMinValue(minYear);
+
                 this.yearRangeSelector.slider.setValue(0, minYear);
-
-                // sets year values for yearSelector combobox
-                // if it's possible it keeps the previous selected year
-                var refYear = this.yearSelector.getValue();
-                this.yearSelector.setRange(minYear, maxYear);
-                if (refYear == '' || parseInt(refYear) > maxYear || parseInt(refYear) < minYear)
-                    this.yearSelector.setValue(maxYear);
-                else
-                    this.yearSelector.setValue(refYear);
-
-                this.monthRangeSelector.setValue(1, 11);
+                this.yearRangeSelector.slider.setValue(1, maxYear);
             },
             updateSubmitBtnState: function(){
                 var gran_type = this.aoiFieldSet.gran_type.getValue().inputValue;
-                var selectedCrops = this.crops.getSelections();
+                var selectedRivers = this.riversGrid.getSelections();
                 var regionList = this.aoiFieldSet.selectedRegions.getValue();
-                var exchangeRateOk;
-                if (this.currency.getValue() == 'usd'){
-                    if (this.exchangeRateRadio.getValue().length != 0){
-                        exchangeRateOk = this.customExchangeRate.getValue() != '' && this.customExchangeRate.validate();
-                    }else{
-                        exchangeRateOk = true;
-                    }
-                }else{
-                    exchangeRateOk = true;
-                }
+                var sourceIsFlow = (this.source.getValue().inputValue == 'flow');
 
-                var disableBtn = (!exchangeRateOk || selectedCrops.length == 0 || gran_type != 'pakistan' && regionList.length == 0);
+                var disableBtn = (sourceIsFlow ? (selectedRivers.length == 0) : (gran_type != 'pakistan' && regionList.length == 0) );
                 this.submitButton.setDisabled(disableBtn);
 
-                if(this.submitButton.xtype == 'gxp_nrlMarketPricesChartButton'){
+                if(this.submitButton.xtype == 'gxp_nrlIrrigationChartButton'){
                     this.optBtn.setDisabled(this.submitButton.disabled);
                 }else{
                     this.optBtn.disable();
@@ -767,15 +665,15 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
         };
 
         if (this.helpPath && this.helpPath != ''){
-            MarketPrices.buttons.unshift({
+            Irrigation.buttons.unshift({
                 xtype: 'gxp_nrlHelpModuleButton',
                 portalRef: this.portalRef,
                 helpPath: this.helpPath
             });
         }
 
-        config = Ext.apply(MarketPrices, config || {});
-        this.output = gxp.plugins.nrl.MarketPrices.superclass.addOutput.call(this, config);
+        config = Ext.apply(Irrigation, config || {});
+        this.output = gxp.plugins.nrl.Irrigation.superclass.addOutput.call(this, config);
 
         //hide selection layer on tab change
         this.output.on('beforehide', function() {
@@ -832,4 +730,4 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
     }
 });
 
-Ext.preg(gxp.plugins.nrl.MarketPrices.prototype.ptype, gxp.plugins.nrl.MarketPrices);
+Ext.preg(gxp.plugins.nrl.Irrigation.prototype.ptype, gxp.plugins.nrl.Irrigation);

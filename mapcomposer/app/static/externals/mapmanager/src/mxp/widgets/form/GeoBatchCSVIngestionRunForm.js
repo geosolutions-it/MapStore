@@ -23,7 +23,7 @@ Ext.ns("mxp.widgets");
 /**
  * Generic Resource Editor for GeoStore
  * Allow to edit and commit changes for a GeoStore Resource
- * 
+ *
  */
 mxp.widgets.GeoBatchCSVIngestionRunForm = Ext.extend(Ext.Panel, {
     iconCls: 'update_manager_ic',
@@ -46,15 +46,15 @@ mxp.widgets.GeoBatchCSVIngestionRunForm = Ext.extend(Ext.Panel, {
     fileRegex: ".*",
     /** api: config[fileId]
      * ``string`` the id of the file to run.
-     * 
+     *
      * e.g. /csv/myFile.csv
      */
     fileId: null,
     /** api: config[baseDir]
      * ``string`` baseDir to concatenate to the dir from the file browser
-     * 
-     * e.g. 
-     * baseDir: "/var/data" 
+     *
+     * e.g.
+     * baseDir: "/var/data"
      * fileId from Server "/csv/myFile.csv"
      * forwarded file path: "/var/data/csv/myFile.csv"
      */
@@ -64,7 +64,7 @@ mxp.widgets.GeoBatchCSVIngestionRunForm = Ext.extend(Ext.Panel, {
         /** public event[success]
          * Fired when the flow starts successful
          *
-         * arguments: 
+         * arguments:
          * ``string`` the id of the consumer
          */
         'success',
@@ -136,7 +136,7 @@ mxp.widgets.GeoBatchCSVIngestionRunForm = Ext.extend(Ext.Panel, {
                                     var multipart_params = pluploadPanel.multipart_params || {};
                                     Ext.apply(multipart_params, {
                                         folder: this.path
-                                    })
+                                    });
                                     pluploadPanel.multipart_params = multipart_params;
                                 },
                                 fileUploaded: function(file) {
@@ -208,7 +208,7 @@ mxp.widgets.GeoBatchCSVIngestionRunForm = Ext.extend(Ext.Panel, {
                                 listeners: {
                                     scope: this,
                                     afterrender: function(fb) {
-                                        //auto select if fileId 
+                                        //auto select if fileId
                                         var sm = fb.fileTreePanel.getSelectionModel();
                                         if (fb.refOwner.fileId) {
                                             var node = fb.fileTreePanel.getNodeById(fb.refOwner.fileId);
@@ -272,12 +272,12 @@ mxp.widgets.GeoBatchCSVIngestionRunForm = Ext.extend(Ext.Panel, {
 
         // set a init value for combobox
         this.form.comboSource.setValue('Cropdata');
-
         this.form.comboSource.on('select',function(cb){
             var selectedItem = cb.getValue();
             this.loadCustomOptions(selectedItem);
             this.allowRun();
         }, this);
+        this.form.comboSource.fireEvent('select', this.form.comboSource);
     },
 
     // adds the needed widgets to the form to get extra properties.
@@ -303,6 +303,46 @@ mxp.widgets.GeoBatchCSVIngestionRunForm = Ext.extend(Ext.Panel, {
         };
 
         switch (comboSourceVal){
+            case 'Cropdata': {
+                removeCustomOptions(this.form);
+                customOptionsConfigs.customOptionsType = 'cropData';
+                customOptionsConfigs.items.push({
+                    xtype: 'combo',
+                    ref: 'source', // must be the same defined in managerConfig.js config file
+                    fieldLabel: 'Source',
+                    ref: 'src',
+                    isValid: function(){
+                        return this.getValue() != '';
+                    },
+                    anchor: '100%',
+                    triggerAction: 'all',
+                    mode: 'local',
+                    typeAhead: true,
+                    lazyRender: false,
+                    forceSelected: true,
+                    allowBlank: false,
+                    displayField: 'src',
+                    valueField: 'src',
+                    editable: true,
+                    store: new Ext.data.JsonStore({
+                        fields: [{name: 'src', mapping: 'properties.src'}],
+                        autoLoad: true,
+                        url: this.sourcesUrl,
+                        root: 'features',
+                        idProperty:'src'
+                    }),
+                    listeners: {
+                        'select': function(combo){
+                            this.refOwner.refOwner.refOwner.allowRun();
+                        }
+                    }
+                });
+
+                var customOptions = new Ext.form.FieldSet(customOptionsConfigs);
+
+                this.form.add(customOptions);
+                this.form.doLayout();
+            }break;
             case 'Market Prices': {
                 removeCustomOptions(this.form);
                 customOptionsConfigs.customOptionsType = 'marketPrices';
@@ -357,7 +397,6 @@ mxp.widgets.GeoBatchCSVIngestionRunForm = Ext.extend(Ext.Panel, {
                         root: 'features',
                         idProperty: 'uid'
                     }),
-                    value: this.defaultDenominator,
                     listeners: {
                         'select': function(combo){
                             this.refOwner.refOwner.refOwner.allowRun();
@@ -481,7 +520,7 @@ mxp.widgets.GeoBatchCSVIngestionRunForm = Ext.extend(Ext.Panel, {
             xmlData: propFileContent,
             scope: this,
             success: function(response, opts) {
-                //var data = self.afterFind( Ext.util.JSON.decode(response.responseText) ); 
+                //var data = self.afterFind( Ext.util.JSON.decode(response.responseText) );
                 this.fireEvent('success', response);
                 this.onSuccess(response, opts);
             },

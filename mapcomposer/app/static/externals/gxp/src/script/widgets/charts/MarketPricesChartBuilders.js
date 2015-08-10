@@ -25,16 +25,47 @@ Ext.namespace('nrl.chartbuilder');
 /**
  * @author Mirco Bertelli
  * This file contain Chart builders for market prices.
- * they need to implement:
- * getData (json, granType): parse data from features and generate the proper series for their chart
- *     * json 'Object' :  the geojson from the server.
- *     * granType: type of aoi selections
- *         * district
- *         * province
- *         * pakistan
- * makeChart(data, opt, customOpt, queryParams): return a array of HighCharts charts
  */
 nrl.chartbuilder.marketprices = {};
+nrl.chartbuilder.marketprices.commons = {
+    getXLabelStep: function(queryParams){
+        var step = 1;
+        if (queryParams.time_opt == 'month'){
+            var fromYear = nrl.chartbuilder.util.getDekDate(queryParams.start_abs_dec_year).year;
+            var toYear = nrl.chartbuilder.util.getDekDate(queryParams.end_abs_dec_year).year;
+            step = toYear - fromYear + 1;
+        }else{
+            var decs = queryParams.end_abs_dec_year - queryParams.start_abs_dec_year + 1;
+            step = Math.floor((decs+9)/12);
+        }
+        return step;
+    },
+    getXAxisLabel: function(xVal, queryParams) {
+            var mills = parseInt(xVal);
+            var date = new Date(mills);
+            var monthStr = date.dateFormat('M');
+            var yearStr = date.dateFormat('Y');
+
+            var lbl = monthStr + ' ';
+
+            if (queryParams.time_opt != 'month') {
+                var dayInMonth = parseInt(date.dateFormat('d'));
+                var dec;
+                if (dayInMonth > 20)
+                    dec = 3;
+                else if (dayInMonth > 10)
+                    dec = 2;
+                else
+                    dec = 1;
+
+                lbl += dec + '-';
+            }
+
+            lbl += yearStr;
+
+            return lbl;
+        }
+};
 nrl.chartbuilder.marketprices.commodity = {
     getData: function(json, granType) {
         var data = [];
@@ -112,9 +143,9 @@ nrl.chartbuilder.marketprices.commodity = {
 
         // creates a new data entry for the aggregate velues
         var aggregated = {
-                title: 'aggregate',
-                rows: []
-            }
+            title: 'aggregate',
+            rows: []
+        };
             // this object maps time value on row index for aggregated data
         var timeToRowIndex = {};
 
@@ -151,10 +182,13 @@ nrl.chartbuilder.marketprices.commodity = {
         for (var i = 0; i < aggregated.rows.length; i++) {
             var row = aggregated.rows[i];
             for (var crop in row) {
-                if (crop != 'time')
-                    row[crop] = row[crop].reduce(function(preAVG, x, preAVGItems) {
-                        return (preAVG * preAVGItems + x) / (preAVGItems + 1);
-                    }, 0);
+                if (crop != 'time'){
+                    var avg = 0;
+                    for(var j=0; j<row[crop].length; j++){
+                        avg += row[crop][j];
+                    }
+                    row[crop] = avg/row[crop].length;
+                }
             }
         }
         data.push(aggregated);
@@ -182,7 +216,7 @@ nrl.chartbuilder.marketprices.commodity = {
         }
         ret.yAxis = [{ // AREA
             title: {
-                text: customOpt.stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : customOpt.uomLabel
+                text: customOpt.stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : 'Price (' + customOpt.uomLabel + ')'
             },
             labels: {
                 formatter: function() {
@@ -201,19 +235,6 @@ nrl.chartbuilder.marketprices.commodity = {
         return ret;
     },
     makeChart: function(data, opt, customOpt, queryParams) {
-        // this function assums that the data for aggregate chart are as last
-        // in the chartData array.
-        //  queryParams = {
-        //      comparisonby
-        //      crop_list
-        //      currency
-        //      end_abs_dec_year
-        //      factor
-        //      gran_type
-        //      region_list
-        //      start_abs_dec_year
-        //      time_opt
-        //  }
         var getChartInfo = function(chartData, chartIndex, queryParams) {
             var info = '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />';
 
@@ -236,7 +257,7 @@ nrl.chartbuilder.marketprices.commodity = {
             } else {
                 aoi = chartData[chartIndex].title;
             }
-            info += '<span style="font-size:10px;">Region: ' + aoi + '</span><br />'
+            info += '<span style="font-size:10px;">Region: ' + aoi + '</span><br />';
 
             var fromData = nrl.chartbuilder.util.getDekDate(queryParams.start_abs_dec_year);
             var toData = nrl.chartbuilder.util.getDekDate(queryParams.end_abs_dec_year);
@@ -246,9 +267,9 @@ nrl.chartbuilder.marketprices.commodity = {
                         var fromYear = fromData.year;
                         var toYear = toData.year;
                         if (toYear - fromYear == 0) {
-                            info += '<span style="font-size:10px;">Year: ' + fromYear + '</span><br />';
+                            //info += '<span style="font-size:10px;">Year: ' + fromYear + '</span><br />';
                         } else {
-                            info += '<span style="font-size:10px;">Years: ' + fromYear + ' - ' + toYear + '</span><br />';
+                            //info += '<span style="font-size:10px;">Years: ' + fromYear + ' - ' + toYear + '</span><br />';
                         }
                     }
                     break;
@@ -257,9 +278,16 @@ nrl.chartbuilder.marketprices.commodity = {
                         var from = nrl.chartbuilder.util.numberToMonthName(fromData.month) + '(' + fromData.year + ')';
                         var to = nrl.chartbuilder.util.numberToMonthName(toData.month) + '(' + toData.year + ')';
 
-                        info += '<span style="font-size:10px;">Time Range: ' + from + ' - ' + to + '</span><br />'
+                        info += '<span style="font-size:10px;">Time Range: ' + from + ' - ' + to + '</span><br />';
                     }
                     break;
+            }
+            if (queryParams.currency == 'market_price_usd'){
+                if (queryParams.exrate == 1){
+                    info += '<span style="font-size:10px;">Exchange rate: variable (ingestion date)</span><br />';
+                }else{
+                    info += '<span style="font-size:10px;">Exchange rate: fixed ('+ queryParams.exrate + ' Pakistan Rupee/'+ queryParams.denominatorLbl +')</span><br />';
+                }
             }
 
             return info;
@@ -272,33 +300,8 @@ nrl.chartbuilder.marketprices.commodity = {
             return title;
         };
 
-        var getXAxisLabel = function(xVal) {
-            var mills = parseInt(xVal);
-            var date = new Date(mills);
-            var monthStr = date.dateFormat('M');
-            var yearStr = date.dateFormat('(Y)');
-
-            var lbl = monthStr;
-
-            if (queryParams.time_opt != 'month') {
-                var dayInMonth = parseInt(date.dateFormat('d'));
-                var dec;
-                if (dayInMonth > 20)
-                    dec = 3;
-                else if (dayInMonth > 10)
-                    dec = 2;
-                else
-                    dec = 1;
-
-                lbl += '-' + dec;
-            }
-
-            lbl += '<br>' + yearStr;
-
-            return lbl;
-        };
-
         var charts = [];
+        var xlabelStep = nrl.chartbuilder.marketprices.commons.getXLabelStep(queryParams);
 
         for (var r = 0; r < data.length; r++) {
             // defines fields for the store of the chart.
@@ -309,7 +312,8 @@ nrl.chartbuilder.marketprices.commodity = {
             for (var crop in opt.series) {
                 fields.push({
                     name: crop,
-                    type: 'float'
+                    type: 'float',
+                    useNull: true
                 });
             }
 
@@ -361,22 +365,23 @@ nrl.chartbuilder.marketprices.commodity = {
                         gridLineWidth: 1,
                         labels: {
                             formatter: function() {
-                                return getXAxisLabel(this.value);
+                                return nrl.chartbuilder.marketprices.commons.getXAxisLabel(this.value, queryParams);
                             },
                             rotation: -45,
-                            y: 24
+                            y: 32,
+                            step: xlabelStep
                         }
                     }],
                     yAxis: chartConfig.yAxis,
                     plotOptions: chartConfig.plotOptions,
                     tooltip: {
                         formatter: function() {
-                            var xVal = getXAxisLabel(this.x);
+                            var xVal = nrl.chartbuilder.marketprices.commons.getXAxisLabel(this.x, queryParams);
                             var s = '<b>' + xVal + '</b>';
-
+                            s = s.replace('<br>', ' ');
                             Ext.each(this.points, function(i, point) {
                                 s += '<br/><span style="color:' + i.series.color + '">' + i.series.name + ': </span>' +
-                                    '<span style="font-size:12px;">' + i.y.toFixed(2) + '</span>';
+                                    '<span style="font-size:12px;">' + (i.y ? i.y.toFixed(2) : 'n/a') + '</span>';
                             });
 
                             return s;
@@ -464,7 +469,7 @@ nrl.chartbuilder.marketprices.region = {
         }
         ret.yAxis = [{ // AREA
             title: {
-                text: customOpt.stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : customOpt.uomLabel
+                text: customOpt.stackedCharts.series.stacking == 'percent' ? 'Percentage (%)' : 'Price (' + customOpt.uomLabel + ')'
             },
             labels: {
                 formatter: function() {
@@ -483,17 +488,7 @@ nrl.chartbuilder.marketprices.region = {
         return ret;
     },
     makeChart: function(data, opt, customOpt, queryParams) {
-        //  queryParams = {
-        //      comparisonby
-        //      crop_list
-        //      currency
-        //      end_abs_dec_year
-        //      factor
-        //      gran_type
-        //      region_list
-        //      start_abs_dec_year
-        //      time_opt
-        //  }
+
         var getChartInfo = function(chartData, chartIndex, queryParams) {
             var info = '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />';
 
@@ -516,30 +511,13 @@ nrl.chartbuilder.marketprices.region = {
             } else {
                 crops = chartData[chartIndex].title;
             }
-            info += '<span style="font-size:10px;">Commodity: ' + crops + '</span><br />'
 
-            var fromData = nrl.chartbuilder.util.getDekDate(queryParams.start_abs_dec_year);
-            var toData = nrl.chartbuilder.util.getDekDate(queryParams.end_abs_dec_year);
-            switch (queryParams.time_opt) {
-                case 'month':
-                    {
-                        var fromYear = fromData.year;
-                        var toYear = toData.year;
-                        if (toYear - fromYear == 0) {
-                            info += '<span style="font-size:10px;">Year: ' + fromYear + '</span><br />';
-                        } else {
-                            info += '<span style="font-size:10px;">Years: ' + fromYear + ' - ' + toYear + '</span><br />';
-                        }
-                    }
-                    break;
-                case 'decade_year':
-                    {
-                        var from = nrl.chartbuilder.util.numberToMonthName(fromData.month) + '(' + fromData.year + ')';
-                        var to = nrl.chartbuilder.util.numberToMonthName(toData.month) + '(' + toData.year + ')';
-
-                        info += '<span style="font-size:10px;">Time Range: ' + from + ' - ' + to + '</span><br />'
-                    }
-                    break;
+            if (queryParams.currency == 'market_price_usd'){
+                if (queryParams.exrate == 1){
+                    info += '<span style="font-size:10px;">Exchange rate: variable (ingestion date)</span><br />';
+                }else{
+                    info += '<span style="font-size:10px;">Exchange rate: fixed ('+ queryParams.exrate + ' Pakistan Rupee/'+ queryParams.denominatorLbl +')</span><br />';
+                }
             }
 
             return info;
@@ -552,34 +530,8 @@ nrl.chartbuilder.marketprices.region = {
             return title;
         };
 
-        var getXAxisLabel = function(xVal) {
-            var mills = parseInt(xVal);
-            var date = new Date(mills);
-            var monthStr = date.dateFormat('M');
-            var yearStr = date.dateFormat('(Y)');
-
-            var lbl = monthStr;
-
-            if (queryParams.time_opt != 'month') {
-                var dayInMonth = parseInt(date.dateFormat('d'));
-                var dec;
-                if (dayInMonth > 20)
-                    dec = 3;
-                else if (dayInMonth > 10)
-                    dec = 2;
-                else
-                    dec = 1;
-
-                lbl += '-' + dec;
-            }
-
-            lbl += '<br>' + yearStr;
-
-            return lbl;
-        };
-
         var charts = [];
-
+        var xlabelStep = nrl.chartbuilder.marketprices.commons.getXLabelStep(queryParams);
         for (var r = 0; r < data.length; r++) {
 
             // defines fields for the store of the chart.
@@ -589,8 +541,7 @@ nrl.chartbuilder.marketprices.region = {
             }];
             for (var region in opt.series) {
                 fields.push({
-                    name: region,
-                    type: 'float'
+                    name: region
                 });
             }
 
@@ -641,22 +592,24 @@ nrl.chartbuilder.marketprices.region = {
                         gridLineWidth: 1,
                         labels: {
                             formatter: function() {
-                                return getXAxisLabel(this.value);
+                                return nrl.chartbuilder.marketprices.commons.getXAxisLabel(this.value, queryParams);
                             },
                             rotation: -45,
-                            y: 24
+                            y: 24,
+                            step: xlabelStep
                         }
                     }],
                     yAxis: chartConfig.yAxis,
                     plotOptions: chartConfig.plotOptions,
                     tooltip: {
                         formatter: function() {
-                            var xVal = getXAxisLabel(this.x);
+                            var xVal = nrl.chartbuilder.marketprices.commons.getXAxisLabel(this.x, queryParams);
                             var s = '<b>' + xVal + '</b>';
+                            s = s.replace('<br>', ' ');
 
                             Ext.each(this.points, function(i, point) {
                                 s += '<br/><span style="color:' + i.series.color + '">' + i.series.name + ': </span>' +
-                                    '<span style="font-size:12px;">' + i.y.toFixed(2) + '</span>';
+                                    '<span style="font-size:12px;">' + (i.y ? i.y.toFixed(2) : 'n/a') + '</span>';
                             });
 
                             return s;
@@ -670,10 +623,10 @@ nrl.chartbuilder.marketprices.region = {
                         verticalAlign: 'middle',
                         borderWidth: 0,
                         labelFormatter: function() {
-                            if (this.name == 'Area (000 hectares)') {
-                                return 'Area (000 ha)';
-                            } else {
-                                return this.name;
+                            if (this.options.granType == 'district'){
+                                return this.options.district + ' (' + this.options.province + ')';
+                            }else{
+                                return this.options.name;
                             }
                         }
                     }

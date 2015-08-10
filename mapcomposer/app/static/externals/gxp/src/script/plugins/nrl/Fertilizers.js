@@ -157,8 +157,16 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                     }
                 }
                 this.output.fertilizers.metadata[fertLbl] = fertMetadata;
-
             }
+            var max = -1, min = 999999;
+            for(var f in this.output.fertilizers.metadata){
+                var oldestY = this.output.fertilizers.metadata[f].dataProvincialYears.oldest;
+                var newestY = this.output.fertilizers.metadata[f].dataProvincialYears.newest;
+                max = Math.max(max, newestY);
+                min = Math.min(min, oldestY);
+            }
+            this.output.yearRangeSelector.setMaxValue(max);
+            this.output.yearRangeSelector.setMinValue(min);
         };
 
         this.comboConfigs.base.url = this.dataUrl;
@@ -171,6 +179,7 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
             minWidth: 180,
             autoScroll: true,
             frame: true,
+            buttonAlign: 'left',
             items:[
                 {   // OUTPUT TYPE radiogroup ------------------------------
                     fieldLabel: this.outputTypeText,
@@ -218,7 +227,7 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                                 ref: '../submitButton',
                                 highChartExportUrl: this.highChartExportUrl,
                                 target:this.target,
-                                form: this,
+                                form: this
                             });
 
                             var store = areaSelector.store;
@@ -228,6 +237,12 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                             this.output.syncSize();
 
                             this.output.submitButton.setDisabled(submitButtonState);
+
+                            if(this.output.submitButton.xtype == 'gxp_nrlFertilizerChartButton'){
+                                this.output.optBtn.setDisabled(this.output.submitButton.disabled);
+                            }else{
+                                this.output.optBtn.disable();
+                            }
                         },
                         scope: this
                     }
@@ -235,7 +250,7 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                     style: {
                         marginTop: '6px'
                     },
-                    fieldLabel: 'Time Range',
+                    fieldLabel: 'Data Aggregation',
                     xtype: 'radiogroup',
                     anchor: '100%',
                     autoHeight: true,
@@ -284,6 +299,7 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                         this.ownerCt.monthRangeSelector.hide();
                     }
                 },{ // YEAR compobox ---------------------------------------
+                    fieldLabel: 'Data series',
                     name: 'year',
                     disabled: false,
                     xtype: 'singleyearcombobox',
@@ -291,12 +307,14 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                     ref: 'yearSelector',
                     disabled: true
                 },{ // MONTH range selector --------------------------------
+                    fieldLabel: 'Time span',
                     ref: 'monthRangeSelector',
                     xtype: 'monthyearrangeselector',
                     anchor: '100%',
                     noCrossYear: false,
                     disabled: true
                 },{ // YEAR range selector ---------------------------------
+                    fieldLabel: 'Data series',
                     ref: 'yearRangeSelector',
                     xtype: 'yearrangeselector',
                     anchor: '100%',
@@ -332,7 +350,7 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                     }
                 },{   // FERTILIZERS grid ------------------------------------
                     xtype: 'nrl_checkboxcelectiongrid',
-                    title: 'Fertilizers',
+                    title: 'Fertilizers (tons)',
                     enableHdMenu: false,
                     hideHeaders: false,
                     hidden: false,
@@ -386,7 +404,7 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                 },{ // INFO fieldset ---------------------------------------
                     title: 'Note',
                     style: {
-                        marginTop: '12px',
+                        marginTop: '12px'
                     },
                     xtype: 'fieldset',
                     ref: 'infofieldset',
@@ -417,8 +435,16 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                 }                                         //
                                                     ////////
             },
-            buttons:[
-                {
+            buttons:['->', {
+                    iconCls:'ic_wrench',
+                    ref: '../optBtn',
+                    disabled: true,
+                    listeners: {
+                        click: function () {
+                            this.refOwner.submitButton.chartoptions.fireEvent('click');
+                        }
+                    }
+                }, {
                     url: this.dataUrl,
                     xtype: 'gxp_nrlFertilizerChartButton',
                     typeName: this.typeNameData,
@@ -534,9 +560,22 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                         }
                     }
                 }
+                if(this.submitButton.xtype == 'gxp_nrlFertilizerChartButton'){
+                    this.optBtn.setDisabled(this.submitButton.disabled);
+                }else{
+                    this.optBtn.disable();
+                }
             },
             outputMode: 'chart'
         };
+
+        if (this.helpPath && this.helpPath != ''){
+            Fertilizers.buttons.unshift({
+                xtype: 'gxp_nrlHelpModuleButton',
+                portalRef: this.portalRef,
+                helpPath: this.helpPath
+            });
+        }
 
         config = Ext.apply(Fertilizers, config || {});
         this.output = gxp.plugins.nrl.Fertilizers.superclass.addOutput.call(this, config);
@@ -581,7 +620,7 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                 var id  = Ext.get(Ext.DomQuery.select('#x-form-el-'+this.id+' div'));
                 Ext.QuickTips.register({ target:  id.elements[id.elements.length-1].id, text: t});
             }
-        }
+        };
         return o;
     }
 });

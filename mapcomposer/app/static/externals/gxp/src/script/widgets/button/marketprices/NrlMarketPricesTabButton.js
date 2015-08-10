@@ -62,8 +62,8 @@ gxp.widgets.button.NrlMarketPricesTabButton = Ext.extend(Ext.Button, {
                 case 'decade_year':
                     {
                         var refYear = parseInt(form.yearSelector.getValue());
-                        start_abs_dec_year = (refYear - 1) * 36 + 3 * form.monthRangeSelector.slider.getValues()[0] + 1; // 1st dek of the selected month
-                        end_abs_dec_year = (refYear - 1) * 36 + 3 * form.monthRangeSelector.slider.getValues()[1] + 3; // 3rd dek of the selected month
+                        start_abs_dec_year = (refYear) * 36 + 3 * form.monthRangeSelector.slider.getValues()[0] + 1; // 1st dek of the selected month
+                        end_abs_dec_year   = (refYear) * 36 + 3 * form.monthRangeSelector.slider.getValues()[1] + 3; // 3rd dek of the selected month
                     }
                     break;
                 case 'month':
@@ -250,21 +250,21 @@ gxp.widgets.button.NrlMarketPricesTabButton = Ext.extend(Ext.Button, {
                 aoi = aoiList.join(', ');
             }
             
-            info += '<span style="font-size:10px;">Region: '+ aoi + '</span><br />'
+            info += '<span style="font-size:10px;">Region: '+ aoi + '</span><br />';
 
             switch (queryParams.timerange){
                 case 'annual': {
                     var fromYear = queryParams.from_year;
                     var toYear = queryParams.to_year;
-                    info += '<span style="font-size:10px;">Years: '+ fromYear + '-' + toYear + '</span><br />'
+                    info += '<span style="font-size:10px;">Years: '+ fromYear + '-' + toYear + '</span><br />';
                 }break;
                 case 'monthly': {
                     var referenceYear = queryParams.from_year;
-                    info += '<span style="font-size:10px;">Year: '+ referenceYear + '</span><br />'
+                    info += '<span style="font-size:10px;">Year: '+ referenceYear + '</span><br />';
 
                     var fromMonth = nrl.chartbuilder.util.numberToMonthName(queryParams.from_month);
                     var toMonth = nrl.chartbuilder.util.numberToMonthName(queryParams.to_month);
-                    info += '<span style="font-size:10px;">Months: '+ fromMonth + '-' + toMonth + '</span><br />'
+                    info += '<span style="font-size:10px;">Months: '+ fromMonth + '-' + toMonth + '</span><br />';
                 }break;
             }
 
@@ -365,7 +365,7 @@ gxp.widgets.button.NrlMarketPricesTabButton = Ext.extend(Ext.Button, {
 
         var tabelTitle = 'Market Prices: ';
         if (gran_type == 'pakistan'){
-            tabelTitle += 'Pakistan'
+            tabelTitle += 'Pakistan';
         }else if (regionList.length == 1){
             tabelTitle += regionList[0];
         }else{

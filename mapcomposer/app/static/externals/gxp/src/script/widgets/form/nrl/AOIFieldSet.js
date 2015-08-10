@@ -105,6 +105,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
             tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"                            
         }    
     },
+    disabledGrantype: [],
     constructor: function(config){
         Ext.apply(this, config);
         nrl.form.AOIFieldSet.superclass.constructor.call(this, config);
@@ -118,6 +119,11 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
         );
     },
 	initComponent: function() {
+        this.grantypesState = {};
+        for (var i=0; i<this.disabledGrantype.length; i++){
+            this.grantypesState[this.disabledGrantype[i]] = true;
+        }
+
         this.currentComboConfig = Ext.apply({},this.comboConfigs.base,this.comboConfigs.province);
 		this.items = [
 			{ 
@@ -130,9 +136,9 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 				title: this.outputTypeText,
 				defaultType: 'radio', // each item will be a radio button
 				items:[
-					{boxLabel: 'Province' , name: 'areatype', inputValue: 'province' , checked: true},
-					{boxLabel: 'District', name: 'areatype', inputValue: 'district'},
-                    {boxLabel: 'Pakistan', name: 'areatype', inputValue: 'pakistan'}
+					{boxLabel: 'Province' , name: 'areatype', inputValue: 'province' , checked: true, disabled: this.grantypesState['province']},
+					{boxLabel: 'District', name: 'areatype', inputValue: 'district', disabled: this.grantypesState['district']},
+                    {boxLabel: 'Pakistan', name: 'areatype', inputValue: 'pakistan', disabled: this.grantypesState['pakistan']}
 				],
 				listeners: {
 					change: function(cbg, checkedarray){
