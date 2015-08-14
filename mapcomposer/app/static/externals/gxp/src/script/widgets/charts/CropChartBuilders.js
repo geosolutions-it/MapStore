@@ -359,6 +359,7 @@ nrl.chartbuilder.crop.composite = {
 				chartConfig.yAxis[yAxisDataIdIndexMap[item]].min = -maximums[item];
 			}
 		};
+        var chartTitleList = listVar.chartTitle.split(/\s?[,]\s?/i).sort();
 		for (var r=0; r<data.length; r++){
             //calculate avg
             var prodavg = getAvg(data[r].rows,'prod');
@@ -409,7 +410,7 @@ nrl.chartbuilder.crop.composite = {
 			var dataTitle = data[r].title.toUpperCase();
 			var commodity = listVar.commodity.toUpperCase().replace(/[']/g,'');
 
-			var chartTitle = listVar.chartTitle.split(',')[r];
+			var chartTitle = chartTitleList[r];
 
 			if(dataTitle){
 				if(dataTitle == "AGGREGATED DATA"){
@@ -423,7 +424,7 @@ nrl.chartbuilder.crop.composite = {
 					text += 'Crop Data Analysis: Composite - ' + chartTitle;
 				}
 			}
-			text += (customOpt.compositeMode != 'abs' ? '<br /><span style="font-size: 12px;">' + commodity + ' Anomalies '+ listVar.toYear + ' - (' + listVar.fromYear + "-"+ listVar.toYear + ')</span>' : '<br />' + commodity);
+			text += (customOpt.compositeMode != 'abs' ? '<br /><span>' + nrl.chartbuilder.util.toTitleCase(commodity) + ' ' + listVar.toYear + ' - (average ' + listVar.fromYear + "-"+ listVar.toYear + ')</span>' : '<br />' + commodity);
 
 			//
 			// AOI Subtitle customization
@@ -468,9 +469,9 @@ nrl.chartbuilder.crop.composite = {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
                               '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
                               '<span style="font-size:10px;">AOI: '+ aoiSubtitle /*(data[r].title.toUpperCase()=="AGGREGATED DATA" ? listVar.chartTitle : listVar.chartTitle.split(',')[r])*/ + '</span><br />' +
-                              '<span style="font-size:10px;">Commodity: '+commoditiesListStr+'</span><br />'+
+                              (customOpt.compositeMode == 'abs' ? '<span style="font-size:10px;">Commodity: '+commoditiesListStr+'</span><br />' : '') +
                               '<span style="font-size:10px;">Season: '+listVar.season.toUpperCase()+'</span><br />'+
-                              '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />'+
+                              (customOpt.compositeMode == 'abs' ? '<span style="font-size:10px;">Years: '+ listVar.fromYear + "-"+ listVar.toYear+'</span><br />' : '') +
                               (customOpt.compositeMode == 'abs'
                               	?
 	                            	'<span style="font-size:10px; color: '+opt.series.area.color+'">Area mean: '+areaavg.toFixed(2)+' '+opt.series.area.unit+'</span><br />'+
@@ -496,8 +497,9 @@ nrl.chartbuilder.crop.composite = {
                             var s = '<b>'+ this.x +'</b>';
 
                             Ext.each(this.points, function(i, point) {
+                                var percentageStr = i.percentage != undefined ? (' (' + i.percentage.toFixed(2) + '%)') : '';
                                 s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
-                                    '<span style="font-size:12px;">'+ i.y+'</span>';
+                                     '<span style="font-size:12px;">'+ i.y + percentageStr + '</span>';
                             });
 
                             return s;
@@ -748,8 +750,9 @@ nrl.chartbuilder.crop.compareRegion = {
                             var s = '<b>'+ this.x +'</b>';
 
                             Ext.each(this.points, function(i, point) {
+                                var percentageStr = i.percentage != undefined ? (' (' + i.percentage.toFixed(2) + '%)') : '';
                                 s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
-                                    '<span style="font-size:12px;">'+ i.y+'</span>';
+                                    '<span style="font-size:12px;">'+ i.y + percentageStr + '</span>';
                             });
 
                             return s;
@@ -1316,8 +1319,9 @@ nrl.chartbuilder.crop.compareCommodity = {
                             var s = '<b>'+ this.x +'</b>';
 
                             Ext.each(this.points, function(i, point) {
+                                var percentageStr = i.percentage != undefined ? (' (' + i.percentage.toFixed(2) + '%)') : '';
                                 s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
-                                    '<span style="font-size:12px;">'+ i.y.toFixed(2)+'</span>';
+                                    '<span style="font-size:12px;">'+ i.y.toFixed(2) + percentageStr + '</span>';
                             });
 
                             return s;
@@ -1382,6 +1386,10 @@ nrl.chartbuilder.crop.compareCommodity = {
 
 nrl.chartbuilder.crop.compareSources = {
     getData: function(jsonData, variable, aoiStore){
+        // useful data structure to compute yield mean for pakistan.
+        var weightsMap = {};
+        var totalsMap = {};
+
         var getRegionValue = function(grantype, store, qParam){
             var item = store.queryBy(function(r){
                 return r.data.attributes[grantype] == qParam;
@@ -1389,12 +1397,12 @@ nrl.chartbuilder.crop.compareSources = {
             if(grantype == 'district'){
                 return item.data.attributes.district + ' (' + item.data.attributes.province + ')';
             }else{
-                return item.data.attributes.province;
+                return item ? item.data.attributes.province : qParam;
             }
         };
 
         var grantype = undefined;
-        if(aoiStore.data.items[0].data.attributes.district){
+        if(aoiStore.data.items.length > 0 && aoiStore.data.items[0].data.attributes.district){
             grantype = 'district';
         }else{
             grantype = 'province';
@@ -1438,6 +1446,82 @@ nrl.chartbuilder.crop.compareSources = {
                 row = chartData.rows[timeToRowIndex[x]];
             }
             row[src] = value;
+
+            // stores the weights to compute correct value for pakistan yield.
+            if (weightsMap[properties.year] == undefined) {
+                weightsMap[properties.year] = {};
+            }
+            if (weightsMap[properties.year][chartData.region] == undefined){
+                weightsMap[properties.year][chartData.region] = {}
+            }
+            weightsMap[properties.year][chartData.region][src] = properties.area;
+        }
+
+        for (var y in weightsMap) {
+            if (weightsMap.hasOwnProperty(y)) {
+                for (var r in weightsMap[y]) {
+                    if (weightsMap[y].hasOwnProperty(r)) {
+                        for (var s in weightsMap[y][r]) {
+                            if (weightsMap[y][r].hasOwnProperty(s)) {
+                                if (totalsMap[y] == undefined) {
+                                    totalsMap[y] = {};
+                                }
+                                totalsMap[y][s] = weightsMap[y][r][s] + (totalsMap[y][s] != undefined ? totalsMap[y][s] : 0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        var getFactorForAverage = function(variable, time, region, src) {
+            if (variable != 'yield') {
+                return 1;
+            }
+            return weightsMap[time][region][src] / totalsMap[time][src];
+        };
+
+        var aggregatedData;
+        if (aoiStore.data.items.length != 1) {
+            var aggrData = {
+                region: (aoiStore.data.items.length == 0 ? 'Pakistan' : 'Region'),
+                rows: [],
+                timeToRowIndex: {},
+                variable: variable
+            };
+            for (var i=0; i<data.length; i++) {
+                for (var r=0; r<data[i].rows.length; r++) {
+                    var item = data[i].rows[r];
+
+                    var dataEntry = undefined;
+
+                    var dataEntryIndex = undefined;
+                    dataEntryIndex = aggrData.timeToRowIndex[item.time];
+
+                    if (dataEntryIndex == undefined) {
+                        dataEntry = {
+                            time: item.time
+                        };
+                        aggrData.rows.push(dataEntry);
+                        aggrData.timeToRowIndex[item.time] = aggrData.rows.length - 1;
+                    } else {
+                        dataEntry = aggrData.rows[dataEntryIndex];
+                    }
+
+                    for (var p in item) {
+                        if (item.hasOwnProperty(p) && p != 'time'){
+                            var avgFactor = getFactorForAverage(variable, item.time, data[i].region, p);
+                            dataEntry[p] = avgFactor * item[p] + (dataEntry[p] ? dataEntry[p] : 0);
+                        }
+                    }
+                }
+            }
+            aggregatedData = aggrData;
+        }
+        if (aoiStore.data.items.length == 0) {
+            return [aggregatedData];
+        } else if (aggregatedData != undefined) {
+            data.push(aggregatedData);
         }
         return data;
     },
@@ -1493,8 +1577,16 @@ nrl.chartbuilder.crop.compareSources = {
         var charts = [];
         var chartOpt = nrl.chartbuilder.crop.compareSources.getChartConfigs(chartOpts);
         var chartInfo = nrl.chartbuilder.crop.compareSources.getChartInfo(chartOpts);
+        var appendRegionList = function(str, rlist) {
+            return str +
+                '<span style="font-size:10px;">Regions: '+ rlist.map(function(region){
+                    return nrl.chartbuilder.util.toTitleCase(region);
+                }).join(', ') + '</span><br />';
+        }
 
         for(var i=0; i<data.length; i++){
+
+            var currentInfo = data[i].region == 'Region' ? appendRegionList(chartInfo, chartOpts.regionList) : chartInfo;
 
             var store = new Ext.data.JsonStore({
                 data: data[i],
@@ -1520,11 +1612,11 @@ nrl.chartbuilder.crop.compareSources = {
                     },
                     title: { // 2 line title (part of issue #104 fixing)
                         useHTML: true,
-                        text: '<p>Crop Data Analysis: Comparison by Source<br>'+ data[i].region +'</p>',
+                        text: '<p>Crop Data Analysis: Comparison by Source<br>' + chartOpts.commodity + ' - ' + data[i].region +'</p>',
                         margin: 32
                     },
                     subtitle: {
-                        text: chartInfo,
+                        text: currentInfo,
                         align: 'left',
                         verticalAlign: 'bottom',
                         useHTML: true,
@@ -1556,8 +1648,9 @@ nrl.chartbuilder.crop.compareSources = {
                             var s = '<b>'+ this.x +'</b>';
 
                             Ext.each(this.points, function(i, point) {
+                                var percentageStr = i.percentage != undefined ? (' (' + i.percentage.toFixed(2) + '%)') : '';
                                 s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
-                                     '<span style="font-size:12px;">'+ (i.y != undefined ? i.y.toFixed(2) : 'n/a') +'</span>';
+                                     '<span style="font-size:12px;">'+ (i.y != undefined ? i.y.toFixed(2) : 'n/a') + percentageStr + '</span>';
                             });
                             return s;
                         },
@@ -1578,7 +1671,7 @@ nrl.chartbuilder.crop.compareSources = {
                         }
                     }
                 },
-                info: chartInfo
+                info: currentInfo
             });
             charts.push(chart);
         }

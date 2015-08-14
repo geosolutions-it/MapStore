@@ -154,8 +154,8 @@ gxp.widgets.button.NrlCropStatusTabButton = Ext.extend(Ext.Button, {
 				// Export button disabled
 				// {
 				// 	xtype:'button',
-				// 	text: 'Export All District',
-				// 	tooltip: 'Export All District',
+				// 	text: 'Export All Districts',
+				// 	tooltip: 'Export All Districts',
 				// 	hidden: !isProvince,
 				// 	iconCls: 'icon-disk-multiple',
 				// 	handler:function(){

@@ -345,7 +345,15 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
                 }),
                 target:this.target,
                 form: this,
-                disabled:true
+                disabled:true,
+                listeners: {
+                    enable: function() {
+                        this.refOwner.optBtn.enable();
+                    },
+                    disable: function() {
+                        this.refOwner.optBtn.disable();
+                    }
+                }
         };
     },
 

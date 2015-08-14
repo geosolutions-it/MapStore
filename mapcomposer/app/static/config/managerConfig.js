@@ -9,7 +9,7 @@
         "via": "geosolutions_it",
         "hashtags": ""
     },
-    "mediaContent": "./externals/mapmanager/theme/media",
+    "mediaContent": "./externals/mapmanager/theme/media/",
     "ASSET": {
         "delete_icon": "./externals/mapmanager/theme/img/user_delete.png",
         "edit_icon": "./externals/mapmanager/theme/img/user_edit.png"
@@ -64,7 +64,7 @@
                     "baseDir": "/home/geosolutions/admin",
                     "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
                     "fileRegex": "\\.csv$",
-                    "path": "/test_csv/",
+                    "path": "/",
                     "ingestionSources": [
                         "Cropdata",
                         "Agromet",
@@ -77,32 +77,36 @@
                         "cropData": ["src"]
                     },
                     "factorUrl": "http://cip-pakistan.geo-solutions.it/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:measure_units_for_crop&outputFormat=json",
-                    "sourcesUrl": "http://cip-pakistan.geo-solutions.it/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_sources&outputFormat=json"
+                    "sourcesUrl": "http://cip-pakistan.geo-solutions.it/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_sources&outputFormat=json",
+                    "mediaContent": "./externals/mapmanager/theme/media/"
                 },
                 "ndviingestion": {
                     "xtype": "geobatch_run_local_form",
                     "baseDir": "/home/geosolutions/admin",
                     "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
                     "fileRegex": "\\.ti[f]{1,2}$",
-                    "path": "/NDVI/NDVI/"
+                    "path": "/",
+                    "mediaContent": "./externals/mapmanager/theme/media/"
                 },
                 "ndvistats": {
                     "xtype": "geobatch_run_form",
                     "baseDir": "/home/geosolutions/admin",
                     "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
                     "fileRegex": "\\.shp$",
-                    "path": "/crop_masks",
+                    "path": "/",
                     "decadConfig": {
                         "dataUrl": "http://cip-pakistan.geo-solutions.it/geoserver/ndvi/ows",
                         "layer": "ndvi:ndvi"
-                    }
+                    },
+                    "mediaContent": "./externals/mapmanager/theme/media/"
                 },
                 "createupdatelayer": {
                     "xtype": "geobatch_run_local_form",
                     "baseDir": "/home/geosolutions/admin",
                     "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
                     "fileRegex": "\\.zip$",
-                    "path": "/shapes/"
+                    "path": "/",
+                    "mediaContent": "./externals/mapmanager/theme/media/"
                 }
             },
             "actionTarget": {
@@ -136,7 +140,8 @@
             "actionTarget": {
                 "target": "north.tbar",
                 "index": 3
-            }
+            },
+            "mediaContent": "./externals/mapmanager/theme/media/"
         },
         {
             "ptype": "mxp_entity_manger",

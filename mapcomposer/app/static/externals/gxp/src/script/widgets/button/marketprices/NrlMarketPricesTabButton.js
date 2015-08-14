@@ -43,6 +43,7 @@ gxp.widgets.button.NrlMarketPricesTabButton = Ext.extend(Ext.Button, {
     text: 'Generate Table',
     queryOptions: {},
     handler: function () {
+        var tOpt = (this.refOwner.timerange.getValue().inputValue == 'monthly' ? '10-day' : 'monthly');
         var getViewParams = function(form) {
             // gets a list of selected crops
             var cropsSelected = form.crops.getSelections();
@@ -147,17 +148,17 @@ gxp.widgets.button.NrlMarketPricesTabButton = Ext.extend(Ext.Button, {
             else
                 return 'nrl:marketprices_data';
         };
-        var getPropertyName = function(granType) {
+        var getPropertyName = function(granType, time_opt) {
             if (granType == 'pakistan') {
-                return 'crop,abs_dek,value';
+                return 'crop,abs_dek,value,year,month' + (time_opt == '10-day' ? ',decade' : '');
             } else {
-                return 'province,region,crop,abs_dek,value';
+                return 'province,region,crop,abs_dek,value,year,month' + (time_opt == '10-day' ? ',decade' : '');
             }
         };
 
         var viewparams = getViewParams(this.refOwner);
         var typeName = getTypeName(this.queryOptions.gran_type);
-        var propertyName = getPropertyName(this.queryOptions.gran_type);
+        var propertyName = getPropertyName(this.queryOptions.gran_type, tOpt);
 
         var storeConf = {
             url: this.url,
@@ -214,10 +215,16 @@ gxp.widgets.button.NrlMarketPricesTabButton = Ext.extend(Ext.Button, {
     },
 
     createResultPanel: function(store, queryOptions){
+        var fileNameSuffix = '.' + this.refOwner.lblOutput.text.replace(/\s/g, '_').replace(/[\/]/g, '-');
         var gran_type = queryOptions.gran_type;
         var timeHeader = (queryOptions.timerange == 'monthly' ? 'Month' : 'Year');
         var tabPanel = Ext.getCmp(this.tabPanel);
         var regionList = this.refOwner.aoiFieldSet.selectedRegions.getValue().replace(/[']/g,'').split('\\,');
+
+        if (this.refOwner.exchangeRateRadio.getValue().inputValue == 'custom' &&
+            this.refOwner.currency.getValue() == 'usd' ) {
+            fileNameSuffix += '(' + this.refOwner.customExchangeRate.getValue() + '_PKR-USD)';
+        }
 
         var yearOrMonthName = function(value){
             return (value < 13 ? nrl.chartbuilder.util.numberToMonthName(value, true) : value);
@@ -249,7 +256,7 @@ gxp.widgets.button.NrlMarketPricesTabButton = Ext.extend(Ext.Button, {
             }else{
                 aoi = aoiList.join(', ');
             }
-            
+
             info += '<span style="font-size:10px;">Region: '+ aoi + '</span><br />';
 
             switch (queryParams.timerange){
@@ -344,8 +351,10 @@ gxp.widgets.button.NrlMarketPricesTabButton = Ext.extend(Ext.Button, {
                     handler: function(){
                         var store = this.ownerCt.ownerCt.getStore();
                         var exportParams = store.exportParams;
+                        exportParams.propertyName = exportParams.propertyName.replace(/abs_dek[,]?/,'');
                         var dwl = store.url + "?";
                         exportParams.outputFormat = "CSV";
+                        exportParams.filename = exportParams.typeName + fileNameSuffix + '.csv';
                         for (var i in exportParams){
                             dwl+=i + "=" +encodeURIComponent(exportParams[i])+"&";
                         }

@@ -495,12 +495,18 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                                      yearRangeSelector.setDisabled(true);
                                      refYearSelector.setDisabled(true);
                                 }else{
+                                    var comboData = [];
+                                    for (var i=min+2; i<=max; i++) {
+                                        comboData.push([i]);
+                                    }
                                     yearRangeSelector.setDisabled(false);
                                     yearRangeSelector.setMaxValue(max);
                                     yearRangeSelector.setMinValue(min);
+                                    yearRangeSelector.slider.setValue(0, min);
                                     refYearSelector.setDisabled(false);
                                     // adds new year value in combobox if not already present.
                                     var comboStore = refYearSelector.getStore();
+                                    comboStore.loadData(comboData, false);
                                     if (comboStore.query('year', max).length == 0){
                                         comboStore.add(new Ext.data.Record({
                                             year: max
@@ -539,7 +545,15 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
                 highChartExportUrl: this.highChartExportUrl,
                 target:this.target,
 				form: this,
-                disabled:true
+                disabled:true,
+                listeners: {
+                    disable: function() {
+                        this.refOwner.optBtn.disable();
+                    },
+                    enable: function() {
+                        this.refOwner.optBtn.enable();
+                    }
+                }
             }]
 		};
 

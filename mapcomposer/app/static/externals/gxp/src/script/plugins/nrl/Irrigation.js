@@ -195,7 +195,6 @@ gxp.plugins.nrl.Irrigation = Ext.extend(gxp.plugins.Tool, {
                 ref: 'outputType',
                 checkboxToggle: true,
                 title: this.outputTypeText,
-                autoHeight: true,
                 defaultType: 'radio', // each item will be a radio button
                 items: [{
                     boxLabel: 'Data',
@@ -367,6 +366,7 @@ gxp.plugins.nrl.Irrigation = Ext.extend(gxp.plugins.Tool, {
                 listeners: {
                     change: function(radioGroup, checked){
                         this.refOwner.aoiFieldSet.setVisible(checked.inputValue == 'supply');
+                        this.refOwner.aoiFieldSet.doLayout();
                         this.refOwner.riversGrid.setVisible(checked.inputValue == 'flow');
                         this.refOwner.uomFlow.setVisible(checked.inputValue == 'flow');
                         this.refOwner.uomSupply.setVisible(checked.inputValue == 'supply');
@@ -451,7 +451,10 @@ gxp.plugins.nrl.Irrigation = Ext.extend(gxp.plugins.Tool, {
                         this.refOwner.updateSubmitBtnState();
                        if (outputtype != 'data')
                            this.ownerCt.submitButton.initChartOpt(this.ownerCt);
-                    }
+                    },
+					show: function() {
+						this.AreaSelector.syncSize();
+					}
                 }
             }, { // RIVES grid ------------------------------------------
                 xtype: 'nrl_checkboxcelectiongrid',

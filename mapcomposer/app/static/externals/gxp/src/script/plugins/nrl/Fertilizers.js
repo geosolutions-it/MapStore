@@ -274,6 +274,7 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                                     this.setMonthlyMode();
                                 }break;
                             }
+                            this.refOwner.yearRangeSelector.slider.syncThumb();
                         }
                     },
                     // shows controllers for select a years range.
@@ -558,6 +559,8 @@ gxp.plugins.nrl.Fertilizers = Ext.extend(gxp.plugins.Tool, {
                             yearRangeSelector.setMinValue(oldest_year);
                             yearRangeSelector.setMaxValue(newest_year);
                         }
+                        yearRangeSelector.slider.setValue(0, oldest_year);
+                        yearRangeSelector.slider.setValue(1, newest_year);
                     }
                 }
                 if(this.submitButton.xtype == 'gxp_nrlFertilizerChartButton'){

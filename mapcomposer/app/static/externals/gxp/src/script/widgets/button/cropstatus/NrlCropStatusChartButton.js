@@ -45,7 +45,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
         series:{
             range:{
                 color: '#89A54E',
-                lcolor: 'rgb(207,235,148)',      
+                lcolor: 'rgb(207,235,148)',
                 fillOpacity: 0.1,
                 type: 'arearange',
                 highDataIndex: 'max',
@@ -58,7 +58,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
             max:{
                 name:"Max",
                 color: '#89A54E',
-                lcolor: 'rgb(207,235,148)',                    
+                lcolor: 'rgb(207,235,148)',
                 type: 'line',
                 dataIndex: 'max',
                 xField:'s_dec',
@@ -70,7 +70,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
             min:{
                 name:"Min",
                 color: '#89A54E',
-                lcolor: 'rgb(207,235,148)',                    
+                lcolor: 'rgb(207,235,148)',
                 type: 'line',
                 dataIndex: 'min',
                 xField:'s_dec',
@@ -82,11 +82,11 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
              opt:{
                 name:"Optimal",
                 color: '#89A54E',
-                lcolor: 'rgb(207,235,148)',                    
+                lcolor: 'rgb(207,235,148)',
                 type: 'line',
                 lineWidth:1,
 
-                dashStyle: 'dash',                    
+                dashStyle: 'dash',
                 dataIndex: 'opt',
                 xField:'s_dec',
                 marker: {
@@ -95,7 +95,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
             },
             data:{
                 color: '#AA4643',
-                lcolor: 'rgb(240,140,137)',                    
+                lcolor: 'rgb(240,140,137)',
                 type: 'line',
                 dataIndex: 'value',
                 xField:'s_dec'
@@ -109,10 +109,10 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
         var mm = today.getMonth()+1; //January is 0!
 
         var yyyy = today.getFullYear();
-        if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} var today = mm+'/'+dd+'/'+yyyy;    
+        if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} var today = mm+'/'+dd+'/'+yyyy;
         //Ext.Msg.alert("Generate Chart","Not Yet Implemented");
         //return;
-            
+
         var numRegion = [];
         var data = this.form.output.getForm().getValues();
         var fields = this.form.output.getForm().getFieldValues();
@@ -120,12 +120,12 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
 
         var district = this.form.output.singleFeatureSelector.singleSelector.selectButton.store.data.items[0].data.attributes.district;
         var province = this.form.output.singleFeatureSelector.singleSelector.selectButton.store.data.items[0].data.attributes.province;
-        
+
         var regionList = "'" + (granType == 'PROVINCE' ? province : district).toLowerCase() +"'" ;
         var crop = this.form.output.form.getValues().crop;
         numRegion.push(regionList);
-        
-        
+
+
         var season = data.season.toLowerCase();
         var year = data.year;
         var toYear = data.endYear;
@@ -145,12 +145,12 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                     factorList += "'" + factorValue + "'";
                 }else{
                     factorList += "'" + factorValue.concat("'\\,");
-                    
+
                 }
             }
         }
-        
-        
+
+
 
         var listVar = {
             numRegion: numRegion,
@@ -166,12 +166,12 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                 province: province
             }
         };
-        
+
         var store = new Ext.data.JsonStore({
             url: this.url,
              sortInfo: {field: "s_dec", direction: "ASC"},
             root: 'features',
-            
+
             fields: [{
                 name: 'factor',
                 mapping: 'properties.factor'
@@ -197,11 +197,15 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                 name: 'opt',
                 mapping: 'properties.opt'
             }]
-            
+
 		});
 		store.load({
 			callback:function(){
-				this.createResultPanel(store,listVar);
+                if (store.getTotalCount() == 0) {
+                    Ext.Msg.alert("No data","Data not available for these search criteria");
+                } else {
+                    this.createResultPanel(store,listVar);
+                }
 			},
 
 			scope:this,
@@ -211,21 +215,21 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
 				request: "GetFeature",
 				typeName: "nrl:crop_status",
 				outputFormat: "json",
-				viewparams: season == 'rabi' ? 
+				viewparams: season == 'rabi' ?
                     "year:"+ year + ";" +
                     "factor_list:"+ factorList + ";" +
                     "region_list:"+ regionList + ";" +
-                    "gran_type:" + granType + ";" +      
+                    "gran_type:" + granType + ";" +
                     "crop:" + crop.toLowerCase() + ";" +
-                    "season_flag:NOT" :  
+                    "season_flag:NOT" :
                     "year:"+ year + ";" +
                     "factor_list:"+ factorList + ";" +
                     "region_list:"+ regionList + ";" +
                     "crop:" + crop.toLowerCase() + ";" +
                     "gran_type:" + granType
 			}
-		}); 
-        
+		});
+
     },
 	createResultPanel:function(store,listVar){
 		 var tabPanel = Ext.getCmp('id_mapTab');
@@ -234,14 +238,14 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
 		var charts  = this.makeChart(store,listVar);
 		var wins = gxp.WindowManagerPanel.Util.createChartWindows(charts,listVar);
         gxp.WindowManagerPanel.Util.showInWindowManager(wins,this.tabPanel,this.targetTab,this.windowManagerOptions);
-                    
-	
+
+
 	},
 	makeChart: function(store,listVar){
-		
+
 		var grafici = [];
 		var factorStore = [];
-		
+
 		for (var i = 0;i<listVar.factorValues.length;i++){
 
             factorStore[i] = new Ext.data.JsonStore({
@@ -268,7 +272,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                     name: 'min',
                     mapping: 'properties.min'
                 }]
-                
+
             });
 
             store.queryBy(function(record,id){
@@ -276,8 +280,8 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                     factorStore[i].insert(id,record);
                 }
             });
-            
-            factorStore[i].sort("s_dec", "ASC");    
+
+            factorStore[i].sort("s_dec", "ASC");
 			var chart;
 			var unit =listVar.factorStore[i].get('unit');
             var refYear = parseInt(listVar.year);
@@ -304,21 +308,21 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
 							name: listVar.factorStore[i].get('label')
 						},
                         this.chartOpt.series.data)
-                        
+
 				],
 				height: this.chartOpt.height,
 				//width: 900,
 				store: factorStore[i],
 				animShift: true,
-				info:   "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" + 
+				info:   "<div id='list2' style='border: none; height: 100%; width: 100%' border='0'>" +
                             "<ol>" +
-                            
+
                             "<li><p><em> Source: </em>Pakistan Crop Portal</p></li>" +
                             "<li><p><em> Date: </em>" +  listVar.today +   "</p></li>" +
                             "<li><p><em> AOI: </em>" + aoiLabel +"</p></li>" +
                             "<li><p><em> Commodity: </em>" + listVar.crop  + "</p></li>" +
 							"<li><p><em> Season: </em>" + listVar.season.toUpperCase() + "</p></li>" +
-						"</ol>" +                                        
+						"</ol>" +
 						"</div>",
 				chartConfig: {
 					chart: {
@@ -332,19 +336,19 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                     },
 					title: {
 						text: chartTitle
-					},					
+					},
 					xAxis: [{
 						type: 'datetime',
 						categories: ['s_dec'],
 						tickWidth: 0,
 						gridLineWidth: 1,
-                        style: { 
+                        style: {
                             backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
-                        },                        
+                        },
 						labels: {
-                            style: { 
+                            style: {
                                 backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
-                            },                        
+                            },
                             rotation: 320,
                             y: +22,
 							formatter: function () {
@@ -354,23 +358,23 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                                     return months[this.value-1];
                                 }else{
                                     return months[this.value-1];
-                                }								
-							}							
-						}                        
+                                }
+							}
+						}
 					}],
 					yAxis: [{ // YEARS
 						title: {
 							text: listVar.factorStore[i].get('label')	+ " " + listVar.factorStore[i].get('unit'),
-                            style: { 
+                            style: {
                                 backgroundColor: Ext.isIE ? '#ffffff' : "transparent"
-                            }							
-						},                    
-						labels: {                   
+                            }
+						},
+						labels: {
 							formatter: function () {
 								return this.value;
 							}
 						}
-					}], 
+					}],
 					tooltip: {
                         formatter: function() {
                             var months = ["Nov-1","Nov-2","Nov-3","Dec-1","Dec-2","Dec-3","Jan-1","Jan-2","Jan-3","Feb-1","Feb-2","Feb-3","Mar-1","Mar-2","Mar-3","Apr-1","Apr-2","Apr-3","May-1","May-2","May-3","Jun-1","Jun-2","Jun-3","Jul-1","Jul-2","Jul-3","Aug-1","Aug-2","Aug-3","Sep-1","Sep-2","Sep-3","Oct-1","Oct-2","Oct-3"];
@@ -382,13 +386,13 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                             Ext.each(this.points, function(i, point) {
                                 s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name  +': </span>'+
                                     '<span style="font-size:12px;">'+ i.y.toFixed(2)+( unit !=null ? unit: "" )+'</span>';
-                            });                            
+                            });
                             return s;
                         },
                         shared: true,
 						crosshairs: true
 					},
-                    
+
                     subtitle: {
                         text: '<span style="font-size:10px;">Source: Pakistan Crop Portal</span><br />'+
                               '<span style="font-size:10px;">Date: '+ listVar.today +'</span><br />'+
@@ -400,13 +404,13 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
                         useHTML: true,
                         x: 30,
                         y: 16
-					}                    
+					}
 				}
 			});
 			grafici.push(chart);
-		}		
-		return grafici; 
-	}	
+		}
+		return grafici;
+	}
 });
 
 Ext.reg(gxp.widgets.button.NrlCropStatusChartButton.prototype.xtype, gxp.widgets.button.NrlCropStatusChartButton);

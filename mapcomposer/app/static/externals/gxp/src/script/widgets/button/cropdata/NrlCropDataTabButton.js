@@ -145,8 +145,8 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 				{
 					xtype: 'button',
 					hidden: !isProvince,
-					text: 'Export All District',
-					tooltip: 'Export All District',
+					text: 'Export All Districts',
+					tooltip: 'Export All Districts',
 					iconCls: 'icon-disk-multiple',
 					handler:function(){
 						var store = this.ownerCt.ownerCt.getStore();

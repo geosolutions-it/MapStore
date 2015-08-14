@@ -17,13 +17,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 Ext.ns("mxp.widgets");
 
 /**
  * Generic Resource Editor for GeoStore
  * Allow to edit and commit changes for a GeoStore Resource
- * 
+ *
  */
 mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
     iconCls:'update_manager_ic',
@@ -46,25 +46,25 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
     fileRegex: ".*",
     /** api: config[fileId]
      * ``string`` the id of the file to run.
-     * 
+     *
      * e.g. /csv/myFile.csv
      */
     fileId: null,
     /** api: config[baseDir]
      * ``string`` baseDir to concatenate to the dir from the file browser
-     * 
-     * e.g. 
-     * baseDir: "/var/data" 
+     *
+     * e.g.
+     * baseDir: "/var/data"
      * fileId from Server "/csv/myFile.csv"
      * forwarded file path: "/var/data/csv/myFile.csv"
      */
     baseDir:'',
-    
+
     events: [
         /** public event[success]
          * Fired when the flow starts successful
          *
-         * arguments: 
+         * arguments:
          * ``string`` the id of the consumer
          */
         'success',
@@ -84,7 +84,7 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
     errorText:"Error",
     runSuccessText: "The workflow has been started successfully<br/>",
     //end of i18n
-    
+
     initComponent: function() {
         var me = this;
         //TODO AUTHORIZATION
@@ -96,7 +96,7 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
             border:false,
             closable: true,
             closeAction: 'close',
-            autoWidth: true, 
+            autoWidth: true,
             // iconCls: "template_manger_ic",  // TODO: icon
             header: false,
             viewConfig: {
@@ -116,7 +116,7 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
             listeners: {
                 scope:this,
                 afterrender: function(fb){
-                    //auto select if fileId 
+                    //auto select if fileId
                     var sm = fb.fileTreePanel.getSelectionModel();
                     if(fb.refOwner.fileId){
                         var node = fb.fileTreePanel.getNodeById(fb.refOwner.fileId);
@@ -124,11 +124,11 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
                             sm.select(node);
                         }
                     }
-                    var runBtn = fb.refOwner.run; 
+                    var runBtn = fb.refOwner.run;
                     //enable or disable button
-                    
+
                     sm.on('selectionchange',function(smod,node){
-                        
+
                     var patt = new RegExp(me.fileRegex);
                     var res = patt.test(node.id);
                     if(res){
@@ -136,7 +136,7 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
                     }else{
                         runBtn.setDisabled(true);
                     }
-                    
+
                 });
                 }
             }
@@ -151,9 +151,10 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
 					autoScroll:true,
 					layout:'fit',
 					url: filebrowser.url.substring(0,filebrowser.url.lastIndexOf('/'))+'/upload',
+                    mediaContent: this.mediaContent,
 					multipart: true,
 					listeners:{
-						beforestart:function() {  
+						beforestart:function() {
 							var multipart_params =  pluploadPanel.multipart_params || {};
 							Ext.apply(multipart_params, {
 								folder: this.path
@@ -164,7 +165,7 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
 							this.fileBrowser.fileTreePanel.root.reload()
 						},
 						uploadcomplete:function() {
-							
+
 						},
 						scope: this
 					}
@@ -189,19 +190,19 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
                 var filebrowser = btn.refOwner.fileBrowser;
                 var node = filebrowser.fileTreePanel.selModel.getSelectedNode();
                 btn.refOwner.runLocal(btn.refOwner.flowId,node);
-            } 
+            }
         }];
         mxp.widgets.GeoBatchRunLocalForm.superclass.initComponent.call(this, arguments);
-       
+
     },
-    
+
 	isForm: function() {
 		return true;
 	},
-	
+
     runLocal: function(flowId,node){
         Ext.Ajax.request({
-	       url: this.geoBatchRestURL + 'flows/' + flowId +'/runlocal', 
+	       url: this.geoBatchRestURL + 'flows/' + flowId +'/runlocal',
 	       method: 'POST',
 	       headers:{
 	          'Content-Type' : 'application/xml',
@@ -211,7 +212,7 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
             xmlData:'<runInfo><file>'+ this.baseDir +node.id +'</file></runInfo>',
 	       scope: this,
 	       success: function(response, opts){
-				//var data = self.afterFind( Ext.util.JSON.decode(response.responseText) ); 
+				//var data = self.afterFind( Ext.util.JSON.decode(response.responseText) );
                 this.fireEvent('success',response);
 				this.onSuccess(response, opts);
 	       },
@@ -232,7 +233,7 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
             msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
             buttons: Ext.Msg.OK,
             icon: Ext.MessageBox.ERROR
-        });	
+        });
     },
     /**
      * private method[onSuccess]
@@ -244,9 +245,9 @@ mxp.widgets.GeoBatchRunLocalForm = Ext.extend(Ext.Panel, {
             //msg: this.runSuccessPreText + response.responseText,
             msg: this.runSuccessText,
             buttons: Ext.Msg.OK,
-            icon: Ext.MessageBox.INFO  
-        });	
+            icon: Ext.MessageBox.INFO
+        });
     }
-    
+
 });
 Ext.reg(mxp.widgets.GeoBatchRunLocalForm.prototype.xtype, mxp.widgets.GeoBatchRunLocalForm);
