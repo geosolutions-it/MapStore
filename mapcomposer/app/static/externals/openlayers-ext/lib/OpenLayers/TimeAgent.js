@@ -82,10 +82,6 @@ OpenLayers.TimeAgent = OpenLayers.Class({
             this.range = timeConfig.range;
             this.intervals = timeConfig.intervals;
             this.timeSpans = timeConfig.timeSpans;
-            for(var i=0;i<this.layers.length;i++){
-                var layer = this.layers[i];
-                layer.calculateInRange = OpenLayers.Function.bind(this.calculateLayerInRange, this, layer);
-            }
         }
     },
 
@@ -96,7 +92,12 @@ OpenLayers.TimeAgent = OpenLayers.Class({
     },
 
     onTick : function() {
-        //Implemented By Subclasses
+        if(this.layers){
+            for (var i = this.layers.length - 1; i >= 0; i--) {
+                var lyr=this.layers[i]
+                lyr.display(this.calculateInTemporalRange(lyr));
+            }
+        }
     },
 
     addLayer : function(layer) {
@@ -116,7 +117,6 @@ OpenLayers.TimeAgent = OpenLayers.Class({
             this.intervals = timeConfig.intervals;
             this.timeSpans = timeConfig.timeSpans;
         }
-        layer.calculateInRange = OpenLayers.Function.bind(this.calculateLayerInRange, this, layer);
     },
 
     removeLayer : function(layer) {
@@ -239,16 +239,15 @@ OpenLayers.TimeAgent = OpenLayers.Class({
         return intervalPeriod;
     },
     
-    calculateLayerInRange: function(layer){
-        var inRange = OpenLayers.Layer.prototype.calculateInRange.call(layer);
-        if(inRange){ 
-            var time = this.currentTime || this.timeManager.currentTime;
-            if(time){
-                var range = [layer.metadata.timeInterval[0],layer.metadata.timeInterval[layer.metadata.timeInterval.length-1]];
-                if(time<range[0] || time>range[1]){
-                    inRange = false;
-                }
+    calculateInTemporalRange: function(layer){
+        var time = this.currentTime || this.timeManager.currentTime;
+        var inRange = true;
+        if(time){
+            var range = [layer.metadata.timeInterval[0],layer.metadata.timeInterval[layer.metadata.timeInterval.length-1]];
+            if(time<range[0] || time>range[1]){
+                inRange = false;
             }
+            layer.inTemporalRange = inRange;
         }
         return inRange;
     },

@@ -1,57 +1,7 @@
-/** 
- * Copyright (c) 2006-2011 by OpenLayers Contributors (see authors.txt for 
+/* Copyright (c) 2006-2011 by OpenLayers Contributors (see authors.txt for 
  * full list of contributors). Published under the Clear BSD license.  
  * See http://svn.openlayers.org/trunk/openlayers/license.txt for the
- * full text of the license. 
- */
-
-//
-// Fix for IE7 and IE8
-//
-if (!Date.prototype.toISOString) {
-	Date.prototype.toISOString = function() {
-		function pad(n) { return n < 10 ? '0' + n : n }
-		return this.getUTCFullYear() + '-'
-			+ pad(this.getUTCMonth() + 1) + '-'
-			+ pad(this.getUTCDate()) + 'T'
-			+ pad(this.getUTCHours()) + ':'
-			+ pad(this.getUTCMinutes()) + ':'
-			+ pad(this.getUTCSeconds()) + 'Z';
-	};
-}
-
-//
-// See http://stackoverflow.com/questions/11020658/javascript-json-date-parse-in-ie7-ie8-returns-nan
-//
-var D= new Date('2011-06-02T09:34:29+02:00');
-if(!D || +D!== 1307000069000){
-	Date.fromISO= function(s){
-		var day, tz,
-		rx=/^(\d{4}\-\d\d\-\d\d([tT][\d:\.]*)?)([zZ]|([+\-])(\d\d):(\d\d))?$/,
-		p= rx.exec(s) || [];
-		if(p[1]){
-			day= p[1].split(/\D/);
-			for(var i= 0, L= day.length; i<L; i++){
-				day[i]= parseInt(day[i], 10) || 0;
-			};
-			day[1]-= 1;
-			day= new Date(Date.UTC.apply(Date, day));
-			if(!day.getDate()) return NaN;
-			if(p[5]){
-				tz= (parseInt(p[5], 10)*60);
-				if(p[6]) tz+= parseInt(p[6], 10);
-				if(p[4]== '+') tz*= -1;
-				if(tz) day.setUTCMinutes(day.getUTCMinutes()+ tz);
-			}
-			return day;
-		}
-		return NaN;
-	}
-}else{
-	Date.fromISO= function(s){
-		return new Date(s);
-	}
-}   
+ * full text of the license. */
 
 /**
  * requires OpenLayers/Control.js
@@ -92,7 +42,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
      *      property indicating the control reset due to running in looped mode
      *      (true) or the reset function call (false)
      */
-    EVENT_TYPES: ["beforetick","tick","play","stop","reset","currenttime","rangemodified"],
+    EVENT_TYPES: ["beforetick","tick","play","stop","reset","rangemodified"],
 
 
     /**
@@ -114,15 +64,6 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
      *     Default : 1.
      */
 	step:1,
-    
-    /**
-     * APIProperty: stepType
-     * {Number} The type of step. 
-     *     Must be one of:
-     *     "next" - call incrementTime function
-     *     "back" - call decrementTime function
-     */
-    stepType: "next",
 	
     /**
      * APIProperty: range
@@ -151,7 +92,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
      *     Note: You can use an ISO 8601 formated string (see 
      *     http://tools.ietf.org/html/rfc3339) or Date objects.
      */
-    timeSpans:null,
+    timespans:null,
     
 	/**
 	 * APIProperty: frameRate
@@ -236,7 +177,6 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
         else if(this.range) {
             if(!(this.range[0] instanceof Date)) {
                 this.range[0] = OpenLayers.Date.parse(this.range[0]);
-                //OpenLayers.Util.getElement('olTime').innerHTML = this.range[0];
             }
             if(!(this.range[1] instanceof Date)) {
                 this.range[1] = OpenLayers.Date.parse(this.range[1]);
@@ -347,19 +287,12 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             }
             this.events.triggerEvent('rangemodified');
         }
-        /*if(this.range && !this.currentTime) {
-            this.currentTime = new Date(this.range[(this.step > 0) ? 0 : 1].getTime());
+        if(this.range && !this.currentTime) {
+            this.setTime(new Date(this.range[(this.step > 0) ? 0 : 1].getTime()));
         } else if(this.currentTime){
-			//force a tick call and maybe a tick event
-			this.setTime(this.currentTime);
-		}*/
-		
-		if(this.range && !this.currentTime) {
-			this.setTime(new Date(this.range[(this.step > 0) ? 0 : 1].getTime()));
-		} else if(this.currentTime){
-			//force a tick call and maybe a tick event
-			this.setTime(this.currentTime);
-		}
+            //force a tick call and maybe a tick event
+            this.setTime(this.currentTime);
+        }
         //set map agents for layer additions and removal
         this.map.events.on({
             'addlayer' : this.onAddLayer,
@@ -445,33 +378,29 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
         var lyr = evt.layer;
         if(lyr.metadata.timeInterval) {
             var lyrIntervals = lyr.metadata.timeInterval;
-			
-			if(this.layers){
-				var lyrIndex = OpenLayers.Util.indexOf(this.layers, lyr);
-				this.layers.splice(lyrIndex, 1);
-				
-				this.removeAgentLayer(lyr);
+            var lyrIndex = OpenLayers.Util.indexOf(this.layers, lyr);
+            this.layers.splice(lyrIndex, 1);
+            this.removeAgentLayer(lyr);
 
-				if(lyrIntervals.length && lyrIntervals[0] instanceof Date && !this.fixedIntervals) {
-					this.intervals = this.buildIntervals(this.timeAgents);
-					if(this.intervals) {
-						if(this.intervals[0] < this.range[0] || this.intervals[1] > this.range[1]) {
-							this.setRange([Math.max(this.intervals[0], this.range[0]), Math.min(this.intervals[1], this.range[1])]);
-						}
-					}
-				}
-				else if(!this.fixedRange) {
-					if(this.timeSpans) {
-						if(lyrIntervals.start < this.range[0] || lyrIntervals.end > this.range[1]) {
-							this.setRange([Math.max(lyrIntervals.start, this.range[0]), Math.min(lyrIntervals.end, this.range[1])]);
-						}
-					}
-				}
-				if(!this.fixedRange && !this.fixedIntervals && !this.intervals && !this.timeSpans) {
-					//we have NO time layers
-					this.setRange([null, null]);
-				}
-			}
+            if(lyrIntervals.length && lyrIntervals[0] instanceof Date && !this.fixedIntervals) {
+                this.intervals = this.buildIntervals(this.timeAgents);
+                if(this.intervals) {
+                    if(this.intervals[0] < this.range[0] || this.intervals[1] > this.range[1]) {
+                        this.setRange([Math.max(this.intervals[0], this.range[0]), Math.min(this.intervals[1], this.range[1])]);
+                    }
+                }
+            }
+            else if(!this.fixedRange) {
+                if(this.timeSpans) {
+                    if(lyrIntervals.start < this.range[0] || lyrIntervals.end > this.range[1]) {
+                        this.setRange([Math.max(lyrIntervals.start, this.range[0]), Math.min(lyrIntervals.end, this.range[1])]);
+                    }
+                }
+            }
+            if(!this.fixedRange && !this.fixedIntervals && !this.intervals && !this.timeSpans) {
+                //we have NO time layers
+                this.setRange([null, null]);
+            }
         }
     },
     /**
@@ -493,61 +422,22 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             }
         }
         else {
-           if(this.stepType == "next"){
-            
-                this.incrementTime();
-                
-            }else if(this.stepType == "back"){
-                
-                if(this.currentTime <= this.range[0]) {
-                    
-                    Ext.MessageBox.show({
-                        title: "Attention",
-                        msg: "Has reached the beginning of the cruise",
-                        buttons: Ext.Msg.OK,
-                        icon: Ext.MessageBox.WARNING
-                    });
-                  
-                }else{
-                    this.decrementTime();                
-                }
-                
-            }else{
-                this.incrementTime();
-            }
-            
+            this.incrementTime();
         }
         //test that we have reached the end of our range
         if(this.currentTime > this.range[1] || this.currentTime < this.range[0]) {
             //loop in looping mode
             if(this.loop) {
                 this.clearTimer();
-                this.clearTooltipTimer();
-                this.reset(true);                
+                this.reset(true);
                 this.play();
             }
             //stop in normal mode
             else {
-                if(this.stepType !== "back"){                    
-                    this.clearTimer();
-                    this.clearTooltipTimer();
-                    this.reset(true);                
-                }else{
-                    /*Ext.MessageBox.show({
-                        title: "Attention",
-                        msg: "Has reached the beginning of the cruise",
-                        buttons: Ext.MessageBox.CANCEL,
-                        animEl: 'mb4',
-                        icon: Ext.MessageBox.WARNING,
-                        scope: this
-                    });*/
-                    this.clearTimer();
-                    this.clearTooltipTimer();
-                    this.reset(true);   
-                    /*this.events.triggerEvent('stop', {
-                        'rangeExceeded' : true
-                    });*/                    
-                }
+                this.clearTimer();
+                this.events.triggerEvent('stop', {
+                    'rangeExceeded' : true
+                });
             }
         }
         else {
@@ -559,11 +449,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             else {
                 var intervalId, checkCount = 0, maxDelays = this.maxFrameDelay * 4;
                 this.clearTimer();
-                this.clearTooltipTimer();
-                if (this.toolbar.tooltip){
-                    this.toolbar.tooltip.body.dom.innerHTML = "Please Wait, loading...";
-                }    
-                intervalId = setInterval(OpenLayers.Function.bind(function() {                  
+                intervalId = setInterval(OpenLayers.Function.bind(function() {
                     var doTick = this.canTickCheck() || checkCount++ >= maxDelays;
                     if(checkCount > maxDelays) {
                         //console.debug('ADVANCED DUE TO TIME LIMIT');
@@ -575,31 +461,10 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
                         });
                         if(!this._stopped){
                             this.clearTimer();
-                            this.clearTooltipTimer();
-                            this.timeInterval = this.frameRate*1000;
-
-                            if (this.frameRate == 1){
-                                this.timeToRefresh = this.timeInterval;
-                            }else{
-                                this.timeToRefresh = this.timeInterval-1000;    
-                            }
-                            
-                            if (this.toolbar.tooltip){
-                                this.toolbar.tooltip.body.dom.innerHTML = 'next refresh in ' + this.timeInterval/1000 + ' seconds';
-                            }                                  
-
-                            var pressed = this.toolbar.btnFastforward.pressed;
-                            if(pressed){
-                                this.tooltipTimer = setInterval(OpenLayers.Function.bind(function(){this.countDown()}, this), 1000/2);  
-                                this.timer = setInterval(OpenLayers.Function.bind(this.tick, this), (1000/2) * this.frameRate);                                                              
-                            }else{
-                                this.tooltipTimer = setInterval(OpenLayers.Function.bind(function(){this.countDown()}, this), 1000);
-                                this.timer = setInterval(OpenLayers.Function.bind(this.tick, this), 1000 * this.frameRate);  
-                            }
-                            
+                            this.timer = setInterval(OpenLayers.Function.bind(this.tick, this), 1000 / this.frameRate);
                         }
                     }
-                }, this), 1000 * (this.frameRate / 4)); //setta il tempo di attesa se il layer non si è ancora caricato prima di riaggiornare il tempo e fare una nuova MergeNewParameter
+                }, this), 1000 / (this.frameRate * 4));
             }
         }
     },
@@ -611,77 +476,22 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
 	 play:function() {
         //ensure that we don't have multiple timers running
         this.clearTimer();
-        this.clearTooltipTimer();
         //start playing
         if(this.events.triggerEvent('play') !== false) {
             delete this._stopped;
             this.tick();
             this.clearTimer(); //no seriously we really really only want 1 timer
-            this.clearTooltipTimer();
-            
-            //countdown for Time Animator
-            var pressed = this.toolbar.btnFastforward.pressed;
-
-            this.timeInterval = this.frameRate*1000;
-            
-            if (this.frameRate == 1){
-                this.timeToRefresh = this.timeInterval;
-            }else{
-                this.timeToRefresh = this.timeInterval-1000;    
-            }
-            
-            this.toolbar.tooltip = new Ext.ToolTip({
-                                target: 'sync-button',
-                                html:  'next refresh in ' + this.timeInterval/1000 + ' seconds',
-                                title: 'Working interval: ' + Ext.util.Format.date(this.range[0], "d/m/Y") + ' to ' 
-                                            + Ext.util.Format.date(this.range[1], "d/m/Y" ),
-                                autoHide: false,
-                                draggable:true,
-                                width: 350,
-                                height: 50,
-                                anchor: 'bottom',
-                                closable: true
-                            });
-                            
-            this.toolbar.tooltip.showAt( [ this.toolbar.getEl().getX()-50,  this.toolbar.getEl().getY()+50 ]);
-            
-            if(pressed){
-                this.timer = setInterval(OpenLayers.Function.bind(this.tick, this), (1000/2) * this.frameRate);
-                this.tooltipTimer = setInterval(OpenLayers.Function.bind(function(){this.countDown(pressed)}, this), 1000/2);                        
-            }else{
-                this.timer = setInterval(OpenLayers.Function.bind(this.tick, this), 1000 * this.frameRate);
-                this.tooltipTimer = setInterval(OpenLayers.Function.bind(function(){this.countDown(pressed)}, this), 1000);                    
-            }                   
+            this.timer = setInterval(OpenLayers.Function.bind(this.tick, this), 1000 / this.frameRate);
         }
     },
-	/**
-	 * APIMethod: countDown
-	 * CountDown for the Time Animator
-	 */    
-    countDown:function(pressed){        
-        if (this.toolbar.tooltip && this.toolbar.tooltip.getEl()){
-            this.toolbar.tooltip.update(  'next refresh in ' +this.timeToRefresh/1000 + ' seconds' );
-        }
-
-        this.timeToRefresh -= 1000;
-
-        if ( this.timeToRefresh === 0){
-            this.timeToRefresh = this.timeInterval;
-        }        
-    },    
 	/**
 	 * APIMethod: stop
 	 * Stops the time-series animation. Fires the 'stop' event.
 	 */
 	stop:function(){
 		this.clearTimer();
-        this.clearTooltipTimer();
 		this.events.triggerEvent('stop',{'rangeExceeded':false});
 		this._stopped=true;
-        if (this.toolbar.tooltip){
-            this.toolbar.tooltip.destroy();
-            this.toolbar.tooltip = null;
-        }        
 	},
 	/**
 	 * APIMethod: setRange
@@ -709,12 +519,9 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             var newTime = new Date(this.range[(this.step > 0) ? 0 : 1].getTime());
             this.setTime(newTime);
         }
-        //#######
-        //commentato l'if per consentire il settaggio dei valori dello slide cambiando lo step e le unità anche se i valore di range non sono cambiati
-        //#######
-        //if(this.range[0].getTime() != oldRange[0] || this.range[1].getTime() != oldRange[1]) {
+        if(this.range[0].getTime() != oldRange[0] || this.range[1].getTime() != oldRange[1]) {
             this.events.triggerEvent("rangemodified");
-        //}
+        }
     },
 	/**
 	 * APIMethod:setStart
@@ -758,7 +565,7 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
      * time - {Date|String} UTC current animantion time/date using either a
      *     Date object or ISO 8601 formatted string.
      */ 
-     setTime:function(time,curTime) {
+     setTime:function(time) {
         if(!( time instanceof Date)) {
             time = OpenLayers.Date.parse(time);
         }
@@ -783,12 +590,9 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
         }
         else {
             this.currentTime = time;
-            this.curTime = curTime;
-            //OpenLayers.Util.getElement('olTime').innerHTML = time;
         }
         this.events.triggerEvent('tick', {
-            'currentTime' : this.currentTime,
-            'curTime' : this.curTime
+            'currentTime' : this.currentTime
         });
     },
     /**
@@ -796,49 +600,13 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
      * Sets the control's playback frameRate (ticks/second)
      * Parameters: {Number} rate - the ticks/second rate
      */
-    setFrameRate: function(rate,pressed){
+    setFrameRate: function(rate){
         var playing = !!this.timer;
         this.clearTimer();
-        this.clearTooltipTimer();        
         this.frameRate = rate;
-
-        
         if(playing){
             //this.tick();
-            if (this.toolbar.tooltip){
-                this.toolbar.tooltip.destroy();
-                this.toolbar.tooltip = null;
-            }    
-            this.timeInterval = this.frameRate*1000;
-            
-            if (this.frameRate == 1){
-                this.timeToRefresh = this.timeInterval;
-            }else{
-                this.timeToRefresh = this.timeInterval-1000;    
-            }
-            
-            this.toolbar.tooltip = new Ext.ToolTip({
-                                target: 'sync-button',
-                                html:  'next refresh in ' + this.timeInterval/1000 + ' seconds',
-                                title: 'Working interval: ' + Ext.util.Format.date(this.range[0], "d/m/Y") + ' to ' 
-                                            + Ext.util.Format.date(this.range[1], "d/m/Y" ),
-                                autoHide: false,
-                                draggable:true,
-                                width: 350,
-                                height: 50,
-                                anchor: 'bottom',
-                                closable: true
-                            });
-            this.toolbar.tooltip.showAt( [ this.toolbar.getEl().getX()-50,  this.toolbar.getEl().getY()+50 ]);
-            
-            if(pressed){
-                this.timer = setInterval(OpenLayers.Function.bind(this.tick, this), (1000/2) * this.frameRate);
-                this.tooltipTimer = setInterval(OpenLayers.Function.bind(function(){this.countDown(pressed)}, this), 1000/2);                        
-            }else{
-                this.timer = setInterval(OpenLayers.Function.bind(this.tick, this), 1000 * this.frameRate);
-                this.tooltipTimer = setInterval(OpenLayers.Function.bind(function(){this.countDown(pressed)}, this), 1000);                    
-            }
-      
+            this.timer = setInterval(OpenLayers.Function.bind(this.tick, this), 1000 / this.frameRate);
         }
     },
     /**
@@ -851,7 +619,6 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
      */ 
      reset:function(looped) {
         this.clearTimer();
-        this.clearTooltipTimer();
         var newTime = new Date(this.range[(this.step > 0) ? 0 : 1].getTime());
         this.setTime(newTime);
         this.events.triggerEvent('reset', {
@@ -859,39 +626,6 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
         });
         return this.currentTime;
     },
-    /**
-     * APIMethod:currenttime
-     * Set the time to the animation current UTC time. Fires the 'currenttime' event.
-     * 
-     * Parameters: {Boolean} looped - trigger reset event with looped = true
-     * Returns:
-     * {Date} the control's currentTime
-     */ 
-     currenttime:function(looped) {
-        this.clearTimer();
-        this.clearTooltipTimer();
-        
-        var d = new Date();        
-        var UTC = d.getUTCFullYear() + '-'
-		            + this.pad(d.getUTCMonth() + 1) + '-'
-		            + this.pad(d.getUTCDate()) + 'T'
-                    
-		            + this.pad(d.getUTCHours()) + ':'
-		            + this.pad(d.getUTCMinutes()) + ':'
-		            + this.pad(d.getUTCSeconds()) + 'Z';
-
-        currentTimeUTC = Date.fromISO( UTC ); 
-        
-        var newTime = new Date(currentTimeUTC.getTime());
-        this.setTime(newTime,"curTime");
-        this.events.triggerEvent('reset', {
-            'looped' : !!looped
-        });
-        return this.currentTime;
-    },
-    pad: function (n){
-        return n < 10 ? '0' + n : n 
-    },      
     /**
      * APIMethod: incrementTime
      * Moves the current animation time forward by the specified step & stepUnit
@@ -903,35 +637,10 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
      incrementTime:function(step,stepUnit) {
         var step = step || this.step;
         var stepUnit = stepUnit || this.units;
-        if (stepUnit == "Days"){
-            var newTime = parseFloat(this.currentTime['getUTCDate']()) + parseFloat(step);
-            this.currentTime['setUTCDate'](newTime);
-        }else{
-            var newTime = parseFloat(this.currentTime['getUTC'+stepUnit]()) + parseFloat(step);
-            this.currentTime['setUTC'+stepUnit](newTime);    
-        }
+        var newTime = parseFloat(this.currentTime['getUTC'+stepUnit]()) + parseFloat(step);
+        this.currentTime['setUTC'+stepUnit](newTime);
     },
-    
-    /**
-     * APIMethod: decrementTime
-     * Moves the current animation time backward by the specified step & stepUnit
-     *
-     * Parameters:
-     * step - {Number}
-     * stepUnit - {<OpenLayers.TimeUnit>}
-     */ 
-     decrementTime:function(step,stepUnit) {
-        var step = step || this.step;
-        var stepUnit = stepUnit || this.units;
-        if (stepUnit == "Days"){
-            var newTime = parseFloat(this.currentTime['getUTCDate']()) - parseFloat(step);
-            this.currentTime['setUTCDate'](newTime);
-        }else{
-            var newTime = parseFloat(this.currentTime['getUTC'+stepUnit]()) - parseFloat(step);
-            this.currentTime['setUTC'+stepUnit](newTime);    
-        }
-    },
-    
+
 	/**
 	 * Method: buildTimeAgents
 	 * Creates the controls "managed" by this control.
@@ -1101,13 +810,12 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
                     return a.resolution.step - b.resolution.step;
                 }
             });
-            // Commentato perchè sovrascrive le impostazioni della configurazione
-            //this.setRange([timeSpans[0].start, timeSpans[0].end]);
-            //this.units = timeSpans[0].resolution.units;
-            //this.step = timeSpans[0].resolution.step;
+            this.setRange([timeSpans[0].start, timeSpans[0].end]);
+            this.units = timeSpans[0].resolution.units;
+            this.step = timeSpans[0].resolution.step;
         }
         else if (this.intervals) {
-            this.snapToIntervals = false
+            this.snapToIntervals = true;
         }
         else {
             //guess based on range, keep step at 1
@@ -1195,12 +903,6 @@ OpenLayers.Control.TimeManager = OpenLayers.Class(OpenLayers.Control, {
             this.timer = null;
         }
     },
-    clearTooltipTimer: function() {
-        if(this.tooltipTimer) {
-            clearInterval(this.tooltipTimer);
-            this.tooltipTimer = null;
-        }
-    },    
 	
 	CLASS_NAME:'OpenLayers.Control.TimeManager'
 });
@@ -1209,7 +911,7 @@ OpenLayers.TimeUnit = {
 	SECONDS:'Seconds',
 	MINUTES:'Minutes',
 	HOURS:'Hours',
-	DAYS:'Days',
+	DAYS:'Date',
 	MONTHS:'Month',
 	YEARS:'FullYear'
 };

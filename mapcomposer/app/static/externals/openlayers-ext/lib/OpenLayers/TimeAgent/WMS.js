@@ -84,19 +84,19 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
 
     onTick : function(evt) {
         this.currentTime = evt.currentTime || this.timeManager.currentTime;
+        OpenLayers.TimeAgent.prototype.onTick.call(this);
         //console.debug('CurrentTime:' + this.currentTime.toString());
-        var inrange=true;  //needed to allow incremental intervals TODO do it in a better way
-        //var inrange = this.currentTime <= this.range[1] && this.currentTime >= this.range[0];
-        //this is an inrange flag for all the entire time range of layers managed by
-        //this time agent and not a specific layer
+        var inrange = this.currentTime <= this.range[1] && this.currentTime >= this.range[0];
+        //this is an inrange flag for all the entire value range of layers managed by
+        //this dimension agent and not a specific layer
         if(inrange) {
             var validLayers = OpenLayers.Array.filter(this.layers, function(lyr) {
-                return lyr.visibility && lyr.calculateInRange();
+                return lyr.visibility && lyr.inTemporalRange;
             });
             this.loadQueue = validLayers.length;
             
             this.canTick = !this.loadQueue;
-            //console.debug('canTick:FALSE\nQueueCount:' + this.loadQueue);
+            //console.debug('WMS Agent QueueCount:' + this.loadQueue);
             
             for(var i=0;i<validLayers.length;i++){
                 this.applyTime(validLayers[i], this.currentTime);
@@ -110,11 +110,7 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
             if(this.rangeMode == 'range') {
                 minTime = new Date(time.getTime());
                 if(this.timeManager.units) {
-                    if (this.timeManager.units == "Days"){
-                        minTime['setUTCDate'](time['getUTCDate']() - this.rangeInterval);
-                    }else{
-                        minTime['setUTC'+this.timeManager.units](time['getUTC'+this.timeManager.units]() - this.rangeInterval);
-                    }
+                    minTime['setUTC'+this.timeManager.units](time['getUTC'+this.timeManager.units]() - this.rangeInterval);
                 }
             }
             else {
@@ -148,12 +144,6 @@ OpenLayers.TimeAgent.WMS = OpenLayers.Class(OpenLayers.TimeAgent, {
         layer.mergeNewParams({
             time : isotime
         });
-	
-    	/*
-        if(!layer.visiblity) {
-            layer.setVisibility(true);
-        }
-	*/
     },
 
     /**

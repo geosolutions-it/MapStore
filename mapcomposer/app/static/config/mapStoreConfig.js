@@ -1,6 +1,6 @@
 {
    "scaleOverlayMode": "basic",
-   "gsSources":{ 		
+   "gsSources":{
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
 		}, 
@@ -26,7 +26,6 @@
 	"map": {
 		"projection": "EPSG:900913",
 		"units": "m",
-		"center": [1250000.000000, 5370000.000000],
 		"zoom":5,
 		"maxExtent": [
 			-20037508.34, -20037508.34,
@@ -179,6 +178,9 @@
 			"useTabPanel": true,
 			"toggleGroup": "toolGroup",
 			"actionTarget": {"target": "paneltbar", "index": 20}
+		}, {
+			"ptype": "gxp_playback",
+			"outputTarget": "map"
 		}
 	]
 }

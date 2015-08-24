@@ -28,7 +28,6 @@
 				"group": "background"
 			}
 		],
-        "center": [1250000.000000, 5370000.000000],
         "zoom": 5
     },
 	
@@ -48,6 +47,9 @@
 			"ptype": "gxp_geolocationmenu",
 			"actionTarget": {"target": "paneltbar", "index": 18},
 			"toggleGroup": "toolGroup"
+		}, {
+			"ptype": "gxp_playback",
+			"outputTarget": "map"
 		}
 	],
 	

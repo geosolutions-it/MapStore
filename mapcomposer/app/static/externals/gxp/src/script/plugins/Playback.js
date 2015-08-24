@@ -62,23 +62,8 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
      *  output and action(s).
      */
     actionTarget: null,
-	
-	/**
-	 * api config[dynamicRange]
-     */
-    dynamicRange:false,
-	
-    /**
-     * api config[playbackMode]
-	 * Playback mode is one of: "track","cumulative","ranged",??"decay"??
-     * from Openlayers.TimeAgent tool will be set as following: 
-     *      "ranged" - use a value range for time 
-     *      "cumulative" - use a range from the start time to the current time
-     *      "track": only use single value time parameters 
-      */
-	playbackMode:"ranged",
-    
-	/** api: config[outputTarget]
+
+    /** api: config[outputTarget]
      *  ``Object`` or ``String`` Where to place the tool's output (widgets.PlaybackPanel)
      *  Use 'map' as the default to display a transparent floating panel over the map.
      */
@@ -89,27 +74,17 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
     constructor: function(config) {
         gxp.plugins.Playback.superclass.constructor.apply(this, arguments);
     },
-	
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
     addOutput: function(config){
         delete this._ready;
-		
-		//
-        // Set maxFrameDelay to advance frame even if the layer is not loaded
-		//
-		OpenLayers.Control.TimeManager.prototype.maxFrameDelay = (this.target.tests && this.target.tests.dropFrames) ? 10 : NaN;
+        OpenLayers.Control.TimeManager.prototype.maxFrameDelay = 
+            (this.target.tests && this.target.tests.dropFrames) ? 10 : NaN;
         config = Ext.applyIf(config || this.outputConfig || {}, {
             xtype: 'gxp_playbacktoolbar',
             mapPanel:this.target.mapPanel,
             playbackMode:this.playbackMode,
-            showIntervals: this.showIntervals,
-            timeFormat:this.timeFormat,
-            labelButtons:this.labelButtons,
-            settingsButton:this.settingsButton,
-            rateAdjuster:this.rateAdjuster,
-            dynamicRange:this.dynamicRange,
             looped:this.looped,
             autoPlay:this.autoStart,
             optionsWindow: new Ext.Window({
@@ -136,12 +111,8 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
         var toolbar = gxp.plugins.Playback.superclass.addOutput.call(this,config); 
         this.relayEvents(toolbar,['timechange','rangemodified']);
         this.playbackToolbar = toolbar;
-		
-		//
-        // Firing the 'rangemodified' event to indicate that the 
-		// toolbar has been created with temporal layers
-        //
-		if(toolbar.control.layers){
+        //firing the 'rangemodified' event to indicate that the toolbar has been created with temporal layers
+        if(toolbar.control.layers){
             this.fireEvent('rangemodified',this,toolbar.control.range);
         }
         return toolbar;
@@ -159,39 +130,13 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
             }
         });
 
-		var self = this;
         this.target.on('ready',function() {
             this._ready += 1;
             if (this._ready > 1) {
                 this.addOutput();
-				self.target.fireEvent("timemanager");
-                self.getTimeManager();
             }
         }, this);
     },
-    getTimeManager: function(){
-	    if ( ! this.timeManager ){ // if it is not initialized
-			var timeManagers = this.target.mapPanel.map.getControlsByClass('OpenLayers.Control.TimeManager');
-			if (timeManagers.length <= 0){
-				console.error('Error: no TimeManager found');
-				return;
-			}
-			this.timeManager = timeManagers[0];
-			var self = this;
-			// listen to play events
-			this.timeManager.events.register('play', this, 
-					function(){ 
-                        //call function in composer.js to disable al functionality
-                        //this.target.disableAllFunc();  
-					});	
-			this.timeManager.events.register('stop', this, 
-					function(){ 
-                        //call function in composer.js to disable al functionality
-                        //this.target.enableAllFunc();  
-					});	
-	    }
-		return this.timeManager;
-    },    
     /** api: method[setTime]
      *  :arg time: {Date}
      *  :return: {Boolean} - true if the time could be set to the supplied value
@@ -247,11 +192,8 @@ gxp.plugins.Playback = Ext.extend(gxp.plugins.Tool, {
                     config.outputConfig.controlConfig.timeAgents = agentConfigs;
                 }
             }
-			
-			//
-            // Get rid of 2 instantiated objects that will cause problems
-            //
-			delete config.outputConfig.mapPanel;
+            //get rid of 2 instantiated objects that will cause problems
+            delete config.outputConfig.mapPanel;
             delete config.outputConfig.optionsWindow;
         }
         return config;

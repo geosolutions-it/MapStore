@@ -49,7 +49,6 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
     listOnlyText:'Use Exact List Values Only',
     stepText:'Animation Step',
     unitsText:'Animation Units',
-    frameRateText:'Animation Delay (s)',
     noUnitsText:'Snap To Time List',
     loopText:'Loop Animation',
     reverseText:'Reverse Animation',
@@ -60,7 +59,7 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
      */
     initComponent: function() {
         var config = Ext.applyIf(this.initialConfig,{
-            //minHeight:400,
+            minHeight:400,
             minWidth:275,
             ref:'optionsPanel',
             items:[
@@ -69,8 +68,6 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
                 layout: 'form',
                 autoScroll: true,
                 ref:'form',
-                border:false,
-                bodyStyle: "padding: 10px",
                 labelWidth:10,
                 defaultType: 'textfield',
                 items: [{
@@ -83,7 +80,6 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
                         text: this.rangeChoiceText
                     }, {
                         fieldLabel: this.startText,
-                        //format: "d-m-Y",  
                         listeners: {
                             'select': this.setStartTime,
                             'change': this.setStartTime,
@@ -92,7 +88,6 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
                         ref: '../../rangeStartField'
                     }, {
                         fieldLabel: this.endText,
-                        //format: "d-m-Y",  
                         listeners: {
                             'select': this.setEndTime,
                             'change': this.setEndTime,
@@ -103,27 +98,17 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
                 }, {
                     xtype: 'fieldset',
                     title: this.animationFieldsetText,
-                    labelWidth:120,
+                    labelWidth:100,
                     items: [
-                   /* {
+                    {
                       boxLabel:this.listOnlyText,
                       hideLabel:true,
                       xtype:'checkbox',
                       handler:this.toggleListMode,
                       scope:this,
                       ref:'../../listOnlyCheck'
-                    },*/
+                    },
                     {
-                        fieldLabel: this.frameRateText,
-                        xtype: 'numberfield',
-                        anchor:'-25',
-                        enableKeyEvents:true,
-                        listeners: {
-                            'change': this.setFrameRate,
-                            scope: this
-                        },
-                        ref: '../../rateValueField'
-                    },{
                         fieldLabel: this.stepText,
                         xtype: 'numberfield',
                         anchor:'-25',
@@ -176,25 +161,23 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
                     handler:this.setLoopMode,
                     scope:this,
                     ref:'../loopModeCheck'
-                }/*,
+                },
                 {
                     xtype:'checkbox',
                     boxLabel:this.reverseText,
                     handler:this.setReverseMode,
                     scope:this,
                     ref:'../reverseModeCheck'
-                }*/]
+                }]
             }
             ],
             listeners:{'show':this.populateForm,scope:this},
             bbar: [{
                 text: 'Save',
-                iconCls:'save',
                 handler: this.saveValues,
                 scope: this
             }, {
                 text: 'Cancel',
-                iconCls:'cancel',
                 handler: this.cancelChanges,
                 scope: this
             }]
@@ -208,20 +191,13 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
         this.un('show',this,this.populateForm);
         gxp.PlaybackOptionsPanel.superclass.destroy.call(this);
     },
-    setFrameRate: function(cmp,newVal,oldVal){
-        this.timeManager.frameRate = newVal; 
-        
-    },    
     setStartTime: function(cmp, date){
         this.timeManager.setStart(date);
         this.timeManager.fixedRange=true;
-        this.rangeEndField.setMinValue(date);
-        
     },
     setEndTime:function(cmp,date){
         this.timeManager.setEnd(date);
         this.timeManager.fixedRange=true;
-        this.rangeStartField.setMaxValue(date);
     },
     toggleListMode: function(cmp, checked){
         this.stepValueField.setDisabled(checked);
@@ -234,28 +210,16 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
             this.timeManager.units = units;
             if(this.playbackToolbar.playbackMode != 'track'){
                 this.timeManager.incrementTime();
-                
-                // prende la data di inizio e la data di fine del pannello
-                // e invoca la funzione setRange di timeManager per ricalcolare i valori della slide
-                this.timeManager.setRange([this.timeManager.range[0],this.timeManager.range[1]]);
-                this.timeManager.fixedRange=true;             
-
             }
         }
     },
     setStep:function(cmp,newVal,oldVal){
         if(cmp.validate() && newVal){
             this.timeManager.step = newVal;
-            if(this.playbackToolbar.playbackMode == 'range' && 
+            if(this.playbackToolbar.playbackMode == 'ranged' && 
                 this.timeManager.rangeInterval != newVal){
                     this.timeManager.rangeInterval = newVal;
                     this.timeManager.incrementTime(newVal);
-                    
-                    // prende la data di inizio e la data di fine del pannello
-                    // e invoca la funzione setRange di timeManager per ricalcolare i valori della slide
-                    this.timeManager.setRange([this.timeManager.range[0],this.timeManager.range[1]]);
-                    this.timeManager.fixedRange=true;                              
-                    
             }
         }
     },
@@ -264,15 +228,15 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
             case 'cumulative':
                 this.playbackToolbar.setPlaybackMode('cumulative');
                 break;
-            case "range":
+            case 'ranged':
                 this.disableListMode(true);
-                this.playbackToolbar.setPlaybackMode("range");
+                this.playbackToolbar.setPlaybackMode('ranged');
                 break;
             default:
                 this.playbackToolbar.setPlaybackMode('track');
                 break;
         }
-        if(mode != "range"){
+        if(mode != 'ranged'){
             this.disableListMode(false);
         }
     },
@@ -295,16 +259,13 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
             this.rangeStartField.originalValue = this.timeManager.range[0];
             this.rangeEndField.setValue(this.timeManager.range[1]);
             this.rangeEndField.originalValue = this.timeManager.range[1];
-            this.rateValueField.setValue(this.timeManager.frameRate);
-            this.rateValueField.originalValue = this.timeManager.frameRate;
             this.stepValueField.setValue(this.timeManager.step);
             this.stepValueField.originalValue = this.timeManager.step;
             this.stepUnitsField.setValue(this.timeManager.units);
             this.stepUnitsField.originalValue = this.timeManager.units;
-            // this.listOnlyCheck.setValue(this.timeManager.snapToIntervals);
-            // this.listOnlyCheck.originalValue = this.timeManager.snapToIntervals;
-            // var playbackMode = this.playbackToolbar.playbackMode;
-			var playbackMode = 'range';
+            this.listOnlyCheck.setValue(this.timeManager.snapToIntervals);
+            this.listOnlyCheck.originalValue = this.timeManager.snapToIntervals;
+            var playbackMode = this.playbackToolbar.playbackMode;
             if(playbackMode == 'track' || !playbackMode) { playbackMode = false; }
             if(!this.playbackModeField.timeAgents || !this.playbackModeField.timeAgents.length){
                 this.playbackModeField.timeAgents = this.timeManager.timeAgents;
@@ -313,15 +274,8 @@ gxp.PlaybackOptionsPanel = Ext.extend(Ext.Panel, {
             this.playbackModeField.originalValue = playbackMode;
             this.loopModeCheck.setValue(this.timeManager.loop);
             this.loopModeCheck.originalValue=this.timeManager.loop;
-            // this.reverseModeCheck.setValue(this.timeManager.step<0);
-            // this.reverseModeCheck.originalValue=this.reverseModeCheck.getValue();
-            //set min and max for not negative ranges.
-            //this.rangeStartField.setMaxValue(this.timeManager.range[1]);
-            //this.rangeEndField.setMinValue(this.timeManager.range[0]);
-            //disable if range mode 
-             /*if(playbackMode == "range"){
-                this.listOnlyCheck.setDisabled(true);
-            }*/
+            this.reverseModeCheck.setValue(this.timeManager.step<0);
+            this.reverseModeCheck.originalValue=this.reverseModeCheck.getValue();
         }
     },
     saveValues:function(btn){

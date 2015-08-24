@@ -548,6 +548,19 @@
 			addMSLayer = function(resources){
 				var addLayer = app.tools["addlayer"];
 				
+				// SET THE png8 IMAGE FORMAT
+				for(var i=0; i<resources.length; i++){
+						if(resources[i]){
+						   resources[i].sourceOptions = {
+								 layerBaseParams: {
+										FORMAT: "image/png8",
+										TILED: true
+								 }
+						   };
+						}
+				}
+
+					
 				addLayer.addLayer(
 					resources
 				);
