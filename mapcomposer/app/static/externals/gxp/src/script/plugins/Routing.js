@@ -83,7 +83,17 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
 
     fieldRequiredMsg: "Il campo è obbligatorio",
 
-    lengthFormula: "Lunghezza",
+    lengthFormula: "Percorso più breve",
+    
+    humanRiskFormula: "Percorso meno rischioso per l'uomo",
+    
+    notHumanRiskFormula: "Percorso meno rischioso per l'ambiente",
+    
+    humanVulnFormula: "Percorso con minore vulnerabilità per l'uomo",
+    
+    notHumanVulnFormula: "Percorso con minore vulnerabilità per l'ambiente",
+    
+    incFormula: "Percorso con minore incidentalità",
 
     /** private: method[constructor]
      */
@@ -192,11 +202,11 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                     };
                     
                     var formulaData = [
-                        ['141-SOC', 'R - ' + humanRiskLabel, 98],
-                        ['141-ENV', 'R - ' + notHumanRiskLabel, 99],
-                        ['32-SOC', formulaELabel + ' (' + humanRiskLabel + ')', 98],
-                        ['32-ENV', formulaELabel + ' (' + notHumanRiskLabel + ')', 99],
-                        ['22', formulaPisLabel, 98],
+                        ['141-SOC', this.humanRiskFormula, 98],
+                        ['141-ENV', this.notHumanRiskFormula, 99],
+                        ['32-SOC', this.humanVulnFormula, 98],
+                        ['32-ENV', this.notHumanVulnFormula, 99],
+                        ['22', this.incFormula, 98],
                         ['142', this.lengthFormula, null]
                     ];
                     var comboStore = new Ext.data.ArrayStore({
