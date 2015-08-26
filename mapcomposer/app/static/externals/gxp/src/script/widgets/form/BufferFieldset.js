@@ -238,12 +238,14 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
     		this.bufferField.setReadOnly(false);
     		this.compositeField.clickToggle.show();
     		this.compositeField.scenarioLabel.hide();
+            this.compositeField.doLayout();
     	} else {
     		this.bufferField.enable();
     		this.bufferField.setReadOnly(true);
     		this.updateRadius(radius);
     		this.compositeField.clickToggle.hide();
     		this.compositeField.scenarioLabel.show();
+            this.compositeField.doLayout();
     	}
     },
 
