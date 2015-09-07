@@ -40,6 +40,12 @@ gxp.plugins.SearchVia = Ext.extend(gxp.plugins.Tool, {
 
 	selectionProperties: null,
 	firstTb: false,
+	
+	closed_groups: null,
+	
+	showStartMsg: false,
+	startMsgTitles: null,
+	startMsgTexts: null,
 		
 	constructor: function(config) {
         gxp.plugins.SearchVia.superclass.constructor.apply(this, arguments);
@@ -222,14 +228,14 @@ gxp.plugins.SearchVia = Ext.extend(gxp.plugins.Tool, {
 													
 													addLayer.addLayer(opts);																					
 													
-													
-												}else{
-													layer.mergeNewParams({
-														"cql_filter": filterAttribute + "=" + bounds.codice,
-														"layers": selectionLayerName,
-														"styles": selectionStyle
-													});
-												}
+													layer = apptarget.mapPanel.map.getLayersByName(this.selectionProperties.selectionLayerTitle)[0];
+												}//else{   Nota: a seguito di alcune modifiche, bisogna riassegnare il cql_filter
+												layer.mergeNewParams({
+													"cql_filter": filterAttribute + "=" + bounds.codice,
+													"layers": selectionLayerName,
+													"styles": selectionStyle
+												});
+												//}
 											}
 											
 											apptarget.mapPanel.map.zoomToExtent(newBounds);
@@ -254,9 +260,105 @@ gxp.plugins.SearchVia = Ext.extend(gxp.plugins.Tool, {
 				//}				
             ]
 		});	
+		
+		
+		
+		var closeGroupFlag = false;
+		var mySelf = this;
+		apptarget.mapPanel.map.events.register('preaddlayer', apptarget.mapPanel.map, function (e) {
+			if (! closeGroupFlag && mySelf.closed_groups)
+			{			
+				Ext.getCmp('layertree').root.cascade(function(n) {
+					for (var i = 0; i < mySelf.closed_groups.length; i++) {
+						var grText = '';
+						if (mySelf.vieLang == 'it')
+						{
+							grText = mySelf.closed_groups[i].it;
+						}
+						else 
+						{
+							grText = mySelf.closed_groups[i].de;
+						}
+						if (n.text == grText)
+						{
+							n.collapse();
+						}
+					}	
+				}); 
+			}
+			//closeGroupFlag = true;
+		});
+		
+		
 		   
 		if (this.firstTb){	
 			Ext.getCmp("west").setActiveTab(2);
+		}
+		
+		
+		
+		var windowOptions = {
+			height:500,
+			width:600
+		};
+		
+		if (this.showStartMsg)
+		{
+			var title = '';
+			var msg = '';
+			if (this.vieLang == 'it')
+			{
+				title = this.startMsgTitles[0].it;
+				msg = this.startMsgTexts[0].it;
+			}
+			else 
+			{
+				title = this.startMsgTitles[0].de;
+				msg = this.startMsgTexts[0].de;
+			}
+			
+			
+			var pnl = new Ext.Panel({
+					items: [{
+						autoEl: {
+							id: 'content_iframe',
+							tag: 'iframe'
+						},
+						xtype: 'box'
+					}],
+					 anchor: '100% 80%'
+				});
+			
+			
+			
+			var win = new Ext.Window(Ext.apply({
+				   
+				   title: title,
+				   border:false,
+				   autoScroll:false,
+				   layout:'anchor',
+				   items:[
+					   {
+							xtype: 'panel'							
+							, html: msg
+							//, html: ' <iframe src="http://localhost:8080/GeoInfo/antenneinfo_it.html" style="position: absolute; height: 98%; width: 98%"></iframe> '
+							, anchor: '100% 95%'
+						},
+						{
+							xtype: 'button',
+							id: 'srcBtn',
+							labelStyle:'font-weight:bold;',
+							text: 'Chiudi',
+							handler: function(){
+								win.close();
+							}
+						}
+				   ],
+				   modal:true,
+				   height:500
+				},windowOptions)).show();
+				
+			//Ext.get('content_iframe').dom.contentWindow.document.body.innerHTML = 'Hello <b>world!</b>';	
 		}
 			
 		var panel = gxp.plugins.SearchVia.superclass.addOutput.call(this, form);		

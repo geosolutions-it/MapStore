@@ -250,6 +250,19 @@
 			"outputTarget": "searchpanel",
 			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
 			"firstTb": true,			
+			"showStartMsg": true,
+			"startMsgTitles": [
+				{"it":"Attenzione:", "de":"Achtung"}
+			],
+			"startMsgTexts": [
+				{"it": "<iframe src=\"http://sit.comune.bolzano.it/GeoInfo/antenneinfo_it.html\" style=\"position: absolute; height: 98%; width: 98%\"></iframe>",								
+				"de":"<iframe src=\"http://sit.comune.bolzano.it/GeoInfo/antenneinfo_de.html\" style=\"position: absolute; height: 98%; width: 98%\"></iframe>"}
+			],			
+			"closed_groups": [
+				{"it":"Sfondo", "de":"Hintergrund"},
+				{"it":"Catasto", "de":"Kataster"},
+				{"it":"Puc", "de":"Puc"}
+			],
 			"selectionProperties": {
 				"wmsURL": "http://sit.comune.bolzano.it/geoserver/ows",
 				"selectionLayerTitle": "Selection Layer",
@@ -404,8 +417,7 @@
 			]
 		}, {
 			"ptype": "gxp_help",
-			"fileDocURL": "http://sit.comune.bolzano.it/GeoInfo/help/",
-			"fileName": "help",
+			"link": "http://sit.comune.bolzano.it/GeoInfo/help/",
 			"actionTarget": {"target": "paneltbar", "index": 22}
 		}, {
 			"ptype": "gxp_clr",			

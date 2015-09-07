@@ -4,7 +4,7 @@
 
 /** api: (define)
  *  module = gxp.plugins
- *  class = SearchServizioApertura
+ *  class = SearchInfortuni
  */
  
  
@@ -14,14 +14,14 @@
 Ext.namespace("gxp.plugins");
 
 /** api: constructor
- *  .. class:: SearchServizioApertura(config)
+ *  .. class:: SearchInfortuni(config)
  *
  *    Plugin for adding a new group on layer tree.
  */
-gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
+gxp.plugins.SearchInfortuni = Ext.extend(gxp.plugins.Tool, {
     
     /** api: ptype = gxp_addgroup */
-    ptype: "gxp_searchservizioapertura",
+    ptype: "gxp_searchinfortuni",
 	
 	serviceUrl: null,
 	vieLang: "it",
@@ -33,14 +33,14 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
 		
 		
 	constructor: function(config) {
-        gxp.plugins.SearchServizioApertura.superclass.constructor.apply(this, arguments);
+        gxp.plugins.SearchInfortuni.superclass.constructor.apply(this, arguments);
     },
 	
 	/** private: method[init]
 	* :arg target: ``Object`` The object initializing this plugin.
 	*/
 	init: function(target) {
-		gxp.plugins.SearchServizioApertura.superclass.init.apply(this, arguments);
+		gxp.plugins.SearchInfortuni.superclass.init.apply(this, arguments);
 		
 	},
 
@@ -196,282 +196,130 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
 		var serviziForm = new Ext.form.FormPanel({
 			header: true,
 			border: true,
-			title: 'Ricerca Apertura Servizi',
+			title: 'Filtra Infortuni',
 			labelWidth: 80,
 			bodyStyle:'padding:5px 5px 0', 
-			tbar:[				   
-						{
-							xtype: 'button',
-							id: 'ckBtn',
-							text: 'Seleziona tutto',
-							iconCls: 'icon-addlayers',
-							width: 50,
-							handler: function(){
-								Ext.getCmp('serviziCheck').items.each(function(oEl) {
-									oEl.setValue(true);
-								});
-							}
-						},
-						//verLine,
-						'-',
-						{
-							xtype: 'button',
-							id: 'unckBtn',
-							text: 'Deseleziona tutto',
-							iconCls: 'icon-removelayers',
-							width: 50,
-							handler: function(){
-								Ext.getCmp('serviziCheck').items.each(function(oEl) {
-									oEl.setValue(false);
-								});
-							}
-						}
-		    ],			
+				
 			items: [
 				//formPanel,
 				{
 					xtype: "fieldset",
 					items:[{
 						xtype: 'checkboxgroup',
-						fieldLabel: 'Tipo Servizi',
+						fieldLabel: 'Anno infortuni',
 						// Arrange checkboxes into two columns, distributed vertically
 						columns: 1,
 						vertical: true,
-						id: 'serviziCheck',
+						id: 'annoCheck',
 						labelStyle:'font-weight:bold;',					
 						items: [{
-							boxLabel: 'Amministrativo',
+							boxLabel: '2013',
 							name: 'rbAmm',
-							inputValue: '01',
+							inputValue: '2013',
 							checked: true
 						}, {
-							boxLabel: 'Chiese',
+							boxLabel: '2014',
 							name: 'rbAmm',
-							inputValue: '04',
+							inputValue: '2014',
 							checked: true
 						}, {
-							boxLabel: 'Commercio',
+							boxLabel: '2015',
 							name: 'rbAmm',
-							inputValue: '10',
-							checked: true
-						}, {
-							boxLabel: 'Cultura',
-							name: 'rbAmm',
-							inputValue: '05',
-							checked: true
-						}, {
-							boxLabel: 'Finanziari',
-							name: 'rbAmm',
-							inputValue: '11',
-							checked: true
-						}, {
-							boxLabel: 'Giustizia',
-							name: 'rbAmm',
-							inputValue: '02',
-							checked: true
-						}, {
-							boxLabel: 'Informazione',
-							name: 'rbAmm',
-							inputValue: '13',
-							checked: true
-						}, {
-							boxLabel: 'Istruzione',
-							name: 'rbAmm',
-							inputValue: '06',
-							checked: true
-						}, {
-							boxLabel: 'Libera Prof.',
-							name: 'rbAmm',
-							inputValue: '12',
-							checked: true
-						}, {
-							boxLabel: 'Sanita',
-							name: 'rbAmm',
-							inputValue: '07',
-							checked: true
-						}, {
-							boxLabel: 'Sicurezza',
-							name: 'rbAmm',
-							inputValue: '03',
-							checked: true
-						}, {
-							boxLabel: 'Sociali',
-							name: 'rbAmm',
-							inputValue: '14',
-							checked: true
-						}, {
-							boxLabel: 'Sport',
-							name: 'rbAmm',
-							inputValue: '09',
+							inputValue: '2015',
 							checked: true
 						}]
 					}]
 				},				
 				{
-					xtype: "fieldset",  //RICERCA TESTUALE DESCRIZIONE SERVIZIO
+					xtype: "fieldset",
 					items:[{
-						xtype: 'combo',
-						fieldLabel: 'Chiave',
-						labelStyle:'font-weight:bold;',
-						store: dsServizi,
-						mode: 'remote',
-						displayField: 'descrizione',
-						emptyText: 'Inserisci parola chiave',
-						valueField: 'codice', 
-						width: 250,
-						minChars: 3,
-						id: 'servDescBox',
-						hideTrigger:true,
-						forceSelection: false,
-						scope: this,	
-						listeners:{					    
-							select: function(combo, record, index) {
-								var recordSelected = Ext.getCmp("quartBox").getStore().getAt(0);                     
-								Ext.getCmp("quartBox").setValue(recordSelected.get('codice'));
-								dsVie.removeAll(false);								
-								Ext.getCmp("vieBox").clearValue();	
-							},
-							render: function(c) {
-							  /*Ext.QuickTips.register({
-								target: c.getEl(),
-								text: me.viaToolTip
-							  });*/
-							}
-						}
+						xtype: 'checkboxgroup',
+						fieldLabel: 'Giorno della settimana',
+						// Arrange checkboxes into two columns, distributed vertically
+						columns: 1,
+						vertical: true,
+						id: 'gSettCheck',
+						labelStyle:'font-weight:bold;',					
+						items: [{
+							boxLabel: 'Lunedì',
+							name: 'rbAmm',
+							inputValue: '1',
+							checked: true
+						}, {
+							boxLabel: 'Martedì',
+							name: 'rbAmm',
+							inputValue: '2',
+							checked: true
+						}, {
+							boxLabel: 'Mercoledì',
+							name: 'rbAmm',
+							inputValue: '3',
+							checked: true
+						}, {
+							boxLabel: 'Giovedì',
+							name: 'rbAmm',
+							inputValue: '4',
+							checked: true
+						}, {
+							boxLabel: 'Venerdì',
+							name: 'rbAmm',
+							inputValue: '5',
+							checked: true
+						}, {
+							boxLabel: 'Sabato',
+							name: 'rbAmm',
+							inputValue: '6',
+							checked: true
+						}, {
+							boxLabel: 'Domenica',
+							name: 'rbAmm',
+							inputValue: '7',
+							checked: true
+						}]
 					}]
-				},
-				//lineconfig,
+				},						
 				{
 					xtype: "fieldset",
 					items:[{
-						xtype: 'timefield',
-						fieldLabel: 'Da',
+						xtype: 'checkboxgroup',
+						fieldLabel: 'Tipo di infortunio',
+						// Arrange checkboxes into two columns, distributed vertically
+						columns: 1,
+						vertical: true,
+						id: 'tpIncCheck',
 						labelStyle:'font-weight:bold;',					
-						emptyText: 'Orario Da',
-						minValue: '7:00',
-						maxValue: '22:00',
-						format: 'H:i',
-						increment: 30,
-						width: 150,
-						id: 'daBox',
-						scope: this					
-					},
-					{
-						xtype: 'timefield',
-						fieldLabel: 'A',
-						labelStyle:'font-weight:bold;',					
-						emptyText: 'Orario A',
-						minValue: '7:00',
-						maxValue: '22:00',
-						format: 'H:i',
-						increment: 30,
-						width: 150,
-						id: 'aBox',
-						scope: this	
-					}, 			
-					{
-						xtype: 'datefield',
-						//anchor: '100%',
-						width: 150,
-						fieldLabel: 'Data',
-						labelStyle:'font-weight:bold;',					
-						name: 'date',
-						id: 'searchDate',
-						format: 'd/m/Y'
-					},
-					{
-						xtype: 'combo',
-						fieldLabel: 'Quartiere',
-						labelStyle:'font-weight:bold;',
-						store: dsQuart,
-						mode: 'local',	
-						displayField: 'descrizione',
-						valueField: 'codice', 
-						value: '0',
-						typeAhead: true,
-						triggerAction: 'all',
-						emptyText: '',
-						width: 150,					
-						id: 'quartBox',
-						listeners:{
-							select: function(combo, record, index) {
-								dsVie.removeAll(false);								
-								Ext.getCmp("vieBox").clearValue();								
-								dsServizi.removeAll(false);								
-								Ext.getCmp("servDescBox").clearValue();
-							}
-						}
-					},
-					{
-						xtype: 'combo',
-						fieldLabel: this.viaText,
-						labelStyle:'font-weight:bold;',
-						store: dsVie,
-						mode: 'remote',
-						displayField: 'descrizione',
-						emptyText: this.viaEmpty,
-						valueField: 'codice', 
-						width: 250,
-						minChars: 3,
-						id: 'vieBox',
-						hideTrigger:true,
-						forceSelection: false,
-						scope: this,	
-						listeners:{					    
-							select: function(combo, record, index) {
-								var recordSelected = Ext.getCmp("quartBox").getStore().getAt(0);                     
-								Ext.getCmp("quartBox").setValue(recordSelected.get('codice'));
-								dsServizi.removeAll(false);								
-								Ext.getCmp("servDescBox").clearValue();
-							},
-							render: function(c) {
-							  /*Ext.QuickTips.register({
-								target: c.getEl(),
-								text: me.viaToolTip
-							  });*/
-							}
-						}
-				    }]
-				},						
+						items: [{
+							boxLabel: 'Senza Feriti',
+							name: 'rbAmm',
+							inputValue: '1',
+							checked: true
+						}, {
+							boxLabel: 'Con Feriti',
+							name: 'rbAmm',
+							inputValue: '2',
+							checked: true
+						}, {
+							boxLabel: 'Mortale',
+							name: 'rbAmm',
+							inputValue: '3',
+							checked: true
+						}]
+					}]
+				},	
 				{
 					xtype: 'button',
 					text: 'Aggiorna',
 					scope: this,
 					handler: function(){					   
-					   aggiornaServizi();
-						if ((! Ext.getCmp('vieBox').getValue()) && (Ext.getCmp('quartBox').getValue() == 0) &&
-						     (! Ext.getCmp('servDescBox').getValue())) {
-							var layer = apptarget.mapPanel.map.getLayersByName(me.selectionProperties.selectionLayerTitle)[0];
-							if(layer){
-								apptarget.mapPanel.map.removeLayer(layer);																																			
-							}
-						}
-						
-					   /*serviziLayer.mergeNewParams({
-					       "viewparams": "begin_datetime:2014-11-03 20:00:00;end_datetime:2014-11-03 22:30:00"
-					   });*/
-					   //viewparams = 'begin_datetime:' + aDate.format('Y-m-d') + ' ' + startTime + ':00;end_datetime:' + aDate.format('Y-m-d') + ' ' + endTime + ':00';
+					   aggiornaServizi();						
 					}
 				}
             ]
 		});		
-		
-		var actualDate = new Date();
-		Ext.getCmp("searchDate").setValue(actualDate);
-		
-		if (actualDate.getHours() <= 12)
-		{
-			Ext.getCmp("daBox").setValue('8:30');
-			Ext.getCmp("aBox").setValue('12:30');
-		}
-		else 
-		{
-			Ext.getCmp("daBox").setValue('14:30');
-			Ext.getCmp("aBox").setValue('18:00');
-		}
+				
 		
 		function aggiornaServizi(layer) {
-		   var startTime = Ext.getCmp("daBox").getValue();
+		  /* var startTime = Ext.getCmp("daBox").getValue();
 		   var endTime = Ext.getCmp("aBox").getValue();
 		   var aDate = Ext.getCmp("searchDate").getValue();
 		   var via = Ext.getCmp('vieBox').getValue();
@@ -509,56 +357,69 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
 				}
 				
 				zoomServizio(url, selectionLayerName, filterAttribute, selectionStyle, servizio, comProjection, googleProjection);
-			}
+			}*/
 			
 			
 			
-		   
+		   var infortuniLayer;
 		   if (!layer) {
-		   	   serviziLayer = apptarget.mapPanel.map.getLayersByName('servizi_apertura')[0];
+		   	   infortuniLayer = apptarget.mapPanel.map.getLayersByName('view_incidenti')[0];
 		   } else {
-			   serviziLayer = layer;
+			   infortuniLayer = layer;
 		   }
 		   
 		  
-		   var selectedServices = Ext.getCmp("serviziCheck").getValue();
-		   var inServices = "";
-           /*for(var i=0;i<selectedServices.length;i++){
-				inServices = inServices + "'" + selectedServices[i].inputValue + "'";
-				if (i < (selectedServices.length - 1))
-				{
-					inServices = inServices + ',';
-				}
-			}*/
-			
-            // /////////////////////////////////////////////////////////////////
-            // Create a CQL OpenLayers WFS compliant
-            // ('IN' clause is not supported by OpenLayers.Format.CQL)
-            // /////////////////////////////////////////////////////////////////
-            for(var i=0; i<selectedServices.length; i++){
-                var inService = "CATE_ROOT_CODE='" + selectedServices[i].inputValue + "'";
-                inServices += inService;
+		   var selectedYears = Ext.getCmp("annoCheck").getValue();
+		   var inYears = "";           
+            for(var i=0; i<selectedYears.length; i++){
+                var inYear = "ANNOINC=" + selectedYears[i].inputValue + "";
+                inYears += inYear;
                 
-                if(i+1 < selectedServices.length){
-                    inServices += " OR ";
+                if(i+1 < selectedYears.length){
+                    inYears += " OR ";
                 }         
             }
-            
-			if (!via) {
+			
+			var selectedDays = Ext.getCmp("gSettCheck").getValue();
+		    var inDays = "";           
+            for(var i=0; i<selectedDays.length; i++){
+                var inDay = "DOW='" + selectedDays[i].inputValue + "'";
+                inDays += inDay;
+                
+                if(i+1 < selectedDays.length){
+                    inDays += " OR ";
+                }         
+            }
+			
+			var selectedTypes = Ext.getCmp("tpIncCheck").getValue();
+		    var inTypes = "";           
+            for(var i=0; i<selectedTypes.length; i++){
+                var inType = "TPINCID='" + selectedTypes[i].inputValue + "'";
+                inTypes += inType;
+                
+                if(i+1 < selectedTypes.length){
+                    inTypes += " OR ";
+                }         
+            }
+			
+			var sCqlFilter = "(" + (inYears == "" ? "ANNOINC=0" : inYears) + ") AND (" + (inTypes == "" ? "TPINCID='0'" : inTypes) + ") AND (" + (inDays == "" ? "DOW='-1'" : inDays) + ")";
+           // var sParam = "gionrnos_p:'" + (inDays == "" ?  "''-1''" : inDays) + "'";
+			
+			/*if (!via) {
 				via = 0;
-			}
+			}*/
 			
 			var params = {
-			   "viewparams": "begin_datetime:" + aDate.format("Y-m-d") + " " + startTime + ":00;end_datetime:" + aDate.format("Y-m-d") + " " + endTime + ":00;via_p:" + via + ";quart_p:" + quartiere,
+			   //"viewparams": sParam,
 			   //"cql_filter": "CATE_ROOT_CODE IN (" + inServices + ")"
                 //"cql_filter": inServices == "" ? "INCLUDE" : inServices
-				"cql_filter": inServices == "" ? "CATE_ROOT_CODE=-1" : inServices
+				"cql_filter": sCqlFilter
 		    };
 		   
 		   
-		   serviziLayer.mergeNewParams(params);
+		   infortuniLayer.mergeNewParams(params);
 		   
-		   var index = apptarget.mapPanel.layers.findExact('name', 'Cartografia:servizi_apertura');
+		   var index = apptarget.mapPanel.layers.findExact('name', 'Cartografia:view_incidenti');
 		   apptarget.mapPanel.layers.getAt(index).getLayer().vendorParams = params;
 		   apptarget.mapPanel.layers.getAt(index).getLayer().mergeNewParams(params);		  
 		   
@@ -779,11 +640,11 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
 		apptarget.mapPanel.map.events.register('preaddlayer', apptarget.mapPanel.map, function (e) {
 		
 			if (e.layer.params && e.layer.params.LAYERS ==  'Cartografia:servizi_apertura'){
-				aggiornaServizi(e.layer);
+				//aggiornaServizi(e.layer);
 			}
 		});				
 		
-		var panel = gxp.plugins.SearchServizioApertura.superclass.addOutput.call(this, serviziForm);
+		var panel = gxp.plugins.SearchInfortuni.superclass.addOutput.call(this, serviziForm);
 		
 		// Imposto il tab di ricerca come tab attivo
 		var container = Ext.getCmp(this.initialConfig.outputTarget);
@@ -797,4 +658,4 @@ gxp.plugins.SearchServizioApertura = Ext.extend(gxp.plugins.Tool, {
         
 });
 
-Ext.preg(gxp.plugins.SearchServizioApertura.prototype.ptype, gxp.plugins.SearchServizioApertura);
+Ext.preg(gxp.plugins.SearchInfortuni.prototype.ptype, gxp.plugins.SearchInfortuni);
