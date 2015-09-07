@@ -46,8 +46,8 @@
 				"format": "image/jpeg"
 			},{
                 "source": "bolzano",
-				"title": "servizi_apertura",
-				"name": "Cartografia:servizi_apertura"
+				"title": "view_incidenti",
+				"name": "Cartografia:view_incidenti"
             }
 		]
 	},
@@ -71,9 +71,9 @@
 	
 	"customTools":[
 		{
-			"ptype": "gxp_searchservizioapertura",			
-			"outputTarget": "east",
+			"ptype": "gxp_searchinfortuni",
 			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
+			"outputTarget": "east",
 			"selectionProperties": {
 				"wmsURL": "http://sit.comune.bolzano.it/geoserver/ows",
 				"selectionLayerTitle": "Selection Layer",

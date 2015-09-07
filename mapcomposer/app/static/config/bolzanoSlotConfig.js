@@ -250,6 +250,10 @@
 			"outputTarget": "searchpanel",
 			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
 			"firstTb": true,			
+			"closed_groups": [
+				{"it":"Sfondo", "de":"Hintergrund"},
+				{"it":"Catasto", "de":"Kataster"}
+			],	
 			"selectionProperties": {
 				"wmsURL": "http://sit.comune.bolzano.it/geoserver/ows",
 				"selectionLayerTitle": "Selection Layer",
@@ -404,8 +408,7 @@
 			]
 		}, {
 			"ptype": "gxp_help",
-			"fileDocURL": "http://sit.comune.bolzano.it/GeoInfo/help/",
-			"fileName": "help",
+			"link": "http://sit.comune.bolzano.it/GeoInfo/help/",
 			"actionTarget": {"target": "paneltbar", "index": 22}
 		}, {
 			"ptype": "gxp_clr",			

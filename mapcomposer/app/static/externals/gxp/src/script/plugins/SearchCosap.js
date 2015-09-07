@@ -306,14 +306,14 @@ gxp.plugins.SearchCosap = Ext.extend(gxp.plugins.Tool, {
 											
 											addLayer.addLayer(opts);																					
 											
-											
-										}else{
+											layer = apptarget.mapPanel.map.getLayersByName(this.selectionProperties.selectionLayerTitle)[0];
+										} //else{ Nota: a seguito di alcune modifiche, bisogna riassegnare il cql_filter
 											layer.mergeNewParams({
 												"cql_filter": filterAttribute + "=" + bounds.codice,
 												"layers": selectionLayerName,
 												"styles": selectionStyle
 											});
-										}
+										//}
 									}
 									
 									apptarget.mapPanel.map.zoomToExtent(newBounds);

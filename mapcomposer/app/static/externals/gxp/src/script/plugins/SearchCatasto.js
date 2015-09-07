@@ -278,13 +278,15 @@ function zoomCatasto(particella, comCat, tipoPart, serviceUrl, selectionProperti
 						};
 						
 						addLayer.addLayer(opts);
-					}else{
+						
+						layer = apptarget.mapPanel.map.getLayersByName(selectionProperties.selectionLayerTitle)[0];
+					} //else{ 	Nota: a seguito di alcune modifiche, bisogna riassegnare il cql_filter
 						layer.mergeNewParams({
 							"cql_filter": "NUM='" + particella +"' AND COM=" + comCat,
 							"layers": selectionLayerName,
 							"styles": 'highlight_polygon'
 						});
-					}
+					//}
 				}
 				
 				apptarget.mapPanel.map.zoomToExtent(newBounds);
