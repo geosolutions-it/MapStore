@@ -109,6 +109,8 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			buffer: 1
 		}
 	},
+	
+	alwaysZoomToExtent: true,
     
     /** private: method[constructor]
      */
@@ -316,7 +318,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				);
 			}
             
-            if(customParams && customParams.zoomToExtent)
+            if(this.alwaysZoomToExtent || (customParams && customParams.zoomToExtent))
                 map.zoomToExtent(extent, true);
 			
 			var report = {
