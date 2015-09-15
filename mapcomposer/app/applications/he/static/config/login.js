@@ -333,14 +333,17 @@
 			"ptype": "gxp_languageselector",
 			"actionTarget": {"target": "panelbbar", "index": 3}
 		}, {
-            "ptype": "gxp_featuremanager",
+            "ptype": "gxp_featuremanagerwmshighlight",
             "pagingType": 1,
             "format": "GML2",
-            "id": "featuremanager"
-	    }, {
+            "id": "featuremanager",
+            "disableGeometry": false
+	    },{
 		  "ptype": "gxp_featuregrid",
 		  "featureManager": "featuremanager",
+		  "displayMode":"selected",
 		  "outputConfig": {
+		  	  "xtype":"gxp_hefeaturegrid",
 			  "id": "featuregrid",
 			  "title": "Features"
 		  },
