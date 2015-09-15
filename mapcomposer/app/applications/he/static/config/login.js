@@ -328,7 +328,7 @@
 			"tooltip":"MapStore Guide",
 			"index": 24,
 			"showOnStartup": false,
-			"fileDocURL": "MapStore-Help.pdf"
+			"fileDocURL": "https://github.com/geosolutions-it/MapStore/wiki"
         }, {
 			"ptype": "gxp_languageselector",
 			"actionTarget": {"target": "panelbbar", "index": 3}
