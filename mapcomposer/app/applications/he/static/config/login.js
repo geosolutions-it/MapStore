@@ -251,6 +251,11 @@
     "removeTools":["googleearth_plugin", "googleearth_separator"],
 	"customTools":[
 		{
+		   "ptype": "gxp_addlayersgeostore",
+		    "actionTarget": "tree.tbar",
+			"id": "addlayers"
+		},
+		{
 			"ptype": "gxp_embedmapdialog",
 			"actionTarget": {"target": "paneltbar", "index": 2},
 			"embeddedTemplateName": "viewer",
