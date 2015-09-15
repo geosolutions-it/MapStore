@@ -359,6 +359,9 @@
           "id": "bboxquery",
           "filterLayer":true,
           "outputConfig":{
+          		  "spatialSelectorFieldset":{
+          		  	"collapsed":true
+          		  },
                   "outputSRS": "EPSG:900913",
                   "selectStyle":{
                           "strokeColor": "#ee9900",

@@ -414,7 +414,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             autoScroll: true,
             id: this.getFormId(),
             items: [
-            {
+            Ext.apply({
                 xtype: "fieldset",
                 ref: "spatialSelectorFieldset",
                 title: spatialSelectorOutput.title,
@@ -430,8 +430,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                         this.spatialSelector.reset();
                     }
                 }
-            },
-            {
+            },this.outputConfig.spatialSelectorFieldset||{}),
+            Ext.apply({
                 xtype: "fieldset",
                 ref: "attributeFieldset",
                 title: this.queryByAttributesText,
@@ -448,7 +448,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                         }
                     }
 				}
-            }],
+            },this.outputConfig.attributeFieldset||{})],
             bbar: bbarButtons
         }, config || {});
 		
