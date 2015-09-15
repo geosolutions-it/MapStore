@@ -339,7 +339,7 @@
             "id": "featuremanager",
             "disableGeometry": false
 	    },{
-		  "ptype": "gxp_featuregrid",
+		  "ptype": "he_feature_grid",
 		  "featureManager": "featuremanager",
 		  "displayMode":"selected",
 		  "outputConfig": {
@@ -348,7 +348,7 @@
 			  "title": "Features"
 		  },
 		  "outputTarget": "south",
-		  "showExportCSV":false
+		  "showExportCSV":true
 	    }, {
           "ptype": "gxp_spatialqueryform",
           "featureManager": "featuremanager",
