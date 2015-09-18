@@ -344,11 +344,7 @@ if(this.infoAction=='click'){
             queryableLayers.each(function(x){                
                 var l = x.getLayer();
 			
-            var vendorParams = {};
-            Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
-                if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
-                    vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
-                }
+           
 
                 // Obtain info format
             	var infoFormat = this.getInfoFormat(x);
@@ -359,9 +355,16 @@ if(this.infoAction=='click'){
                     layers: [x.getLayer()],
                     infoFormat: infoFormat,
                     maxFeatures:this.maxFeatures,
-                    vendorParams: vendorParams,
+                    vendorParams: {},
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
+                            //Update vendorParmas
+                             var vendorParams = {};
+                             Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
+                             if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
+                                vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
+                             }
+                             evt.object.vendorParams=vendorParams;
 							//first getFeatureInfo in chain
 							if(!started){
 								started= true;
@@ -466,7 +469,7 @@ if(this.infoAction=='click'){
 				updateInfo.call(this);
 			}
 		};
-        this.target.mapPanel.layers.on("update", updateInfoEvent, this);
+       // this.target.mapPanel.layers.on("update", updateInfoEvent, this);
         this.target.mapPanel.layers.on("add", updateInfoEvent, this);
         this.target.mapPanel.layers.on("remove", updateInfoEvent, this);
 
@@ -799,11 +802,7 @@ if(this.infoAction=='click'){
             }
         };
         
-        var vendorParams = {};
-        Ext.apply(vendorParams, layer.vendorParams || this.vendorParams || {});
-        if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
-            vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
-        }
+        
 
         var selectedLayer = this.target.mapPanel.layers.queryBy(function(x){
             return (layer.id == x.getLayer().id) && x.get("queryable") ;
@@ -819,7 +818,7 @@ if(this.infoAction=='click'){
                 layers: [layer],
                 infoFormat: infoFormat,
                 maxFeatures:this.maxFeatures,
-                vendorParams: vendorParams,
+                vendorParams: {},
                 hover: true,
                 queryVisible: true,
                 handlerOptions:{    
@@ -827,7 +826,14 @@ if(this.infoAction=='click'){
                 },
                 eventListeners:{
                     scope:this,
-
+                    beforegetfeatureinfo: function(evt) {
+                           var vendorParams = {};
+                           Ext.apply(vendorParams, layer.vendorParams || this.vendorParams || {});
+                           if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
+                                vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
+                           }
+                           evt.object.vendorParams=vendorParams;
+                    },
                     getfeatureinfo:function(evt){
                         cleanup();
                         
