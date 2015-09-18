@@ -455,7 +455,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         var values = [];
         
         for (var i = 0;i<arrayValues.length;i++){
-            values[values.length] = [arrayIds[i],arrayDescs[i],arrayValues[i]];
+            values[values.length] = [arrayIds[i],arrayDescs[i].replace('***',','),arrayValues[i]];
         }        
         
         var store = new Ext.data.ArrayStore({
