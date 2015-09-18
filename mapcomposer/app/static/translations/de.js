@@ -68,7 +68,7 @@ GeoExt.Lang.add("de", {
 		saveDownloadTitle: "Export",
 		saveDownloadNameFieldsetTitle: "Export",
 		saveDownloadErrorTitle: "Export der Verarbeitung",
-		saveDownloadWinTitle: "neue Export",
+		saveDownloadWinTitle: "neuer Export",
 		saveDownloadErrorMsg: "Export fehlgeschlagen",
 		saveDownloadSuccessTitle: "Export Processing",
 		saveDownloadSuccessMsg: "Verarbeitung erfolgreich exportiert",
