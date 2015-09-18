@@ -94,6 +94,10 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
     notHumanVulnFormula: "Percorso con minore vulnerabilità per l'ambiente",
     
     incFormula: "Percorso con minore incidentalità",
+    
+    warningTitle: "Attenzione",
+    
+    warningText: "La mancanza di alcune informazioni (i sensi di percorrenza, indicazioni di lavori in corso e info sulla velocità)  non permettono di evidenziare il percorso più veloce ma solo quello linearmente più corto.",
 
     /** private: method[constructor]
      */
@@ -234,6 +238,13 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                             columnWidth:.65,
                             bodyStyle:'padding:0 5px',
                             items: [{
+                                xtype: 'fieldset',
+                                title: this.warningTitle,
+                                items: [{
+                                    xtype: 'box',
+                                    html: this.warningText
+                                }]
+                            },{
                                 xtype: 'fieldset',
                                 title: this.formulaText,
                                 layout: 'form',
@@ -398,7 +409,7 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                                     id: 'excluded-roads-panel',
                                     xtype: 'fieldset',
                                     title: this.blockRoadsText,
-                                    height: 330,
+                                    height: 430,
                                     layout: 'anchor',
                                     items: [{
                                         id: "routing_featuregrid",
@@ -492,7 +503,7 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                     var win = new Ext.Window({
                         title: me.menuText,
                         width: 600,
-                        height: 420,
+                        height: 520,
                         layout: 'fit',
                         renderTo: app.mapPanel.body,
                         modal: false,
