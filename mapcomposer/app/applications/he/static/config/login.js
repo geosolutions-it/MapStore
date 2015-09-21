@@ -25,7 +25,7 @@
    },
    
    "footer": {
-		"html": "<div id=\"footer\"><img src=\"images/banner/logo_footer.png\" > © Hart Energy 2014 &nbsp;</div>",
+		"html": "<div id=\"footer\"><img src=\"images/banner/logo_footer.png\" > © Hart Energy </div>",
 		"css": "<style type='text/css'>#footer{background-color:black;height:100%;text-align:right;color:white;line-height:30px} #footer img{text-align:left; float:left; margin:5px;}</style>",
 		"container": {
 			"border": false,
@@ -328,7 +328,7 @@
 			"tooltip":"MapStore Guide",
 			"index": 24,
 			"showOnStartup": false,
-			"fileDocURL": "MapStore-Help.pdf"
+			"fileDocURL": "https://github.com/geosolutions-it/MapStore/wiki"
         }, {
 			"ptype": "gxp_languageselector",
 			"actionTarget": {"target": "panelbbar", "index": 3}

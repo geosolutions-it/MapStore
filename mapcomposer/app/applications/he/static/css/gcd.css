@@ -151,3 +151,45 @@ span.icon_span{
     position:relative; /* for calculating scroll offsets */
     zoom:1;
  }
+ .x-tool.x-tool-collapse-east,.x-tool.x-tool-collapse-west,.x-tool.x-tool-collapse-south,.x-tool.x-tool-collapse-north{
+  background-image: url(../images/ArrowSpritesMedium.gif);
+  width: 20px;
+  height: 20px;
+}
+.x-tool.x-tool-expand-east,.x-tool.x-tool-expand-west,.x-tool.x-tool-expand-south,.x-tool.x-tool-expand-north{
+  background-image: url(../images/ArrowSpritesMedium.gif);
+  width: 20px;
+  height: 20px;
+}
+.x-tool-collapse-east, .x-tool-expand-west {
+  background-position: 0px -0px;
+}
+.x-tool-collapse-east-over,.x-tool-expand-west-over {
+  background-position: -20px -0px;
+}
+.x-tool-collapse-west, .x-tool-expand-east {
+  background-position: 0px -20px;
+  margin-top: 2px;
+  margin-right: 2px;
+}
+.x-tool-collapse-west-over, .x-tool-expand-east-over {
+  background-position: -20px -20px;
+}
+.x-layout-collapsed.x-layout-collapsed-east, .x-layout-collapsed.x-layout-collapsed-west {
+  width: 24px !important;
+}
+.x-tool-collapse-south, .x-tool-expand-north {
+  background-position: 0px -40px;
+}
+.x-tool-collapse-south-over, .x-tool-expand-north-over {
+  background-position: -20px -40px;
+}
+.x-tool-collapse-north, .x-tool-expand-south {
+  background-position: 0px -60px;
+}
+.x-tool-collapse-north-over, .x-tool-expand-south-over {
+  background-position: -20px -60px;
+}
+.x-layout-collapsed.x-layout-collapsed-north, .x-layout-collapsed.x-layout-collapsed-south {
+  height: 24px !important;
+}

@@ -1,4 +1,4 @@
-<% extends ../../../templates/base.html %>
+<% extends ./hebase.html %>
 <% subskin extrahead %>
     <!-- OpenLayers resources -->
     <link rel="stylesheet" type="text/css" href="externals/openlayers/theme/default/style.css">
@@ -41,14 +41,14 @@
     <script type="text/javascript" src="script/proj4js.js"></script>
 	<script type="text/javascript" src="script/projCodes.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="css/gcd.css">
-    <script type="text/javascript" src="script/gcd.js"></script>
+   
     
     <!-- GeoExplorer resources -->
     <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
     <link rel="stylesheet" type="text/css" href="theme/app/mapstore.css" />
    
-	
+	 <link rel="stylesheet" type="text/css" href="css/gcd.css">
+    <script type="text/javascript" src="script/gcd.js"></script>
 	<!-- Advanced Scalebar CSS -->
 	<!--link rel="stylesheet" type="text/css" href="theme/app/scalebar-fat.css" /-->
     <link rel="stylesheet" type="text/css" href="theme/app/scalebar-thin.css" />
@@ -304,7 +304,6 @@
 					layout: 'fit',
 					border: false
 			};
-
 			// in header and footer, we need numbers, not strings
 			var parseKnowIntegers = function(section){
 				var knownInteger = {'height':true, 'maxHeight': true, 'minWidth':true};
@@ -361,6 +360,11 @@
 			}			
 			
 			var appViewport = new Ext.Viewport(viewport);
+            
+            var footer=Ext.getDom('footer');
+                        var thisDate=new Date();
+                        var thisYear=thisDate.getFullYear();
+                        if(footer) footer.innerHTML+=thisYear+"&nbsp;";
             
             // /////////////////////////////////////////////////////////////
             // Parsing WMS servers Sources for getCapabilities operation
@@ -426,7 +430,8 @@
                 }, mapIdentifier, authorization, fullScreen, templateId);   
                 
                 app.on({
-                    'portalready' : function() {              	
+                    'portalready' : function() {
+                        
                         if(fullScreen) {
                             var westPanel = Ext.getCmp('west');
                             westPanel.setActiveTab('legend');

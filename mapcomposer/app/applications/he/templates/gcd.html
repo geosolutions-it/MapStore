@@ -1,4 +1,4 @@
-<% extends ../../../templates/base.html %>
+<% extends ./hebase.html %>
 <% subskin extrahead %>
         <!--meta http-equiv="X-UA-Compatible" content="IE=8" /-->
         <title>Map Viewer</title>
@@ -49,7 +49,7 @@
  
         <!-- gxp resources -->
         <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
-        <link rel="stylesheet" type="text/css" href="css/gcd.css">
+        
         <link rel="stylesheet" type="text/css" href="css/metricsgraphics.css">
         <script type="text/javascript" src="script/gxp.js"></script> 
 
@@ -61,9 +61,14 @@
         <link rel="stylesheet" type="text/css" href="theme/app/geoexplorer.css" />
         <link rel="stylesheet" type="text/css" href="theme/app/mapstore.css" />
         <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->        
- 
+
         <script type="text/javascript" src="script/GeoExplorer.js"></script>
         <script type="text/javascript" src="script/ux.js"></script>
+        
+        <!--He application CSS-->
+        <link rel="stylesheet" type="text/css" href="css/gcd.css">
+        <link rel="stylesheet" type="text/css" href="css/ngr.css">
+
         
         <!-- geocoding data  -->
         <script type="text/javascript" src="data/georeferences.js"></script>
