@@ -1883,6 +1883,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             this.processingPane.elaborazione.setValue(1);
             var record = this.processingPane.elaborazione.getStore().getAt(0);
             this.processingPane.elaborazione.fireEvent('select', this.processingPane.elaborazione, record, 0);
+            this.processingPane.viadottiGallerie = [];
             // Formula
             this.processingPane.formula.setValue(this.processingPane.formula.getStore().data.items[0].get('id_formula'));                        
             // Resolution
@@ -2831,6 +2832,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     getFormulaEnv: function(status, targetId) {
         var env = "formula:"+this.optimizeFormula(status)+";resolution:"+status.resolution+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+';kemler:' + (this.status.sostanza.originalid || this.status.sostanza.id.join('\\,')) +";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing+";precision:"+this.formulaPrecision;
+        if(status.resolution === 1 && status.viadottiGallerie.length > 0) {
+            env += ';viadottigallerie:';
+        }
         if(status.processing === 3) {
             var simulation = status.simulation;            
             env += ';pis:'+simulation.pis.join('_') + ';padr:'+simulation.padr.join('_') + ';cff:'+simulation.cff.join('_');

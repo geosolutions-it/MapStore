@@ -92,6 +92,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     seriousnessLabel: "Entità",
     resetButton: "Reimposta",
     cancelButton: "Annulla",
+    okButton: "Conferma",
     viewMapButton: "Avvia Elaborazione",
     formLabel: "Impostazioni di Elaborazione",
     bboxValidationTitle: "Selezione Area di Interesse",
@@ -131,6 +132,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     alertSimGridReloadTitle: "Aggiornamento Bersagli",
     alertSimGridReloadMsg: "Vuoi aggiornare i Bersagli? - Tutte le modifica andranno perse!",    
     formulaHelpTitle: "Descrizione Formula",
+    viadottiGallerieButtonText: "Viadotti e Gallerie",
+    viadottiGallerieArcIdHeader: "Arco",
+    viadottiGallerieViadottoHeader: "Viadotto",
+    viadottiGallerieGalleriaHeader: "Galleria",
     // End i18n.
         
     cellViewScale: 500010,
@@ -178,6 +183,8 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
     aoiFieldset: null,
     
     selDamage: null,
+    
+    viadottiGallerie: [],
     
     /*WFSStores settings*/
     wfsURL: "http://84.33.2.23/geoserver/wfs",
@@ -617,7 +624,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.aoiUpdater = function() {            
             var extent=map.getExtent().clone();
             this.aoiFieldset.setAOI(extent);                    
-            this.aoiFieldset.removeAOILayer(map);            
+            this.aoiFieldset.removeAOILayer(map);  
+            this.enableDisableViadottiGallerie(this.getComboRecord(this.formula, 'id_formula'), 
+                this.getComboRecord(this.elaborazione, 'id'));
         };
         map.events.register("move", this, this.aoiUpdater);
         
@@ -781,12 +790,20 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                     combo.innerList.setWidth( 'auto' );
                 },
                 select: function(combo, record, index) {
-                    //this.enableDisableForm(record, this.getComboRecord(this.elaborazione, 'id'));
+                    this.enableDisableForm(this.getComboRecord(this.formula, 'id_formula'), this.getComboRecord(this.elaborazione, 'id'));
                 }
             } 
         });
         
         this.resolution.setValue(this.resolutionStore.getAt(0).get('id_resolution'));
+       
+        this.viadottiGallerieButton = new Ext.Button({
+            text: this.viadottiGallerieButtonText,
+            handler: function(btn) {
+                this.showViadottiGallerieDialog();
+            },
+            scope: this
+        });
        
         this.elabSet = new Ext.form.FieldSet({
             title: this.formLabel,
@@ -797,9 +814,10 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 bodyStyle:'padding:5px;'
             },
             items: [
-            this.elaborazione,
-            this.formula,
-            this.resolution
+                this.elaborazione,
+                this.formula,
+                this.resolution,
+                this.viadottiGallerieButton
             ]
         });
         
@@ -1184,6 +1202,113 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         return this.accidentSet;
     },
+    
+    showViadottiGallerieDialog: function() {
+        var map = this.appTarget.mapPanel.map;
+        var bounds = new OpenLayers.Bounds.fromString(this.getRoiObject().bbox.toBBOX());
+        var filter = new OpenLayers.Filter.Spatial({ 
+          type: OpenLayers.Filter.Spatial.BBOX,
+          property: 'geometria',
+          value: bounds, 
+          projection: map.getProjection() 
+        });
+    
+        var viadottiGallerieStore = new GeoExt.data.FeatureStore({ 
+            id: "viadottiGallerieStore",
+            fields: [
+               {name: 'id', type: 'int', mapping: 'id_geo_arco'},
+               {name: 'viadotto', type: 'bool', mapping: 'viadotto'},
+               {name: 'galleria', type: 'bool', mapping: 'galleria'}
+            ],
+            proxy: this.getWFSStoreProxy("viadotti_gallerie", filter)
+        }); 
+        
+        viadottiGallerieStore.load();
+    
+        var viadottiGallerieGrid = new Ext.grid.GridPanel({
+            id: 'id_viadotti_gallerie_grid',
+            store: viadottiGallerieStore,
+            header: false,
+            
+            cm: new Ext.grid.ColumnModel({
+                columns: [
+                    {
+                        header: this.viadottiGallerieArcIdHeader,
+                        width : 60,
+                        sortable : true,
+                        dataIndex: 'id'
+                    },{
+                        header: this.viadottiGallerieViadottoHeader,
+                        width : 120,
+                        renderer: function(value, metadata, record) {
+                            return '<input id="viadotti_gallerie_check_viadotto_'+record.get('id')+'" type="checkbox" '+(value ? 'checked' : '')+'/>';
+                        },
+                        sortable : true,
+                        dataIndex: 'viadotto'
+                    },{
+                        header: this.viadottiGallerieGalleriaHeader,
+                        width : 120,
+                        renderer: function(value, metadata, record) {
+                            return '<input id="viadotti_gallerie_check_galleria_'+record.get('id')+'" type="checkbox" '+(value ? 'checked' : '')+'/>';
+                        },
+                        sortable : true,
+                        dataIndex: 'galleria'
+                    }
+                  ]                
+            }),
+            viewConfig: {
+                forceFit: true
+            }            
+        });
+    
+        this.viadottiGallerieWin = new Ext.Window({
+			title: this.viadottiGallerieButtonText,
+			layout: "fit",
+			width: 600,
+			height: 500,
+			closeAction: 'close',
+			resizable: false,
+			plain: true,
+			border: false,
+			modal: true,
+			items: [viadottiGallerieGrid],
+            buttons: [{
+                text: this.okButton,
+                iconCls: 'ok-button',
+                scope: this,
+                handler: function() {
+                    this.updateViadottiGallerie(viadottiGallerieStore);
+                    this.viadottiGallerieWin.destroy();
+                }
+            }],
+			keys: [{ 
+				key: [Ext.EventObject.ESC], 
+				handler: function() {
+					this.formulaHelpWin.close();
+				},
+				scope: this
+			}]
+		});
+		this.viadottiGallerieWin.show();
+    },
+    
+    updateViadottiGallerie: function(store) {
+        this.viadottiGallerie = [];
+        store.each(function(record) {
+            var id = record.get('id');
+            var viadotto = !!Ext.getDom('viadotti_gallerie_check_viadotto_' + id).checked;
+            var galleria = !!Ext.getDom('viadotti_gallerie_check_galleria_' + id).checked;
+            
+            if(viadotto || galleria) {
+                this.viadottiGallerie.push({
+                    id: id,
+                    viadotto: viadotto,
+                    galleria: galleria
+                });
+            }
+        }, this);
+    },
+    
     /**
      * Calculates the automatic radius for "Valutazione del danno" processing, from current form status.
      */
@@ -1266,6 +1391,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.enableDisableTargets(formula, elaborazione);
         this.enableDisableScenario(formula, elaborazione);
         this.enableDisableResolution(formula, elaborazione);
+        this.enableDisableViadottiGallerie(formula, elaborazione);
     },
     
     enableDisableTemporali: function(formula, elaborazione) {
@@ -1284,6 +1410,29 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.enableDisable(enable, this.resolution);
         if(!enable) {
             this.resolution.setValue(this.resolutionStore.getAt(0).get('id_resolution'));
+        }
+    },
+    
+    enableDisableViadottiGallerie: function(formula, elaborazione) {
+        var map = this.appTarget.mapPanel.map;
+        var scale = Math.round(map.getScale()); 
+        
+        var enable = false;
+        if(formula){
+            enable = formula.get('ambito_territoriale')  && elaborazione.get('id') <= 2;
+        }
+        if(enable) {
+            if(this.resolution.getValue() > 1) {
+                enable = false;
+            }
+        }
+        if(scale > this.syntView.analiticViewScale) {
+            enable = false;
+        }
+        if(enable) {
+            this.viadottiGallerieButton.enable();
+        } else {
+            this.viadottiGallerieButton.disable();
         }
     },
     
@@ -1885,6 +2034,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             },
             resolution: resolutionRec.get('id_resolution'),
             resolutionDesc: resolutionRec.get('name'),
+            viadottiGallerie: this.viadottiGallerie,
             themas: this.getThemasObj(processingRec.get('id'), formulaRec),
             
             roi : this.getRoiObject(),
@@ -2027,6 +2177,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             }*/
         }
         this.resolution.setValue(this.status.resolution || 1);
+        this.viadottiGallerie = this.status.viadottiGallerie || [];
         this.updateAOI(status.roi);
                 
         store=this.macrobers.getStore(); 
