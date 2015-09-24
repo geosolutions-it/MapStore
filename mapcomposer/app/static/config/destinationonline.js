@@ -932,6 +932,10 @@
 						"mapping": "descrizione_ateco_${locale}"
 					},
 					{
+						"name": "codateco",
+						"mapping": "codateco"
+					},
+					{
 						"name": "partner",
 						"mapping": "partner_${locale}"
                         }
