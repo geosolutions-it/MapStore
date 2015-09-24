@@ -1980,6 +1980,10 @@
                             "mapping": "cod_fisc"
                         },
                         {
+                            "name": "codateco",
+                            "mapping": "codateco"
+                        },
+                        {
                             "name": "descrizioneateco",      
                             "mapping": "descrizione_ateco_${locale}"
                         },
