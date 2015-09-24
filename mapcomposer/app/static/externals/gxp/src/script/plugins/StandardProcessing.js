@@ -1212,7 +1212,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
           value: bounds, 
           projection: map.getProjection() 
         });
-    
+        var resolution = this.resolution.getValue();
         var viadottiGallerieStore = new GeoExt.data.FeatureStore({ 
             id: "viadottiGallerieStore",
             fields: [
@@ -1220,18 +1220,117 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                {name: 'viadotto', type: 'bool', mapping: 'viadotto'},
                {name: 'galleria', type: 'bool', mapping: 'galleria'}
             ],
-            proxy: this.getWFSStoreProxy("viadotti_gallerie", filter)
+            proxy: this.getWFSStoreProxy("viadotti_gallerie_" + resolution, filter)
         }); 
         
         viadottiGallerieStore.load();
+    
+        var displayGeometry = function(layerName, id, geometry, style ){
+            
+            var targetLayer = map.getLayersByName(layerName)[0];
+            
+            var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+            renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;       
+            
+            if(!targetLayer){
+                var layerStyle= style || {
+                    strokeColor: "#FF00FF",
+                    strokeWidth: 2,
+                    fillColor: "#FF00FF",
+                    fillOpacity: 0.8
+                };
+                                        
+                targetLayer = new OpenLayers.Layer.Vector(layerName,{
+                    displayInLayerSwitcher: false,
+                    style: layerStyle,
+                    renderers: renderer
+                });
+                
+                map.addLayer(targetLayer);
+            }
+            if(geometry) {
+                var feature = new OpenLayers.Feature.Vector(geometry,{
+                    "id": id
+                });
+                targetLayer.addFeatures([feature]);	   
+            }
+            return targetLayer;
+        };
+        
+        var getGeometry = function(rec, sourceSRS){
+            //var geometry = rec.data.feature.geometry;
+            var geometry = rec;
+            if(geometry && sourceSRS) {
+                if(sourceSRS != map.getProjection()){
+                    var coll=new OpenLayers.Geometry.Collection(new Array(geometry.clone()));
+                    
+                    var targetColl = transformCollection(
+                        coll, 
+                        new OpenLayers.Projection(sourceSRS),
+                        map.getProjectionObject()
+                    );
+                    
+                    geometry = targetColl.components[0];   
+                }
+            }
+            return geometry;
+        };
+        
+        var removeGeometry = function(layerName, id){
+            var targetLayer = map.getLayersByName(layerName)[0];
+            if(targetLayer) {
+                var unSelectFeatures= targetLayer.getFeaturesByAttribute("id", id);
+                targetLayer.removeFeatures(unSelectFeatures); 
+            }
+        };
+        
+        var clearGeometries = function(layerName){
+            var targetLayer = map.getLayersByName(layerName)[0];
+            if(targetLayer) {
+                targetLayer.removeAllFeatures(); 
+            }
+        };
+        
+        var transformCollection = function(coll, sourceProjection, destProjection) {
+            // workaround to make transform consider towgs84 params
+            var epsg4326 = new OpenLayers.Projection('EPSG:4326');
+            coll = coll.transform(
+                sourceProjection,
+                epsg4326
+            );
+            return coll.transform(
+                epsg4326,
+                destProjection
+            );
+        };
+    
+        var checkConf = {
+            checkOnly: true,
+            listeners: {
+                scope: this,
+                rowdeselect: function (selMod, rowIndex, record){
+                    removeGeometry("viadotti_gallerie", record.get("fid"));
+                },
+                rowselect: function(selMod, rowIndex, record) {
+                    
+                    var geom = getGeometry(record.data.feature.geometry,"EPSG:4326");
+                    displayGeometry("viadotti_gallerie", 
+                        record.get("fid"),
+                        geom);
+                }
+            }
+        };
+        
+        var sm = new Ext.grid.CheckboxSelectionModel(checkConf)
     
         var viadottiGallerieGrid = new Ext.grid.GridPanel({
             id: 'id_viadotti_gallerie_grid',
             store: viadottiGallerieStore,
             header: false,
-            
+            sm: sm,
             cm: new Ext.grid.ColumnModel({
                 columns: [
+                    sm,
                     {
                         header: this.viadottiGallerieArcIdHeader,
                         width : 60,
@@ -1262,6 +1361,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         });
     
         this.viadottiGallerieWin = new Ext.Window({
+            id: "viadotti_gallerie_win",
 			title: this.viadottiGallerieButtonText,
 			layout: "fit",
 			width: 600,
@@ -1277,6 +1377,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 iconCls: 'ok-button',
                 scope: this,
                 handler: function() {
+                    clearGeometries("viadotti_gallerie");
                     this.updateViadottiGallerie(viadottiGallerieStore);
                     this.viadottiGallerieWin.destroy();
                 }
@@ -1287,7 +1388,12 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
 					this.formulaHelpWin.close();
 				},
 				scope: this
-			}]
+			}],
+            listeners: {
+                close: function() {
+                    clearGeometries("viadotti_gallerie");
+                }
+            }
 		});
 		this.viadottiGallerieWin.show();
     },
@@ -1422,7 +1528,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             enable = formula.get('ambito_territoriale')  && elaborazione.get('id') <= 2;
         }
         if(enable) {
-            if(this.resolution.getValue() > 1) {
+            if(this.resolution.getValue() > 2) {
                 enable = false;
             }
         }

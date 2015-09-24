@@ -109,6 +109,7 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 	notAgreeDisclaimerText: 'Non Accetto',
     
     resolutionLabel: "Risoluzione",
+    viadottiGallerieWarning: "Attenzione, l'elaborazione comprende archi di strada che rappresentano viadotti e/o gallerie",
     // End i18n.
         
     id: "syntheticview",
@@ -424,7 +425,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         var targetViewParams = this.getRoiViewParams(this.status, bounds, this.status.processing !== 4) 
             + ';distanzaumano:' + radius.maxHuman + ';distanza:' + radius.maxNotHuman + ';wkt:' + wkt
             + ';resolution:' + resolution;
-        
+        if(this.status.viadottiGallerie.length > 0) {
+            targetViewParams += ';skipped:' + this.getViadottiGallerieList(this.status.viadottiGallerie).join(',').replace(/,/g, "\\\,");
+        }
         this.analyticViewLayers.push(name);
         this.analyticViewLayers.push(this.selectedTargetLayer);
         layers.push(this.createLayerRecord({
@@ -2032,6 +2035,16 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 				changedTargetsInfo = new OpenLayers.WPSProcess.LiteralData({value:Ext.encode(simulation.exportInfo)});
 			}
 			me.saveDownloadPanel.getEl().mask(this.saveDownloadLoadingMsg);
+            var skippedArcs = '';
+            if(aggregation <= 2 && aggregation === this.status.resolution && this.status.viadottiGallerie.length > 0) {
+                var viadottiGallerie = [];
+                for(var i = 0; i < this.status.viadottiGallerie.length; i++) {
+                    var current = this.status.viadottiGallerie[i];
+                    viadottiGallerie.push(current.id + '*' + current.viadotto + '*' + current.galleria);
+                }
+                skippedArcs = viadottiGallerie.join('_');
+            }
+            
 			downloadProcess.execute({
 				headers: this.getBasicAuthentication(),
 				// spatial input can be a feature or a geometry or an array of
@@ -2070,7 +2083,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 					pis: pis,
 					changedTargets: changedTargets,
 					changedTargetsInfo: changedTargetsInfo,
-					crs: new OpenLayers.WPSProcess.LiteralData({value:me.selectionLayerProjection.split(':')[1]})
+					crs: new OpenLayers.WPSProcess.LiteralData({value:me.selectionLayerProjection.split(':')[1]}),
+                    skippedarcs: new OpenLayers.WPSProcess.LiteralData({value:skippedArcs})
 					
 				},
 				outputs: [],                                    
@@ -2661,7 +2675,14 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     getBufferSizeInPixels: function(bufferInMeter) {
         return Math.round(bufferInMeter / this.getMetersToPixelsRatio());
     },
-    
+    getViadottiGallerieList: function(list) {
+        var result = [];
+        for(var i = 0; i < list.length; i++) {
+            var arc = list[i];
+            result.push(arc.id);
+        }
+        return result;
+    },
     addBuffers: function(layers, bounds, radius, bufferArea, resolution) {        
         var bufferLayerTitle =this.bufferLayerTitle[GeoExt.Lang.getLocaleIndex()];
         var roi;
@@ -2671,6 +2692,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         } else {
             var viewParams = this.getRoiViewParams(this.status, bounds, true) +
                 ';resolution:' + resolution;
+            if(this.status.viadottiGallerie.length > 0) {
+                viewParams += ';skipped:' + this.getViadottiGallerieList(this.status.viadottiGallerie).join(',').replace(/,/g, "\\\,");
+            }
             //var buffer = this.getBufferSizeInPixels(radius.max);
             roi = this.getRoi(null, null, radius.max)
             if(!this.status || this.isMixedTargets()) {
@@ -2832,8 +2856,13 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
     getFormulaEnv: function(status, targetId) {
         var env = "formula:"+this.optimizeFormula(status)+";resolution:"+status.resolution+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+';kemler:' + (this.status.sostanza.originalid || this.status.sostanza.id.join('\\,')) +";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing+";precision:"+this.formulaPrecision;
-        if(status.resolution === 1 && status.viadottiGallerie.length > 0) {
-            env += ';viadottigallerie:';
+        if(status.resolution <= 2 && status.viadottiGallerie.length > 0) {
+            var viadottiGallerie = [];
+            for(var i = 0; i < status.viadottiGallerie.length; i++) {
+                var current = status.viadottiGallerie[i];
+                viadottiGallerie.push(current.id + '*' + current.viadotto + '*' + current.galleria);
+            }
+            env += ';viadottigallerie:' + viadottiGallerie.join('_');
         }
         if(status.processing === 3) {
             var simulation = status.simulation;            
@@ -2872,7 +2901,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         if(GeoExt.Lang.locale === 'de' && (status.formula === 26 || status.formula === 29)) {
             formulaDescTot = status.formulaDesc;
         }
-
+        if(status.viadottiGallerie.length > 0) {
+            Ext.getCmp('warning_message').setValue(this.viadottiGallerieWarning);
+        } else {
+            this.checkViadottiGallerie(roi, status);
+        }
+        
         if(status.formulaInfo.dependsOnTarget) {
             if(this.isSingleTarget()) {
                 this.addFormula(layers, bounds, status, parseInt(status.target['id_bersaglio'], 10), this.formulaRiskLayer[resolution], this.isHumanTarget() ? formulaDescHum : formulaDescNotHum, this.isHumanTarget() ? formulaUdmSoc : formulaUdmEnv, env, roi, true);
@@ -2892,6 +2926,30 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     
     getMixedFormulaEnv: function() {
         return "lowsociale:"+this.status.themas['sociale'][0]+";mediumsociale:"+this.status.themas['sociale'][1]+";maxsociale:"+this.status.themas['sociale'][2]+";lowambientale:"+this.status.themas['ambientale'][0]+";mediumambientale:"+this.status.themas['ambientale'][1]+";maxambientale:"+this.status.themas['ambientale'][2];
+    },
+    
+    checkViadottiGallerie: function(bounds, status) {
+        var map = this.target.mapPanel.map;
+        var filter = new OpenLayers.Filter.Spatial({ 
+          type: OpenLayers.Filter.Spatial.BBOX,
+          property: 'geometria',
+          value: bounds, 
+          projection: map.getProjection() 
+        });
+        var resolution = status.resolution;
+        var viadottiGallerieStore = new GeoExt.data.FeatureStore({ 
+            id: "viadottiGallerieStore",
+            fields: [
+               {name: 'id', type: 'int', mapping: 'id_geo_arco'}
+            ],
+            proxy: this.processingPane.getWFSStoreProxy("viadotti_gallerie_check_" + resolution, filter)
+        }); 
+        viadottiGallerieStore.on('load', function(store, records) {
+            if(records && records.length > 0) {
+                Ext.getCmp('warning_message').setValue(this.viadottiGallerieWarning);
+            }
+        }, this);
+        viadottiGallerieStore.load();
     },
     
     extractLayersByName: function(layers, names, field) {
