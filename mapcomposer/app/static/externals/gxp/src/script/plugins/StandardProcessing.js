@@ -2354,6 +2354,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             visibleOnGrid: true
         };                
         obj.resolution = 1;
+        obj.viadottiGallerie = [];
         obj.simulation = {
             cff:[],
             padr:[],
