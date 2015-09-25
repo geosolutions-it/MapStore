@@ -226,8 +226,8 @@ gxp.slider.TimeSlider = Ext.extend(Ext.slider.MultiSlider, {
         else{
             var indexMap = ['primary'], 
                 values = [this.timeManager.currentTime.getTime()], 
-                min = this.timeManager.range[0].getTime(), 
-                max = this.timeManager.range[1].getTime(), 
+                min = this.timeManager.range[0].getTime() + (this.timeManager.range[0].getTimezoneOffset() * 60000), 
+                max = this.timeManager.range[1].getTime() + (this.timeManager.range[1].getTimezoneOffset() * 60000), 
                 then = new Date(min), 
                 interval;
             

@@ -49,6 +49,9 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 	 * {string} the OpenSDI2-Manager REST Url
 	 */
 	osdi2ManagerRestURL : null,
+	
+	owsWMSUrl  : "http://localhost:8083/geoserver/wms",
+	owsBgLayer : 'geosolutions:Counties',
 
 	/* i18n */
 	nameText : 'Title',
@@ -287,7 +290,7 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 								center : me.center
 							},
 							layers : [
-								new OpenLayers.Layer.OSM("OpenStreetMap", 
+								/*new OpenLayers.Layer.OSM("OpenStreetMap", 
 									[
 										"http://a.tile.openstreetmap.org/${z}/${x}/${y}.png", 
 								 		"http://b.tile.openstreetmap.org/${z}/${x}/${y}.png", 
@@ -309,7 +312,18 @@ mxp.widgets.CMREOnDemandServicesGrid = Ext.extend(Ext.grid.GridPanel, {
 											crossOriginKeyword : null
 										}
 									})
-								),
+								)*/
+								new OpenLayers.Layer.WMS(
+                                 	"World Countries", 
+                                 	me.owsWMSUrl,
+                                 	{
+                                         srs: 'EPSG:4326',
+                                         layers: me.owsBgLayer,
+                                         styles: '',
+                                         format:'image/png'
+                                 	},
+                                 	{singleTile: false, ratio: 1}
+                                ),
 								vectorLayer
 							],
 							extent : me.bounds,

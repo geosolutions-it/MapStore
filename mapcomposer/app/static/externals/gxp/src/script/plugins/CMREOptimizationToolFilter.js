@@ -298,15 +298,43 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 		   url: url,
 		   method: 'GET',
 		   success: function (response){
-		   	Ext.Msg.show({
-			   title: "OTH-Gold PIM Track",
-			   msg: response.responseText,
-			   closable: false,
-			   width: 650,
-			   height: 800,
-			   buttons: Ext.Msg.OK,
-			   icon: Ext.MessageBox.INFO
-			});
+			   	/*Ext.Msg.show({
+				   title: "OTH-Gold PIM Track",
+				   msg: response.responseText,
+				   closable: false,
+				   width: 650,
+				   height: 800,
+				   buttons: Ext.Msg.OK,
+				   icon: Ext.MessageBox.INFO
+				});*/
+				
+			    var eventPan=new Ext.Panel({
+					html:response.responseText,
+					preventBodyReset:true,
+					autoScroll:true,
+					autoHeight: false,
+					width: 600,
+					height: 400
+				
+				});		
+				
+				var eventWin = new Ext.Window({
+					
+					title: "OTH-Gold PIM Track",
+					closable: true,
+					width:614,
+					resizable: false,
+					
+					draggable: true,
+					items: [
+						eventPan
+					]
+			
+					
+				});
+				
+				eventWin.show();
+			    
 		   },
            failure: function (response){
            	Ext.Msg.show({
@@ -842,7 +870,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 						});
 		           	},
 		            scope: this
-		       },{
+		       }/*,{
 		            xtype: "fieldset",
 		            title: "OTH-Gold PIM Track",
 		            checkboxToggle: false,
@@ -885,7 +913,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 					    	]
 			    		},{
 			    			xtype:'textfield',
-			    			fieldLabel: "Comma-separated list of Assets (1,2,...)",
+			    			fieldLabel: "Comma-separated list of Asset IDs",
 			    			ref: 'assets',
 			    			allowBlank: false,
 			    			anchor: "100%"
@@ -998,7 +1026,7 @@ gxp.plugins.CMREOptimizationToolFilter = Ext.extend(gxp.plugins.WMSLayerFilter, 
 					            scope: this
 					  		}]
 			        }]
-		       }
+		       }*/
             ]
         });
 

@@ -173,6 +173,8 @@ mxp.plugins.CMREOnDemandServices = Ext.extend(mxp.plugins.Tool, {
             geoStoreBase: this.geoStoreBase,
             tbar:buttons,
             osdi2ManagerRestURL: this.osdi2ManagerRestURL,
+			owsWMSUrl  : this.owsWMSUrl,
+			owsBgLayer : this.owsBgLayer,            
             region:'west',
 			iconCls:'nato_ic',
 			title:this.flowsListTitle,

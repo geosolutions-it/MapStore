@@ -45,8 +45,10 @@
     }],
    "adminTools":[{
          "ptype": "mxp_cmre_ondemand_services",
-         "osdi2ManagerRestURL":"http://172.21.160.30:8282/opensdi2-manager/mvc/process/wps/",         
-         "baseMapUrl": "./?config=assetAllocatorResult",
+         "osdi2ManagerRestURL":"http://172.21.160.30:8282/opensdi2-manager/mvc/process/wps/", 
+         "owsWMSUrl"  : "http://172.21.160.30:8080/geoserver/wms",
+         "owsBgLayer" : "natocmre:WorldCoastlines",
+         "baseMapUrl" : "./?config=assetAllocatorResult",
          "autoRefreshTime": 30000,
          "autoOpen":true,
          "outputConfig":{"closable":false},
@@ -256,6 +258,8 @@
     "loggedTools":[{
          "ptype": "mxp_cmre_ondemand_services",
          "osdi2ManagerRestURL":"http://172.21.160.30:8282/opensdi2-manager/mvc/process/wps/",
+         "owsWMSUrl"  : "http://172.21.160.30:8080/geoserver/wms",
+         "owsBgLayer" : "natocmre:WorldCoastlines",
          "baseMapUrl": "./?config=assetAllocatorResult",
          "autoRefreshTime": 30000,
          "autoOpen":true,
