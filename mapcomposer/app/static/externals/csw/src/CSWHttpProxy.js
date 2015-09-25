@@ -64,8 +64,12 @@
 	  */
 	constructor: function(options) {
 		this.cswVersion = (options.cswVersion) ? options.cswVersion : "2.0.2";
-		this.sortProperty = (options.sortProperty) ? options.sortProperty: "Title";
-		this.sortOrder = (options.sortOrder) ? options.sortOrder: "ASC";
+		this.sortProperty = options.sortProperty;
+		
+		if(this.sortProperty){
+			this.sortOrder = (options.sortOrder) ? options.sortOrder: "ASC";
+		}
+		
 		this.limit = options.limit;
 		var conn = {
 				url: ( options.XDProxy ? options.XDProxy.url + "?" + options.XDProxy.callback + "=" + encodeURIComponent(options.url) : options.url),
@@ -139,12 +143,14 @@
 		}
 
 		// Sort results by a given property 
-		optionsCsw.Query.SortBy = [
-			{
-				property: this.sortProperty,
-				order: this.sortOrder
-			}	
-		];
+		if(this.sortProperty){
+			optionsCsw.Query.SortBy = [
+				{
+					property: this.sortProperty,
+					order: this.sortOrder
+				}	
+			];
+		}
 
 		var format = new OpenLayers.Format.CSWGetRecords();
 		return format.write(optionsCsw);

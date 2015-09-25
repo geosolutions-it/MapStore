@@ -166,7 +166,7 @@ CSWCatalogChooser = Ext.extend(Ext.form.ComboBox, {
                             + "?"
                             + "Request=GetCapabilities"
                             + "&SERVICE=CSW"
-                            + "&Section=ServiceIdentification"
+                            + "&Sections=ServiceIdentification"
                             + "&outputformat=application/xml"
                             + "&AcceptVersions=" + this.cswVersion
                     );
@@ -175,7 +175,7 @@ CSWCatalogChooser = Ext.extend(Ext.form.ComboBox, {
             url =   catalogUrl 
                     + "?Request=GetCapabilities"
                     +"&SERVICE=CSW"
-                    +"&Section=ServiceIdentification"
+                    +"&Sections=ServiceIdentification"
                     +"&outputformat=application/xml"
                     +"&AcceptVersions=" +this.cswVersion;
         }

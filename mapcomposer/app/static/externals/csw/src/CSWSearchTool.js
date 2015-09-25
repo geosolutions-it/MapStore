@@ -216,6 +216,8 @@ CSWSearchTool = Ext.extend(Ext.form.FormPanel, {
 			url : this.catalogChooser.getValue(),
             //url : this.catalogChooser.store.getAt(0).data.url,
 			filterVersion : this.filterVersion,
+			sortProperty: this.sortProperty,
+			sortOrder: this.sortOrder,
 			resultType : "full"
 		};
 

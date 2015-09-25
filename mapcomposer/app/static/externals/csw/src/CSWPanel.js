@@ -164,7 +164,9 @@ CSWPanel = Ext.extend(Ext.Panel, {
 					this.config.initialBBox.maxx, 
 					this.config.initialBBox.maxy
 			),
-			filterVersion: this.config.filterVersion	
+			filterVersion: this.config.filterVersion,
+			sortProperty: this.config.sortProperty,
+			sortOrder: this.config.sortOrder
 		});
         
         if(this.cswPanelMode === 'addActions'){
