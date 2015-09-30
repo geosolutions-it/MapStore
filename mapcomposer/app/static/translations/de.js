@@ -348,15 +348,15 @@ GeoExt.Lang.add("de", {
 	    paperSizeText: "Papierformat:",
 	    resolutionText: "Auflösung:",
 	    printText: "Drucken",
-	    emptyTitleText: "Überschrift der Karte hier eingeben.",
 	    includeLegendText: "Legende einbeziehen?",
 	    legendOnSeparatePageText: "Legende auf eigener Seite?",
 	    compactLegendText: "Kompakte Legende?",	
-	    emptyCommentText: "Kommentare hier einfügen.",
 	    creatingPdfText: "Erstellung der PDF-Datei...",
 		graticuleFieldLabelText: 'Aktive Raster',
-		defaultTabText: "Default",
-		legendTabText: "Legend"
+		legendTabText: "Legend",
+		defaultTabText: "Map",
+        emptyTitleText: "Karte Titel (Zentrum für Computerausdruck).",
+        emptyCommentText: "Kartenbeschreibung (unten links)."        
     },
 	
 	"GeoExt.ux.LegendStylePanel.prototype":{

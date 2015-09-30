@@ -324,15 +324,15 @@ GeoExt.Lang.add("fr", {
         paperSizeText: "Taille de papier:",
         resolutionText: "Résolution:",
         printText: "Imprimer",
-        emptyTitleText: "Saisir le titre de la carte ici.",
         includeLegendText: "Inclure la légende ?",
         legendOnSeparatePageText: "Légende sur une page distincte ?",
         compactLegendText: "Légende compacte ?",	
-        emptyCommentText: "Entrer des commentaires ici.",
         creatingPdfText: "Création du PDF en cours...",
 		graticuleFieldLabelText: 'Réticule actif',
-		defaultTabText: "Défaut",
-		legendTabText: "Légende"
+		legendTabText: "Légende",
+        defaultTabText: "La carte",
+        emptyTitleText: "Titre de la carte (Centre d'impression).",
+        emptyCommentText: "Carte Description (En bas à gauche)."        
     },
 	
 	"GeoExt.ux.LegendStylePanel.prototype":{

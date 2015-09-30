@@ -393,7 +393,8 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                     this.updateLayout();
                 },
                 cls : "gx-item-margin-left",
-                scope: this
+                scope: this,
+                
             });
             
             var compactLegendCheckbox = new Ext.form.Checkbox({
@@ -436,14 +437,16 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 checkItems.push(landscapeCheckbox);
             }
 
-            panelElements.push({
+            var legendItems = {
                 //xtype: "container",
                 layout: "form",
+                name: 'enableLegendPanelObj',
                 cls: "x-form-item",
                 style:"text-align:left;padding:0px;",
                 bodyStyle: 'padding:4px',
                 items: checkItems
-            });
+            };
+            
         }
         
         panelElements.push({
@@ -461,9 +464,12 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         if(this.addFormParameters || this.addGraticuleControl){
             return new Ext.TabPanel({
                 activeTab: 0,
-                items: this.getTabItems(panelElements)
+                items: this.getTabItems(panelElements,legendItems)
             });
         }else{
+        
+            //panelElements.push(legendItems);
+            
             return new Ext.form.FormPanel({
                 autoHeight: true,
                 border: false,
@@ -479,7 +485,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
      *  :`panelElements`: `Object` with elements for the default tab
      *  :return: ``Array`` with tab items for the print preview 
      */
-    getTabItems: function(panelElements){
+    getTabItems: function(panelElements,legendItems){
 
         var tabItems = [];
         // Default tab
@@ -498,6 +504,10 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             this.legendStylePanel = new GeoExt.ux.LegendStylePanel({
                 printMapPanel: this.printMapPanel
             });
+            
+            this.legendStylePanel.insert(0,legendItems);
+            this.legendStylePanel.doLayout();
+            
             tabItems.push(new Ext.form.FormPanel({
                 title: this.legendTabText,
                 autoHeight: true,
@@ -553,6 +563,10 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             
         */ 
         if(this.includeLegend){
+        
+            if (this.legendStylePanel)
+                this.disableLegendItems(false);
+            
             newLayoutName = currentLayout;
             
             if(this.compactLegend && this.legendOnSeparatePage){
@@ -564,6 +578,10 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             }           
             
         } else {
+        
+            if(this.legendStylePanel)
+                this.disableLegendItems(true);
+            
             newLayoutName = currentLayout + '_no_legend';
         }
 
@@ -680,6 +698,32 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         }
         this.printMapPanel.un("resize", this.updateSize, this);
         GeoExt.ux.PrintPreview.superclass.beforeDestroy.apply(this, arguments);
+    },
+    
+    /** private: method[disableLegendItems]
+     */    
+    disableLegendItems: function(disable){
+        for(var i = 0; i < this.legendStylePanel.items.keys.length; i++){
+            var key =this.legendStylePanel.items.keys[i];
+            var formParam = this.legendStylePanel.items.get(key);
+            if(formParam.name){
+                if(formParam.name === "enableLegendPanelObj"){
+                    formParam.items.each(function(e){
+                        if(e.name !== "legendSeparatePage"){
+                            e.setDisabled(disable);
+                        }
+                    });                
+                }else{
+                    formParam.setDisabled(disable);
+                    if(formParam.innerCt){
+                        formParam.innerCt.items.each(function(e){
+                            e.setDisabled(disable);
+                        });
+                    }
+                }
+            }
+            
+        }    
     }
     
 });

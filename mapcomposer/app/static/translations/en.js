@@ -325,15 +325,15 @@ GeoExt.Lang.add("en", {
         paperSizeText: "Paper size:",
         resolutionText: "Resolution:",
         printText: "Print",
-        emptyTitleText: "Enter map title here.",
         includeLegendText: "Include legend?",
         legendOnSeparatePageText: "Legend on separate page?",
         compactLegendText: "Compact legend?",	
-        emptyCommentText: "Enter comments here.",
         creatingPdfText: "Creating PDF...",
 		graticuleFieldLabelText: 'Active graticule',
-		defaultTabText: "Default",
-		legendTabText: "Legend"
+		legendTabText: "Legend",
+        defaultTabText: "Map",
+        emptyTitleText: "Map Title (Center of Printout).",
+        emptyCommentText: "Map Description (Lower Left)."        
     },
 	
     "GeoExt.ux.LegendStylePanel.prototype":{
