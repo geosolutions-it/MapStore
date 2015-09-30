@@ -87,7 +87,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
     /** api config[includeLegend]
      *  option checked in the print preview
      */
-    includeLegend:true,
+    includeLegend:false,
     /** api config[defaultResolutionIndex]
      *  resolution at that index will be selected as default in the print preview
      */
@@ -380,7 +380,6 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             },
                             printProvider: printProvider,
                             legend : Ext.getCmp(this.legendPanelId),
-                            includeLegend: true,
                             sourceMap: mapPanel
                         })
                     ],
