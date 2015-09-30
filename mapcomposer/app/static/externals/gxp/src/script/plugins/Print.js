@@ -217,14 +217,15 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                         }
                     }
                     
+                    var notIgnorable = getNotIgnorable(notSupported, this.ignoreLayers);
+                    
                     if (activeSupportedLayers > 0) {
 
-                        var notIgnorable = getNotIgnorable(notSupported, this.ignoreLayers);
                         if( notIgnorable.length > 0 ){
 
                             Ext.Msg.alert(
                                 this.notAllNotPrintableText,
-                                this.notPrintableLayersText + '<br />' + notIgnorable.join(',') +
+                                notIgnorable.join(',') + " " + this.notPrintableLayersText + 
                                 ( notIgnorable.indexOf('Marker') != -1 ? '<br />'+ this.notPrintableMarkersText : '')
                             );
                             
@@ -237,7 +238,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                         // no layers supported
                         Ext.Msg.alert(
                             this.notAllNotPrintableText,
-                            this.nonePrintableText
+                            notIgnorable.join(',') + " " + this.notPrintableLayersText + 
+                            ( notIgnorable.indexOf('Marker') != -1 ? '<br />'+ this.notPrintableMarkersText : '')
                         );
                     }
                 },

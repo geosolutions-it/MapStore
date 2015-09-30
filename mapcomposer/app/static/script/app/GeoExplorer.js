@@ -1435,6 +1435,71 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         }
         
         return auth;
+    },
+    
+    /** private: method[enablePrintLayoutByGroup]
+     * 
+     */
+    enablePrintLayoutByGroup: function(customParamsRestrictLayout,capabilitiesLayouts){
+
+        var existingUserDetails = sessionStorage["userDetails"];
+        
+        var layouts = [];
+        
+        if(!existingUserDetails){
+            return capabilitiesLayouts;
+        }else{
+
+            var userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
+            var isAdmin = false;
+
+            // get auth info
+            if (userDetails) {
+                var user = userDetails.user;
+                if(user && user.groups){
+                    if(user.role && ["ROLE_ADMIN","ADMIN"].indexOf(user.role) > -1){
+                        isAdmin = true;
+                        return capabilitiesLayouts;
+                    }else{
+                        if(!isAdmin){
+                            if(customParamsRestrictLayout){
+                                var check = [];
+                                for (var node in user.groups){
+                                    if(user.groups[node] instanceof Array){
+                                        for(var i = 0;i<user.groups[node].length;i++){
+                                            if (user.groups[node][i]['groupName'] === customParamsRestrictLayout.restrictToGroups[0]){
+                                                check.push(user.groups[node][i]['groupName']);
+                                            }
+                                        }
+                                    }else{
+                                        if (user.groups[node]['groupName'] === customParamsRestrictLayout.restrictToGroups[0]){
+                                            check.push(user.groups[node]['groupName']);
+                                        }
+                                    }
+                                }
+                                if(check.length > 0){
+                                    return capabilitiesLayouts;
+                                }else{
+                                    for (var i = 0;i<capabilitiesLayouts.length;i++){
+                                        if (capabilitiesLayouts[i].name.indexOf(customParamsRestrictLayout.layoutName) === -1){
+                                            layouts.push(capabilitiesLayouts[i]);
+                                        }
+                                    }
+                                    
+                                    return layouts;
+                                }
+                            }else{
+                                return capabilitiesLayouts;
+                            }
+                        }
+                    }
+                }else{
+                    return capabilitiesLayouts;
+                }
+            }else{
+                return capabilitiesLayouts;
+            }
+        }        
     }
 });
 

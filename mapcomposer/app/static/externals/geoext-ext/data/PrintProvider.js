@@ -564,9 +564,20 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
     loadStores: function() {
         this.scales.loadData(this.capabilities);
         this.dpis.loadData(this.capabilities);
-        
+
         var caps2 = { layouts : []};
-        var layouts = this.capabilities.layouts;
+        
+        var layouts = [];
+        
+        var capabilitiesLayouts = this.capabilities.layouts;
+        
+        var customParamsRestrictLayout = this.customParams.restrictLayout || false;
+        
+        if(customParamsRestrictLayout){
+            layouts = app.enablePrintLayoutByGroup(customParamsRestrictLayout,capabilitiesLayouts);
+        }else{
+            layouts = this.capabilities.layouts;
+        }
         
         this.fullLayouts.loadData({'layouts' : layouts});
         
@@ -581,7 +592,8 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
         
         this.layouts.loadData(caps2);
         
-        this.setLayout(this.layouts.getAt(this.defaultLayoutIndex ||0));
+        this.setLayout(this.layouts.getAt(this.defaultLayoutIndex || 0) ||
+            this.layouts.getAt(0));
         this.setDpi(this.dpis.getAt(this.defaultResolutionIndex||0));
         this.fireEvent("loadcapabilities", this, this.capabilities);
     },
