@@ -87,7 +87,7 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
     /** api config[includeLegend]
      *  option checked in the print preview
      */
-    includeLegend:true,
+    includeLegend:false,
     /** api config[defaultResolutionIndex]
      *  resolution at that index will be selected as default in the print preview
      */
@@ -217,14 +217,15 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                         }
                     }
                     
+                    var notIgnorable = getNotIgnorable(notSupported, this.ignoreLayers);
+                    
                     if (activeSupportedLayers > 0) {
 
-                        var notIgnorable = getNotIgnorable(notSupported, this.ignoreLayers);
                         if( notIgnorable.length > 0 ){
 
                             Ext.Msg.alert(
                                 this.notAllNotPrintableText,
-                                this.notPrintableLayersText + '<br />' + notIgnorable.join(',') +
+                                notIgnorable.join(',') + " " + this.notPrintableLayersText + 
                                 ( notIgnorable.indexOf('Marker') != -1 ? '<br />'+ this.notPrintableMarkersText : '')
                             );
                             
@@ -237,7 +238,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                         // no layers supported
                         Ext.Msg.alert(
                             this.notAllNotPrintableText,
-                            this.nonePrintableText
+                            notIgnorable.join(',') + " " + this.notPrintableLayersText + 
+                            ( notIgnorable.indexOf('Marker') != -1 ? '<br />'+ this.notPrintableMarkersText : '')
                         );
                     }
                 },
@@ -380,7 +382,6 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                             },
                             printProvider: printProvider,
                             legend : Ext.getCmp(this.legendPanelId),
-                            includeLegend: true,
                             sourceMap: mapPanel
                         })
                     ],

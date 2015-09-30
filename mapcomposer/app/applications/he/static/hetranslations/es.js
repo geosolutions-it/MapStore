@@ -20,5 +20,12 @@ GeoExt.Lang.add("es", {
         groupsLabel:"Grupos",
         gsErrorTitle:"Geostore Error",
         gsGetPermissionError:"No se puede recuperar permisos de recursos."
+    },    
+    "gxp.plugins.PrintSnapshotHE.prototype" :{
+        noSupportedLayersErrorMsg: " no está disponible para la impresión.<br/>Por favor seleccione una de las siguientes como su capa de fondo y vuelva a intentarlo:<br/>",    
+        suggestionLayersMsg: "-> OpenStreetMap <br/> -> MapQuest OpenStreetMap <br/> -> MapQuest Imagery"
+    },
+    "gxp.plugins.Print.prototype": {
+        notPrintableLayersText: "no está disponible para la impresión.<br/>Por favor seleccione una de las siguientes como su capa de fondo y vuelva a intentarlo:<br/>-> OpenStreetMap <br/> -> MapQuest OpenStreetMap <br/> -> MapQuest Imagery"
     }
 });

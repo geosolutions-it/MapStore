@@ -20,5 +20,12 @@ GeoExt.Lang.add("fr", {
         groupsLabel:"Groupes",
         gsErrorTitle:"GeoStore Erreur",
         gsGetPermissionError:"Impossible de récupérer les autorisations de ressources."
+    },    
+    "gxp.plugins.PrintSnapshotHE.prototype" :{
+        noSupportedLayersErrorMsg: " ne sont pas disponibles pour l'impression.<br/>S'il vous plaît sélectionnez une des options suivantes en tant que votre couche de fond et essayez à nouveau:<br/>",    
+        suggestionLayersMsg: "-> OpenStreetMap <br/> -> MapQuest OpenStreetMap <br/> -> MapQuest Imagery"
+    },
+    "gxp.plugins.Print.prototype": {
+        notPrintableLayersText: "ne sont pas disponibles pour l'impression.<br/>S'il vous plaît sélectionnez une des options suivantes en tant que votre couche de fond et essayez à nouveau:<br/>-> OpenStreetMap <br/> -> MapQuest OpenStreetMap <br/> -> MapQuest Imagery"
     }
 });

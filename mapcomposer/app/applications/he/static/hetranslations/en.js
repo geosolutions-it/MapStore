@@ -1,5 +1,5 @@
 GeoExt.Lang.add("en", {
-	"gxp.plugins.he.AddLayersGeoStore.prototype": {
+    "gxp.plugins.he.AddLayersGeoStore.prototype": {
         gsErrorTitle:"GeoStore Error",
         gsInfoTitle:"GeoStore Info",
         editServerText:"Edit",
@@ -20,5 +20,12 @@ GeoExt.Lang.add("en", {
         groupsLabel:"Groups",
         gsErrorTitle:"Geostore Error",
         gsGetPermissionError:"Unable to retrieve resource permissions."
+    },    
+    "gxp.plugins.PrintSnapshotHE.prototype" :{
+        noSupportedLayersErrorMsg: " is not available for printing.<br/>Please select one of the following as your background layer and try again:<br/>",    
+        suggestionLayersMsg: "-> OpenStreetMap <br/> -> MapQuest OpenStreetMap <br/> -> MapQuest Imagery"
+    },
+    "gxp.plugins.Print.prototype": {
+        notPrintableLayersText: "is not available for printing.<br/>Please select one of the following as your background layer and try again:<br/>-> OpenStreetMap <br/> -> MapQuest OpenStreetMap <br/> -> MapQuest Imagery"
     }
 });
