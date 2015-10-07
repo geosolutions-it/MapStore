@@ -834,6 +834,31 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                 }];
             }
         }
-    }
+    },
     
+    /** private: method[checkLayoutName]
+     *  :param currentLayout: ``string`` Current Layout in print plugin.
+     *  :param onChange: ``Boolean`` True if call by onFieldChange PrintProviderField function.
+     * 
+     *  Check correct layout name.
+     */
+    checkLayoutName: function(currentLayout,onChange) {    
+        var layouts = [
+            '_2_pages_compact_legend',
+            '_2_pages_compact_legend_landscape',
+            '_compact_legend',
+            '_compact_legend_landscape',
+            '_2_pages_legend',
+            '_no_legend'
+            ];
+        
+        for (var i = 0;i<layouts.length;i++){
+            if(currentLayout.indexOf(layouts[i]) > 0){
+                var index = currentLayout.indexOf(layouts[i]);
+                return onChange ? layouts[i] : currentLayout.substr(0,index);
+            }
+        }
+        
+        return '';
+    }    
 });

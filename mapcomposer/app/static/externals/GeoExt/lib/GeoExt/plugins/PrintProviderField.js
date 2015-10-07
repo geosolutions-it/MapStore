@@ -118,8 +118,7 @@ GeoExt.plugins.PrintProviderField = Ext.extend(Ext.util.Observable, {
         var printProvider = this.printProvider || field.ownerCt.printProvider;
         if(field.store === printProvider.layouts) {
 		
-		
-			var cleanLayoutName = printProvider.layout.get('name').substr(0,2);
+			var cleanLayoutName = printProvider.checkLayoutName(printProvider.layout.get('name'),false);
 					
 			if(cleanLayoutName){
 				var nr = printProvider.layouts.find("name", cleanLayoutName);
@@ -157,7 +156,9 @@ GeoExt.plugins.PrintProviderField = Ext.extend(Ext.util.Observable, {
         if(record) {
             switch(field.store) {
                 case printProvider.layouts:
-					var newLayoutName = record.get('name') + printProvider.layout.get('name').substr(2);
+                    var name = record.get('name');
+                    var layoutType = printProvider.checkLayoutName(printProvider.layout.get('name'),true);
+					var newLayoutName = name + layoutType;
 					
 					var nr = printProvider.fullLayouts.find("name", newLayoutName);
 					var newLayout = printProvider.fullLayouts.getAt(nr);
