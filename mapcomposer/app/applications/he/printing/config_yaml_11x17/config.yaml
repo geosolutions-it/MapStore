@@ -506,21 +506,21 @@ layouts:
     mainPage:
       rotation: true
       pageSize: _11X17
-      landscape: false
+      landscape: true
       items:
         - !columns
           absoluteX: 42
-          absoluteY: 814
-          width: 1105
+          absoluteY: 790
+          width: 1140
           items:
             - !image
-              maxWidth: 1105
+              maxWidth: 1140
               url: '${configDir}/print_header.png'
         - !map
-          width: 837
-          height: 584
+          width: 855
+          height: 570
           absoluteX:42
-          absoluteY:670
+          absoluteY:645
         #legend panel            
         - !columns               
           config:
@@ -529,13 +529,13 @@ layouts:
               - borderWidth: 2
                 borderWidthLeft: 1
                 borderColor: black
-                padding: 4
+                padding: 2
                 backgroundColor: white
                 vertAlign: bottom
-          widths: [248]
+          widths: [283]
           absoluteX: 900
-          absoluteY: 670
-          width: 247
+          absoluteY: 645
+          width: 282
           items:
             - !legends
               #maxIconWidth: 160
@@ -547,7 +547,7 @@ layouts:
               classSpace: 4
               backgroundColor: #ffffff   
         - !columns
-          absoluteX: 590
+          absoluteX: 790
           absoluteY: 140
           width: 40
           items:
@@ -558,8 +558,8 @@ layouts:
               rotation: '${rotation}'          
         - !columns
           absoluteX: 42
-          absoluteY: 78
-          width: 1105
+          absoluteY: 70
+          width: 1140
           widths: [340, 424, 340]
           items:
             - !columns
@@ -597,21 +597,21 @@ layouts:
     mainPage:
       rotation: true
       pageSize: _11X17
-      landscape: false
+      landscape: true
       items:
         - !columns
           absoluteX: 42
-          absoluteY: 814
-          width: 1105
+          absoluteY: 790
+          width: 1140
           items:
             - !image
-              maxWidth: 1105
-              url: '${configDir}/print_header.png'        
+              maxWidth: 1140
+              url: '${configDir}/print_header.png'
         - !map
-          width: 837
-          height: 584
+          width: 855
+          height: 570
           absoluteX:42
-          absoluteY:670
+          absoluteY:645
         #legend panel            
         - !columns               
           config:
@@ -620,17 +620,17 @@ layouts:
               - borderWidth: 2
                 borderWidthLeft: 1
                 borderColor: black
-                padding: 4
+                padding: 2
                 backgroundColor: white
                 vertAlign: bottom
-          widths: [170]
-          absoluteX: 907
-          absoluteY: 670
-          width: 240
+          widths: [283]
+          absoluteX: 900
+          absoluteY: 645
+          width: 282
           items:
             - !legends
-              maxIconWidth: 160
-              maxIconHeight: 260
+              #maxIconWidth: 160
+              maxIconHeight: 0
               layerSpace: 5
               layerFontSize: 12
               classIndentation: 5
@@ -638,8 +638,8 @@ layouts:
               classSpace: 4
               backgroundColor: #ffffff   
         - !columns
-          absoluteX: 834
-          absoluteY: 198
+          absoluteX: 790
+          absoluteY: 140
           width: 40
           items:
             - !image
@@ -649,9 +649,9 @@ layouts:
               rotation: '${rotation}'          
         - !columns
           absoluteX: 42
-          absoluteY: 78
-          width: 1105
-          widths: [339, 423, 339]
+          absoluteY: 70
+          width: 1140
+          widths: [340, 424, 340]
           items:
             - !columns
               nbColumns: 1
@@ -681,31 +681,31 @@ layouts:
               vertAlign: middle
               maxSize: 200
               type: 'bar sub'
-              intervals: 5                  
+              intervals: 5   
   #===========================================================================
   11x17_no_legend :
   #===========================================================================
     mainPage:
       rotation: true
       pageSize: _11X17
-      landscape: false
+      landscape: true
       items:
         - !columns
           absoluteX: 42
-          absoluteY: 814
-          width: 1105
+          absoluteY: 790
+          width: 1140
           items:
             - !image
-              maxWidth: 1105
+              maxWidth: 1140
               url: '${configDir}/print_header.png'
         - !map
-          width: 1102
-          height: 584
+          width: 1140
+          height: 570
           absoluteX:42
-          absoluteY:670
+          absoluteY:645
         - !columns
-          absoluteX: 1060
-          absoluteY: 198
+          absoluteX: 1090
+          absoluteY: 185
           width: 40
           items:
             - !image
@@ -715,8 +715,8 @@ layouts:
               rotation: '${rotation}'          
         - !columns
           absoluteX: 42
-          absoluteY: 78
-          width: 1105
+          absoluteY: 70
+          width: 1140
           widths: [339, 424, 339]
           items:
             - !columns
@@ -754,24 +754,24 @@ layouts:
     mainPage:
       rotation: true
       pageSize: _11X17
-      landscape: false
+      landscape: true
       items:
         - !columns
           absoluteX: 42
-          absoluteY: 814
-          width: 1105
+          absoluteY: 790
+          width: 1140
           items:
             - !image
-              maxWidth: 1105
+              maxWidth: 1140
               url: '${configDir}/print_header.png'
         - !map
-          width: 1105
-          height: 584
+          width: 1140
+          height: 570
           absoluteX:42
-          absoluteY: 670
+          absoluteY:645
         - !columns
-          absoluteX: 1070
-          absoluteY: 198
+          absoluteX: 1090
+          absoluteY: 185
           width: 40
           items:
             - !image
@@ -781,8 +781,8 @@ layouts:
               rotation: '${rotation}'          
         - !columns
           absoluteX: 42
-          absoluteY: 78
-          width: 1105
+          absoluteY: 70
+          width: 1140
           widths: [339, 424, 339]
           items:
             - !columns
@@ -816,7 +816,7 @@ layouts:
               intervals: 5
     lastPage:
       rotation: true
-      pageSize: 842 1190 
+      pageSize: _11X17 
       landscape: false
       items: 
         #legend panel            
@@ -850,24 +850,24 @@ layouts:
     mainPage:
       rotation: true
       pageSize: _11X17
-      landscape: false
+      landscape: true
       items:
         - !columns
           absoluteX: 42
-          absoluteY: 814
-          width: 1105
+          absoluteY: 790
+          width: 1140
           items:
             - !image
-              maxWidth: 1105
+              maxWidth: 1140
               url: '${configDir}/print_header.png'
         - !map
-          width: 1102
-          height: 584
+          width: 1140
+          height: 570
           absoluteX:42
-          absoluteY:670
+          absoluteY:645
         - !columns
-          absoluteX: 1070
-          absoluteY: 198
+          absoluteX: 1090
+          absoluteY: 185
           width: 40
           items:
             - !image
@@ -877,8 +877,8 @@ layouts:
               rotation: '${rotation}'          
         - !columns
           absoluteX: 42
-          absoluteY: 78
-          width: 1105
+          absoluteY: 70
+          width: 1140
           widths: [339, 424, 339]
           items:
             - !columns
@@ -904,6 +904,7 @@ layouts:
               fontSize: 14
               text: '${mapTitle}'
             - !scalebar
+              units: ft
               align: right
               vertAlign: middle
               maxSize: 200
@@ -911,7 +912,7 @@ layouts:
               intervals: 5
     lastPage:
       rotation: true
-      pageSize: _11X17
+      pageSize: _11X17 
       landscape: false
       items: 
         #legend panel            
@@ -928,14 +929,14 @@ layouts:
           widths: [220]
           absoluteX: 42
           absoluteY: 1132
-          width: 220
+          width: 311
           items:
             - !legends
-              maxIconWidth: 210
-              maxIconHeight: 300
+              #maxIconWidth: 16
+              maxIconHeight: 0
               layerSpace: 5
               layerFontSize: 12
               classIndentation: 5
               classFontSize: 8
               classSpace: 4
-              backgroundColor: #ffffff 
+              backgroundColor: #ffffff
