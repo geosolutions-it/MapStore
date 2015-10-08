@@ -1235,7 +1235,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             if(!targetLayer){
                 var layerStyle= style || {
                     strokeColor: "#FF00FF",
-                    strokeWidth: 2,
+                    strokeWidth: 10,
                     fillColor: "#FF00FF",
                     fillOpacity: 0.8
                 };
@@ -1338,7 +1338,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         dataIndex: 'id'
                     },{
                         header: this.viadottiGallerieViadottoHeader,
-                        width : 120,
+                        width : 60,
                         renderer: function(value, metadata, record) {
                             return '<input id="viadotti_gallerie_check_viadotto_'+record.get('id')+'" type="checkbox" '+(value ? 'checked' : '')+'/>';
                         },
@@ -1346,7 +1346,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                         dataIndex: 'viadotto'
                     },{
                         header: this.viadottiGallerieGalleriaHeader,
-                        width : 120,
+                        width : 60,
                         renderer: function(value, metadata, record) {
                             return '<input id="viadotti_gallerie_check_galleria_'+record.get('id')+'" type="checkbox" '+(value ? 'checked' : '')+'/>';
                         },
@@ -1364,13 +1364,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             id: "viadotti_gallerie_win",
 			title: this.viadottiGallerieButtonText,
 			layout: "fit",
-			width: 600,
+			width: 300,
 			height: 500,
 			closeAction: 'close',
 			resizable: false,
 			plain: true,
 			border: false,
-			modal: true,
+			modal: false,
 			items: [viadottiGallerieGrid],
             buttons: [{
                 text: this.okButton,
