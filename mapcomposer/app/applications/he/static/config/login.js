@@ -284,17 +284,22 @@
 		},{
 		  "ptype":"gxp_print",
 		  "customParams":{
-			 "outputFilename":"gwgwp-print",
-            		 "forwardHeaders":[],
-                     "outputFormat":"pdf",
-                     "geodetic": true
+			 "outputFilename":"GeoWeb_Map",
+             "forwardHeaders":[],
+             "outputFormat":"pdf",
+             "geodetic": true,
+             "restrictLayout": {
+                 "restrictToGroups" : ["Advanced_Users"],
+                 "layoutName" : "11x17"                 
+             }
 		  },
+          "includeLegend": false,
+          "legendOnSeparatePage":false,
 		  "appendLegendOptions": true,
 		  "printService":"http://he.geo-solutions.it/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
           "defaultResolutionIndex":1,
           "defaultLayoutIndex":1,
-          "legendOnSeparatePage":true,
 		  "ignoreLayers":["WFSSearch","Marker","WFSsearchMarker","GeoRefMarker","GeoLocation"],
 		  "actionTarget":{
 			 "target":"paneltbar",
@@ -308,11 +313,9 @@
              "actionTarget": {"target": "paneltbar", "index": 20},
               "vendorParams":{"buffer":10}
          }, {
-          "ptype":"gxp_printsnapshot",
+          "ptype":"gxp_printsnapshothe",
           "service": "http://he.geo-solutions.it/servicebox/",
-          "customParams":{
-            "outputFilename":"mapstore-print"
-          },
+          "fileName": "GeoWeb_Snapshot.png",
           "actionTarget":{
             "target":"paneltbar",
             "index":5

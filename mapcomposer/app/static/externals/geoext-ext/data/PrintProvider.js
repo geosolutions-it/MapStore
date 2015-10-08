@@ -564,9 +564,20 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
     loadStores: function() {
         this.scales.loadData(this.capabilities);
         this.dpis.loadData(this.capabilities);
-        
+
         var caps2 = { layouts : []};
-        var layouts = this.capabilities.layouts;
+        
+        var layouts = [];
+        
+        var capabilitiesLayouts = this.capabilities.layouts;
+        
+        var customParamsRestrictLayout = this.customParams.restrictLayout || false;
+        
+        if(customParamsRestrictLayout){
+            layouts = app.enablePrintLayoutByGroup(customParamsRestrictLayout,capabilitiesLayouts);
+        }else{
+            layouts = this.capabilities.layouts;
+        }
         
         this.fullLayouts.loadData({'layouts' : layouts});
         
@@ -581,7 +592,8 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
         
         this.layouts.loadData(caps2);
         
-        this.setLayout(this.layouts.getAt(this.defaultLayoutIndex ||0));
+        this.setLayout(this.layouts.getAt(this.defaultLayoutIndex || 0) ||
+            this.layouts.getAt(0));
         this.setDpi(this.dpis.getAt(this.defaultResolutionIndex||0));
         this.fireEvent("loadcapabilities", this, this.capabilities);
     },
@@ -822,6 +834,31 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                 }];
             }
         }
-    }
+    },
     
+    /** private: method[checkLayoutName]
+     *  :param currentLayout: ``string`` Current Layout in print plugin.
+     *  :param onChange: ``Boolean`` True if call by onFieldChange PrintProviderField function.
+     * 
+     *  Check correct layout name.
+     */
+    checkLayoutName: function(currentLayout,onChange) {    
+        var layouts = [
+            '_2_pages_compact_legend',
+            '_2_pages_compact_legend_landscape',
+            '_compact_legend',
+            '_compact_legend_landscape',
+            '_2_pages_legend',
+            '_no_legend'
+            ];
+        
+        for (var i = 0;i<layouts.length;i++){
+            if(currentLayout.indexOf(layouts[i]) > 0){
+                var index = currentLayout.indexOf(layouts[i]);
+                return onChange ? layouts[i] : currentLayout.substr(0,index);
+            }
+        }
+        
+        return '';
+    }    
 });
