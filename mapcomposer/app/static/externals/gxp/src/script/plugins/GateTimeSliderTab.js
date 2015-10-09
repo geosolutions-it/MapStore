@@ -176,7 +176,8 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                 sortBy:"id_gate",
                 ref:'singleSelector',
                 displayField:"descrizione",
-                pageSize:10            
+                pageSize:10,
+                hideTrigger:false                 
             },
             gate:{
                 queriableAttributes:[
@@ -196,7 +197,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                        mapping:"properties.descrizione_" + GeoExt.Lang.locale
                     } 
                 ],
-                tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{descrizione}</span></h3>({descrizione})</div></tpl>"       
+                tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{descrizione}</span></h3>({descrizione})</div></tpl>"
             }   
         };
         var me = this;
@@ -765,7 +766,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                             //return ((v === 0 || v > 1) ? '(Media Oraria: ' + v +')' : '(Media Oraria 1)');
                             return ('(' + me.summaryLabels[me.currentAggregation] + ': ' + v +')');
                         }
-                    },{
+                    }/*,{
                         header: this.gateTimeGridHourTimeZone,
                         width: 120,
                         sortable: true,
@@ -777,7 +778,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                         sortable: true,
                         dataIndex: 'minuto_fuso_orario',
                         groupable: false
-                    },{
+                    }*/,{
                         header: this.gateTimeGridReceptionDate,
                         width: 120,
                         sortable: true,

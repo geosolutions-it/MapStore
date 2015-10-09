@@ -14,6 +14,48 @@
  */
 Ext.namespace("gxp.plugins");
 
+SostanzeComboBox = Ext.extend(Ext.form.ComboBox, {
+    doQuery : function(q, forceAll){
+        q = Ext.isEmpty(q) ? '' : q;
+        var qe = {
+            query: q,
+            forceAll: forceAll,
+            combo: this,
+            cancel:false
+        };
+        if(this.fireEvent('beforequery', qe)===false || qe.cancel){
+            return false;
+        }
+        q = qe.query;
+        forceAll = qe.forceAll;
+        if(forceAll === true || (q.length >= this.minChars)){
+            if(this.lastQuery !== q){
+                this.lastQuery = q;
+                if(this.mode == 'local'){
+                    this.selectedIndex = -1;
+                    if(forceAll){
+                        this.store.clearFilter();
+                    }else{
+                        this.store.filterBy(function(record, id) {
+                            return record.get(this.displayField).toLowerCase().indexOf(q.toLowerCase()) !== -1;
+                        }, this);
+                    }
+                    this.onLoad();
+                }else{
+                    this.store.baseParams[this.queryParam] = q;
+                    this.store.load({
+                        params: this.getParams(q)
+                    });
+                    this.expand();
+                }
+            }else{
+                this.selectedIndex = -1;
+                this.onLoad();
+            }
+        }
+    }
+});
+
 GeoExt.data.FeatureReader.prototype.readRecords = function(features) {
     var records = [];
 
@@ -1026,7 +1068,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             }              
         });      
 
-        this.sostanzeSingole = new Ext.form.ComboBox({
+        this.sostanzeSingole = new SostanzeComboBox({
             fieldLabel: this.sostanzeSingoleLabel,
             id: "sostanzesingolecb",
             width: 150,
@@ -1038,7 +1080,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             triggerAction: 'all',
             selectOnFocus:true,
             editable: true,
-            typeAhead: true,
+            typeAhead: false,
             resizable: true,
             value: this.allSostOption,
             lazyInit: false,

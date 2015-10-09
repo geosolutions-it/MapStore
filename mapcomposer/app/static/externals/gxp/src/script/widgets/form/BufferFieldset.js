@@ -74,6 +74,8 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
      * Text for the scenario mode tooltip.
      */ 
 	selectScenarioLabel: "Scegli Sostanza / Scenario",
+    
+    uomLabel: "Metri",
 
     /** api: config[errorBufferText]
      * ``String``
@@ -189,6 +191,12 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 		    fieldLabel: this.bufferFieldLabel,
 			items: [
 				this.bufferField,
+                {
+                	xtype: 'label',
+                	height: 30,
+                	ref: 'uomLabel',
+                	text: this.uomLabel
+                },
 				{
                     xtype: 'button',
 					ref: 'clickToggle',
@@ -237,14 +245,14 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
     		this.bufferField.disable();
     		this.bufferField.setReadOnly(false);
     		this.compositeField.clickToggle.show();
-    		this.compositeField.scenarioLabel.hide();
+    		//this.compositeField.scenarioLabel.hide();
             this.compositeField.doLayout();
     	} else {
     		this.bufferField.enable();
     		this.bufferField.setReadOnly(true);
     		this.updateRadius(radius);
     		this.compositeField.clickToggle.hide();
-    		this.compositeField.scenarioLabel.show();
+    		//this.compositeField.scenarioLabel.show();
             this.compositeField.doLayout();
     	}
     },

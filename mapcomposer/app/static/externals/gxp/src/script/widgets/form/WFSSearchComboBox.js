@@ -53,6 +53,8 @@ gxp.form.WFSSearchComboBox = Ext.extend(Ext.form.ComboBox, {
 	typeAhead: false,
 	displayInfo: false,
 	hideTrigger:true,
+    lastQuery: '',
+    triggerAction: 'all',
 	
     /** api: config[displayField]
 	 * If a template is not defined, this is the field to show.

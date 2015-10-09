@@ -124,7 +124,8 @@ gxp.widgets.form.SingleFeatureSelector = Ext.extend(Ext.form.CompositeField,{
 				sortBy:this.sortBy,
 				displayField:this.displayField,
                 pageSize:this.pageSize,
-                tpl:this.tpl
+                tpl:this.tpl,
+                hideTrigger: this.hideTrigger
 			});
 		selectCombo.on('select', function(combo,record,index){
 				var geom_json = record.get('geometry');

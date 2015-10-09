@@ -29,7 +29,7 @@ destination.form.SingleAOISelector = Ext.extend( Ext.form.FieldSet,
             sortBy:"id_gate",
 			ref:'singleSelector',
             displayField:"descrizione",
-            pageSize:10            
+            pageSize:10
         },
         gate:{
             typeName:"siig_gate_geo_gate",
