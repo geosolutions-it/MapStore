@@ -362,9 +362,11 @@
 			var appViewport = new Ext.Viewport(viewport);
             
             var footer=Ext.getDom('footer');
-                        var thisDate=new Date();
-                        var thisYear=thisDate.getFullYear();
-                        if(footer) footer.innerHTML+=thisYear+"&nbsp;";
+            var thisDate=new Date();
+            var thisYear=thisDate.getFullYear();
+            if(footer) {
+                footer.innerHTML+=thisYear+"&nbsp;";
+            }
             
             // /////////////////////////////////////////////////////////////
             // Parsing WMS servers Sources for getCapabilities operation

@@ -358,6 +358,13 @@
 
                 var appViewport = new Ext.Viewport(viewport);
 
+                var footer=Ext.getDom('footer');
+                var thisDate=new Date();
+                var thisYear=thisDate.getFullYear();
+                if(footer) {
+                    footer.innerHTML+=thisYear+"&nbsp;";
+                }
+
 				if(gsturl){
 					serverConfig.geoStoreBase = gsturl;
 				}
@@ -464,8 +471,8 @@
                         geoStoreBaseURL: serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/'),
                         printServiceURL: serverConfig.printServiceURL,
                         about: {
-                            title: "Custom Map",
-                            'abstract': "Custom Map",
+                            title: "",
+                            'abstract': "",
                             contact: "<a href='#'>#</a>."
                         },
                         sources: serverConfig.gsSources || {
