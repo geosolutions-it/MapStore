@@ -143,7 +143,10 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             if (type === OpenLayers.Filter.Comparison.BETWEEN) {
                 this.valueWidgets.add(this.addValidation(this.createValueWidget('lower', value[0])));
                 this.valueWidgets.add(this.addValidation(this.createValueWidget('upper', value[1])));
-            } else {
+            } else if(type === OpenLayers.Filter.Comparison.IS_NULL){
+               this.filter.value='NULL';
+            }
+            else {
                 this.valueWidgets.add(this.addValidation(this.createValueWidget('single', value[0])));
             }
             
@@ -489,7 +492,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                         store.filter([
                           {
                             fn   : function(record) {
-                                return (record.get('name') === "=") || (record.get('name') === "<>") || (record.get('name') === "<") || (record.get('name') === ">") || (record.get('name') === "<=") || (record.get('name') === ">=") || (record.get('name') === "between");
+                                return (record.get('name') === "=") || (record.get('name') === "<>") || (record.get('name') === "<") || (record.get('name') === ">") || (record.get('name') === "<=") || (record.get('name') === ">=") || (record.get('name') === "between") || (record.get('name') === "isNull");
                             },
                             scope: this
                           }                      
