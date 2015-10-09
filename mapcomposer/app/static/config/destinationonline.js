@@ -14,7 +14,8 @@
 			"ptype": "gxp_googlesource"
 		},
 		"bing": {
-			"ptype": "gxp_bingsource"
+			"ptype": "gxp_bingsource",
+            "apiKey": "AtJtDQ5jkpmFmWTymrtVevkxEfAPvDSebt9MteFCXbPo5CDlPHN57YcLL1vqBE-E"
 		},
 		"ol": {
 			"ptype": "gxp_olsource"
