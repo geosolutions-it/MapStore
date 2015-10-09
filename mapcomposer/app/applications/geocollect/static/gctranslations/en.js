@@ -71,7 +71,7 @@ GeoExt.Lang.add("en", {
         btnSaveTooltip: "Save Widget",
         btnSaveText: "Save",
         pageTitleLabel: "Page Title",
-        pageMsgLabel: "Page Messagge",
+        pageMsgLabel: "Page Message",
         saveMsg: "Save Widget Changes?",
         saveMsgTitle: "Save Widget",
         saveAlertMsg: "Widget Properties Invalid",
