@@ -54,6 +54,8 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
     selectPointText: "Seleziona punto da mappa",
 
     calculateText: "Calcola",
+    
+    downloadText: "Esporta",
 
     socRiskText: "Sociale",
 
@@ -550,7 +552,55 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
                                 routingBtn.disable();
                             }
                         },
-                        bbar: ["->", {
+                        bbar: ["->", 
+                        {
+                            id: 'route-export',
+                            xtype: 'button',
+                            text: this.downloadText,
+                            iconCls: 'save-download-button',
+                            scope: me,
+                            disabled: true,
+                            handler: function() {
+                                if (!formPanel.getForm().isValid()) {
+                                    Ext.Msg.show({
+                                        title: this.errorTitle,
+                                        buttons: Ext.Msg.OK,
+                                        msg: this.missingParametersMsg,
+                                        icon: Ext.MessageBox.ERROR,
+                                        scope: this
+                                    });
+                                } else {
+                                    var formula = formPanel.getFormula().get('id_formula');
+                                    formula = formula && formula.split('-')[0];
+                                    var target = formPanel.getFormula().get('target');
+                                    var startX = formPanel.getStartX().getValue();
+                                    var startY = formPanel.getStartY().getValue();
+                                    var endX = formPanel.getEndX().getValue();
+                                    var endY = formPanel.getEndY().getValue();
+                                    var startProj = me.toXY(startX, startY);
+                                    var endProj = me.toXY(endX, endY);
+                                    var descr = formPanel.getDescription().getValue();
+                                    if (!descr) {
+                                        descr = me.getDefaultDescription();
+                                    }
+                                    
+                                    var start = startX+","+startY;
+                                    var end = endX+","+endY;
+                                                                        
+                                    var blocked = [];
+                                    var records = excludedRoadsStore.getRange();
+                                    Ext.each(records, function(r) {
+                                        blocked.push(r.get('id_geo_arco'));
+                                    });
+                                    
+                                    var syntView = app.tools["syntheticview"];
+                                    syntView.exportRouting(descr, formula, start, end, target, blocked);
+                                    
+                                    win.hide();
+                                }
+                            }
+                        },
+                        {
                             id: 'route-calculate',
                             xtype: 'button',
                             text: this.calculateText,
@@ -621,11 +671,14 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
     enableOrDisableCalculateBtn: function() {
         var formPanel = Ext.getCmp('route-formpanel');
         var calculateBtn = Ext.getCmp('route-calculate');
+        var exportBtn = Ext.getCmp('route-export');
         if (formPanel && calculateBtn) {
             if (formPanel.getForm().isValid()) {
                 calculateBtn.setDisabled(false);
+                exportBtn.setDisabled(false);
             } else {
                 calculateBtn.setDisabled(true);
+                exportBtn.setDisabled(true);
             }
         }
     },

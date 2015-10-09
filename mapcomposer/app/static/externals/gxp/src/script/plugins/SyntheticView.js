@@ -2797,6 +2797,65 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 
         this.target.mapPanel.layers.add([record]);
     },
+    
+    exportRouting: function(title, formula, start, end, target, blocked) {
+        var routingDownloadProcess = this.wpsClient.getProcess('destination', 'gs:DestinationDownloadRouting');                                  
+        var me = this;
+        routingDownloadProcess.execute({
+				headers: this.getBasicAuthentication(),
+				// spatial input can be a feature or a geometry or an array of
+				// features or geometries
+				inputs: {
+					features: new OpenLayers.WPSProcess.ReferenceData({
+						href:'http://geoserver/wfs', 
+						method:'POST', mimeType: 'text/xml', 
+						body: {
+							wfs: {
+								featureType: 'destination:routing', 
+								version: '1.1.0'
+							}
+						}
+					}),
+					store: new OpenLayers.WPSProcess.LiteralData({value:this.wpsStore}),
+					start: new OpenLayers.WPSProcess.LiteralData({value:start}),
+					end: new OpenLayers.WPSProcess.LiteralData({value:end}),
+					precision: new OpenLayers.WPSProcess.LiteralData({value:4}),
+					processing: new OpenLayers.WPSProcess.LiteralData({value:1}),
+					formula: new OpenLayers.WPSProcess.LiteralData({value:141}),
+					target: new OpenLayers.WPSProcess.LiteralData({value:target}),
+					materials: new OpenLayers.WPSProcess.LiteralData({value:"1,2,3,4,5,6,7,8,9,10,11,12"}),
+					scenarios: new OpenLayers.WPSProcess.LiteralData({value:"1,2,3,4,5,6,7,8,9,10,11,12,13,14"}),
+					entities: new OpenLayers.WPSProcess.LiteralData({value:"0,1"}),
+					severeness: new OpenLayers.WPSProcess.LiteralData({value:"1,2,3,4,5"}),
+					fp: new OpenLayers.WPSProcess.LiteralData({value:"fp_scen_centrale"}),
+					level: new OpenLayers.WPSProcess.LiteralData({value:1}),
+					blocked: new OpenLayers.WPSProcess.LiteralData({value:blocked})
+				},
+				outputs: [],                                    
+				success: function(outputs) {
+					if(outputs.executeResponse.status.processSucceeded) {
+						var link = outputs.executeResponse.processOutputs[0].literalData.value;
+						var url = me.downloadBaseUrl + link;
+						Ext.Msg.show({
+                            title: me.saveDownloadSuccessTitle,
+                            buttons: Ext.Msg.OK,
+                            msg: '<a href="'+url+'" target="_blank">' + me.downloadFileLabel + '</a>',
+                            icon: Ext.MessageBox.INFO,
+                            scope: this
+                        });
+					} else {
+						var error = outputs.executeResponse.status.exception.exceptionReport.exceptions[0].texts[0]
+						Ext.Msg.show({
+							title: me.saveProcessingErrorTitle,
+							buttons: Ext.Msg.OK,
+							msg: error,
+							icon: Ext.MessageBox.ERROR,
+							scope: me
+						});  
+					}
+				}
+			});
+    },
 
     addFormula: function(layers, bounds, status, targetId, layer, formulaDesc, formulaUdm, env, roi, visible) {
         this.currentRiskLayers.push(layer);
