@@ -85,15 +85,31 @@ gxp.plugins.BingSource = Ext.extend(gxp.plugins.LayerSource, {
     
     /** api: config[apiKey]
      *  ``String``
-     *  API key generated from http://bingmapsportal.com/ for your domain.
+     *  API key generated from http://bingmapsportal.com/ for your domain. 
      */
-    apiKey: "AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf",
+    /*******************************************/
+    /**            IMPORTANT NOTE             **/
+    /**            ^^^^^^^^^^^^^^             **/
+    /**                                       **/
+    /** THIS IS THE BING KEY FOR THE CUSTOMER **/
+    /** TO HAVE A DEFAULT VALUE BECAUSE       **/
+    /** localConfig.js WA NOT PRESENT ON THIS **/
+    /** BRANCH. PLEASE REMOVE WHEN MERGE WITH **/
+    /**                MASTER                 **/
+    /*******************************************/
+    apiKey: "yA7Li8umW7ZKNdTyclEl~R1mUpC3WmGa_WO55xjW3Jw~AnofOOebz5HsDynDX_twx4jjMghcNWzguLjfTMZ8UXEwbq4AbafpF_LfhSwXNy3b",
     
     /** api: method[createStore]
      *
      *  Creates a store of layer records.  Fires "ready" when store is loaded.
      */
     createStore: function() {
+        
+        // If the apiKey has not been configured in the Source, get the default from the config
+        if(this.apiKey == null && this.target
+        && this.target.apikeys && this.target.apikeys.Bing ){
+            this.apiKey = this.target.apikeys.Bing;
+        };
         
         var layers = [
             new OpenLayers.Layer.Bing({
