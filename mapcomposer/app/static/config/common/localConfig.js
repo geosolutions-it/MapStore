@@ -5,5 +5,8 @@ var localConfig = {
    proxy:"/http_proxy/proxy/?url=",
    adminUrl: "http://he.geo-solutions.it/opensdi2-manager",
    printServiceURL: "http://he.geo-solutions.it/servicebox/",
-   defaultLanguage: "en"
+   defaultLanguage: "en",
+   apikeys:{
+       "Bing" : "insert-your-Bing-API-key"
+   }
 };
