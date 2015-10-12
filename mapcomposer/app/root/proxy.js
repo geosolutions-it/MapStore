@@ -88,6 +88,7 @@ var createProxyRequestProps = exports.createProxyRequestProps = function(config)
             headers.unset("Authorization");
             headers.unset("Cookie");
         }
+	var data = (request.contentLength > 0) && request.input || undefined;
         props = {
             url: urlProps.url,
             method: request.method,
@@ -95,7 +96,7 @@ var createProxyRequestProps = exports.createProxyRequestProps = function(config)
             username: urlProps.username,
             password: urlProps.password,
             headers: headers,
-            data: request.contentLength && request.input
+            data: data
         };
     }
     return props;
