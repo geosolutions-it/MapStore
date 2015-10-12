@@ -594,7 +594,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         width: 400,
                         height: 250,
                         modal: true,
-                        resizable: false,
+                        resizable: true,
                         title: 'Road Edit Form',
                         autoShow: true,
                         autoScroll: true,

@@ -218,6 +218,8 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                 text:this.unauthorizedLabel
             }],
             bbar: [],
+            // TEMPORARY DISABLED
+            hidden: true,
             defaults: {
                 // applied to each contained panel
                 bodyStyle:'padding:5px;'
