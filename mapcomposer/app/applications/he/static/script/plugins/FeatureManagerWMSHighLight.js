@@ -33,8 +33,8 @@ Ext.namespace('gxp.he');
 /** api: constructor
  *  .. class:: FeatureManagerWMSHighLight(config)
  *  This class add wms highligth capability to FeatureManager plugin.
- *  
- */   
+ *
+ */
 gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, {
  /** api: ptype = gxp_featuremanagerwmshighlight */
     ptype: "gxp_featuremanagerwmshighlight",
@@ -44,7 +44,7 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
      *    feature
      */
     highLightLayer: null,
-    
+
     /** api: config[wmsHighLight]
      *  ``Boolean`` If true will show wms layer with highlighted features
      *    feature
@@ -52,7 +52,7 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
     wmsHighLight:true,
 
     /** api: config[strWithHighLight]
-     *  ``String`` 
+     *  ``String``
      *    default string to identify highlight styles.
      */
     strWithHighLight:"_highlight",
@@ -79,8 +79,8 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
      */
     init: function(target) {
         gxp.plugins.FeatureManagerWMSHighLight.superclass.init.apply(this, arguments);
-        
-        
+
+
         this.on({
             //TODO add a beforedestroy event to the tool
             beforedestroy: function() {
@@ -92,11 +92,10 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
 
                     var layer=this.layerRecord.get("layer");
                     if(!this.highLightLayer) this.createHighLightLayer(layer);
-                        else if(this.highLightLayer.name!=layer.name){
+                    else if(this.highLightLayer.name!=layer.name){
                             this.destroyHighLightLayer();
                             this.createHighLightLayer(layer);
                         }
-                    
                     var protocol=store.proxy.protocol;
                     var format= new OpenLayers.Format.Filter({ ////new OpenLayers.Format.CQL();
                             version: protocol.version,
@@ -105,7 +104,7 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
                     var qfilter=new OpenLayers.Format.XML().write(format.write(filter));
                     var highlightStyle=this.hasHighLightStyle(this.layerRecord);
                     if(!highlightStyle){
-                    	var sld = {version: "1.0.0", namedLayers: {}};                 
+                    	var sld = {version: "1.0.0", namedLayers: {}};
                     	var name = this.layerRecord.data.name;
                     	sld.namedLayers[name] = {name: name, userStyles: []};
                     	var symbolizer = this.selectionSymbolizer;
@@ -121,19 +120,21 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
                          symbolizer = {Polygon: this.selectionSymbolizer['Polygon']};
                     	}
                    		sld.namedLayers[name].userStyles.push({name: 'default', rules: [
-                        new OpenLayers.Rule({symbolizer: symbolizer 
+                        new OpenLayers.Rule({symbolizer: symbolizer
                        //, maxScaleDenominator: this.featureLayer.minScale
                         })
                     	]});
                     	var sldDescriptor = new OpenLayers.Format.SLD({srsName: protocol.srsName}).write(sld);
-                    	this.highLightLayer.mergeNewParams({SLD_BODY: sldDescriptor,FILTER:qfilter,STYLES:null});
+                    	if(this.highLightLayer.vendorParams)this.highLightLayer.vendorParams.cql_filter=null;
+                        this.highLightLayer.mergeNewParams({SLD_BODY: sldDescriptor,FILTER:qfilter,STYLES:null,CQL_FILTER:null});
                 	}else{
-                		this.highLightLayer.mergeNewParams({STYLES: highlightStyle,FILTER:qfilter});
+                        if(this.highLightLayer.vendorParams)this.highLightLayer.vendorParams.cql_filter=null;
+                		this.highLightLayer.mergeNewParams({STYLES: highlightStyle,FILTER:qfilter,CQL_FILTER:null});
                 	}
-                    
+
 
                     if(!this.highLightLayer.map) layer.map.addLayer(this.highLightLayer);
-                    
+
                         this.highLightLayer.setVisibility(this.visible());
 
             }
@@ -161,8 +162,8 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
         if (source && source instanceof gxp.plugins.WMSSource) {
             source.getSchema(record, function(schema) {
                 if (schema === false) {
-                
-                    //information about why selected layers are not queriable.                
+
+                    //information about why selected layers are not queriable.
                     var layer = record.get("layer");
                     var wmsVersion = layer.params.VERSION;
                     Ext.MessageBox.show({
@@ -172,7 +173,7 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
                         animEl: 'elId',
                         icon: Ext.MessageBox.INFO
                     });
-                    
+
                     this.clearFeatureStore();
                 } else {
                     var fields = [], geometryName,propertyNames=[];
@@ -209,8 +210,8 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
                             propertyNames.push(r.get("name"));
                         }
                     }, this);
-                    
-                    var protocolOptions = {    
+
+                    var protocolOptions = {
                         srsName: this.target.mapPanel.map.getProjection(),
                         url: schema.url,
                         featureType: schema.reader.raw.featureTypes[0].typeName,
@@ -232,7 +233,7 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
                         resultType: "hits",
                         filter: filter
                     }, protocolOptions));
-                    
+
                     this.featureStore = new gxp.data.WFSFeatureStore(Ext.apply({
                         fields: fields,
                         proxy: {
@@ -241,7 +242,7 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
                                 propertyNames: (this.disableGeometry)? propertyNames:[]
                             }
                         },
-                        
+
                         maxFeatures: this.maxFeatures,
                         layer: this.featureLayer,
                         ogcFilter: filter,
@@ -265,11 +266,11 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
         } else {
             this.clearFeatureStore();
             this.fireEvent("layerchange", this, record, false);
-        }        
+        }
     },
 
      /** private: method[setLayerDisplay]
-     *  
+     *
      */
     setLayerDisplay: function() {
     	gxp.plugins.FeatureManagerWMSHighLight.superclass.setLayerDisplay.apply(this, arguments);
@@ -334,14 +335,14 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
     		var styles = sourceLayer.get('styles');
     	    if(styles){
                 for (var key in styles){
-                    if(styles.hasOwnProperty(key)){                    
+                    if(styles.hasOwnProperty(key)){
                         var obj = styles[key];
                         var sld = obj.name.search(this.strWithHighLight);
                         if(sld != -1)
-                            return obj.name;                                
-                         
+                            return obj.name;
+
                         }
-                    }    
+                    }
                 }
              return undefined;
 
