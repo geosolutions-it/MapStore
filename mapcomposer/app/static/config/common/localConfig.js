@@ -5,5 +5,8 @@
 var localConfig = {
    geoStoreBase: "",
    proxy:"/http_proxy/proxy/?url=",
-   defaultLanguage: "en"
+   defaultLanguage: "en",
+   apikeys:{
+       "Bing" : "insert-your-Bing-API-key"
+   }
 };
