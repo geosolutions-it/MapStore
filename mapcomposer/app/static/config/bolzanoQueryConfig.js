@@ -105,7 +105,7 @@
 				"group": "background",
 				"transparent": false,
 				"format": "image/jpeg"
-			}
+			}			
 		]
 	},
 	

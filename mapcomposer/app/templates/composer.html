@@ -412,7 +412,8 @@
                 georeferences: georeferences_data,
                 cswconfig: serverConfig.cswconfig,
                 map: serverConfig.map,
-				customTools: serverConfig.customTools
+                customTools: serverConfig.customTools,
+                apikeys: serverConfig.apikeys
             }, mapIdentifier, authorization && authorization == "false" ? null: authorization, fullScreen, templateId);   
             
             app.on({
