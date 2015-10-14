@@ -32,13 +32,13 @@
   height:   100%;
   z-index:  20000;
 
-  
+
   /*background-color: transparent;*/
 }
 
 #loading {
   position: absolute;
- 
+
   left:     0px;
   top:      0px;
   width:    100%;
@@ -53,16 +53,16 @@
 
 #loading .loading-indicator {
   background: url(img/loading_welcome.gif) no-repeat;
- 
+
   background-repeat: no-repeat;
   background-position:center center;
   background-attachment:fixed;
   overflow:visible;
-  
+
   margin:0;
   width:    100%;
   height: 100%;
-  
+
   text-align: center;
 }
 
@@ -71,40 +71,40 @@
 *********************************/
 
 div#homelogos ul {
-    display: block; 
-    font-size: 11px; 
-    margin: 0px auto; 
+    display: block;
+    font-size: 11px;
+    margin: 0px auto;
     list-style-type: none;
 }
 div#homelogos ul li {
     padding-left: 10px; float: left
 }
 div#homelogos ul li a {
-    padding-right: 3px; 
-    display: block; 
-    padding-left: 3px; 
-    font-size: 12px; 
-    padding-bottom: 3px; 
-    padding-top: 3px; 
+    padding-right: 3px;
+    display: block;
+    padding-left: 3px;
+    font-size: 12px;
+    padding-bottom: 3px;
+    padding-top: 3px;
     text-decoration: none
 }
 
 div#homelogos {
-    margin: 10px auto; 
+    margin: 10px auto;
     width: 900px;
     text-align: center;
 }
 div#homelogos ul li a {
     width: 48px; height: 48px;
-    border-right: #fff 1px transparent; 
-    border-left-color: transparent; 
-    border-top-color: transparent; 
+    border-right: #fff 1px transparent;
+    border-left-color: transparent;
+    border-top-color: transparent;
     border-bottom: #fff 1px transparent;
 }
 div#homelogos ul li a:hover {
-    border-right: #ccc 1px solid; 
-    border-left-color: transparent; 
-    border-top-color: transparent; 
+    border-right: #ccc 1px solid;
+    border-left-color: transparent;
+    border-top-color: transparent;
     border-bottom: #ccc 1px solid
 }
 .logo_au {
@@ -176,7 +176,7 @@ div#homelogos ul li a:hover {
 #images-view .thumb img{
 	height: 45px;
 	margin:0 auto;
-	
+
 }
 #images-view .thumb-wrap{
 	float: left;
@@ -229,9 +229,9 @@ div#homelogos ul li a:hover {
 .x-tree-node-error .x-tree-node-icon{
 	background-image:url(img/silk/cancel.png) !important;
 }
-/* when OL encounters a 404, don't display the pink image 
-.olImageLoadError { 
-    
+/* when OL encounters a 404, don't display the pink image
+.olImageLoadError {
+
     display: none !important;
 } */
 
@@ -261,7 +261,7 @@ div#homelogos ul li a:hover {
 	position:absolute;
     top:0;
     left:0;
-    height:20px !important;    
+    height:20px !important;
 }
 
 .x-layout-collapsed.x-layout-collapsed-east, .x-layout-collapsed.x-layout-collapsed-west{
@@ -269,6 +269,9 @@ div#homelogos ul li a:hover {
     top:0;
     left:0;
     width:20px !important;
+	background-image: url(img/query-panel-collapsed.png);
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .x-layout-collapsed-west .x-layout-collapsed-tools, .x-layout-collapsed-east .x-layout-collapsed-tools{
