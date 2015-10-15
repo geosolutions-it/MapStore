@@ -290,7 +290,7 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
             }else{
                 var yearInTitle = refYear;
             }
-            var chartTitle = yearInTitle + ' - ' + listVar.factorStore[i].get('label');
+            var chartTitle = 'CROP STATUS: ' + listVar.crop + '<br/>' + yearInTitle + ' - ' + listVar.factorStore[i].get('label');
             var aoiLabel = listVar.numRegion[0].replace(/[']/g,'');
             if (listVar.granType == 'PROVINCE'){
                 aoiLabel = listVar.place.province;
@@ -327,7 +327,8 @@ gxp.widgets.button.NrlCropStatusChartButton = Ext.extend(Ext.Button, {
 				chartConfig: {
 					chart: {
 						zoomType: 'x',
-                        spacingBottom: 128
+                        spacingBottom: 128,
+                        marginTop: 64
 					},
                     exporting: {
                         enabled: true,
