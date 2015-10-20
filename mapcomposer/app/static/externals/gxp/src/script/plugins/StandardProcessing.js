@@ -2193,6 +2193,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
             macroTarget : this.macrobers.getValue(),
             
             classe : this.getComboRecord(this.classi).data,
+            sostanzaSingola : this.getComboRecord(this.sostanzeSingole).data,
             sostanza : this.getComboRecord(this.sostanze).data,
             accident : this.getComboRecord(this.accident).data,
             seriousness : this.getComboRecord(this.seriousness).data,
@@ -2348,6 +2349,7 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         
         this.setComboStatus(this.classi, 'classe');
         this.setComboStatus(this.sostanze, 'sostanza');
+        this.setComboStatus(this.sostanzeSingole, 'sostanzaSingola');
         this.setComboStatus(this.accident, 'accident');
         this.setComboStatus(this.seriousness, 'seriousness');   
 
