@@ -28,8 +28,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
+import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.vividsolutions.jts.geom.GeometryFactory;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -41,6 +44,11 @@ import au.com.bytecode.opencsv.CSVReader;
 public abstract class GenericCSVProcessor<T, ID extends Serializable> extends CSVProcessor {
 
     protected final static Logger LOGGER = LoggerFactory.getLogger(GenericCSVProcessor.class);
+
+    /*
+     * GeometryFactory will be used to create the geometry attribute of each feature (a Point object for the location)
+     */
+    protected GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 
     int insertCount;
 

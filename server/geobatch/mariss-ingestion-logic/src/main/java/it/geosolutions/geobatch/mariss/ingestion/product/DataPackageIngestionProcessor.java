@@ -19,13 +19,6 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.product;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
-import it.geosolutions.geobatch.annotations.Action;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
-import it.geosolutions.geobatch.mariss.ingestion.csv.utils.DecompressUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -41,8 +34,6 @@ import javax.xml.bind.JAXB;
 import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import net.opengis.gml.DirectPositionType;
-
 import org.geotools.data.DataStore;
 import org.geotools.jdbc.JDBCDataStore;
 import org.opengis.feature.simple.SimpleFeature;
@@ -56,6 +47,13 @@ import eu.europa.emsa.csndc.DataPackageType;
 import eu.europa.emsa.csndc.DetectedShipReferenceType;
 import eu.europa.emsa.csndc.ImageType;
 import eu.europa.emsa.csndc.ShipType;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
+import it.geosolutions.geobatch.mariss.ingestion.csv.utils.DecompressUtils;
+import net.opengis.gml.DirectPositionType;
 
 /**
  * Data ingestion for data package features http://www.emsa.europa.eu/schemas/csndc/DataPackage/csndc_pkg.xsd

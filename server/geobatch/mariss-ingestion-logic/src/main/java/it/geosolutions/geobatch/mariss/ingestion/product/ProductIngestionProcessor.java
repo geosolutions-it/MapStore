@@ -19,12 +19,6 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.product;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.imagemosaic.ImageMosaicCommand;
-import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -48,6 +42,12 @@ import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.GeometryFactory;
 
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.imagemosaic.ImageMosaicCommand;
+import it.geosolutions.geobatch.imagemosaic.ImageMosaicConfiguration;
+
 /**
  * Product ingestion for MARISS project
  * 
@@ -63,6 +63,11 @@ public abstract class ProductIngestionProcessor extends BaseAction<EventObject> 
 
     protected final static Logger LOGGER = LoggerFactory.getLogger(ProductIngestionProcessor.class);
 
+    /*
+     * GeometryFactory will be used to create the geometry attribute of each feature (a Point object for the location)
+     */
+    protected GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+    
     // Resources to do the ingestion
     protected DataStore dataStore = null;
 
@@ -81,11 +86,6 @@ public abstract class ProductIngestionProcessor extends BaseAction<EventObject> 
     protected String targetTifFolder;
 
     protected ImageMosaicConfiguration imageMosaicConfiguration = null;
-
-    /*
-     * GeometryFactory will be used to create the geometry attribute of each feature (a Point object for the location)
-     */
-    protected GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 
     // constructors
     public ProductIngestionProcessor() {

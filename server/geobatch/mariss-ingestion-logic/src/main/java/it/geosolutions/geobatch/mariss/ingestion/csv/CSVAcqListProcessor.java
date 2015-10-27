@@ -19,9 +19,6 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.csv;
 
-import it.geosolutions.geobatch.catalog.impl.TimeFormat;
-import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVPropertyType;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,12 +26,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opengis.feature.simple.SimpleFeature;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LinearRing;
+
+import it.geosolutions.geobatch.catalog.impl.TimeFormat;
+import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVPropertyType;
 
 /**
  * Acquisition List CSV processor
@@ -61,7 +59,7 @@ public class CSVAcqListProcessor extends MarissCSVServiceProcessor {
     /*
      * GeometryFactory will be used to create the geometry attribute of each feature (a Point object for the location)
      */
-    GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+    //GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 
     private final static List<String> HEADERS = Collections.unmodifiableList(Arrays.asList("*",
             "Type", "Start", "End", "Duration", "Region", "OZA", "SZA", "LookAngle", "Min_Incid",

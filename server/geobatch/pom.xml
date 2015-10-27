@@ -1767,7 +1767,8 @@
       </snapshots>
       <id>boundless</id>
       <name>Boundless Maven Repository</name>
-      <url>http://repo.boundlessgeo.com/main</url>
+      <!-- url>http://repo.boundlessgeo.com/main</url -->
+      <url>http://boundless.artifactoryonline.com/main/</url>
     </repository>
 
     <repository>

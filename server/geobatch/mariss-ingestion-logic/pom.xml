@@ -172,6 +172,10 @@
 			<artifactId>gt-xml</artifactId>
 			<version>${gt.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-metadata</artifactId>
+		</dependency>
 
 		<!-- =========================================================== -->
 

@@ -19,25 +19,21 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.csv;
 
-import it.geosolutions.geobatch.catalog.impl.TimeFormat;
-import it.geosolutions.geobatch.mariss.dao.GenericDAO;
-import it.geosolutions.geobatch.mariss.dao.impl.GenericFeatureDaoImpl;
-import it.geosolutions.geobatch.mariss.ingestion.csv.configuration.CSVProcessorConfiguration;
-import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import au.com.bytecode.opencsv.CSVReader;
-
-import com.vividsolutions.jts.geom.GeometryFactory;
+import it.geosolutions.geobatch.catalog.impl.TimeFormat;
+import it.geosolutions.geobatch.mariss.dao.GenericDAO;
+import it.geosolutions.geobatch.mariss.dao.impl.GenericFeatureDaoImpl;
+import it.geosolutions.geobatch.mariss.ingestion.csv.configuration.CSVProcessorConfiguration;
+import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
 
 /**
  * MARISS CSV processor based on a service name for an user
@@ -48,12 +44,6 @@ public abstract class MarissCSVServiceProcessor extends GenericCSVProcessor<Simp
 
     // the dao
     protected GenericDAO<SimpleFeature, Long> dao;
-
-    /*
-     * GeometryFactory will be used to create the geometry attribute of each feature (a Point object for the location)
-     */
-    protected GeometryFactory geometryFactory = 
-            JTSFactoryFinder.getGeometryFactory(null);
 
     // user and service name
     protected String userName;
