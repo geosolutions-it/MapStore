@@ -18,14 +18,15 @@ package it.geosolutions.geobatch.mariss.actions.sartiff;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
+import it.geosolutions.geobatch.annotations.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.geoserver.tools.WorkspaceUtils;
 import it.geosolutions.geobatch.mariss.actions.MarissBaseAction;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationUtils;
-import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfiguration;
 import it.geosolutions.geobatch.mariss.actions.netcdf.NetCDFAction;
-import it.geosolutions.geobatch.mariss.actions.netcdf.NetCDFAction.SARType;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ShipDetection;
+import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
+import it.geosolutions.geobatch.mariss.actions.sar.SARType;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
 import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.ParameterConfigure;
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
@@ -36,28 +37,24 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.lang.StringUtils;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
+import org.geotools.factory.GeoTools;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -67,10 +64,14 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
- * @author Alessio
+ * @author Alessio Fabiani, GeoSolutions
+ * @author Lorenzo Natali, GeoSolutions
+ * 
+ * Base Class that ingests a GeoTIFF with ship detections
  * 
  */
-public abstract class SarGeoTIFFAction extends MarissBaseAction {
+@Action(configurationClass = SARGeoTiffActionConfiguration.class)
+public class SarGeoTIFFAction extends MarissBaseAction {
 	
 	private static String COVERAGE_NAME = "sar";
 
@@ -78,7 +79,7 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
 	 * 
 	 * @param actionConfiguration
 	 */
-	public SarGeoTIFFAction(IngestionActionConfiguration actionConfiguration) {
+	public SarGeoTIFFAction(SARGeoTiffActionConfiguration actionConfiguration) {
 		super(actionConfiguration);
 
 	}
@@ -104,8 +105,8 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
 						FileSystemEvent fileEvent = (FileSystemEvent) ev;
 						// if the file is processable
 						if (canProcess(fileEvent)) {
-							AttributeBean attributeBean = new AttributeBean();
-
+							AttributeBean attributeBean = getAttributeBean(fileEvent.getSource());
+							LOGGER.info("recognized as SAR-GeoTiff process");
 							// pre process file (extract, get file and data to
 							// publish
 							SarGeoTiffProcessingResult processResult = processFile(
@@ -123,7 +124,7 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
 				if (LOGGER.isErrorEnabled())
 					LOGGER.error(message, ioe);
 
-				throw new ActionException(this, message);
+				throw new ActionException(this, message,ioe);
 			}
 		}
 		return ret;
@@ -181,7 +182,7 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
                 geo.setUserData(crs);
                 
                 //  publish ship detections
-                publishShipDetections(attributeBean, processResult);
+                //publishShipDetections(attributeBean, processResult);
                 
                 // update table of products
                 publishProducts(attributeBean, tif, geo);
@@ -193,21 +194,14 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
 			ds.dispose();
 		}
 	}
-
+	
 	public void publishProducts(AttributeBean attributeBean, File tif,
 			Geometry geo) throws ActionException {
-		insertDb(attributeBean, tif.getAbsolutePath(), configuration.getContainer().getDefaultNameSpace(), getActionName(),
+		insertDb(attributeBean,attributeBean.outFilePath, configuration.getContainer().getDefaultNameSpace(), getActionName(),
 		        getActionName(), geo);
 	}
 
-	public void publishShipDetections(AttributeBean attributeBean,
-			SarGeoTiffProcessingResult processResult) throws ActionException {
-		
-		List<ShipDetection> shipDetections = processResult.getShipDetections();
-		if (shipDetections.size() > 0) {
-		    insertShipDetectionsIntoDb(attributeBean, shipDetections);
-		}
-	}
+	
 
 	/**
 	 * Publish the geotiff
@@ -240,7 +234,6 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
 		} catch (Exception e) {
 			throw new ActionException(SarGeoTIFFAction.class,
 					e.getLocalizedMessage());
-			// DEBUG : LOGGER.warn(e.getLocalizedMessage(), e);
 		}
 
 		
@@ -251,13 +244,12 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
 			// TODO create empty mosaic if doesnt exists
 			boolean published = isMosaicConfigured(reader, COVERAGE_NAME);
 			String newFileName = IDENTIFIER_SEPARATOR + attributeBean.identifier + IDENTIFIER_SEPARATOR
-                    + SERVICE_SEPARATOR + configuration.getServiceName() + SERVICE_SEPARATOR
+                    + SERVICE_SEPARATOR + attributeBean.serviceName + SERVICE_SEPARATOR
                     + tif.getName();
 			if (!published) {
 				published = createEmptyMosaic(publisher,newFileName);
 			}
 			//force because you receive errors
-			published = true;
 			if(published){
 				// copy file into harvesting directory
 				File mosaicDir = new File(container.getParams().get(
@@ -271,32 +263,32 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
                 
                 // Copy the file
                 try {
-                	if(!newFile.exists()){
+                	if(newFile.exists()){
                 		LOGGER.warn("THE FILE " + newFile.getAbsolutePath() + " already exists!!! deleting it");
                 		newFile.delete();
                 	}
                 	FileUtils.copyFile(tif, newFile);
+                	attributeBean.absolutePath = newFile.getAbsolutePath();
                 } catch (IOException e) {
                     throw new ActionException(NetCDFAction.class, e.getLocalizedMessage());
                 }
 				//TODO optimize geotiff
         		String optimizationOptions = configuration.getContainer().getParams().get(ConfigurationUtils.OPTIMIZATION_OPTION);
-        		if(optimizationOptions !=null){
-        			List<String> transformations = Arrays.asList(optimizationOptions.split(","));
-        			optimizeGeoTiff(newFile,transformations);
-        		}
+        		
+    			
+    			importGeoTiff(newFile,optimizationOptions);
+        		
 
-				//run harvesting
-                published &=  publisher.harvestExternal(container.getDefaultNameSpace(),
-                        getActionName(), "geotiff", newFile.getAbsolutePath());
+				// save the outFilePath
+    			attributeBean.outFilePath = newFile.getAbsolutePath();
                 
-                // get envelop of geotif
+                // get envelope of geotiff
 				try {
-					GeoTiffReader tr = new GeoTiffReader(newFile);
+					GeoTiffReader tr = new GeoTiffReader(newFile,GeoTools.getDefaultHints());
 					attributeBean.env = tr.getOriginalEnvelope();
 				} catch (DataSourceException e) {
 					throw new ActionException(this, "Could't read the geotif to get envelop: "
-							+ e.getMessage());
+							+ e.getMessage(),e);
 				}
 			}
 			if(!published){
@@ -308,10 +300,16 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
                     throw new ActionException(SarGeoTIFFAction.class, message);
                 }
 			}
+			// last step configure the mosaic if ingstion finished
+			if(isMosaicConfigured(reader, COVERAGE_NAME)){
+				//TODO configure coverage
+			}
+			
 			return published;
 		} catch (Exception e) {
-			throw new ActionException(SarGeoTIFFAction.class,
-					e.getLocalizedMessage());
+		    LOGGER.error("Error importing GEOTIFF",e);
+			throw new ActionException(this,
+					e.getLocalizedMessage(),e);
 		}
 
 	}
@@ -319,23 +317,59 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
 	/**
 	 * Use Importer to optimize the geotif
 	 * @param newFile
-	 * @param transformations 
+	 * @param optimizationOptions 
 	 * @return
 	 * @throws Exception 
 	 */
-	private void optimizeGeoTiff(File newFile, List<String> transformations) throws Exception {
+	private void importGeoTiff(File newFile, String optimizationOptions) throws Exception {
 		GeoServerRESTImporterManager publisher = new GeoServerRESTImporterManager(
 				new URL(configuration.getGeoserverURL()),
 				configuration.getGeoserverUID(),
 				configuration.getGeoserverPWD());
-		int i = publisher.postNewImport();
-		int t = publisher.putNewTask(i, newFile.getAbsolutePath());
-		JSONObject  task = publisher.getTask(i, t);
-		for(String transformation : transformations){
-			publisher.putTaskLayer(i, t,transformation);
-		}
+		String requestBody = createImporterRequestBody(newFile,optimizationOptions);
+		
+		int i = publisher.postNewImport(requestBody);
+		int t = 0;//publisher.putNewTask(i, newFile.getAbsolutePath());
+		
+		
 		publisher.postImport(i);
 
+	}
+
+	public String createImporterRequestBody(File newFile, String optimizationOptions) {
+		JSONObject requestBody = new JSONObject();
+		JSONObject importBlock = new JSONObject();
+		
+		//workspace
+		JSONObject targetWorkspace = new JSONObject();
+		HashMap<String,String> wp = new HashMap<String,String>();
+		wp.put("name", container.getDefaultNameSpace());
+		targetWorkspace.put("workspace",wp );
+		importBlock.put("targetWorkspace",targetWorkspace );
+		
+		// target store
+		Map<String,String> dataStore = new HashMap<String,String>();
+		dataStore.put("name", getActionName());
+		JSONObject targetStore = new JSONObject();
+		targetStore.put("dataStore", dataStore);
+		importBlock.put("targetStore", targetStore);
+		
+		//data
+		Map<String,String> data = new HashMap<String,String>();
+		data.put("type","file");
+		data.put("file",newFile.getAbsolutePath());
+		importBlock.put("data", data);
+		
+		//Transforms
+		JSONObject transforms = (JSONObject) JSONSerializer.toJSON(StringUtils.trim(optimizationOptions));
+		importBlock.put("transforms", transforms.get("transforms"));
+		
+		//put everything in the import object
+		requestBody.put("import",importBlock);
+		if(LOGGER.isDebugEnabled()){
+		    LOGGER.debug("IMPORTS BODY:"+ requestBody.toString());
+		}
+		return requestBody.toString();
 	}
 
 	/**
@@ -376,8 +410,8 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
         }
 		
 		// Create the Mosaic elements
-		createIndexerFile(mosaicDir, getActionName(),
-				configuration.getServiceName(), null);
+        //Can be empty
+		createIndexerFile(mosaicDir, getActionName(), null,true);
 		createDatastoreFile(mosaicDir, getActionName());
 		createRegexFiles(mosaicDir, getActionName(), null);
 
@@ -385,10 +419,11 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
 		File zipped = zipAll(temp, mosaicDir.listFiles(), mosaicDir.getName());
 
 		// Publish the ImageMosaic
-		published &= publisher.publishImageMosaic(container
+		published = publisher.publishImageMosaic(container
 				.getDefaultNameSpace(), getActionName(), zipped,
-				ParameterConfigure.FIRST, new NameValuePair("coverageName",
+				ParameterConfigure.NONE, new NameValuePair("coverageName",
 						COVERAGE_NAME));
+		
 		return published;
 	}
 
@@ -401,9 +436,11 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
 	 */
 	protected boolean isMosaicConfigured(GeoServerRESTReader reader,
 			String storename) {
-		String coveragename = storename;// .replace("_", "-");
-		return reader.existsCoverage(container.getDefaultNameSpace(),
-				storename, coveragename);
+		String coveragename = storename;
+		boolean exists = reader.existsCoverage(container.getDefaultNameSpace(),
+                storename, coveragename);
+		LOGGER.info("configured mosaic:"+exists);
+		return exists;
 	}
 
 	/**
@@ -414,9 +451,13 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
 	 */
 	public boolean canProcess(FileSystemEvent event) {
 		File file = event.getSource();
-		String extension = FilenameUtils.getExtension(file.getName());
-		return extension != null && !extension.isEmpty()
-				&& (extension.equalsIgnoreCase("zip"));
+		if(file.exists() && file.isDirectory()){
+		    return true;
+		}
+//		String extension = FilenameUtils.getExtension(file.getName());
+//		return extension != null && !extension.isEmpty()
+//				&& (extension.equalsIgnoreCase("zip"));
+		return false;
 	}
 
 	/**
@@ -437,25 +478,26 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
 		File inputFile = source;
 		attributeBean.absolutePath = inputFile.getAbsolutePath();
 		attributeBean.maskOneIsValid = container.isMaskOneIsValid();
-		File tifDir = unzipFile(inputFile);
-		String identifier = inputFile.getName().substring(0,
-				inputFile.getName().length() - 8);
-		attributeBean.identifier = identifier;
+		
+		File tifDir = null;
+		if(inputFile.isDirectory()){
+		    tifDir = inputFile; 
+		}else{
+		    tifDir = unzipFile(inputFile);
+		}
+		
+		
 		// Getting SARType
-		attributeBean.type = SARType.getType(getActionName());
+		attributeBean.type = SARType.getType("HIMAGE");
 		// Don't read configuration for the file, just
 		// this.outputfeature configuration
 
 		File tifFile = searchTiff(attributeBean, tifDir);
-		File[] shipDetectionFiles = getShipDetections(attributeBean, tifDir);
+
 
 		// Setup result of processing
 		SarGeoTiffProcessingResult result = new SarGeoTiffProcessingResult();
 		result.setGeoTiff(tifFile);
-		if (shipDetectionFiles.length > 0) {
-			List<ShipDetection> shipDetections = readShipDetections(shipDetectionFiles);
-			result.setShipDetections(shipDetections);
-		}
 
 		return result;
 
@@ -485,24 +527,14 @@ public abstract class SarGeoTIFFAction extends MarissBaseAction {
 			if (files != null && files.length > 0) {
 				tifFile = files[0];
 				// Getting Time dimension if present
-				Pattern pattern = Pattern.compile(container.getPattern());
-				Matcher m = pattern.matcher(attributeBean.absolutePath);
-				if (m.matches()) {
-					// Getting dates
-					String date = m.group(1);
-					String date2 = m.group(2);
-					SimpleDateFormat toSdf = new SimpleDateFormat(
-							"yyyyMMdd'T'HHmmss");
-					toSdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-					try {
-						attributeBean.timedim = toSdf.parse(date);
-					} catch (ParseException e) {
-						LOGGER.error(e.getMessage());
-					}
-				}
-
 			}
 		}
 		return tifFile;
 	}
+
+    @Override
+    public boolean checkConfiguration() {
+        // TODO Auto-generated method stub
+        return true;
+    }
 }

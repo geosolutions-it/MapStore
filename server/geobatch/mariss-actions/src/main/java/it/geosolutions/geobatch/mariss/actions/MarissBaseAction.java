@@ -1,13 +1,13 @@
 package it.geosolutions.geobatch.mariss.actions;
 
+import it.geosolutions.geobatch.actions.sync.model.FileMetadataWrapper;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
-import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationUtils;
 import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfiguration;
 import it.geosolutions.geobatch.mariss.actions.netcdf.NetCDFAction;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ShipDetection;
-import it.geosolutions.geobatch.mariss.actions.netcdf.NetCDFAction.SARType;
+import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -19,19 +19,18 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EventObject;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -43,16 +42,13 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.jdbc.JDBCDataStore;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
 import com.vividsolutions.jts.geom.Geometry;
-
-import ucar.nc2.Variable;
 
 /**
  * Base Class with common method common all actions for mariss netcdf and
@@ -73,38 +69,10 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
 	protected static final String SERVICE_SEPARATOR = "_s_";
 
 	protected static final String IDENTIFIER_SEPARATOR = "_I_";
+	
+	protected static final String ATTRIBUTES_FILE_NAME = "Product_Attributes.xml";
 
-	/**
-	 * a container for ingested element attribute
-	 */
-	public static class AttributeBean {
-
-		public Map<String, Variable> foundVariables = new HashMap<String, Variable>();
-
-		public Map<String, String> foundVariableLongNames = new HashMap<String, String>();
-
-		public Map<String, String> foundVariableBriefNames = new HashMap<String, String>();
-
-		public Map<String, String> foundVariableUoM = new HashMap<String, String>();
-
-		public Date timedim;
-
-		public SARType type;
-
-		public GeneralEnvelope env;
-
-		public String absolutePath;
-
-		public String identifier;
-
-		public JDBCDataStore dataStore;
-
-		public boolean maskOneIsValid;
-
-		public int numShipDetections;
-
-		public int numOilSpills;
-	}
+	
 
 	protected IngestionActionConfiguration configuration;
 	protected ConfigurationContainer container;
@@ -118,10 +86,7 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
 		super(actionConfiguration);
 		configuration = actionConfiguration;
 		ConfigurationContainer container = actionConfiguration.getContainer();
-		if (container == null
-				|| container.getParams() == null
-				|| !container.getParams().containsKey(
-						ConfigurationUtils.NETCDF_DIRECTORY_KEY)) {
+		if (container == null || container.getParams() == null) {
 			throw new RuntimeException("Wrong configuration defined");
 		} else {
 			this.container = container;
@@ -168,8 +133,7 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
 	 * @param additionalDimensions
 	 * @throws IOException
 	 */
-	protected void createIndexerFile(File mosaicDir, String varName,
-			String serviceName, Map<String, String> additionalDimensions)
+	protected void createIndexerFile(File mosaicDir, String varName, Map<String, String> additionalDimensions,boolean canBeEmpty)
 			throws IOException {
 		File indexer = new File(mosaicDir, "indexer.properties");
 		indexer.createNewFile();
@@ -190,7 +154,14 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
 		// + "PropertyCollectors=" + propertyCollectors;
 		String properties = "Schema=" + schema + "\n" + "PropertyCollectors="
 				+ propertyCollectors;
+		if(canBeEmpty){
+		    properties+="\nCanBeEmpty=true";
+		}
 		FileUtils.write(indexer, properties);
+	}
+	
+	protected void createIndexerFile(File mosaicDir, String varName, Map<String, String> additionalDimensions) throws IOException{
+	    createIndexerFile(mosaicDir,varName,additionalDimensions,false);
 	}
 	/**
 	 * Creates the regex file with service, identifier and other custom dimensions
@@ -672,20 +643,13 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
 			PreparedStatement ps = conn.prepareStatement(sql);
 
 			for (ShipDetection ds : shipDetections) {
-				ps.setString(1, configuration.getServiceName()); // servicename
+				ps.setString(1, attributeBean.serviceName); // servicename
 				ps.setString(2, attributeBean.identifier); // identifier
 				ps.setString(3, ds.getId()); // dsid
 				if (ds.getTimeStamp() != null) { // "timeStamp"
-					SimpleDateFormat sdf = new SimpleDateFormat(
-							"YYYY-MM-dd'T'HH:mm:ss'Z'");
-					sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-					try {
-						ps.setDate(4,
-								new java.sql.Date(sdf.parse(ds.getTimeStamp())
-										.getTime()));
-					} catch (ParseException e) {
-						LOGGER.warn(e.getMessage(), e);
-						ps.setDate(4, new java.sql.Date(1));
+					Date d = guessTimeStamp(ds.getTimeStamp());
+					if(d != null){
+					    ps.setDate(4, new java.sql.Date(d.getTime()));
 					}
 				} else {
 					ps.setDate(4, new java.sql.Date(1));
@@ -765,6 +729,31 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
 
 		return result;
 	}
+
+	/**
+	 * Tries to guess the time-stamp
+	 * @param ps
+	 * @param ds
+	 * @throws SQLException
+	 */
+	protected Date guessTimeStamp(String timeStamp) {
+	    List<String> dateFormatStrings = configuration.getContainer().getDateFormats();
+		
+
+		for(String formatString : dateFormatStrings){
+		    SimpleDateFormat df = new SimpleDateFormat(formatString);
+		    df.setTimeZone(TimeZone.getTimeZone("UTC"));
+		    try {
+	            Date d = df.parse(timeStamp);
+	            return d;
+	        } catch (ParseException e) {
+	            //go forwards to the next format
+	        }
+		}
+		LOGGER.warn("unable to parse timeStamp : " + timeStamp);
+		
+		return null;
+	}
 	
 	/**
      * Insert a product in the database
@@ -790,18 +779,18 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
         try {
             conn = attributeBean.dataStore.getDataSource().getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, configuration.getServiceName());
+            ps.setString(1, attributeBean.serviceName);
             ps.setString(2, attributeBean.identifier);
             ps.setString(3, geo.toText());
             if (attributeBean.timedim != null) {
-                ps.setDate(4, new java.sql.Date(attributeBean.timedim.getTime()));
+                ps.setTimestamp(4, new Timestamp(attributeBean.timedim.getTime()));
             } else {
-                ps.setDate(4, new java.sql.Date(1));
+                ps.setTimestamp(4, null);
             }
             ps.setString(5, cfName);
-            ps.setString(6, attributeBean.type.name());
+            ps.setString(6, attributeBean.type == null ? null : attributeBean.type.name());
             ps.setString(7, outFileLocation);
-            ps.setString(8, configuration.getServiceName() + "/PRODUCTS/" + FilenameUtils.getName(attributeBean.absolutePath));
+            ps.setString(8, attributeBean.absolutePath);
             ps.setString(9, namespace + ":" + layerName);
             
             String partition = null;
@@ -810,8 +799,8 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
                 partition = outputFileVaseName.substring(outputFileVaseName.indexOf(CUSTOM_DIM_VAL_SEPARATOR) + CUSTOM_DIM_VAL_SEPARATOR.length(), outputFileVaseName.indexOf(CUSTOM_DIM_END_SEPARATOR));
             }
             ps.setString(10, partition);
-            ps.setString(11, String.valueOf(attributeBean.numOilSpills));
-            ps.setString(12, String.valueOf(attributeBean.numShipDetections));
+            ps.setInt(11, attributeBean.numOilSpills);
+            ps.setInt(12, attributeBean.numShipDetections);
 
             result = ps.execute() && ps.getUpdateCount() > 0;
             ps.close();
@@ -828,5 +817,84 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
 
         return result;
     }
+    protected AttributeBean getAttributeBean(File inputDir) throws ActionException {
+		AttributeBean attributeBean = new AttributeBean();
+		
+		attributeBean.maskOneIsValid = container.isMaskOneIsValid();
+
+		getProductAttributes(inputDir, attributeBean);
+		return attributeBean;
+	}
+
+    /**
+     * Gets the attributes of the product
+     * @param inputDir the directory of Input
+     * @param attributeBean 
+     * @throws ActionException 
+     */
+	private void getProductAttributes(File inputDir, AttributeBean attributeBean) throws ActionException {
+		
+		// Getting file name
+		if(inputDir !=null && inputDir.exists() && inputDir.isDirectory()){
+			String fileName = configuration.getAttributeFileName();
+			File attributeFile = new File(inputDir,fileName != null ? fileName : ATTRIBUTES_FILE_NAME);
+			if(!attributeFile.exists()){
+				LOGGER.error("UNABLE TO FIND ATTRIBUTE FILE");
+				throw new ActionException(this, "Unable to find configuration file:" + attributeFile.getAbsolutePath());
+			}
+			//read attributes
+			FileMetadataWrapper metadata = readAttributeFile(attributeFile);
+			Map<String,Object> metadataMap = metadata.getMetadata();
+			attributeBean.serviceName = (String) metadataMap.get(MarissConstants.SERVICE_KEY);
+			attributeBean.absolutePath = (String) metadataMap.get(MarissConstants.ORIGINAL_FILE_PATH_KEY);
+			attributeBean.identifier = (String) metadataMap.get(MarissConstants.PRODUCTID_KEY);
+			attributeBean.user = (String) metadataMap.get(MarissConstants.USER_KEY);
+			attributeBean.timedim = (Date) metadataMap.get(MarissConstants.TIME_START);
+		}else if(inputDir !=null && inputDir.exists()){
+			//TODO try to extract
+			LOGGER.error("The input is not a directory:" + inputDir);
+			throw new ActionException(this, "Unable to find input directory:" + inputDir.getAbsolutePath());
+		}else if(inputDir!= null){
+			//TODO try to extract
+			LOGGER.error("Input dir doesn't exists:" + inputDir);
+			throw new ActionException(this, "Unable to find input directory:" + inputDir.getAbsolutePath());
+		}else{
+			LOGGER.error("Input dir is null");
+			throw new ActionException(this, "Unable to find input directory");
+		}
+		
+		
+	}
+
+	private FileMetadataWrapper readAttributeFile(File attributeFile) throws ActionException {
+		FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(attributeFile);
+            XStream xstream = new XStream();
+            return (FileMetadataWrapper) xstream.fromXML(inputStream);
+
+        } catch (XStreamException e) {
+            // the object cannot be deserialized
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("The passed FileSystemEvent reference to a not deserializable file: "
+                             + attributeFile.getAbsolutePath(), e);
+            if (!configuration.isFailIgnored()) {
+                listenerForwarder.failed(e);
+                throw new ActionException(this, e.getLocalizedMessage());
+            }
+        } catch (Throwable e) {
+            // the object cannot be deserialized
+            if (LOGGER.isErrorEnabled())
+                LOGGER.error("XstreamAction.adapter(): " + e.getLocalizedMessage(), e);
+            if (!configuration.isFailIgnored()) {
+                listenerForwarder.failed(e);
+                throw new ActionException(this, e.getLocalizedMessage());
+            }
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
+		return null;
+		
+	}
 
 }

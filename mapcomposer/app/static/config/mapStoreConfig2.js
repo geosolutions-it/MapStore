@@ -2,7 +2,7 @@
    
    "scaleOverlayMode": "basic",
    "adminUrl":"http://localhost/opensdi2-manager/",
-   "geoStoreBase":"http://localhost/opensdi2-manager/facade/geostore/rest/",
+   "geoStoreBase":"/opensdi2-manager/facade/geostore/rest/",
    "externalHeaders": true,
    "header":{
         "container": {

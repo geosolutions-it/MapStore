@@ -146,9 +146,9 @@ public class CSVAcqListProcessor extends MarissCSVServiceProcessor {
         // "Frame_End",
         TYPES.add(CSVPropertyType.INTEGER);
         // "Revisiting",
-        TYPES.add(CSVPropertyType.INTEGER);
+        TYPES.add(CSVPropertyType.DOUBLE);
         // "Slew",
-        TYPES.add(CSVPropertyType.INTEGER);
+        TYPES.add(CSVPropertyType.STRING);
         // "Polarization",
         TYPES.add(CSVPropertyType.STRING);
         // "Service Provider"

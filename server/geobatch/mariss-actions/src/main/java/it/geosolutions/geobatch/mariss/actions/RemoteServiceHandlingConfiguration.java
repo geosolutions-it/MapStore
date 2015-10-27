@@ -233,7 +233,7 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
     }
 
     /**
-     * @return the succesPath
+     * @return the path where to place files recognized to be processed 
      */
     public String getSuccesPath() {
         return succesPath;

@@ -19,7 +19,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package it.geosolutions.geobatch.mariss.actions;
+package it.geosolutions.geobatch.mariss.actions.csv;
 
 import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;

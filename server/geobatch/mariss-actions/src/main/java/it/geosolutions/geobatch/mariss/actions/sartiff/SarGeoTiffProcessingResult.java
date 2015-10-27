@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Container class with informations 
+ * Container class with information 
  * to update database and publish data from an <SarGeoTIFFAction>
  * @author Lorenzo Natali, GeoSolutions
  *

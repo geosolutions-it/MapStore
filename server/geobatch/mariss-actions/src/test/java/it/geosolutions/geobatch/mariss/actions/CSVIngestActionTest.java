@@ -23,7 +23,8 @@ import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
 import it.geosolutions.geobatch.catalog.impl.TimeFormat;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
-import it.geosolutions.geobatch.mariss.actions.netcdf.ShipDetection;
+import it.geosolutions.geobatch.mariss.actions.csv.CSVIngestAction;
+import it.geosolutions.geobatch.mariss.actions.csv.CSVIngestConfiguration;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVAcqListProcessor;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes1To3Processor;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes5Processor;
@@ -39,13 +40,8 @@ import java.util.Queue;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.junit.Assert.*;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.QNameMap;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
-import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 /**
  * Tests for CSV ingestion action
@@ -54,7 +50,7 @@ import com.thoughtworks.xstream.mapper.MapperWrapper;
  */
 public class CSVIngestActionTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CSVIngestAction.class);
+   
 
     public CSVIngestActionTest() {
         super();
@@ -121,7 +117,7 @@ public class CSVIngestActionTest {
             processor.setUserName(userName);
             processor.setServiceName(serviceName);
         } catch (Exception e) {
-            LOGGER.error("Error getting the processor", e);
+            fail("Error getting the processor:" + e.getLocalizedMessage());
         }
         return processor;
     }
@@ -144,14 +140,14 @@ public class CSVIngestActionTest {
             Queue<EventObject> events = new LinkedList<EventObject>();
 
             for (File file : FileUtils.listFiles(new File("."), new String[] { "csv" }, true)) {
-                LOGGER.info("Loading " + file);
+                
                 FileSystemEvent event = new FileSystemEvent(file, FileSystemEventType.FILE_ADDED);
                 events.add(event);
                 @SuppressWarnings({ "unused", "rawtypes" })
                 Queue result = action.execute(events);
             }
         } else {
-            LOGGER.info("The local database is not available");
+            //LOGGER.info("The local database is not available");
         }
     }
     

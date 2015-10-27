@@ -7,7 +7,7 @@
             "ptype": "gxp_wmssource",
             "title": "MARISS",
             "version": "1.1.1",
-            "url": "http://mariss.geo-solutions.it/geoserver/mariss/ows",
+            "url": "/geoserver/mariss/ows",
             "layerBaseParams": {
                 "TILED": true,
                 "TILESORIGIN": "-20037508.34,-20037508.34"
@@ -17,7 +17,7 @@
             "ptype": "gxp_wmssource",
             "title": "SDE",
             "version": "1.1.1",
-            "url": "http://mariss.geo-solutions.it/geoserver/ows",
+            "url": "/geoserver/ows",
             "layerBaseParams": {
                 "TILED": true,
                 "TILESORIGIN": "-20037508.34,-20037508.34"
@@ -60,13 +60,6 @@
         ],
         "layers": [
             {
-                "source": "MARISS-Layers2",
-                "title": "SAR Image",
-                "name": "sde:sar",
-                "displayInLayerSwitcher": false,
-                "visibility": false,
-                "tiled": true
-            },{
                 "source": "MARISS-Layers",
                 "title": "Ship Detections",
                 "name": "ship_detections",
@@ -118,14 +111,14 @@
                 "source": "MARISS-Layers2",
                 "title": "SAR-imagery-footprints",
                 "name": "TEM_QL__1P_mosaic_idx",
-                "displayInLayerSwitcher": false,
+                "displayInLayerSwitcher": true,
                 "tiled": true
             },
             {
                 "source": "MARISS-Layers",
                 "title": "SHIP-detection",
                 "name": "tem_sd__1p",
-                "displayInLayerSwitcher": false,
+                "displayInLayerSwitcher": true,
                 "tiled": true
             },
             {
@@ -390,6 +383,7 @@
                 }
             },
             "pagingType": 1,
+            "showTotalResults":true,
             "maxFeatures": 15
         },
         {
@@ -407,6 +401,7 @@
             "pagingType": 1,
             "maxFeatures": 1000
         },
+        {"ptype":"gxp_planeditor","id":"gxp_planeditor","outputTarget":"west","source":"MARISS-Layers","downloadUploadedSHP":false,"auxiliaryLayerName":"Draft Layer","displayAuxiliaryLayerInLayerSwitcher":false,"layoutConfig":{"xtype":"form","buttonAlign":"right","autoScroll":true,"frame":true} },{"ptype":"gxp_importexport","id":"gxp_importexport","service":"http://<host_ip>/opensdi2-manager/","types":["kml/kmz","geojson","shp"],"exportConf":{"kml/kmz":{"layerName":"Draft Layer","alternativeStyle":false,"dontAskForLayerName":true},"geojson":{"panelConfig":{"fieldEmptyText":"Browse for GeoJSON files...","validFileExtensions": [".json", ".geojson"],"fileLabel":"JSON file","deafultLayerName": "Draft Layer","dontAskForLayerName": true}},"shp":{"panelConfig":{"fieldEmptyText":"Browse for SHP files...","validFileExtensions": [".shp"],"fileLabel":"SHP file","deafultLayerName":"Draft Layer","dontAskForLayerName": true}}}},
         {
             "ptype": "npa_results_grid",
             "selectOnMap": true,
@@ -442,15 +437,14 @@
                 "variablelist",
                 "sartypelist",
                 "identifier",
-                "originalfilepath",
-                "filelist"
+                "originalfilepath"
             ],
             "outputTarget": "south"
         },
         {
             "ptype": "npa_cart_grid",
             "id": "cart",
-            "downloadService":"http://mariss.geo-solutions.it/opensdi2-manager/mvc/download/",
+            "downloadService":"/opensdi2-manager/mvc/download/",
             "outputConfig": {
                 "viewConfig": {
                     "forceFit": true
@@ -470,8 +464,7 @@
                 "bounds",
                 "outfilelocation",
                 "originalfilepath",
-                "layername",
-                "filelist"
+                "layername"
             ],
             "outputTarget": "downloadlist",
             "cartTypes": {
@@ -486,10 +479,6 @@
             "ptype": "npa_scenario",
             "id": "scenario",
             "layersgroup": {
-                "sde:sar": {
-                    "tpl": "service = '{servicename}' AND identifier = '{identifier}'",
-                    "visible": false
-                },
                 "sde:wl": {
                     "tpl": "service = '{servicename}' AND identifier = '{identifier}'",
                     "visible": false
@@ -512,7 +501,7 @@
                 },
                 "ship_detections": {
                     "tpl": "servicename = '{servicename}' AND identifier = '{identifier}'",
-                    "visible": true
+                    "visible": false
                 }
             },
             "gIdTmp": "prodId_{identifier}",
@@ -521,8 +510,8 @@
         {
             "ptype": "gxp_wpsmanager",
             "id": "wpsSPM",
-            "url": "http://mariss.geo-solutions.it/geoserver/wps",
-            "geostoreUrl": "http://mariss.geo-solutions.it/opensdi2-manager/facade/geostore/rest",
+            "url": "/geoserver/wps",
+            "geostoreUrl": "http://localhost/opensdi2-manager/facade/geostore/rest",
             "geostoreProxy": "/proxy?url=",
             "silentErrors": true,
             "checkLocation": true,
