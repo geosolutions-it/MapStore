@@ -230,6 +230,7 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
             //TODO remove these parameters initialization and use configuration in subclasses instead
             // Remote server configuration
             String remotePath = cfg.getInputRemotePath();
+            LOGGER.debug("Scanning directory:"+remotePath);
             RemoteBrowserProtocol serverProtocol = configuration.getRemoteBrowserConfiguration()
                     .getServerProtocol();
             String serverHost = configuration.getRemoteBrowserConfiguration().getFtpserverHost();

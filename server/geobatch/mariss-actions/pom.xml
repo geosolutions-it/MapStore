@@ -133,14 +133,21 @@
           <groupId>it.geosolutions.geobatch</groupId>
           <artifactId>gb-action-scripting</artifactId>
       </dependency>
+	<!--  LOG4J  -->
+	
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+        
 
+        <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- Test dependencies -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -150,23 +157,15 @@
         <dependency>
           <groupId>it.geosolutions.geobatch</groupId>
           <artifactId>gb-dao-xstream</artifactId>
-          <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>it.geosolutions.imageio-ext</groupId>
             <artifactId>imageio-ext-streams</artifactId>
             <scope>test</scope>
-            <version>1.1-SNAPSHOT</version>
-        </dependency>
-        
-        
-        <dependency>
-            <groupId>it.geosolutions.imageio-ext</groupId>
-            <artifactId>imageio-ext-streams</artifactId>
-            <scope>test</scope>
             <version>${imageio-ext.version}</version>
         </dependency>
+        
         <dependency>
         	<groupId>it.geosolutions.imageio-ext</groupId>
   			<artifactId>imageio-ext-tiff</artifactId>

@@ -60,6 +60,10 @@
         }
     }],
    "adminTools":[{
+
+        "ptype": "mxp_categoryinitializer",
+        "neededCategories": ["GEOBATCH_RUN_CONFIGS","ARCHIVEDLOGS","ARCHIVEDRUNS" ],
+    },{
         "ptype": "mxp_mapviewer",
         "loginManager": "loginTool",
         "mapStoreUrl": "/mapstore/",
@@ -80,19 +84,31 @@
           "index": 1
         }
     },{
+        "ptype": "mxp_geobatch_flows",
+        "showConsumersDetails":true,
+        "geoBatchRestURL":"/geobatch/rest/",
+        "archivedVisible":false,
+         "runConfigs": {
+            
+         },
+         "actionTarget":{
+           "target": "north.tbar",
+           "index": 3
+         }
+    },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "statelessSession":false,
         "externalHeaders": true,
         "actionTarget":{
           "target": "north.tbar",
-          "index": 5
+          "index": 10
         }
     },{
         "ptype": "mxp_languageselector",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 8
+          "index": 15
         }
     }],
     "loggedTools":[{

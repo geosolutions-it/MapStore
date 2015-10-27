@@ -54,6 +54,7 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
+import org.geotools.factory.GeoTools;
 import org.geotools.gce.geotiff.GeoTiffReader;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -281,13 +282,13 @@ public class SarGeoTIFFAction extends MarissBaseAction {
 				// save the outFilePath
     			attributeBean.outFilePath = newFile.getAbsolutePath();
                 
-                // get envelop of geotiff
+                // get envelope of geotiff
 				try {
-					GeoTiffReader tr = new GeoTiffReader(newFile);
+					GeoTiffReader tr = new GeoTiffReader(newFile,GeoTools.getDefaultHints());
 					attributeBean.env = tr.getOriginalEnvelope();
 				} catch (DataSourceException e) {
 					throw new ActionException(this, "Could't read the geotif to get envelop: "
-							+ e.getMessage());
+							+ e.getMessage(),e);
 				}
 			}
 			if(!published){
