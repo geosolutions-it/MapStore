@@ -634,7 +634,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         var record = this.layerRecord;
         var source = this.target.getSource(record);
         if (source && source instanceof gxp.plugins.WMSSource) {
-            source.getSchema(record, function(schema, owsType) {
+            source.getSchema(record, function(schema, owsType, error) {
                 if (schema === false) {
 
 					if(owsType == "WFS"){
@@ -652,7 +652,9 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         } else {
                             record.owsType = owsType;
                         }
-					}
+					} else if (error) {
+                        record.error = error;
+                    }
 
                     this.clearFeatureStore();
                 } else {

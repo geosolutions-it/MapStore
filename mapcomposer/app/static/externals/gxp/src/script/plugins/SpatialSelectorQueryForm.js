@@ -499,6 +499,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             queryForm.setDisabled(!schema);
             if (rec && rec.data.group != 'background' && !schema && rec.owsType == "WFS") {
                 queryForm.getEl().mask(mgr.noValidWmsVersionMsgText + rec.get('layer').params.VERSION);
+            } else if (rec && rec.data.group != 'background' && !schema && rec.error) {
+                queryForm.getEl().mask(rec.error);
             }
 
             if (schema) {
