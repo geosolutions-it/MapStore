@@ -304,8 +304,8 @@ gxp.plugins.WMSGetFeatureInfo = Ext.extend(gxp.plugins.Tool, {
                 layout: this.useTabPanel ? "fit" : "accordion",
                 location: evt.xy,
                 map: this.target.mapPanel,
-                width: 490,
-                height: 320,
+                width: this.infoPopupWidth || 490,
+                height: this.infoPopupHeight || 320,
                 /*anchored: true,
                 unpinnable : true,*/
                 items: items,

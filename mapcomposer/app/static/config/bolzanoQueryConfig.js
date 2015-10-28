@@ -217,6 +217,8 @@
 			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
 			"useTabPanel": true,
 			"toggleGroup": "toolGroup",
+			"infoPopupWidth": 490,
+			"infoPopupHeight": 320,
 			"vendorParams": {
 				"buffer": 20
 			},
