@@ -135,6 +135,8 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
      * Radius selection mode (user / scenario).
      */ 
 	radiusMode: 'user',
+	
+	geodesic: true,
 
     /** 
 	 * private: method[initComponent]
@@ -262,7 +264,6 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
     		this.bufferField.setValue(radius);
     		this.drawNewBuffer(false);
     	}
-
     },
 
     drawNewBuffer: function(zoom) {  
@@ -270,16 +271,34 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 			var coords = this.coordinatePicker.getCoordinate();
 			var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
 	        
-	        lonlat.transform(new OpenLayers.Projection(this.outputSRS),map.getProjectionObject());
+	        lonlat.transform(new OpenLayers.Projection(this.outputSRS), this.map.getProjectionObject());
 
 			var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
 
-			var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+			/*var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
 				point,
 				this.bufferField.getValue(),
 				100, 
 				null
-			);
+			);*/
+
+			var regularPolygon;
+			if(this.geodesic){
+				regularPolygon = OpenLayers.Geometry.Polygon.createGeodesicPolygon(
+					point,
+					this.bufferField.getValue(),
+					100, 
+					0,
+					this.map.getProjectionObject()
+				);
+			}else{
+				regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+					point,
+					this.bufferField.getValue(),
+					100, 
+					0
+				);
+			}
 
 			this.drawBuffer(regularPolygon);
 

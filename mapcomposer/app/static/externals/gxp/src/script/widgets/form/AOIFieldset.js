@@ -371,17 +371,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                         combo.innerList.setWidth( 'auto' );
                     },
                     select: function(combo, record, index) {
-                        var store = this.comuni.getStore();
-                        
-                        var codProvincia = record.get('id');
-                        if(codProvincia !== '0'){
-                           store.filterBy(function(record, id) {
-                                return record.get('cod_provincia') === '0' || record.get('cod_provincia') === codProvincia;
-                           });
-                           this.comuni.setValue('0');
-                        } else {
-                            store.clearFilter();
-                        }
+						this.comuni.reset();
                     }
                 }          
             });
@@ -391,6 +381,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                 id: "comunicb",
                 width: 150,
                 hideLabel : false,
+				minChars: 1,
                 store: comuniStore, 
                 valueField: 'id',
                 displayField: 'name',   
@@ -399,7 +390,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                 mode: 'local',
                 forceSelection: true,
                 triggerAction: 'all',
-                selectOnFocus:true,            
+                selectOnFocus:true,          				
                 resizable: true,    
                 listeners: {
                     scope: this,                
@@ -409,8 +400,89 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                     },
                     beforequery: function(evt) {
                     }
-                }          
-            });
+                }             
+            });			
+			
+			// /////////////////////////////////////////////////////
+			// Overriding the doQuery method in order to allow
+			// the client side filter by province and user's query.
+			// /////////////////////////////////////////////////////
+			this.comuni.doQuery = function(q, forceAll){
+				q = Ext.isEmpty(q) ? '' : q;
+				var qe = {
+					query: q,
+					forceAll: forceAll,
+					combo: this,
+					cancel:false
+				};
+				if(this.fireEvent('beforequery', qe)===false || qe.cancel){
+					return false;
+				}
+				q = qe.query;
+				forceAll = qe.forceAll;
+				if(forceAll === true || (q.length >= this.minChars)){
+					if(this.lastQuery !== q){
+						this.lastQuery = q;
+						if(this.mode == 'local'){
+							this.selectedIndex = -1;
+							/*if(forceAll){
+								this.store.clearFilter();
+							}else{
+								this.store.filter(this.displayField, q);
+								
+							}*/							
+							this.filterByProvince(q);
+							this.onLoad();
+						}else{
+							this.store.baseParams[this.queryParam] = q;
+							this.store.load({
+								params: this.getParams(q)
+							});
+							this.expand();
+						}
+					}else{
+						this.filterByProvince(q);
+						
+						this.selectedIndex = -1;
+						this.onLoad();
+					}
+				}else{
+					this.filterByProvince(q);
+				}
+			};
+			
+			var self = this;
+			this.comuni.filterByProvince = function(q){
+				this.store.clearFilter();
+				
+				var provStore = self.province.getStore();
+		
+				var nameProvincia = self.province.getValue();
+				var prov_record = provStore.find("id", nameProvincia);
+				
+				if(prov_record){
+					var codProvincia = provStore.getAt(prov_record).get('id');
+					if(codProvincia !== '0'){						
+						var filter = [{
+							fn   : function(record) {
+							  return record.get('cod_provincia') === '0' || record.get('cod_provincia') === codProvincia;
+							},
+							scope: this
+						}]
+					   
+						if(q){
+							filter.push({
+								property     : this.displayField,
+								value        : q,
+								anyMatch     : true,
+								caseSensitive: true
+							});
+						}
+
+					    this.store.filter(filter);
+					}
+				}
+			};
             
             this.items = [{
                 xtype: 'radiogroup',

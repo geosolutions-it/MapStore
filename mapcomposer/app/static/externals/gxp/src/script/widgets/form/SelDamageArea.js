@@ -253,36 +253,83 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
 
             app.mapPanel.map.addLayer(this.drawings);
             
-            this.draw = new OpenLayers.Control.DrawFeature(
-                this.drawings,
-                type === 'circle' ? 
-                    OpenLayers.Handler.RegularPolygon : OpenLayers.Handler.Polygon,
-                type === 'circle' ? 
-                        {handlerOptions: {
-                            sides: 100
-                        }} : undefined
-                    
-                
-            );
+			if(this.featureSummary){
+				this.featureSummary.destroy();
+			}
+				
+			if(type === 'circle'){				
+				this.featureSummary = new Ext.ToolTip({
+					xtype: 'tooltip',
+					target: Ext.getBody(),
+					html: "",
+					title: "Radius",
+					autoHide: false,
+					closable: false,
+					draggable: false,
+					mouseOffset: [0, 0],
+					showDelay: 1
+				});	
+			}
+			
+			var me = this;
+			this.draw = new OpenLayers.Control.DrawFeature(
+				this.drawings,
+				type === 'circle' ? 
+					OpenLayers.Handler.RegularPolygon : OpenLayers.Handler.Polygon,
+				type === 'circle' ? 
+					{
+						persist: true,
+						geodesic: true,
+						handlerOptions: {
+							sides: 100
+						},
+						callbacks: { 
+							move: function(evt) {
+								//console.log(evt);
+								me.drawings.destroyFeatures();
+								
+								var center = evt.getCentroid();
+								
+								var vertex = evt.getVertices();
+								var lastPoint = vertex[vertex.length - 1];
+		
+								var px = me.map.getPixelFromLonLat(new OpenLayers.LonLat(lastPoint.x, lastPoint.y));			
+								var p0 = me.mapPanel.getPosition();
+								
+								me.featureSummary.targetXY = [p0[0] + px.x, p0[1] + px.y];
+		
+								var point1 = new OpenLayers.Geometry.Point(center.x, center.y);
+								var point2 = new OpenLayers.Geometry.Point(lastPoint.x, lastPoint.y);       
+								var distance = point1.distanceTo(point2);
+								
+								if(me.featureSummary.isVisible()){
+									me.featureSummary.update((Math.round(distance * 100) / 100) + " m");
+									me.featureSummary.show();
+								}else{
+									me.featureSummary.show();
+								}						
+							}
+						}
+					} : undefined
+			);
             
-            app.mapPanel.map.addControl(this.draw);
-            this.draw.activate();
+			app.mapPanel.map.addControl(this.draw);
+			this.draw.activate();
 
-            if(geometry) {
-                var feature = new OpenLayers.Feature.Vector(geometry,{
-                    "id": 1
-                });
+			if(geometry) {
+				var feature = new OpenLayers.Feature.Vector(geometry,{
+					"id": 1
+				});
 
-                this.drawings.addFeatures([feature]);
-            }
-            
-            this.drawings.events.on({
-                "beforefeatureadded": function (event) {
-                    this.drawings.destroyFeatures();
-                },
-                scope: this
-            });
-            
+				this.drawings.addFeatures([feature]);
+			}
+			
+			this.drawings.events.on({
+				"beforefeatureadded": function (event) {
+					this.drawings.destroyFeatures();
+				},
+				scope: this
+			});            
         } else {
             this.bufferFieldSet.enable();
             this.bufferFieldSet.bufferField.setValue('');
