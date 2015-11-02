@@ -78,6 +78,8 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
      * Text for Label comboScenarioSelection (i18n).
      */  
     comboScenarioSelection: "Scegli Sostanza/Scenario", 
+	
+	radius: "Raggio",
 
     processingPane: null,   
 
@@ -134,6 +136,7 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
                 valueNotFoundText: this.selAreaDamageEmptyText,
                 editable: false,
                 readOnly: false,
+				resizable: true, 
                 store: new Ext.data.JsonStore({
                     fields: [{
                         name: 'name',
@@ -164,6 +167,10 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
                     }]
                 }),
                 listeners: {
+				    expand: function(combo) {
+                        combo.list.setWidth( 'auto' );
+                        combo.innerList.setWidth( 'auto' );
+                    },
                     select: function (c, record, index) {
 
                         this.bufferFieldSet.resetPointSelection();
@@ -262,7 +269,7 @@ gxp.form.SelDamageArea = Ext.extend(Ext.form.FieldSet, {
 					xtype: 'tooltip',
 					target: Ext.getBody(),
 					html: "",
-					title: "Radius",
+					title: this.radius,
 					autoHide: false,
 					closable: false,
 					draggable: false,
