@@ -2914,7 +2914,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return status.formula;
     },
     getFormulaEnv: function(status, targetId) {
-        var env = "formula:"+this.optimizeFormula(status)+";resolution:"+status.resolution+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+';kemler:' + (this.status.sostanza.originalid || this.status.sostanza.id.join('\\,')) +";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing+";precision:"+this.formulaPrecision;
+        var env = "formula:"+this.optimizeFormula(status)+";resolution:"+status.resolution+
+		";target:"+targetId+";materials:"+status.sostanza.id.join(',')+';kemler:' + 
+		(this.status.sostanza.originalid || this.status.sostanza.id.join('\\,')) +
+		";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+
+		";fp:"+status.temporal.value+";processing:"+status.processing+";precision:"+this.formulaPrecision;
+		
+		if(targetId == 98){
+			env += ";formulaudm:" + status.formulaUdm[1];
+		}else if(targetId == 99){
+			env += ";formulaudm:" + status.formulaUdm[2];
+		}
+		
         if(status.resolution <= 2 && status.viadottiGallerie.length > 0) {
             var viadottiGallerie = [];
             for(var i = 0; i < status.viadottiGallerie.length; i++) {
