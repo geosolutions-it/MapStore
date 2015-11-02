@@ -1546,7 +1546,8 @@ nrl.chartbuilder.crop.compareSources = {
         for (var listFields in opt.series){
             ret.fields.push({
                 name: listFields,
-                useNull: true
+                useNull: true,
+                type: "float"
             });
         };
 
