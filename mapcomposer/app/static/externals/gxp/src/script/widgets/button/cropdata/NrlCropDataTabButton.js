@@ -152,6 +152,10 @@ gxp.widgets.button.NrlCropDataTabButton = Ext.extend(Ext.Button, {
 						var store = this.ownerCt.ownerCt.getStore();
 						var lastParams = Ext.applyIf({}, store.lastParams);
 
+                        var viewparamsList = lastParams.viewparams.split(';');
+                        viewparamsList[0] = viewparamsList[0].replace('crops', 'crop').replace(/[']/g,'');
+                        lastParams.viewparams = viewparamsList.join(';');
+
 						var dwl = store.url + "?";
 						lastParams.outputFormat = "CSV";
 
