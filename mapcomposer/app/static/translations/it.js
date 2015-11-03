@@ -92,7 +92,9 @@ GeoExt.Lang.add("it", {
 		agreeDisclaimerText: 'Accetto',
 		notAgreeDisclaimerText: 'Non Accetto',
         
-        resolutionLabel: "Risoluzione"
+        resolutionLabel: "Risoluzione",
+		routePlannerAlertTitle: "Calcolo del percorso",
+	    routePlanExceptionText: "Non è stato possibile calcolare il percorso"	
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Elaborazione",

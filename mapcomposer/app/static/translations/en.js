@@ -95,7 +95,9 @@ GeoExt.Lang.add("en", {
 		agreeDisclaimerText: 'I Agree',
 		notAgreeDisclaimerText: 'I do not agree',
     
-        resolutionLabel: "Resolution"
+        resolutionLabel: "Resolution",
+		routePlannerAlertTitle: "Route calculation",
+	    routePlanExceptionText: "It was not possible to calculate the route"
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Processing",
