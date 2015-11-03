@@ -9,6 +9,8 @@
 /**
  * @requires plugins/Tool.js
  * @requires widgets/WMSStylesDialog.js
+ * @requires plugins/GeoServerStyleWriter.js
+ * @requires plugins/WMSRasterStylesDialog.js
  */
 
 /** api: (define)
@@ -30,6 +32,9 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
     
     /** api: ptype = gxp_styler */
     ptype: "gxp_styler",
+    
+    /** api: config[id] */
+    id: "styler",
     
     /** api: config[menuText]
      *  ``String``
@@ -58,6 +63,14 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
      */
     rasterStyling: false,
     
+    /** api: config[requireDescribeLayer]
+     *  ``Boolean`` If set to false, styling will be enabled for all WMS layers
+     *  that have "/ows" or "/wms" at the end of their base url in case the WMS
+     *  does not support DescribeLayer. Only set to false when rasterStyling is
+     *  set to true. Default is true.
+     */
+    requireDescribeLayer: true,
+    
     constructor: function(config) {
         gxp.plugins.Styler.superclass.constructor.apply(this, arguments);
         
@@ -80,6 +93,7 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
             menuText: this.menuText,
             iconCls: "gxp-icon-palette",
             disabled: true,
+            hidden: true,
             tooltip: this.tooltip,
             handler: function() {
                 this.addOutput();
@@ -103,7 +117,7 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
      */
     handleLayerChange: function(record) {
         this.launchAction.disable();
-        if (record && record.get("styles")) {
+        if (record) {
             var source = this.target.getSource(record);
             if (source instanceof gxp.plugins.WMSSource) {
                 source.describeLayer(record, function(describeRec) {
@@ -123,27 +137,57 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
      *  action.
      */
     checkIfStyleable: function(layerRec, describeRec) {
-        var owsTypes = ["WFS"];
-        if (this.rasterStyling === true) {
-            owsTypes.push("WCS");
+        if (describeRec) {
+            var owsTypes = ["WFS"];
+            if (this.rasterStyling === true) {
+                owsTypes.push("WCS");
+            }
         }
-        if (describeRec && owsTypes.indexOf(describeRec.get("owsType")) !== -1) {
+        if (describeRec ? owsTypes.indexOf(describeRec.get("owsType")) !== -1 : !this.requireDescribeLayer) {
             var editableStyles = false;
             var source = this.target.layerSources[layerRec.get("source")];
-            var url = source.url.split("?")
-                .shift().replace(/\/(wms|ows)\/?$/, "/rest/styles");
+            var url;
+            var restUrl = layerRec.get("restUrl");
+            if (restUrl) {
+                url = restUrl + "/styles";
+            } else {
+                url = source.url.split("?")
+                    .shift().replace(/\/(wms|ows)\/?$/, "/rest/styles");
+            }
             if (this.sameOriginStyling) {
                 // this could be made more robust
                 // for now, only style for sources with relative url
                 editableStyles = url.charAt(0) === "/";
+                // and assume that local sources are GeoServer instances with
+                // styling capabilities
+                if (this.target.authenticate && editableStyles) {
+                    // we'll do on-demand authentication when the button is
+                    // pressed.
+                    this.launchAction.enable();
+                    return;
+                }
             } else {
                 editableStyles = true;
             }
             if (editableStyles) {
-                if (this.target.isAuthorized()) {
+            
+                this.roleAdmin=(this.target &&
+                                this.target.userDetails &&
+                                this.target.userDetails.user.role &&
+                                ["ROLE_ADMIN","ADMIN"].indexOf(this.target.userDetails.user.role) > -1);
+                                
+                this.advancedUser=this.hasGroup(this.target.userDetails.user,this.restrictToGroups);
+                
+                if(this.roleAdmin){
+                    this.enableActionIfAvailable(url,this.getBasicAuthentication());
+                }else if(this.advancedUser){
+                    
+                }
+
+                /*if (this.target.isAuthorized()) {
                     // check if service is available
                     this.enableActionIfAvailable(url);
-                }
+                }*/
             }
         }
     },
@@ -153,14 +197,16 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
      * 
      *  Enable the launch action if the service is available.
      */
-    enableActionIfAvailable: function(url) {
+    enableActionIfAvailable: function(url,auth) {
         Ext.Ajax.request({
             method: "PUT",
             url: url,
+            headers: {"Authorization":  auth},
             callback: function(options, success, response) {
                 // we expect a 405 error code here if we are dealing
                 // with GeoServer and have write access.
-                this.launchAction.setDisabled(response.status !== 405);                        
+                this.launchAction.setDisabled(response.status !== 405);
+                this.launchAction.setHidden(response.status !== 405);
             },
             scope: this
         });
@@ -173,6 +219,7 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
         var origCfg = this.initialConfig.outputConfig || {};
         this.outputConfig.title = origCfg.title ||
             this.menuText + ": " + record.get("title");
+        this.outputConfig.shortTitle = record.get("title");
 
         Ext.apply(config, gxp.WMSStylesDialog.createGeoServerStylerConfig(record));
         if (this.rasterStyling === true) {
@@ -183,9 +230,49 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
         Ext.applyIf(config, {style: "padding: 10px"});
         
         var output = gxp.plugins.Styler.superclass.addOutput.call(this, config);
+        if (!(output.ownerCt.ownerCt instanceof Ext.Window)) {
+            output.dialogCls = Ext.Panel;
+            output.showDlg = function(dlg) {
+                dlg.layout = "fit";
+                dlg.autoHeight = false;
+                output.ownerCt.add(dlg);
+            };
+        }
         output.stylesStore.on("load", function() {
-            this.outputTarget || output.ownerCt.ownerCt.center();
+            if (!this.outputTarget && output.ownerCt.ownerCt instanceof Ext.Window) {
+                output.ownerCt.ownerCt.center();
+            }
         });
+
+    },
+    
+    /** private: method[hasGroup]
+     *  ``Function`` Check if users has passed group
+     *
+     */
+    hasGroup: function(user, targetGroups){
+        if(user && user.groups && targetGroups){
+            var groupfound = false;
+            for (var key in user.groups.group) {
+                if (user.groups.group.hasOwnProperty(key)) {
+                    var g = user.groups.group[key];
+                    if(g.groupName && targetGroups.indexOf(g.groupName) > -1 ){
+                        groupfound = true;
+                    }
+                }
+            }
+            return groupfound;
+        }
+        
+        return false;
+    },
+    
+    /** private: method[getBasicAuthentication]
+     *  :arg url: 
+     * 
+     */    
+    getBasicAuthentication: function() {
+        return this.target.authToken || undefined;
     }
         
 });

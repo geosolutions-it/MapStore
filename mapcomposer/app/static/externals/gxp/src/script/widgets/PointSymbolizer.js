@@ -141,7 +141,7 @@ gxp.PointSymbolizer = Ext.extend(Ext.Panel, {
             name: "url",
             fieldLabel: this.urlText,
             value: this.symbolizer["externalGraphic"],
-            hidden: true,
+            hidden: !this.external,
             listeners: {
                 change: function(field, value) {
                     this.symbolizer["externalGraphic"] = value;
@@ -212,15 +212,17 @@ gxp.PointSymbolizer = Ext.extend(Ext.Panel, {
                     if(!mark) {
                         if(value) {
                             this.urlField.hide();
-                            // this to hide the container - otherwise the label remains
-                            this.urlField.getEl().up('.x-form-item').setDisplayed(false);
                             this.symbolizer["externalGraphic"] = value;
                         } else {
                             this.urlField.show();
-                            this.urlField.getEl().up('.x-form-item').setDisplayed(true);
                         }
                         if(!this.external) {
                             this.external = true;
+                            var urlValue = this.urlField.getValue();
+                            if (!Ext.isEmpty(urlValue)) {
+                                this.symbolizer["externalGraphic"] = urlValue;
+                            }
+                            delete this.symbolizer["graphicName"];
                             this.updateGraphicDisplay();
                         }
                     } else {

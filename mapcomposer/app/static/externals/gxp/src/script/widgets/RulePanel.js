@@ -214,6 +214,7 @@ gxp.RulePanel = Ext.extend(Ext.TabPanel, {
             bodyStyle: {"padding": "10px"},
             items: [{
                 xtype: "fieldset",
+                layout: 'anchor',
                 title: this.labelFeaturesText,
                 autoHeight: true,
                 checkboxToggle: true,
@@ -225,10 +226,12 @@ gxp.RulePanel = Ext.extend(Ext.TabPanel, {
                     collapse: function() {
                         OpenLayers.Util.removeItem(this.rule.symbolizers, this.getTextSymbolizer());
                         this.fireEvent("change", this, this.rule);
+                        this.textSymbolizer.doLayout();
                     },
                     expand: function() {
                         this.setTextSymbolizer(this.textSymbolizer.symbolizer);
                         this.fireEvent("change", this, this.rule);
+                        this.textSymbolizer.doLayout();                        
                     },
                     scope: this
                 }
@@ -298,17 +301,19 @@ gxp.RulePanel = Ext.extend(Ext.TabPanel, {
                         collapse: function(){
                             delete this.rule.filter;
                             this.fireEvent("change", this, this.rule);
+                            this.filterBuilder.doLayout();
                         },
                         expand: function(){
                             var changed = false;
                             this.rule.filter = this.filterBuilder.getFilter();
                             this.fireEvent("change", this, this.rule);
+                            this.filterBuilder.doLayout();
                         },
                         scope: this
                     }
                 }]
             }];
-        };
+        }
         this.items[0].autoHeight = true;
 
         this.addEvents(
@@ -353,7 +358,7 @@ gxp.RulePanel = Ext.extend(Ext.TabPanel, {
     getTextSymbolizer: function() {
         var symbolizer = this.hasTextSymbolizer();
         if (!symbolizer) {
-            symbolizer = new OpenLayers.Symbolizer.Text();
+            symbolizer = new OpenLayers.Symbolizer.Text({graphic: false});
         }
         return symbolizer;
     },
