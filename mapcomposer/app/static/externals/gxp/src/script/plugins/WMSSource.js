@@ -154,7 +154,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 	errorTitle: "Error",
 
     showGetSchemaError: true,
-
+    wfsBase: null,
     /** api: method[createStore]
      *
      *  Creates a store of layer records.  Fires "ready" when store is loaded.
@@ -736,7 +736,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
                     }
                 } else {
                     schema = new GeoExt.data.AttributeStore({
-                        url: r.get("owsURL"),
+                        url: this.wfsBase || r.get("owsURL"),
                         baseParams: {
                             SERVICE: "WFS",
                             //TODO should get version from WFS GetCapabilities
