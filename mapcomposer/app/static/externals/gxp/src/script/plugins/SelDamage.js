@@ -58,6 +58,7 @@ gxp.plugins.SelDamage = Ext.extend(gxp.plugins.Tool, {
         
         var selDamageArea = new gxp.form.SelDamageArea(Ext.apply({
             map: target.mapPanel.map,
+			mapPanel: target.mapPanel,
             id: me.id+"_widget"
         }, this.outputConfig));
         

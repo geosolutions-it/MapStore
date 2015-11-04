@@ -227,6 +227,12 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         }
         
     },
+
+	routePlanExceptionText: "Non è stato possibile calcolare il percorso",
+	
+    verboseMsg: false,
+	
+	routePlannerAlertTitle: "Calcolo del percorso",
     
     /** private: method[constructor]
      *  :arg config: ``Object``
@@ -2772,30 +2778,120 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
     },
 
     addRoutingLayer: function(title, formula, start, end, target, bbox, blocked) {
-        var envParams = ["title:" + title, "formula:" + formula, start, end];
-        if (target) {
-            envParams.push("target:" + target);
-        }
-        if (blocked) {
-            envParams.push("blocked:" + blocked.join(','));
-        }
-        var env = envParams.join(";");
-        var record = this.createLayerRecord({
-            name: "routing",
-            title: title,
-            tiled: false,
-            params: {
-                env: env,
-                defaultenv: env
-            }
-        }, {
-            singleTile: true,
-            group: "routing",
-            bounds: OpenLayers.Bounds.fromString(bbox),
-            visibility: true
-        });
+		var routeProcess = this.wpsClient.getProcess('destination', 'gs:RoutePlannerGH');
+		
+		if(routeProcess){
+			var me = this;
+			routeProcess.execute({
+				headers: this.getBasicAuthentication(),
+				type: "raw",
+				scope: this,
+				inputs: {
+					features: new OpenLayers.WPSProcess.ReferenceData({
+						href: 'http://geoserver/wfs', 
+						method: 'POST', 
+						mimeType: 'text/xml', 
+						body: {
+							wfs: {
+								featureType: 'destination:routing', 
+								version: '1.1.0'
+							}
+						}
+					}),
+					store: new OpenLayers.WPSProcess.LiteralData({
+						value: "destination"
+					}),
+					start: new OpenLayers.WPSProcess.LiteralData({
+						value: start.split(":")[1]
+					}),
+					end: new OpenLayers.WPSProcess.LiteralData({
+						value: end.split(":")[1]
+					}),
+					precision: new OpenLayers.WPSProcess.LiteralData({
+						value: 4
+					}),
+					processing: new OpenLayers.WPSProcess.LiteralData({
+						value: 1
+					}),
+					formula: new OpenLayers.WPSProcess.LiteralData({
+						value: formula
+					}),
+					target: new OpenLayers.WPSProcess.LiteralData({
+						value: target
+					}),
+					materials: new OpenLayers.WPSProcess.LiteralData({
+						value: "1,2,3,4,5,6,7,8,9,10,11,12"
+					}),
+					scenarios: new OpenLayers.WPSProcess.LiteralData({
+						value: "1,2,3,4,5,6,7,8,9,10,11,12,13,14"
+					}),
+					entities: new OpenLayers.WPSProcess.LiteralData({
+						value: "0,1"
+					}),
+					severeness: new OpenLayers.WPSProcess.LiteralData({
+						value: "1,2,3,4,5"
+					}),
+					blocked: new OpenLayers.WPSProcess.LiteralData({
+						value: blocked
+					})
+				},
+				outputs: [new OpenLayers.WPSProcess.Output({
+					mimeType: 'text/xml'
+				})],		
+				success: function(xml) {
+					var xml_obj = new OpenLayers.Format.XML().read(xml);
+					
+					var executeResponse = xml_obj.childNodes[0];
+					if(executeResponse){
+						var responseStatus = xml_obj.getElementsByTagName("Status")[0];
+						
+						if(responseStatus){
+							var processFailed = xml_obj.getElementsByTagName("ProcessFailed")[0];
+							
+							if(processFailed){
+							    var exceptionText = xml_obj.getElementsByTagName("ExceptionText")[0];								
+							    var exception = me.routePlanExceptionText + 
+									(me.verboseMsg === true ? ": " + executeResponse.textContent || executeResponse.text : "");
+									
+								Ext.Msg.show({
+									title: me.routePlannerAlertTitle,
+									buttons: Ext.Msg.OK,
+									msg: exception,
+									icon: Ext.MessageBox.WARNING,
+									scope: me
+								});  
+							}
+						}else{
+							var envParams = ["title:" + title, "formula:" + formula, start, end];
+							if (target) {
+								envParams.push("target:" + target);
+							}
+							if (blocked) {
+								envParams.push("blocked:" + blocked.join(','));
+							}
+							var env = envParams.join(";");
+							var record = this.createLayerRecord({
+								name: "routing",
+								title: title,
+								tiled: false,
+								params: {
+									env: env,
+									defaultenv: env
+								}
+							}, {
+								singleTile: true,
+								group: "routing",
+								bounds: OpenLayers.Bounds.fromString(bbox),
+								visibility: true
+							});
 
-        this.target.mapPanel.layers.add([record]);
+							this.target.mapPanel.layers.add([record]);
+						}
+					}
+					
+				}
+			});
+		}
     },
     
     exportRouting: function(title, formula, start, end, target, blocked) {
@@ -2914,7 +3010,18 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
         return status.formula;
     },
     getFormulaEnv: function(status, targetId) {
-        var env = "formula:"+this.optimizeFormula(status)+";resolution:"+status.resolution+";target:"+targetId+";materials:"+status.sostanza.id.join(',')+';kemler:' + (this.status.sostanza.originalid || this.status.sostanza.id.join('\\,')) +";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+";fp:"+status.temporal.value+";processing:"+status.processing+";precision:"+this.formulaPrecision;
+        var env = "formula:"+this.optimizeFormula(status)+";resolution:"+status.resolution+
+		";target:"+targetId+";materials:"+status.sostanza.id.join(',')+';kemler:' + 
+		(this.status.sostanza.originalid || this.status.sostanza.id.join('\\,')) +
+		";scenarios:"+status.accident.id.join(',')+";entities:"+status.seriousness.id.join(',')+
+		";fp:"+status.temporal.value+";processing:"+status.processing+";precision:"+this.formulaPrecision;
+		
+		if(targetId == 98){
+			env += ";formulaudm:" + status.formulaUdm[1];
+		}else if(targetId == 99){
+			env += ";formulaudm:" + status.formulaUdm[2];
+		}
+		
         if(status.resolution <= 2 && status.viadottiGallerie.length > 0) {
             var viadottiGallerie = [];
             for(var i = 0; i < status.viadottiGallerie.length; i++) {

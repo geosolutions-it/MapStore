@@ -96,7 +96,9 @@ GeoExt.Lang.add("fr", {
 		agreeDisclaimerText: 'j\'accepte',
 		notAgreeDisclaimerText: 'je ne suis pas d\'accord',
         
-        resolutionLabel: "Résolution"
+        resolutionLabel: "Résolution",
+		routePlannerAlertTitle: "Le calcul d'itinéraire",
+	    routePlanExceptionText: "Il n'a pas été possible de calculer l'itinéraire"
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Traitement",
@@ -619,17 +621,19 @@ GeoExt.Lang.add("fr", {
         selAreaDamageLabel: "Méthode de sélection",
         selAreaDamageEmptyText: "--- Choisissez le type ---",
         comboPolygonSelection: 'Polygon',
-        comboCircleSelection: 'Arrondissez',
-        comboBufferSelection: "Buffer",
-        comboScenarioSelection: "Choisissez Substance / Scénario"
+        comboCircleSelection: 'Cercle Manuel',
+        comboBufferSelection: "Cercle de rayon",
+        comboScenarioSelection: "Cercle avec Substance / Scénario",
+		radius: "Rayon"
     },
 
     "gxp.widgets.form.BufferFieldset.prototype": {
 		bufferFieldLabel: "Gamme de tampon",
 		bufferFieldSetTitle: "Tampon",
 		coordinatePickerLabel: "Coordonnées",
-		draweBufferTooltip: "Dessinez le tampon",
-        selectScenarioLabel: "Choisissez Substance / Scénario"
+		draweBufferTooltip: "Dessinez le Cercle",
+        selectScenarioLabel: "Choisissez Substance / Scénario",
+		uomLabel: "Mètres"
 	},
 
 	"gxp.widgets.form.CoordinatePicker.prototype":{

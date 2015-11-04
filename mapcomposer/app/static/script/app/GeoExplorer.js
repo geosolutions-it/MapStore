@@ -572,7 +572,8 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         this.toolbar = new Ext.Toolbar({
             disabled: true,
             id: 'paneltbar',
-            items: this.createTools()
+            items: this.createTools(),
+			enableOverflow: true
         });
         
         this.on("ready", function() {
@@ -681,7 +682,9 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
             width: 385,
             split: true,
             collapsible: true,
-            header: false
+			collapseMode: "mini",
+            header: false,
+            enableTabScroll: true			
         });		
 		
 		var southPanel = new Ext.Panel({

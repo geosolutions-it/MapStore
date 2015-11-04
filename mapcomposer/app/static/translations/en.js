@@ -95,7 +95,9 @@ GeoExt.Lang.add("en", {
 		agreeDisclaimerText: 'I Agree',
 		notAgreeDisclaimerText: 'I do not agree',
     
-        resolutionLabel: "Resolution"
+        resolutionLabel: "Resolution",
+		routePlannerAlertTitle: "Route calculation",
+	    routePlanExceptionText: "It was not possible to calculate the route"
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Processing",
@@ -622,17 +624,19 @@ GeoExt.Lang.add("en", {
         selAreaDamageLabel: "Selection method",
         selAreaDamageEmptyText: "--- Choose type ---",
         comboPolygonSelection: 'Polygon',
-        comboCircleSelection: 'Circle',
-        comboBufferSelection: "Buffer",
-        comboScenarioSelection: "Choose Material/Accident"
+        comboCircleSelection: 'Manual circle',
+        comboBufferSelection: "Circle with radius",
+        comboScenarioSelection: "Circle with Material/Accident",
+		radius: "Radius"
     },
 
     "gxp.widgets.form.BufferFieldset.prototype": {
 		bufferFieldLabel: "Buffer Range",
 		bufferFieldSetTitle: "Buffer",
 		coordinatePickerLabel: "Coordinates",
-		draweBufferTooltip: "Draw the Buffer",
-        selectScenarioLabel: "Choose Material/Accident"
+		draweBufferTooltip: "Draw the Circle",
+        selectScenarioLabel: "Choose Material/Accident",
+		uomLabel: "Meters"
 	},
 
 	"gxp.widgets.form.CoordinatePicker.prototype":{

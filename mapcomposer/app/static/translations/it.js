@@ -92,7 +92,9 @@ GeoExt.Lang.add("it", {
 		agreeDisclaimerText: 'Accetto',
 		notAgreeDisclaimerText: 'Non Accetto',
         
-        resolutionLabel: "Risoluzione"
+        resolutionLabel: "Risoluzione",
+		routePlannerAlertTitle: "Calcolo del percorso",
+	    routePlanExceptionText: "Non è stato possibile calcolare il percorso"	
     },
     "gxp.plugins.StandardProcessing.prototype": {
         title: "Elaborazione",
@@ -619,17 +621,19 @@ GeoExt.Lang.add("it", {
         selAreaDamageLabel: "Metodo selezione",
         selAreaDamageEmptyText: "--- Scegli tipologia ---",
         comboPolygonSelection: 'Poligono',
-        comboCircleSelection: 'Cerchio',
-        comboBufferSelection: "Buffer",
-        comboScenarioSelection: "Scegli Sostanza/Scenario"
+        comboCircleSelection: 'Cerchio manuale',
+        comboBufferSelection: "Cerchio con raggio",
+        comboScenarioSelection: "Cerchio con sostanza/scenario",
+		radius: "Raggio"
     },
 
 	"gxp.widgets.form.BufferFieldset.prototype": {
-		bufferFieldLabel: "Ampiezza del Buffer",
-		bufferFieldSetTitle: "Buffer",
+		bufferFieldLabel: "Ampiezza del Raggio",
+		bufferFieldSetTitle: "Raggio",
 		coordinatePickerLabel: "Coordinate",
-		draweBufferTooltip: "Disegna il Buffer",
-        selectScenarioLabel: "Scegli Sostanza / Scenario"
+		draweBufferTooltip: "Disegna il cerchio",
+        selectScenarioLabel: "Scegli Sostanza / Scenario",
+		uomLabel: "Metri"
 	},
 
 	"gxp.widgets.form.CoordinatePicker.prototype":{

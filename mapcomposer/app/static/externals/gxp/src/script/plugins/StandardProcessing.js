@@ -1529,8 +1529,9 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.aoiFieldset.removeAOILayer();
         this.selDamage.clearDrawFeature();
         this.resetBBOX(true);
-    },
-    
+		
+		this.enableDisableTemporali();
+    },    
     
     enableDisableForm: function(formula, elaborazione) {
         this.enableDisableAOI(formula, elaborazione);
@@ -1542,12 +1543,19 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
         this.enableDisableViadottiGallerie(formula, elaborazione);
     },
     
-    enableDisableTemporali: function(formula, elaborazione) {
-        if(formula){
-            this.enableDisable(formula.get('condizioni_temporali') && elaborazione.get('id') === 2, this.temporal);        
-        }else{
-            this.enableDisable(elaborazione.get('id') !== 4, this.temporal);
+    enableDisableTemporali: function(formula, elaborazione) {		
+		var condition = false;
+		if(formula && elaborazione){
+			condition = formula.get('condizioni_temporali') && elaborazione.get('id') === 2;      
+        }else if(elaborazione){
+            condition = elaborazione.get('id') !== 4;
         }
+		
+		if(!condition){
+			this.temporal.reset();
+		}
+		
+	    this.enableDisable(condition, this.temporal);
     },
     
     enableDisableResolution: function(formula, elaborazione) {
