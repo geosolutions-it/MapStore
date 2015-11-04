@@ -457,11 +457,11 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
 				
 				var provStore = self.province.getStore();
 		
-				var nameProvincia = self.province.getValue();
-				var prov_record = provStore.find("id", nameProvincia);
+				var codProvincia = self.province.getValue();
+				//var prov_record = provStore.find("id", nameProvincia);
 				
-				if(prov_record){
-					var codProvincia = provStore.getAt(prov_record).get('id');
+				//if(prov_record){
+					//var codProvincia = provStore.getAt(prov_record).get('id');
 					if(codProvincia !== '0'){						
 						var filter = [{
 							fn   : function(record) {
@@ -481,7 +481,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
 
 					    this.store.filter(filter);
 					}
-				}
+				//}
 			};
             
             this.items = [{
