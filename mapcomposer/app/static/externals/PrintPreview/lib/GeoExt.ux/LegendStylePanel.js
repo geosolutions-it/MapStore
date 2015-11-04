@@ -402,7 +402,8 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
                 STYLE: (styleName !== '') ? styleName: null,
                 STYLES: null,
                 SRS: null,
-                FORMAT: null
+                FORMAT: null,
+                SCALE: this.useScaleParameter && legend.scale ? legend.scale : null 
             });
         }
         
@@ -411,11 +412,11 @@ GeoExt.ux.LegendStylePanel = Ext.extend(Ext.Panel, {
         // add scale parameter - also if we have the url from the record's
         // styles data field and it is actually a GetLegendGraphic request.
         if(this.useScaleParameter === true) {
-            var scale = layer.map.getScale();
+            var scale = legend.scale || layer.map.getScale();
             if(this.minScale !== -1 && scale < legend.minScale) {
                 scale = this.minScale;
             }
-            if(this.maxScale !== -1 && scale > legend.maxScale) {
+            if(this.maxScale !== -1 &&  legend.maxScale !== -1 && scale > legend.maxScale) {
                 scale = this.maxScale;
             }
             params["SCALE"] = scale;

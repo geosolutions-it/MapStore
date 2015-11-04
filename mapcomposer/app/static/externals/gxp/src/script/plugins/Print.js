@@ -303,6 +303,9 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                     resizable: false,
                     items: [
                         new GeoExt.ux.PrintPreview({
+                            hideLegendOnASeparatePage: this.hideLegendOnASeparatePage,
+                            landscapeCustomText: this.landscapeCustomText,
+                            useScaleParameter: this.useScaleParameter,
                             legendOnSeparatePage:this.legendOnSeparatePage,
                             includeLegend:this.includeLegend,
                             autoHeight: true,

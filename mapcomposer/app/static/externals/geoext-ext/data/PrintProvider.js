@@ -433,9 +433,12 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
         }, this);
         
         jsonData.layers = encodedLayers;
-        
+        var scale;
         var encodedPages = [];
         Ext.each(pages, function(page) {
+            if(page.scale && page.scale.get){
+                scale = page.scale.get("value");
+            }
             if(page.bbox){
                 // only bbox fix!!
                 encodedPages.push(Ext.apply({
@@ -479,6 +482,7 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
             }
             var encodedLegends = [];
             legend.items && legend.items.each(function(cmp) {
+                cmp.scale = scale;
                 if(!cmp.hidden && !(cmp.layer instanceof OpenLayers.Layer.Vector)) {
                     var encFn = this.encoders.legends[cmp.getXType()];
                     encodedLegends = encodedLegends.concat(encFn.call(this, cmp));

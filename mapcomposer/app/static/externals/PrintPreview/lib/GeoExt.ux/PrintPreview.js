@@ -112,6 +112,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     compactLegend: false,
     
     legendOnSeparatePage: false,
+    hideLegendOnASeparatePage: false,
     
     /** api: config[mapTitle]
      *  ``String`` An optional title to set for the mapTitle field when
@@ -251,6 +252,12 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                     msg: this.creatingPdfText
                 });
                 this.mon(this.printProvider,{
+                    "layoutchange": function (){
+                        // update checkbox visibility
+                        this.setCheckBoxVisibility(this.getBaseLayoutName());
+                        // force resolution to less then 150dpi for A1 format
+                        this.setFilteredResolutions();
+                    },
                     "beforeprint": function(printProvider){
                         if(this.addFormParameters){
                             // save state before print
@@ -285,7 +292,26 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             scope: this
         });
     },
-    
+    setFilteredResolutions: function(){
+        var cb = this.printToolbar.resolutionsCombo;
+        var store = cb.getStore();
+        if(this.getBaseLayoutName().indexOf("A1") >= 0){
+            var findLowResoultions = function(record){
+                return record.get('value') <= 150;
+            };
+            store.filter({fn: findLowResoultions});
+            //set an allowed value
+            if(this.printProvider.dpi.get('value') > 150){
+                var validRes = cb.getStore().findBy(findLowResoultions);
+                var rec = cb.getStore().getAt(validRes);
+                cb.setValue(rec.get(cb.displayField));
+                this.printProvider.dpi = rec;
+            }
+        } else {
+            this.printProvider.dpis.clearFilter();
+        }
+        
+    },
     /** private: method[createToolbar]
      *  :return: ``Ext.Toolbar``
      */
@@ -293,7 +319,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         var items = [];
         this.printProvider.layouts.getCount() > 1 && items.push(this.paperSizeText, {
             xtype: "combo",
-            width: 98,
+            width: 94,
             plugins: new GeoExt.plugins.PrintProviderField({
                 printProvider: this.printProvider
             }),
@@ -301,6 +327,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             displayField: "name",
             typeAhead: true,
             mode: "local",
+            editable:false,
             forceSelection: true,
             triggerAction: "all",
             selectOnFocus: true
@@ -308,6 +335,8 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         this.printProvider.dpis.getCount() > 1 && items.push(this.resolutionText, {
             xtype: "combo",
             width: 62,
+            editable:false,
+            ref: 'resolutionsCombo',
             plugins: new GeoExt.plugins.PrintProviderField({
                 printProvider: this.printProvider
             }),
@@ -322,6 +351,12 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             setValue: function(v){
                 v = parseInt(v) + " dpi";
                 Ext.form.ComboBox.prototype.setValue.apply(this, arguments);
+            },
+            listeners: {
+                expand: function(){
+                    this.setFilteredResolutions();
+                },
+                scope:this
             }
         }, "&nbsp;");
         items.push("->", {
@@ -339,6 +374,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             scope: this
         });
         return {
+            ref: 'printToolbar',
             xtype: "toolbar",
             items: items
         };
@@ -370,6 +406,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 checked: this.legendOnSeparatePage,
                 boxLabel: this.legendOnSeparatePageText,
                 hideLabel: true,
+                hidden: this.hideLegendOnASeparatePage,
                 ctCls: "gx-item-nowrap",
                 handler: function(cb, checked) {
                     this.legendOnSeparatePage = checked;
@@ -421,7 +458,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 var landscapeCheckbox = new Ext.form.Checkbox({
                     name: "landscape",
                     checked: this.landscape,
-                    boxLabel: this.landscapeText,
+                    boxLabel: this.landscapeCustomText || this.landscapeText,
                     hideLabel: true,
                     disabled: !this.legendOnSeparatePage,
                     ctCls: "gx-item-nowrap",
@@ -444,8 +481,14 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                 bodyStyle: 'padding:4px',
                 items: checkItems
             });
+            this.layoutCheckboxes = {
+                legend: legendCheckbox,
+                legendOnSeparatePage : legendOnSeparatePageCheckbox,
+                compactLegend: compactLegendCheckbox,
+                landscapeCheckbox: this.landscapeCheckbox
+            }
         }
-        
+       
         panelElements.push({
             xtype: "textarea",
             name: this.commentField,
@@ -474,7 +517,82 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
             });
         }
     },
+     /**
+     * Setup the checkboxes visibility from the list of available options for the layout
+     * 
+     */
+    setCheckBoxVisibility: function(baseName){
+        var availableOptions = this.getLayoutOptions(baseName);
+
+        var has2Pages = availableOptions.findIndexBy(function(obj,key){
+            return obj.get("name").indexOf("_2_pages_legend") > 0;
+        }) > 0;
+        var hasNoLegend = availableOptions.findIndexBy(function(obj,key){
+            return obj.get("name").indexOf("_no_legend") > 0;
+        }) > 0;
+        var hasLandscape =  availableOptions.findIndexBy(function(obj,key){
+            return obj.get("name").indexOf("_landscape") > 0;
+        }) > 0;
+        
+         var hasNoLandscape =  availableOptions.findIndexBy(function(obj,key){
+            return obj.get("name").indexOf("_landscape") < 0 && obj.get("name")!==baseName ;
+        }) > 0;
+        
+        var has2PagesCompact = availableOptions.findIndexBy(function(obj,key){
+            return obj.get("name").indexOf("_2_pages_compact_legend") > 0;
+        }) > 0;
+        // only compact
+        var hasCompactLegend = availableOptions.findIndexBy(function(obj,key){
+            return obj.get("name").indexOf("_compact_legend") > 0 && obj.get("name").indexOf("_2_pages_compact_legend") < 0
+        }) > 0;
+
+        // display include legend
+        var showLegendCeckbox = ( has2Pages || has2PagesCompact || hasCompactLegend)  && hasNoLegend;
+        this.layoutCheckboxes.legend.setVisible(showLegendCeckbox);
+
+        // display legend in a separate page
+        var showSeparatePage = ( has2Pages || has2PagesCompact) && hasCompactLegend;
+        this.layoutCheckboxes.legendOnSeparatePage.setVisible(showSeparatePage);
+        // display landscape
+        var showLandscape = hasLandscape && hasNoLandscape;
+        if(this.layoutCheckboxes.landscapeCheckbox){
+            this.layoutCheckboxes.landscapeCheckbox.setVisible(showLandscape);
+        }
+        
+
+    },
+    /**
+     * returns the options for the layout
+     */
+    getLayoutOptions(baseName){
+        return this.printProvider.fullLayouts.queryBy(function(record,id){
+            return record.get("name").indexOf(baseName) === 0;
+        });
+    },
     
+    /**
+     * 
+     */
+    getBaseLayoutName: function() {
+        var currentLayout = this.printProvider.layout.get("name");
+         if(currentLayout.indexOf('_2_pages') > 0){
+            var index = currentLayout.indexOf('_2_pages');
+            currentLayout = currentLayout.substr(0,index);
+        } else if(currentLayout.indexOf('_compact_legend') > 0){
+            var index = currentLayout.indexOf('_compact_legend');
+            currentLayout = currentLayout.substr(0,index);
+        } else if(currentLayout.indexOf('_no_legend') > 0){
+            var index = currentLayout.indexOf('_no_legend');
+            currentLayout = currentLayout.substr(0,index);
+        } else if(currentLayout.indexOf('_legend') > 0){
+            var index = currentLayout.indexOf('_legend');
+            currentLayout = currentLayout.substr(0,index);
+        }else if(currentLayout.indexOf('_landscape') > 0){
+            var index = currentLayout.indexOf('_landscape');
+            currentLayout = currentLayout.substr(0,index);
+        }
+        return currentLayout;
+    },
     /** api: method[getTabItems]
      *  :`panelElements`: `Object` with elements for the default tab
      *  :return: ``Array`` with tab items for the print preview 
@@ -496,7 +614,8 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         // Legend style tab
         if(this.addFormParameters){
             this.legendStylePanel = new GeoExt.ux.LegendStylePanel({
-                printMapPanel: this.printMapPanel
+                printMapPanel: this.printMapPanel,
+                useScaleParameter: this.useScaleParameter
             });
             tabItems.push(new Ext.form.FormPanel({
                 title: this.legendTabText,
@@ -576,8 +695,9 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
         }
         
         var nr = this.printProvider.fullLayouts.find("name", newLayoutName);
-        newLayout = this.printProvider.fullLayouts.getAt(nr);           
+        newLayout = this.printProvider.fullLayouts.getAt(nr);
         this.printProvider.setLayout(newLayout);
+        this.setCheckBoxVisibility(this.getBaseLayoutName());
 
     },
     
