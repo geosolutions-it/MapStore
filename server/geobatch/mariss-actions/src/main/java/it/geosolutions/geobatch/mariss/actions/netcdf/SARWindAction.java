@@ -1,12 +1,5 @@
 package it.geosolutions.geobatch.mariss.actions.netcdf;
 
-import it.geosolutions.geobatch.annotations.Action;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
-import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
-import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
-import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
-
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
@@ -23,6 +16,14 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.geometry.GeneralEnvelope;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
+import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
+import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
+import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.Index;
@@ -32,7 +33,6 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("SARWind")
 @Action(configurationClass = SARWindActionConfiguration.class)
 public class SARWindAction extends NetCDFAction {
@@ -67,15 +67,15 @@ public class SARWindAction extends NetCDFAction {
 
                     // TODO CHANGE ME
                     for (MetocElementType m : metocDictionary.getMetoc()) {
-                        if ((varName.equalsIgnoreCase("wind_speed") && m.getName().equals(
-                                "wind speed"))
-                                || (varName.equalsIgnoreCase("wind_direction") && m.getName()
-                                        .equals("wind direction"))) {
+                        if ((varName.equalsIgnoreCase("wind_speed")
+                                && m.getName().equals("wind speed"))
+                                || (varName.equalsIgnoreCase("wind_direction")
+                                        && m.getName().equals("wind direction"))) {
                             longName = m.getName();
                             briefName = m.getBrief();
                             uom = m.getDefaultUom();
-                            uom = uom.indexOf(":") > 0 ? URLDecoder.decode(
-                                    uom.substring(uom.lastIndexOf(":") + 1), "UTF-8") : uom;
+                            uom = uom.indexOf(":") > 0 ? URLDecoder
+                                    .decode(uom.substring(uom.lastIndexOf(":") + 1), "UTF-8") : uom;
                             break;
                         }
                     }
@@ -91,6 +91,7 @@ public class SARWindAction extends NetCDFAction {
         }
     }
 
+    @Override
     protected String getActionName() {
         return "wind";
     }
@@ -155,15 +156,17 @@ public class SARWindAction extends NetCDFAction {
                     // ////
                     // ... create the output file
                     // ////
-                    outputFiles[index] = new File(directory, fileBaseName + 
-                            CUSTOM_DIM_START_SEPARATOR + "sartype" + CUSTOM_DIM_VAL_SEPARATOR + getActionName() + CUSTOM_DIM_END_SEPARATOR + 
-                            SEPARATOR + varName.trim() + ".nc");
+                    outputFiles[index] = new File(directory,
+                            fileBaseName + CUSTOM_DIM_START_SEPARATOR + "sartype"
+                                    + CUSTOM_DIM_VAL_SEPARATOR + getActionName()
+                                    + CUSTOM_DIM_END_SEPARATOR + SEPARATOR + varName.trim()
+                                    + ".nc");
                     outputFiles[index].createNewFile();
                     // ////
                     // ... create the output file data structure
                     // ////
-                    NetcdfFileWriteable writable = NetcdfFileWriteable.createNew(outputFiles[index]
-                            .getAbsolutePath());
+                    NetcdfFileWriteable writable = NetcdfFileWriteable
+                            .createNew(outputFiles[index].getAbsolutePath());
                     ncFileOut[index] = writable;
 
                     // copying NetCDF input file global attributes
@@ -222,8 +225,8 @@ public class SARWindAction extends NetCDFAction {
             Dimension depthDim, Date time, boolean hasTime, Array lonOriginalData,
             Array latOriginalData, double noData, Array timeOriginalData, DataType latDataType,
             DataType lonDataType, GeneralEnvelope envelope, NetcdfFile ncFileIn,
-            NetcdfFileWriteable ncFileOut, AttributeBean attributeBean) throws IOException,
-            InvalidRangeException {
+            NetcdfFileWriteable ncFileOut, AttributeBean attributeBean)
+                    throws IOException, InvalidRangeException {
 
         double[] bbox = new double[] { envelope.getLowerCorner().getOrdinate(0),
                 envelope.getLowerCorner().getOrdinate(1), envelope.getUpperCorner().getOrdinate(0),
@@ -287,8 +290,8 @@ public class SARWindAction extends NetCDFAction {
         userRaster = NetCDFUtils.warping(bbox, lonOriginalData, latOriginalData,
                 ra_size.getLength(), az_size.getLength(), 2, userRaster, (float) noData, false);
 
-        final Variable outVar = ncFileOut.findVariable(attributeBean.foundVariableBriefNames
-                .get(varName));
+        final Variable outVar = ncFileOut
+                .findVariable(attributeBean.foundVariableBriefNames.get(varName));
         final Array outVarData = outVar.read();
 
         int[] dimensions = new int[hasTime ? 3 : 2];

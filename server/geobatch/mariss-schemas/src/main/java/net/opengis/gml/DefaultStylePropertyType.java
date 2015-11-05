@@ -154,7 +154,8 @@ public class DefaultStylePropertyType {
     /**
      * Gets the value of the style property.
      * 
-     * @return possible object is {@link JAXBElement }{@code <}{@link StyleType }{@code >} {@link JAXBElement }{@code <}{@link AbstractStyleType }{@code >}
+     * @return possible object is {@link JAXBElement }{@code <}{@link StyleType }{@code >} {@link JAXBElement }{@code <}{@link AbstractStyleType }
+     *         {@code >}
      * 
      */
     public JAXBElement<? extends AbstractStyleType> getStyle() {
@@ -263,7 +264,7 @@ public class DefaultStylePropertyType {
      * 
      */
     public void setStyle(JAXBElement<? extends AbstractStyleType> value) {
-        this.style = ((JAXBElement<? extends AbstractStyleType>) value);
+        this.style = (value);
     }
 
     /**

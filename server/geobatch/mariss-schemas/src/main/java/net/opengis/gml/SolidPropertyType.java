@@ -140,8 +140,8 @@ public class SolidPropertyType {
     /**
      * Gets the value of the solid property.
      * 
-     * @return possible object is {@link JAXBElement }{@code <}{@link SolidType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSolidType }{@code >}
-     *         {@link JAXBElement }{@code <}{@link CompositeSolidType }{@code >}
+     * @return possible object is {@link JAXBElement }{@code <}{@link SolidType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSolidType }
+     *         {@code >} {@link JAXBElement }{@code <}{@link CompositeSolidType }{@code >}
      * 
      */
     public JAXBElement<? extends AbstractSolidType> getSolid() {
@@ -240,7 +240,7 @@ public class SolidPropertyType {
      * 
      */
     public void setSolid(JAXBElement<? extends AbstractSolidType> value) {
-        this.solid = ((JAXBElement<? extends AbstractSolidType>) value);
+        this.solid = (value);
     }
 
     /**

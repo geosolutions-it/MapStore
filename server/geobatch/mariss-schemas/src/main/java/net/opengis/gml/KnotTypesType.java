@@ -34,10 +34,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum KnotTypesType {
 
-    @XmlEnumValue("uniform")
-    UNIFORM("uniform"), @XmlEnumValue("quasiUniform")
-    QUASI_UNIFORM("quasiUniform"), @XmlEnumValue("piecewiseBezier")
-    PIECEWISE_BEZIER("piecewiseBezier");
+    @XmlEnumValue("uniform") UNIFORM("uniform"), @XmlEnumValue("quasiUniform") QUASI_UNIFORM(
+            "quasiUniform"), @XmlEnumValue("piecewiseBezier") PIECEWISE_BEZIER("piecewiseBezier");
     public static KnotTypesType fromValue(String v) {
         for (KnotTypesType c : KnotTypesType.values()) {
             if (c.value.equals(v)) {

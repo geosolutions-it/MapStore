@@ -149,8 +149,8 @@ public class TopoPrimitiveMemberType {
      * Gets the value of the topoPrimitive property.
      * 
      * @return possible object is {@link JAXBElement }{@code <}{@link NodeType }{@code >} {@link JAXBElement }{@code <}{@link FaceType }{@code >}
-     *         {@link JAXBElement }{@code <}{@link EdgeType }{@code >} {@link JAXBElement }{@code <}{@link TopoSolidType }{@code >} {@link JAXBElement }
-     *         {@code <}{@link AbstractTopoPrimitiveType }{@code >}
+     *         {@link JAXBElement }{@code <}{@link EdgeType }{@code >} {@link JAXBElement }{@code <}{@link TopoSolidType }{@code >} {@link JAXBElement
+     *         } {@code <}{@link AbstractTopoPrimitiveType }{@code >}
      * 
      */
     public JAXBElement<? extends AbstractTopoPrimitiveType> getTopoPrimitive() {
@@ -245,12 +245,12 @@ public class TopoPrimitiveMemberType {
      * Sets the value of the topoPrimitive property.
      * 
      * @param value allowed object is {@link JAXBElement }{@code <}{@link NodeType }{@code >} {@link JAXBElement }{@code <}{@link FaceType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link EdgeType }{@code >} {@link JAXBElement }{@code <}{@link TopoSolidType }{@code >} {@link JAXBElement }
-     *        {@code <}{@link AbstractTopoPrimitiveType }{@code >}
+     *        {@link JAXBElement }{@code <}{@link EdgeType }{@code >} {@link JAXBElement }{@code <}{@link TopoSolidType }{@code >} {@link JAXBElement
+     *        } {@code <}{@link AbstractTopoPrimitiveType }{@code >}
      * 
      */
     public void setTopoPrimitive(JAXBElement<? extends AbstractTopoPrimitiveType> value) {
-        this.topoPrimitive = ((JAXBElement<? extends AbstractTopoPrimitiveType>) value);
+        this.topoPrimitive = (value);
     }
 
     /**

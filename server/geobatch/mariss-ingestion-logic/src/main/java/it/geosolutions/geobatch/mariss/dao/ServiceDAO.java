@@ -16,12 +16,12 @@
  */
 package it.geosolutions.geobatch.mariss.dao;
 
+import java.util.List;
+
 import it.geosolutions.geobatch.mariss.model.AreaOfInterest;
 import it.geosolutions.geobatch.mariss.model.Sensor;
 import it.geosolutions.geobatch.mariss.model.SensorMode;
 import it.geosolutions.geobatch.mariss.model.Service;
-
-import java.util.List;
 
 /**
  * @author Alessio

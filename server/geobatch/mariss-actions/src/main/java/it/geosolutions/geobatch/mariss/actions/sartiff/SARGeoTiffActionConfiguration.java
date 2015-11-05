@@ -1,10 +1,10 @@
 package it.geosolutions.geobatch.mariss.actions.sartiff;
 
-import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
-import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfiguration;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
+
+import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
+import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfiguration;
 
 @XStreamAlias("SARGeoTiffActionConfiguration")
 @XStreamInclude({ ConfigurationContainer.class })

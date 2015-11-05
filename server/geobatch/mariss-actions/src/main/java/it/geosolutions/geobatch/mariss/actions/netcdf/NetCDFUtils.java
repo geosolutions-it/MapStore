@@ -1,13 +1,5 @@
 package it.geosolutions.geobatch.mariss.actions.netcdf;
 
-//import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
-//import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
-import it.geosolutions.geobatch.global.CatalogHolder;
-import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
-import it.geosolutions.imageio.plugins.netcdf.NetCDFUtilities;
-import it.geosolutions.tools.commons.file.Path;
-
 import java.awt.image.DataBuffer;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
@@ -27,6 +19,13 @@ import javax.xml.bind.Unmarshaller;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 
+//import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+//import it.geosolutions.geobatch.global.CatalogHolder;
+import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
+import it.geosolutions.geobatch.global.CatalogHolder;
+import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
+import it.geosolutions.imageio.plugins.netcdf.NetCDFUtilities;
+import it.geosolutions.tools.commons.file.Path;
 import ucar.ma2.Array;
 import ucar.ma2.ArrayByte;
 import ucar.ma2.ArrayDouble;
@@ -107,7 +106,7 @@ public class NetCDFUtils {
      */
     public static GeneralEnvelope buildEnvelope(final Dimension lon_dim, final Dimension lat_dim,
             final Array lonOriginalData, final Array latOriginalData)
-            throws IndexOutOfBoundsException {
+                    throws IndexOutOfBoundsException {
         double[] bbox = computeExtrema(latOriginalData, lonOriginalData, lat_dim, lon_dim);
 
         // building Envelope
@@ -311,8 +310,8 @@ public class NetCDFUtils {
      * @throws IOException
      * @throws FileNotFoundException
      */
-    public static Metocs getMetocsDictionary(String metodLocation) throws JAXBException,
-            IOException, FileNotFoundException {
+    public static Metocs getMetocsDictionary(String metodLocation)
+            throws JAXBException, IOException, FileNotFoundException {
         JAXBContext context = JAXBContext.newInstance(Metocs.class);
         Unmarshaller um = context.createUnmarshaller();
 
@@ -360,7 +359,8 @@ public class NetCDFUtils {
         final double stepX = 2.0;
         final double stepY = 2.0;
 
-        int numNeededPoints = (int) (Math.ceil(imageWidth / stepX) * Math.ceil(imageHeight / stepY));
+        int numNeededPoints = (int) (Math.ceil(imageWidth / stepX)
+                * Math.ceil(imageHeight / stepY));
 
         /**
          * Source and destination matrices: - Arrays have double dimension since they contain couple of X,Y (or Lon,Lat) values [X0,Y0, X1,Y1, ... ,
@@ -391,15 +391,17 @@ public class NetCDFUtils {
                 /**
                  * Filling destination coords with corresponding Lon,Lat values
                  */
-                destCoords[offset] = (float) ((lonData.getFloat(lonData.getIndex().set(yi, xi)) - bbox[0]) / periodX);
+                destCoords[offset] = (float) ((lonData.getFloat(lonData.getIndex().set(yi, xi))
+                        - bbox[0]) / periodX);
 
                 // Flipping Y if needed
                 if (flipY) {
-                    destCoords[offset + 1] = (float) ((bbox[3] - latData.getFloat(latData
-                            .getIndex().set(yi, xi))) / periodY);
+                    destCoords[offset + 1] = (float) ((bbox[3]
+                            - latData.getFloat(latData.getIndex().set(yi, xi))) / periodY);
                 } else {
-                    destCoords[offset + 1] = (float) ((latData.getFloat(latData.getIndex().set(yi,
-                            xi)) - bbox[1]) / periodY);
+                    destCoords[offset
+                            + 1] = (float) ((latData.getFloat(latData.getIndex().set(yi, xi))
+                                    - bbox[1]) / periodY);
                 }
 
                 offset += 2;
@@ -424,8 +426,8 @@ public class NetCDFUtils {
             int var = 0;
             for (int i = 0; i <= polyDegree; i++) {
                 for (int j = 0; j <= i; j++) {
-                    double value = Math.pow(destCoords[2 * coord + XOFFSET], (double) (i - j))
-                            * Math.pow(destCoords[2 * coord + YOFFSET], (double) j);
+                    double value = Math.pow(destCoords[2 * coord + XOFFSET], i - j)
+                            * Math.pow(destCoords[2 * coord + YOFFSET], j);
                     A.setElement(coord, var++, value);
                 }
             }
@@ -473,8 +475,8 @@ public class NetCDFUtils {
                     int var = 0;
                     for (int i = 0; i <= polyDegree; i++) {
                         for (int j = 0; j <= i; j++) {
-                            double value = Math.pow(xi, (double) (i - j))
-                                    * Math.pow(yi, (double) j);
+                            double value = Math.pow(xi, i - j)
+                                    * Math.pow(yi, j);
                             regressionVec.setElement(var++, 0, value);
                         }
                     }
@@ -516,8 +518,8 @@ public class NetCDFUtils {
     public static Array write2DData(WritableRaster userRaster, Variable var,
             final Array originalVarData, final boolean findNewRange, final boolean updateFillValue,
             final int[] loopLengths, final boolean flipY, final Array mask,
-            final boolean maskOneIsValid, final double[] rescaleFactors) throws IOException,
-            InvalidRangeException {
+            final boolean maskOneIsValid, final double[] rescaleFactors)
+                    throws IOException, InvalidRangeException {
 
         int tPos = -1;
         int zPos = -1;
@@ -571,10 +573,11 @@ public class NetCDFUtils {
 
             for (int yPos = 0; yPos < latPositions; yPos++) {
                 for (int xPos = 0; xPos < lonPositions; xPos++) {
-                    float sVal = originalVarData.getFloat(tPos >= 0 ? (zPos >= 0 ? varIndex.set(
-                            tPos, zPos, yPos, xPos) : varIndex.set(tPos, yPos, xPos))
-                            : (zPos >= 0 ? varIndex.set(zPos, yPos, xPos) : varIndex
-                                    .set(yPos, xPos)));
+                    float sVal = originalVarData.getFloat(tPos >= 0
+                            ? (zPos >= 0 ? varIndex.set(tPos, zPos, yPos, xPos)
+                                    : varIndex.set(tPos, yPos, xPos))
+                            : (zPos >= 0 ? varIndex.set(zPos, yPos, xPos)
+                                    : varIndex.set(yPos, xPos)));
                     if (mask != null) {
                         int validByte = maskOneIsValid ? 1 : 0;
                         if (mask.getByte(maskIndex.set(yPos, xPos)) != validByte) {
@@ -631,10 +634,11 @@ public class NetCDFUtils {
 
             for (int yPos = 0; yPos < latPositions; yPos++) {
                 for (int xPos = 0; xPos < lonPositions; xPos++) {
-                    double sVal = originalVarData.getDouble(tPos >= 0 ? (zPos >= 0 ? varIndex.set(
-                            tPos, zPos, yPos, xPos) : varIndex.set(tPos, yPos, xPos))
-                            : (zPos >= 0 ? varIndex.set(zPos, yPos, xPos) : varIndex
-                                    .set(yPos, xPos)));
+                    double sVal = originalVarData.getDouble(tPos >= 0
+                            ? (zPos >= 0 ? varIndex.set(tPos, zPos, yPos, xPos)
+                                    : varIndex.set(tPos, yPos, xPos))
+                            : (zPos >= 0 ? varIndex.set(zPos, yPos, xPos)
+                                    : varIndex.set(yPos, xPos)));
                     if (mask != null) {
                         int validByte = maskOneIsValid ? 1 : 0;
                         if (mask.getByte(maskIndex.set(yPos, xPos)) != validByte) {
@@ -691,10 +695,11 @@ public class NetCDFUtils {
 
             for (int yPos = 0; yPos < latPositions; yPos++) {
                 for (int xPos = 0; xPos < lonPositions; xPos++) {
-                    byte sVal = originalVarData.getByte(tPos >= 0 ? (zPos >= 0 ? varIndex.set(tPos,
-                            zPos, yPos, xPos) : varIndex.set(tPos, yPos, xPos))
-                            : (zPos >= 0 ? varIndex.set(zPos, yPos, xPos) : varIndex
-                                    .set(yPos, xPos)));
+                    byte sVal = originalVarData.getByte(tPos >= 0
+                            ? (zPos >= 0 ? varIndex.set(tPos, zPos, yPos, xPos)
+                                    : varIndex.set(tPos, yPos, xPos))
+                            : (zPos >= 0 ? varIndex.set(zPos, yPos, xPos)
+                                    : varIndex.set(yPos, xPos)));
                     if (mask != null) {
                         int validByte = maskOneIsValid ? 1 : 0;
                         if (mask.getByte(maskIndex.set(yPos, xPos)) != validByte) {
@@ -745,10 +750,11 @@ public class NetCDFUtils {
 
             for (int yPos = 0; yPos < latPositions; yPos++) {
                 for (int xPos = 0; xPos < lonPositions; xPos++) {
-                    short sVal = originalVarData.getShort(tPos >= 0 ? (zPos >= 0 ? varIndex.set(
-                            tPos, zPos, yPos, xPos) : varIndex.set(tPos, yPos, xPos))
-                            : (zPos >= 0 ? varIndex.set(zPos, yPos, xPos) : varIndex
-                                    .set(yPos, xPos)));
+                    short sVal = originalVarData.getShort(tPos >= 0
+                            ? (zPos >= 0 ? varIndex.set(tPos, zPos, yPos, xPos)
+                                    : varIndex.set(tPos, yPos, xPos))
+                            : (zPos >= 0 ? varIndex.set(zPos, yPos, xPos)
+                                    : varIndex.set(yPos, xPos)));
                     if (mask != null) {
                         int validByte = maskOneIsValid ? 1 : 0;
                         if (mask.getByte(maskIndex.set(yPos, xPos)) != validByte) {
@@ -799,10 +805,11 @@ public class NetCDFUtils {
 
             for (int yPos = 0; yPos < latPositions; yPos++) {
                 for (int xPos = 0; xPos < lonPositions; xPos++) {
-                    int sVal = originalVarData.getInt(tPos >= 0 ? (zPos >= 0 ? varIndex.set(tPos,
-                            zPos, yPos, xPos) : varIndex.set(tPos, yPos, xPos))
-                            : (zPos >= 0 ? varIndex.set(zPos, yPos, xPos) : varIndex
-                                    .set(yPos, xPos)));
+                    int sVal = originalVarData.getInt(tPos >= 0
+                            ? (zPos >= 0 ? varIndex.set(tPos, zPos, yPos, xPos)
+                                    : varIndex.set(tPos, yPos, xPos))
+                            : (zPos >= 0 ? varIndex.set(zPos, yPos, xPos)
+                                    : varIndex.set(yPos, xPos)));
                     if (mask != null) {
                         int validByte = maskOneIsValid ? 1 : 0;
                         if (mask.getByte(maskIndex.set(yPos, xPos)) != validByte) {

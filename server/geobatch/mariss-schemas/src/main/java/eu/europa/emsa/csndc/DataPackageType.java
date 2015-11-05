@@ -46,7 +46,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DataPackageType", propOrder = { "packageInfo", "eoProduct", "oilSpills",
-        "detectedShips", "sarDerivedData", "qualityNotification", "qualityReport", "processRequest" })
+        "detectedShips", "sarDerivedData", "qualityNotification", "qualityReport",
+        "processRequest" })
 public class DataPackageType {
 
     @XmlElement(required = true)

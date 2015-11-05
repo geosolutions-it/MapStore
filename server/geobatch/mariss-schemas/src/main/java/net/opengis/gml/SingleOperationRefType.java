@@ -244,7 +244,7 @@ public class SingleOperationRefType {
      * 
      */
     public void setSingleOperation(JAXBElement<? extends AbstractCoordinateOperationType> value) {
-        this.singleOperation = ((JAXBElement<? extends AbstractCoordinateOperationType>) value);
+        this.singleOperation = (value);
     }
 
     /**

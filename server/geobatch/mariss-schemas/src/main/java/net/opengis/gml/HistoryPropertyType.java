@@ -64,8 +64,8 @@ public class HistoryPropertyType {
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link AbstractTimeSliceType }{@code >} {@link JAXBElement }
-     * {@code <}{@link MovingObjectStatusType }{@code >}
+     * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link AbstractTimeSliceType }{@code >}
+     * {@link JAXBElement } {@code <}{@link MovingObjectStatusType }{@code >}
      * 
      * 
      */

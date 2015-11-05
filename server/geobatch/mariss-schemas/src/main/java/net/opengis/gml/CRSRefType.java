@@ -100,11 +100,11 @@ public class CRSRefType {
      * 
      * @return possible object is {@link JAXBElement }{@code <}{@link EngineeringCRSType }{@code >} {@link JAXBElement }{@code <}
      *         {@link GeographicCRSType }{@code >} {@link JAXBElement }{@code <}{@link DerivedCRSType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link GeocentricCRSType }{@code >} {@link JAXBElement }{@code <}{@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link ImageCRSType }{@code >} {@link JAXBElement }{@code <}{@link TemporalCRSType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link GeocentricCRSType }{@code >} {@link JAXBElement }{@code <}{@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link ImageCRSType }{@code >} {@link JAXBElement }{@code <}{@link TemporalCRSType }{@code >} {@link JAXBElement }{@code <}
      *         {@link CompoundCRSType }{@code >} {@link JAXBElement }{@code <}{@link VerticalCRSType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}{@link ProjectedCRSType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link AbstractGeneralDerivedCRSType }{@code >}
+     *         {@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}{@link ProjectedCRSType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link AbstractGeneralDerivedCRSType }{@code >}
      * 
      */
     public JAXBElement<? extends AbstractReferenceSystemType> getCRS() {
@@ -200,15 +200,15 @@ public class CRSRefType {
      * 
      * @param value allowed object is {@link JAXBElement }{@code <}{@link EngineeringCRSType }{@code >} {@link JAXBElement }{@code <}
      *        {@link GeographicCRSType }{@code >} {@link JAXBElement }{@code <}{@link DerivedCRSType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link GeocentricCRSType }{@code >} {@link JAXBElement }{@code <}{@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link ImageCRSType }{@code >} {@link JAXBElement }{@code <}{@link TemporalCRSType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link GeocentricCRSType }{@code >} {@link JAXBElement }{@code <}{@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link ImageCRSType }{@code >} {@link JAXBElement }{@code <}{@link TemporalCRSType }{@code >} {@link JAXBElement }{@code <}
      *        {@link CompoundCRSType }{@code >} {@link JAXBElement }{@code <}{@link VerticalCRSType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}{@link ProjectedCRSType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractGeneralDerivedCRSType }{@code >}
+     *        {@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}{@link ProjectedCRSType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link AbstractGeneralDerivedCRSType }{@code >}
      * 
      */
     public void setCRS(JAXBElement<? extends AbstractReferenceSystemType> value) {
-        this.crs = ((JAXBElement<? extends AbstractReferenceSystemType>) value);
+        this.crs = (value);
     }
 
     /**

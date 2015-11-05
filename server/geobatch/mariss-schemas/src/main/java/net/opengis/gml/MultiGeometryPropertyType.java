@@ -101,9 +101,10 @@ public class MultiGeometryPropertyType {
      * Gets the value of the geometricAggregate property.
      * 
      * @return possible object is {@link JAXBElement }{@code <}{@link MultiPointType }{@code >} {@link JAXBElement }{@code <}{@link MultiSurfaceType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link MultiSolidType }{@code >} {@link JAXBElement }{@code <}{@link MultiLineStringType }{@code >}
-     *         {@link JAXBElement }{@code <}{@link MultiGeometryType }{@code >} {@link JAXBElement }{@code <}{@link MultiPolygonType }{@code >}
-     *         {@link JAXBElement }{@code <}{@link AbstractGeometricAggregateType }{@code >} {@link JAXBElement }{@code <}{@link MultiCurveType }{@code >}
+     *         {@code >} {@link JAXBElement }{@code <}{@link MultiSolidType }{@code >} {@link JAXBElement }{@code <}{@link MultiLineStringType }
+     *         {@code >} {@link JAXBElement }{@code <}{@link MultiGeometryType }{@code >} {@link JAXBElement }{@code <}{@link MultiPolygonType }
+     *         {@code >} {@link JAXBElement }{@code <}{@link AbstractGeometricAggregateType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link MultiCurveType }{@code >}
      * 
      */
     public JAXBElement<? extends AbstractGeometricAggregateType> getGeometricAggregate() {
@@ -197,14 +198,15 @@ public class MultiGeometryPropertyType {
     /**
      * Sets the value of the geometricAggregate property.
      * 
-     * @param value allowed object is {@link JAXBElement }{@code <}{@link MultiPointType }{@code >} {@link JAXBElement }{@code <}{@link MultiSurfaceType }
-     *        {@code >} {@link JAXBElement }{@code <}{@link MultiSolidType }{@code >} {@link JAXBElement }{@code <}{@link MultiLineStringType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link MultiGeometryType }{@code >} {@link JAXBElement }{@code <}{@link MultiPolygonType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link AbstractGeometricAggregateType }{@code >} {@link JAXBElement }{@code <}{@link MultiCurveType }{@code >}
+     * @param value allowed object is {@link JAXBElement }{@code <}{@link MultiPointType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link MultiSurfaceType } {@code >} {@link JAXBElement }{@code <}{@link MultiSolidType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link MultiLineStringType }{@code >} {@link JAXBElement }{@code <}{@link MultiGeometryType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link MultiPolygonType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeometricAggregateType }{@code >} {@link JAXBElement }
+     *        {@code <}{@link MultiCurveType }{@code >}
      * 
      */
     public void setGeometricAggregate(JAXBElement<? extends AbstractGeometricAggregateType> value) {
-        this.geometricAggregate = ((JAXBElement<? extends AbstractGeometricAggregateType>) value);
+        this.geometricAggregate = (value);
     }
 
     /**

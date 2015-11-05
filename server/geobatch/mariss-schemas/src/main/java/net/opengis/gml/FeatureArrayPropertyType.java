@@ -69,11 +69,11 @@ public class FeatureArrayPropertyType {
      * {@link JAXBElement }{@code <}{@link AbstractDiscreteCoverageType }{@code >} {@link JAXBElement }{@code <}{@link AbstractFeatureType }{@code >}
      * {@link JAXBElement }{@code <}{@link MultiPointCoverageType }{@code >} {@link JAXBElement }{@code <}{@link MultiCurveCoverageType }{@code >}
      * {@link JAXBElement }{@code <}{@link DirectedObservationAtDistanceType }{@code >} {@link JAXBElement }{@code <}{@link DirectedObservationType }
-     * {@code >} {@link JAXBElement }{@code <}{@link ObservationType }{@code >} {@link JAXBElement }{@code <}{@link MultiSurfaceCoverageType }{@code >}
-     * {@link JAXBElement }{@code <}{@link AbstractCoverageType }{@code >} {@link JAXBElement }{@code <}{@link MultiSolidCoverageType }{@code >}
-     * {@link JAXBElement }{@code <}{@link AbstractFeatureCollectionType }{@code >} {@link JAXBElement }{@code <}{@link ShipType }{@code >}
-     * {@link JAXBElement }{@code <}{@link AbstractContinuousCoverageType }{@code >} {@link JAXBElement }{@code <}{@link FeatureCollectionType }{@code >}
-     * {@link JAXBElement }{@code <}{@link GridCoverageType }{@code >} {@link JAXBElement }{@code <}{@link OilSpillType }{@code >}
+     * {@code >} {@link JAXBElement }{@code <}{@link ObservationType }{@code >} {@link JAXBElement }{@code <}{@link MultiSurfaceCoverageType }
+     * {@code >} {@link JAXBElement }{@code <}{@link AbstractCoverageType }{@code >} {@link JAXBElement }{@code <}{@link MultiSolidCoverageType }
+     * {@code >} {@link JAXBElement }{@code <}{@link AbstractFeatureCollectionType }{@code >} {@link JAXBElement }{@code <}{@link ShipType }{@code >}
+     * {@link JAXBElement }{@code <}{@link AbstractContinuousCoverageType }{@code >} {@link JAXBElement }{@code <}{@link FeatureCollectionType }
+     * {@code >} {@link JAXBElement }{@code <}{@link GridCoverageType }{@code >} {@link JAXBElement }{@code <}{@link OilSpillType }{@code >}
      * 
      * 
      */

@@ -89,12 +89,12 @@ public class DynamicFeatureType extends AbstractFeatureType {
     /**
      * Sets the value of the history property.
      * 
-     * @param value allowed object is {@link JAXBElement }{@code <}{@link HistoryPropertyType }{@code >} {@link JAXBElement }{@code <}{@link TrackType }
-     *        {@code >}
+     * @param value allowed object is {@link JAXBElement }{@code <}{@link HistoryPropertyType }{@code >} {@link JAXBElement }{@code <}{@link TrackType
+     *        } {@code >}
      * 
      */
     public void setHistory(JAXBElement<? extends HistoryPropertyType> value) {
-        this.history = ((JAXBElement<? extends HistoryPropertyType>) value);
+        this.history = (value);
     }
 
     /**

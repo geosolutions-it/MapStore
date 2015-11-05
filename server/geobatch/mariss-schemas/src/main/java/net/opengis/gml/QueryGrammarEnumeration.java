@@ -34,10 +34,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum QueryGrammarEnumeration {
 
-    @XmlEnumValue("xpath")
-    XPATH("xpath"), @XmlEnumValue("xquery")
-    XQUERY("xquery"), @XmlEnumValue("other")
-    OTHER("other");
+    @XmlEnumValue("xpath") XPATH("xpath"), @XmlEnumValue("xquery") XQUERY(
+            "xquery"), @XmlEnumValue("other") OTHER("other");
     public static QueryGrammarEnumeration fromValue(String v) {
         for (QueryGrammarEnumeration c : QueryGrammarEnumeration.values()) {
             if (c.value.equals(v)) {

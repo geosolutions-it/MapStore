@@ -21,10 +21,10 @@
  */
 package it.geosolutions.geobatch.catalog.impl.configuration;
 
+import java.util.List;
+
 import it.geosolutions.geobatch.catalog.impl.BaseDescriptableConfiguration;
 import it.geosolutions.geobatch.destination.common.utils.RemoteBrowserProtocol;
-
-import java.util.List;
 
 /**
  * Configuration for remote browser access

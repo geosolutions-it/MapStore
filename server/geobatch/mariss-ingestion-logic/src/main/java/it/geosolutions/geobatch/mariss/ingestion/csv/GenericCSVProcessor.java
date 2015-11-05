@@ -19,11 +19,6 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.csv;
 
-import it.geosolutions.geobatch.catalog.impl.TimeFormat;
-import it.geosolutions.geobatch.mariss.dao.GenericDAO;
-import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
-import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVPropertyType;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
@@ -35,6 +30,10 @@ import org.slf4j.LoggerFactory;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 import au.com.bytecode.opencsv.CSVReader;
+import it.geosolutions.geobatch.catalog.impl.TimeFormat;
+import it.geosolutions.geobatch.mariss.dao.GenericDAO;
+import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
+import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVPropertyType;
 
 /**
  * CSV Generic processor for Geobatch
@@ -76,6 +75,7 @@ public abstract class GenericCSVProcessor<T, ID extends Serializable> extends CS
     /**
      * @return the failCount
      */
+    @Override
     public int getFailCount() {
         return failCount;
     }
@@ -83,11 +83,13 @@ public abstract class GenericCSVProcessor<T, ID extends Serializable> extends CS
     /**
      * @return CSV headers matching with this processor
      */
+    @Override
     public abstract List<String> getHeaders();
 
     /**
      * @return the insertCount
      */
+    @Override
     public int getInsertCount() {
         return insertCount;
     }
@@ -101,6 +103,7 @@ public abstract class GenericCSVProcessor<T, ID extends Serializable> extends CS
     /**
      * @return the removeCount
      */
+    @Override
     public int getRemoveCount() {
         return removeCount;
     }
@@ -120,6 +123,7 @@ public abstract class GenericCSVProcessor<T, ID extends Serializable> extends CS
     /**
      * @return the updateCount
      */
+    @Override
     public int getUpdateCount() {
         return updateCount;
     }

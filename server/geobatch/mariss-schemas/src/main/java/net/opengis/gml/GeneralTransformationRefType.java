@@ -199,7 +199,7 @@ public class GeneralTransformationRefType {
      */
     public void setGeneralTransformation(
             JAXBElement<? extends AbstractGeneralTransformationType> value) {
-        this.generalTransformation = ((JAXBElement<? extends AbstractGeneralTransformationType>) value);
+        this.generalTransformation = (value);
     }
 
     /**

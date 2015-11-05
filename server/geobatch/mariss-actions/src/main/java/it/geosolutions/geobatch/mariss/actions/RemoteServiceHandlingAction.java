@@ -21,24 +21,8 @@
  */
 package it.geosolutions.geobatch.mariss.actions;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
-import it.geosolutions.geobatch.annotations.Action;
-import it.geosolutions.geobatch.destination.common.utils.RemoteBrowserProtocol;
-import it.geosolutions.geobatch.destination.common.utils.RemoteBrowserUtils;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
-import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfiguration;
-import it.geosolutions.geobatch.mariss.dao.ServiceDAO;
-import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
-import it.geosolutions.geobatch.mariss.ingestion.product.DataPackageIngestionProcessor;
-import it.geosolutions.geobatch.mariss.model.Service;
-
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,9 +44,22 @@ import org.geotools.jdbc.JDBCDataStore;
 import com.enterprisedt.net.ftp.FTPConnectMode;
 import com.enterprisedt.net.ftp.FTPException;
 
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.destination.common.utils.RemoteBrowserProtocol;
+import it.geosolutions.geobatch.destination.common.utils.RemoteBrowserUtils;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.mariss.dao.ServiceDAO;
+import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
+import it.geosolutions.geobatch.mariss.ingestion.product.DataPackageIngestionProcessor;
+import it.geosolutions.geobatch.mariss.model.Service;
+
 /**
- * Abstract GeoBatch service data ingestion remote file handling action
- * Iterate remote user folders and check active services on the database for them. 
+ * Abstract GeoBatch service data ingestion remote file handling action Iterate remote user folders and check active services on the database for
+ * them.
  * 
  * Setup configuration and then call a method for each service to be implemented by sub-classes, to ingest data properly.
  * 
@@ -83,7 +80,6 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
      */
     protected RemoteServiceHandlingConfiguration configuration;
 
-
     /**
      * 
      */
@@ -100,6 +96,7 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
     /**
      * Check if the configuration it's correctly. Just obtain the data source
      */
+    @Override
     public boolean checkConfiguration() {
         DataStore ds = null;
         try {
@@ -139,8 +136,8 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
      */
     protected boolean checkIfExists(RemoteBrowserProtocol serverProtocol, String serverUser,
             String serverHost, String serverPWD, int serverPort, String path, String fileName,
-            FTPConnectMode connectMode, int timeout) throws IOException, FTPException,
-            ParseException {
+            FTPConnectMode connectMode, int timeout)
+                    throws IOException, FTPException, ParseException {
         return RemoteBrowserUtils.checkIfExists(serverProtocol, serverUser, serverHost, serverPWD,
                 serverPort, path, fileName, connectMode, timeout);
     }
@@ -176,35 +173,31 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
      * @throws FTPException
      */
     private List<String> collectPostProcessingFiles(List<String> availableProducts,
-            String productsFtpFolder,
-            String localRelativeFolder, // result remote
+            String productsFtpFolder, String localRelativeFolder, // result remote
             RemoteBrowserProtocol serverResultProtocol, String serverResultUser,
             String serverResultPWD, String serverResultHost, int serverResultPort,
             FTPConnectMode resultConnectMode, int resultTimeout) throws IOException, FTPException {
 
         List<String> products = new ArrayList<String>();
-        
-        for (String productFile : availableProducts) {
 
-            
+        for (String productFile : availableProducts) {
 
             // Eligible for post processing.
             final File inputFile = new File(productsFtpFolder, productFile);
             String targetPath = null;
-           
+
             // success: put on success dir
             targetPath = productsFtpFolder + LOCAL_SEPARATOR + configuration.getSuccesPath();
-           
 
             // MOVE FILES IN THE INGESTION DIR
-            if (!productFile.equalsIgnoreCase("packageready.txt")){
-	            File destFile = new File(targetPath,inputFile.getName());
-	            FileUtils.moveFile(inputFile, destFile); 
-	            products.add(destFile.getAbsolutePath());
+            if (!productFile.equalsIgnoreCase("packageready.txt")) {
+                File destFile = new File(targetPath, inputFile.getName());
+                FileUtils.moveFile(inputFile, destFile);
+                products.add(destFile.getAbsolutePath());
             }
             // add the targetFile to the list
-            
-            // clean  file in the input directory
+
+            // clean file in the input directory
             inputFile.delete();
         }
 
@@ -225,12 +218,10 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
         Queue<EventObject> resultList = new LinkedList<EventObject>();
         try {
 
-
-            
-            //TODO remove these parameters initialization and use configuration in subclasses instead
+            // TODO remove these parameters initialization and use configuration in subclasses instead
             // Remote server configuration
             String remotePath = cfg.getInputRemotePath();
-            LOGGER.debug("Scanning directory:"+remotePath);
+            LOGGER.debug("Scanning directory:" + remotePath);
             RemoteBrowserProtocol serverProtocol = configuration.getRemoteBrowserConfiguration()
                     .getServerProtocol();
             String serverHost = configuration.getRemoteBrowserConfiguration().getFtpserverHost();
@@ -239,8 +230,8 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
             int serverPort = configuration.getRemoteBrowserConfiguration().getFtpserverPort();
             int timeout = configuration.getRemoteBrowserConfiguration().getTimeout();
             final FTPConnectMode connectMode = configuration.getRemoteBrowserConfiguration()
-                    .toString().equalsIgnoreCase(FTPConnectMode.ACTIVE.toString()) ? FTPConnectMode.ACTIVE
-                    : FTPConnectMode.PASV;
+                    .toString().equalsIgnoreCase(FTPConnectMode.ACTIVE.toString())
+                            ? FTPConnectMode.ACTIVE : FTPConnectMode.PASV;
 
             // Remote server result configuration
             RemoteBrowserProtocol serverResultProtocol = null;
@@ -263,24 +254,24 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
                 resultTimeout = configuration.getRemoteResultBrowserConfiguration().getTimeout();
                 resultConnectMode = configuration.getRemoteResultBrowserConfiguration().toString()
                         .equalsIgnoreCase(FTPConnectMode.ACTIVE.toString()) ? FTPConnectMode.ACTIVE
-                        : FTPConnectMode.PASV;
+                                : FTPConnectMode.PASV;
             }
 
             // File pattern
-            Pattern pattern = configuration.getFilePattern() != null ? Pattern
-                    .compile(configuration.getFilePattern()) : null;
+            Pattern pattern = configuration.getFilePattern() != null
+                    ? Pattern.compile(configuration.getFilePattern()) : null;
 
             // iterate by services
             Map<String, List<Service>> servicesByUser = getCurrentServices(serverProtocol,
-                    serverUser, serverPWD, serverHost, serverPort, remotePath, connectMode,
-                    timeout, pattern);
+                    serverUser, serverPWD, serverHost, serverPort, remotePath, connectMode, timeout,
+                    pattern);
 
             // user size and index
             int usersSize = servicesByUser.keySet().size();
             int userIndex = 0;
-            
+
             //
-            //ITERATE SERVICES USER BY USER
+            // ITERATE SERVICES USER BY USER
             //
             for (String user : servicesByUser.keySet()) {
                 // service size and index
@@ -293,7 +284,7 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
                             serverPWD, serverHost, serverPort, remotePath, connectMode, timeout,
                             serverResultProtocol, serverResultUser, serverResultPWD,
                             serverResultHost, serverResultPort, resultConnectMode, resultTimeout,
-                             dataStore, usersSize, userIndex, serviceSize, serviceIndex));
+                            dataStore, usersSize, userIndex, serviceSize, serviceIndex));
                 }
             }
 
@@ -309,6 +300,7 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
     /**
      * Execute process
      */
+    @Override
     public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
 
         // return object
@@ -327,15 +319,15 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
                         File file = fileEvent.getSource();
                         // Don't read configuration for the file, just
                         // this.outputfeature configuration
-                        DataStore ds = FeatureConfigurationUtil.createDataStore(configuration
-                                .getOutputFeature());
+                        DataStore ds = FeatureConfigurationUtil
+                                .createDataStore(configuration.getOutputFeature());
                         if (ds == null) {
                             throw new ActionException(this, "Can't find datastore ");
                         }
                         try {
                             if (!(ds instanceof JDBCDataStore)) {
-                                throw new ActionException(this, "Bad Datastore type "
-                                        + ds.getClass().getName());
+                                throw new ActionException(this,
+                                        "Bad Datastore type " + ds.getClass().getName());
                             }
                             JDBCDataStore dataStore = (JDBCDataStore) ds;
                             dataStore.setExposePrimaryKeyColumns(true);
@@ -437,12 +429,8 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
      * @throws IOException
      * @throws FTPException
      */
-    private Collection<? extends EventObject> getPostProcessEvents(
-            List<String> pendingProductFiles,
-            DataStore dataStore,
-            String user,
-            Service service,
-            String relativeFolder,
+    private Collection<? extends EventObject> getPostProcessEvents(List<String> pendingProductFiles,
+            DataStore dataStore, String user, Service service, String relativeFolder,
             // result remote
             RemoteBrowserProtocol serverResultProtocol, String serverResultUser,
             String serverResultPWD, String serverResultHost, int serverResultPort,
@@ -462,7 +450,7 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
             File inputFile = new File(filePath);
             // copy to target folder
             if (failFiles.contains(filePath)) {
-                //TODO copy to error
+                // TODO copy to error
                 LOGGER.error("Error processing the CSV " + filePath
                         + ". Another CSV file is not included in the package");
                 error = true;
@@ -547,28 +535,18 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
      * @param serviceSize2
      * @return
      */
-    protected abstract Collection<? extends EventObject> ingestServiceData(
-            String user,
+    protected abstract Collection<? extends EventObject> ingestServiceData(String user,
             Service service,
             // remote browser
-            RemoteBrowserProtocol serverProtocol,
-            String serverUser,
-            String serverPWD,
-            String serverHost,
-            int serverPort,
-            String remotePath,
-            FTPConnectMode connectMode,
+            RemoteBrowserProtocol serverProtocol, String serverUser, String serverPWD,
+            String serverHost, int serverPort, String remotePath, FTPConnectMode connectMode,
             int timeout,
             // result remote
-            RemoteBrowserProtocol serverResultProtocol,
-            String serverResultUser,
-            String serverResultPWD,
-            String serverResultHost,
-            int serverResultPort,
-            
-            FTPConnectMode resultConnectMode, int resultTimeout,
-            DataStore dataStore, int usersSize, int userIndex, int serviceSize,
-            int serviceIndex) ;
+            RemoteBrowserProtocol serverResultProtocol, String serverResultUser,
+            String serverResultPWD, String serverResultHost, int serverResultPort,
+
+            FTPConnectMode resultConnectMode, int resultTimeout, DataStore dataStore, int usersSize,
+            int userIndex, int serviceSize, int serviceIndex);
 
     /**
      * Check if this action must observe this folder in the service
@@ -578,7 +556,7 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
      * @param folder
      * @return true is it's a known folder or false otherwise
      */
-    abstract protected boolean isObservableServiceFolder(Service service, String folder) ;
+    abstract protected boolean isObservableServiceFolder(Service service, String folder);
 
     /**
      * Delegated on utilities class
@@ -635,7 +613,7 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
         listenerForwarder.setTask(msg);
         listenerForwarder.progressing();
     }
-    
+
     /**
      * Save progress information for a task
      * 
@@ -646,7 +624,6 @@ public abstract class RemoteServiceHandlingAction extends BaseAction<EventObject
         listenerForwarder.setTask(msg);
         listenerForwarder.progressing();
     }
-    
 
     /**
      * Update the status of the listener

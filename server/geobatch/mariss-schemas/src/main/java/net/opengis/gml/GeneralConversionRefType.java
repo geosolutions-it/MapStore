@@ -198,7 +198,7 @@ public class GeneralConversionRefType {
      * 
      */
     public void setGeneralConversion(JAXBElement<? extends AbstractGeneralConversionType> value) {
-        this.generalConversion = ((JAXBElement<? extends AbstractGeneralConversionType>) value);
+        this.generalConversion = (value);
     }
 
     /**

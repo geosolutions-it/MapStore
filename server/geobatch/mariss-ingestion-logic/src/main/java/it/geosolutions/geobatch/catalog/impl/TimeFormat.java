@@ -21,8 +21,6 @@
  */
 package it.geosolutions.geobatch.catalog.impl;
 
-import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
-
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParsePosition;
@@ -42,6 +40,8 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
+
+import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
 
 /**
  * Time format
@@ -481,8 +481,8 @@ public class TimeFormat extends BaseDescriptable {
      */
     private void initOutputFormats() {
         List<String> outputStrings = this.timeFormatConfiguration != null
-                && this.timeFormatConfiguration.getAllowedTimeFormats() != null ? this.timeFormatConfiguration
-                .getAllowedTimeFormats() : DEFAULT_PATTERNS;
+                && this.timeFormatConfiguration.getAllowedTimeFormats() != null
+                        ? this.timeFormatConfiguration.getAllowedTimeFormats() : DEFAULT_PATTERNS;
         outputFormats = new LinkedList<SimpleDateFormat>();
         for (String output : outputStrings) {
             outputFormats.add(new SimpleDateFormat(output));
@@ -494,8 +494,8 @@ public class TimeFormat extends BaseDescriptable {
      */
     private void initPatterns() {
         List<String> patterns = this.timeFormatConfiguration != null
-                && this.timeFormatConfiguration.getAllowedTimeFormats() != null ? this.timeFormatConfiguration
-                .getAllowedTimeFormats() : DEFAULT_PATTERNS;
+                && this.timeFormatConfiguration.getAllowedTimeFormats() != null
+                        ? this.timeFormatConfiguration.getAllowedTimeFormats() : DEFAULT_PATTERNS;
         Map<Integer, List<String>> tmpPatterns = new HashMap<Integer, List<String>>();
 
         for (String pattern : patterns) {

@@ -21,12 +21,12 @@
  */
 package it.geosolutions.geobatch.mariss.actions.csv;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
 import it.geosolutions.geobatch.mariss.ingestion.csv.configuration.CSVProcessorConfiguration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  */
@@ -85,7 +85,8 @@ public class CSVIngestConfiguration extends Ds2dsConfiguration {
     /**
      * @param proccesorsConfiguration the proccesorsConfiguration to set
      */
-    public void setProccesorsConfiguration(List<CSVProcessorConfiguration> proccesorsConfiguration) {
+    public void setProccesorsConfiguration(
+            List<CSVProcessorConfiguration> proccesorsConfiguration) {
         this.proccesorsConfiguration = proccesorsConfiguration;
     }
 

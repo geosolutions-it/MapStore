@@ -125,6 +125,7 @@ public abstract class MarissCSVServiceProcessor extends GenericCSVProcessor<Simp
         return userName;
     }
 
+    @Override
     public void persist(SimpleFeature entity) throws IOException {
         dao.persist(entity);
     }
@@ -159,6 +160,7 @@ public abstract class MarissCSVServiceProcessor extends GenericCSVProcessor<Simp
     /**
      * Get user/service parameters from the file name
      */
+    @Override
     public String processCSVFile(File file, char separator) throws IOException {
         Map<String, String> fileParameters = CSVIngestUtils.getParametersFromName(file.getName());
         if (fileParameters.containsKey(CSVIngestUtils.USER_FILE_PARAMETER)) {
@@ -171,6 +173,7 @@ public abstract class MarissCSVServiceProcessor extends GenericCSVProcessor<Simp
         return super.processCSVFile(file, separator);
     }
 
+    @Override
     public void save(SimpleFeature entity) throws IOException {
         dao.merge(entity);
     }

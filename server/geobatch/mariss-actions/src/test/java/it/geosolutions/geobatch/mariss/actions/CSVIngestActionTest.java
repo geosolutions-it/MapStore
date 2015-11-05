@@ -19,16 +19,7 @@
  */
 package it.geosolutions.geobatch.mariss.actions;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.catalog.impl.TimeFormat;
-import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
-import it.geosolutions.geobatch.mariss.actions.csv.CSVIngestAction;
-import it.geosolutions.geobatch.mariss.actions.csv.CSVIngestConfiguration;
-import it.geosolutions.geobatch.mariss.ingestion.csv.CSVAcqListProcessor;
-import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes1To3Processor;
-import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes5Processor;
-import it.geosolutions.geobatch.mariss.ingestion.csv.MarissCSVServiceProcessor;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.Serializable;
@@ -40,8 +31,17 @@ import java.util.Queue;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.catalog.impl.TimeFormat;
+import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
+import it.geosolutions.geobatch.mariss.actions.csv.CSVIngestAction;
+import it.geosolutions.geobatch.mariss.actions.csv.CSVIngestConfiguration;
+import it.geosolutions.geobatch.mariss.ingestion.csv.CSVAcqListProcessor;
+import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes1To3Processor;
+import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes5Processor;
+import it.geosolutions.geobatch.mariss.ingestion.csv.MarissCSVServiceProcessor;
 
 /**
  * Tests for CSV ingestion action
@@ -49,8 +49,6 @@ import static org.junit.Assert.*;
  * @author adiaz
  */
 public class CSVIngestActionTest {
-
-   
 
     public CSVIngestActionTest() {
         super();
@@ -87,32 +85,20 @@ public class CSVIngestActionTest {
         MarissCSVServiceProcessor processor = null;
         try {
             if ("acq_list".equals(typeName)) {
-                processor = new CSVAcqListProcessor(
-                        getConnectionParameters(),
-                        typeName,
-                        new TimeFormat(
-                                null,
-                                null,
-                                "Time format default",
-                                new TimeFormatConfiguration(null, null, "Time format configuration")));
+                processor = new CSVAcqListProcessor(getConnectionParameters(), typeName,
+                        new TimeFormat(null, null, "Time format default",
+                                new TimeFormatConfiguration(null, null,
+                                        "Time format configuration")));
             } else if ("products_1to3".equals(typeName)) {
-                processor = new CSVProductTypes1To3Processor(
-                        getConnectionParameters(),
-                        typeName,
-                        new TimeFormat(
-                                null,
-                                null,
-                                "Time format default",
-                                new TimeFormatConfiguration(null, null, "Time format configuration")));
+                processor = new CSVProductTypes1To3Processor(getConnectionParameters(), typeName,
+                        new TimeFormat(null, null, "Time format default",
+                                new TimeFormatConfiguration(null, null,
+                                        "Time format configuration")));
             } else if ("products_5".equals(typeName)) {
-                processor = new CSVProductTypes5Processor(
-                        getConnectionParameters(),
-                        typeName,
-                        new TimeFormat(
-                                null,
-                                null,
-                                "Time format default",
-                                new TimeFormatConfiguration(null, null, "Time format configuration")));
+                processor = new CSVProductTypes5Processor(getConnectionParameters(), typeName,
+                        new TimeFormat(null, null, "Time format default",
+                                new TimeFormatConfiguration(null, null,
+                                        "Time format configuration")));
             }
             processor.setUserName(userName);
             processor.setServiceName(serviceName);
@@ -132,53 +118,54 @@ public class CSVIngestActionTest {
         CSVAcqListProcessor acqProcessor = getAcqProcessor();
 
         if (acqProcessor != null) {
-            CSVIngestAction action = new CSVIngestAction(new CSVIngestConfiguration(null, null,
-                    null));
+            CSVIngestAction action = new CSVIngestAction(
+                    new CSVIngestConfiguration(null, null, null));
             action.addProcessor(acqProcessor);
             action.addProcessor(getProcessor("products_1to3", "CLS", "CLS1"));
             action.addProcessor(getProcessor("products_5", "CLS", "CLS1"));
             Queue<EventObject> events = new LinkedList<EventObject>();
 
             for (File file : FileUtils.listFiles(new File("."), new String[] { "csv" }, true)) {
-                
+
                 FileSystemEvent event = new FileSystemEvent(file, FileSystemEventType.FILE_ADDED);
                 events.add(event);
                 @SuppressWarnings({ "unused", "rawtypes" })
                 Queue result = action.execute(events);
             }
         } else {
-            //LOGGER.info("The local database is not available");
+            // LOGGER.info("The local database is not available");
         }
     }
-    
-//    @Test
-//    public void testDsMarshalling() throws Exception {
-//        
-//        File fileDsXml = new File("C:\\work\\E-GEOS\\MARISS\\data\\data\\Phase1\\VDS\\NEREIDS_ASA_IMP_1PNIPA20100913_110107_000000162092_00495_44637_0625.N1_GMV_274.xml");
-//        
-//        QNameMap qmap = new QNameMap();
-//        qmap.setDefaultNamespace("http://ignore.namespace/prefix");
-//        qmap.setDefaultPrefix("");
-//        StaxDriver staxDriver = new StaxDriver(qmap); 
-//        XStream xstream = new XStream(staxDriver){
-//            @Override
-//            protected MapperWrapper wrapMapper(MapperWrapper next) {
-//                return new MapperWrapper(next) {
-//                    @Override
-//                    public boolean shouldSerializeMember(Class definedIn, String fieldName) {
-//                        if (definedIn == Object.class) {
-//                            return false;
-//                        }
-//                        return super.shouldSerializeMember(definedIn, fieldName);
-//                    }
-//                };
-//            }
-//        };
-//        
-//        xstream.processAnnotations(ShipDetection.class);     // inform XStream to parse annotations in Data 
-//        
-//        ShipDetection shpDs = (ShipDetection) xstream.fromXML(fileDsXml);
-//        
-//        LOGGER.info(shpDs.toString());
-//    }
+
+    // @Test
+    // public void testDsMarshalling() throws Exception {
+    //
+    // File fileDsXml = new
+    // File("C:\\work\\E-GEOS\\MARISS\\data\\data\\Phase1\\VDS\\NEREIDS_ASA_IMP_1PNIPA20100913_110107_000000162092_00495_44637_0625.N1_GMV_274.xml");
+    //
+    // QNameMap qmap = new QNameMap();
+    // qmap.setDefaultNamespace("http://ignore.namespace/prefix");
+    // qmap.setDefaultPrefix("");
+    // StaxDriver staxDriver = new StaxDriver(qmap);
+    // XStream xstream = new XStream(staxDriver){
+    // @Override
+    // protected MapperWrapper wrapMapper(MapperWrapper next) {
+    // return new MapperWrapper(next) {
+    // @Override
+    // public boolean shouldSerializeMember(Class definedIn, String fieldName) {
+    // if (definedIn == Object.class) {
+    // return false;
+    // }
+    // return super.shouldSerializeMember(definedIn, fieldName);
+    // }
+    // };
+    // }
+    // };
+    //
+    // xstream.processAnnotations(ShipDetection.class); // inform XStream to parse annotations in Data
+    //
+    // ShipDetection shpDs = (ShipDetection) xstream.fromXML(fileDsXml);
+    //
+    // LOGGER.info(shpDs.toString());
+    // }
 }

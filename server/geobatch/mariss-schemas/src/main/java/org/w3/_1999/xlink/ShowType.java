@@ -36,12 +36,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum ShowType {
 
-    @XmlEnumValue("new")
-    NEW("new"), @XmlEnumValue("replace")
-    REPLACE("replace"), @XmlEnumValue("embed")
-    EMBED("embed"), @XmlEnumValue("other")
-    OTHER("other"), @XmlEnumValue("none")
-    NONE("none");
+    @XmlEnumValue("new") NEW("new"), @XmlEnumValue("replace") REPLACE(
+            "replace"), @XmlEnumValue("embed") EMBED("embed"), @XmlEnumValue("other") OTHER(
+                    "other"), @XmlEnumValue("none") NONE("none");
     public static ShowType fromValue(String v) {
         for (ShowType c : ShowType.values()) {
             if (c.value.equals(v)) {

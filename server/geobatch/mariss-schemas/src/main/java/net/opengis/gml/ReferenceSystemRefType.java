@@ -108,13 +108,13 @@ public class ReferenceSystemRefType {
     /**
      * Gets the value of the referenceSystem property.
      * 
-     * @return possible object is {@link JAXBElement }{@code <}{@link EngineeringCRSType }{@code >} {@link JAXBElement }{@code <}{@link DerivedCRSType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link ImageCRSType }{@code >} {@link JAXBElement }{@code <}{@link AbstractReferenceSystemType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link TemporalCRSType }{@code >} {@link JAXBElement }{@code <}{@link AbstractReferenceSystemType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link VerticalCRSType }{@code >} {@link JAXBElement }{@code <}{@link AbstractReferenceSystemType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link AbstractGeneralDerivedCRSType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link GeographicCRSType }{@code >} {@link JAXBElement }{@code <}{@link GeocentricCRSType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link CompoundCRSType }{@code >} {@link JAXBElement }{@code <}{@link ProjectedCRSType }{@code >}
+     * @return possible object is {@link JAXBElement }{@code <}{@link EngineeringCRSType }{@code >} {@link JAXBElement }{@code <}{@link DerivedCRSType
+     *         } {@code >} {@link JAXBElement }{@code <}{@link ImageCRSType }{@code >} {@link JAXBElement }{@code <}{@link AbstractReferenceSystemType
+     *         } {@code >} {@link JAXBElement }{@code <}{@link TemporalCRSType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link AbstractReferenceSystemType } {@code >} {@link JAXBElement }{@code <}{@link VerticalCRSType }{@code >} {@link JAXBElement }
+     *         {@code <}{@link AbstractReferenceSystemType } {@code >} {@link JAXBElement }{@code <}{@link AbstractGeneralDerivedCRSType }{@code >}
+     *         {@link JAXBElement }{@code <} {@link GeographicCRSType }{@code >} {@link JAXBElement }{@code <}{@link GeocentricCRSType }{@code >}
+     *         {@link JAXBElement }{@code <} {@link CompoundCRSType }{@code >} {@link JAXBElement }{@code <}{@link ProjectedCRSType }{@code >}
      * 
      */
     public JAXBElement<? extends AbstractReferenceSystemType> getReferenceSystem() {
@@ -210,15 +210,16 @@ public class ReferenceSystemRefType {
      * 
      * @param value allowed object is {@link JAXBElement }{@code <}{@link EngineeringCRSType }{@code >} {@link JAXBElement }{@code <}
      *        {@link DerivedCRSType }{@code >} {@link JAXBElement }{@code <}{@link ImageCRSType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}{@link TemporalCRSType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}{@link VerticalCRSType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeneralDerivedCRSType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link GeographicCRSType }{@code >} {@link JAXBElement }{@code <}{@link GeocentricCRSType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link CompoundCRSType }{@code >} {@link JAXBElement }{@code <}{@link ProjectedCRSType }{@code >}
+     *        {@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}{@link TemporalCRSType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}{@link VerticalCRSType }{@code >}
+     *        {@link JAXBElement }{@code <} {@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link AbstractGeneralDerivedCRSType }{@code >} {@link JAXBElement }{@code <}{@link GeographicCRSType }{@code >} {@link JAXBElement }
+     *        {@code <}{@link GeocentricCRSType }{@code >} {@link JAXBElement }{@code <}{@link CompoundCRSType }{@code >} {@link JAXBElement }
+     *        {@code <}{@link ProjectedCRSType }{@code >}
      * 
      */
     public void setReferenceSystem(JAXBElement<? extends AbstractReferenceSystemType> value) {
-        this.referenceSystem = ((JAXBElement<? extends AbstractReferenceSystemType>) value);
+        this.referenceSystem = (value);
     }
 
     /**

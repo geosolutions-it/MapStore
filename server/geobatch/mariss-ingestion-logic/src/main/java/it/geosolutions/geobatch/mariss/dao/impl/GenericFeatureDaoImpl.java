@@ -3,8 +3,6 @@
  */
 package it.geosolutions.geobatch.mariss.dao.impl;
 
-import it.geosolutions.geobatch.mariss.dao.GenericDAO;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,6 +29,8 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import it.geosolutions.geobatch.mariss.dao.GenericDAO;
 
 /**
  * @author alediator
@@ -87,6 +87,7 @@ public class GenericFeatureDaoImpl implements GenericDAO<SimpleFeature, Long> {
         dataStore = null;
     }
 
+    @Override
     public String[] getPKNames() {
         return pkNames;
     }
@@ -94,6 +95,7 @@ public class GenericFeatureDaoImpl implements GenericDAO<SimpleFeature, Long> {
     /**
      * @return the schema
      */
+    @Override
     public SimpleFeatureType getSchema() {
         return schema;
     }
@@ -134,8 +136,8 @@ public class GenericFeatureDaoImpl implements GenericDAO<SimpleFeature, Long> {
      * @throws CQLException
      * @throws IOException
      */
-    protected Filter getSearchByPkFilter(String[] names, SimpleFeature entity) throws CQLException,
-            IOException {
+    protected Filter getSearchByPkFilter(String[] names, SimpleFeature entity)
+            throws CQLException, IOException {
         // prepare filter
         if (names == null || entity == null) {
             throw new IOException("Unable to search by PK");
@@ -287,10 +289,12 @@ public class GenericFeatureDaoImpl implements GenericDAO<SimpleFeature, Long> {
         }
     }
 
+    @Override
     public boolean removeByPK(Serializable... pkObjects) {
         return removeByPK(pkNames, pkObjects);
     }
 
+    @Override
     public boolean removeByPK(String[] names, Serializable... pkObjects) {
         SimpleFeature found = searchByPK(names, pkObjects);
         boolean removed = false;
@@ -331,10 +335,12 @@ public class GenericFeatureDaoImpl implements GenericDAO<SimpleFeature, Long> {
         return removed;
     }
 
+    @Override
     public SimpleFeature searchByPK(Serializable... pkObjects) {
         return searchByPK(pkNames, pkObjects);
     }
 
+    @Override
     public SimpleFeature searchByPK(String[] names, Serializable... pkObjects) {
         SimpleFeature feature = null;
         FeatureCollection<SimpleFeatureType, SimpleFeature> collection = null;

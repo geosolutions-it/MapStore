@@ -47,6 +47,7 @@ public class CSVAcqListProcessor extends MarissCSVServiceProcessor {
     private static final String[] PK_NAMES = { "sensor", "sensor_mode", "start", "end" };
 
     static List<Integer> PK_PROPERTIES;
+
     static {
         // ID : "Sensor", "Acquisition Mode", "Start", "End"
         PK_PROPERTIES = new LinkedList<Integer>();
@@ -59,15 +60,15 @@ public class CSVAcqListProcessor extends MarissCSVServiceProcessor {
     /*
      * GeometryFactory will be used to create the geometry attribute of each feature (a Point object for the location)
      */
-    //GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+    // GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
 
-    private final static List<String> HEADERS = Collections.unmodifiableList(Arrays.asList("*",
-            "Type", "Start", "End", "Duration", "Region", "OZA", "SZA", "LookAngle", "Min_Incid",
-            "Max_Incid", "RelOrb", "Pass", "NW_Lat", "NW_Lon", "NE_Lat", "NE_Lon", "SE_Lat",
-            "SE_Lon", "SW_Lat", "SW_Lon", "Center_Lat", "Center_Lon", "MLST_Start", "MLST_End",
-            "DataSize", "Satellite", "Sensor", "SensorMode", "OrbName", "Orbit", "Cycle", "Track",
-            "Frames", "Frame_Start", "Frame_End", "Revisiting", "Slew", "Polarization",
-            "Service Provider"));
+    private final static List<String> HEADERS = Collections.unmodifiableList(
+            Arrays.asList("*", "Type", "Start", "End", "Duration", "Region", "OZA", "SZA",
+                    "LookAngle", "Min_Incid", "Max_Incid", "RelOrb", "Pass", "NW_Lat", "NW_Lon",
+                    "NE_Lat", "NE_Lon", "SE_Lat", "SE_Lon", "SW_Lat", "SW_Lon", "Center_Lat",
+                    "Center_Lon", "MLST_Start", "MLST_End", "DataSize", "Satellite", "Sensor",
+                    "SensorMode", "OrbName", "Orbit", "Cycle", "Track", "Frames", "Frame_Start",
+                    "Frame_End", "Revisiting", "Slew", "Polarization", "Service Provider"));
 
     static List<CSVPropertyType> TYPES;
 
@@ -183,6 +184,7 @@ public class CSVAcqListProcessor extends MarissCSVServiceProcessor {
             String[] pkNames, TimeFormat timeFormat) {
         super(connectionParam, typeName, pkNames, timeFormat);
     }
+
     public CSVAcqListProcessor(Map<String, Serializable> connectionParam, String typeName,
             TimeFormat timeFormat) {
         super(connectionParam, typeName, timeFormat);
@@ -208,11 +210,12 @@ public class CSVAcqListProcessor extends MarissCSVServiceProcessor {
         return TYPES;
     }
 
+    @Override
     public SimpleFeature merge(SimpleFeature old, Object[] properties) {
         SimpleFeature feature = null;
         try {
             if (old != null) {
-                feature = (SimpleFeature) old;
+                feature = old;
             } else {
                 feature = createFeature();
             }
@@ -310,7 +313,7 @@ public class CSVAcqListProcessor extends MarissCSVServiceProcessor {
             // "Service Provider"
             feature.setAttribute("service_provider", properties[idx++]);
 
-            feature.setAttribute("service_name", /*getUserName() + "@" + */getServiceName());
+            feature.setAttribute("service_name", /* getUserName() + "@" + */getServiceName());
 
             // create the geometry
             if (nwLat != null && nwLon != null && neLat != null && neLon != null && seLat != null

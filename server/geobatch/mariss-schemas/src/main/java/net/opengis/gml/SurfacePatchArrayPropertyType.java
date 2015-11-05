@@ -64,9 +64,9 @@ public class SurfacePatchArrayPropertyType {
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link RectangleType }{@code >} {@link JAXBElement }{@code <}
-     * {@link AbstractParametricCurveSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CylinderType }{@code >} {@link JAXBElement }{@code <}
-     * {@link PolygonPatchType }{@code >} {@link JAXBElement }{@code <}{@link SphereType }{@code >} {@link JAXBElement }{@code <}
+     * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link RectangleType }{@code >} {@link JAXBElement }
+     * {@code <} {@link AbstractParametricCurveSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CylinderType }{@code >} {@link JAXBElement }
+     * {@code <} {@link PolygonPatchType }{@code >} {@link JAXBElement }{@code <}{@link SphereType }{@code >} {@link JAXBElement }{@code <}
      * {@link AbstractGriddedSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link TriangleType }{@code >} {@link JAXBElement }{@code <}
      * {@link AbstractSurfacePatchType }{@code >} {@link JAXBElement }{@code <}{@link ConeType }{@code >}
      * 

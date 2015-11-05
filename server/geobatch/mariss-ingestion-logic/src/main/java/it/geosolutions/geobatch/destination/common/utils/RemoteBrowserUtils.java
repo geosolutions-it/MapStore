@@ -21,8 +21,6 @@
  */
 package it.geosolutions.geobatch.destination.common.utils;
 
-import it.geosolutions.geobatch.ftp.client.FTPHelperBare;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -54,6 +52,8 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
+
+import it.geosolutions.geobatch.ftp.client.FTPHelperBare;
 
 /**
  * Utilities class for remote files handling with {@link RemoteBrowserProtocol} protocols
@@ -96,8 +96,8 @@ public class RemoteBrowserUtils {
      */
     public static boolean checkIfExists(RemoteBrowserProtocol serverProtocol, String serverUser,
             String serverHost, String serverPWD, int serverPort, String path, String fileName,
-            FTPConnectMode connectMode, int timeout) throws IOException, FTPException,
-            ParseException {
+            FTPConnectMode connectMode, int timeout)
+                    throws IOException, FTPException, ParseException {
 
         String child = fileName;
         String parentFolder = path;
@@ -238,13 +238,12 @@ public class RemoteBrowserUtils {
             String serverPWD, String serverHost, int serverPort, String remotePath,
             String localPath, int timeout) throws IOException {
         if (RemoteBrowserProtocol.local.equals(serverProtocol)) {
-        	
+
             return copyfile(remotePath, localPath);
         } else {
             initFsManager(timeout);
-            FileObject file = fsManager.resolveFile(
-                    getURI(serverProtocol, serverUser, serverPWD, serverHost, serverPort,
-                            remotePath), fsOptions);
+            FileObject file = fsManager.resolveFile(getURI(serverProtocol, serverUser, serverPWD,
+                    serverHost, serverPort, remotePath), fsOptions);
             return downloadFile(file, localPath);
         }
     }
@@ -267,9 +266,9 @@ public class RemoteBrowserUtils {
      * @throws ParseException
      */
     public static boolean forceMkdir(RemoteBrowserProtocol protocol, String serverUser,
-            String serverHost, String serverPWD, int serverPort, String path,
-            String relativeFolder, FTPConnectMode connectMode, int timeout) throws IOException,
-            FTPException, ParseException {
+            String serverHost, String serverPWD, int serverPort, String path, String relativeFolder,
+            FTPConnectMode connectMode, int timeout)
+                    throws IOException, FTPException, ParseException {
 
         String currentPath = path;
 
@@ -356,7 +355,7 @@ public class RemoteBrowserUtils {
      */
     private static boolean ftpmkdir(String serverUser, String serverPWD, String serverHost,
             int serverPort, String path, FTPConnectMode connectMode, int timeout, String folderName)
-            throws IOException, FTPException, ParseException {
+                    throws IOException, FTPException, ParseException {
         // just create the folder and check
         FTPHelperBare.createDirectory(serverHost, path + SEPARATOR + folderName, path + SEPARATOR,
                 serverUser, serverPWD, serverPort, FTPTransferType.BINARY, WriteMode.OVERWRITE,
@@ -455,7 +454,7 @@ public class RemoteBrowserUtils {
      */
     public static List<String> ls(RemoteBrowserProtocol protocol, String userName, String password,
             String host, int port, String path, FTPConnectMode connectMode, int timeout)
-            throws IOException, FTPException, ParseException {
+                    throws IOException, FTPException, ParseException {
         return ls(protocol, userName, password, host, port, path, connectMode, timeout, null);
     }
 
@@ -537,8 +536,8 @@ public class RemoteBrowserUtils {
      */
     public static boolean mkdir(RemoteBrowserProtocol protocol, String serverUser,
             String serverHost, String serverPWD, int serverPort, String path, String folderName,
-            FTPConnectMode connectMode, int timeout) throws IOException, FTPException,
-            ParseException {
+            FTPConnectMode connectMode, int timeout)
+                    throws IOException, FTPException, ParseException {
 
         if (RemoteBrowserProtocol.ftp.equals(protocol)) {
             return ftpmkdir(serverUser, serverPWD, serverHost, serverPort, path, connectMode,
@@ -676,7 +675,7 @@ public class RemoteBrowserUtils {
      */
     private static boolean sftpmkdir(String serverUser, String serverPWD, String serverHost,
             int serverPort, String path, FTPConnectMode connectMode, int timeout, String folderName)
-            throws IOException, FTPException, ParseException {
+                    throws IOException, FTPException, ParseException {
         JSch jsch = new JSch();
         Session session = null;
         ChannelSftp sftpChannel = null;

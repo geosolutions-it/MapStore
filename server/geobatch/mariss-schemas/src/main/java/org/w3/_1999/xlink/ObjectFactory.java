@@ -26,7 +26,8 @@ public class ObjectFactory {
     private final static QName _Resource_QNAME = new QName("http://www.w3.org/1999/xlink",
             "resource");
 
-    private final static QName _Locator_QNAME = new QName("http://www.w3.org/1999/xlink", "locator");
+    private final static QName _Locator_QNAME = new QName("http://www.w3.org/1999/xlink",
+            "locator");
 
     private final static QName _Title_QNAME = new QName("http://www.w3.org/1999/xlink", "title");
 

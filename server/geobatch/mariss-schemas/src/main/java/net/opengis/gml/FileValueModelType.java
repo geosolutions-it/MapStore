@@ -32,8 +32,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum FileValueModelType {
 
-    @XmlEnumValue("Record Interleaved")
-    RECORD_INTERLEAVED("Record Interleaved");
+    @XmlEnumValue("Record Interleaved") RECORD_INTERLEAVED("Record Interleaved");
     public static FileValueModelType fromValue(String v) {
         for (FileValueModelType c : FileValueModelType.values()) {
             if (c.value.equals(v)) {

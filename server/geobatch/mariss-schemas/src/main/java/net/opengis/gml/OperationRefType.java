@@ -205,12 +205,12 @@ public class OperationRefType {
      * Sets the value of the operation property.
      * 
      * @param value allowed object is {@link JAXBElement }{@code <}{@link AbstractGeneralTransformationType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractCoordinateOperationType }{@code >} {@link JAXBElement }{@code <}{@link ConversionType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link TransformationType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeneralConversionType }{@code >}
+     *        {@link AbstractCoordinateOperationType }{@code >} {@link JAXBElement }{@code <}{@link ConversionType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link TransformationType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeneralConversionType }{@code >}
      * 
      */
     public void setOperation(JAXBElement<? extends AbstractCoordinateOperationType> value) {
-        this.operation = ((JAXBElement<? extends AbstractCoordinateOperationType>) value);
+        this.operation = (value);
     }
 
     /**

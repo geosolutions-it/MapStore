@@ -42,18 +42,17 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum CurveInterpolationType {
 
-    @XmlEnumValue("linear")
-    LINEAR("linear"), @XmlEnumValue("geodesic")
-    GEODESIC("geodesic"), @XmlEnumValue("circularArc3Points")
-    CIRCULAR_ARC_3_POINTS("circularArc3Points"), @XmlEnumValue("circularArc2PointWithBulge")
-    CIRCULAR_ARC_2_POINT_WITH_BULGE("circularArc2PointWithBulge"), @XmlEnumValue("circularArcCenterPointWithRadius")
-    CIRCULAR_ARC_CENTER_POINT_WITH_RADIUS("circularArcCenterPointWithRadius"), @XmlEnumValue("elliptical")
-    ELLIPTICAL("elliptical"), @XmlEnumValue("clothoid")
-    CLOTHOID("clothoid"), @XmlEnumValue("conic")
-    CONIC("conic"), @XmlEnumValue("polynomialSpline")
-    POLYNOMIAL_SPLINE("polynomialSpline"), @XmlEnumValue("cubicSpline")
-    CUBIC_SPLINE("cubicSpline"), @XmlEnumValue("rationalSpline")
-    RATIONAL_SPLINE("rationalSpline");
+    @XmlEnumValue("linear") LINEAR("linear"), @XmlEnumValue("geodesic") GEODESIC(
+            "geodesic"), @XmlEnumValue("circularArc3Points") CIRCULAR_ARC_3_POINTS(
+                    "circularArc3Points"), @XmlEnumValue("circularArc2PointWithBulge") CIRCULAR_ARC_2_POINT_WITH_BULGE(
+                            "circularArc2PointWithBulge"), @XmlEnumValue("circularArcCenterPointWithRadius") CIRCULAR_ARC_CENTER_POINT_WITH_RADIUS(
+                                    "circularArcCenterPointWithRadius"), @XmlEnumValue("elliptical") ELLIPTICAL(
+                                            "elliptical"), @XmlEnumValue("clothoid") CLOTHOID(
+                                                    "clothoid"), @XmlEnumValue("conic") CONIC(
+                                                            "conic"), @XmlEnumValue("polynomialSpline") POLYNOMIAL_SPLINE(
+                                                                    "polynomialSpline"), @XmlEnumValue("cubicSpline") CUBIC_SPLINE(
+                                                                            "cubicSpline"), @XmlEnumValue("rationalSpline") RATIONAL_SPLINE(
+                                                                                    "rationalSpline");
     public static CurveInterpolationType fromValue(String v) {
         for (CurveInterpolationType c : CurveInterpolationType.values()) {
             if (c.value.equals(v)) {

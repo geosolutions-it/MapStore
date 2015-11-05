@@ -41,17 +41,16 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum SurfaceInterpolationType {
 
-    @XmlEnumValue("none")
-    NONE("none"), @XmlEnumValue("planar")
-    PLANAR("planar"), @XmlEnumValue("spherical")
-    SPHERICAL("spherical"), @XmlEnumValue("elliptical")
-    ELLIPTICAL("elliptical"), @XmlEnumValue("conic")
-    CONIC("conic"), @XmlEnumValue("tin")
-    TIN("tin"), @XmlEnumValue("parametricCurve")
-    PARAMETRIC_CURVE("parametricCurve"), @XmlEnumValue("polynomialSpline")
-    POLYNOMIAL_SPLINE("polynomialSpline"), @XmlEnumValue("rationalSpline")
-    RATIONAL_SPLINE("rationalSpline"), @XmlEnumValue("triangulatedSpline")
-    TRIANGULATED_SPLINE("triangulatedSpline");
+    @XmlEnumValue("none") NONE("none"), @XmlEnumValue("planar") PLANAR(
+            "planar"), @XmlEnumValue("spherical") SPHERICAL(
+                    "spherical"), @XmlEnumValue("elliptical") ELLIPTICAL(
+                            "elliptical"), @XmlEnumValue("conic") CONIC(
+                                    "conic"), @XmlEnumValue("tin") TIN(
+                                            "tin"), @XmlEnumValue("parametricCurve") PARAMETRIC_CURVE(
+                                                    "parametricCurve"), @XmlEnumValue("polynomialSpline") POLYNOMIAL_SPLINE(
+                                                            "polynomialSpline"), @XmlEnumValue("rationalSpline") RATIONAL_SPLINE(
+                                                                    "rationalSpline"), @XmlEnumValue("triangulatedSpline") TRIANGULATED_SPLINE(
+                                                                            "triangulatedSpline");
     public static SurfaceInterpolationType fromValue(String v) {
         for (SurfaceInterpolationType c : SurfaceInterpolationType.values()) {
             if (c.value.equals(v)) {

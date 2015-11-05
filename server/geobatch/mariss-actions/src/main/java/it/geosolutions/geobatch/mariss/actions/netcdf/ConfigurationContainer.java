@@ -15,11 +15,11 @@ public class ConfigurationContainer {
     private String defaultNameSpaceURI;
 
     private String actionClass;
-    
+
     private boolean maskOneIsValid;
 
     private Map<String, String> params;
-    
+
     private List<String> dateFormats;
 
     protected ConfigurationContainer() {

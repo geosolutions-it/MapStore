@@ -138,9 +138,8 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<scope>runtime</scope>
+			<!-- scope>runtime</scope -->
 		</dependency>
-        
 
         <!-- Test dependencies -->
         <dependency>

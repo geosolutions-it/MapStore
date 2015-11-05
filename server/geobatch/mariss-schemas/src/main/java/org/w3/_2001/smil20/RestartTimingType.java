@@ -35,11 +35,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum RestartTimingType {
 
-    @XmlEnumValue("never")
-    NEVER("never"), @XmlEnumValue("always")
-    ALWAYS("always"), @XmlEnumValue("whenNotActive")
-    WHEN_NOT_ACTIVE("whenNotActive"), @XmlEnumValue("default")
-    DEFAULT("default");
+    @XmlEnumValue("never") NEVER("never"), @XmlEnumValue("always") ALWAYS(
+            "always"), @XmlEnumValue("whenNotActive") WHEN_NOT_ACTIVE(
+                    "whenNotActive"), @XmlEnumValue("default") DEFAULT("default");
     public static RestartTimingType fromValue(String v) {
         for (RestartTimingType c : RestartTimingType.values()) {
             if (c.value.equals(v)) {

@@ -44,7 +44,8 @@ import org.w3._1999.xlink.TypeType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AbstractGeneralOperationParameterRefType", propOrder = { "generalOperationParameter" })
+@XmlType(name = "AbstractGeneralOperationParameterRefType", propOrder = {
+        "generalOperationParameter" })
 public class AbstractGeneralOperationParameterRefType {
 
     @XmlElementRef(name = "_GeneralOperationParameter", namespace = "http://www.opengis.net/gml", type = JAXBElement.class)
@@ -193,13 +194,13 @@ public class AbstractGeneralOperationParameterRefType {
     /**
      * Sets the value of the generalOperationParameter property.
      * 
-     * @param value allowed object is {@link JAXBElement }{@code <}{@link AbstractGeneralOperationParameterType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link OperationParameterType }{@code >} {@link JAXBElement }{@code <}{@link OperationParameterGroupType }{@code >}
+     * @param value allowed object is {@link JAXBElement }{@code <}{@link AbstractGeneralOperationParameterType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link OperationParameterType }{@code >} {@link JAXBElement }{@code <}{@link OperationParameterGroupType }{@code >}
      * 
      */
     public void setGeneralOperationParameter(
             JAXBElement<? extends AbstractGeneralOperationParameterType> value) {
-        this.generalOperationParameter = ((JAXBElement<? extends AbstractGeneralOperationParameterType>) value);
+        this.generalOperationParameter = (value);
     }
 
     /**

@@ -21,12 +21,12 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.csv.configuration;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
 import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes1To3Processor;
 import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProductTypes5Processor;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * Configuration for each CSV processor.

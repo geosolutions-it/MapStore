@@ -19,9 +19,6 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.csv;
 
-import it.geosolutions.geobatch.catalog.impl.TimeFormat;
-import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVPropertyType;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,6 +30,9 @@ import org.opengis.feature.simple.SimpleFeature;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
+
+import it.geosolutions.geobatch.catalog.impl.TimeFormat;
+import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVPropertyType;
 
 /**
  * Product ingestion types 1 to 3 CSV processor
@@ -48,6 +48,7 @@ public class CSVProductTypes1To3Processor extends MarissCSVServiceProcessor {
             "user_id", "latitude", "longitude" };
 
     static List<Integer> PK_PROPERTIES;
+
     static {
         // ID : "message_type", "timestamp_sat", "timestamp_db", "user_id", "latitude", "longitude"
         PK_PROPERTIES = new LinkedList<Integer>();
@@ -105,7 +106,8 @@ public class CSVProductTypes1To3Processor extends MarissCSVServiceProcessor {
         super();
     }
 
-    public CSVProductTypes1To3Processor(Map<String, Serializable> connectionParam, String typeName) {
+    public CSVProductTypes1To3Processor(Map<String, Serializable> connectionParam,
+            String typeName) {
         super(connectionParam, typeName);
     }
 
@@ -121,6 +123,7 @@ public class CSVProductTypes1To3Processor extends MarissCSVServiceProcessor {
             String[] pkNames, TimeFormat timeFormat) {
         super(connectionParam, typeName, pkNames, timeFormat);
     }
+
     public CSVProductTypes1To3Processor(Map<String, Serializable> connectionParam, String typeName,
             TimeFormat timeFormat) {
         super(connectionParam, typeName, timeFormat);
@@ -146,11 +149,12 @@ public class CSVProductTypes1To3Processor extends MarissCSVServiceProcessor {
         return TYPES;
     }
 
+    @Override
     public SimpleFeature merge(SimpleFeature old, Object[] properties) {
         SimpleFeature feature = null;
         try {
             if (old != null) {
-                feature = (SimpleFeature) old;
+                feature = old;
             } else {
                 feature = createFeature();
             }

@@ -104,11 +104,12 @@ public class GeometricPrimitivePropertyType {
      *         {@link LineStringType }{@code >} {@link JAXBElement }{@code <}{@link PolyhedralSurfaceType }{@code >} {@link JAXBElement }{@code <}
      *         {@link OrientableSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CompositeSolidType }{@code >} {@link JAXBElement }{@code <}
      *         {@link CompositeCurveType }{@code >} {@link JAXBElement }{@code <}{@link OrientableCurveType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link PolygonType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeometricPrimitiveType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link AbstractCurveType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSolidType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link CompositeSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link SolidType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link TinType }{@code >} {@link JAXBElement }{@code <}{@link PointType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSurfaceType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link SurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CurveType }{@code >}
+     *         {@link PolygonType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeometricPrimitiveType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link AbstractCurveType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSolidType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link CompositeSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link SolidType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link TinType }{@code >} {@link JAXBElement }{@code <}{@link PointType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link AbstractSurfaceType } {@code >} {@link JAXBElement }{@code <}{@link SurfaceType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link CurveType }{@code >}
      * 
      */
     public JAXBElement<? extends AbstractGeometricPrimitiveType> getGeometricPrimitive() {
@@ -206,15 +207,16 @@ public class GeometricPrimitivePropertyType {
      *        {@link LineStringType }{@code >} {@link JAXBElement }{@code <}{@link PolyhedralSurfaceType }{@code >} {@link JAXBElement }{@code <}
      *        {@link OrientableSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CompositeSolidType }{@code >} {@link JAXBElement }{@code <}
      *        {@link CompositeCurveType }{@code >} {@link JAXBElement }{@code <}{@link OrientableCurveType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link PolygonType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeometricPrimitiveType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractCurveType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSolidType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link CompositeSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link SolidType }{@code >} {@link JAXBElement }{@code <}{@link TinType }
-     *        {@code >} {@link JAXBElement }{@code <}{@link PointType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSurfaceType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link SurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CurveType }{@code >}
+     *        {@link PolygonType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeometricPrimitiveType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link AbstractCurveType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSolidType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link CompositeSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link SolidType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link TinType } {@code >} {@link JAXBElement }{@code <}{@link PointType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link AbstractSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link SurfaceType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link CurveType }{@code >}
      * 
      */
     public void setGeometricPrimitive(JAXBElement<? extends AbstractGeometricPrimitiveType> value) {
-        this.geometricPrimitive = ((JAXBElement<? extends AbstractGeometricPrimitiveType>) value);
+        this.geometricPrimitive = (value);
     }
 
     /**

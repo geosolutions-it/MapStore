@@ -19,9 +19,6 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.csv;
 
-import it.geosolutions.geobatch.catalog.impl.TimeFormat;
-import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVPropertyType;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.opengis.feature.simple.SimpleFeature;
+
+import it.geosolutions.geobatch.catalog.impl.TimeFormat;
+import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVPropertyType;
 
 /**
  * Product ingestion type 5 CSV processor
@@ -45,6 +45,7 @@ public class CSVProductTypes5Processor extends MarissCSVServiceProcessor {
             "user_id", "name", "message_number" };
 
     static List<Integer> PK_PROPERTIES;
+
     static {
         // ID : "message_type", "timestamp_sat", "timestamp_db", "user_id", "name", "message_number"
         PK_PROPERTIES = new LinkedList<Integer>();
@@ -60,11 +61,11 @@ public class CSVProductTypes5Processor extends MarissCSVServiceProcessor {
     // name message_number ais_version imo_number call_sign dimension_a_m
     // dimension_b_m dimension_c_m dimension_d_m electronic_type eta_datetime max_static_draught_m
     // destination dte
-    private final static List<String> HEADERS = Collections.unmodifiableList(Arrays.asList(
-            "message_type", "timestamp_sat", "timestamp_db", "user_id", "name", "message_number",
-            "ais_version", "imo_number", "call_sign", "dimension_a_m", "dimension_b_m",
-            "dimension_c_m", "dimension_d_m", "electronic_type", "eta_datetime",
-            "max_static_draught_m", "destination", "dte"));
+    private final static List<String> HEADERS = Collections.unmodifiableList(
+            Arrays.asList("message_type", "timestamp_sat", "timestamp_db", "user_id", "name",
+                    "message_number", "ais_version", "imo_number", "call_sign", "dimension_a_m",
+                    "dimension_b_m", "dimension_c_m", "dimension_d_m", "electronic_type",
+                    "eta_datetime", "max_static_draught_m", "destination", "dte"));
 
     static List<CSVPropertyType> TYPES;
 
@@ -126,6 +127,7 @@ public class CSVProductTypes5Processor extends MarissCSVServiceProcessor {
             String[] pkNames, TimeFormat timeFormat) {
         super(connectionParam, typeName, pkNames, timeFormat);
     }
+
     public CSVProductTypes5Processor(Map<String, Serializable> connectionParam, String typeName,
             TimeFormat timeFormat) {
         super(connectionParam, typeName, timeFormat);
@@ -151,11 +153,12 @@ public class CSVProductTypes5Processor extends MarissCSVServiceProcessor {
         return TYPES;
     }
 
+    @Override
     public SimpleFeature merge(SimpleFeature old, Object[] properties) {
         SimpleFeature feature = null;
         try {
             if (old != null) {
-                feature = (SimpleFeature) old;
+                feature = old;
             } else {
                 feature = createFeature();
             }

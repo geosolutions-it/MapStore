@@ -46,8 +46,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DatasetDescriptionSummaryBaseType", propOrder = { "wgs84BoundingBox",
-        "identifier", "boundingBox", "metadata", "datasetDescriptionSummary" })
+@XmlType(name = "DatasetDescriptionSummaryBaseType", propOrder = { "wgs84BoundingBox", "identifier",
+        "boundingBox", "metadata", "datasetDescriptionSummary" })
 public class DatasetDescriptionSummaryBaseType extends DescriptionType {
 
     @XmlElement(name = "WGS84BoundingBox")

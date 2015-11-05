@@ -159,7 +159,7 @@ public class MovingObjectStatusType extends AbstractTimeSliceType {
      * 
      */
     public void setLocation(JAXBElement<? extends LocationPropertyType> value) {
-        this.location = ((JAXBElement<? extends LocationPropertyType>) value);
+        this.location = (value);
     }
 
     /**

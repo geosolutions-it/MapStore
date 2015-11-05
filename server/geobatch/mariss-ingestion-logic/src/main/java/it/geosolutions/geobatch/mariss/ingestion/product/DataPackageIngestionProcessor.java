@@ -273,15 +273,15 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
                 feature.setAttribute("speed", speed);
                 feature.setAttribute("include_in_report", includeInReport);
                 feature.setAttribute("external_id", externalId);
-                feature.setAttribute("image", imageIdentifier != null ? imageIdentifier.getValue()
-                        : null);
+                feature.setAttribute("image",
+                        imageIdentifier != null ? imageIdentifier.getValue() : null);
                 feature.setAttribute("image_type",
                         imageIdentifier != null ? imageIdentifier.getType() : null);
 
                 // save position
                 if (pos != null) {
-                    Point point = geometryFactory.createPoint(new Coordinate(pos.getValue().get(1),
-                            pos.getValue().get(0)));
+                    Point point = geometryFactory.createPoint(
+                            new Coordinate(pos.getValue().get(1), pos.getValue().get(0)));
                     point.setSRID(projection);
                     feature.setAttribute("the_geom", point);
                 }
@@ -348,15 +348,15 @@ public class DataPackageIngestionProcessor extends ProductIngestionProcessor {
                         File file = fileEvent.getSource();
                         // Don't read configuration for the file, just
                         // this.outputfeature configuration
-                        DataStore ds = FeatureConfigurationUtil.createDataStore(configuration
-                                .getOutputFeature());
+                        DataStore ds = FeatureConfigurationUtil
+                                .createDataStore(configuration.getOutputFeature());
                         if (ds == null) {
                             throw new ActionException(this, "Can't find datastore ");
                         }
                         try {
                             if (!(ds instanceof JDBCDataStore)) {
-                                throw new ActionException(this, "Bad Datastore type "
-                                        + ds.getClass().getName());
+                                throw new ActionException(this,
+                                        "Bad Datastore type " + ds.getClass().getName());
                             }
                             JDBCDataStore dataStore = (JDBCDataStore) ds;
                             dataStore.setExposePrimaryKeyColumns(true);

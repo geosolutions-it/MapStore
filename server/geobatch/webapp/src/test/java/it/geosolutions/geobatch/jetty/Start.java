@@ -88,8 +88,8 @@ public class Start {
         return wah;
     }
 
-    private static Properties loadProperties(final File props) throws IllegalArgumentException,
-            IOException {
+    private static Properties loadProperties(final File props)
+            throws IllegalArgumentException, IOException {
         Properties prop = new Properties();
         if (props == null || !props.exists()) {
             throw new IllegalArgumentException("Bad file name argument: " + props);

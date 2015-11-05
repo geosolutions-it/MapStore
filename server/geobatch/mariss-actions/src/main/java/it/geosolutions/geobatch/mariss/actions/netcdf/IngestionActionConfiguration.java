@@ -37,7 +37,7 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
     /**
      * The file name to get the Product Attributes
      */
-	private String attributeFileName;
+    private String attributeFileName;
 
     public IngestionActionConfiguration(String id, String name, String description) {
         super(id, name, description);
@@ -67,6 +67,7 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
         return metocDictionaryPath;
     }
 
+    @Override
     public FeatureConfiguration getOutputFeature() {
         return outputFeature;
     }
@@ -74,7 +75,7 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
     public String getProductsTableName() {
         return productsTableName;
     }
-    
+
     public String getShipDetectionsTableName() {
         return shipDetectionsTableName;
     }
@@ -107,6 +108,7 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
         this.metocDictionaryPath = metocDictionaryPath;
     }
 
+    @Override
     public void setOutputFeature(FeatureConfiguration outputFeature) {
         this.outputFeature = outputFeature;
     }
@@ -118,18 +120,18 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
     public void setShipDetectionsTableName(String shipDetectionsTableName) {
         this.shipDetectionsTableName = shipDetectionsTableName;
     }
-    
+
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
 
-	public String getAttributeFileName() {
-		return this.attributeFileName;
-		
-	}
-	
-	public void setAttributeFileName(String attributeFileName){
-		this.attributeFileName = attributeFileName;
-	}
+    public String getAttributeFileName() {
+        return this.attributeFileName;
+
+    }
+
+    public void setAttributeFileName(String attributeFileName) {
+        this.attributeFileName = attributeFileName;
+    }
 
 }

@@ -63,9 +63,9 @@ public class SurfaceArrayPropertyType {
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link PolygonType }{@code >} {@link JAXBElement }{@code <}
-     * {@link TriangulatedSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CompositeSurfaceType }{@code >} {@link JAXBElement }{@code <}
-     * {@link TinType }{@code >} {@link JAXBElement }{@code <}{@link PolyhedralSurfaceType }{@code >} {@link JAXBElement }{@code <}
+     * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link PolygonType }{@code >} {@link JAXBElement }
+     * {@code <} {@link TriangulatedSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CompositeSurfaceType }{@code >} {@link JAXBElement }
+     * {@code <} {@link TinType }{@code >} {@link JAXBElement }{@code <}{@link PolyhedralSurfaceType }{@code >} {@link JAXBElement }{@code <}
      * {@link AbstractSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link OrientableSurfaceType }{@code >} {@link JAXBElement }{@code <}
      * {@link SurfaceType }{@code >}
      * 

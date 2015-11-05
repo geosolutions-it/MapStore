@@ -16,12 +16,6 @@
  */
 package it.geosolutions.geobatch.mariss.dao.impl;
 
-import it.geosolutions.geobatch.mariss.dao.ServiceDAO;
-import it.geosolutions.geobatch.mariss.model.AreaOfInterest;
-import it.geosolutions.geobatch.mariss.model.Sensor;
-import it.geosolutions.geobatch.mariss.model.SensorMode;
-import it.geosolutions.geobatch.mariss.model.Service;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,6 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
+
+import it.geosolutions.geobatch.mariss.dao.ServiceDAO;
+import it.geosolutions.geobatch.mariss.model.AreaOfInterest;
+import it.geosolutions.geobatch.mariss.model.Sensor;
+import it.geosolutions.geobatch.mariss.model.SensorMode;
+import it.geosolutions.geobatch.mariss.model.Service;
 
 /**
  * <pre>
@@ -105,8 +105,8 @@ public class JdbcServiceDAO implements ServiceDAO {
             List<Sensor> sensors = new ArrayList<Sensor>();
             rs = ps.executeQuery();
             while (rs.next()) {
-                Sensor sensor = new Sensor(rs.getString("sensor_type"), new SensorMode(
-                        rs.getString("sensor_mode")));
+                Sensor sensor = new Sensor(rs.getString("sensor_type"),
+                        new SensorMode(rs.getString("sensor_mode")));
                 sensor.setId(rs.getInt("id"));
                 sensors.add(sensor);
             }
@@ -195,8 +195,8 @@ public class JdbcServiceDAO implements ServiceDAO {
                 List<Sensor> sensors = new ArrayList<Sensor>();
                 rs = ps.executeQuery();
                 while (rs.next()) {
-                    Sensor sensor = new Sensor(rs.getString("sensor_type"), new SensorMode(
-                            rs.getString("sensor_mode")));
+                    Sensor sensor = new Sensor(rs.getString("sensor_type"),
+                            new SensorMode(rs.getString("sensor_mode")));
                     sensor.setId(rs.getInt("id"));
                     sensors.add(sensor);
                 }

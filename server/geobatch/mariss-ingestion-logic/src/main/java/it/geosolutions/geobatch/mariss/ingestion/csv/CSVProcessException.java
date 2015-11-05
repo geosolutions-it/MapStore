@@ -27,8 +27,8 @@ package it.geosolutions.geobatch.mariss.ingestion.csv;
 public class CSVProcessException extends Exception {
 
     /**
-	 * 
-	 */
+     * 
+     */
     private static final long serialVersionUID = -2501711315277548277L;
 
     public CSVProcessException() {

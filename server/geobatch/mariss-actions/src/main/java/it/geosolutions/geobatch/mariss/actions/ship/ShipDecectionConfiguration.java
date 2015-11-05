@@ -10,9 +10,9 @@ import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfigurati
 @XStreamInclude({ ConfigurationContainer.class })
 public class ShipDecectionConfiguration extends IngestionActionConfiguration {
 
-	public ShipDecectionConfiguration(String id, String name, String description) {
-		super(id, name, description);
-		// TODO Auto-generated constructor stub
-	}
+    public ShipDecectionConfiguration(String id, String name, String description) {
+        super(id, name, description);
+        // TODO Auto-generated constructor stub
+    }
 
 }

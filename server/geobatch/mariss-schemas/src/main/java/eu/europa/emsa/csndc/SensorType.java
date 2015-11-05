@@ -34,8 +34,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum SensorType {
 
-    SAR("SAR"), @XmlEnumValue("VIS-IR")
-    VIS_IR("VIS-IR"), OTHER("OTHER");
+    SAR("SAR"), @XmlEnumValue("VIS-IR") VIS_IR("VIS-IR"), OTHER("OTHER");
     public static SensorType fromValue(String v) {
         for (SensorType c : SensorType.values()) {
             if (c.value.equals(v)) {

@@ -112,21 +112,22 @@ public class DomainSetType {
      * 
      * @return possible object is {@link JAXBElement }{@code <}{@link TriangulatedSurfaceType }{@code >} {@link JAXBElement }{@code <}
      *         {@link MultiSolidType }{@code >} {@link JAXBElement }{@code <}{@link MultiGeometryType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link PolyhedralSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeometryType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link MultiPolygonType }{@code >} {@link JAXBElement }{@code <}{@link RectifiedGridType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link AbstractGeometricAggregateType }{@code >} {@link JAXBElement }{@code <}{@link PolygonType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link AbstractCurveType }{@code >} {@link JAXBElement }{@code <}{@link CompositeSurfaceType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link PointType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSurfaceType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link SurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CurveType }{@code >} {@link JAXBElement }{@code <}{@link LineStringType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link AbstractRingType }{@code >} {@link JAXBElement }{@code <}{@link OrientableSurfaceType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link CompositeSolidType }{@code >} {@link JAXBElement }{@code <}{@link CompositeCurveType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link AbstractGeometryType }{@code >} {@link JAXBElement }{@code <}{@link OrientableCurveType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link MultiPointType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link AbstractGeometricPrimitiveType }{@code >} {@link JAXBElement }{@code <}{@link GridType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link GeometricComplexType }{@code >} {@link JAXBElement }{@code <}{@link MultiSurfaceType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link AbstractSolidType }{@code >} {@link JAXBElement }{@code <}{@link MultiLineStringType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link SolidType }{@code >} {@link JAXBElement }{@code <}{@link TinType }{@code >} {@link JAXBElement }{@code <}{@link MultiCurveType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link RingType }{@code >} {@link JAXBElement }{@code <}{@link LinearRingType }{@code >}
+     *         {@link PolyhedralSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeometryType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link MultiPolygonType }{@code >} {@link JAXBElement }{@code <}{@link RectifiedGridType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link AbstractGeometricAggregateType }{@code >} {@link JAXBElement }{@code <}{@link PolygonType }{@code >}
+     *         {@link JAXBElement }{@code <} {@link AbstractCurveType }{@code >} {@link JAXBElement }{@code <}{@link CompositeSurfaceType }{@code >}
+     *         {@link JAXBElement }{@code <} {@link PointType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSurfaceType }{@code >}
+     *         {@link JAXBElement }{@code <} {@link SurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CurveType }{@code >} {@link JAXBElement
+     *         }{@code <}{@link LineStringType } {@code >} {@link JAXBElement }{@code <}{@link AbstractRingType }{@code >} {@link JAXBElement }
+     *         {@code <}{@link OrientableSurfaceType } {@code >} {@link JAXBElement }{@code <}{@link CompositeSolidType }{@code >} {@link JAXBElement
+     *         }{@code <}{@link CompositeCurveType } {@code >} {@link JAXBElement }{@code <}{@link AbstractGeometryType }{@code >} {@link JAXBElement
+     *         }{@code <}{@link OrientableCurveType } {@code >} {@link JAXBElement }{@code <}{@link MultiPointType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link AbstractGeometricPrimitiveType }{@code >} {@link JAXBElement }{@code <}{@link GridType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link GeometricComplexType }{@code >} {@link JAXBElement }{@code <}{@link MultiSurfaceType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link AbstractSolidType }{@code >} {@link JAXBElement }{@code <}{@link MultiLineStringType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link SolidType }{@code >} {@link JAXBElement }{@code <}{@link TinType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link MultiCurveType } {@code >} {@link JAXBElement }{@code <}{@link RingType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link LinearRingType }{@code >}
      * 
      */
     public JAXBElement<? extends AbstractGeometryType> getGeometry() {
@@ -178,10 +179,10 @@ public class DomainSetType {
      * 
      * @return possible object is {@link JAXBElement }{@code <}{@link TimeInstantType }{@code >} {@link JAXBElement }{@code <}
      *         {@link AbstractTimeGeometricPrimitiveType }{@code >} {@link JAXBElement }{@code <}{@link TimeNodeType }{@code >} {@link JAXBElement }
-     *         {@code <}{@link TimeTopologyComplexType }{@code >} {@link JAXBElement }{@code <}{@link TimeEdgeType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link AbstractTimeComplexType }{@code >} {@link JAXBElement }{@code <}{@link AbstractTimeObjectType }{@code >} {@link JAXBElement }
-     *         {@code <}{@link AbstractTimePrimitiveType }{@code >} {@link JAXBElement }{@code <}{@link TimePeriodType }{@code >} {@link JAXBElement }
-     *         {@code <}{@link AbstractTimeTopologyPrimitiveType }{@code >}
+     *         {@code <}{@link TimeTopologyComplexType }{@code >} {@link JAXBElement }{@code <}{@link TimeEdgeType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link AbstractTimeComplexType }{@code >} {@link JAXBElement }{@code <}{@link AbstractTimeObjectType }{@code >}
+     *         {@link JAXBElement } {@code <}{@link AbstractTimePrimitiveType }{@code >} {@link JAXBElement }{@code <}{@link TimePeriodType }{@code >}
+     *         {@link JAXBElement } {@code <}{@link AbstractTimeTopologyPrimitiveType }{@code >}
      * 
      */
     public JAXBElement<? extends AbstractTimeObjectType> getTimeObject() {
@@ -237,25 +238,25 @@ public class DomainSetType {
      * 
      * @param value allowed object is {@link JAXBElement }{@code <}{@link TriangulatedSurfaceType }{@code >} {@link JAXBElement }{@code <}
      *        {@link MultiSolidType }{@code >} {@link JAXBElement }{@code <}{@link MultiGeometryType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link PolyhedralSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeometryType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link MultiPolygonType }{@code >} {@link JAXBElement }{@code <}{@link RectifiedGridType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractGeometricAggregateType }{@code >} {@link JAXBElement }{@code <}{@link PolygonType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractCurveType }{@code >} {@link JAXBElement }{@code <}{@link CompositeSurfaceType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link PointType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSurfaceType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link SurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CurveType }{@code >} {@link JAXBElement }{@code <}{@link LineStringType }
-     *        {@code >} {@link JAXBElement }{@code <}{@link AbstractRingType }{@code >} {@link JAXBElement }{@code <}{@link OrientableSurfaceType }
-     *        {@code >} {@link JAXBElement }{@code <}{@link CompositeSolidType }{@code >} {@link JAXBElement }{@code <}{@link CompositeCurveType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link AbstractGeometryType }{@code >} {@link JAXBElement }{@code <}{@link OrientableCurveType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link MultiPointType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeometricPrimitiveType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link GridType }{@code >} {@link JAXBElement }{@code <}{@link GeometricComplexType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link MultiSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSolidType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link MultiLineStringType }{@code >} {@link JAXBElement }{@code <}{@link SolidType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link TinType }{@code >} {@link JAXBElement }{@code <}{@link MultiCurveType }{@code >} {@link JAXBElement }
-     *        {@code <}{@link RingType }{@code >} {@link JAXBElement }{@code <}{@link LinearRingType }{@code >}
+     *        {@link PolyhedralSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeometryType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link MultiPolygonType }{@code >} {@link JAXBElement }{@code <}{@link RectifiedGridType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link AbstractGeometricAggregateType }{@code >} {@link JAXBElement }{@code <}{@link PolygonType }{@code >} {@link JAXBElement
+     *        }{@code <} {@link AbstractCurveType }{@code >} {@link JAXBElement }{@code <}{@link CompositeSurfaceType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link PointType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSurfaceType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link SurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CurveType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link LineStringType } {@code >} {@link JAXBElement }{@code <}{@link AbstractRingType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link OrientableSurfaceType } {@code >} {@link JAXBElement }{@code <}{@link CompositeSolidType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link CompositeCurveType }{@code >} {@link JAXBElement }{@code <}{@link AbstractGeometryType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link OrientableCurveType }{@code >} {@link JAXBElement }{@code <}{@link MultiPointType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link AbstractGeometricPrimitiveType }{@code >} {@link JAXBElement }{@code <}{@link GridType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link GeometricComplexType }{@code >} {@link JAXBElement }{@code <}{@link MultiSurfaceType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link AbstractSolidType }{@code >} {@link JAXBElement }{@code <}{@link MultiLineStringType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link SolidType }{@code >} {@link JAXBElement }{@code <}{@link TinType }{@code >} {@link JAXBElement }{@code <}{@link MultiCurveType }
+     *        {@code >} {@link JAXBElement } {@code <}{@link RingType }{@code >} {@link JAXBElement }{@code <}{@link LinearRingType }{@code >}
      * 
      */
     public void setGeometry(JAXBElement<? extends AbstractGeometryType> value) {
-        this.geometry = ((JAXBElement<? extends AbstractGeometryType>) value);
+        this.geometry = (value);
     }
 
     /**
@@ -303,14 +304,14 @@ public class DomainSetType {
      * 
      * @param value allowed object is {@link JAXBElement }{@code <}{@link TimeInstantType }{@code >} {@link JAXBElement }{@code <}
      *        {@link AbstractTimeGeometricPrimitiveType }{@code >} {@link JAXBElement }{@code <}{@link TimeNodeType }{@code >} {@link JAXBElement }
-     *        {@code <}{@link TimeTopologyComplexType }{@code >} {@link JAXBElement }{@code <}{@link TimeEdgeType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractTimeComplexType }{@code >} {@link JAXBElement }{@code <}{@link AbstractTimeObjectType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractTimePrimitiveType }{@code >} {@link JAXBElement }{@code <}{@link TimePeriodType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractTimeTopologyPrimitiveType }{@code >}
+     *        {@code <}{@link TimeTopologyComplexType }{@code >} {@link JAXBElement }{@code <}{@link TimeEdgeType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link AbstractTimeComplexType }{@code >} {@link JAXBElement }{@code <}{@link AbstractTimeObjectType }{@code >}
+     *        {@link JAXBElement }{@code <} {@link AbstractTimePrimitiveType }{@code >} {@link JAXBElement }{@code <}{@link TimePeriodType }{@code >}
+     *        {@link JAXBElement }{@code <} {@link AbstractTimeTopologyPrimitiveType }{@code >}
      * 
      */
     public void setTimeObject(JAXBElement<? extends AbstractTimeObjectType> value) {
-        this.timeObject = ((JAXBElement<? extends AbstractTimeObjectType>) value);
+        this.timeObject = (value);
     }
 
     /**

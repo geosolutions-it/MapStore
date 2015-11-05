@@ -67,7 +67,7 @@ public abstract class ProductIngestionProcessor extends BaseAction<EventObject> 
      * GeometryFactory will be used to create the geometry attribute of each feature (a Point object for the location)
      */
     protected GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
-    
+
     // Resources to do the ingestion
     protected DataStore dataStore = null;
 

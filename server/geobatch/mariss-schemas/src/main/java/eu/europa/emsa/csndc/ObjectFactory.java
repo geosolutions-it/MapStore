@@ -73,8 +73,8 @@ public class ObjectFactory {
     private final static QName _EoProduct_QNAME = new QName("http://www.emsa.europa.eu/csndc",
             "eoProduct");
 
-    private final static QName _ShipTypeHeading_QNAME = new QName(
-            "http://www.emsa.europa.eu/csndc", "heading");
+    private final static QName _ShipTypeHeading_QNAME = new QName("http://www.emsa.europa.eu/csndc",
+            "heading");
 
     private final static QName _ShipTypePositionAccuracyVector_QNAME = new QName(
             "http://www.emsa.europa.eu/csndc", "positionAccuracyVector");
@@ -528,8 +528,8 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.emsa.europa.eu/csndc", name = "confidenceLevel", scope = ShipType.class)
     public JAXBElement<Double> createShipTypeConfidenceLevel(Double value) {
-        return new JAXBElement<Double>(_ShipTypeConfidenceLevel_QNAME, Double.class,
-                ShipType.class, value);
+        return new JAXBElement<Double>(_ShipTypeConfidenceLevel_QNAME, Double.class, ShipType.class,
+                value);
     }
 
     /**
@@ -549,8 +549,8 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.emsa.europa.eu/csndc", name = "heading", scope = ShipType.class)
     public JAXBElement<BigInteger> createShipTypeHeading(BigInteger value) {
-        return new JAXBElement<BigInteger>(_ShipTypeHeading_QNAME, BigInteger.class,
-                ShipType.class, value);
+        return new JAXBElement<BigInteger>(_ShipTypeHeading_QNAME, BigInteger.class, ShipType.class,
+                value);
     }
 
     /**

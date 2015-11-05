@@ -100,10 +100,10 @@ public class CoordinateOperationRefType {
      * 
      * @return possible object is {@link JAXBElement }{@code <}{@link AbstractGeneralTransformationType }{@code >} {@link JAXBElement }{@code <}
      *         {@link PassThroughOperationType }{@code >} {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
-     *         {@link JAXBElement }{@code <}{@link ConversionType }{@code >} {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
-     *         {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >} {@link JAXBElement }{@code <}{@link TransformationType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link ConcatenatedOperationType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link AbstractGeneralConversionType }{@code >}
+     *         {@link JAXBElement }{@code <}{@link ConversionType }{@code >} {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }
+     *         {@code >} {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link TransformationType } {@code >} {@link JAXBElement }{@code <}{@link ConcatenatedOperationType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link AbstractGeneralConversionType }{@code >}
      * 
      */
     public JAXBElement<? extends AbstractCoordinateOperationType> getCoordinateOperation() {
@@ -199,14 +199,15 @@ public class CoordinateOperationRefType {
      * 
      * @param value allowed object is {@link JAXBElement }{@code <}{@link AbstractGeneralTransformationType }{@code >} {@link JAXBElement }{@code <}
      *        {@link PassThroughOperationType }{@code >} {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link ConversionType }{@code >} {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >} {@link JAXBElement }{@code <}{@link TransformationType }
-     *        {@code >} {@link JAXBElement }{@code <}{@link ConcatenatedOperationType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractGeneralConversionType }{@code >}
+     *        {@link JAXBElement }{@code <}{@link ConversionType }{@code >} {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }
+     *        {@code >} {@link JAXBElement }{@code <}{@link AbstractCoordinateOperationType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link TransformationType } {@code >} {@link JAXBElement }{@code <}{@link ConcatenatedOperationType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link AbstractGeneralConversionType }{@code >}
      * 
      */
-    public void setCoordinateOperation(JAXBElement<? extends AbstractCoordinateOperationType> value) {
-        this.coordinateOperation = ((JAXBElement<? extends AbstractCoordinateOperationType>) value);
+    public void setCoordinateOperation(
+            JAXBElement<? extends AbstractCoordinateOperationType> value) {
+        this.coordinateOperation = (value);
     }
 
     /**

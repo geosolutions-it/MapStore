@@ -42,7 +42,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "GetCapabilitiesType", propOrder = { "acceptVersions", "sections", "acceptFormats" })
+@XmlType(name = "GetCapabilitiesType", propOrder = { "acceptVersions", "sections",
+        "acceptFormats" })
 public class GetCapabilitiesType {
 
     @XmlElement(name = "AcceptVersions")

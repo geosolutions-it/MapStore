@@ -202,7 +202,7 @@ public class DatumRefType {
      * 
      */
     public void setDatum(JAXBElement<? extends AbstractDatumType> value) {
-        this.datum = ((JAXBElement<? extends AbstractDatumType>) value);
+        this.datum = (value);
     }
 
     /**

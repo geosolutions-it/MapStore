@@ -10,39 +10,39 @@ import org.geotools.jdbc.JDBCDataStore;
 import ucar.nc2.Variable;
 
 /**
-	 * a container for ingested element attribute
-	 */
-	public class AttributeBean {
+ * a container for ingested element attribute
+ */
+public class AttributeBean {
 
-		public Map<String, Variable> foundVariables = new HashMap<String, Variable>();
+    public Map<String, Variable> foundVariables = new HashMap<String, Variable>();
 
-		public Map<String, String> foundVariableLongNames = new HashMap<String, String>();
+    public Map<String, String> foundVariableLongNames = new HashMap<String, String>();
 
-		public Map<String, String> foundVariableBriefNames = new HashMap<String, String>();
+    public Map<String, String> foundVariableBriefNames = new HashMap<String, String>();
 
-		public Map<String, String> foundVariableUoM = new HashMap<String, String>();
+    public Map<String, String> foundVariableUoM = new HashMap<String, String>();
 
-		public Date timedim;
-		
-		public String outFilePath;
+    public Date timedim;
 
-		public SARType type;
+    public String outFilePath;
 
-		public GeneralEnvelope env;
+    public SARType type;
 
-		public String absolutePath;
+    public GeneralEnvelope env;
 
-		public String identifier;
-		
-		public String serviceName;
-		
-		public String user;
+    public String absolutePath;
 
-		public JDBCDataStore dataStore;
+    public String identifier;
 
-		public boolean maskOneIsValid;
+    public String serviceName;
 
-		public int numShipDetections = 0;
+    public String user;
 
-		public int numOilSpills = 0;
-	}
+    public JDBCDataStore dataStore;
+
+    public boolean maskOneIsValid;
+
+    public int numShipDetections = 0;
+
+    public int numOilSpills = 0;
+}

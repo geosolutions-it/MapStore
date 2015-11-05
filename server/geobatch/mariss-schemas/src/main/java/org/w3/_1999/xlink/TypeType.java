@@ -37,13 +37,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum TypeType {
 
-    @XmlEnumValue("simple")
-    SIMPLE("simple"), @XmlEnumValue("extended")
-    EXTENDED("extended"), @XmlEnumValue("title")
-    TITLE("title"), @XmlEnumValue("resource")
-    RESOURCE("resource"), @XmlEnumValue("locator")
-    LOCATOR("locator"), @XmlEnumValue("arc")
-    ARC("arc");
+    @XmlEnumValue("simple") SIMPLE("simple"), @XmlEnumValue("extended") EXTENDED(
+            "extended"), @XmlEnumValue("title") TITLE("title"), @XmlEnumValue("resource") RESOURCE(
+                    "resource"), @XmlEnumValue("locator") LOCATOR(
+                            "locator"), @XmlEnumValue("arc") ARC("arc");
     public static TypeType fromValue(String v) {
         for (TypeType c : TypeType.values()) {
             if (c.value.equals(v)) {

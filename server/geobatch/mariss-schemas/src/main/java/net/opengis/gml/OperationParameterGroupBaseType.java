@@ -41,6 +41,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OperationParameterGroupBaseType")
 @XmlSeeAlso({ OperationParameterGroupType.class })
-public abstract class OperationParameterGroupBaseType extends AbstractGeneralOperationParameterType {
+public abstract class OperationParameterGroupBaseType
+        extends AbstractGeneralOperationParameterType {
 
 }

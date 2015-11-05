@@ -67,9 +67,10 @@ public class CurveSegmentArrayPropertyType {
      * {@link JAXBElement }{@code <}{@link ArcStringType }{@code >} {@link JAXBElement }{@code <}{@link GeodesicType }{@code >} {@link JAXBElement }
      * {@code <}{@link LineStringSegmentType }{@code >} {@link JAXBElement }{@code <}{@link BSplineType }{@code >} {@link JAXBElement }{@code <}
      * {@link ArcByCenterPointType }{@code >} {@link JAXBElement }{@code <}{@link CircleType }{@code >} {@link JAXBElement }{@code <}
-     * {@link OffsetCurveType }{@code >} {@link JAXBElement }{@code <}{@link ArcType }{@code >} {@link JAXBElement }{@code <}{@link ArcStringByBulgeType }
-     * {@code >} {@link JAXBElement }{@code <}{@link ArcByBulgeType }{@code >} {@link JAXBElement }{@code <}{@link CubicSplineType }{@code >}
-     * {@link JAXBElement }{@code <}{@link GeodesicStringType }{@code >} {@link JAXBElement }{@code <}{@link ClothoidType }{@code >}
+     * {@link OffsetCurveType }{@code >} {@link JAXBElement }{@code <}{@link ArcType }{@code >} {@link JAXBElement }{@code <}
+     * {@link ArcStringByBulgeType } {@code >} {@link JAXBElement }{@code <}{@link ArcByBulgeType }{@code >} {@link JAXBElement }{@code <}
+     * {@link CubicSplineType }{@code >} {@link JAXBElement }{@code <}{@link GeodesicStringType }{@code >} {@link JAXBElement }{@code <}
+     * {@link ClothoidType }{@code >}
      * 
      * 
      */

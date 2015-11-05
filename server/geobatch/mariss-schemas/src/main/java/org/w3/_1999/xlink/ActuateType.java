@@ -35,11 +35,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum ActuateType {
 
-    @XmlEnumValue("onLoad")
-    ON_LOAD("onLoad"), @XmlEnumValue("onRequest")
-    ON_REQUEST("onRequest"), @XmlEnumValue("other")
-    OTHER("other"), @XmlEnumValue("none")
-    NONE("none");
+    @XmlEnumValue("onLoad") ON_LOAD("onLoad"), @XmlEnumValue("onRequest") ON_REQUEST(
+            "onRequest"), @XmlEnumValue("other") OTHER("other"), @XmlEnumValue("none") NONE("none");
     public static ActuateType fromValue(String v) {
         for (ActuateType c : ActuateType.values()) {
             if (c.value.equals(v)) {

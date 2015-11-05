@@ -98,8 +98,8 @@ public class CoordinateSystemRefType {
     /**
      * Gets the value of the coordinateSystem property.
      * 
-     * @return possible object is {@link JAXBElement }{@code <}{@link CylindricalCSType }{@code >} {@link JAXBElement }{@code <}{@link CartesianCSType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link UserDefinedCSType }{@code >} {@link JAXBElement }{@code <}
+     * @return possible object is {@link JAXBElement }{@code <}{@link CylindricalCSType }{@code >} {@link JAXBElement }{@code <}{@link CartesianCSType
+     *         } {@code >} {@link JAXBElement }{@code <}{@link UserDefinedCSType }{@code >} {@link JAXBElement }{@code <}
      *         {@link AbstractCoordinateSystemType }{@code >} {@link JAXBElement }{@code <}{@link EllipsoidalCSType }{@code >} {@link JAXBElement }
      *         {@code <}{@link VerticalCSType }{@code >} {@link JAXBElement }{@code <}{@link LinearCSType }{@code >} {@link JAXBElement }{@code <}
      *         {@link TemporalCSType }{@code >} {@link JAXBElement }{@code <}{@link SphericalCSType }{@code >} {@link JAXBElement }{@code <}
@@ -199,14 +199,14 @@ public class CoordinateSystemRefType {
      * 
      * @param value allowed object is {@link JAXBElement }{@code <}{@link CylindricalCSType }{@code >} {@link JAXBElement }{@code <}
      *        {@link CartesianCSType }{@code >} {@link JAXBElement }{@code <}{@link UserDefinedCSType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link AbstractCoordinateSystemType }{@code >} {@link JAXBElement }{@code <}{@link EllipsoidalCSType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link VerticalCSType }{@code >} {@link JAXBElement }{@code <}{@link LinearCSType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link AbstractCoordinateSystemType }{@code >} {@link JAXBElement }{@code <}{@link EllipsoidalCSType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link VerticalCSType }{@code >} {@link JAXBElement }{@code <}{@link LinearCSType }{@code >} {@link JAXBElement }{@code <}
      *        {@link TemporalCSType }{@code >} {@link JAXBElement }{@code <}{@link SphericalCSType }{@code >} {@link JAXBElement }{@code <}
      *        {@link ObliqueCartesianCSType }{@code >} {@link JAXBElement }{@code <}{@link PolarCSType }{@code >}
      * 
      */
     public void setCoordinateSystem(JAXBElement<? extends AbstractCoordinateSystemType> value) {
-        this.coordinateSystem = ((JAXBElement<? extends AbstractCoordinateSystemType>) value);
+        this.coordinateSystem = (value);
     }
 
     /**

@@ -100,8 +100,8 @@ public class CoordinateReferenceSystemRefType {
      * 
      * @return possible object is {@link JAXBElement }{@code <}{@link EngineeringCRSType }{@code >} {@link JAXBElement }{@code <}
      *         {@link GeographicCRSType }{@code >} {@link JAXBElement }{@code <}{@link DerivedCRSType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link GeocentricCRSType }{@code >} {@link JAXBElement }{@code <}{@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link ImageCRSType }{@code >} {@link JAXBElement }{@code <}{@link TemporalCRSType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link GeocentricCRSType }{@code >} {@link JAXBElement }{@code <}{@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link ImageCRSType }{@code >} {@link JAXBElement }{@code <}{@link TemporalCRSType }{@code >} {@link JAXBElement }{@code <}
      *         {@link VerticalCRSType }{@code >} {@link JAXBElement }{@code <}{@link ProjectedCRSType }{@code >} {@link JAXBElement }{@code <}
      *         {@link AbstractGeneralDerivedCRSType }{@code >}
      * 
@@ -199,15 +199,15 @@ public class CoordinateReferenceSystemRefType {
      * 
      * @param value allowed object is {@link JAXBElement }{@code <}{@link EngineeringCRSType }{@code >} {@link JAXBElement }{@code <}
      *        {@link GeographicCRSType }{@code >} {@link JAXBElement }{@code <}{@link DerivedCRSType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link GeocentricCRSType }{@code >} {@link JAXBElement }{@code <}{@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link ImageCRSType }{@code >} {@link JAXBElement }{@code <}{@link TemporalCRSType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link GeocentricCRSType }{@code >} {@link JAXBElement }{@code <}{@link AbstractReferenceSystemType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link ImageCRSType }{@code >} {@link JAXBElement }{@code <}{@link TemporalCRSType }{@code >} {@link JAXBElement }{@code <}
      *        {@link VerticalCRSType }{@code >} {@link JAXBElement }{@code <}{@link ProjectedCRSType }{@code >} {@link JAXBElement }{@code <}
      *        {@link AbstractGeneralDerivedCRSType }{@code >}
      * 
      */
     public void setCoordinateReferenceSystem(
             JAXBElement<? extends AbstractReferenceSystemType> value) {
-        this.coordinateReferenceSystem = ((JAXBElement<? extends AbstractReferenceSystemType>) value);
+        this.coordinateReferenceSystem = (value);
     }
 
     /**

@@ -114,7 +114,7 @@ public class ObservationType extends AbstractFeatureType {
      * 
      */
     public void setTarget(JAXBElement<TargetPropertyType> value) {
-        this.target = ((JAXBElement<TargetPropertyType>) value);
+        this.target = (value);
     }
 
     /**

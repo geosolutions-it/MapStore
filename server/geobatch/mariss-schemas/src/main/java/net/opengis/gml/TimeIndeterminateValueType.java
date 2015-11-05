@@ -35,11 +35,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum TimeIndeterminateValueType {
 
-    @XmlEnumValue("after")
-    AFTER("after"), @XmlEnumValue("before")
-    BEFORE("before"), @XmlEnumValue("now")
-    NOW("now"), @XmlEnumValue("unknown")
-    UNKNOWN("unknown");
+    @XmlEnumValue("after") AFTER("after"), @XmlEnumValue("before") BEFORE(
+            "before"), @XmlEnumValue("now") NOW("now"), @XmlEnumValue("unknown") UNKNOWN("unknown");
     public static TimeIndeterminateValueType fromValue(String v) {
         for (TimeIndeterminateValueType c : TimeIndeterminateValueType.values()) {
             if (c.value.equals(v)) {

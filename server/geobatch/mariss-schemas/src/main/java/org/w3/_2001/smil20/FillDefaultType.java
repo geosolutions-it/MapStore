@@ -37,13 +37,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum FillDefaultType {
 
-    @XmlEnumValue("remove")
-    REMOVE("remove"), @XmlEnumValue("freeze")
-    FREEZE("freeze"), @XmlEnumValue("hold")
-    HOLD("hold"), @XmlEnumValue("auto")
-    AUTO("auto"), @XmlEnumValue("inherit")
-    INHERIT("inherit"), @XmlEnumValue("transition")
-    TRANSITION("transition");
+    @XmlEnumValue("remove") REMOVE("remove"), @XmlEnumValue("freeze") FREEZE(
+            "freeze"), @XmlEnumValue("hold") HOLD("hold"), @XmlEnumValue("auto") AUTO(
+                    "auto"), @XmlEnumValue("inherit") INHERIT(
+                            "inherit"), @XmlEnumValue("transition") TRANSITION("transition");
     public static FillDefaultType fromValue(String v) {
         for (FillDefaultType c : FillDefaultType.values()) {
             if (c.value.equals(v)) {

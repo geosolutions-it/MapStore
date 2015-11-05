@@ -35,11 +35,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum RestartDefaultType {
 
-    @XmlEnumValue("never")
-    NEVER("never"), @XmlEnumValue("always")
-    ALWAYS("always"), @XmlEnumValue("whenNotActive")
-    WHEN_NOT_ACTIVE("whenNotActive"), @XmlEnumValue("inherit")
-    INHERIT("inherit");
+    @XmlEnumValue("never") NEVER("never"), @XmlEnumValue("always") ALWAYS(
+            "always"), @XmlEnumValue("whenNotActive") WHEN_NOT_ACTIVE(
+                    "whenNotActive"), @XmlEnumValue("inherit") INHERIT("inherit");
     public static RestartDefaultType fromValue(String v) {
         for (RestartDefaultType c : RestartDefaultType.values()) {
             if (c.value.equals(v)) {

@@ -19,10 +19,6 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.csv.utils;
 
-import it.geosolutions.geobatch.catalog.impl.TimeFormat;
-import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
-import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProcessException;
-
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -32,6 +28,10 @@ import java.util.Map;
 
 import org.springframework.util.StringUtils;
 
+import it.geosolutions.geobatch.catalog.impl.TimeFormat;
+import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
+import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProcessException;
+
 /**
  * Utilities for CSV ingest
  * 
@@ -39,8 +39,8 @@ import org.springframework.util.StringUtils;
  */
 public class CSVIngestUtils {
 
-    static TimeFormat TIME_FORMAT = new TimeFormat(null, null, null, new TimeFormatConfiguration(
-            null, null, null));
+    static TimeFormat TIME_FORMAT = new TimeFormat(null, null, null,
+            new TimeFormatConfiguration(null, null, null));
 
     /**
      * Separator for each global parameter in the file name
@@ -89,8 +89,8 @@ public class CSVIngestUtils {
      */
     public static Double getDoubleValue(String doubleString) throws CSVProcessException {
         try {
-            return doubleString != null && StringUtils.hasText(doubleString) ? Double
-                    .parseDouble(doubleString) : null;
+            return doubleString != null && StringUtils.hasText(doubleString)
+                    ? Double.parseDouble(doubleString) : null;
         } catch (NumberFormatException nfe) {
             throw new CSVProcessException("Incorrect double=" + doubleString);
         }
@@ -107,8 +107,8 @@ public class CSVIngestUtils {
     public static Map<String, String> getParametersFromName(String fileName) {
         Map<String, String> parameters = new HashMap<String, String>();
         if (fileName.contains(PARAMS_START) && fileName.contains(PARAMS_END)) {
-            String partial = fileName.substring(fileName.indexOf(PARAMS_START)
-                    + PARAMS_START.length());
+            String partial = fileName
+                    .substring(fileName.indexOf(PARAMS_START) + PARAMS_START.length());
             partial = partial.substring(0, partial.indexOf(PARAMS_END));
             String[] pairs = partial.split(PARAMS_SEPARATOR);
             for (String nameValuePair : pairs) {
@@ -158,7 +158,8 @@ public class CSVIngestUtils {
      * 
      * @return file name with the parameters
      */
-    public static String getUserServiceFileName(String fileName, String userName, String serviceName) {
+    public static String getUserServiceFileName(String fileName, String userName,
+            String serviceName) {
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put(USER_FILE_PARAMETER, userName);
         parameters.put(SERVICE_FILE_PARAMETER, serviceName);

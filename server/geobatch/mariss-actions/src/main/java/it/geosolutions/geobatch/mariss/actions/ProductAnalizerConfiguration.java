@@ -10,9 +10,9 @@ import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfigurati
 @XStreamInclude({ ConfigurationContainer.class })
 public class ProductAnalizerConfiguration extends IngestionActionConfiguration {
 
-	public ProductAnalizerConfiguration(String id, String name, String description) {
-		super(id, name, description);
-		// TODO Auto-generated constructor stub
-	}
+    public ProductAnalizerConfiguration(String id, String name, String description) {
+        super(id, name, description);
+        // TODO Auto-generated constructor stub
+    }
 
 }

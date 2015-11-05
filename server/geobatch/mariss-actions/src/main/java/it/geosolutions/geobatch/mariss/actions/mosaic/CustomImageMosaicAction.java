@@ -21,17 +21,17 @@
  */
 package it.geosolutions.geobatch.mariss.actions.mosaic;
 
-import it.geosolutions.geobatch.annotations.Action;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.imagemosaic.ImageMosaicAction;
-import it.geosolutions.geobatch.imagemosaic.ImageMosaicCommand;
-
 import java.util.EventObject;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.imagemosaic.ImageMosaicAction;
+import it.geosolutions.geobatch.imagemosaic.ImageMosaicCommand;
 
 /**
  * Custom image mosaic action that allow the circle flow execution

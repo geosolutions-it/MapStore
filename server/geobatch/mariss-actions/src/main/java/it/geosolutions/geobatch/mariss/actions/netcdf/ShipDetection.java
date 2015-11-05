@@ -21,52 +21,42 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 /**
  * @author Alessio
  *
-    id VDS_ASA_IMP_1PNIPA20100913_110107_000000162092_00495_44637_0625.N1_GMV_274.xml
-    the_geom <gml:pos axisLabels="latitude longitude" srsDimension="2" uomLabels="deg deg">15.226362 -16.972208</gml:pos>
-    timeStamp 2010-09-13T11:01:07Z
-    heading 97
-    speed 0.00
-    length 48.88
-    MMSI -1
-    confidenceLevel 0.45
-    imageIdentifier [type="SAR"] ASA_IMP_1PNIPA20100913_110107_000000162092_00495_44637_0625.N1
-    detectionParameters
-       RCS 0.45
-       maxPixelValue 1.06
-    shipCategory 14.00
-    confidenceLevelCat 
-
+ *         id VDS_ASA_IMP_1PNIPA20100913_110107_000000162092_00495_44637_0625.N1_GMV_274.xml the_geom <gml:pos axisLabels=
+ *         "latitude longitude" srsDimension="2" uomLabels="deg deg">15.226362 -16.972208</gml:pos> timeStamp 2010-09-13T11:01:07Z heading 97 speed
+ *         0.00 length 48.88 MMSI -1 confidenceLevel 0.45 imageIdentifier [type="SAR"] ASA_IMP_1PNIPA20100913_110107_000000162092_00495_44637_0625.N1
+ *         detectionParameters RCS 0.45 maxPixelValue 1.06 shipCategory 14.00 confidenceLevelCat
+ * 
  */
 
 @XStreamAlias("Ship")
 public class ShipDetection {
 
     private String id;
-    
+
     private String timeStamp;
-    
+
     private Boolean includeInReport;
-    
+
     private Double heading;
-    
+
     private Double speed;
-    
+
     private Double length;
-    
+
     private String MMSI;
-    
+
     private Double confidenceLevel;
-    
+
     private String imageIdentifier;
-    
+
     private String imageType;
-    
+
     private DetectionParameters detectionParameters;
-    
+
     private Double shipCategory;
-    
+
     private String confidenceLevelCat;
-    
+
     @XStreamAlias("pos")
     private String the_geom;
 
@@ -256,8 +246,14 @@ public class ShipDetection {
      * @return the the_geom
      */
     public String getPosition() {
-        String[] coords = the_geom.split(" ");
-        return "SRID=4326;POINT(" + coords[1] + " " + coords[0] + ")";
+        the_geom = the_geom.trim();
+        if (the_geom.startsWith("POINT")) {
+            return "SRID=4326;" + the_geom;
+            
+        } else {
+            String[] coords = the_geom.split(" ");
+            return "SRID=4326;POINT(" + coords[1] + " " + coords[0] + ")";
+        }
     }
 
     /**
@@ -266,6 +262,5 @@ public class ShipDetection {
     public void setPosition(String the_geom) {
         this.the_geom = the_geom;
     }
-    
-}
 
+}

@@ -46,8 +46,8 @@ public class AbstractRingPropertyType {
     /**
      * Gets the value of the ring property.
      * 
-     * @return possible object is {@link JAXBElement }{@code <}{@link AbstractRingType }{@code >} {@link JAXBElement }{@code <}{@link RingType }{@code >}
-     *         {@link JAXBElement }{@code <}{@link LinearRingType }{@code >}
+     * @return possible object is {@link JAXBElement }{@code <}{@link AbstractRingType }{@code >} {@link JAXBElement }{@code <}{@link RingType }
+     *         {@code >} {@link JAXBElement }{@code <}{@link LinearRingType }{@code >}
      * 
      */
     public JAXBElement<? extends AbstractRingType> getRing() {
@@ -62,7 +62,7 @@ public class AbstractRingPropertyType {
      * 
      */
     public void setRing(JAXBElement<? extends AbstractRingType> value) {
-        this.ring = ((JAXBElement<? extends AbstractRingType>) value);
+        this.ring = (value);
     }
 
 }

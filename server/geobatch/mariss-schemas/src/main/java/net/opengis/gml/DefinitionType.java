@@ -45,11 +45,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "DefinitionType")
 @XmlSeeAlso({ TimeCalendarEraType.class, TimeOrdinalEraType.class, DefinitionProxyType.class,
         DictionaryType.class, AbstractTimeReferenceSystemType.class, UnitDefinitionType.class,
-        AbstractReferenceSystemBaseType.class, EllipsoidBaseType.class,
-        PrimeMeridianBaseType.class, AbstractGeneralOperationParameterType.class,
-        CoordinateSystemAxisBaseType.class, AbstractCoordinateOperationBaseType.class,
-        AbstractCoordinateSystemBaseType.class, AbstractDatumBaseType.class,
-        OperationMethodBaseType.class })
+        AbstractReferenceSystemBaseType.class, EllipsoidBaseType.class, PrimeMeridianBaseType.class,
+        AbstractGeneralOperationParameterType.class, CoordinateSystemAxisBaseType.class,
+        AbstractCoordinateOperationBaseType.class, AbstractCoordinateSystemBaseType.class,
+        AbstractDatumBaseType.class, OperationMethodBaseType.class })
 public class DefinitionType extends AbstractGMLType {
 
 }

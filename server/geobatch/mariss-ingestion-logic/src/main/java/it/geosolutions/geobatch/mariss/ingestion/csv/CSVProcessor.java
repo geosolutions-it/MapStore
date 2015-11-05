@@ -19,9 +19,6 @@
  */
 package it.geosolutions.geobatch.mariss.ingestion.csv;
 
-import it.geosolutions.geobatch.mariss.ingestion.csv.configuration.CSVProcessorConfiguration;
-import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -31,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.com.bytecode.opencsv.CSVReader;
+import it.geosolutions.geobatch.mariss.ingestion.csv.configuration.CSVProcessorConfiguration;
+import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
 
 /**
  * 
@@ -56,9 +55,9 @@ public abstract class CSVProcessor {
             return false;
         }
         if (ingestHeaders.size() != getHeaders().size()) {
-            LOGGER.debug("Processor " + getClass().getSimpleName()
-                    + " skipped because of headers size [" + getHeaders().size() + "!="
-                    + ingestHeaders.size() + "]");
+            LOGGER.debug(
+                    "Processor " + getClass().getSimpleName() + " skipped because of headers size ["
+                            + getHeaders().size() + "!=" + ingestHeaders.size() + "]");
             return false;
         }
         for (int i = 0; i < getHeaders().size(); i++) {

@@ -1,14 +1,5 @@
 package it.geosolutions.geobatch.mariss.actions;
 
-import it.geosolutions.geobatch.actions.sync.model.FileMetadataWrapper;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
-import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfiguration;
-import it.geosolutions.geobatch.mariss.actions.netcdf.NetCDFAction;
-import it.geosolutions.geobatch.mariss.actions.netcdf.ShipDetection;
-import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -25,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EventObject;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,6 +34,15 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.shapefile.shp.ShapefileReader;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.Filter;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
@@ -50,9 +51,17 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
 import com.vividsolutions.jts.geom.Geometry;
 
+import it.geosolutions.geobatch.actions.sync.model.FileMetadataWrapper;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
+import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfiguration;
+import it.geosolutions.geobatch.mariss.actions.netcdf.NetCDFAction;
+import it.geosolutions.geobatch.mariss.actions.netcdf.ShipDetection;
+import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
+
 /**
- * Base Class with common method common all actions for mariss netcdf and
- * geotiff
+ * Base Class with common method common all actions for mariss netcdf and geotiff
  * 
  * TODO: many of the methods in this class can be placed in a Utility class.
  * 
@@ -60,117 +69,117 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  */
 public abstract class MarissBaseAction extends BaseAction<EventObject> {
-	protected static final String SEPARATOR = "_Var_";
+    protected static final String SEPARATOR = "_Var_";
 
-	protected static final String CUSTOM_DIM_START_SEPARATOR = "_Dim_";
-	protected static final String CUSTOM_DIM_VAL_SEPARATOR = "_DimVal_";
-	protected static final String CUSTOM_DIM_END_SEPARATOR = "_DimEnd_";
+    protected static final String CUSTOM_DIM_START_SEPARATOR = "_Dim_";
 
-	protected static final String SERVICE_SEPARATOR = "_s_";
+    protected static final String CUSTOM_DIM_VAL_SEPARATOR = "_DimVal_";
 
-	protected static final String IDENTIFIER_SEPARATOR = "_I_";
-	
-	protected static final String ATTRIBUTES_FILE_NAME = "Product_Attributes.xml";
+    protected static final String CUSTOM_DIM_END_SEPARATOR = "_DimEnd_";
 
-	
+    protected static final String SERVICE_SEPARATOR = "_s_";
 
-	protected IngestionActionConfiguration configuration;
-	protected ConfigurationContainer container;
+    protected static final String IDENTIFIER_SEPARATOR = "_I_";
 
-	/**
-	 * Constructor. TODO check the proper configuration needed
-	 * 
-	 * @param actionConfiguration
-	 */
-	public MarissBaseAction(IngestionActionConfiguration actionConfiguration) {
-		super(actionConfiguration);
-		configuration = actionConfiguration;
-		ConfigurationContainer container = actionConfiguration.getContainer();
-		if (container == null || container.getParams() == null) {
-			throw new RuntimeException("Wrong configuration defined");
-		} else {
-			this.container = container;
-		}
-	}
+    protected static final String ATTRIBUTES_FILE_NAME = "Product_Attributes.xml";
 
-	/**
-	 * Create datastore file
-	 * 
-	 * @param mosaicDir
-	 * @param varName
-	 * @throws IOException
-	 */
-	protected void createDatastoreFile(File mosaicDir, String varName)
-			throws IOException {
-		Map<String, Serializable> dsParams = configuration.getOutputFeature()
-				.getDataStore();
+    protected IngestionActionConfiguration configuration;
 
-		// ---
-		final String host = (String) dsParams.get("host");
-		final String port = (String) dsParams.get("port");
-		final String database = (String) dsParams.get("database");
-		final String schema = (String) dsParams.get("schema");
-		final String user = (String) dsParams.get("user");
-		final String passwd = (String) dsParams.get("passwd");
-		// ---
-		File datastore = new File(mosaicDir, "datastore.properties");
-		datastore.createNewFile();
-		String properties = "user=" + user + "\n" + "port=" + port + "\n"
-				+ "passwd=" + passwd + "\n" + "host=" + host + "\n"
-				+ "database=" + database + "\n"
-				+ "driver=org.postgresql.Driver\n" + "schema=" + schema + "\n"
-				+ "Estimated\\ extends=false\n"
-				+ "SPI=org.geotools.data.postgis.PostgisNGDataStoreFactory";
-		FileUtils.write(datastore, properties);
-	}
+    protected ConfigurationContainer container;
 
-	/**
-	 * Create the indexer file for a mosaic
-	 * 
-	 * @param mosaicDir
-	 * @param varName
-	 * @param serviceName
-	 * @param additionalDimensions
-	 * @throws IOException
-	 */
-	protected void createIndexerFile(File mosaicDir, String varName, Map<String, String> additionalDimensions,boolean canBeEmpty)
-			throws IOException {
-		File indexer = new File(mosaicDir, "indexer.properties");
-		indexer.createNewFile();
+    /**
+     * Constructor. TODO check the proper configuration needed
+     * 
+     * @param actionConfiguration
+     */
+    public MarissBaseAction(IngestionActionConfiguration actionConfiguration) {
+        super(actionConfiguration);
+        configuration = actionConfiguration;
+        ConfigurationContainer container = actionConfiguration.getContainer();
+        if (container == null || container.getParams() == null) {
+            throw new RuntimeException("Wrong configuration defined");
+        } else {
+            this.container = container;
+        }
+    }
 
-		String schema = "*the_geom:Polygon,location:String,time:java.util.Date,service:String,identifier:String";
-		String propertyCollectors = "StringFileNameExtractorSPI[serviceregex](service),StringFileNameExtractorSPI[identifierregex](identifier)";
+    /**
+     * Create datastore file
+     * 
+     * @param mosaicDir
+     * @param varName
+     * @throws IOException
+     */
+    protected void createDatastoreFile(File mosaicDir, String varName) throws IOException {
+        Map<String, Serializable> dsParams = configuration.getOutputFeature().getDataStore();
 
-		if (additionalDimensions != null && additionalDimensions.size() > 0) {
-			for (Entry<String, String> entry : additionalDimensions.entrySet()) {
-				schema += "," + entry.getKey() + ":String";
-				propertyCollectors += ",StringFileNameExtractorSPI["
-						+ entry.getKey() + "regex](" + entry.getKey() + ")";
-			}
-		}
+        // ---
+        final String host = (String) dsParams.get("host");
+        final String port = (String) dsParams.get("port");
+        final String database = (String) dsParams.get("database");
+        final String schema = (String) dsParams.get("schema");
+        final String user = (String) dsParams.get("user");
+        final String passwd = (String) dsParams.get("passwd");
+        // ---
+        File datastore = new File(mosaicDir, "datastore.properties");
+        datastore.createNewFile();
+        String properties = "user=" + user + "\n" + "port=" + port + "\n" + "passwd=" + passwd
+                + "\n" + "host=" + host + "\n" + "database=" + database + "\n"
+                + "driver=org.postgresql.Driver\n" + "schema=" + schema + "\n"
+                + "Estimated\\ extends=false\n"
+                + "SPI=org.geotools.data.postgis.PostgisNGDataStoreFactory";
+        FileUtils.write(datastore, properties);
+    }
 
-		// String properties = "TimeAttribute=time\n" + "Schema=" + schema +
-		// "\n"
-		// + "PropertyCollectors=" + propertyCollectors;
-		String properties = "Schema=" + schema + "\n" + "PropertyCollectors="
-				+ propertyCollectors;
-		if(canBeEmpty){
-		    properties+="\nCanBeEmpty=true";
-		}
-		FileUtils.write(indexer, properties);
-	}
-	
-	protected void createIndexerFile(File mosaicDir, String varName, Map<String, String> additionalDimensions) throws IOException{
-	    createIndexerFile(mosaicDir,varName,additionalDimensions,false);
-	}
-	/**
-	 * Creates the regex file with service, identifier and other custom dimensions
-	 * @param mosaicDir the directory where create file
-	 * @param varName the variable name
-	 * @param additionalDimensions map of dimensions
-	 * @throws IOException
-	 */
-	protected void createRegexFiles(File mosaicDir, String varName,
+    /**
+     * Create the indexer file for a mosaic
+     * 
+     * @param mosaicDir
+     * @param varName
+     * @param serviceName
+     * @param additionalDimensions
+     * @throws IOException
+     */
+    protected void createIndexerFile(File mosaicDir, String varName,
+            Map<String, String> additionalDimensions, boolean canBeEmpty) throws IOException {
+        File indexer = new File(mosaicDir, "indexer.properties");
+        indexer.createNewFile();
+
+        String schema = "*the_geom:Polygon,location:String,time:java.util.Date,service:String,identifier:String";
+        String propertyCollectors = "StringFileNameExtractorSPI[serviceregex](service),StringFileNameExtractorSPI[identifierregex](identifier)";
+
+        if (additionalDimensions != null && additionalDimensions.size() > 0) {
+            for (Entry<String, String> entry : additionalDimensions.entrySet()) {
+                schema += "," + entry.getKey() + ":String";
+                propertyCollectors += ",StringFileNameExtractorSPI[" + entry.getKey() + "regex]("
+                        + entry.getKey() + ")";
+            }
+        }
+
+        // String properties = "TimeAttribute=time\n" + "Schema=" + schema +
+        // "\n"
+        // + "PropertyCollectors=" + propertyCollectors;
+        String properties = "Schema=" + schema + "\n" + "PropertyCollectors=" + propertyCollectors;
+        if (canBeEmpty) {
+            properties += "\nCanBeEmpty=true";
+        }
+        FileUtils.write(indexer, properties);
+    }
+
+    protected void createIndexerFile(File mosaicDir, String varName,
+            Map<String, String> additionalDimensions) throws IOException {
+        createIndexerFile(mosaicDir, varName, additionalDimensions, false);
+    }
+
+    /**
+     * Creates the regex file with service, identifier and other custom dimensions
+     * 
+     * @param mosaicDir the directory where create file
+     * @param varName the variable name
+     * @param additionalDimensions map of dimensions
+     * @throws IOException
+     */
+    protected void createRegexFiles(File mosaicDir, String varName,
             Map<String, String> additionalDimensions) throws IOException {
         // REGEX for Service Name
         File serviceRegex = new File(mosaicDir, "serviceregex.properties");
@@ -193,570 +202,637 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
                 File customPropRegex = new File(mosaicDir, entry.getKey() + "regex.properties");
                 customPropRegex.createNewFile();
                 String customPropRegexProperties = "regex=" + "(?<=" + CUSTOM_DIM_START_SEPARATOR
-                        + entry.getKey() + CUSTOM_DIM_VAL_SEPARATOR +").*" + "(?=" + CUSTOM_DIM_END_SEPARATOR + ")";
+                        + entry.getKey() + CUSTOM_DIM_VAL_SEPARATOR + ").*" + "(?="
+                        + CUSTOM_DIM_END_SEPARATOR + ")";
                 FileUtils.write(customPropRegex, customPropRegexProperties);
             }
         }
     }
-	protected File untarFile(File inputFile) throws ActionException {
-		// Getting file base name without extension
-		String fileName = FilenameUtils.getBaseName(inputFile.getName());
-		final File outputFile = new File(getTempDir(), fileName);
-		// Getting the stream
-		GZIPInputStream in = null;
-		FileOutputStream out = null;
-		try {
-			in = new GZIPInputStream(new FileInputStream(inputFile));
-			out = new FileOutputStream(outputFile);
-			IOUtils.copy(in, out);
-		} catch (IOException e) {
-			throw new ActionException(MarissBaseAction.class,
-					e.getLocalizedMessage());
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (Exception e) {
-					LOGGER.error(e.getLocalizedMessage());
-				}
-			}
-			if (out != null) {
-				try {
-					out.close();
-				} catch (Exception e) {
-					LOGGER.error(e.getLocalizedMessage());
-				}
-			}
-		}
-		// Create another temporary Directory for the tar file
-		File finalDir = new File(getTempDir(), fileName + "dir");
 
-		extractTar(outputFile, finalDir);
+    protected File untarFile(File inputFile) throws ActionException {
+        // Getting file base name without extension
+        String fileName = FilenameUtils.getBaseName(inputFile.getName());
+        final File outputFile = new File(getTempDir(), fileName);
+        // Getting the stream
+        GZIPInputStream in = null;
+        FileOutputStream out = null;
+        try {
+            in = new GZIPInputStream(new FileInputStream(inputFile));
+            out = new FileOutputStream(outputFile);
+            IOUtils.copy(in, out);
+        } catch (IOException e) {
+            throw new ActionException(MarissBaseAction.class, e.getLocalizedMessage());
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (Exception e) {
+                    LOGGER.error(e.getLocalizedMessage());
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (Exception e) {
+                    LOGGER.error(e.getLocalizedMessage());
+                }
+            }
+        }
+        // Create another temporary Directory for the tar file
+        File finalDir = new File(getTempDir(), fileName + "dir");
 
-		return finalDir;
-	}
+        extractTar(outputFile, finalDir);
 
-	/**
-	 * Unzip a zip archive
-	 * 
-	 * @param inputFile
-	 *            the archive
-	 * @return the directory where the file is unzipped
-	 * @throws ActionException
-	 */
-	protected File unzipFile(File inputFile) throws ActionException {
-		// Getting file base name without extension
-		String fileName = FilenameUtils.getBaseName(inputFile.getName());
-		final File outputFile = new File(getTempDir(), fileName);
-		// Getting the stream
-		FileInputStream in = null;
-		FileOutputStream out = null;
-		try {
-			in = new FileInputStream(inputFile);
-			out = new FileOutputStream(outputFile);
-			IOUtils.copy(in, out);
-		} catch (IOException e) {
-			throw new ActionException(MarissBaseAction.class,
-					e.getLocalizedMessage());
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (Exception e) {
-					LOGGER.error(e.getLocalizedMessage());
-				}
-			}
-			if (out != null) {
-				try {
-					out.close();
-				} catch (Exception e) {
-					LOGGER.error(e.getLocalizedMessage());
-				}
-			}
-		}
-		// Create another temporary Directory for the tar file
-		File finalDir = new File(getTempDir(), fileName + "dir");
+        return finalDir;
+    }
 
-		extractZip(outputFile, finalDir);
+    /**
+     * Unzip a zip archive
+     * 
+     * @param inputFile the archive
+     * @return the directory where the file is unzipped
+     * @throws ActionException
+     */
+    protected File unzipFile(File inputFile) throws ActionException {
+        // Getting file base name without extension
+        String fileName = FilenameUtils.getBaseName(inputFile.getName());
+        final File outputFile = new File(getTempDir(), fileName);
+        // Getting the stream
+        FileInputStream in = null;
+        FileOutputStream out = null;
+        try {
+            in = new FileInputStream(inputFile);
+            out = new FileOutputStream(outputFile);
+            IOUtils.copy(in, out);
+        } catch (IOException e) {
+            throw new ActionException(MarissBaseAction.class, e.getLocalizedMessage());
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (Exception e) {
+                    LOGGER.error(e.getLocalizedMessage());
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (Exception e) {
+                    LOGGER.error(e.getLocalizedMessage());
+                }
+            }
+        }
+        // Create another temporary Directory for the tar file
+        File finalDir = new File(getTempDir(), fileName + "dir");
 
-		return finalDir;
-	}
+        extractZip(outputFile, finalDir);
 
-	/**
-	 * Extract an archive into a directory
-	 * 
-	 * @param outputFile
-	 *            the file to read
-	 * @param finalDir
-	 *            the directory where unzip to
-	 * @throws ActionException
-	 */
-	protected void extractZip(final File outputFile, File finalDir)
-			throws ActionException {
-		// Extracting the tar file
-		ZipArchiveInputStream zipStream = null;
-		try {
-			// Create the final directory
-			FileUtils.forceMkdir(finalDir);
-			zipStream = new ZipArchiveInputStream(new FileInputStream(
-					outputFile));
-			// Accessing the entries
-			ArchiveEntry entry = zipStream.getNextEntry();
+        return finalDir;
+    }
 
-			do {
-				int offset = 0;
-				byte[] content = new byte[(int) entry.getSize()];
-				int byteRead = 0;
-				while (offset < content.length && byteRead != -1) {
-					byteRead = zipStream.read(content, offset, content.length
-							- offset);
-					offset += byteRead;
-				}
+    /**
+     * Extract an archive into a directory
+     * 
+     * @param outputFile the file to read
+     * @param finalDir the directory where unzip to
+     * @throws ActionException
+     */
+    protected void extractZip(final File outputFile, File finalDir) throws ActionException {
+        // Extracting the tar file
+        ZipArchiveInputStream zipStream = null;
+        try {
+            // Create the final directory
+            FileUtils.forceMkdir(finalDir);
+            zipStream = new ZipArchiveInputStream(new FileInputStream(outputFile));
+            // Accessing the entries
+            ArchiveEntry entry = zipStream.getNextEntry();
 
-				// Writing Entry to file
-				String entryName = entry.getName();
+            do {
+                int offset = 0;
+                byte[] content = new byte[(int) entry.getSize()];
+                int byteRead = 0;
+                while (offset < content.length && byteRead != -1) {
+                    byteRead = zipStream.read(content, offset, content.length - offset);
+                    offset += byteRead;
+                }
 
-				File f = new File(finalDir, entryName);
-				FileUtils.writeByteArrayToFile(f, content);
-				entry = zipStream.getNextEntry();
-			} while (entry != null);
-		} catch (FileNotFoundException e) {
-			throw new ActionException(MarissBaseAction.class,
-					e.getLocalizedMessage());
-		} catch (IOException e) {
-			throw new ActionException(MarissBaseAction.class,
-					e.getLocalizedMessage());
-		} finally {
-			if (zipStream != null) {
-				try {
-					zipStream.close();
-				} catch (Exception e) {
-					LOGGER.error(e.getLocalizedMessage());
-				}
-			}
-		}
-	}
+                // Writing Entry to file
+                String entryName = entry.getName();
 
-	/**
-	 * Extract a archive into a directory
-	 * 
-	 * @param outputFile
-	 *            the file to read
-	 * @param finalDir
-	 *            the directory where write to
-	 * @throws ActionException
-	 */
-	protected void extractTar(final File outputFile, File finalDir)
-			throws ActionException {
-		// Extracting the tar file
-		TarArchiveInputStream tarStream = null;
-		try {
-			// Create the final directory
-			FileUtils.forceMkdir(finalDir);
-			tarStream = new TarArchiveInputStream(new FileInputStream(
-					outputFile));
-			// Accessing the entries
-			ArchiveEntry entry = tarStream.getNextEntry();
+                File f = new File(finalDir, entryName);
+                FileUtils.writeByteArrayToFile(f, content);
+                entry = zipStream.getNextEntry();
+            } while (entry != null);
+        } catch (FileNotFoundException e) {
+            throw new ActionException(MarissBaseAction.class, e.getLocalizedMessage());
+        } catch (IOException e) {
+            throw new ActionException(MarissBaseAction.class, e.getLocalizedMessage());
+        } finally {
+            if (zipStream != null) {
+                try {
+                    zipStream.close();
+                } catch (Exception e) {
+                    LOGGER.error(e.getLocalizedMessage());
+                }
+            }
+        }
+    }
 
-			do {
-				int offset = 0;
-				byte[] content = new byte[(int) entry.getSize()];
-				int byteRead = 0;
-				while (offset < content.length && byteRead != -1) {
-					byteRead = tarStream.read(content, offset, content.length
-							- offset);
-					offset += byteRead;
-				}
+    /**
+     * Extract a archive into a directory
+     * 
+     * @param outputFile the file to read
+     * @param finalDir the directory where write to
+     * @throws ActionException
+     */
+    protected void extractTar(final File outputFile, File finalDir) throws ActionException {
+        // Extracting the tar file
+        TarArchiveInputStream tarStream = null;
+        try {
+            // Create the final directory
+            FileUtils.forceMkdir(finalDir);
+            tarStream = new TarArchiveInputStream(new FileInputStream(outputFile));
+            // Accessing the entries
+            ArchiveEntry entry = tarStream.getNextEntry();
 
-				// Writing Entry to file
-				String entryName = entry.getName();
+            do {
+                int offset = 0;
+                byte[] content = new byte[(int) entry.getSize()];
+                int byteRead = 0;
+                while (offset < content.length && byteRead != -1) {
+                    byteRead = tarStream.read(content, offset, content.length - offset);
+                    offset += byteRead;
+                }
 
-				File f = new File(finalDir, entryName);
-				FileUtils.writeByteArrayToFile(f, content);
-				entry = tarStream.getNextEntry();
-			} while (entry != null);
-		} catch (FileNotFoundException e) {
-			throw new ActionException(MarissBaseAction.class,
-					e.getLocalizedMessage());
-		} catch (IOException e) {
-			throw new ActionException(MarissBaseAction.class,
-					e.getLocalizedMessage());
-		} finally {
-			if (tarStream != null) {
-				try {
-					tarStream.close();
-				} catch (Exception e) {
-					LOGGER.error(e.getLocalizedMessage());
-				}
-			}
-		}
-	}
+                // Writing Entry to file
+                String entryName = entry.getName();
 
-	/**
-	 * Private method for zipping an array of files
-	 * 
-	 * @param temp
-	 * @param files
-	 * @param filename
-	 * @return
-	 * @throws ActionException
-	 */
-	protected File zipAll(File temp, File[] files, String filename)
-			throws ActionException {
-		File zippedFile = new File(temp, filename + ".zip");
-		FileOutputStream fos = null;
-		ZipOutputStream zos = null;
-		try {
-			// Create the new file
-			zippedFile.createNewFile();
+                File f = new File(finalDir, entryName);
+                FileUtils.writeByteArrayToFile(f, content);
+                entry = tarStream.getNextEntry();
+            } while (entry != null);
+        } catch (FileNotFoundException e) {
+            throw new ActionException(MarissBaseAction.class, e.getLocalizedMessage());
+        } catch (IOException e) {
+            throw new ActionException(MarissBaseAction.class, e.getLocalizedMessage());
+        } finally {
+            if (tarStream != null) {
+                try {
+                    tarStream.close();
+                } catch (Exception e) {
+                    LOGGER.error(e.getLocalizedMessage());
+                }
+            }
+        }
+    }
 
-			// create byte buffer
-			byte[] buffer = new byte[1024];
-			// Open the stream
-			fos = new FileOutputStream(zippedFile);
-			zos = new ZipOutputStream(fos);
-			// Loop on the array
-			for (int i = 0; i < files.length; i++) {
-				FileInputStream fis = null;
-				try {
-					fis = new FileInputStream(files[i]);
-					// begin writing a new ZIP entry, positions the stream to
-					// the start of the entry data
-					zos.putNextEntry(new ZipEntry(files[i].getName()));
-					int length;
+    /**
+     * Private method for zipping an array of files
+     * 
+     * @param temp
+     * @param files
+     * @param filename
+     * @return
+     * @throws ActionException
+     */
+    protected File zipAll(File temp, File[] files, String filename) throws ActionException {
+        File zippedFile = new File(temp, filename + ".zip");
+        FileOutputStream fos = null;
+        ZipOutputStream zos = null;
+        try {
+            // Create the new file
+            zippedFile.createNewFile();
 
-					while ((length = fis.read(buffer)) > 0) {
-						zos.write(buffer, 0, length);
-					}
-					zos.closeEntry();
-				} catch (Exception e) {
-					throw new ActionException(NetCDFAction.class,
-							e.getLocalizedMessage());
-				} finally {
-					if (fis != null) {
-						// close the ZipOutputStream
-						try {
-							fis.close();
-						} catch (Exception e) {
-							LOGGER.error(e.getLocalizedMessage());
-						}
-					}
-				}
-			}
-			zos.finish();
-		} catch (Exception e) {
-			throw new ActionException(NetCDFAction.class,
-					e.getLocalizedMessage());
-		} finally {
-			if (fos != null) {
-				// close the ZipOutputStream
-				try {
-					fos.close();
-				} catch (Exception e) {
-					LOGGER.error(e.getLocalizedMessage());
-				}
-			}
-			if (zos != null) {
-				// close the ZipOutputStream
-				try {
-					zos.close();
-				} catch (Exception e) {
-					LOGGER.error(e.getLocalizedMessage());
-				}
-			}
-		}
+            // create byte buffer
+            byte[] buffer = new byte[1024];
+            // Open the stream
+            fos = new FileOutputStream(zippedFile);
+            zos = new ZipOutputStream(fos);
+            // Loop on the array
+            for (int i = 0; i < files.length; i++) {
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(files[i]);
+                    // begin writing a new ZIP entry, positions the stream to
+                    // the start of the entry data
+                    zos.putNextEntry(new ZipEntry(files[i].getName()));
+                    int length;
 
-		return zippedFile;
-	}
+                    while ((length = fis.read(buffer)) > 0) {
+                        zos.write(buffer, 0, length);
+                    }
+                    zos.closeEntry();
+                } catch (Exception e) {
+                    throw new ActionException(NetCDFAction.class, e.getLocalizedMessage());
+                } finally {
+                    if (fis != null) {
+                        // close the ZipOutputStream
+                        try {
+                            fis.close();
+                        } catch (Exception e) {
+                            LOGGER.error(e.getLocalizedMessage());
+                        }
+                    }
+                }
+            }
+            zos.finish();
+        } catch (Exception e) {
+            throw new ActionException(NetCDFAction.class, e.getLocalizedMessage());
+        } finally {
+            if (fos != null) {
+                // close the ZipOutputStream
+                try {
+                    fos.close();
+                } catch (Exception e) {
+                    LOGGER.error(e.getLocalizedMessage());
+                }
+            }
+            if (zos != null) {
+                // close the ZipOutputStream
+                try {
+                    zos.close();
+                } catch (Exception e) {
+                    LOGGER.error(e.getLocalizedMessage());
+                }
+            }
+        }
 
-	/**
-	 * Zip a list of file into one zip file.
-	 * 
-	 * @param files
-	 *            files to zip
-	 * @param targetZipFile
-	 *            target zip file
-	 * @throws IOException
-	 *             IO error exception can be thrown when copying ...
-	 */
-	protected void zipFile(final File[] files, final File targetZipFile)
-			throws IOException {
-		FileOutputStream fos = null;
-		ZipOutputStream zos = null;
-		try {
-			fos = new FileOutputStream(targetZipFile);
-			zos = new ZipOutputStream(fos);
-			byte[] buffer = new byte[128];
-			for (int i = 0; i < files.length; i++) {
-				File currentFile = files[i];
-				if (!currentFile.isDirectory()) {
-					ZipEntry entry = new ZipEntry(currentFile.getName());
-					FileInputStream fis = null;
-					try {
-						fis = new FileInputStream(currentFile);
-						zos.putNextEntry(entry);
-						int read = 0;
-						while ((read = fis.read(buffer)) != -1) {
-							zos.write(buffer, 0, read);
-						}
-					} catch (Exception e) {
-						LOGGER.error(e.getMessage());
-					} finally {
-						if (fis != null) {
-							try {
-								fis.close();
-							} catch (Exception e) {
-								LOGGER.error(e.getMessage());
-							}
-						}
-						if (zos != null) {
-							try {
-								zos.closeEntry();
-							} catch (Exception e) {
-								LOGGER.error(e.getMessage());
-							}
-						}
-					}
-				}
-			}
-		} catch (FileNotFoundException e) {
-			LOGGER.error("File not found : " + e);
-		} finally {
-			if (fos != null) {
-				try {
-					fos.close();
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage());
-				}
-			}
-			if (zos != null) {
-				try {
-					zos.close();
-				} catch (Exception e) {
-					LOGGER.error(e.getMessage());
-				}
-			}
-		}
-	}
+        return zippedFile;
+    }
 
-	/**
-	 * Method that gets the ship detection from the directory
-	 * 
-	 * @param attributeBean
-	 *            the attributebean to populate
-	 * @param dir
-	 *            the directory
-	 * @return
-	 */
-	protected File[] getShipDetections(AttributeBean attributeBean, File dir) {
+    /**
+     * Zip a list of file into one zip file.
+     * 
+     * @param files files to zip
+     * @param targetZipFile target zip file
+     * @throws IOException IO error exception can be thrown when copying ...
+     */
+    protected void zipFile(final File[] files, final File targetZipFile) throws IOException {
+        FileOutputStream fos = null;
+        ZipOutputStream zos = null;
+        try {
+            fos = new FileOutputStream(targetZipFile);
+            zos = new ZipOutputStream(fos);
+            byte[] buffer = new byte[128];
+            for (int i = 0; i < files.length; i++) {
+                File currentFile = files[i];
+                if (!currentFile.isDirectory()) {
+                    ZipEntry entry = new ZipEntry(currentFile.getName());
+                    FileInputStream fis = null;
+                    try {
+                        fis = new FileInputStream(currentFile);
+                        zos.putNextEntry(entry);
+                        int read = 0;
+                        while ((read = fis.read(buffer)) != -1) {
+                            zos.write(buffer, 0, read);
+                        }
+                    } catch (Exception e) {
+                        LOGGER.error(e.getMessage());
+                    } finally {
+                        if (fis != null) {
+                            try {
+                                fis.close();
+                            } catch (Exception e) {
+                                LOGGER.error(e.getMessage());
+                            }
+                        }
+                        if (zos != null) {
+                            try {
+                                zos.closeEntry();
+                            } catch (Exception e) {
+                                LOGGER.error(e.getMessage());
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            LOGGER.error("File not found : " + e);
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (Exception e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+            if (zos != null) {
+                try {
+                    zos.close();
+                } catch (Exception e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+    }
 
-		IOFileFilter file = FileFilterUtils.fileFileFilter();
-		IOFileFilter xml = FileFilterUtils.suffixFileFilter("xml");
-		IOFileFilter dsFilter = new RegexFileFilter(".*_DS.*");
-		FileFilter and = FileFilterUtils.and(file, xml, dsFilter);
-		File[] files = dir.listFiles(and);
+    /**
+     * Method that gets the ship detection from the directory
+     * 
+     * @param attributeBean the attributebean to populate
+     * @param dir the directory
+     * @return
+     */
+    protected File[] getShipDetections(AttributeBean attributeBean, File dir) {
 
-		attributeBean.numShipDetections = (files != null ? files.length : 0);
-		return files;
-	}
+        IOFileFilter file = FileFilterUtils.fileFileFilter();
 
-	/**
-	 * Read ship detection from the list of files provided
-	 * 
-	 * @param files
-	 *            the xml files with ship detections
-	 * @return
-	 */
-	protected List<ShipDetection> readShipDetections(File[] files) {
-		QNameMap qmap = new QNameMap();
-		qmap.setDefaultNamespace("http://ignore.namespace/prefix");
-		qmap.setDefaultPrefix("");
-		StaxDriver staxDriver = new StaxDriver(qmap);
-		XStream xstream = new XStream(staxDriver) {
-			@Override
-			protected MapperWrapper wrapMapper(MapperWrapper next) {
-				return new MapperWrapper(next) {
-					@Override
-					public boolean shouldSerializeMember(Class definedIn,
-							String fieldName) {
-						if (definedIn == Object.class) {
-							return false;
-						}
-						return super
-								.shouldSerializeMember(definedIn, fieldName);
-					}
-				};
-			}
-		};
+        IOFileFilter xml = FileFilterUtils.suffixFileFilter("xml");
+        IOFileFilter dsFilter = new RegexFileFilter(".*_DS.*");
 
-		xstream.processAnnotations(ShipDetection.class); // inform XStream to
-															// parse annotations
-															// in Data
+        FileFilter dsXmlFileFilter = FileFilterUtils.and(file, xml, dsFilter);
 
-		List<ShipDetection> shipDetections = new ArrayList<ShipDetection>();
+        IOFileFilter shp = FileFilterUtils.suffixFileFilter("shp");
+        IOFileFilter shipFilter = new RegexFileFilter(".*_SHIP.*");
 
-		for (File fileDsXml : files) {
-			try {
-				ShipDetection shpDs = (ShipDetection) xstream
-						.fromXML(fileDsXml);
+        FileFilter shipShpFileFilter = FileFilterUtils.and(file, shp, shipFilter);
 
-				shipDetections.add(shpDs);
+        File[] dsXmlfiles = dir.listFiles(dsXmlFileFilter);
+        File[] shipShpfiles = dir.listFiles(shipShpFileFilter);
 
-			} catch (Exception e) {
-				LOGGER.warn(e.getMessage(), e);
-			}
+        File[] files = null;
+        if (dsXmlfiles != null && dsXmlfiles.length > 0) {
+            files = dsXmlfiles;
+        } else {
+            files = shipShpfiles;
+        }
 
-		}
-		return shipDetections;
-	}
+        return files;
+    }
 
-	/**
-	 * 
-	 * @param attributeBean
-	 * @param shipDetections
-	 * @return
-	 * @throws ActionException
-	 */
-	public boolean insertShipDetectionsIntoDb(AttributeBean attributeBean,
-			List<ShipDetection> shipDetections) throws ActionException {
-		boolean result = false;
+    /**
+     * Read ship detection from the list of files provided
+     * 
+     * @param files the xml files with ship detections
+     * @return
+     */
+    protected List<ShipDetection> readShipDetections(AttributeBean attributeBean, File[] files) {
+        List<ShipDetection> shipDetections = new ArrayList<ShipDetection>();
 
-		/*
-		 * ship_detections(
-		 * 
-		 * servicename, identifier, dsid, "timeStamp", heading, speed, length,
-		 * 
-		 * "MMSI", confidencelevel, imageidentifier, imagetype, "RCS",
-		 * maxpixelvalue,
-		 * 
-		 * shipcategory, confidencelevelcat, the_geom )
-		 */
+        if (files != null && files.length > 0) {
+            if (FilenameUtils.getExtension(files[0].getAbsolutePath()).equalsIgnoreCase("xml")) {
 
-		String sql = "INSERT INTO "
-				+ configuration.getShipDetectionsTableName()
-				+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromText(?))";
+                // If files are DS XML
 
-		Connection conn = null;
+                XStream xstream = prepareXStreamDSReader();
+                attributeBean.numShipDetections = (files != null ? files.length : 0);
+                for (File fileDsXml : files) {
+                    try {
+                        ShipDetection shpDs = (ShipDetection) xstream.fromXML(fileDsXml);
 
-		try {
-			conn = attributeBean.dataStore.getDataSource().getConnection();
-			PreparedStatement ps = conn.prepareStatement(sql);
+                        shipDetections.add(shpDs);
 
-			for (ShipDetection ds : shipDetections) {
-				ps.setString(1, attributeBean.serviceName); // servicename
-				ps.setString(2, attributeBean.identifier); // identifier
-				ps.setString(3, ds.getId()); // dsid
-				if (ds.getTimeStamp() != null) { // "timeStamp"
-					Date d = guessTimeStamp(ds.getTimeStamp());
-					if(d != null){
-					    ps.setDate(4, new java.sql.Date(d.getTime()));
-					}
-				} else {
-					ps.setDate(4, new java.sql.Date(1));
-				}
+                    } catch (Exception e) {
+                        LOGGER.warn(e.getMessage(), e);
+                    }
 
-				if (ds.getHeading() != null)
-					ps.setDouble(5, ds.getHeading()); // heading
-				else
-					ps.setNull(5, java.sql.Types.DOUBLE);
+                }
+            } else if (FilenameUtils.getExtension(files[0].getAbsolutePath())
+                    .equalsIgnoreCase("shp")) {
 
-				if (ds.getSpeed() != null)
-					ps.setDouble(6, ds.getSpeed()); // speed
-				else
-					ps.setNull(6, java.sql.Types.DOUBLE);
+                // If files are SHIP ESRI ShapeFiles
 
-				if (ds.getLength() != null)
-					ps.setDouble(7, ds.getLength()); // length
-				else
-					ps.setNull(7, java.sql.Types.DOUBLE);
+                ShapefileReader reader = null;
+                try {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("url", files[0].toURI().toURL());
 
-				ps.setString(8, ds.getMMSI()); // "MMSI"
+                    DataStore dataStore = DataStoreFinder.getDataStore(map);
+                    String typeName = dataStore.getTypeNames()[0];
 
-				if (ds.getConfidenceLevel() != null)
-					ps.setDouble(9, ds.getConfidenceLevel()); // confidencelevel
-				else
-					ps.setNull(9, java.sql.Types.DOUBLE);
+                    FeatureSource<SimpleFeatureType, SimpleFeature> source = dataStore
+                            .getFeatureSource(typeName);
+                    Filter filter = Filter.INCLUDE; // ECQL.toFilter("BBOX(THE_GEOM, 10,20,30,40)")
 
-				ps.setString(10, ds.getImageIdentifier()); // imageidentifier
-				ps.setString(11, ds.getImageType()); // imagetype
+                    FeatureCollection<SimpleFeatureType, SimpleFeature> collection = source
+                            .getFeatures(filter);
+                    FeatureIterator<SimpleFeature> features = collection.features();
+                    int numFeatures = 0;
+                    while (features.hasNext()) {
+                        SimpleFeature feature = features.next();
+                        numFeatures++;
+                        
+                        ShipDetection sd = new ShipDetection();
+                        
+                        sd.setId(feature.getID());
+                        Geometry geom = (Geometry) feature.getDefaultGeometryProperty().getValue();
+                        sd.setPosition(geom.toText());
+                        sd.setSpeed((Double) feature.getAttribute("TARGET_VEL"));
+                        sd.setHeading((Double) feature.getAttribute("TARGET_DIR"));
+                        sd.setLength((Double) feature.getAttribute("LENGTH"));
+                        sd.setTimeStamp((String) feature.getAttribute("TARGET_UTC"));
+                        
+                        shipDetections.add(sd);
+                    }
+                    attributeBean.numShipDetections = numFeatures;
+                } catch (Exception e) {
+                    LOGGER.warn(e.getMessage(), e);
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            LOGGER.warn(e.getMessage(), e);
+                        }
+                    }
+                }
+            }
+        }
 
-				Double RCS = null;
-				Double maxPixelValue = null;
-				if (ds.getDetectionParameters() != null) {
-					RCS = ds.getDetectionParameters().getRCS();
+        return shipDetections;
+    }
 
-					if (RCS != null)
-						ps.setDouble(12, RCS); // "RCS"
-					else
-						ps.setNull(12, java.sql.Types.DOUBLE);
+    /**
+     * @return
+     */
+    protected XStream prepareXStreamDSReader() {
+        QNameMap qmap = new QNameMap();
+        qmap.setDefaultNamespace("http://ignore.namespace/prefix");
+        qmap.setDefaultPrefix("");
+        StaxDriver staxDriver = new StaxDriver(qmap);
+        XStream xstream = new XStream(staxDriver) {
+            @Override
+            protected MapperWrapper wrapMapper(MapperWrapper next) {
+                return new MapperWrapper(next) {
+                    @Override
+                    public boolean shouldSerializeMember(Class definedIn, String fieldName) {
+                        if (definedIn == Object.class) {
+                            return false;
+                        }
+                        return super.shouldSerializeMember(definedIn, fieldName);
+                    }
+                };
+            }
+        };
 
-					maxPixelValue = ds.getDetectionParameters()
-							.getMaxPixelValue();
+        xstream.processAnnotations(ShipDetection.class); // inform XStream to
+                                                         // parse annotations
+                                                         // in Data
+        return xstream;
+    }
 
-					if (maxPixelValue != null)
-						ps.setDouble(13, maxPixelValue); // maxpixelvalue
-					else
-						ps.setNull(13, java.sql.Types.DOUBLE);
-				} else {
-					ps.setNull(12, java.sql.Types.DOUBLE); // "RCS"
-					ps.setNull(13, java.sql.Types.DOUBLE); // maxpixelvalue
-				}
+    /**
+     * 
+     * @param attributeBean
+     * @param shipDetections
+     * @return
+     * @throws ActionException
+     */
+    public boolean insertShipDetectionsIntoDb(AttributeBean attributeBean,
+            List<ShipDetection> shipDetections) throws ActionException {
+        boolean result = false;
 
-				if (ds.getShipCategory() != null)
-					ps.setDouble(14, ds.getShipCategory()); // shipcategory
-				else
-					ps.setNull(14, java.sql.Types.DOUBLE);
+        /*
+         * ship_detections(
+         * 
+         * servicename, identifier, dsid, "timeStamp", heading, speed, length,
+         * 
+         * "MMSI", confidencelevel, imageidentifier, imagetype, "RCS", maxpixelvalue,
+         * 
+         * shipcategory, confidencelevelcat, the_geom )
+         */
 
-				ps.setString(15, ds.getConfidenceLevelCat()); // confidencelevelcat
-				ps.setString(16, ds.getPosition()); // the_geom
+        String sql = "INSERT INTO " + configuration.getShipDetectionsTableName()
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromText(?))";
 
-				ps.addBatch();
-			}
+        Connection conn = null;
 
-			int[] ids = ps.executeBatch();
-			result = ids != null && ids.length > 0;
-			ps.close();
-		} catch (SQLException e) {
-			throw new ActionException(this, e.getMessage());
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
+        try {
+            conn = attributeBean.dataStore.getDataSource().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
 
-		return result;
-	}
+            for (ShipDetection ds : shipDetections) {
+                ps.setString(1, attributeBean.serviceName); // servicename
+                ps.setString(2, attributeBean.identifier); // identifier
 
-	/**
-	 * Tries to guess the time-stamp
-	 * @param ps
-	 * @param ds
-	 * @throws SQLException
-	 */
-	protected Date guessTimeStamp(String timeStamp) {
-	    List<String> dateFormatStrings = configuration.getContainer().getDateFormats();
-		
+                // DS ID
+                ps.setString(3, ds.getId()); // dsid
 
-		for(String formatString : dateFormatStrings){
-		    SimpleDateFormat df = new SimpleDateFormat(formatString);
-		    df.setTimeZone(TimeZone.getTimeZone("UTC"));
-		    try {
-	            Date d = df.parse(timeStamp);
-	            return d;
-	        } catch (ParseException e) {
-	            //go forwards to the next format
-	        }
-		}
-		LOGGER.warn("unable to parse timeStamp : " + timeStamp);
-		
-		return null;
-	}
-	
-	/**
+                // TIMESTAMP
+                if (ds.getTimeStamp() != null) { // "timeStamp"
+                    Date d = guessTimeStamp(ds.getTimeStamp());
+                    if (d != null) {
+                        ps.setDate(4, new java.sql.Date(d.getTime()));
+                    }
+                } else {
+                    ps.setDate(4, new java.sql.Date(1));
+                }
+
+                // HEADING
+                if (ds.getHeading() != null)
+                    ps.setDouble(5, ds.getHeading()); // heading
+                else
+                    ps.setNull(5, java.sql.Types.DOUBLE);
+
+                // SPEED
+                if (ds.getSpeed() != null)
+                    ps.setDouble(6, ds.getSpeed()); // speed
+                else
+                    ps.setNull(6, java.sql.Types.DOUBLE);
+
+                // LENGTH
+                if (ds.getLength() != null)
+                    ps.setDouble(7, ds.getLength()); // length
+                else
+                    ps.setNull(7, java.sql.Types.DOUBLE);
+
+                // MSI
+                ps.setString(8, ds.getMMSI()); // "MMSI"
+
+                // CONFIDENCE LEVEL
+                if (ds.getConfidenceLevel() != null)
+                    ps.setDouble(9, ds.getConfidenceLevel()); // confidencelevel
+                else
+                    ps.setNull(9, java.sql.Types.DOUBLE);
+
+                // IMAGE IDENTIFIER
+                ps.setString(10, ds.getImageIdentifier()); // imageidentifier
+
+                // IMAGE TYPE
+                ps.setString(11, ds.getImageType()); // imagetype
+
+                // DETECTION PARAMS
+                Double RCS = null;
+                Double maxPixelValue = null;
+                if (ds.getDetectionParameters() != null) {
+                    RCS = ds.getDetectionParameters().getRCS();
+
+                    if (RCS != null)
+                        ps.setDouble(12, RCS); // "RCS"
+                    else
+                        ps.setNull(12, java.sql.Types.DOUBLE);
+
+                    maxPixelValue = ds.getDetectionParameters().getMaxPixelValue();
+
+                    if (maxPixelValue != null)
+                        ps.setDouble(13, maxPixelValue); // maxpixelvalue
+                    else
+                        ps.setNull(13, java.sql.Types.DOUBLE);
+                } else {
+                    ps.setNull(12, java.sql.Types.DOUBLE); // "RCS"
+                    ps.setNull(13, java.sql.Types.DOUBLE); // maxpixelvalue
+                }
+
+                // SHIP CATEGORY
+                if (ds.getShipCategory() != null)
+                    ps.setDouble(14, ds.getShipCategory()); // shipcategory
+                else
+                    ps.setNull(14, java.sql.Types.DOUBLE);
+
+                // CONFIDENCE LEVEL CATEGORY
+                ps.setString(15, ds.getConfidenceLevelCat()); // confidencelevelcat
+
+                // SHIP POSITION
+                ps.setString(16, ds.getPosition()); // the_geom
+
+                ps.addBatch();
+            }
+
+            int[] ids = ps.executeBatch();
+            result = ids != null && ids.length > 0;
+            ps.close();
+        } catch (SQLException e) {
+            throw new ActionException(this, e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Tries to guess the time-stamp
+     * 
+     * @param ps
+     * @param ds
+     * @throws SQLException
+     */
+    protected Date guessTimeStamp(String timeStamp) {
+        List<String> dateFormatStrings = configuration.getContainer().getDateFormats();
+
+        for (String formatString : dateFormatStrings) {
+            SimpleDateFormat df = new SimpleDateFormat(formatString);
+            df.setTimeZone(TimeZone.getTimeZone("UTC"));
+            try {
+                Date d = df.parse(timeStamp);
+                return d;
+            } catch (ParseException e) {
+                // go forwards to the next format
+            }
+        }
+        LOGGER.warn("unable to parse timeStamp : " + timeStamp);
+
+        return null;
+    }
+
+    /**
      * Insert a product in the database
+     * 
      * @param attributeBean attributes
      * @param outFileLocation the absolute path
      * @param namespace namespace
@@ -766,11 +842,11 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
      * @return true if success
      * @throws ActionException
      */
-    public boolean insertDb(AttributeBean attributeBean, String outFileLocation, String namespace, String layerName,
-            String cfName, Geometry geo) throws ActionException {
+    public boolean insertDb(AttributeBean attributeBean, String outFileLocation, String namespace,
+            String layerName, String cfName, Geometry geo) throws ActionException {
         boolean result = false;
 
-        String sql = "INSERT INTO " + configuration.getProductsTableName() 
+        String sql = "INSERT INTO " + configuration.getProductsTableName()
                 + "(servicename, identifier, bbox, \"time\", variable, sartype, outfilelocation, originalfilepath, layername, partition, numoilspill, numshipdetect)"
                 + " VALUES (?,?,ST_GeomFromText(?),?,?,?,?,?,?,?,?,?)";
 
@@ -792,11 +868,14 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
             ps.setString(7, outFileLocation);
             ps.setString(8, attributeBean.absolutePath);
             ps.setString(9, namespace + ":" + layerName);
-            
+
             String partition = null;
             final String outputFileVaseName = FilenameUtils.getBaseName(outFileLocation);
             if (outputFileVaseName.contains("partition")) {
-                partition = outputFileVaseName.substring(outputFileVaseName.indexOf(CUSTOM_DIM_VAL_SEPARATOR) + CUSTOM_DIM_VAL_SEPARATOR.length(), outputFileVaseName.indexOf(CUSTOM_DIM_END_SEPARATOR));
+                partition = outputFileVaseName.substring(
+                        outputFileVaseName.indexOf(CUSTOM_DIM_VAL_SEPARATOR)
+                                + CUSTOM_DIM_VAL_SEPARATOR.length(),
+                        outputFileVaseName.indexOf(CUSTOM_DIM_END_SEPARATOR));
             }
             ps.setString(10, partition);
             ps.setInt(11, attributeBean.numOilSpills);
@@ -817,57 +896,64 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
 
         return result;
     }
-    protected AttributeBean getAttributeBean(File inputDir) throws ActionException {
-		AttributeBean attributeBean = new AttributeBean();
-		
-		attributeBean.maskOneIsValid = container.isMaskOneIsValid();
 
-		getProductAttributes(inputDir, attributeBean);
-		return attributeBean;
-	}
+    protected AttributeBean getAttributeBean(File inputDir) throws ActionException {
+        AttributeBean attributeBean = new AttributeBean();
+
+        attributeBean.maskOneIsValid = container.isMaskOneIsValid();
+
+        getProductAttributes(inputDir, attributeBean);
+        return attributeBean;
+    }
 
     /**
      * Gets the attributes of the product
+     * 
      * @param inputDir the directory of Input
-     * @param attributeBean 
-     * @throws ActionException 
+     * @param attributeBean
+     * @throws ActionException
      */
-	private void getProductAttributes(File inputDir, AttributeBean attributeBean) throws ActionException {
-		
-		// Getting file name
-		if(inputDir !=null && inputDir.exists() && inputDir.isDirectory()){
-			String fileName = configuration.getAttributeFileName();
-			File attributeFile = new File(inputDir,fileName != null ? fileName : ATTRIBUTES_FILE_NAME);
-			if(!attributeFile.exists()){
-				LOGGER.error("UNABLE TO FIND ATTRIBUTE FILE");
-				throw new ActionException(this, "Unable to find configuration file:" + attributeFile.getAbsolutePath());
-			}
-			//read attributes
-			FileMetadataWrapper metadata = readAttributeFile(attributeFile);
-			Map<String,Object> metadataMap = metadata.getMetadata();
-			attributeBean.serviceName = (String) metadataMap.get(MarissConstants.SERVICE_KEY);
-			attributeBean.absolutePath = (String) metadataMap.get(MarissConstants.ORIGINAL_FILE_PATH_KEY);
-			attributeBean.identifier = (String) metadataMap.get(MarissConstants.PRODUCTID_KEY);
-			attributeBean.user = (String) metadataMap.get(MarissConstants.USER_KEY);
-			attributeBean.timedim = (Date) metadataMap.get(MarissConstants.TIME_START);
-		}else if(inputDir !=null && inputDir.exists()){
-			//TODO try to extract
-			LOGGER.error("The input is not a directory:" + inputDir);
-			throw new ActionException(this, "Unable to find input directory:" + inputDir.getAbsolutePath());
-		}else if(inputDir!= null){
-			//TODO try to extract
-			LOGGER.error("Input dir doesn't exists:" + inputDir);
-			throw new ActionException(this, "Unable to find input directory:" + inputDir.getAbsolutePath());
-		}else{
-			LOGGER.error("Input dir is null");
-			throw new ActionException(this, "Unable to find input directory");
-		}
-		
-		
-	}
+    private void getProductAttributes(File inputDir, AttributeBean attributeBean)
+            throws ActionException {
 
-	private FileMetadataWrapper readAttributeFile(File attributeFile) throws ActionException {
-		FileInputStream inputStream = null;
+        // Getting file name
+        if (inputDir != null && inputDir.exists() && inputDir.isDirectory()) {
+            String fileName = configuration.getAttributeFileName();
+            File attributeFile = new File(inputDir,
+                    fileName != null ? fileName : ATTRIBUTES_FILE_NAME);
+            if (!attributeFile.exists()) {
+                LOGGER.error("UNABLE TO FIND ATTRIBUTE FILE");
+                throw new ActionException(this,
+                        "Unable to find configuration file:" + attributeFile.getAbsolutePath());
+            }
+            // read attributes
+            FileMetadataWrapper metadata = readAttributeFile(attributeFile);
+            Map<String, Object> metadataMap = metadata.getMetadata();
+            attributeBean.serviceName = (String) metadataMap.get(MarissConstants.SERVICE_KEY);
+            attributeBean.absolutePath = (String) metadataMap
+                    .get(MarissConstants.ORIGINAL_FILE_PATH_KEY);
+            attributeBean.identifier = (String) metadataMap.get(MarissConstants.PRODUCTID_KEY);
+            attributeBean.user = (String) metadataMap.get(MarissConstants.USER_KEY);
+            attributeBean.timedim = (Date) metadataMap.get(MarissConstants.TIME_START);
+        } else if (inputDir != null && inputDir.exists()) {
+            // TODO try to extract
+            LOGGER.error("The input is not a directory:" + inputDir);
+            throw new ActionException(this,
+                    "Unable to find input directory:" + inputDir.getAbsolutePath());
+        } else if (inputDir != null) {
+            // TODO try to extract
+            LOGGER.error("Input dir doesn't exists:" + inputDir);
+            throw new ActionException(this,
+                    "Unable to find input directory:" + inputDir.getAbsolutePath());
+        } else {
+            LOGGER.error("Input dir is null");
+            throw new ActionException(this, "Unable to find input directory");
+        }
+
+    }
+
+    private FileMetadataWrapper readAttributeFile(File attributeFile) throws ActionException {
+        FileInputStream inputStream = null;
         try {
             inputStream = new FileInputStream(attributeFile);
             XStream xstream = new XStream();
@@ -877,7 +963,7 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
             // the object cannot be deserialized
             if (LOGGER.isErrorEnabled())
                 LOGGER.error("The passed FileSystemEvent reference to a not deserializable file: "
-                             + attributeFile.getAbsolutePath(), e);
+                        + attributeFile.getAbsolutePath(), e);
             if (!configuration.isFailIgnored()) {
                 listenerForwarder.failed(e);
                 throw new ActionException(this, e.getLocalizedMessage());
@@ -893,8 +979,8 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
         } finally {
             IOUtils.closeQuietly(inputStream);
         }
-		return null;
-		
-	}
+        return null;
+
+    }
 
 }

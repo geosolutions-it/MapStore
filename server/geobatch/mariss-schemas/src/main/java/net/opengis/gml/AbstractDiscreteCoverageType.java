@@ -40,9 +40,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AbstractDiscreteCoverageType", propOrder = { "coverageFunction" })
-@XmlSeeAlso({ MultiSolidCoverageType.class, GridCoverageType.class,
-        RectifiedGridCoverageType.class, MultiCurveCoverageType.class,
-        MultiPointCoverageType.class, MultiSurfaceCoverageType.class })
+@XmlSeeAlso({ MultiSolidCoverageType.class, GridCoverageType.class, RectifiedGridCoverageType.class,
+        MultiCurveCoverageType.class, MultiPointCoverageType.class,
+        MultiSurfaceCoverageType.class })
 public abstract class AbstractDiscreteCoverageType extends AbstractCoverageType {
 
     protected CoverageFunctionType coverageFunction;

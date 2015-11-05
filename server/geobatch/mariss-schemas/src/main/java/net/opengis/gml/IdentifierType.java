@@ -58,10 +58,10 @@ public class IdentifierType {
      * allowed in all CRS objects.
      * 
      * @return possible object is {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >}
-     *         {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >}
-     *         {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}
-     *         {@link CodeType }{@code >}
+     *         {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }
+     *         {@code <} {@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }
+     *         {@code >} {@link JAXBElement }{@code <} {@link CodeType }{@code >}
      * 
      */
     public JAXBElement<CodeType> getName() {
@@ -92,14 +92,14 @@ public class IdentifierType {
      * Sets the value of the name property.
      * 
      * @param value allowed object is {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >}
-     *        {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link CodeType }{@code >}
+     *        {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }{@code >} {@link JAXBElement }{@code <}{@link CodeType }
+     *        {@code >} {@link JAXBElement }{@code <} {@link CodeType }{@code >}
      * 
      */
     public void setName(JAXBElement<CodeType> value) {
-        this.name = ((JAXBElement<CodeType>) value);
+        this.name = (value);
     }
 
     /**

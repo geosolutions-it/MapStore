@@ -21,16 +21,6 @@
  */
 package it.geosolutions.geobatch.mariss.actions.csv;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.annotations.Action;
-import it.geosolutions.geobatch.annotations.CheckConfiguration;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.flow.event.action.BaseAction;
-import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProcessException;
-import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProcessor;
-import it.geosolutions.geobatch.mariss.ingestion.csv.configuration.CSVProcessorConfiguration;
-import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -45,6 +35,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import au.com.bytecode.opencsv.CSVReader;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.annotations.CheckConfiguration;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.flow.event.action.BaseAction;
+import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProcessException;
+import it.geosolutions.geobatch.mariss.ingestion.csv.CSVProcessor;
+import it.geosolutions.geobatch.mariss.ingestion.csv.configuration.CSVProcessorConfiguration;
+import it.geosolutions.geobatch.mariss.ingestion.csv.utils.CSVIngestUtils;
 
 @Action(configurationClass = CSVIngestConfiguration.class)
 public class CSVIngestAction extends BaseAction<EventObject> implements InitializingBean {
@@ -121,8 +120,8 @@ public class CSVIngestAction extends BaseAction<EventObject> implements Initiali
                     }
                     // if it haven't an specific time format configuration, use the global
                     if (csvProcessorConfig.getTimeFormatConfiguration() == null) {
-                        csvProcessorConfig.setTimeFormatConfiguration(this.configuration
-                                .getTimeFormatConfiguration());
+                        csvProcessorConfig.setTimeFormatConfiguration(
+                                this.configuration.getTimeFormatConfiguration());
                     }
                     // this method prepare the processor
                     processor.setConfiguration(csvProcessorConfig);
@@ -137,6 +136,7 @@ public class CSVIngestAction extends BaseAction<EventObject> implements Initiali
     /**
      *
      */
+    @Override
     public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
 
         // return object
@@ -188,8 +188,8 @@ public class CSVIngestAction extends BaseAction<EventObject> implements Initiali
 
         try {
             try {
-                reader = new CSVReader(new FileReader(file), this.configuration.getCsvSeparator()
-                        .charAt(0));
+                reader = new CSVReader(new FileReader(file),
+                        this.configuration.getCsvSeparator().charAt(0));
                 headers = reader.readNext();
             } catch (IOException e) {
                 throw new ActionException(this, "Error in reading CSV file", e);

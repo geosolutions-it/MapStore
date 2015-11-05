@@ -35,11 +35,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum SyncBehaviorDefaultType {
 
-    @XmlEnumValue("canSlip")
-    CAN_SLIP("canSlip"), @XmlEnumValue("locked")
-    LOCKED("locked"), @XmlEnumValue("independent")
-    INDEPENDENT("independent"), @XmlEnumValue("inherit")
-    INHERIT("inherit");
+    @XmlEnumValue("canSlip") CAN_SLIP("canSlip"), @XmlEnumValue("locked") LOCKED(
+            "locked"), @XmlEnumValue("independent") INDEPENDENT(
+                    "independent"), @XmlEnumValue("inherit") INHERIT("inherit");
     public static SyncBehaviorDefaultType fromValue(String v) {
         for (SyncBehaviorDefaultType c : SyncBehaviorDefaultType.values()) {
             if (c.value.equals(v)) {

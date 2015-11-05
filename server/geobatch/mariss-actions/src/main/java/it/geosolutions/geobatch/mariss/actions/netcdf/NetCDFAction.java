@@ -1,18 +1,5 @@
 package it.geosolutions.geobatch.mariss.actions.netcdf;
 
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
-import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.geoserver.tools.WorkspaceUtils;
-import it.geosolutions.geobatch.mariss.actions.MarissBaseAction;
-import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
-import it.geosolutions.geobatch.mariss.actions.sar.SARType;
-import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
-import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.ParameterConfigure;
-import it.geosolutions.geoserver.rest.GeoServerRESTReader;
-import it.geosolutions.imageio.plugins.netcdf.NetCDFUtilities;
-
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FileFilter;
@@ -37,6 +24,20 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.jdbc.JDBCDataStore;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import com.vividsolutions.jts.geom.Geometry;
+
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
+import it.geosolutions.filesystemmonitor.monitor.FileSystemEventType;
+import it.geosolutions.geobatch.actions.ds2ds.util.FeatureConfigurationUtil;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.geoserver.tools.WorkspaceUtils;
+import it.geosolutions.geobatch.mariss.actions.MarissBaseAction;
+import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
+import it.geosolutions.geobatch.mariss.actions.sar.SARType;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher.ParameterConfigure;
+import it.geosolutions.geoserver.rest.GeoServerRESTReader;
+import it.geosolutions.imageio.plugins.netcdf.NetCDFUtilities;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.Index;
@@ -45,11 +46,7 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.NetcdfFileWriteable;
 import ucar.nc2.Variable;
 
-import com.vividsolutions.jts.geom.Geometry;
-
 public abstract class NetCDFAction extends MarissBaseAction {
-
-
 
     private static final String PATHSEPARATOR = File.separator;
 
@@ -77,8 +74,8 @@ public abstract class NetCDFAction extends MarissBaseAction {
      */
     public boolean canProcess(FileSystemEvent event) {
         File file = event.getSource();
-        if(file.isDirectory()){
-        	return true;
+        if (file.isDirectory()) {
+            return true;
         }
         String extension = FilenameUtils.getExtension(file.getName());
         return extension != null && !extension.isEmpty() && (extension.equalsIgnoreCase("tgz"));
@@ -90,8 +87,8 @@ public abstract class NetCDFAction extends MarissBaseAction {
     public boolean checkConfiguration() {
         // Checking if the NetCDF directory is defined
         Map<String, String> params = container.getParams();
-        String dir = (params != null && params.containsKey(ConfigurationUtils.NETCDF_DIRECTORY_KEY)) ? params
-                .get(ConfigurationUtils.NETCDF_DIRECTORY_KEY) : null;
+        String dir = (params != null && params.containsKey(ConfigurationUtils.NETCDF_DIRECTORY_KEY))
+                ? params.get(ConfigurationUtils.NETCDF_DIRECTORY_KEY) : null;
         // Initial check
         boolean exists = dir != null && !dir.isEmpty();
         if (exists) {
@@ -101,8 +98,6 @@ public abstract class NetCDFAction extends MarissBaseAction {
             return false;
         }
     }
-
-    
 
     protected double definingOutputVariables(boolean hasDepth, int nLat, int nLon,
             NetcdfFileWriteable ncFileOut, NetcdfFile ncFileIn, boolean hasTimeDim, int nTime,
@@ -191,13 +186,14 @@ public abstract class NetCDFAction extends MarissBaseAction {
             File[] finalFiles = new File[createdFiles.length];
             String[] layerNames = new String[createdFiles.length];
             // Boolean indicating if the operation has gone
-            boolean sent = handleMosaic(reader, publisher, createdFiles, finalFiles, layerNames, attributeBean);
+            boolean sent = handleMosaic(reader, publisher, createdFiles, finalFiles, layerNames,
+                    attributeBean);
 
             // Move the original netCDF File in the netcdf directory
 
             // Creating a subdirectory of the NetCDF directory
-            File netcdfDir = new File(container.getParams().get(
-                    ConfigurationUtils.NETCDF_DIRECTORY_KEY));
+            File netcdfDir = new File(
+                    container.getParams().get(ConfigurationUtils.NETCDF_DIRECTORY_KEY));
             if (!netcdfDir.exists() || !netcdfDir.canWrite()) {
                 throw new ActionException(NetCDFAction.class, "Unable to find NetCDF directory");
             }
@@ -236,6 +232,7 @@ public abstract class NetCDFAction extends MarissBaseAction {
     /**
      * Execute process
      */
+    @Override
     public Queue<EventObject> execute(Queue<EventObject> events) throws ActionException {
 
         // return object
@@ -253,15 +250,15 @@ public abstract class NetCDFAction extends MarissBaseAction {
                         if (canProcess(fileEvent)) {
                             // Create a new Container for all the attributes
                             File inputFile = fileEvent.getSource();
-                           
+
                             // Unzipping the tar.gz file if needed
                             File netcdfDir = (inputFile);
-                            if(!inputFile.isDirectory()){
-                            	netcdfDir = untarFile(inputFile);
+                            if (!inputFile.isDirectory()) {
+                                netcdfDir = untarFile(inputFile);
                             }
-                            
+
                             AttributeBean attributeBean = getAttributeBean(netcdfDir);
-                            
+
                             // Getting file name
                             attributeBean.absolutePath = inputFile.getAbsolutePath();
                             attributeBean.maskOneIsValid = container.isMaskOneIsValid();
@@ -278,14 +275,13 @@ public abstract class NetCDFAction extends MarissBaseAction {
                                 // Getting the first netcdf file if present
                                 if (files != null && files.length > 0) {
                                     netcdfFile = files[0];
-                                   
 
                                 }
                             }
                             if (canProcessFile(netcdfFile)) {
                                 // Getting the File identifier
                                 String identifier = attributeBean.identifier;
-                                
+
                                 // Getting SARType
                                 attributeBean.type = SARType.getType(getActionName());
                                 // Don't read configuration for the file, just
@@ -297,16 +293,17 @@ public abstract class NetCDFAction extends MarissBaseAction {
                                 }
                                 try {
                                     if (!(ds instanceof JDBCDataStore)) {
-                                        throw new ActionException(this, "Bad Datastore type "
-                                                + ds.getClass().getName());
+                                        throw new ActionException(this,
+                                                "Bad Datastore type " + ds.getClass().getName());
                                     }
                                     attributeBean.dataStore = (JDBCDataStore) ds;
                                     attributeBean.dataStore.setExposePrimaryKeyColumns(true);
-                                   
+
                                     // return next events configurations
-                                    Collection<EventObject> resultEvents = doProcess(netcdfFile, attributeBean);
+                                    Collection<EventObject> resultEvents = doProcess(netcdfFile,
+                                            attributeBean);
                                     ret.addAll(resultEvents);
-                                    
+
                                 } finally {
                                     ds.dispose();
                                 }
@@ -333,9 +330,6 @@ public abstract class NetCDFAction extends MarissBaseAction {
         }
         return ret;
     }
-
-    
-  
 
     protected abstract String getActionName();
 
@@ -370,7 +364,7 @@ public abstract class NetCDFAction extends MarissBaseAction {
      */
     protected boolean handleMosaic(GeoServerRESTReader reader, GeoServerRESTPublisher publisher,
             File[] outputFiles, File[] finalFiles, String[] layerNames, AttributeBean attributeBean)
-            throws ActionException {
+                    throws ActionException {
         // Initialization of the result
         boolean published = true;
         // File array index
@@ -380,9 +374,9 @@ public abstract class NetCDFAction extends MarissBaseAction {
             try {
                 // Getting Variable Name
                 String file = FilenameUtils.getBaseName(f.getAbsolutePath());
-                String variableName = /* getActionName() + */file.substring(file
-                        .lastIndexOf(SEPARATOR) + SEPARATOR.length());
-                variableName = variableName.toLowerCase() /*.replace("_", "-")*/ ; 
+                String variableName = /* getActionName() + */file
+                        .substring(file.lastIndexOf(SEPARATOR) + SEPARATOR.length());
+                variableName = variableName.toLowerCase() /* .replace("_", "-") */ ;
 
                 Map<String, String> additionalDimensions = new HashMap<String, String>();
                 if (file.indexOf(CUSTOM_DIM_START_SEPARATOR) > 0) {
@@ -402,15 +396,16 @@ public abstract class NetCDFAction extends MarissBaseAction {
                 File temp = new File(getTempDir(), "temp" + file);
                 FileUtils.forceMkdir(temp);
                 File mosaicDir = new File(temp, variableName);
-                String newFileName = IDENTIFIER_SEPARATOR + attributeBean.identifier + IDENTIFIER_SEPARATOR
-                        + SERVICE_SEPARATOR + attributeBean.serviceName + SERVICE_SEPARATOR
-                        + f.getName();
+                String newFileName = IDENTIFIER_SEPARATOR + attributeBean.identifier
+                        + IDENTIFIER_SEPARATOR + SERVICE_SEPARATOR + attributeBean.serviceName
+                        + SERVICE_SEPARATOR + f.getName();
 
                 // Check if the mosaic is present
                 if (isMosaicConfigured(reader, variableName)) {
                     // After the first file, other mosaic files will be stored inside the netcdf directory
-                    mosaicDir = new File(container.getParams().get(
-                            ConfigurationUtils.NETCDF_DIRECTORY_KEY), variableName);
+                    mosaicDir = new File(
+                            container.getParams().get(ConfigurationUtils.NETCDF_DIRECTORY_KEY),
+                            variableName);
                     if (!mosaicDir.exists()) {
                         FileUtils.forceMkdir(mosaicDir);
                         // mosaicDir.createNewFile();
@@ -443,8 +438,9 @@ public abstract class NetCDFAction extends MarissBaseAction {
                     }
                     // Copy the final file location
                     String geoserverDataDirectory = configuration.getGeoserverDataDirectory();
-                    geoserverDataDirectory = geoserverDataDirectory.endsWith(PATHSEPARATOR) ? geoserverDataDirectory
-                            .substring(0, geoserverDataDirectory.length() - 1)
+                    geoserverDataDirectory = geoserverDataDirectory.endsWith(PATHSEPARATOR)
+                            ? geoserverDataDirectory.substring(0,
+                                    geoserverDataDirectory.length() - 1)
                             : geoserverDataDirectory;
                     finalFiles[index] = new File(geoserverDataDirectory + PATHSEPARATOR + "data"
                             + PATHSEPARATOR + container.getDefaultNameSpace() + PATHSEPARATOR
@@ -459,8 +455,8 @@ public abstract class NetCDFAction extends MarissBaseAction {
 
                     // Publish the ImageMosaic
                     published &= publisher.publishImageMosaic(container.getDefaultNameSpace(),
-                            variableName, zipped, ParameterConfigure.FIRST, new NameValuePair(
-                                    "coverageName", variableName));
+                            variableName, zipped, ParameterConfigure.FIRST,
+                            new NameValuePair("coverageName", variableName));
                     // Adding layername
                     layerNames[index] = variableName;
                 }
@@ -472,10 +468,6 @@ public abstract class NetCDFAction extends MarissBaseAction {
         return published;
     }
 
-    
-
-    
-    
     /**
      * Check if the NetCDF ImageMosaic Layer has been already configured
      * 
@@ -525,5 +517,4 @@ public abstract class NetCDFAction extends MarissBaseAction {
         }
     }
 
-    
 }

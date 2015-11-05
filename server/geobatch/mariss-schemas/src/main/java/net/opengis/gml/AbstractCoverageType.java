@@ -73,9 +73,9 @@ public abstract class AbstractCoverageType extends AbstractFeatureType {
      * Gets the value of the domainSet property.
      * 
      * @return possible object is {@link JAXBElement }{@code <}{@link DomainSetType }{@code >} {@link JAXBElement }{@code <}{@link GridDomainType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link MultiPointDomainType }{@code >} {@link JAXBElement }{@code <}{@link RectifiedGridDomainType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link MultiCurveDomainType }{@code >} {@link JAXBElement }{@code <}{@link MultiSolidDomainType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link MultiSurfaceDomainType }{@code >}
+     *         {@code >} {@link JAXBElement }{@code <}{@link MultiPointDomainType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link RectifiedGridDomainType } {@code >} {@link JAXBElement }{@code <}{@link MultiCurveDomainType }{@code >} {@link JAXBElement }
+     *         {@code <}{@link MultiSolidDomainType } {@code >} {@link JAXBElement }{@code <}{@link MultiSurfaceDomainType }{@code >}
      * 
      */
     public JAXBElement<? extends DomainSetType> getDomainSet() {
@@ -105,14 +105,14 @@ public abstract class AbstractCoverageType extends AbstractFeatureType {
     /**
      * Sets the value of the domainSet property.
      * 
-     * @param value allowed object is {@link JAXBElement }{@code <}{@link DomainSetType }{@code >} {@link JAXBElement }{@code <}{@link GridDomainType }
-     *        {@code >} {@link JAXBElement }{@code <}{@link MultiPointDomainType }{@code >} {@link JAXBElement }{@code <}{@link RectifiedGridDomainType }
-     *        {@code >} {@link JAXBElement }{@code <}{@link MultiCurveDomainType }{@code >} {@link JAXBElement }{@code <}{@link MultiSolidDomainType }
-     *        {@code >} {@link JAXBElement }{@code <}{@link MultiSurfaceDomainType }{@code >}
+     * @param value allowed object is {@link JAXBElement }{@code <}{@link DomainSetType }{@code >} {@link JAXBElement }{@code <}{@link GridDomainType
+     *        } {@code >} {@link JAXBElement }{@code <}{@link MultiPointDomainType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link RectifiedGridDomainType } {@code >} {@link JAXBElement }{@code <}{@link MultiCurveDomainType }{@code >} {@link JAXBElement }
+     *        {@code <}{@link MultiSolidDomainType } {@code >} {@link JAXBElement }{@code <}{@link MultiSurfaceDomainType }{@code >}
      * 
      */
     public void setDomainSet(JAXBElement<? extends DomainSetType> value) {
-        this.domainSet = ((JAXBElement<? extends DomainSetType>) value);
+        this.domainSet = (value);
     }
 
     /**

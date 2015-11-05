@@ -54,8 +54,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArcByCenterPointType", propOrder = { "pos", "pointProperty", "pointRep",
-        "posList", "coordinates", "radius", "startAngle", "endAngle" })
+@XmlType(name = "ArcByCenterPointType", propOrder = { "pos", "pointProperty", "pointRep", "posList",
+        "coordinates", "radius", "startAngle", "endAngle" })
 @XmlSeeAlso({ CircleByCenterPointType.class })
 public class ArcByCenterPointType extends AbstractCurveSegmentType {
 

@@ -45,9 +45,8 @@ import eu.europa.emsa.csndc.ShipType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AbstractFeatureType", propOrder = { "boundedBy", "location" })
-@XmlSeeAlso({ ShipType.class, OilSpillType.class, ObservationType.class,
-        AbstractCoverageType.class, AbstractFeatureCollectionType.class, DynamicFeatureType.class,
-        BoundedFeatureType.class })
+@XmlSeeAlso({ ShipType.class, OilSpillType.class, ObservationType.class, AbstractCoverageType.class,
+        AbstractFeatureCollectionType.class, DynamicFeatureType.class, BoundedFeatureType.class })
 public abstract class AbstractFeatureType extends AbstractGMLType {
 
     protected BoundingShapeType boundedBy;
@@ -94,7 +93,7 @@ public abstract class AbstractFeatureType extends AbstractGMLType {
      * 
      */
     public void setLocation(JAXBElement<? extends LocationPropertyType> value) {
-        this.location = ((JAXBElement<? extends LocationPropertyType>) value);
+        this.location = (value);
     }
 
 }

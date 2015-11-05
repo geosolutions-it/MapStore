@@ -64,14 +64,14 @@ public class ObjectFactory {
     private final static QName _Identifier_QNAME = new QName("http://www.opengis.net/ows/1.1",
             "Identifier");
 
-    private final static QName _OrganisationName_QNAME = new QName(
-            "http://www.opengis.net/ows/1.1", "OrganisationName");
+    private final static QName _OrganisationName_QNAME = new QName("http://www.opengis.net/ows/1.1",
+            "OrganisationName");
 
     private final static QName _DataType_QNAME = new QName("http://www.opengis.net/ows/1.1",
             "DataType");
 
-    private final static QName _WGS84BoundingBox_QNAME = new QName(
-            "http://www.opengis.net/ows/1.1", "WGS84BoundingBox");
+    private final static QName _WGS84BoundingBox_QNAME = new QName("http://www.opengis.net/ows/1.1",
+            "WGS84BoundingBox");
 
     private final static QName _Spacing_QNAME = new QName("http://www.opengis.net/ows/1.1",
             "Spacing");
@@ -130,8 +130,8 @@ public class ObjectFactory {
     private final static QName _Abstract_QNAME = new QName("http://www.opengis.net/ows/1.1",
             "Abstract");
 
-    private final static QName _ServiceReference_QNAME = new QName(
-            "http://www.opengis.net/ows/1.1", "ServiceReference");
+    private final static QName _ServiceReference_QNAME = new QName("http://www.opengis.net/ows/1.1",
+            "ServiceReference");
 
     private final static QName _Metadata_QNAME = new QName("http://www.opengis.net/ows/1.1",
             "Metadata");
@@ -139,8 +139,8 @@ public class ObjectFactory {
     private final static QName _PointOfContact_QNAME = new QName("http://www.opengis.net/ows/1.1",
             "PointOfContact");
 
-    private final static QName _AbstractMetaData_QNAME = new QName(
-            "http://www.opengis.net/ows/1.1", "AbstractMetaData");
+    private final static QName _AbstractMetaData_QNAME = new QName("http://www.opengis.net/ows/1.1",
+            "AbstractMetaData");
 
     private final static QName _GetResourceByID_QNAME = new QName("http://www.opengis.net/ows/1.1",
             "GetResourceByID");
@@ -153,7 +153,8 @@ public class ObjectFactory {
 
     private final static QName _HTTPGet_QNAME = new QName("http://www.opengis.net/ows/1.1", "Get");
 
-    private final static QName _HTTPPost_QNAME = new QName("http://www.opengis.net/ows/1.1", "Post");
+    private final static QName _HTTPPost_QNAME = new QName("http://www.opengis.net/ows/1.1",
+            "Post");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: net.opengis.ows._1
@@ -772,8 +773,8 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.opengis.net/ows/1.1", name = "ReferenceSystem")
     public JAXBElement<DomainMetadataType> createReferenceSystem(DomainMetadataType value) {
-        return new JAXBElement<DomainMetadataType>(_ReferenceSystem_QNAME,
-                DomainMetadataType.class, null, value);
+        return new JAXBElement<DomainMetadataType>(_ReferenceSystem_QNAME, DomainMetadataType.class,
+                null, value);
     }
 
     /**

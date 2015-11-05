@@ -105,12 +105,12 @@ public class ShipType extends AbstractFeatureType {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link Double }{@code >} {@link JAXBElement }{@code <}
-     * {@link Double }{@code >} {@link JAXBElement }{@code <}{@link ImageType }{@code >} {@link JAXBElement }{@code <}{@link DirectPositionType }{@code >}
-     * {@link JAXBElement }{@code <}{@link DetectionParametersType }{@code >} {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }{@code >}
-     * {@link JAXBElement }{@code <}{@link Boolean }{@code >} {@link JAXBElement }{@code <}{@link String }{@code >} {@link JAXBElement }{@code <}
-     * {@link Double }{@code >} {@link JAXBElement }{@code <}{@link String }{@code >} {@link JAXBElement }{@code <}{@link Double }{@code >}
-     * {@link JAXBElement }{@code <}{@link Double }{@code >} {@link JAXBElement }{@code <}{@link PositionAccuracyVectorType }{@code >} {@link JAXBElement }
-     * {@code <}{@link BigInteger }{@code >} {@link JAXBElement }{@code <}{@link Double }{@code >}
+     * {@link Double }{@code >} {@link JAXBElement }{@code <}{@link ImageType }{@code >} {@link JAXBElement }{@code <}{@link DirectPositionType }
+     * {@code >} {@link JAXBElement }{@code <}{@link DetectionParametersType }{@code >} {@link JAXBElement }{@code <}{@link XMLGregorianCalendar }
+     * {@code >} {@link JAXBElement }{@code <}{@link Boolean }{@code >} {@link JAXBElement }{@code <}{@link String }{@code >} {@link JAXBElement }
+     * {@code <} {@link Double }{@code >} {@link JAXBElement }{@code <}{@link String }{@code >} {@link JAXBElement }{@code <}{@link Double }{@code >}
+     * {@link JAXBElement }{@code <}{@link Double }{@code >} {@link JAXBElement }{@code <}{@link PositionAccuracyVectorType }{@code >}
+     * {@link JAXBElement } {@code <}{@link BigInteger }{@code >} {@link JAXBElement }{@code <}{@link Double }{@code >}
      * 
      * 
      */

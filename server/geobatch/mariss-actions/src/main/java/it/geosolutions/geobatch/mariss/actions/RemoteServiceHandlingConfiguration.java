@@ -21,15 +21,15 @@
  */
 package it.geosolutions.geobatch.mariss.actions;
 
-import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
-import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
-import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
-import it.geosolutions.geobatch.remoteBrowser.configuration.RemoteBrowserConfiguration;
-
 import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
+
+import it.geosolutions.geobatch.actions.ds2ds.Ds2dsConfiguration;
+import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
+import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
+import it.geosolutions.geobatch.remoteBrowser.configuration.RemoteBrowserConfiguration;
 
 /**
  * Gate file handling configuration. Not use input ds (input data it's read from xml). Includes ftp connection parameters for the remote file browsing
@@ -100,12 +100,12 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
      * Name of the products table
      */
     private String productsTableName;
-    
+
     /**
      * Name of the ship detections table
      */
     private String shipDetectionsTableName;
-    
+
     /**
      * Absolute path to the GeoServerDataDirectory
      */
@@ -233,7 +233,7 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
     }
 
     /**
-     * @return the path where to place files recognized to be processed 
+     * @return the path where to place files recognized to be processed
      */
     public String getSuccesPath() {
         return succesPath;
@@ -368,7 +368,8 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
     /**
      * @param remoteBrowserConfiguration the remoteBrowserConfiguration to set
      */
-    public void setRemoteBrowserConfiguration(RemoteBrowserConfiguration remoteBrowserConfiguration) {
+    public void setRemoteBrowserConfiguration(
+            RemoteBrowserConfiguration remoteBrowserConfiguration) {
         this.remoteBrowserConfiguration = remoteBrowserConfiguration;
     }
 

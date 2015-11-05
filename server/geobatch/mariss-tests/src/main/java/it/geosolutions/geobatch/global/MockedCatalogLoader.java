@@ -22,10 +22,10 @@
 
 package it.geosolutions.geobatch.global;
 
-import it.geosolutions.geobatch.catalog.Catalog;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import it.geosolutions.geobatch.catalog.Catalog;
 
 /**
  * Mocked catalog loader to load the catalog configuration for test purpuse

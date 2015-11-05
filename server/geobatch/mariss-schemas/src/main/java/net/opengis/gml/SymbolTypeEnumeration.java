@@ -34,10 +34,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum SymbolTypeEnumeration {
 
-    @XmlEnumValue("svg")
-    SVG("svg"), @XmlEnumValue("xpath")
-    XPATH("xpath"), @XmlEnumValue("other")
-    OTHER("other");
+    @XmlEnumValue("svg") SVG("svg"), @XmlEnumValue("xpath") XPATH(
+            "xpath"), @XmlEnumValue("other") OTHER("other");
     public static SymbolTypeEnumeration fromValue(String v) {
         for (SymbolTypeEnumeration c : SymbolTypeEnumeration.values()) {
             if (c.value.equals(v)) {

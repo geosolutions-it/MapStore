@@ -37,13 +37,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum SequenceRuleNames {
 
-    @XmlEnumValue("Linear")
-    LINEAR("Linear"), @XmlEnumValue("Boustrophedonic")
-    BOUSTROPHEDONIC("Boustrophedonic"), @XmlEnumValue("Cantor-diagonal")
-    CANTOR_DIAGONAL("Cantor-diagonal"), @XmlEnumValue("Spiral")
-    SPIRAL("Spiral"), @XmlEnumValue("Morton")
-    MORTON("Morton"), @XmlEnumValue("Hilbert")
-    HILBERT("Hilbert");
+    @XmlEnumValue("Linear") LINEAR("Linear"), @XmlEnumValue("Boustrophedonic") BOUSTROPHEDONIC(
+            "Boustrophedonic"), @XmlEnumValue("Cantor-diagonal") CANTOR_DIAGONAL(
+                    "Cantor-diagonal"), @XmlEnumValue("Spiral") SPIRAL(
+                            "Spiral"), @XmlEnumValue("Morton") MORTON(
+                                    "Morton"), @XmlEnumValue("Hilbert") HILBERT("Hilbert");
     public static SequenceRuleNames fromValue(String v) {
         for (SequenceRuleNames c : SequenceRuleNames.values()) {
             if (c.value.equals(v)) {

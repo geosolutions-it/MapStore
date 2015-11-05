@@ -101,7 +101,7 @@ public class BoundingShapeType {
      * 
      */
     public void setEnvelope(JAXBElement<? extends EnvelopeType> value) {
-        this.envelope = ((JAXBElement<? extends EnvelopeType>) value);
+        this.envelope = (value);
     }
 
 }

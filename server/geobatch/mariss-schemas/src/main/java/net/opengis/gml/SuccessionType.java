@@ -35,11 +35,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum SuccessionType {
 
-    @XmlEnumValue("substitution")
-    SUBSTITUTION("substitution"), @XmlEnumValue("division")
-    DIVISION("division"), @XmlEnumValue("fusion")
-    FUSION("fusion"), @XmlEnumValue("initiation")
-    INITIATION("initiation");
+    @XmlEnumValue("substitution") SUBSTITUTION("substitution"), @XmlEnumValue("division") DIVISION(
+            "division"), @XmlEnumValue("fusion") FUSION(
+                    "fusion"), @XmlEnumValue("initiation") INITIATION("initiation");
     public static SuccessionType fromValue(String v) {
         for (SuccessionType c : SuccessionType.values()) {
             if (c.value.equals(v)) {

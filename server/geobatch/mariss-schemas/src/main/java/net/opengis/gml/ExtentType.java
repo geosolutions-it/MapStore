@@ -16,10 +16,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Information about the spatial, vertical, and/or temporal extent of a reference system object. Constraints: At least one of the elements
- * "description", "boundingBox", "boundingPolygon", "verticalExtent", and
- * temporalExtent" must be included, but more that one can be included when appropriate. Furthermore, more than one "
- * boundingBox", "boundingPolygon", "verticalExtent", and/or temporalExtent" element can be included, with more than one meaning the union of the
- * individual domains.
+ * "description", "boundingBox", "boundingPolygon", "verticalExtent", and temporalExtent
+ * " must be included, but more that one can be included when appropriate. Furthermore, more than one " boundingBox", "boundingPolygon", "
+ * verticalExtent", and/or temporalExtent" element can be included, with more than one meaning the union of the individual domains.
  * 
  * <p>
  * Java class for ExtentType complex type.

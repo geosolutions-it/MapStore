@@ -57,8 +57,8 @@ public abstract class DecompressUtils {
      * @param cleanAndCreateFolder flag to clean and create the target folder
      * @throws IOException
      */
-    public static void decompress(String compressedFile, String outdir, boolean cleanAndCreateFolder)
-            throws IOException {
+    public static void decompress(String compressedFile, String outdir,
+            boolean cleanAndCreateFolder) throws IOException {
         if (cleanAndCreateFolder) {
             File zipFolder = new File(outdir);
             if (zipFolder.exists()) {
@@ -143,8 +143,8 @@ public abstract class DecompressUtils {
             int len;
 
             InputStream zipin = zipFile.getInputStream(entry);
-            BufferedOutputStream fileout = new BufferedOutputStream(new FileOutputStream(outdir
-                    + File.separator + entry.getName()));
+            BufferedOutputStream fileout = new BufferedOutputStream(
+                    new FileOutputStream(outdir + File.separator + entry.getName()));
 
             while ((len = zipin.read(buffer)) >= 0)
                 fileout.write(buffer, 0, len);

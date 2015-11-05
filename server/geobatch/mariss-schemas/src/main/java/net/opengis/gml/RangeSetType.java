@@ -43,7 +43,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RangeSetType", propOrder = { "valueArray", "scalarValueList", "dataBlock", "file" })
+@XmlType(name = "RangeSetType", propOrder = { "valueArray", "scalarValueList", "dataBlock",
+        "file" })
 public class RangeSetType {
 
     @XmlElement(name = "ValueArray")

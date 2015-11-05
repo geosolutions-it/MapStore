@@ -1,11 +1,11 @@
 package it.geosolutions.geobatch.mariss.actions.netcdf;
 
 public class DetectionParameters {
- 
+
     private Double RCS;
-    
+
     private Double maxPixelValue;
-    
+
     /**
      * @return the rCS
      */
@@ -19,7 +19,7 @@ public class DetectionParameters {
     public void setRCS(Double rCS) {
         RCS = rCS;
     }
-    
+
     /**
      * @return the maxPixelValue
      */
@@ -32,5 +32,5 @@ public class DetectionParameters {
      */
     public void setMaxPixelValue(Double maxPixelValue) {
         this.maxPixelValue = maxPixelValue;
-    }   
+    }
 }

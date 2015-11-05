@@ -1,13 +1,5 @@
 package it.geosolutions.geobatch.mariss.actions.netcdf;
 
-import it.geosolutions.geobatch.annotations.Action;
-import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
-import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
-import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
-import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
-import it.geosolutions.imageio.plugins.netcdf.NetCDFUtilities;
-
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
 import java.awt.image.WritableRaster;
@@ -25,6 +17,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.geotools.geometry.GeneralEnvelope;
 
+import it.geosolutions.geobatch.annotations.Action;
+import it.geosolutions.geobatch.flow.event.action.ActionException;
+import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
+import it.geosolutions.geobatch.metocs.jaxb.model.MetocElementType;
+import it.geosolutions.geobatch.metocs.jaxb.model.Metocs;
+import it.geosolutions.imageio.plugins.netcdf.NetCDFConverterUtilities;
+import it.geosolutions.imageio.plugins.netcdf.NetCDFUtilities;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.Index;
@@ -52,6 +51,7 @@ public class SARWaveAction extends NetCDFAction {
         return false;
     }
 
+    @Override
     protected double definingOutputVariables(boolean hasDepth, int nLat, int nLon,
             NetcdfFileWriteable ncFileOut, NetcdfFile ncFileIn, boolean hasTimeDim, int nTime,
             String varName, AttributeBean attributeBean) {
@@ -68,9 +68,8 @@ public class SARWaveAction extends NetCDFAction {
         List<Dimension> finalDims = new ArrayList<Dimension>(outDimensions);
         for (Dimension dim : outDimensions) {
             String name = dim.getName();
-            if (dim != null
-                    && (name.equalsIgnoreCase("AZ_SIZE") || name.equalsIgnoreCase("RA_SIZE") || name
-                            .equalsIgnoreCase("N_PARTITIONS"))) {
+            if (dim != null && (name.equalsIgnoreCase("AZ_SIZE") || name.equalsIgnoreCase("RA_SIZE")
+                    || name.equalsIgnoreCase("N_PARTITIONS"))) {
                 finalDims.remove(dim);
             }
         }
@@ -106,17 +105,17 @@ public class SARWaveAction extends NetCDFAction {
                     String uom = null;
 
                     for (MetocElementType m : metocDictionary.getMetoc()) {
-                        if ((varName.equalsIgnoreCase("Hs") && m.getName().equals(
-                                "sea surface swell wave significant height"))
-                                || (varName.equalsIgnoreCase("Wl") && m.getName().equals(
-                                        "dominant wave length"))
-                                || (varName.equalsIgnoreCase("Dirmet") && m.getName().equals(
-                                        "sea surface swell wave to direction"))) {
+                        if ((varName.equalsIgnoreCase("Hs")
+                                && m.getName().equals("sea surface swell wave significant height"))
+                                || (varName.equalsIgnoreCase("Wl")
+                                        && m.getName().equals("dominant wave length"))
+                                || (varName.equalsIgnoreCase("Dirmet") && m.getName()
+                                        .equals("sea surface swell wave to direction"))) {
                             longName = m.getName();
                             briefName = m.getBrief();
                             uom = m.getDefaultUom();
-                            uom = uom.indexOf(":") > 0 ? URLDecoder.decode(
-                                    uom.substring(uom.lastIndexOf(":") + 1), "UTF-8") : uom;
+                            uom = uom.indexOf(":") > 0 ? URLDecoder
+                                    .decode(uom.substring(uom.lastIndexOf(":") + 1), "UTF-8") : uom;
                             break;
                         }
                     }
@@ -132,6 +131,7 @@ public class SARWaveAction extends NetCDFAction {
         }
     }
 
+    @Override
     protected String getActionName() {
         return "wave";
     }
@@ -190,7 +190,8 @@ public class SARWaveAction extends NetCDFAction {
 
             // getting Variables number
             int numVariables = attributeBean.foundVariables.size();
-            ncFileOut = new NetcdfFileWriteable[numVariables * (n_partitions != null ? partLen : 1)];
+            ncFileOut = new NetcdfFileWriteable[numVariables
+                    * (n_partitions != null ? partLen : 1)];
             outputFiles = new File[numVariables * (n_partitions != null ? partLen : 1)];
             // Loop through the variables
             if (numVariables > 0) {
@@ -204,9 +205,10 @@ public class SARWaveAction extends NetCDFAction {
                         // ////
                         // ... create the output file
                         // ////
-                        outputFiles[index] = new File(directory, fileBaseName + 
-                                CUSTOM_DIM_START_SEPARATOR + "partition" + CUSTOM_DIM_VAL_SEPARATOR + part + CUSTOM_DIM_END_SEPARATOR + 
-                                SEPARATOR + varName.trim() + ".nc");
+                        outputFiles[index] = new File(directory,
+                                fileBaseName + CUSTOM_DIM_START_SEPARATOR + "partition"
+                                        + CUSTOM_DIM_VAL_SEPARATOR + part + CUSTOM_DIM_END_SEPARATOR
+                                        + SEPARATOR + varName.trim() + ".nc");
                         outputFiles[index].createNewFile();
                         // ////
                         // ... create the output file data structure
@@ -335,8 +337,8 @@ public class SARWaveAction extends NetCDFAction {
         userRaster = NetCDFUtils.warping(bbox, lonOriginalData, latOriginalData,
                 ra_size.getLength(), az_size.getLength(), 2, userRaster, (float) noData, false);
 
-        final Variable outVar = ncFileOut.findVariable(attributeBean.foundVariableBriefNames
-                .get(varName));
+        final Variable outVar = ncFileOut
+                .findVariable(attributeBean.foundVariableBriefNames.get(varName));
         final Array outVarData = outVar.read();
 
         int[] dimensions = new int[hasTime ? 3 : 2];

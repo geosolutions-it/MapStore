@@ -200,8 +200,8 @@ public class RangeParametersType {
     /**
      * Gets the value of the compositeValue property.
      * 
-     * @return possible object is {@link JAXBElement }{@code <}{@link ValueArrayType }{@code >} {@link JAXBElement }{@code <}{@link CompositeValueType }
-     *         {@code >}
+     * @return possible object is {@link JAXBElement }{@code <}{@link ValueArrayType }{@code >} {@link JAXBElement }{@code <}{@link CompositeValueType
+     *         } {@code >}
      * 
      */
     public JAXBElement<? extends CompositeValueType> getCompositeValue() {
@@ -444,7 +444,7 @@ public class RangeParametersType {
      * 
      */
     public void setCompositeValue(JAXBElement<? extends CompositeValueType> value) {
-        this.compositeValue = ((JAXBElement<? extends CompositeValueType>) value);
+        this.compositeValue = (value);
     }
 
     /**

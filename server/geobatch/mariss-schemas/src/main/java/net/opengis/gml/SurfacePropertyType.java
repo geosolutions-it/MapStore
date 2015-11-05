@@ -140,10 +140,11 @@ public class SurfacePropertyType {
     /**
      * Gets the value of the surface property.
      * 
-     * @return possible object is {@link JAXBElement }{@code <}{@link PolygonType }{@code >} {@link JAXBElement }{@code <}{@link TriangulatedSurfaceType }
-     *         {@code >} {@link JAXBElement }{@code <}{@link CompositeSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link TinType }{@code >}
-     *         {@link JAXBElement }{@code <}{@link PolyhedralSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link AbstractSurfaceType }{@code >}
-     *         {@link JAXBElement }{@code <}{@link OrientableSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link SurfaceType }{@code >}
+     * @return possible object is {@link JAXBElement }{@code <}{@link PolygonType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link TriangulatedSurfaceType } {@code >} {@link JAXBElement }{@code <}{@link CompositeSurfaceType }{@code >} {@link JAXBElement }
+     *         {@code <}{@link TinType }{@code >} {@link JAXBElement }{@code <}{@link PolyhedralSurfaceType }{@code >} {@link JAXBElement }{@code <}
+     *         {@link AbstractSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link OrientableSurfaceType }{@code >} {@link JAXBElement }
+     *         {@code <}{@link SurfaceType }{@code >}
      * 
      */
     public JAXBElement<? extends AbstractSurfaceType> getSurface() {
@@ -238,14 +239,14 @@ public class SurfacePropertyType {
      * Sets the value of the surface property.
      * 
      * @param value allowed object is {@link JAXBElement }{@code <}{@link PolygonType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link TriangulatedSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CompositeSurfaceType }{@code >} {@link JAXBElement }{@code <}
-     *        {@link TinType }{@code >} {@link JAXBElement }{@code <}{@link PolyhedralSurfaceType }{@code >} {@link JAXBElement }{@code <}
+     *        {@link TriangulatedSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link CompositeSurfaceType }{@code >} {@link JAXBElement }
+     *        {@code <} {@link TinType }{@code >} {@link JAXBElement }{@code <}{@link PolyhedralSurfaceType }{@code >} {@link JAXBElement }{@code <}
      *        {@link AbstractSurfaceType }{@code >} {@link JAXBElement }{@code <}{@link OrientableSurfaceType }{@code >} {@link JAXBElement }{@code <}
      *        {@link SurfaceType }{@code >}
      * 
      */
     public void setSurface(JAXBElement<? extends AbstractSurfaceType> value) {
-        this.surface = ((JAXBElement<? extends AbstractSurfaceType>) value);
+        this.surface = (value);
     }
 
     /**

@@ -241,7 +241,7 @@ public class TimeTopologyPrimitivePropertyType {
      */
     public void setTimeTopologyPrimitive(
             JAXBElement<? extends AbstractTimeTopologyPrimitiveType> value) {
-        this.timeTopologyPrimitive = ((JAXBElement<? extends AbstractTimeTopologyPrimitiveType>) value);
+        this.timeTopologyPrimitive = (value);
     }
 
     /**

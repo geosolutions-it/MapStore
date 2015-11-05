@@ -72,12 +72,12 @@ public class CoverageFunctionType {
     /**
      * Sets the value of the gridFunction property.
      * 
-     * @param value allowed object is {@link JAXBElement }{@code <}{@link IndexMapType }{@code >} {@link JAXBElement }{@code <}{@link GridFunctionType }
-     *        {@code >}
+     * @param value allowed object is {@link JAXBElement }{@code <}{@link IndexMapType }{@code >} {@link JAXBElement }{@code <}{@link GridFunctionType
+     *        } {@code >}
      * 
      */
     public void setGridFunction(JAXBElement<? extends GridFunctionType> value) {
-        this.gridFunction = ((JAXBElement<? extends GridFunctionType>) value);
+        this.gridFunction = (value);
     }
 
     /**

@@ -23,13 +23,14 @@ package it.geosolutions.geobatch.catalog.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
 
 import java.sql.Timestamp;
 
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import it.geosolutions.geobatch.catalog.impl.configuration.TimeFormatConfiguration;
 
 /**
  * JUnit test for {@link TimeFormat} utilities for specific CSV ingestion Date formatters

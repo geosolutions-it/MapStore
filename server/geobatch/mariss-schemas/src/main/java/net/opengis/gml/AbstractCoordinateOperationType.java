@@ -52,9 +52,8 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AbstractCoordinateOperationType", propOrder = { "coordinateOperationID",
-        "remarks", "operationVersion", "validArea", "scope", "positionalAccuracy", "sourceCRS",
-        "targetCRS" })
+@XmlType(name = "AbstractCoordinateOperationType", propOrder = { "coordinateOperationID", "remarks",
+        "operationVersion", "validArea", "scope", "positionalAccuracy", "sourceCRS", "targetCRS" })
 @XmlSeeAlso({ PassThroughOperationType.class, AbstractGeneralTransformationType.class,
         AbstractGeneralConversionType.class, ConcatenatedOperationType.class })
 public abstract class AbstractCoordinateOperationType extends AbstractCoordinateOperationBaseType {
@@ -132,8 +131,8 @@ public abstract class AbstractCoordinateOperationType extends AbstractCoordinate
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list {@link JAXBElement }{@code <}{@link AbsoluteExternalPositionalAccuracyType }{@code >}
-     * {@link JAXBElement }{@code <}{@link RelativeInternalPositionalAccuracyType }{@code >} {@link JAXBElement }{@code <}{@link CovarianceMatrixType }
-     * {@code >} {@link JAXBElement }{@code <}{@link AbstractPositionalAccuracyType }{@code >}
+     * {@link JAXBElement }{@code <}{@link RelativeInternalPositionalAccuracyType }{@code >} {@link JAXBElement }{@code <}{@link CovarianceMatrixType
+     * } {@code >} {@link JAXBElement }{@code <}{@link AbstractPositionalAccuracyType }{@code >}
      * 
      * 
      */
