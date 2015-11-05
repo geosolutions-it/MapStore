@@ -394,7 +394,9 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                                     if (popup) {
                                     	// not too pretty, I'm calling a private method... any better idea?
                                     	popup.panIntoView();
-                                    }else panIn=true; //issue #623
+                                    }else{
+                                        panIn=true; //issue #623
+                                    }
                                 }                                
 							}
 
@@ -625,7 +627,13 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      * :arg popupKey: ``String`` Key to save the popup on popup cache.
      * :arg onClose: ``Function`` Callback to be called on popup close.
      */
-    cachePopup: function(latLon, items, popupKey, onClose,panIn){
+    cachePopup: function(latLon, items, popupKey, onClose, panIn){
+        
+        if(panIn === undefined){
+            // This is the default value in the "Popup" class
+            panIn = true;
+        }
+        
         var popup = this.addOutput({
             xtype: "gx_popup",
             title: this.popupTitle,
