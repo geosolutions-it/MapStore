@@ -22,9 +22,6 @@
 				"TILED": true
 			},
             "authParam":"authkey"
-		}, 
-		"osm": { 
-				"ptype": "gxp_osmsource"
 		}             
     },
 	"map": {
@@ -38,58 +35,29 @@
 		],
 		"layers": [                                                
 			{
-				"source": "osm",
-				"title": "Open Street Map",
-				"name": "mapnik",
-				"group": "background"
+				"source": "bolzano",
+				"title": "Ortofoto 2013 Bolzano/Bozen",
+				"name": "Cartografia:ortofoto2013",
+				"layersCachedExtent": [
+					1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
+				],
+				"group": "background",
+				"transparent": false,
+				"format": "image/jpeg"
 			},{
                 "source": "bolzano",
-				"title": "view_incidenti",
-				"name": "Cartografia:view_incidenti"
-            },{
-                "source": "bolzano",
-				"title": "view_incidenti_copy",
-				"name": "Cartografia:view_incidenti_copy"
+				"title": "mense_scuole",
+				"name": "Ambiente:mense_scuole"
             }
 		]
 	},
 	
     "customPanels":[
-		{
-			"xtype": "panel",
-			"title": "Ricerca",         
-			"border": false,
-			"id": "east",
-			"width": 400,
-			"height": 500,
-			"region": "east",
-			"layout": "fit",
-			"collapsed": false,
-			"split": true,
-			"collapsible": true,
-			"header": true
-        }
+		
     ],
 	
 	"customTools":[
 		{
-			"ptype": "gxp_searchinfortuni",
-			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
-			"outputTarget": "east",
-			"infortuniLayerName": "view_incidenti",
-			"infortuniLayerCopyName": "view_incidenti_copy",
-			"infortuniLayerWs": "Cartografia",
-			"selectionProperties": {
-				"wmsURL": "http://sit.comune.bolzano.it/geoserver/ows",
-				"selectionLayerTitle": "Selection Layer",
-				"selectionLayerCiviciName": "Cartografia:civici",
-				"selectionLayerViaName": "ctn_base:grafo_vie",
-				"filterCiviciAttribute": "ID",
-				"selectionCiviciStyle": "highlight_point",
-				"filterViaAttribute": "ID_STRASSE",
-				"selectionViaStyle": "highlight"
-			}
-		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": false,
 			"id": "addlayer"
@@ -101,7 +69,7 @@
 			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
 			"useTabPanel": true,
 			"toggleGroup": "toolGroup",
-			"queryLayer": "Cartografia:view_incidenti_copy",
+			"queryLayer": "Ambiente:mense_scuole",
 			"defaultActive": "info-hover",
 			"delay": 1000,
 			"vendorParams": {

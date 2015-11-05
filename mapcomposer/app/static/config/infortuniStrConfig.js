@@ -22,9 +22,6 @@
 				"TILED": true
 			},
             "authParam":"authkey"
-		}, 
-		"osm": { 
-				"ptype": "gxp_osmsource"
 		}             
     },
 	"map": {
@@ -38,18 +35,28 @@
 		],
 		"layers": [                                                
 			{
-				"source": "osm",
-				"title": "Open Street Map",
-				"name": "mapnik",
-				"group": "background"
+				"source": "bolzano",
+				"title": "Ortofoto 2013 Bolzano/Bozen",
+				"name": "Cartografia:ortofoto2013",
+				"layersCachedExtent": [
+					1252344.2712499984,5850795.892246094,1271912.1504882798,5870363.771484375
+				],
+				"group": "background",
+				"transparent": false,
+				"format": "image/jpeg"
 			},{
+                "source": "bolzano",
+				"title": "view_str_inc",
+				"name": "Cartografia:view_str_inc"
+            },{
                 "source": "bolzano",
 				"title": "view_incidenti",
 				"name": "Cartografia:view_incidenti"
             },{
                 "source": "bolzano",
 				"title": "view_incidenti_copy",
-				"name": "Cartografia:view_incidenti_copy"
+				"name": "Cartografia:view_incidenti_copy",
+				"displayInLayerSwitcher": false
             }
 		]
 	},
@@ -73,12 +80,9 @@
 	
 	"customTools":[
 		{
-			"ptype": "gxp_searchinfortuni",
+			"ptype": "gxp_searchinfortunistrade",
 			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
 			"outputTarget": "east",
-			"infortuniLayerName": "view_incidenti",
-			"infortuniLayerCopyName": "view_incidenti_copy",
-			"infortuniLayerWs": "Cartografia",
 			"selectionProperties": {
 				"wmsURL": "http://sit.comune.bolzano.it/geoserver/ows",
 				"selectionLayerTitle": "Selection Layer",
@@ -101,7 +105,7 @@
 			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
 			"useTabPanel": true,
 			"toggleGroup": "toolGroup",
-			"queryLayer": "Cartografia:view_incidenti_copy",
+			"queryLayer": "Cartografia:view_str_inc",
 			"defaultActive": "info-hover",
 			"delay": 1000,
 			"vendorParams": {
