@@ -46,8 +46,16 @@
 				"format": "image/jpeg"
 			},{
                 "source": "bolzano",
-				"title": "servizi_apertura",
-				"name": "Cartografia:servizi_apertura"
+				"title": "view_str_inc",
+				"name": "Cartografia:view_str_inc"
+            },{
+                "source": "bolzano",
+				"title": "view_incidenti",
+				"name": "Cartografia:view_incidenti"
+            },{
+                "source": "bolzano",
+				"title": "view_incidenti_copy",
+				"name": "Cartografia:view_incidenti_copy"
             }
 		]
 	},
@@ -71,9 +79,9 @@
 	
 	"customTools":[
 		{
-			"ptype": "gxp_searchservizioapertura",			
-			"outputTarget": "east",
+			"ptype": "gxp_searchinfortunistrade",
 			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
+			"outputTarget": "east",
 			"selectionProperties": {
 				"wmsURL": "http://sit.comune.bolzano.it/geoserver/ows",
 				"selectionLayerTitle": "Selection Layer",
@@ -96,9 +104,7 @@
 			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
 			"useTabPanel": true,
 			"toggleGroup": "toolGroup",
-			"infoPopupWidth": 650,
-			"infoPopupHeight": 500,
-			"queryLayer": "Cartografia:servizi_apertura",
+			"queryLayer": "Cartografia:view_str_inc",
 			"defaultActive": "info-hover",
 			"delay": 1000,
 			"vendorParams": {

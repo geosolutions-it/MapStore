@@ -46,45 +46,18 @@
 				"format": "image/jpeg"
 			},{
                 "source": "bolzano",
-				"title": "servizi_apertura",
-				"name": "Cartografia:servizi_apertura"
+				"title": "mense_scuole",
+				"name": "Ambiente:mense_scuole"
             }
 		]
 	},
 	
     "customPanels":[
-		{
-			"xtype": "panel",
-			"title": "Ricerca",         
-			"border": false,
-			"id": "east",
-			"width": 400,
-			"height": 500,
-			"region": "east",
-			"layout": "fit",
-			"collapsed": false,
-			"split": true,
-			"collapsible": true,
-			"header": true
-        }
+		
     ],
 	
 	"customTools":[
 		{
-			"ptype": "gxp_searchservizioapertura",			
-			"outputTarget": "east",
-			"serviceUrl": "http://sit.comune.bolzano.it/GeoInfo/",
-			"selectionProperties": {
-				"wmsURL": "http://sit.comune.bolzano.it/geoserver/ows",
-				"selectionLayerTitle": "Selection Layer",
-				"selectionLayerCiviciName": "Cartografia:civici",
-				"selectionLayerViaName": "ctn_base:grafo_vie",
-				"filterCiviciAttribute": "ID",
-				"selectionCiviciStyle": "highlight_point",
-				"filterViaAttribute": "ID_STRASSE",
-				"selectionViaStyle": "highlight"
-			}
-		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": false,
 			"id": "addlayer"
@@ -96,9 +69,7 @@
 			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
 			"useTabPanel": true,
 			"toggleGroup": "toolGroup",
-			"infoPopupWidth": 650,
-			"infoPopupHeight": 500,
-			"queryLayer": "Cartografia:servizi_apertura",
+			"queryLayer": "Ambiente:mense_scuole",
 			"defaultActive": "info-hover",
 			"delay": 1000,
 			"vendorParams": {

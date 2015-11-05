@@ -687,7 +687,7 @@ GeoExt.Lang.add("it", {
 		errorData1: 'Inserire una data di inizio e una data fine valida.',
 		errorData2: 'La data di inizio è maggiore della data di fine.',		
 		errorLayer: 'Layer occupazioni non definito: '
-	},
+	},		
 	
 	"gxp.plugins.SearchServizio.prototype":{
 		waitMsg: "Si prega di attendere ...",	
@@ -698,6 +698,23 @@ GeoExt.Lang.add("it", {
 		cercaText: "Cerca",
 		serviziEmpty: "Inserisci nome servizio",		
 		serviziToolTip: "Digitare nome servizio"
+	},
+	
+	"gxp.plugins.SearchInfortuni.prototype":{
+		annoText: "Anno",
+		dowText: "Giorno della settimana",
+		typeText: "Tipo di infortunio",
+		lunediText: "Lunedì",
+		martediText: "Martedì",
+		mercolediText: "Mercoledì",
+		giovediText: "Giovedì",
+		venerdiText: "Venerdì",
+		sabatoText: "Sabato",
+		domenicaText: "Domenica",
+		filterText: "Filtra Infortuni",
+		noFeritiText: "Senza Feriti",
+		feritiText: "Con Feriti",
+		mortaleText: "Mortale"	
 	},
 	
 	"gxp.plugins.PrintSnapshot.prototype" :{
