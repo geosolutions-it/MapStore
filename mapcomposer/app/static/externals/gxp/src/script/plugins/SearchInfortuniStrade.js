@@ -63,138 +63,6 @@ gxp.plugins.SearchInfortuniStrade = Ext.extend(gxp.plugins.Tool, {
 		var comProjection = new OpenLayers.Projection("EPSG:25832"); 
 		var googleProjection = new OpenLayers.Projection("EPSG:900913");
 		
-		var dsVie = new Ext.data.Store({
-			url: this.serviceUrl + 'VieServlet',			
-			reader: new Ext.data.JsonReader({
-				root: 'vie',
-				totalProperty: 'totalCount',
-				successProperty: 'success',
-				fields: [
-					{name: 'codice', type: 'string'},
-					{name: 'descrizione',  type: 'string'}
-				]
-			})
-		});
-		dsVie.setBaseParam('lang', this.vieLang);
-		
-		var dsServizi = new Ext.data.Store({
-			url: this.serviceUrl + 'DescServiziServlet',			
-			reader: new Ext.data.JsonReader({
-				root: 'servizi',
-				totalProperty: 'totalCount',
-				successProperty: 'success',
-				fields: [
-					{name: 'codice', type: 'string'},
-					{name: 'descrizione',  type: 'string'}
-				]
-			})
-		});
-		dsServizi.setBaseParam('lang', this.vieLang);
-		
-		
-		var dsQuart = new Ext.data.ArrayStore({
-			// store configs
-			autoDestroy: true,
-			storeId: 'quartStore',
-			// reader configs
-			idIndex: 1,  
-			fields: [
-			   'quart',
-			   {name: 'codice', type: 'string'},
-			   {name: 'descrizione', type: 'string'}
-			],
-			data: [
-			    ['TT', '0', '-TUTTI-'],
-				['DB', '4', 'DON BOSCO'],
-				['EU', '3', 'EUROPA NOVACELLA'],
-				['CP', '1', 'CENTRO P. RENCIO'],
-				['GR', '5', 'GRIES S.QUIRINO'],
-				['OL', '2', 'OLTRISARCO ASLAGO']
-			]
-		});
-		
-		/*var quartieriBounds = new Array(new OpenLayers.Bounds(676378.506299966,5146295.22456535,678948.527007408,5151668.14303656),
-										new OpenLayers.Bounds(678466.28086363,5150788.14999069,679766.270519622,5151733.93921576),
-										new OpenLayers.Bounds(679592.610573759,5146771.96139754,686694.123215321,5153840.62514496),
-										new OpenLayers.Bounds(674670.741214438,5150321.92017395,681330.48838804,5155672.9491575),
-										new OpenLayers.Bounds(676774.543313356,5146071.45289345,680640.700936764,5151231.94294201)
-										);*/
-		
-		var quartieriBounds = new Array(new OpenLayers.Bounds(1257678.91320766,5852261.07912094,1261441.1885092,5860011.5664276),
-										new OpenLayers.Bounds(1260744.90851826,5858721.29277957,1262629.25908689,5860082.35535871),
-										new OpenLayers.Bounds(1262261.33008108,5852716.30969585,1272699.68342259,5863090.83195279),
-										new OpenLayers.Bounds(1255276.74739195,5858156.79274919,1265077.53955173,5865757.69329878),
-										new OpenLayers.Bounds(1258145.07649538,5851905.9397528,1263878.7098088,5859314.92879478)
-										);	
-		
-		
-		var lineconfig = {
-			xtype: 'box',
-			autoEl:{
-				tag: 'div',
-				style:'line-height:1px; font-size: 1px;margin-bottom:4px',
-				children: [{
-					tag: 'img',
-					src: '1pxLine.gif',
-					height: '2px',
-					width: '100%'
-				}]
-			}
-		};
-		
-		var verLine = {
-			xtype: 'box',
-			autoEl:{
-				tag: 'div',
-				style:'line-height:1px; font-size: 1px;margin-bottom:4px',
-				children: [{
-					tag: 'img',
-					src: '1pxLine.gif',
-					height: '2px',
-					width: '100%'
-				}]
-			}
-		};
-	
-		/*var formPanel =  {
-			xtype       : 'panel',
-			height:      35,
-			border:0,
-			autoScroll  : false,
-			layout:'column',
-			bodyStyle:'padding:0px 0px 0; background-color:transparent;',
-			id          : 'formpanel',
-			defaultType : 'field',
-			frame       : true,
-			items:[				   
-						{
-							xtype: 'button',
-							id: 'ckBtn',
-							text: 'Seleziona tutto',
-							iconCls: 'icon-addlayers',
-							width: 50,
-							handler: function(){
-								Ext.getCmp('serviziCheck').items.each(function(oEl) {
-									oEl.setValue(true);
-								});
-							}
-						},
-						verLine,
-						{
-							xtype: 'button',
-							id: 'unckBtn',
-							text: 'Deseleziona tutto',
-							iconCls: 'icon-removelayers',
-							width: 50,
-							handler: function(){
-								Ext.getCmp('serviziCheck').items.each(function(oEl) {
-									oEl.setValue(false);
-								});
-							}
-						}
-				   ]
-			};*/
-	
 		
 		var serviziForm = new Ext.form.FormPanel({
 			header: true,
@@ -323,47 +191,7 @@ gxp.plugins.SearchInfortuniStrade = Ext.extend(gxp.plugins.Tool, {
 				
 		
 		function aggiornaServizi(layer) {
-		  /* var startTime = Ext.getCmp("daBox").getValue();
-		   var endTime = Ext.getCmp("aBox").getValue();
-		   var aDate = Ext.getCmp("searchDate").getValue();
-		   var via = Ext.getCmp('vieBox').getValue();
-		   var quartiere = Ext.getCmp('quartBox').getValue();
-		   var servizio = Ext.getCmp('servDescBox').getValue();
-		   var serviziLayer;
-		   var url;
-		   var qBounds;
-		   
-		   if (via) {
-				url = me.serviceUrl + 'BoundsServlet?tipo=via&codice=' + via;
-				if(me.selectionProperties){
-					selectionLayerName = me.selectionProperties.selectionLayerViaName;
-					filterAttribute = me.selectionProperties.filterViaAttribute;
-					selectionStyle = me.selectionProperties.selectionViaStyle;
-				}
-				
-				zoomVia(url, selectionLayerName, filterAttribute, selectionStyle, comProjection, googleProjection);
-			} else if (quartiere > 0) {
-				//var record = Ext.getCmp('quartBox').findRecord(Ext.getCmp('quartBox').valueField || Ext.getCmp('quartBox').displayField, quartiere);
-				//var index = Ext.getCmp('quartBox').store.indexOf(record) - 1;
-				qBounds = quartieriBounds[Ext.getCmp('quartBox').selectedIndex - 1];
-				
-				selectionLayerName = 'Ambiente:quartieri';
-				filterAttribute = 'BOLZANO_CI';
-				selectionStyle = 'highlight_polygon';
-				
-				zoomQuartiere(url, selectionLayerName, filterAttribute, selectionStyle, quartiere, qBounds, comProjection, googleProjection);
-			} else if (servizio) {
-				url = me.serviceUrl + 'BoundsServlet?tipo=servizio&codice=' + servizio;
-				if(me.selectionProperties){
-					selectionLayerName = 'Cartografia:SERVIZI_RICERCA';
-					filterAttribute = 'SERV_ID';
-					selectionStyle = 'highlight_point';
-				}
-				
-				zoomServizio(url, selectionLayerName, filterAttribute, selectionStyle, servizio, comProjection, googleProjection);
-			}*/
-			
-			
+		  
 			
 		   var infortuniLayer;
 		   if (!layer) {
@@ -371,19 +199,7 @@ gxp.plugins.SearchInfortuniStrade = Ext.extend(gxp.plugins.Tool, {
 		   } else {
 			   infortuniLayer = layer;
 		   }
-		   
-		  
-		   /*var selectedYears = Ext.getCmp("annoCheck").getValue();
-		   var inYears = "";           
-            for(var i=0; i<selectedYears.length; i++){
-                var inYear = "" + selectedYears[i].inputValue + "";
-                inYears += inYear;
-                
-                if(i+1 < selectedYears.length){
-                    inYears += "\\,";
-                }         
-            }*/
-			
+		   			
 			var selectedDays = Ext.getCmp("gSettCheck").getValue();
 		    var inDays = "";           
             for(var i=0; i<selectedDays.length; i++){
@@ -406,9 +222,6 @@ gxp.plugins.SearchInfortuniStrade = Ext.extend(gxp.plugins.Tool, {
                 }         
             }
 			
-			//var sCqlFilter = "(" + (inYears == "" ? "ANNOINC=0" : inYears) + ") AND (" + (inTypes == "" ? "TPINCID='0'" : inTypes) + ") AND (" + (inDays == "" ? "DOW='-1'" : inDays) + ")";
-           // var sParam = "gionrnos_p:'" + (inDays == "" ?  "''-1''" : inDays) + "'";
-		   // var annoParam = "anno_p:" + (inYears == "" ? "0" : inYears);
 			var giornoParam = "dow_p:" + (inDays == "" ? "0" : inDays);
 			var tipoIncParam = "tpinc_p:" + (inTypes == "" ? "0" : inTypes);
 			
@@ -436,18 +249,11 @@ gxp.plugins.SearchInfortuniStrade = Ext.extend(gxp.plugins.Tool, {
 					return;
 			   }
 			 
-			
-			/*if (!via) {
-				via = 0;
-			}*/
-			
+
 			var dateParam = "fromdate_p:" + startDate.format('Y-m-d') + ';' + "todate_p:" + endDate.format('Y-m-d');
 			
 			var params = {
 			   "viewparams": dateParam + ';' + giornoParam + ';' + tipoIncParam
-			   //"cql_filter": "CATE_ROOT_CODE IN (" + inServices + ")"
-                //"cql_filter": inServices == "" ? "INCLUDE" : inServices
-				//"cql_filter": sCqlFilter
 		    };
 		   
 		   
@@ -491,16 +297,9 @@ gxp.plugins.SearchInfortuniStrade = Ext.extend(gxp.plugins.Tool, {
 		   }
 		   
 		  
-		  // var selectedYears = Ext.getCmp("annoCheck").getValue();
+
 		   var inYears = "";           
-           /* for(var i=0; i<selectedYears.length; i++){
-                var inYear = "ANNOINC=" + selectedYears[i].inputValue + "";
-                inYears += inYear;
-                
-                if(i+1 < selectedYears.length){
-                    inYears += " OR ";
-                }         
-            }*/
+
 			
 			var selectedDays = Ext.getCmp("gSettCheck").getValue();
 		    var inDays = "";           
@@ -530,17 +329,9 @@ gxp.plugins.SearchInfortuniStrade = Ext.extend(gxp.plugins.Tool, {
 			
 			inYears = "DTINCID <= '"+ endDate.format('Y-m-d') + "' AND DTINCID >= '" + startDate.format('Y-m-d') + "'"
 			
-			var sCqlFilter = "(" + (inYears == "" ? "ANNOINC=0" : inYears) + ") AND (" + (inTypes == "" ? "TPINCID='0'" : inTypes) + ") AND (" + (inDays == "" ? "DOW='-1'" : inDays) + ")";
-           // var sParam = "gionrnos_p:'" + (inDays == "" ?  "''-1''" : inDays) + "'";
-			
-			/*if (!via) {
-				via = 0;
-			}*/
+			var sCqlFilter = "(" + (inYears == "" ? "ANNOINC=0" : inYears) + ") AND (" + (inTypes == "" ? "TPINCID='0'" : inTypes) + ") AND (" + (inDays == "" ? "DOW='-1'" : inDays) + ")";           
 			
 			var params = {
-			   //"viewparams": sParam,
-			   //"cql_filter": "CATE_ROOT_CODE IN (" + inServices + ")"
-                //"cql_filter": inServices == "" ? "INCLUDE" : inServices
 				"cql_filter": sCqlFilter
 		    };
 		   
@@ -570,199 +361,6 @@ gxp.plugins.SearchInfortuniStrade = Ext.extend(gxp.plugins.Tool, {
 			}   
 		}
 		
-		function zoomVia(url, selectionLayerName, filterAttribute, selectionStyle, comProjection, googleProjection) {
-			if (url != '') {
-								
-					var mask = new Ext.LoadMask(Ext.getBody(), {msg: me.waitMsg});
-					mask.show();
-				
-					Ext.Ajax.request({
-						url: url,
-						scope: me,
-						success: function(response, opts) {
-							mask.hide();
-							var obj = Ext.decode(response.responseText);
-							var bounds = obj.bounds;
-							
-							
-							var comBounds = new OpenLayers.Bounds(bounds.x1, bounds.y1, bounds.x2, bounds.y2);
-							var newBounds = comBounds.transform(comProjection, googleProjection);
-						
-							
-							//
-							// Add the WMS layer
-							//
-							var addLayer = apptarget.tools["addlayer"];
-							if(selectionLayerName && me.selectionProperties && 
-								filterAttribute && selectionStyle && addLayer){
-							
-								var layer = apptarget.mapPanel.map.getLayersByName(me.selectionProperties.selectionLayerTitle)[0];
-								if(!layer){
-									var customParams = {
-										cql_filter: filterAttribute + "=" + bounds.codice,
-										styles: selectionStyle,
-										displayInLayerSwitcher: false,
-										enableLang: false
-									};
-									
-									var opts = {
-										msLayerTitle: me.selectionProperties.selectionLayerTitle,
-										msLayerName: selectionLayerName,
-										wmsURL: me.selectionProperties.wmsURL,
-										customParams: customParams
-									};
-									
-									addLayer.addLayer(opts);																					
-									
-									layer = apptarget.mapPanel.map.getLayersByName(me.selectionProperties.selectionLayerTitle)[0];
-								}//else{   Nota: a seguito di alcune modifiche, bisogna riassegnare il cql_filter
-								layer.mergeNewParams({
-									"cql_filter": filterAttribute + "=" + bounds.codice,
-									"layers": selectionLayerName,
-									"styles": selectionStyle
-								});
-								//}
-							}
-							
-							apptarget.mapPanel.map.zoomToExtent(newBounds);							
-						},
-						failure: function(response, opts) {
-							mask.hide();
-							
-							Ext.Msg.show({
-								  title: me.titleError,
-								  msg: response.responseText + " - " + response.status,
-								  width: 300,
-								  icon: Ext.MessageBox.WARNING
-							});
-							
-							console.log('server-side failure with status code ' + response.status);
-						}
-					});
-				}
-		}
-		
-		function zoomQuartiere(url, selectionLayerName, filterAttribute, selectionStyle, quartiere, qBounds) {
-			if (url != '') {
-								
-					var mask = new Ext.LoadMask(Ext.getBody(), {msg: me.waitMsg});
-					mask.show();
-				
-					
-					var addLayer = apptarget.tools["addlayer"];
-							if(selectionLayerName && me.selectionProperties && 
-								filterAttribute && selectionStyle && addLayer){
-							
-																
-								var newBounds = qBounds;
-								
-								var layer = apptarget.mapPanel.map.getLayersByName(me.selectionProperties.selectionLayerTitle)[0];
-								if(!layer){
-									var customParams = {
-										cql_filter: filterAttribute + "=" + quartiere,
-										styles: selectionStyle,
-										displayInLayerSwitcher: false,
-										enableLang: false
-									};
-									
-									var opts = {
-										msLayerTitle: me.selectionProperties.selectionLayerTitle,
-										msLayerName: selectionLayerName,
-										wmsURL: me.selectionProperties.wmsURL,
-										customParams: customParams
-									};
-									
-									addLayer.addLayer(opts);																					
-									
-									layer = apptarget.mapPanel.map.getLayersByName(me.selectionProperties.selectionLayerTitle)[0];
-								}//else{   Nota: a seguito di alcune modifiche, bisogna riassegnare il cql_filter
-								layer.mergeNewParams({
-									"cql_filter": filterAttribute + "=" + quartiere,
-									"layers": selectionLayerName,
-									"styles": selectionStyle
-								});
-								//}
-								
-							}
-					mask.hide();
-					
-					if (newBounds) {
-						apptarget.mapPanel.map.zoomToExtent(newBounds);
-					}
-				}
-		}
-		
-		function zoomServizio(url, selectionLayerName, filterAttribute, selectionStyle, servizio, comProjection, googleProjection) {
-			if (url != '') {
-								
-					var mask = new Ext.LoadMask(Ext.getBody(), {msg: me.waitMsg});
-					mask.show();
-				
-					Ext.Ajax.request({
-						url: url,
-						scope: me,
-						success: function(response, opts) {
-							mask.hide();
-							var obj = Ext.decode(response.responseText);
-							var bounds = obj.bounds;
-							
-							
-							var comBounds = new OpenLayers.Bounds(bounds.x1, bounds.y1, bounds.x2, bounds.y2);
-							var newBounds = comBounds.transform(comProjection, googleProjection);
-						
-							
-							//
-							// Add the WMS layer
-							//
-							var addLayer = apptarget.tools["addlayer"];
-							if(selectionLayerName && me.selectionProperties && 
-								filterAttribute && selectionStyle && addLayer){
-							
-								var layer = apptarget.mapPanel.map.getLayersByName(me.selectionProperties.selectionLayerTitle)[0];
-								if(!layer){
-									var customParams = {
-										cql_filter: filterAttribute + "=" + bounds.codice,
-										styles: selectionStyle,
-										displayInLayerSwitcher: false,
-										enableLang: false
-									};
-									
-									var opts = {
-										msLayerTitle: me.selectionProperties.selectionLayerTitle,
-										msLayerName: selectionLayerName,
-										wmsURL: me.selectionProperties.wmsURL,
-										customParams: customParams
-									};
-									
-									addLayer.addLayer(opts);																					
-									
-									layer = apptarget.mapPanel.map.getLayersByName(me.selectionProperties.selectionLayerTitle)[0];
-								}//else{   Nota: a seguito di alcune modifiche, bisogna riassegnare il cql_filter
-								layer.mergeNewParams({
-									"cql_filter": filterAttribute + "=" + bounds.codice,
-									"layers": selectionLayerName,
-									"styles": selectionStyle
-								});
-								//}
-							}
-							
-							apptarget.mapPanel.map.zoomToExtent(newBounds);							
-						},
-						failure: function(response, opts) {
-							mask.hide();
-							
-							Ext.Msg.show({
-								  title: me.titleError,
-								  msg: response.responseText + " - " + response.status,
-								  width: 300,
-								  icon: Ext.MessageBox.WARNING
-							});
-							
-							console.log('server-side failure with status code ' + response.status);
-						}
-					});
-				}
-		}
 		
 		apptarget.mapPanel.map.events.register('preaddlayer', apptarget.mapPanel.map, function (e) {
 		

@@ -96,6 +96,8 @@
 			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
 			"useTabPanel": true,
 			"toggleGroup": "toolGroup",
+			"infoPopupWidth": 650,
+			"infoPopupHeight": 500,
 			"queryLayer": "Cartografia:servizi_apertura",
 			"defaultActive": "info-hover",
 			"delay": 1000,

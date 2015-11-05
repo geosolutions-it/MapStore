@@ -713,6 +713,23 @@ GeoExt.Lang.add("de", {
 		serviziEmpty: "Dienstname einfügen",		
 		serviziToolTip: "Dienstname eingeben"
 	},
+	
+	"gxp.plugins.SearchInfortuni.prototype":{
+		annoText: "Jahr",
+		dowText: "Wochentag",
+		typeText: "Unfalltyp",
+		lunediText: "Montag",
+		martediText: "Dienstag",
+		mercolediText: "Mittwoch",
+		giovediText: "Donnerstag",
+		venerdiText: "Freitag",
+		sabatoText: "Samstag",
+		domenicaText: "Sonntag",
+		filterText: "Unfälle filtern",
+		noFeritiText: "Ohne Verletzten",
+		feritiText: "Mit Verletzten",
+		mortaleText: "Tödlich"	
+	},
 
 	"gxp.plugins.PrintSnapshot.prototype" :{
 		noSupportedLayersErrorMsg: "Fehler beim Erzeugen der Karte Snapshot: Nein Unterstützte Ebenen gefunden!",
