@@ -25,6 +25,10 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
 
     buttonText: "",
     
+    /** private: property[iconCls]
+     */
+    iconCls: "icon-route",
+    
     /** api: config[menuText]
      *  ``String``
      *  Text for action and win title item (i18n).
@@ -36,10 +40,6 @@ gxp.plugins.Routing = Ext.extend(gxp.plugins.Tool, {
      *  Text for action tooltip (i18n).
      */
     tooltip: "Calcola percorso",
-    
-    /** private: property[iconCls]
-     */
-    iconCls: "icon-route",
 
     formulaText: "Formula",
 

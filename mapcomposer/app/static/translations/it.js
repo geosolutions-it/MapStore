@@ -800,9 +800,17 @@ GeoExt.Lang.add("it", {
         routePointsText: "Estremi del percorso",
         selectPointText: "Seleziona punto da mappa",
         calculateText: "Calcola",
+        downloadText: "Esporta",
+        socRiskText: "Sociale",
+        envRiskText: "Ambientale",
         lonText: "Lon",
         latText: "Lat",
         routingText: "Routing",
+        blockRoadsText: "Blocca strade",
+        zoomToRoadsText: "Zoom alla selezione",
+        addRoadsText: "Aggiungi strade da bloccare",
+        removeRoadsText: "Rimuovi selezionate",
+        resetRoadsText: "Rimuovi tutte",
         errorTitle: "Errore",
         missingParametersMsg: "Specificare tipo di formula, partenza e destinazione",
         selectOneMsg: "Selezionare una opzione",
@@ -813,11 +821,8 @@ GeoExt.Lang.add("it", {
         humanVulnFormula: "Percorso con minore vulnerabilità per l'uomo",    
         notHumanVulnFormula: "Percorso con minore vulnerabilità per l'ambiente",    
         incFormula: "Percorso con minore incidentalità",
-        blockRoadsText: "Blocca strade",
-        zoomToRoadsText: "Zoom alla selezione",
-        addRoadsText: "Aggiungi strade da bloccare",
-        removeRoadsText: "Rimuovi selezionate",
-        resetRoadsText: "Rimuovi tutte"
+        warningTitle: "Attenzione",    
+        warningText: "La mancanza di alcune informazioni (i sensi di percorrenza, indicazioni di lavori in corso e info sulla velocità)  non permettono di evidenziare il percorso più veloce ma solo quello linearmente più corto."
     }
 
 });

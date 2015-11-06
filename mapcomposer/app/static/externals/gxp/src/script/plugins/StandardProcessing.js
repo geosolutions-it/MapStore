@@ -1144,11 +1144,13 @@ gxp.plugins.StandardProcessing = Ext.extend(gxp.plugins.Tool, {
                 select: function(cb, record, index) {
                     var sost = record.get('originalid') || "0";
                     if(sost != "0") {
-                        this.sostanzeToAccidentStore.filter('sostanza', sost);
+                        this.sostanzeToAccidentStore.filterBy(function(rec) {
+                            return rec.get('sostanza') == sost;
+                        }, this);
                         var fids = {};
                         
                         this.sostanzeToAccidentStore.each(function(record){
-                            if(record.get("psc") > 0.0) {
+                            if(record.get("psc") && record.get("psc") > 0.0) {
                                 fids[record.get("scenario")] = true;
                             }
                         }, this);

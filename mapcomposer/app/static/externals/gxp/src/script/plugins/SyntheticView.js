@@ -3020,7 +3020,9 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
 			env += ";formulaudm:" + status.formulaUdm[1];
 		}else if(targetId == 99){
 			env += ";formulaudm:" + status.formulaUdm[2];
-		}
+		} else {
+            env += ";formulaudm1:" + status.formulaUdm[1] + ";formulaudm2:" + status.formulaUdm[2];
+        }
 		
         if(status.resolution <= 2 && status.viadottiGallerie.length > 0) {
             var viadottiGallerie = [];
