@@ -626,11 +626,19 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
          var me = this;
          var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:me.loadingMessage});
          var errorCallback = function(response, form, action) {
-            Ext.Msg.show({
-               msg: this.errorDeleteConsumerText,
-               buttons: Ext.Msg.OK,
-               icon: Ext.MessageBox.ERROR
-            });
+            // XMLHTTPRequest implementation in MSXML HTTP (at least in IE 8.0
+            // on Windows XP SP3+) does not handle HTTP responses with status
+            // code 204 (No Content) properly; the `status' property has the
+            // value 1223.
+            //
+            // see http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+            if (response.status != 1223) {
+                Ext.Msg.show({
+                   msg: this.errorDeleteConsumerText,
+                   buttons: Ext.Msg.OK,
+                   icon: Ext.MessageBox.ERROR
+                });
+            }
             this.store.load();
             loadMask.hide();
         };
