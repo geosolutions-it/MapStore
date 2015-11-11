@@ -613,6 +613,7 @@ GeoExt.Lang.add("fr", {
         aoiMethodLabel: "Mode",
         aoiByRectLabel: "Rectangle",
         aoiByFeatureLabel: "Limite administrative",
+        regioniLabel: "régions",
         provinceLabel: "Province",
         comuniLabel: "Municipalité"
     },
@@ -688,7 +689,9 @@ GeoExt.Lang.add("fr", {
         aggregationSelectorLabel: "Statistiques",
         intervalSelectorLabel: "Intervalle",
         gateLastMonthText: 'Le mois dernier',
-        gateLastYearText: 'L\'année dernière'   
+        gateLastYearText: 'L\'année dernière',
+        helpTitle: 'Help',
+        helpMsg: '<ul><li>total: représente le nombre total de véhicules détectés dans la période spécifiée</li><li>Vitesse moyenne : est le nombre de véhicules détectés en moyenne par heure</li></ul>'
 	},
 
 	"gxp.widgets.button.SelectFeatureButton.prototype":{

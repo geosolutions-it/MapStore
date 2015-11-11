@@ -138,6 +138,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
     aoiMethodLabel: "Modalità",
     aoiByRectLabel: "Rettangolo",
     aoiByFeatureLabel: "Seleziona limite",
+    regioniLabel: "Regioni",
     provinceLabel: "Provincia",
     comuniLabel: "Comune",
     // end i18n
@@ -312,9 +313,29 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             
         if(this.searchByFeature) {
         
+            var regioniStore= new GeoExt.data.FeatureStore({ 
+                 id: "provinceStore",
+                 fields: [{
+                            "name": "id",              
+                            "mapping": "cod_regione"
+                  },{
+                            "name": "name",              
+                            "mapping": "descrizione"
+                  }],
+                 proxy: this.getWFSStoreProxy("v_regioni", undefined, "descrizione"),
+                 autoLoad: true
+           });
+           
+           regioniStore.on('load', function(str, records) {
+              str.insert(0, new str.recordType({"id": '0', "name":'---'}));
+           }, this);
+        
             var provinceStore= new GeoExt.data.FeatureStore({ 
                  id: "provinceStore",
                  fields: [{
+                            "name": "cod_regione",              
+                            "mapping": "cod_regione"
+                  },{
                             "name": "id",              
                             "mapping": "cod_provincia"
                   },{
@@ -332,6 +353,9 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
            var comuniStore= new GeoExt.data.FeatureStore({ 
                  id: "comuniStore",
                  fields: [{
+                            "name": "cod_regione",              
+                            "mapping": "cod_regione"
+                  },{
                             "name": "id",              
                             "mapping": "cod_comune"
                   },{
@@ -348,6 +372,34 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
            comuniStore.on('load', function(str, records) {
               str.insert(0, new str.recordType({"id": '0', "cod_provincia": '0', "name":'---'}));
            }, this);
+        
+            this.regioni = new Ext.form.ComboBox({
+                fieldLabel: this.regioniLabel,
+                id: "regcb",
+                width: 150,
+                hideLabel : false,
+                store: regioniStore, 
+                valueField: 'id',
+                displayField: 'name',   
+                lastQuery: '',
+                typeAhead: true,
+                mode: 'local',
+                forceSelection: true,
+                triggerAction: 'all',
+                selectOnFocus:true,            
+                resizable: true,    
+                listeners: {
+                    scope: this,                
+                    expand: function(combo) {
+                        combo.list.setWidth( 'auto' );
+                        combo.innerList.setWidth( 'auto' );
+                    },
+                    select: function(combo, record, index) {
+                        this.province.reset();
+						this.comuni.reset();
+                    }
+                }          
+            });
         
             this.province = new Ext.form.ComboBox({
                 fieldLabel: this.provinceLabel,
@@ -375,6 +427,54 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                     }
                 }          
             });
+            
+            // /////////////////////////////////////////////////////
+			// Overriding the doQuery method in order to allow
+			// the client side filter by province and user's query.
+			// /////////////////////////////////////////////////////
+			this.province.doQuery = function(q, forceAll){
+				q = Ext.isEmpty(q) ? '' : q;
+				var qe = {
+					query: q,
+					forceAll: forceAll,
+					combo: this,
+					cancel:false
+				};
+				if(this.fireEvent('beforequery', qe)===false || qe.cancel){
+					return false;
+				}
+				q = qe.query;
+				forceAll = qe.forceAll;
+				if(forceAll === true || (q.length >= this.minChars)){
+					if(this.lastQuery !== q){
+						this.lastQuery = q;
+						if(this.mode == 'local'){
+							this.selectedIndex = -1;
+							/*if(forceAll){
+								this.store.clearFilter();
+							}else{
+								this.store.filter(this.displayField, q);
+								
+							}*/							
+							this.filterByRegioni(q);
+							this.onLoad();
+						}else{
+							this.store.baseParams[this.queryParam] = q;
+							this.store.load({
+								params: this.getParams(q)
+							});
+							this.expand();
+						}
+					}else{
+						this.filterByRegioni(q);
+						
+						this.selectedIndex = -1;
+						this.onLoad();
+					}
+				}else{
+					this.filterByRegioni(q);
+				}
+			};
             
             this.comuni = new Ext.form.ComboBox({
                 fieldLabel: this.comuniLabel,
@@ -452,11 +552,41 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
 			};
 			
 			var self = this;
+            
+            this.province.filterByRegioni = function(q){
+				this.store.clearFilter();
+				
+                var regStore = self.regioni.getStore();
+		
+                var codRegione = self.regioni.getValue();
+				
+                if(codRegione && codRegione !== '0') {
+                    var filter = [{
+                        fn   : function(record) {
+                          return record.get('cod_regione') === '0' || record.get('cod_regione') === codRegione;
+                        },
+                        scope: this
+                    }]
+                   
+                    if(q){
+                        filter.push({
+                            property     : this.displayField,
+                            value        : q,
+                            anyMatch     : false,
+                            caseSensitive: false
+                        });
+                    }
+                    this.store.filter(filter);
+                }
+			};
+            
 			this.comuni.filterByProvince = function(q){
 				this.store.clearFilter();
 				
+                var regStore = self.regioni.getStore();
 				var provStore = self.province.getStore();
 		
+                var codRegione = self.regioni.getValue();
 				var codProvincia = self.province.getValue();
 				//var prov_record = provStore.find("id", nameProvincia);
 				
@@ -480,7 +610,24 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
 						}
 
 					    this.store.filter(filter);
-					}
+					} else if(codRegione && codRegione !== '0') {
+                        var filter = [{
+							fn   : function(record) {
+							  return record.get('cod_regione') === '0' || record.get('cod_regione') === codRegione;
+							},
+							scope: this
+						}]
+					   
+						if(q){
+							filter.push({
+								property     : this.displayField,
+								value        : q,
+								anyMatch     : false,
+								caseSensitive: false
+							});
+						}
+                        this.store.filter(filter);
+                    }
 				//}
 			};
             
@@ -511,7 +658,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             }), {
                 id:this.id + '-byfeature',
                 xtype: 'fieldset',
-                items: [this.province, this.comuni],
+                items: [this.regioni, this.province, this.comuni],
                 hidden: true
             }];
         } else {
@@ -617,6 +764,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
         if(this.searchByFeature) {
             this.province.setValue('0');
             this.comuni.setValue('0');
+            this.regioni.setValue('0');
         }
     },
     
@@ -651,6 +799,9 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
         }
         if(type === 'provincia') {
             this.province.setValue(id);
+        }
+        if(type === 'regione') {
+            this.regioni.setValue(id);
         }
     },
     
@@ -707,6 +858,7 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
             else
                 return this.getAOIBounds();
         } else {
+            var codRegione = this.regioni.getValue();
             var codProvincia = this.province.getValue();
             var codComune = this.comuni.getValue();
             var type, id, geometry, bbox, name;
@@ -715,7 +867,12 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                 id = codComune;
                 geometry = this.comuni.store.getAt(this.comuni.store.find('id', codComune)).getFeature().geometry;
                 name = this.comuni.store.getAt(this.comuni.store.find('id', codComune)).get('name');
-              } else {
+            } if(codRegione && codRegione !== '0') {
+                type = 'regione';
+                id = codRegione;
+                geometry = this.regioni.store.getAt(this.regioni.store.find('id', codRegione)).getFeature().geometry;
+                name = this.regioni.store.getAt(this.regioni.store.find('id', codRegione)).get('name');
+            } else {
                 type = 'provincia';
                 id = codProvincia;
                 geometry = this.province.store.getAt(this.province.store.find('id', codProvincia)).getFeature().geometry;

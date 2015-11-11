@@ -616,6 +616,7 @@ GeoExt.Lang.add("en", {
         aoiMethodLabel: "Mode",
         aoiByRectLabel: "Rectangle",
         aoiByFeatureLabel: "Administrative Limit",
+        regioniLabel: "Regions",
         provinceLabel: "Province",
         comuniLabel: "Municipality"
     },
@@ -691,7 +692,9 @@ GeoExt.Lang.add("en", {
         aggregationSelectorLabel: "Statistics",
         intervalSelectorLabel: "Interval",
         gateLastMonthText: 'Last Month',
-        gateLastYearText: 'Last Year'   
+        gateLastYearText: 'Last Year',
+        helpTitle: 'Help',
+        helpMsg: '<ul><li>total : it\'s the total number of vehicles in the chosen period</li><li>Hourly average: it\'s the average number of vehicles in the chosen period</li></ul>'
 	},
 
 	"gxp.widgets.button.SelectFeatureButton.prototype":{

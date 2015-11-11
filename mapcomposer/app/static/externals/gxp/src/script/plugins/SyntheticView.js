@@ -2431,7 +2431,8 @@ gxp.plugins.SyntheticView = Ext.extend(gxp.plugins.Tool, {
             type: OpenLayers.Filter.Comparison.EQUAL_TO,
             property: this.destinationNS + ":" + ({
                 'comune': 'cod_comune',
-                'provincia': 'cod_provincia'
+                'provincia': 'cod_provincia',
+                'regione': 'fk_partner'
             }[type]),
             value: id
         });

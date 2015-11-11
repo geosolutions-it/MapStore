@@ -95,6 +95,8 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
     gateLastMonthText: 'Ultimo mese',
     gateLastYearText: 'Ultimo anno',    
     unauthorizedLabel: 'Funzione non disponibile con questo profilo',
+    helpTitle: 'Help',
+    helpMsg: '<ul><li>totale : rappresenta il totale dei veicoli rilevati nel periodo indicato</li><li>Media oraria: rappresenta quanti veicoli rilevati in media all\'ora</li></ul>',
     /** End i18n */
     
     currentAggregation: "mediaOraria",
@@ -857,12 +859,25 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
                 triggerAction: 'all',
                 selectOnFocus:true,            
                 value: 'mediaOraria',
+                onRender: function() {
+                    Ext.form.ComboBox.prototype.onRender.apply(this, arguments);
+                    this.el.up('').appendChild(Ext.DomHelper.createDom({
+                        tag: 'span',
+                        cls: 'formula-help'
+                    }));
+                    this.el.up('').select('.formula-help').on('click', function() {
+                        this.fireEvent('help', this);
+                    }, this);
+                },
                 listeners: {
                     scope: this,                
                     
                     select: function(combo, record, index) {
                         this.currentAggregation = record.get('summary');
                         this.gateTimeGrid.getView().refresh();
+                    },
+                    help: function(combo) {
+                        this.showHelp();
                     }
                 }          
             });
@@ -878,6 +893,35 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
             this.timeStore.load();        
         }
     
+    },
+    
+    showHelp: function() {
+        this.helpWin = new Ext.Window({
+			title: this.helpTitle,
+			layout: "fit",
+			width: 600,
+			height: 500,
+			closeAction: 'close',
+			resizable: false,
+			plain: true,
+			border: false,
+			modal: true,
+			items: [
+				{
+					xtype:'box',
+                    style: 'background-color: white; overflow: auto;',
+					html: '<div class="formula-help-text">' + this.helpMsg + '</div>'
+				}
+			],
+			keys: [{ 
+				key: [Ext.EventObject.ESC], 
+				handler: function() {
+					this.helpWin.close();
+				},
+				scope: this
+			}]
+		});
+		this.helpWin.show();
     },
     
     getWFSStoreProxy: function(featureName, filter, sortBy){
