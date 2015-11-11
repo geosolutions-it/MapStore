@@ -96,7 +96,7 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
     gateLastYearText: 'Ultimo anno',    
     unauthorizedLabel: 'Funzione non disponibile con questo profilo',
     helpTitle: 'Help',
-    helpMsg: '<ul><li>totale : rappresenta il totale dei veicoli rilevati nel periodo indicato</li><li>Media oraria: rappresenta quanti veicoli rilevati in media all\'ora</li></ul>',
+    helpMsg: '<ul><li>Totale : rappresenta il totale dei veicoli rilevati nel periodo indicato</li><li>Media Oraria: rappresenta quanti veicoli rilevati in media all\'ora</li></ul>',
     /** End i18n */
     
     currentAggregation: "mediaOraria",
@@ -899,8 +899,8 @@ gxp.plugins.GateTimeSliderTab = Ext.extend(gxp.plugins.Tool, {
         this.helpWin = new Ext.Window({
 			title: this.helpTitle,
 			layout: "fit",
-			width: 600,
-			height: 500,
+			width: 400,
+			height: 100,
 			closeAction: 'close',
 			resizable: false,
 			plain: true,

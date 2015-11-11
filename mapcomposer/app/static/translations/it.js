@@ -691,7 +691,7 @@ GeoExt.Lang.add("it", {
         gateLastMonthText: 'Ultimo mese',
         gateLastYearText: 'Ultimo anno',
         helpTitle: 'Help',
-        helpMsg: '<ul><li>totale : rappresenta il totale dei veicoli rilevati nel periodo indicato</li><li>Media oraria: rappresenta quanti veicoli rilevati in media all\'ora</li></ul>'
+        helpMsg: '<ul><li>Totale : rappresenta il totale dei veicoli rilevati nel periodo indicato</li><li>Media Oraria: rappresenta quanti veicoli rilevati in media all\'ora</li></ul>'
 	},
 
 	"gxp.widgets.button.SelectFeatureButton.prototype":{
