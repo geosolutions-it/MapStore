@@ -279,6 +279,23 @@
 			"actionTarget": {"target": "paneltbar", "index": 23},
 			"toggleGroup": "toolGroup"
 		}, {
+            "actions": ["-"], 
+            "actionTarget": "paneltbar"
+        }, {
+            "ptype": "gxp_enablelabel",
+            "strWithLabels": "_with_labels",
+            "actionTarget": {"target": "paneltbar", "index": 22}
+        }, {
+            "actions": ["-"], 
+            "actionTarget": "paneltbar"
+        }, {
+            "ptype": "gxp_styler",
+            "geostoreStyling": true,
+            "actionTarget": "paneltbar",
+            "sameOriginStyling": false,
+            "restrictToGroups" : "Advanced_Users",
+            "index": 24
+        }, {
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
 		},{
@@ -321,10 +338,6 @@
             "index":5
           }
       }, {
-			"ptype": "gxp_enablelabel",
-            "strWithLabels": "_with_labels",
-			"actionTarget": {"target": "paneltbar", "index": 21}
-		}, {
 			"ptype": "gxp_help",
 			"actionTarget": "paneltbar",
 			"text": "Help",
