@@ -46,7 +46,8 @@ gxp.plugins.GeoJSONSource = Ext.extend(gxp.plugins.LayerSource, {
      *  Create a layer record given the config.
      */
     createLayerRecord: function(config) {
-        var olLayer = new OpenLayers.Layer.Vector(config.title || config.name, {
+        var olLayer = new OpenLayers.Layer.Vector(config.title || config.name, Ext.apply({
+            visibility: ("visibility" in config) ? config.visibility : true,
             strategies: [new OpenLayers.Strategy.Fixed()],
             protocol: new OpenLayers.Protocol.HTTP({
                 url: this.urlSource,
@@ -56,14 +57,34 @@ gxp.plugins.GeoJSONSource = Ext.extend(gxp.plugins.LayerSource, {
                     'externalProjection': new OpenLayers.Projection("EPSG:4326")
                 })
             })
-        });
+        },this.createLayerStyle(config) || {}));
         var Record = GeoExt.data.LayerRecord.create();
         var retval = new Record(Ext.apply(config, {
             layer: olLayer,
-            visibility: true
+            queryable: true
         }));
 
         return retval;
+    },
+    createLayerStyle: function(config) {
+        var style = {};
+        var styleMap = null;
+        if (config.symbolizer) {
+            style["default"] =new OpenLayers.Style(null, {
+                rules: [new OpenLayers.Rule({
+                    symbolizer: config.symbolizer
+                })]
+            });
+        }
+        if (config.selectedSymbolizer) {
+            style["selected"]=  new OpenLayers.Style(null, {
+              rules: [new OpenLayers.Rule({symbolizer: config.selectedSymbolizer})]
+          });
+        }
+        if(style.default || style.selected) {
+          styleMap = { "styleMap": new OpenLayers.StyleMap(style)};
+        }
+        return styleMap;
     }
 });
 
