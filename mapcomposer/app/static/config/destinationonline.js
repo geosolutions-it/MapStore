@@ -136,7 +136,7 @@
 			"group": "background"
         },{
             "source": "destinationtiled",
-            "title": ["Environment Risk","Rischio Ambientale","risque environnemental","Umweltrisiko"],
+            "title": ["Environment Risk [m2 con danni/arco/anno]","Rischio Ambientale [m2 con danni/arco/anno]","risque environnemental [m2 con danni/arco/anno]","Umweltrisiko [m2 con danni/arco/anno]"],
 			"name": "rischio_totale_ambientale",
 			"displayInLayerSwitcher": true,
 			"tiled": false,
@@ -147,7 +147,7 @@
 			"forceOneVisible": false
         },{
             "source": "destinationtiled",
-            "title": ["Social Risk","Rischio Sociale","risque social","Anthropologisches Risiko"],
+            "title": ["Social Risk [morti/arco/anno]","Rischio Sociale [morti/arco/anno]","risque social [morti/arco/anno]","Anthropologisches Risiko [morti/arco/anno]"],
 			"name": "rischio_totale_sociale",
 			"displayInLayerSwitcher": true,
 			"tiled": false,
@@ -159,7 +159,7 @@
 			"forceOneVisible": false
         },{
             "source": "destinationtiled",
-            "title": ["Social - Environmental Risk","Rischio Sociale - Ambientale","risque sociale - environnemental","Gesamtrisiko"],
+            "title": ["Social - Environmental Risk scala qualitativa","Rischio Sociale - Ambientale scala qualitativa","risque sociale - environnemental scala qualitativa","Gesamtrisiko scala qualitativa"],
 			"name": "rischio_totale",
 			"displayInLayerSwitcher": true,
 			"tiled": false,
