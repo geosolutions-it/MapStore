@@ -61,7 +61,8 @@ gxp.plugins.GeoJSONSource = Ext.extend(gxp.plugins.LayerSource, {
         var Record = GeoExt.data.LayerRecord.create();
         var retval = new Record(Ext.apply(config, {
             layer: olLayer,
-            queryable: true
+            queryable: true,
+            isGeoJSON: true
         }));
 
         return retval;
