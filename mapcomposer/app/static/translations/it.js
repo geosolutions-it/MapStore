@@ -700,6 +700,23 @@ GeoExt.Lang.add("it", {
 		serviziToolTip: "Digitare nome servizio"
 	},
 	
+	"gxp.plugins.SearchInfortuni.prototype":{
+		annoText: "Anno",
+		dowText: "Giorno della settimana",
+		typeText: "Tipo di infortunio",
+		lunediText: "Lunedì",
+		martediText: "Martedì",
+		mercolediText: "Mercoledì",
+		giovediText: "Giovedì",
+		venerdiText: "Venerdì",
+		sabatoText: "Sabato",
+		domenicaText: "Domenica",
+		filterText: "Filtra Infortuni",
+		noFeritiText: "Senza Feriti",
+		feritiText: "Con Feriti",
+		mortaleText: "Mortale"	
+	},
+	
 	"gxp.plugins.PrintSnapshot.prototype" :{
 		noSupportedLayersErrorMsg: "Si è verificato un errore durante la generazione della mappa Snapshot: Nessun layer è supportato !",
 		generatingErrorMsg: "Si è verificato un errore durante la generazione della mappa Snapshot",
