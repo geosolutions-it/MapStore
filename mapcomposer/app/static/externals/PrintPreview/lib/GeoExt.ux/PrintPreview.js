@@ -564,7 +564,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
     /**
      * returns the options for the layout
      */
-    getLayoutOptions(baseName){
+    getLayoutOptions: function(baseName){
         return this.printProvider.fullLayouts.queryBy(function(record,id){
             return record.get("name").indexOf(baseName) === 0;
         });
