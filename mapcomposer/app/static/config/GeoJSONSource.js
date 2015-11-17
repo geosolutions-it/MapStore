@@ -104,6 +104,9 @@
         "topInUnits":"m",
         "topOutUnits":"km"
     },
+    "removeTools":[
+        "wmsgetfeatureinfo_plugin"
+    ],
 	"customTools":[
 		{
 			"ptype": "gxp_embedmapdialog",
@@ -162,13 +165,19 @@
 				},
 				"collapsedGroups": true
 		}, {
-			"ptype": "gxp_wmsgetfeatureinfo_menu",
+			"ptype": "gxp_getfeatureinfo_menu",
 			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
 			"useTabPanel": true,
 			"infoAction": "hover;click",
 			"toggleGroup": "toolGroup",
-			"actionTarget": {"target": "paneltbar", "index": 20},
-			"maxFeatures": 50
+			"actionTarget": {"target": "paneltbar", "index": 14},
+			"maxFeatures": 50,
+			"outputGridConfig":{
+               "Eventi":{
+                   "ignoreFields":["Scope"],
+          		   "propertyNames":{"City":"Town"}
+           }
+            }
 		}, {
         "ptype":"gxp_print",
         "customParams":{
