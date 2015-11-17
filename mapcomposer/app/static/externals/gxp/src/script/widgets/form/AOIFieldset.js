@@ -867,32 +867,35 @@ gxp.form.AOIFieldset = Ext.extend(Ext.form.FieldSet,  {
                 id = codComune;
                 geometry = this.comuni.store.getAt(this.comuni.store.find('id', codComune)).getFeature().geometry;
                 name = this.comuni.store.getAt(this.comuni.store.find('id', codComune)).get('name');
-            } if(codRegione && codRegione !== '0') {
-                type = 'regione';
-                id = codRegione;
-                geometry = this.regioni.store.getAt(this.regioni.store.find('id', codRegione)).getFeature().geometry;
-                name = this.regioni.store.getAt(this.regioni.store.find('id', codRegione)).get('name');
-            } else {
+            } else if(codProvincia && codProvincia !== '0') {
                 type = 'provincia';
                 id = codProvincia;
                 geometry = this.province.store.getAt(this.province.store.find('id', codProvincia)).getFeature().geometry;
                 name = this.province.store.getAt(this.province.store.find('id', codProvincia)).get('name');
-            }
-            var bbox = new OpenLayers.Bounds.fromString(geometry.getBounds().toBBOX());
+            } else if(codRegione && codRegione !== '0') {
+                type = 'regione';
+                id = codRegione;
+                geometry = this.regioni.store.getAt(this.regioni.store.find('id', codRegione)).getFeature().geometry;
+                name = this.regioni.store.getAt(this.regioni.store.find('id', codRegione)).get('name');
+            } 
+            if(geometry) {
+                var bbox = new OpenLayers.Bounds.fromString(geometry.getBounds().toBBOX());
 
-            if(this.map.getProjection() != this.aoiProjection.getCode()) {
-                bbox = bbox.transform(this.aoiProjection,this.mapProjection);
-                area =  geometry.clone().transform(this.aoiProjection,this.mapProjection).getArea();
-            } else {
-                area =  geometry.clone().getArea();
+                if(this.map.getProjection() != this.aoiProjection.getCode()) {
+                    bbox = bbox.transform(this.aoiProjection,this.mapProjection);
+                    area =  geometry.clone().transform(this.aoiProjection,this.mapProjection).getArea();
+                } else {
+                    area =  geometry.clone().getArea();
+                }
+                return {
+                    bbox: bbox,
+                    type: type,
+                    area: area || undefined,
+                    id: id,
+                    name: name
+                };
             }
-            return {
-                bbox: bbox,
-                type: type,
-                area: area || undefined,
-                id: id,
-                name: name
-            };
+            return null;
         }
     },
     
