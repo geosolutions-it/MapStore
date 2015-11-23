@@ -43,6 +43,17 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
 
     loginManager: null,    
     setActiveOnOutput: true,
+    
+    /**
+     * Set whether the tab can be closed or not
+     */
+    closable: true,
+    
+    /**
+     * Set whether the action button should be displayed or not
+     */
+    showActionButton: true,
+    
     /**
 	 * Property: flowId
 	 * {string} the GeoBatch flow name to manage
@@ -53,20 +64,23 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
      */
     addActions: function() {
         
-        var thisButton = new Ext.Button({
-            iconCls:'update_manager_ic', 
-            text: this.buttonText,
-            tooltip: this.tooltipText,
-            handler: function() { 
-                this.addOutput(); 
+        var actions = [];
+        
+        if(this.showActionButton){
+        
+            var thisButton = new Ext.Button({
+                iconCls:'update_manager_ic', 
+                text: this.buttonText,
+                tooltip: this.tooltipText,
+                handler: function() { 
+                    this.addOutput(); 
+                },
+                scope: this
+            });
 
-               
-            },
-            scope: this
-        });
-
-        var actions = [thisButton];
-
+            actions = [thisButton];
+        }
+        
         return mxp.plugins.Updater.superclass.addActions.apply(this, [actions]);
     },
     
@@ -127,7 +141,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
             layout: 'border',
 			itemId:'Updater',
             xtype:'panel',
-            closable: true,
+            closable: this.closable,
             closeAction: 'close',
             iconCls: "update_manager_ic",  
             header: false,
