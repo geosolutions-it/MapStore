@@ -7,17 +7,17 @@
 */
 
 /**
- * @require util.js
- * @require widgets/RulePanel.js
- * @require widgets/StylePropertiesDialog.js
- * requires OpenLayers/Renderer/SVG.js
- * requires OpenLayers/Renderer/VML.js
- * requires OpenLayers/Renderer/Canvas.js
- * require OpenLayers/Style2.js
- * require OpenLayers/Format/SLD/v1_0_0_GeoServer.js
- * require GeoExt/data/AttributeStore.js
- * require GeoExt/widgets/WMSLegend.js
- * require GeoExt/widgets/VectorLegend.js
+ * require util.js
+ * require widgets/RulePanel.js
+ * require widgets/StylePropertiesDialog.js
+ *  OpenLayers/Renderer/SVG.js
+ *  OpenLayers/Renderer/VML.js
+ *  OpenLayers/Renderer/Canvas.js
+ *  OpenLayers/Style2.js
+ *  OpenLayers/Format/SLD/v1_0_0_GeoServer.js
+ *  GeoExt/data/AttributeStore.js
+ *  GeoExt/widgets/WMSLegend.js
+ *  GeoExt/widgets/VectorLegend.js
  */
 
 /** api: (define)
@@ -25,7 +25,7 @@
  *  class = WMSStylesDialog
  *  base_link = `Ext.Container <http://extjs.com/deploy/dev/docs/?class=Ext.Container>`_
  */
-Ext.namespace("gxp");
+Ext.namespace("gxp.he");
 
 /** api: constructor
  *  .. class:: WMSStylesDialog(config)
@@ -41,7 +41,7 @@ Ext.namespace("gxp");
  *      defaults.  In addition, the OpenLayers SLD v1 parser will be patched
  *      to support vendor specific extensions added to SLD by GeoTools.
  */
-gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
+gxp.he.WMSStylesDialogHE = Ext.extend(Ext.Container, {
     
     /** api: config[addStyleText] (i18n) */
      addStyleText: "Add",
@@ -95,7 +95,11 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
      errorTitle: "Error saving style",
     /** api: config[errorMsg] (i18n) */
      errorMsg: "There was an error saving the style back to the server.",
-
+    /** api: config[searchStyleResourcesErrorTitle] (i18n) */    
+    searchStyleResourcesErrorTitle: "Error",
+    /** api: config[searchStyleResourcesErrorMsg] (i18n) */    
+    searchStyleResourcesErrorMsg: "Something went wrong to try styles",
+    
     //TODO create a StylesStore which can read styles using GetStyles. Create
     // subclasses for that store with writing capabilities, e.g.
     // for GeoServer's RESTconfig API. This should replace the current
@@ -173,6 +177,17 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
      *  ``ready`` event is fired.
      */
     editable: true,
+    
+    /** private: property[styler]
+     *  class:: Styler
+     */    
+    styler: null,
+    
+    /** api: property[disableEditButtons]
+     *  ``Boolean`` Disable edit buttons in WMSLayerProperty dialog.
+     *  default to false
+     */    
+    disableEditButtons: false,
     
     /** private: property[modified]
      *  ``Boolean`` Will be true if styles were modified. Initial state is
@@ -290,6 +305,7 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
                                 "userStyle").clone();
                             newStyle.isDefault = false;
                             newStyle.name = this.newStyleName();
+                            newStyle.geostore = true;
                             var store = this.stylesStore;
                             store.add(new store.recordType({
                                 "name": newStyle.name,
@@ -309,8 +325,12 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
         this.createStylesStore();
                         
         this.on({
-            "beforesaved": function() { this._saving = true; },
+            "beforesaved": function() {
+                if (this._saving === undefined)
+                    this._saving = true;
+            },
             "saved": function() { delete this._saving; },
+            "savedgeostore": function() { delete this._saving; },
             "savefailed": function() { 
                 Ext.Msg.show({
                     title: this.errorTitle,
@@ -320,6 +340,9 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
                 });
                 delete this._saving; 
             },
+            "savegeostorefailed": function() {
+                this._saving = false; 
+            },            
             "render": function() {
                 gxp.util.dispatch([this.getStyles], function() {
                     this.enable();
@@ -328,13 +351,14 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
             scope: this
         });
 
-        gxp.WMSStylesDialog.superclass.initComponent.apply(this, arguments);
+        gxp.he.WMSStylesDialogHE.superclass.initComponent.apply(this, arguments);
     },
     
     /** api: method[addStyle]
      *  Creates a new style and selects it in the styles combo.
      */
     addStyle: function() {
+    
         if(!this._ready) {
             this.on("ready", this.addStyle, this);
             return;
@@ -435,16 +459,19 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
             name: layerName,
             userStyles: []
         };
+        
         this.stylesStore.each(function(r) {
             if(!options.userStyles ||
                     options.userStyles.indexOf(r.get("name")) !== -1) {
                 sld.namedLayers[layerName].userStyles.push(r.get("userStyle"));
             }
         });
-        return new OpenLayers.Format.SLD({
+        var writeSLD = new OpenLayers.Format.SLD({
             multipleSymbolizers: true,
             profile: "GeoServer"
         }).write(sld);
+        
+        return writeSLD;
     },
     
     /** api: method[saveStyles]
@@ -463,10 +490,59 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
      *  the last style.
      */
     updateStyleRemoveButton: function() {
+    
         var userStyle = this.selectedStyle &&
             this.selectedStyle.get("userStyle");
-        this.items.get(1).items.get(1).setDisabled(!userStyle ||
-            this.stylesStore.getCount() <= 1 ||  userStyle.isDefault === true);
+        
+        if(this.styler.roleAdmin){
+            this.items.get(1).items.get(1).setDisabled(!userStyle ||
+                this.stylesStore.getCount() <= 1 ||  userStyle.isDefault === true);
+            this.items.get(1).items.get(2).setDisabled(!userStyle ||
+                this.stylesStore.getCount() <= 1 ||  userStyle.isDefault === true);                                
+        }else{
+            this.items.get(1).items.get(1).setDisabled(!userStyle ||
+                this.stylesStore.getCount() <= 1 ||  userStyle.isDefault === true || !userStyle.geostore);
+                
+            this.items.get(1).items.get(2).setDisabled(!userStyle ||
+                this.stylesStore.getCount() <= 1 ||  userStyle.isDefault === true || !userStyle.geostore);                
+        }
+        
+        if(this.styler.advancedUser){
+            /*this.items.get(2).setDisabled(
+                !userStyle.geostore
+            );*/                        
+            this.items.get(3).items.get(0).setDisabled(
+                !userStyle.geostore
+            );
+            
+            this.items.get(3).items.get(1).setDisabled(
+                !this.selectedRule || this.items.get(2).items.get(0).rules.length < 2 || !userStyle.geostore
+            );
+            
+            this.items.get(3).items.get(2).setDisabled(
+                !this.selectedRule || this.items.get(2).items.get(0).rules.length < 2 || !userStyle.geostore
+            );
+            
+            this.items.get(3).items.get(3).setDisabled(
+                !this.selectedRule || this.items.get(2).items.get(0).rules.length < 2 || !userStyle.geostore
+            );
+            
+            this.items.get(1).setVisible(!this.disableEditButtons);
+        }else{
+            this.items.get(3).items.get(1).setDisabled(
+                !this.selectedRule || this.items.get(2).items.get(0).rules.length < 2
+            );
+            
+            this.items.get(3).items.get(2).setDisabled(
+                !this.selectedRule || this.items.get(2).items.get(0).rules.length < 2
+            );
+            
+            this.items.get(3).items.get(3).setDisabled(
+                !this.selectedRule || this.items.get(2).items.get(0).rules.length < 2
+            );
+            
+            this.items.get(1).setVisible(!this.disableEditButtons);        
+        }
     },
     
     /** private: method[updateRuleRemoveButton]
@@ -599,6 +675,7 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
             width: 320,
             height: 450,
             modal: true,
+            id: 'ruleDlg',
             items: [{
                 xtype: "gxp_rulepanel",
                 ref: "rulePanel",
@@ -680,12 +757,68 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
      */
     setRulesFieldSetVisible: function(visible) {
         // the toolbar
-        this.items.get(3).setVisible(visible && this.editable);
+        this.items.get(3).setVisible(visible && this.editable && !this.disableEditButtons);
         // and the fieldset itself
         this.items.get(2).setVisible(visible);
         this.doLayout();
     },
+    
+    parseSLDGeostore: function(response,userStyles,initialStyle){
+    
+        var layerParams = this.layerRecord.getLayer().params;
+        
+        if(response){
+            var geostoreStyles = response["namedLayers"][layerParams.LAYERS].userStyles;
+            
+            Ext.each(geostoreStyles, function(item) {
+                item.geostore = true;
+            },this);
+            
+            Array.prototype.push.apply(userStyles, geostoreStyles);        
+        }
 
+        // our stylesStore comes from the layerRecord's styles - clear it
+        // and repopulate from GetStyles
+        this.stylesStore.removeAll();
+        this.selectedStyle = null;
+
+        var userStyle, record, index, defaultStyle;
+        for (var i=0, len=userStyles.length; i<len; ++i) {
+            userStyle = userStyles[i];
+            // remove existing record - this way we replace styles from
+            // userStyles with inline styles.
+            index = this.stylesStore.findExact("name", userStyle.name);
+            index !== -1 && this.stylesStore.removeAt(index);
+            record = new this.stylesStore.recordType({
+                "name": userStyle.name,
+                "title": userStyle.title,
+                "abstract": userStyle.description,
+                "userStyle": userStyle,
+                "geostore": userStyle.geostore ? "Geostore Styles" : "Admin Styles"
+            });
+            record.phantom = false;
+            this.stylesStore.add(record);
+            // set the default style if no STYLES param is set on the layer
+            if (!this.selectedStyle && (initialStyle === userStyle.name ||
+                        (!initialStyle && userStyle.isDefault === true))) {
+                this.selectedStyle = record;
+            }
+            if (userStyle.isDefault === true) {
+                defaultStyle = record;
+            }
+        }
+        // fallback to the default style, this can happen when the layer referenced
+        // a non-existing style as initialStyle
+        if (!this.selectedStyle) {
+            this.selectedStyle = defaultStyle;
+        }
+
+        this.addRulesFieldSet();
+        this.createLegend(this.selectedStyle.get("userStyle").rules);
+
+        this.stylesStoreReady();
+        layerParams.SLD_BODY && this.markModified();        
+    },
     /** private: method[parseSLD]
      *  :arg response: ``Object``
      *  :arg options: ``Object``
@@ -723,46 +856,52 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
                 Array.prototype.push.apply(userStyles, inlineStyles);
             }            
             
-            // our stylesStore comes from the layerRecord's styles - clear it
-            // and repopulate from GetStyles
-            this.stylesStore.removeAll();
-            this.selectedStyle = null;
-            
-            var userStyle, record, index, defaultStyle;
-            for (var i=0, len=userStyles.length; i<len; ++i) {
-                userStyle = userStyles[i];
-                // remove existing record - this way we replace styles from
-                // userStyles with inline styles.
-                index = this.stylesStore.findExact("name", userStyle.name);
-                index !== -1 && this.stylesStore.removeAt(index);
-                record = new this.stylesStore.recordType({
-                    "name": userStyle.name,
-                    "title": userStyle.title,
-                    "abstract": userStyle.description,
-                    "userStyle": userStyle
-                });
-                record.phantom = false;
-                this.stylesStore.add(record);
-                // set the default style if no STYLES param is set on the layer
-                if (!this.selectedStyle && (initialStyle === userStyle.name ||
-                            (!initialStyle && userStyle.isDefault === true))) {
-                    this.selectedStyle = record;
+            if(this.styler.roleAdmin){
+                // our stylesStore comes from the layerRecord's styles - clear it
+                // and repopulate from GetStyles
+                this.stylesStore.removeAll();
+                this.selectedStyle = null;
+
+                var userStyle, record, index, defaultStyle;
+                var check = [];
+                for (var i=0, len=userStyles.length; i<len; ++i) {
+                    userStyle = userStyles[i];
+                    // remove existing record - this way we replace styles from
+                    // userStyles with inline styles.
+                    index = this.stylesStore.findExact("name", userStyle.name);
+                    index !== -1 && this.stylesStore.removeAt(index);
+                    record = new this.stylesStore.recordType({
+                        "name": userStyle.name,
+                        "title": userStyle.title,
+                        "abstract": userStyle.description,
+                        "userStyle": userStyle
+                    });
+                    record.phantom = false;
+                    this.stylesStore.add(record);
+                    // set the default style if no STYLES param is set on the layer
+                    if (!this.selectedStyle && (initialStyle === userStyle.name ||
+                                (!initialStyle && userStyle.isDefault === true))) {
+                        this.selectedStyle = record;
+                    }
+                    if (userStyle.isDefault === true) {
+                        defaultStyle = record;
+                    }
                 }
-                if (userStyle.isDefault === true) {
-                    defaultStyle = record;
+                // fallback to the default style, this can happen when the layer referenced
+                // a non-existing style as initialStyle
+                if (!this.selectedStyle) {
+                    this.selectedStyle = defaultStyle;
                 }
-            }
-            // fallback to the default style, this can happen when the layer referenced
-            // a non-existing style as initialStyle
-            if (!this.selectedStyle) {
-                this.selectedStyle = defaultStyle;
+
+                this.addRulesFieldSet();
+                this.createLegend(this.selectedStyle.get("userStyle").rules);
+
+                this.stylesStoreReady();
+                layerParams.SLD_BODY && this.markModified();        
+            }else{
+                var geostoreStyles = this.getGeostoreStyles(userStyles,initialStyle,layerParams);            
             }
             
-            this.addRulesFieldSet();
-            this.createLegend(this.selectedStyle.get("userStyle").rules);
-            
-            this.stylesStoreReady();
-            layerParams.SLD_BODY && this.markModified();
         }
         catch(e) {
             if (window.console) {
@@ -871,6 +1010,7 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
      */
     createStylesStore: function(callback) {
         var styles = this.layerRecord.get("styles") || [];
+        
         this.stylesStore = new Ext.data.JsonStore({
             data: {
                 styles: styles
@@ -893,7 +1033,64 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
             }
         });
     },
-    
+
+
+    /** private: method[getGeostoreStyles]
+     *  :arg callback: ``Function`` function that will be called when the
+     *      request result was returned.
+     */
+    getGeostoreStyles: function(userStyles,initialStyle,layerParams) {
+        if(this.editable === true) {
+            var geostoreEntityResource = new OpenLayers.GeoStore.Resource({
+                name: "resources"
+            });
+            
+            this.geoStore.getEntities(geostoreEntityResource,
+                function(store){
+                    var layer = layerParams.LAYERS;
+                    if(store.length>0){
+                        this.stylesGeostoreStore = store;
+                        firstResponse = store[0].data.data.replace(/\\/g,"");
+                        var firstData = new OpenLayers.Format.XML().read(firstResponse);
+                        var format = new OpenLayers.Format.SLD({profile: "GeoServer", multipleSymbolizers: true});
+                        var firstSld = format.read(firstData);
+                        var namedLayers = firstSld;
+                        
+                        for(var i = 1;i<store.length; i++){
+                            response = store[i].data.data.replace(/\\/g,"");
+                            var data = new OpenLayers.Format.XML().read(response);
+                            var sld = format.read(data);
+                            Array.prototype.push.apply(namedLayers.namedLayers[layerParams.LAYERS].userStyles, sld.namedLayers[layerParams.LAYERS].userStyles);
+                        }
+                        
+                        Ext.each(namedLayers.namedLayers[layerParams.LAYERS].userStyles, function(item,index) {
+                            item.gs_name = this.stylesGeostoreStore[index].name;
+                            item.gs_id = this.stylesGeostoreStore[index].id;
+                        },this);
+                        
+                        this.parseSLDGeostore(namedLayers,userStyles,initialStyle);
+                    }else{
+                        this.parseSLDGeostore(undefined,userStyles,initialStyle);
+                    }
+                },function(response){
+                    Ext.Msg.show({
+                        title: this.searchStyleResourcesErrorTitle,
+                        buttons: Ext.Msg.OK,
+                        msg: this.searchStyleResourcesErrorMsg + this.styler.getErrorMsg(response),
+                        icon: Ext.MessageBox.ERROR,
+                        fn: this.parseSLDGeostore(undefined,userStyles,initialStyle),
+                        scope: this
+                    });
+                },
+                this,true,
+                "POST",
+                "<AND><FIELD><field>METADATA</field><operator>LIKE</operator><value>"+layerParams.LAYERS+"</value></FIELD><CATEGORY><operator>EQUAL_TO</operator><name>LAYERS_STYLES</name></CATEGORY></AND>",
+                "text/xml"
+            );
+        } else {
+            this.setupNonEditable();
+        }
+    },    
     /** private: method[getStyles]
      *  :arg callback: ``Function`` function that will be called when the
      *      request result was returned.
@@ -906,6 +1103,7 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
                 //TODO don't force 1.1.1, fall back instead
                 version = "1.1.1";
             }
+            var ppp = [layer.params["LAYERS"]].join(",");
             Ext.Ajax.request({
                 url: layer.url,
                 params: {
@@ -915,7 +1113,7 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
                     "LAYERS": [layer.params["LAYERS"]].join(",")
                 },
                 method: "GET",
-                disableCaching: false,
+                disableCaching: true,
                 success: this.parseSLD,
                 failure: this.setupNonEditable,
                 callback: callback,
@@ -972,26 +1170,61 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
      */
     addStylesCombo: function() {
         var store = this.stylesStore;
+        var style = this.selectedStyle ?
+                this.selectedStyle.get("title") :
+                this.layerRecord.getLayer().params.STYLES || "default";
+                
         var combo = new Ext.form.ComboBox(Ext.apply({
             fieldLabel: this.chooseStyleText,
             store: store,
             editable: false,
             displayField: "title",
             valueField: "name",
-            value: this.selectedStyle ?
-                this.selectedStyle.get("title") :
-                this.layerRecord.getLayer().params.STYLES || "default",
+            value: style,
             disabled: !store.getCount(),
             mode: "local",
             typeAhead: true,
             triggerAction: "all",
             forceSelection: true,
             anchor: "100%",
+            tpl: new Ext.XTemplate(
+                '<tpl for=".">',
+                '<tpl if="this.geostore != values.geostore">',
+                '<tpl exec="this.geostore = values.geostore"></tpl>',
+                '<h1><span style="color:gray">{geostore}</span></h1>',
+                '</tpl>',
+                '<div class="x-combo-list-item">{title}</div>',
+                '</tpl>'
+            ),            
             listeners: {
-                "select": function(combo, record) {
+                "afterrender": function(combo){
+                    var comboStore = combo.getStore();
+                    var index = comboStore.findBy(function(record,id){
+                        if (record.data.name === (this.selectedStyle ? this.selectedStyle.get("name") : this.layerRecord.getLayer().params.STYLES || "default")){
+                            return record;
+                        };
+                    },this,0);
+                    
+                    var record = combo.getStore().getAt(index);
+                    
                     this.changeStyle(record);
                     if (!record.phantom && !this._removing) {
                         this.fireEvent("styleselected", this, record.get("name"));
+                    }
+                },
+                "select": function(combo, record) {
+                
+                    if (record.get("userStyle")["geostore"]){
+                        this.changeStyle(record);                  
+                        var style = this.geoStore.url + "misc/category/name/LAYERS_STYLES/resource/name/" + record.data.userStyle.gs_name + "/data/";
+                        if (!record.phantom && !this._removing) {  
+                            this.fireEvent("styleselectedgeostore", this, style);
+                        }
+                    }else{
+                        this.changeStyle(record);
+                        if (!record.phantom && !this._removing) {
+                            this.fireEvent("styleselected", this, record.get("name"));
+                        }
                     }
                 },
                 scope: this
@@ -1084,6 +1317,8 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
     addVectorLegend: function(rules, options) {
         options = Ext.applyIf(options || {}, {enableDD: true});
         
+        var isGeostoreStyle = this.selectedStyle.get("userStyle")["geostore"];
+        
         this.symbolType = options.symbolType;
         if (!this.symbolType) {
             var typeHierarchy = ["Point", "Line", "Polygon"];
@@ -1103,7 +1338,7 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
             autoScroll: rules.length > 10,
             rules: rules,
             symbolType: this.symbolType,
-            selectOnClick: true,
+            selectOnClick: this.styler.roleAdmin ? (!this.disableEditButtons || isGeostoreStyle) : (!this.disableEditButtons && isGeostoreStyle),
             enableDD: options.enableDD,
             listeners: {
                 "ruleselected": function(cmp, rule) {
@@ -1154,7 +1389,7 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
      */
     showDlg: function(dlg) {
         dlg.show();
-    }
+    }   
     
 });
 
@@ -1169,8 +1404,24 @@ gxp.WMSStylesDialog = Ext.extend(Ext.Container, {
  *  "styleselected", "modified" and "saved" events that take care of saving
  *  styles and keeping the layer view updated.
  */
-gxp.WMSStylesDialog.createGeoServerStylerConfig = function(layerRecord, url) {
+gxp.he.WMSStylesDialogHE.createGeoServerStylerConfig = function(layerRecord, url) {
     var layer = layerRecord.getLayer();
+    
+    var styler = app.tools["styler"];
+    var geoStore = styler.geoStore;
+    var roleAdmin = styler.roleAdmin;
+    var advancedUser = styler.advancedUser;
+    var styleWriterPTYPE = "gxp_geoserverstylewriter";
+    var setEditable = false;
+    
+    if(roleAdmin){
+        styleWriterPTYPE = "gxp_geoserverstylewriter";
+        setEditable = true;
+    }else if(advancedUser){
+        styleWriterPTYPE = "gxp_geostorestylewriter";
+        setEditable = true;
+    }
+    
     if (!url) {
         url = layerRecord.get("restUrl");
     }
@@ -1178,25 +1429,51 @@ gxp.WMSStylesDialog.createGeoServerStylerConfig = function(layerRecord, url) {
         url = layer.url.split("?").shift().replace(/\/(wms|ows)\/?$/, "/rest");
     }
     return {
-        xtype: "gxp_wmsstylesdialog",
+        xtype: "gxp_wmsstylesdialoghe",
         layerRecord: layerRecord,
+        geoStore: geoStore,
+        styler: styler,
+        editable: setEditable,
         plugins: [{
-            ptype: "gxp_geoserverstylewriter",
-            baseUrl: url
+            ptype: styleWriterPTYPE,
+            baseUrl: url,
+            url: geoStore.url,
+            user: geoStore.user,
+            password: geoStore.password,
+            geoStore: geoStore
         }],
         listeners: {
+            "styleselectedgeostore": function(cmp, style) {
+                layer.mergeNewParams({
+                    _olSalt: Math.random(),
+                    styles: "",
+                    sld: style
+                });
+            },
             "styleselected": function(cmp, style) {
                 layer.mergeNewParams({
+                    sld: null,
                     styles: style
                 });
             },
+            "modifiedgeostore": function(cmp, style) {
+                cmp.saveStyles();
+            },            
             "modified": function(cmp, style) {
                 cmp.saveStyles();
             },
+            "savedgeostore": function(cmp, style) {
+                layer.mergeNewParams({
+                    _olSalt: Math.random(),
+                    styles: "",                    
+                    sld: style
+                });
+            },            
             "saved": function(cmp, style) {
                 layer.mergeNewParams({
                     _olSalt: Math.random(),
-                    styles: style
+                    styles: style,                    
+                    sld: null
                 });
             },
             scope: this
@@ -1222,5 +1499,46 @@ OpenLayers.Renderer.defaultSymbolizer = {
     labelAlign: 'cm'
 };
 
-/** api: xtype = gxp_wmsstylesdialog */
-Ext.reg('gxp_wmsstylesdialog', gxp.WMSStylesDialog);
+//http://blogs.cozi.com/tech/2010/04/generating-uuids-in-javascript.html
+(function() {
+    UUID = {
+    // Return a randomly generated v4 UUID, per RFC 4122
+        uuid4: function () {
+            return this._uuid(
+                this.randomInt(), this.randomInt(),
+                this.randomInt(), this.randomInt(), 4);
+        },
+
+        // Create a versioned UUID from w1..w4, 32-bit non-negative ints
+        _uuid: function (w1, w2, w3, w4, version) {
+            var uuid = new Array(36);
+            var data = [
+                (w1 & 0xFFFFFFFF), (w2 & 0xFFFF0FFF) | ((version || 4) << 12), // version (1-5)
+                (w3 & 0x3FFFFFFF) | 0x80000000, // rfc 4122 variant
+                (w4 & 0xFFFFFFFF)
+            ];
+            for (var i = 0, k = 0; i < 4; i++) {
+                var rnd = data[i];
+                for (var j = 0; j < 8; j++) {
+                    if (k == 8 || k == 13 || k == 18 || k == 23) {
+                        uuid[k++] = '-';
+                    }
+                    var r = (rnd >>> 28) & 0xf; // Take the high-order nybble
+                    rnd = (rnd & 0x0FFFFFFF) << 4;
+                    uuid[k++] = this.hex.charAt(r);
+                }
+            }
+            return uuid.join('');
+        },
+
+        hex: '0123456789abcdef',
+
+        // Return a random integer in [0, 2^32).
+        randomInt: function () {
+            return Math.floor(0x100000000 * Math.random());
+        }
+    }
+})();  
+    
+/** api: xtype = gxp_wmsstylesdialoghe */
+Ext.reg('gxp_wmsstylesdialoghe', gxp.he.WMSStylesDialogHE);

@@ -27,5 +27,56 @@ GeoExt.Lang.add("en", {
     },
     "gxp.plugins.Print.prototype": {
         notPrintableLayersText: "is not available for printing.<br/>Please select one of the following as your background layer and try again:<br/>-> OpenStreetMap <br/> -> MapQuest OpenStreetMap <br/> -> MapQuest Imagery"
+    },
+    "gxp.plugins.he.GeoStoreStyleWriter.prototype": {
+        mainLoadingMask: "Please wait...",
+        geostoreStyleErrorTitle: "Error.",   
+        geostoreStyleCreationErrorMsg: "Error creating the geostore style.",
+        geostoreStyleUpdateErrorMsg: "Error updating geostore style.",    
+        geostoreStyleSearchErrorMsg: "Failed to retrieve the geostore style.",
+        geostoreStyleDeleteSuccessMsg: "Geostore style successfully deleted.",    
+        geostoreStyleDeleteErrorMsg: "Geostore Style not deleted."
+    },
+
+    "gxp.he.WMSStylesDialogHE.prototype": {
+         addStyleText: "Add",
+         addStyleTip: "Add a new style",
+         chooseStyleText: "Choose style",
+         deleteStyleText: "Remove",
+         deleteStyleTip: "Delete the selected style",
+         editStyleText: "Edit",
+         editStyleTip: "Edit the selected style",
+         duplicateStyleText: "Duplicate",
+         duplicateStyleTip: "Duplicate the selected style",
+         addRuleText: "Add",
+         addRuleTip: "Add a new rule",
+         newRuleText: "New Rule",
+         deleteRuleText: "Remove",
+         deleteRuleTip: "Delete the selected rule",
+         editRuleText: "Edit",
+         editRuleTip: "Edit the selected rule",
+         duplicateRuleText: "Duplicate",
+         duplicateRuleTip: "Duplicate the selected rule",
+         cancelText: "Cancel",
+         saveText: "Save",
+         styleWindowTitle: "User Style: {0}",
+         ruleWindowTitle: "Style Rule: {0}",
+         stylesFieldsetTitle: "Styles",
+         rulesFieldsetTitle: "Rules",
+         errorTitle: "Error saving style",
+         errorMsg: "There was an error saving the style back to the server.",         
+         searchStyleResourcesErrorTitle: "Error",
+         searchStyleResourcesErrorMsg: "Something went wrong when loading styles"
+    },
+    
+    "gxp.plugins.he.StylerHE.prototype": {
+        menuText: "Layer Styles",
+        tooltip: "Layer Styles",    
+        geostoreStyleCategoryCreatedSuccessTitle: "Geostore Category creation.",
+        geostoreStyleCategoryCreatedSuccessMsg: "Geostore LAYERS_STYLES Category successfully created.",
+        geostoreStyleCategoryCreatedErrorTitle: "Error creating category.",
+        geostoreStyleCategoryCreatedErrorMsg: "GeoStore resources disabled, only Admin can create missing LAYERS_STYLES CATEGORY.",
+        geostoreStyleCategorySearchErrorTitle: "Error search categories.",
+        geostoreStyleCategorySearchErrorMsg: "Something went wrong in the search categories."
     }
 });

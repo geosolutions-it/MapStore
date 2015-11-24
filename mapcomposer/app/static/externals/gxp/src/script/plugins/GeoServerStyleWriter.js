@@ -115,7 +115,7 @@ gxp.plugins.GeoServerStyleWriter = Ext.extend(gxp.plugins.StyleWriter, {
                     "" : "/" + styleName + ".xml"),
                 headers: {
                     "Content-Type": "application/vnd.ogc.sld+xml; charset=UTF-8",
-                    "Authorization": app.tools["styler"].getBasicAuthentication()
+                    "Authorization": this.target.styler.getAuth()
                 },
                 xmlData: this.target.createSLD({
                     userStyles: [styleName]
@@ -128,7 +128,7 @@ gxp.plugins.GeoServerStyleWriter = Ext.extend(gxp.plugins.StyleWriter, {
                     Ext.Ajax.request({
                         method: "POST",
                         headers: {
-                            "Authorization": app.tools["styler"].getBasicAuthentication()
+                            "Authorization": this.target.styler.getAuth()
                         },                        
                         url: this.baseUrl + "/layers/" +
                             this.target.layerRecord.get("name") + "/styles.json",
@@ -169,7 +169,7 @@ gxp.plugins.GeoServerStyleWriter = Ext.extend(gxp.plugins.StyleWriter, {
         Ext.Ajax.request({
             method: "PUT",
             headers: {
-                "Authorization": app.tools["styler"].getBasicAuthentication()
+                "Authorization": this.target.styler.getAuth()
             },            
             url: this.baseUrl + "/layers/" +
                 this.target.layerRecord.get("name") + ".json",
@@ -201,7 +201,7 @@ gxp.plugins.GeoServerStyleWriter = Ext.extend(gxp.plugins.StyleWriter, {
             Ext.Ajax.request({
                 method: "DELETE",
                 headers: {
-                    "Authorization": app.tools["styler"].getBasicAuthentication()
+                    "Authorization": this.target.styler.getAuth()
                 },                                        
                 url: this.baseUrl + "/styles/" + this.deletedStyles[i] +
                     // cannot use params for DELETE requests without jsonData

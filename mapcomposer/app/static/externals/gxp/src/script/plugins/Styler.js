@@ -33,9 +33,6 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
     /** api: ptype = gxp_styler */
     ptype: "gxp_styler",
     
-    /** api: config[id] */
-    id: "styler",
-    
     /** api: config[menuText]
      *  ``String``
      *  Text for layer properties menu item (i18n).
@@ -93,7 +90,6 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
             menuText: this.menuText,
             iconCls: "gxp-icon-palette",
             disabled: true,
-            hidden: true,
             tooltip: this.tooltip,
             handler: function() {
                 this.addOutput();
@@ -170,24 +166,10 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
                 editableStyles = true;
             }
             if (editableStyles) {
-            
-                this.roleAdmin=(this.target &&
-                                this.target.userDetails &&
-                                this.target.userDetails.user.role &&
-                                ["ROLE_ADMIN","ADMIN"].indexOf(this.target.userDetails.user.role) > -1);
-                                
-                this.advancedUser=this.hasGroup(this.target.userDetails.user,this.restrictToGroups);
-                
-                if(this.roleAdmin){
-                    this.enableActionIfAvailable(url,this.getBasicAuthentication());
-                }else if(this.advancedUser){
-                    
-                }
-
-                /*if (this.target.isAuthorized()) {
+                if (this.target.isAuthorized()) {
                     // check if service is available
                     this.enableActionIfAvailable(url);
-                }*/
+                }
             }
         }
     },
@@ -197,16 +179,14 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
      * 
      *  Enable the launch action if the service is available.
      */
-    enableActionIfAvailable: function(url,auth) {
+    enableActionIfAvailable: function(url) {
         Ext.Ajax.request({
             method: "PUT",
             url: url,
-            headers: {"Authorization":  auth},
             callback: function(options, success, response) {
                 // we expect a 405 error code here if we are dealing
                 // with GeoServer and have write access.
-                this.launchAction.setDisabled(response.status !== 405);
-                this.launchAction.setHidden(response.status !== 405);
+                this.launchAction.setDisabled(response.status !== 405);                        
             },
             scope: this
         });
@@ -243,36 +223,6 @@ gxp.plugins.Styler = Ext.extend(gxp.plugins.Tool, {
                 output.ownerCt.ownerCt.center();
             }
         });
-
-    },
-    
-    /** private: method[hasGroup]
-     *  ``Function`` Check if users has passed group
-     *
-     */
-    hasGroup: function(user, targetGroups){
-        if(user && user.groups && targetGroups){
-            var groupfound = false;
-            for (var key in user.groups.group) {
-                if (user.groups.group.hasOwnProperty(key)) {
-                    var g = user.groups.group[key];
-                    if(g.groupName && targetGroups.indexOf(g.groupName) > -1 ){
-                        groupfound = true;
-                    }
-                }
-            }
-            return groupfound;
-        }
-        
-        return false;
-    },
-    
-    /** private: method[getBasicAuthentication]
-     *  :arg url: 
-     * 
-     */    
-    getBasicAuthentication: function() {
-        return this.target.authToken || undefined;
     }
         
 });

@@ -39,7 +39,7 @@
    },
    
    "scaleOverlayMode": "basic",
-   "gsSources":{ 
+   "gsSources":{
 		"gs": {
 			"ptype": "gxp_wmssource",
 			"title": "GeoServer Hart Energy",
@@ -147,7 +147,7 @@
 				"title": "Natural Gas Meter Points",
 				"name": "Natural_Gas:NG_METER_POINTS",
                 "visibility": false
-			},{
+                },{
 				"source": "gs",
                 "group": "Natural Gas",
 				"title": "Natural Gas Pipelines",
@@ -250,6 +250,17 @@
     },
     "removeTools":["googleearth_plugin", "googleearth_separator"],
 	"customTools":[
+        {
+            "ptype": "gxp_layerproperties",
+            "id": "layerproperties_plugin",
+            "layerPanelConfig": {
+                "xtype": "gxp_wmslayerpanelhe",
+                "gxp_wmslayerpanelhe": {
+                    "rasterStyling": true
+                }
+            },                    
+            "actionTarget": ["tree.tbar", "layertree.contextMenu"]
+        },
 		{
 		   "ptype": "gxp_addlayersgeostore",
 		    "actionTarget": "tree.tbar",
@@ -289,11 +300,11 @@
             "actions": ["-"], 
             "actionTarget": "paneltbar"
         }, {
-            "ptype": "gxp_styler",
-            "geostoreStyling": true,
+            "ptype": "gxp_stylerhe",
             "actionTarget": "paneltbar",
             "sameOriginStyling": false,
             "restrictToGroups" : "Advanced_Users",
+            "rasterStyling": true,
             "index": 24
         }, {
 			"actions": ["->"], 
