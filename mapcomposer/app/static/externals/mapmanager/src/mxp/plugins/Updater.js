@@ -60,6 +60,12 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
 	 */	
     flowId: 'ds2ds_zip2pg',
     
+    /**
+	 * Property: autoRefreshState
+	 * {boolean} should the GeoBatch state be automatically refreshed?
+	 */	
+    autoRefreshState: false,
+    
     /** api: method[addActions]
      */
     addActions: function() {
@@ -161,7 +167,8 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
                     auth: this.auth,
                     autoWidth:true,
                     region:'center',
-                    ref:'grid'
+                    ref:'grid',
+                    autoRefreshState : this.autoRefreshState
                 },  
                 pluploadPanel
             ]
