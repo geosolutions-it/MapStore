@@ -46,7 +46,10 @@ mxp.plugins.EntityManager = Ext.extend(mxp.plugins.Tool, {
      */
     iconCls: 'resource_edit',
 
-
+    /**
+     * Set whether the tab can be closed or not
+     */
+    closable: true,
     
     /** api: method[addActions]
      */
@@ -103,7 +106,7 @@ mxp.plugins.EntityManager = Ext.extend(mxp.plugins.Tool, {
             layout: 'border',
             itemId:'EntityManager',
             autoDestroy:true,
-            closable: true,
+            closable: this.closable,
             closeAction: 'close',
             header: false,
             deferredReneder:false,
