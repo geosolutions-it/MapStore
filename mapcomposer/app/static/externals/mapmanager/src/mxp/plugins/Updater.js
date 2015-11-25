@@ -66,27 +66,36 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
 	 */	
     autoRefreshState: false,
     
+    /**
+	 * Property: restrictToGroups
+     * Array of groups enabled to see this tool, or false for "everyone"
+	 */	
+    restrictToGroups: false,  
+    
     /** api: method[addActions]
      */
     addActions: function() {
         
         var actions = [];
-        
-        if(this.showActionButton){
-        
-            var thisButton = new Ext.Button({
-                iconCls:'update_manager_ic', 
-                text: this.buttonText,
-                tooltip: this.tooltipText,
-                handler: function() { 
-                    this.addOutput(); 
-                },
-                scope: this
-            });
+        if(this.restrictToGroups){
+            if(this.hasGroup(this.target.user, this.restrictToGroups)){
+                if(this.showActionButton){
+                
+                    var thisButton = new Ext.Button({
+                        iconCls:'update_manager_ic', 
+                        text: this.buttonText,
+                        tooltip: this.tooltipText,
+                        handler: function() { 
+                            this.addOutput(); 
+                        },
+                        scope: this
+                    });
 
-            actions = [thisButton];
+                    actions = [thisButton];
+                }
+             }
         }
-        
+       
         return mxp.plugins.Updater.superclass.addActions.apply(this, [actions]);
     },
     
@@ -102,6 +111,14 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
      */
     addOutput: function(config) {
 
+        // Check for Group restrictions to apply
+        if(this.restrictToGroups){
+            if(!this.hasGroup(this.target.user, this.restrictToGroups)){
+                // do not display output
+                return {};
+            }
+        }
+    
         var login = this.target.login ? this.target.login: 
                 this.loginManager && this.target.currentTools[this.loginManager] 
                 ? this.target.currentTools[this.loginManager] : null;
@@ -196,6 +213,25 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
             }
         }
         return mxp.plugins.Updater.superclass.addOutput.apply(this, arguments);
+    },
+
+    /**
+     * Check if the given user has one of the give groups
+     */
+    hasGroup : function(user, targetGroups){
+        if(user && user.groups && targetGroups){
+            var groupfound = false;
+            for (var key in user.groups.group) {
+                if (user.groups.group.hasOwnProperty(key)) {
+                    var g = user.groups.group[key];
+                    if(g.groupName && targetGroups.indexOf(g.groupName) > -1 ){
+                        groupfound = true;
+                    }
+                }
+            }
+            return groupfound;
+        }
+        return false;
     }
 });
 
