@@ -51,23 +51,34 @@ mxp.plugins.EntityManager = Ext.extend(mxp.plugins.Tool, {
      */
     closable: true,
     
+    /**
+     * Set whether the action button should be displayed or not
+     */
+    showActionButton: true,
+
     /** api: method[addActions]
      */
     addActions: function() {
         this.adminUrl = this.adminUrl || this.target.adminUrl;
-        var thisButton = new Ext.Button({
-            iconCls: this.iconCls, 
-            text: this.buttonText,
-            tooltip: this.tooltipText,
-            handler: function() { 
-                this.addOutput(); 
+        
+        var actions = [];
+        
+        if(this.showActionButton){
 
-               
-            },
-            scope: this
-        });
+            var thisButton = new Ext.Button({
+                iconCls: this.iconCls, 
+                text: this.buttonText,
+                tooltip: this.tooltipText,
+                handler: function() { 
+                    this.addOutput(); 
 
-        var actions = [thisButton];
+                   
+                },
+                scope: this
+            });
+            
+            actions = [thisButton];
+        }
 
         return mxp.plugins.EntityManager.superclass.addActions.apply(this, [actions]);
     },
