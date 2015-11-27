@@ -402,7 +402,7 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
         if ( data.code == -600 ) {
             data.file.msg = String.format( '<span style="color: red">{0}</span>', this.statusInvalidSizeText || 'Too big' );
         }
-        else if ( data.code == -700 ) {
+        else if ( data.code == -601 ) {
             data.file.msg = String.format( '<span style="color: red">{0}</span>', this.statusInvalidExtensionText || 'Invalid file type' );
         }
         else {
