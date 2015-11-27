@@ -71,6 +71,8 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
      * Array of groups enabled to see this tool, or false for "everyone"
 	 */	
     restrictToGroups: false,  
+
+    filters: [],
     
     /** api: method[addActions]
      */
@@ -144,6 +146,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
             multipart: true,
             auth: this.auth,
 			mediaContent: this.target.initialConfig.mediaContent,
+            filters: this.filters,
             listeners:{
                 beforestart:function() {
                     var multipart_params =  pluploadPanel.multipart_params || {};
