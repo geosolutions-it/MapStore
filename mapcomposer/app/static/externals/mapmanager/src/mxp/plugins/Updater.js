@@ -188,7 +188,12 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
                     autoRefreshState : this.autoRefreshState
                 },  
                 pluploadPanel
-            ]
+            ],
+            listeners:{
+                activate:function(){
+                    this.grid.fireEvent('activate');
+                }
+            }
         });
 		// In user information the output is generated in the component and we can't check the item.initialConfig.
         if(this.output.length > 0
