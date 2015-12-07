@@ -594,6 +594,8 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
     
     initUniqueValuesStore: function(store, url, layerName, namespaces, fieldName) {
         var wpsUrl = url;
+        
+        //Substitute "wfs" string with "wps" if exists at the end of the URL
         if (url.indexOf('wfs?', url.length - 'wfs?'.length) !== -1) {
             wpsUrl = url.substring(0, url.length-'wfs?'.length)+"wps";
         }
@@ -605,7 +607,33 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             prefix = layerName.split(':')[0];
             featureNS = namespaces[prefix] || '';
         }
-            
+        
+        // Check if authentication information can be used
+        if(sessionStorage){
+            var userDetails = sessionStorage["userDetails"];
+            if(userDetails){
+                var userInfo = Ext.util.JSON.decode(userDetails);
+                var authkey;
+                
+                if(userInfo.user && userInfo.user.attribute && userInfo.user.attribute instanceof Array){
+                    for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
+                        if( userInfo.user.attribute[i].name == "UUID" ){
+                            authkey = userInfo.user.attribute[i].value;
+                        }
+                    }
+                }else{
+                    if(userInfo.user.attribute && userInfo.user.attribute.name == "UUID"){
+                       authkey = userInfo.user.attribute.value;
+                    }
+                }
+                if(authkey){
+                    // Add Authentication token to the request
+                    // Usually it is the GeoServer authKey
+                    wpsUrl += '?'+this.autoCompleteCfg.authParam + '=' + authkey;
+                }
+            }
+        }
+
         var params = {
             url: wpsUrl,
             outputs: [{

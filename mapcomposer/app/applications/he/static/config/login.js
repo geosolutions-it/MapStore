@@ -426,7 +426,13 @@
                     "addGeometryOperation":false,
                     "zoomToCurrentExtent": false
                 }
-              }
+          },
+          "autoComplete": {
+                "sources": ["gs"],
+                "url": "http://he.geo-solutions.it/geoserver/wps",
+                "pageSize": 10,
+                "authParam":"authkey"
+           }
         },
         {
           "ptype":"gxp_onpageunloadalert"
