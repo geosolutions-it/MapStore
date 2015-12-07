@@ -250,7 +250,85 @@ GeoExt.Lang.add("de", {
          styleWindowTitle: "User Style: {0}",
          ruleWindowTitle: "Style Rule: {0}",
          stylesFieldsetTitle: "Stile",
-         rulesFieldsetTitle: "Regeln"
+         rulesFieldsetTitle: "Regeln",
+         errorTitle: "Fehler beim Speichern Stil",
+         errorMsg: "Es gab einen Fehler beim Speichern des Stil zurück an den Server.",                 
+         searchStyleResourcesErrorTitle: "Fehler",
+         searchStyleResourcesErrorMsg: "Da lief was falsch beim Laden von Stilen"
+    },
+    
+    "gxp.plugins.Styler.prototype": {
+        menuText: "Style bearbeiten",
+        tooltip: "Layer Styles verwalten",    
+        geostoreStyleCategoryCreatedSuccessTitle: "GeoStore Kategorie Schöpfung.",
+        geostoreStyleCategoryCreatedSuccessMsg: "GeoStore LAYERS_STYLES Kategorie erfolgreich erstellt.",
+        geostoreStyleCategoryCreatedErrorTitle: "Fehler beim Erstellen der Kategorie.",
+        geostoreStyleCategoryCreatedErrorMsg: "GeoStore Ressourcen Behinderte, nur Admin kann fehlende LAYERS_STYLES Kategorie erstellen.",
+        geostoreStyleCategorySearchErrorTitle: "Fehlersuche Kategorien.",
+        geostoreStyleCategorySearchErrorMsg: "Etwas falsch in den Suchkategorien ging."
+    },
+    
+    "gxp.FillSymbolizer.prototype": {
+        fillText: "Füllung",
+        colorText: "Farbe",
+        opacityText: "Transparenz"
+    },
+    
+    "gxp.PointSymbolizer.prototype": {
+        graphicCircleText: "Kreis",
+        graphicSquareText: "Rechteck",
+        graphicTriangleText: "Dreieck",
+        graphicStarText: "Stern",
+        graphicCrossText: "Kreuz",
+        graphicXText: "x",
+        graphicExternalText: "extern",
+        urlText: "URL",
+        opacityText: "Transparenz",
+        symbolText: "Symbol",
+        sizeText: "Grösse",
+        rotationText: "Rotation"
+    },
+    
+    "gxp.RulePanel.prototype": {
+        scaleSliderTemplate: "{scaleType} Massstab 1:{scale}",
+        labelFeaturesText: "Objekte beschriften",
+        labelsText: "Beschriftung",
+        basicText: "Basic",
+        advancedText: "Erweitert",
+        limitByScaleText: "Massstabsbeschränkung",
+        limitByConditionText: "Einschränkung durch Bedingung",
+        symbolText: "Symbol",
+        nameText: "Name"
+    },
+    
+    "gxp.ScaleLimitPanel.prototype": {
+        scaleSliderTemplate: "{scaleType} Massstab 1:{scale}",
+        minScaleLimitText: "Minimale Massstabsgrenze",
+        maxScaleLimitText: "Maximale Massstabsgrenze"
+    },
+    
+    "gxp.StrokeSymbolizer.prototype": {
+        solidStrokeName: "ausgezogen",
+        dashStrokeName: "gestrichelt",
+        dotStrokeName: "gepunktet",
+        titleText: "Linie",
+        styleText: "Style",
+        colorText: "Farbe",
+        widthText: "Breite",
+        opacityText: "Transparenz"
+    },
+    
+    "gxp.StylePropertiesDialog.prototype": {   
+        titleText: "Allgemein",
+        nameFieldText: "Name",
+        titleFieldText: "Titel",
+        abstractFieldText: "Kurzbeschreibung"
+    },
+    
+    "gxp.TextSymbolizer.prototype": {
+        labelValuesText: "Label values",
+        haloText: "Halo",
+        sizeText: "Grösse"
     },
 
     "gxp.NewSourceWindow.prototype": {

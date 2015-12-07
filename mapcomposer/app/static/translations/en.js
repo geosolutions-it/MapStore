@@ -232,6 +232,111 @@ GeoExt.Lang.add("en", {
         refreshText: "Refresh"
     },
 
+    "gxp.WMSStylesDialog.prototype": {
+         addStyleText: "Add",
+         addStyleTip: "Add a new style",
+         chooseStyleText: "Choose style",
+         deleteStyleText: "Remove",
+         deleteStyleTip: "Delete the selected style",
+         editStyleText: "Edit",
+         editStyleTip: "Edit the selected style",
+         duplicateStyleText: "Duplicate",
+         duplicateStyleTip: "Duplicate the selected style",
+         addRuleText: "Add",
+         addRuleTip: "Add a new rule",
+         newRuleText: "New Rule",
+         deleteRuleText: "Remove",
+         deleteRuleTip: "Delete the selected rule",
+         editRuleText: "Edit",
+         editRuleTip: "Edit the selected rule",
+         duplicateRuleText: "Duplicate",
+         duplicateRuleTip: "Duplicate the selected rule",
+         cancelText: "Cancel",
+         saveText: "Save",
+         styleWindowTitle: "User Style: {0}",
+         ruleWindowTitle: "Style Rule: {0}",
+         stylesFieldsetTitle: "Styles",
+         rulesFieldsetTitle: "Rules",
+         errorTitle: "Error saving style",
+         errorMsg: "There was an error saving the style back to the server.",         
+         searchStyleResourcesErrorTitle: "Error",
+         searchStyleResourcesErrorMsg: "Something went wrong when loading styles"
+    },
+    
+    "gxp.plugins.Styler.prototype": {
+        menuText: "Layer Styles",
+        tooltip: "Layer Styles",    
+        geostoreStyleCategoryCreatedSuccessTitle: "Geostore Category creation.",
+        geostoreStyleCategoryCreatedSuccessMsg: "Geostore LAYERS_STYLES Category successfully created.",
+        geostoreStyleCategoryCreatedErrorTitle: "Error creating category.",
+        geostoreStyleCategoryCreatedErrorMsg: "GeoStore resources disabled, only Admin can create missing LAYERS_STYLES CATEGORY.",
+        geostoreStyleCategorySearchErrorTitle: "Error search categories.",
+        geostoreStyleCategorySearchErrorMsg: "Something went wrong in the search categories."
+    },
+    
+    "gxp.FillSymbolizer.prototype": {
+        fillText: "Fill",
+        colorText: "Color",
+        opacityText: "Opacity"
+    },
+    
+    "gxp.PointSymbolizer.prototype": {
+        graphicCircleText: "circle",
+        graphicSquareText: "square",
+        graphicTriangleText: "triangle",
+        graphicStarText: "star",
+        graphicCrossText: "cross",
+        graphicXText: "x",
+        graphicExternalText: "external",
+        urlText: "URL",
+        opacityText: "opacity",
+        symbolText: "Symbol",
+        sizeText: "Size",
+        rotationText: "Rotation"
+    },
+    
+    "gxp.RulePanel.prototype": {
+        scaleSliderTemplate: "{scaleType} Scale 1:{scale}",
+        labelFeaturesText: "Label Features",
+        labelsText: "Labels",
+        basicText: "Basic",
+        advancedText: "Advanced",
+        limitByScaleText: "Limit by scale",
+        limitByConditionText: "Limit by condition",
+        symbolText: "Symbol",
+        nameText: "Name"
+    },
+    
+    "gxp.ScaleLimitPanel.prototype": {
+        scaleSliderTemplate: "{scaleType} Scale 1:{scale}",
+        minScaleLimitText: "Min scale limit",
+        maxScaleLimitText: "Max scale limit"
+    },
+    
+    "gxp.StrokeSymbolizer.prototype": {
+        solidStrokeName: "solid",
+        dashStrokeName: "dash",
+        dotStrokeName: "dot",
+        titleText: "Stroke",
+        styleText: "Style",
+        colorText: "Color",
+        widthText: "Width",
+        opacityText: "Opacity"
+    },
+    
+    "gxp.StylePropertiesDialog.prototype": {   
+        titleText: "General",
+        nameFieldText: "Name",
+        titleFieldText: "Title",
+        abstractFieldText: "Abstract"
+    },
+    
+    "gxp.TextSymbolizer.prototype": {
+        labelValuesText: "Label values",
+        haloText: "Halo",
+        sizeText: "Size"
+    },
+
     "gxp.NewSourceWindow.prototype": {
         title: "Add Server",
         cancelText: "Cancel",

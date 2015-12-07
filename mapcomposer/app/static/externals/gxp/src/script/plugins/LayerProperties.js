@@ -101,7 +101,7 @@ gxp.plugins.LayerProperties = Ext.extend(gxp.plugins.Tool, {
             this.menuText + ": " + record.get("title");
         
         //TODO create generic gxp_layerpanel
-        var xtype = record.get("properties") || "gxp_layerpanel";
+        var xtype = this.layerPanelConfig["xtype"] || record.get("properties") || "gxp_layerpanel";
         var panelConfig = this.layerPanelConfig;
         if (panelConfig && panelConfig[xtype]) {
             Ext.apply(config, panelConfig[xtype]);

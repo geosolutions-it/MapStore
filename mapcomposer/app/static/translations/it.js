@@ -252,9 +252,87 @@ GeoExt.Lang.add("it", {
          styleWindowTitle: "User Style: {0}",
          ruleWindowTitle: "Style Rule: {0}",
          stylesFieldsetTitle: "Stili",
-         rulesFieldsetTitle: "Regole"
+         rulesFieldsetTitle: "Regole",
+         errorTitle: "Errore salvataggio stile",
+         errorMsg: "Si è verificato un errore nel salvare lo stile sul server.",                 
+         searchStyleResourcesErrorTitle: "Error",
+         searchStyleResourcesErrorMsg: "Something went wrong when loading styles"
+    },
+    
+    "gxp.plugins.Styler.prototype": {
+        menuText: "Stili dei layer",
+        tooltip: "Stili dei layer",    
+        geostoreStyleCategoryCreatedSuccessTitle: "Creazione categoria di GeoStore.",
+        geostoreStyleCategoryCreatedSuccessMsg: "La categoria LAYERS_STYLES è stata creata correttamente.",
+        geostoreStyleCategoryCreatedErrorTitle: "Errore nella creazione della categoria.",
+        geostoreStyleCategoryCreatedErrorMsg: "GeoStore disabilitato, solamente l'Amministratore può creare la categoria mancante LAYERS_STYLES.",
+        geostoreStyleCategorySearchErrorTitle: "Errore nella ricerca delle categorie.",
+        geostoreStyleCategorySearchErrorMsg: "Qualcosa è andato storto nella ricerca delle categorie."
     },
 
+    "gxp.FillSymbolizer.prototype": {
+        fillText: "Riempimento",
+        colorText: "Colore",
+        opacityText: "Opacità"
+    },
+
+    "gxp.PointSymbolizer.prototype": {
+        graphicCircleText: "cerchio",
+        graphicSquareText: "quadrato",
+        graphicTriangleText: "triangolo",
+        graphicStarText: "stella",
+        graphicCrossText: "attraversamento",
+        graphicXText: "x",
+        graphicExternalText: "esterno",
+        urlText: "URL",
+        opacityText: "opacità",
+        symbolText: "Simbolo",
+        sizeText: "Grandezza",
+        rotationText: "Rotazione"
+    },
+
+    "gxp.RulePanel.prototype": {
+        scaleSliderTemplate: "{scaleType} Scala 1:{scale}",
+        labelFeaturesText: "Etichetta Feature",
+        labelsText: "Etichette",
+        basicText: "Base",
+        advancedText: "Avanzate",
+        limitByScaleText: "Limita in base alla scala",
+        limitByConditionText: "Limita in base alla condizione",
+        symbolText: "Simbolo",
+        nameText: "Nome"
+    },
+
+    "gxp.ScaleLimitPanel.prototype": {
+        scaleSliderTemplate: "{scaleType} Scala 1:{scale}",
+        minScaleLimitText: "Limite scala Min",
+        maxScaleLimitText: "Limite scala Max"
+    },
+
+    "gxp.StrokeSymbolizer.prototype": {
+        solidStrokeName: "continua",
+        dashStrokeName: "tratteggiata",
+        dotStrokeName: "puntiforme",
+        titleText: "Linea",
+        styleText: "Stile",
+        colorText: "Colore",
+        widthText: "Larghezza",
+        opacityText: "Opacità"
+    },
+
+    "gxp.StylePropertiesDialog.prototype": {
+        titleText: "Generale",
+        nameFieldText: "Nome",
+        titleFieldText: "Titolo",
+        abstractFieldText: "In sintesi"
+    },
+
+    "gxp.TextSymbolizer.prototype": {
+        labelValuesText: "Valori etichetta",
+        haloText: "Halo",
+        sizeText: "Grandezza"
+    },
+    
     "gxp.NewSourceWindow.prototype": {
         title: "Aggiungi Server",
         cancelText: "Cancella",

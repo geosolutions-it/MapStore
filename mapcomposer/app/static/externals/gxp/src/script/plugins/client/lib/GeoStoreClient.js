@@ -89,6 +89,10 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
      */
     password: null,
     
+    /** private: property[authToken]
+      *  ``String`` Token for the authenticate requests
+     */
+    authToken: null,
 
     /** private: method[constructor]
      */
@@ -117,7 +121,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
      *
      *  Send GeoStore request
      */
-    sendRequest: function(restPath, method, content, contentType, success, failure) {
+    sendRequest: function(restPath, method, content, contentType, success, failure, scope) {
         var headers= {
             'Accept' : 'application/json, text/plain, text/xml'
         };
@@ -125,14 +129,16 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
         if(contentType)
             headers['Content-Type']= contentType;
 	
-        if(this.user && this.password){
+        if(this.authToken) {
+            headers['Authorization']= this.authToken;
+        } else if(this.user && this.password){
             headers['Authorization']= 'Basic ' + Base64.encode(this.user + ':' + this.password);
         }
 	
         var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
         var mHost=pattern.exec(this.url); 
         var mUrl = this.url+restPath;
-        var url = mHost[2] == location.host ? mUrl : this.proxy + mUrl;
+        var url = mHost[2] == location.host ? mUrl : this.proxy + encodeURIComponent(mUrl);
 	
         
         Ext.Ajax.disableCaching=true;
@@ -141,7 +147,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             method: method,
             headers: headers,
             params: content,
-            scope: this,
+            scope: scope || this,
             success: success,
             failure: failure
         });	
@@ -161,13 +167,15 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
      *       
      *  Send get Geostore entity list request
      */
-    getEntities: function (entity, success, failure){
+    getEntities: function (entity, success, failure, scope, withAttributes, method, content, contentType){
         var restPath="";
-        var method= "GET";
+        var method= method || "GET";
+        var contentType = contentType;
+        var content = content || null;
         var callFailure;
         switch (entity.type){
             case "resource":
-                restPath="/resources";
+                restPath=withAttributes ? "/resources/search/list?includeAttributes=true&includeData=true":"/resources";
                 break;
             case "user":
                 restPath="/users";
@@ -202,7 +210,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
                     entities.push(entitiesObj);
                 }
 
-            success.call(this, entities);
+            success.call(scope || this, entities);
         };
         
         if(failure)
@@ -217,7 +225,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             };
         } 
         
-        this.sendRequest(restPath, method, null, null, callSuccess, callFailure);
+        this.sendRequest(restPath, method, content, contentType, callSuccess, callFailure, scope);
     },
     
     
@@ -228,11 +236,12 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
      *                          The Object properties are  defined in the Openlayers.Geostore class.
      *  :arg success: ``Function`` Optional callback to call when request the has been executed successfully
      *  :arg failure: ``Function`` Optional callback to call when the request fails
+     *  :arg scope: ``Function`` Optional scope for callbacks
      *       
      *       
      *  Send create Geostore entity request
      */
-    createEntity: function (entity, success, failure){
+    createEntity: function (entity, success, failure, scope){
         var restPath="";
         var method= "POST";
         var contentType= "text/xml";
@@ -257,7 +266,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
         var callSuccess= function(response, opts){
             var entityID= response.responseText;
 	  
-            success.call(this, entityID);
+            success.call(scope || this, entityID);
         };
 	
 	
@@ -282,7 +291,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             }
         }
        
-        this.sendRequest(restPath, method, content, contentType, callSuccess, callFailure);
+        this.sendRequest(restPath, method, content, contentType, callSuccess, callFailure, scope);
     },
     
     
@@ -297,10 +306,11 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
      *  
      *  Send delete entity request
      */
-    deleteEntity: function (entity, success, failure){
+    deleteEntity: function (entity, success, failure, scope){
         var restPath="";
         var method= "DELETE";
         var callFailure;
+        var content = 'text/xml';
         
         switch (entity.type){
             case "resource":
@@ -331,7 +341,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             };
         } 
         
-        this.sendRequest(restPath, method, null, null, success, callFailure);
+        this.sendRequest(restPath, method, null, content, success, callFailure, scope);
     },
     
     
@@ -414,18 +424,22 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
      *  
      *  Send get all resources by category request
      */
-    getCategoryResources: function (categoryName, success, failure){
-        var restPath="/misc/category/name/"+categoryName+"/resources";
+    getCategoryResources: function (categoryName, success, failure, scope, withAttributes){
+        var restPath;
+        if(withAttributes) {
+            restPath = "/misc/category/name/"+categoryName+"/fullresources?includeAttributes=true";
+        } else {
+            restPath = "/misc/category/name/"+categoryName+"/resources";
+        }
+        
         var method= "GET";
         var callFailure;
 
         var callSuccess= function(response, opts){
-            var jsonResponse= Ext.util.JSON.decode(response.responseText);
-            var resources;
-
-            resources= new Array();
+            var jsonResponse = Ext.util.JSON.decode(response.responseText);
+            var resources = [];
             
-            if(jsonResponse.ResourceList.Resource)
+            if(jsonResponse.ResourceList.Resource) {
                 if(jsonResponse.ResourceList.Resource instanceof Array)
                     for(var resource in jsonResponse.ResourceList.Resource){
                         if(! isNaN(resource)){
@@ -435,7 +449,8 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
                 else{
                     resources.push(jsonResponse.ResourceList.Resource);
                 }
-            success.call(this, resources);
+            }
+            success.call(scope || this, resources);
         };
         
         
@@ -451,7 +466,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             };
         } 
         
-        this.sendRequest(restPath, method, null, null, callSuccess, callFailure);
+        this.sendRequest(restPath, method, null, null, callSuccess, callFailure, scope);
     },
     
     
@@ -468,7 +483,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
      *
      *  Send get entities by like name request
      */
-    getLikeName: function (entity, success, failure){
+    getLikeName: function (entity, success, failure, scope){
         var restPath="";
         var method= "GET";
         var callFailure;
@@ -504,7 +519,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
                     entities.push(entitiesObj);
                 }
 
-            success.call(this, entities);
+            success.call(scope || this, entities);
         };
         
         if(failure)
@@ -519,7 +534,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             };
         } 
         
-        this.sendRequest(restPath, method, null, null, callSuccess, callFailure);
+        this.sendRequest(restPath, method, null, null, callSuccess, callFailure, scope);
     },
     
     
@@ -535,7 +550,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
      *                                       
      *  Send "exists entity by name" request (The method uses the count request)
      */
-    existsEntity: function (entity, success, failure){
+    existsEntity: function (entity, success, failure, scope){
      
         var restPath="";
         var method= "GET";
@@ -560,7 +575,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
         var callSuccess= function(response, opts){
             var count= response.responseText;
 	  
-            success.call(this, parseInt(count)>0);
+            success.call(scope || this, parseInt(count)>0);
         };
 	
 	
@@ -576,7 +591,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             };
         } 
 	
-        this.sendRequest(restPath, method, null, null, callSuccess, callFailure);
+        this.sendRequest(restPath, method, null, null, callSuccess, callFailure,scope);
     },
     
     
@@ -594,7 +609,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
      *  Send "get entity by ID" request
      */
     
-    getEntityByID: function (entity, success, failure){
+    getEntityByID: function (entity, success, failure, scope){
         var restPath="";
         var method= "GET";
         var advPar="";
@@ -604,6 +619,10 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
                 restPath="/resources/resource/";
                 advPar="?full=true";
                 break;
+            case "attribute":
+                restPath="/resources/resource/";
+                advPar="/attributes?full=true";
+                break;                
             case "user":
                 restPath="/users/user/";
                 break;
@@ -623,7 +642,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
         var callSuccess= function(response, opts){
             var entity= Ext.util.JSON.decode(response.responseText);
      
-            success.call(this, entity);
+            success.call(scope || this, entity);
         };
 
         if(failure)
@@ -638,7 +657,7 @@ gxp.plugins.GeoStoreClient =  Ext.extend(gxp.plugins.Tool,{
             };
         } 
 
-        this.sendRequest(restPath, method, null, null, callSuccess, callFailure);
+        this.sendRequest(restPath, method, null, null, callSuccess, callFailure, scope);
     }
 
 

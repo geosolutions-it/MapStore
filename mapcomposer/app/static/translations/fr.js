@@ -210,6 +210,37 @@ GeoExt.Lang.add("fr", {
     "gxp.plugins.ZoomToLayerExtent.prototype": {
         menuText: "Zoom sur l`étendue de la couche",
         tooltip: "Zoom sur l`étendue de la couche"
+    },
+
+    "gxp.WMSStylesDialog.prototype": {
+         addStyleText: "Ajouter",
+         addStyleTip: "Ajouter un nouveau style",
+         chooseStyleText: "Choisissez le style",
+         deleteStyleText: "Retirer",
+         deleteStyleTip: "Supprimer le style sélectionné",
+         editStyleText: "Modifier",
+         editStyleTip: "Modifier le style sélectionné",
+         duplicateStyleText: "Dupliquer",
+         duplicateStyleTip: "Dupliquer le style sélectionné",
+         addRuleText: "Ajouter",
+         addRuleTip: "Ajouter une nouvelle règle",
+         newRuleText: "Nouvelle règle",
+         deleteRuleText: "Retirer",
+         deleteRuleTip: "Supprimer la règle sélectionnée",
+         editRuleText: "Modifier",
+         editRuleTip: "Modifier la règle sélectionnée",
+         duplicateRuleText: "Dupliquer",
+         duplicateRuleTip: "Dupliquer la règle sélectionnée",
+         cancelText: "Annuler",
+         saveText: "Sauvegarder",
+         styleWindowTitle: "Style utilisateur: {0}",
+         ruleWindowTitle: "Style de règle: {0}",
+         stylesFieldsetTitle: "Styles",
+         rulesFieldsetTitle: "Des règles",
+         errorTitle: "Le style d'économie d'erreur",
+         errorMsg: "Il y avait une économie du style vers le serveur erreur.",         
+         searchStyleResourcesErrorTitle: "Erreur",
+         searchStyleResourcesErrorMsg: "Quelque chose a mal tourné lors du chargement de styles"
     },  
 
     "gxp.WMSLayerPanel.prototype": {
@@ -229,6 +260,80 @@ GeoExt.Lang.add("fr", {
         loadMaskMsg: "Extraction des données en cours...",
         noDataMsg: "Pas de données disponibles dans la vue actuelle",
         refreshText: "Actualiser"
+    },
+    
+    "gxp.plugins.Styler.prototype": {
+        menuText: "Styles de calque",
+        tooltip: "Styles de calque",    
+        geostoreStyleCategoryCreatedSuccessTitle: "GeoStore création d'Catégorie.",
+        geostoreStyleCategoryCreatedSuccessMsg: "GeoStore LAYERS_STYLES Catégorie créé avec succès.",
+        geostoreStyleCategoryCreatedErrorTitle: "Erreur de création de la catégorie.",
+        geostoreStyleCategoryCreatedErrorMsg: "Ressources GeoStore désactivé, seul l'administrateur peut créer manquer Catégorie LAYERS_STYLES.",
+        geostoreStyleCategorySearchErrorTitle: "Catégories de recherche d'erreur.",
+        geostoreStyleCategorySearchErrorMsg: "Quelque chose a mal tourné dans les catégories de recherche."
+    },
+    
+    "gxp.FillSymbolizer.prototype": {
+        fillText: "Remplir",
+        colorText: "Couleur",
+        opacityText: "Opacité"
+    },
+    
+    "gxp.PointSymbolizer.prototype": {
+        graphicCircleText: "Cercle",
+        graphicSquareText: "Carré",
+        graphicTriangleText: "Triangle",
+        graphicStarText: "Étoile",
+        graphicCrossText: "Croix",
+        graphicXText: "x",
+        graphicExternalText: "Externe",
+        urlText: "URL",
+        opacityText: "Opacité",
+        symbolText: "Symbole",
+        sizeText: "Taille",
+        rotationText: "Rotation"
+    },
+
+    "gxp.RulePanel.prototype": {
+        scaleSliderTemplate: "{scaleType} échelle 1:{scale}",
+        labelFeaturesText: "Label Caractéristiques",
+        labelsText: "Labels",
+        basicText: "Base",
+        advancedText: "Avancé",
+        limitByScaleText: "Limiter par l'échelle",
+        limitByConditionText: "Limiter par condition",
+        symbolText: "Symbole",
+        nameText: "Nom"
+    },
+
+    "gxp.ScaleLimitPanel.prototype": {
+        scaleSliderTemplate: "{scaleType} échelle 1:{scale}",
+        maxScaleLimitText: "Échelle maximale",
+        minScaleLimitText: "Échelle manimale"
+    },
+
+    "gxp.StrokeSymbolizer.prototype": {
+        solidStrokeName: "continue",
+        dashStrokeName: "pointillés",
+        dotStrokeName: "point",
+        titleText: "Ligne",
+        styleText: "Style",
+        colorText: "Couleur",
+        widthText: "Largeur",
+        opacityText: "Opacité"
+    },
+
+    "gxp.StylePropertiesDialog.prototype": {
+        titleText: "Général",
+        nameFieldText: "Nom",
+        titleFieldText: "Titre",
+        abstractFieldText: "En résumé"
+    },
+
+    "gxp.TextSymbolizer.prototype": {
+        labelValuesText: "Label Valeurs",
+        haloText: "Halo",
+        sizeText: "Grandeur"
     },  
 
     "gxp.NewSourceWindow.prototype": {
