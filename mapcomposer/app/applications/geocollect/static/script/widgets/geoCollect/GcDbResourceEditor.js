@@ -899,7 +899,7 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
             this.gcSopGrid.propertyNames = np;
         } else {
             for (var key in np) {
-                if (!p[key] || np[key].header != p[key].header) {
+                if (!p[key] || np[key] != p[key]) {
                     this.templateDirty = true;
                     this.gcSopGrid.propertyNames = np;
                     break;
