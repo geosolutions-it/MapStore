@@ -29,10 +29,10 @@ Ext.namespace("gxp.plugins.he");
  *    Plugin providing a styles editing dialog for geoserver layers.
  */
 gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
-    
+
     /** api: ptype = gxp_styler */
     ptype: "gxp_stylerhe",
-    
+
     /** api: config[id] */
     id: "styler",
     /** api: config[menuText]
@@ -46,22 +46,22 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
      *  Text for layer properties action tooltip (i18n).
      */
     tooltip: "Manage layer styles",
-    
+
     /** api: config[sameOriginStyling]
      *  ``Boolean``
      *  Only allow editing of styles for layers whose sources have a URL that
-     *  matches the origin of this applicaiton.  It is strongly discouraged to 
+     *  matches the origin of this applicaiton.  It is strongly discouraged to
      *  do styling through commonly used proxies as all authorization headers
      *  and cookies are shared with all remote sources.  Default is ``true``.
      */
     sameOriginStyling: true,
-    
+
     /** api: config[rasterStyling]
      *  ``Boolean`` If set to true, single-band raster styling will be
      *  supported. Default is ``false``.
      */
     rasterStyling: false,
-    
+
     /** api: config[requireDescribeLayer]
      *  ``Boolean`` If set to false, styling will be enabled for all WMS layers
      *  that have "/ows" or "/wms" at the end of their base url in case the WMS
@@ -69,7 +69,7 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
      *  set to true. Default is true.
      */
     requireDescribeLayer: true,
-    
+
     /** api: config[geostoreStyleCategoryCreatedSuccessTitle]
      *  ``String``
      *  Text for layer properties menu item (i18n).
@@ -79,38 +79,38 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
     /** api: config[geostoreStyleCategoryCreatedSuccessMsg]
      *  ``String``
      *  Text for layer properties menu item (i18n).
-     */    
+     */
     geostoreStyleCategoryCreatedSuccessMsg: "Creating category LAYERS STYLES successful",
-    
+
     /** api: config[geostoreStyleCategoryCreatedErrorTitle]
      *  ``String``
      *  Text for layer properties menu item (i18n).
-     */        
+     */
     geostoreStyleCategoryCreatedErrorTitle: "Error creating category",
-    
+
     /** api: config[geostoreStyleCategoryCreatedErrorMsg]
      *  ``String``
      *  Text for layer properties menu item (i18n).
-     */          
+     */
     geostoreStyleCategoryCreatedErrorMsg: "GeoStore resources disabled, only Admin can create missing LAYERS_STYLES CATEGORY",
-    
+
     /** api: config[geostoreStyleCategorySearchErrorTitle]
      *  ``String``
      *  Text for layer properties menu item (i18n).
-     */              
+     */
     geostoreStyleCategorySearchErrorTitle: "Error search categories",
-    
+
     /** api: config[geostoreStyleCategorySearchErrorMsg]
      *  ``String``
      *  Text for layer properties menu item (i18n).
-     */      
-    geostoreStyleCategorySearchErrorMsg: "Something went wrong in the search categories",  
-    
+     */
+    geostoreStyleCategorySearchErrorMsg: "Something went wrong in the search categories",
+
     /** private: property[geostoreSource]
      *  boolena if true geostore source enabled
      */
-    geostoreSource:false,    
-    
+    geostoreSource:false,
+
     /** private: property[roleAdmin]
      *  boolena if true user is Admin
      */
@@ -119,11 +119,11 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
     /** private: property[advancedUser]
      *  boolena if true user is Advanced User
      */
-    advancedUser:false,                          
-    
+    advancedUser:false,
+
     constructor: function(config) {
         gxp.plugins.he.StylerHE.superclass.constructor.apply(this, arguments);
-        
+
         if (!this.outputConfig) {
             this.outputConfig = {
                 autoHeight: true,
@@ -135,7 +135,7 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
             closeAction: "close"
         });
     },
-    
+
     /** api: method[addActions]
      */
     addActions: function() {
@@ -151,17 +151,17 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
             },
             scope: this
         }]);
-        
+
         this.launchAction = actions[0];
         this.target.on({
             layerselectionchange: this.handleLayerChange,
             ready: this.checkGeostoreStyleCategory,
             scope: this
         });
-        
+
         return actions;
     },
-    
+
     /** private: method[handleLayerChange]
      *  :arg record: ``GeoExt.data.LayerRecord``
      *
@@ -181,11 +181,11 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
 
     /** private: method[checkIfStyleable]
      *  :arg layerRec: ``GeoExt.data.LayerRecord``
-     *  :arg describeRec: ``Ext.data.Record`` Record from a 
+     *  :arg describeRec: ``Ext.data.Record`` Record from a
      *      `GeoExt.data.DescribeLayerStore``.
      *
-     *  Given a layer record and the corresponding describe layer record, 
-     *  determine if the target layer can be styled.  If so, enable the launch 
+     *  Given a layer record and the corresponding describe layer record,
+     *  determine if the target layer can be styled.  If so, enable the launch
      *  action.
      */
     checkIfStyleable: function(layerRec, describeRec) {
@@ -222,17 +222,21 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
                 editableStyles = true;
             }
             if (editableStyles) {
-            
+
+                var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
+                var mHost=pattern.exec(url);
+                var sameSource = mapStoreDebug ? mapStoreDebug : (mHost[2] == location.host ? true : false);
+
                 this.roleAdmin=(this.target &&
                                 this.target.userDetails &&
                                 this.target.userDetails.user.role &&
                                 ["ROLE_ADMIN","ADMIN"].indexOf(this.target.userDetails.user.role) > -1);
-                                
+
                 this.advancedUser=this.hasGroup(this.target.userDetails.user,this.restrictToGroups);
-                
-                if(this.roleAdmin){
+
+                if(this.roleAdmin && sameSource){
                     this.enableActionIfAvailable(url,this.getAuth());
-                }else if(this.advancedUser){
+                }else if(this.advancedUser && sameSource){
                     this.launchAction.setDisabled(!this.geostoreSource);
                     this.launchAction.setHidden(!this.geostoreSource);
                 }
@@ -244,10 +248,10 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
             }
         }
     },
-    
+
     /** private: method[enableActionIfAvailable]
      *  :arg url: ``String`` URL of style service
-     * 
+     *
      *  Enable the launch action if the service is available.
      */
     enableActionIfAvailable: function(url,auth) {
@@ -266,7 +270,7 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
             scope: this
         });
     },
-    
+
     addOutput: function(config) {
         config = config || {};
         var record = this.target.selectedLayer;
@@ -283,7 +287,7 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
             });
         }
         Ext.applyIf(config, {style: "padding: 10px"});
-        
+
         var output = gxp.plugins.Styler.superclass.addOutput.call(this, config);
         if (!(output.ownerCt.ownerCt instanceof Ext.Window)) {
             output.dialogCls = Ext.Panel;
@@ -300,7 +304,7 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
         });
 
     },
-    
+
     /** private: method[hasGroup]
      *  ``Function`` Check if users has passed group
      *
@@ -318,14 +322,14 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
             }
             return groupfound;
         }
-        
+
         return false;
     },
 
     /** private: method[checkGeostoreStyleCategory]
-     *  :arg url: 
-     * 
-     */        
+     *  :arg url:
+     *
+     */
     checkGeostoreStyleCategory: function(){
         var user, password;
         if(this.target.authToken) {
@@ -354,7 +358,7 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
         var geostoreEntityResource = new OpenLayers.GeoStore.Category({
             name: "LAYERS_STYLES"
         });
-            
+
         this.geoStore.existsEntity(geostoreEntityResource,
             function(data){
                 if(!data){
@@ -388,11 +392,11 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
                     icon: Ext.MessageBox.ERROR,
                     scope: this
                 });
-            },            
+            },
             this
         );
     },
-    
+
     /** private: method[getErrorMsg]
      *  ``Function``Format geostore response errror
      *
@@ -400,7 +404,7 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
     getErrorMsg:function(response){
         return defaultErrMsg = " "+response.statusText + "(status " + response.status + "):  " + response.responseText;
     }
-        
+
 });
 
 Ext.preg(gxp.plugins.he.StylerHE.prototype.ptype, gxp.plugins.he.StylerHE);

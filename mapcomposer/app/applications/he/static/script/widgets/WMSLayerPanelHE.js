@@ -21,7 +21,7 @@ Ext.namespace("gxp.he");
 
 /** api: constructor
  *  .. class:: WMSLayerPanel(config)
- *   
+ *
  *      Create a dialog for setting WMS layer properties like title, abstract,
  *      opacity, transparency and image format.
  */
@@ -31,8 +31,8 @@ gxp.he.WMSLayerPanelHE = Ext.extend(gxp.WMSLayerPanel, {
     /** api: config[sameOriginStyling]
      *  ``Boolean``
      *  Only allow editing of styles for layers whose sources have a URL that
-     *  matches the origin of this application.  It is strongly discouraged to 
-     *  do styling through the proxy as all authorization headers and cookies 
+     *  matches the origin of this application.  It is strongly discouraged to
+     *  do styling through the proxy as all authorization headers and cookies
      *  are shared with all remotesources.  Default is ``true``.
      */
     sameOriginStyling: true,
@@ -42,12 +42,12 @@ gxp.he.WMSLayerPanelHE = Ext.extend(gxp.WMSLayerPanel, {
      *  supported.  Default is ``false``.
      */
     rasterStyling: false,
-    
+
     initComponent: function() {
-		
+
         gxp.he.WMSLayerPanelHE.superclass.initComponent.call(this);
     },
-    
+
     /** private: createStylesPanel
      *  :arg url: ``String`` url to save styles to
      *
@@ -57,11 +57,11 @@ gxp.he.WMSLayerPanelHE = Ext.extend(gxp.WMSLayerPanel, {
         var config = gxp.he.WMSStylesDialogHE.createGeoServerStylerConfig(
             this.layerRecord, url
         );
-        
+
         config.plugins.push({
             ptype: "gxp_wmsrasterstylesdialoghe"
         });
-        
+
         var ownerCt = this.ownerCt;
         if (!(ownerCt.ownerCt instanceof Ext.Window)) {
             config.dialogCls = Ext.Panel;
@@ -81,4 +81,4 @@ gxp.he.WMSLayerPanelHE = Ext.extend(gxp.WMSLayerPanel, {
 
 });
 
-Ext.reg('gxp_wmslayerpanelhe', gxp.he.WMSLayerPanelHE); 
+Ext.reg('gxp_wmslayerpanelhe', gxp.he.WMSLayerPanelHE);
