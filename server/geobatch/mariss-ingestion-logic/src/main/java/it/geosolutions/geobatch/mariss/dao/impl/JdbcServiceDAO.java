@@ -215,7 +215,7 @@ public class JdbcServiceDAO implements ServiceDAO {
     @Override
     public List<Service> getServiceAccessByUser(String userId) {
 
-        String sql = "SELECT SERVICE.* FROM SERVICE JOIN SERVICE_ACCESS ON SERVICE.\"SERVICE_ID\" = SERVICE_ACCESS.\"SERVICE_ID\" WHERE \"USER\" = ?";
+        String sql = "SELECT SERVICE.* FROM SERVICE JOIN SERVICE_ACCESS ON SERVICE.\"SERVICE_ID\" = SERVICE_ACCESS.\"SERVICE_ID\" WHERE SERVICE_ACCESS.\"USER\" = ?";
 
         Connection conn = null;
 
