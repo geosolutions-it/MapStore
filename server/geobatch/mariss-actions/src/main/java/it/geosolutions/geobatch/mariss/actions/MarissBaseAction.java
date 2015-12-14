@@ -57,6 +57,7 @@ import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationContainer;
 import it.geosolutions.geobatch.mariss.actions.netcdf.IngestionActionConfiguration;
 import it.geosolutions.geobatch.mariss.actions.netcdf.NetCDFAction;
+import it.geosolutions.geobatch.mariss.actions.netcdf.OilSpill;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ShipDetection;
 import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
 
@@ -561,6 +562,30 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
     }
 
     /**
+     * Method that gets the oil spills from the directory
+     * 
+     * @param attributeBean the attributebean to populate
+     * @param dir the directory
+     * @return
+     */
+    protected File[] getOilSpills(AttributeBean attributeBean, File dir) {
+
+        IOFileFilter file = FileFilterUtils.fileFileFilter();
+
+        IOFileFilter shp = FileFilterUtils.suffixFileFilter("shp");
+        IOFileFilter oilSpillFilter = new RegexFileFilter(".*_OIL.*");
+
+        FileFilter oilSpillShpFileFilter = FileFilterUtils.and(file, shp, oilSpillFilter);
+
+        File[] shipShpfiles = dir.listFiles(oilSpillShpFileFilter);
+
+        File[] files = null;
+        files = shipShpfiles;
+
+        return files;
+    }
+    
+    /**
      * Read ship detection from the list of files provided
      * 
      * @param files the xml files with ship detections
@@ -575,6 +600,7 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
                 // If files are DS XML
 
                 XStream xstream = prepareXStreamDSReader();
+                attributeBean.numOilSpills = 0;
                 attributeBean.numShipDetections = (files != null ? files.length : 0);
                 for (File fileDsXml : files) {
                     try {
@@ -624,6 +650,7 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
                         
                         shipDetections.add(sd);
                     }
+                    attributeBean.numOilSpills = 0;
                     attributeBean.numShipDetections = numFeatures;
                 } catch (Exception e) {
                     LOGGER.warn(e.getMessage(), e);
@@ -642,6 +669,88 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
         return shipDetections;
     }
 
+    /**
+     * Read oil spills from the list of files provided
+     * 
+     * @param files the xml files with oil spills
+     * @return
+     */
+    protected List<OilSpill> readOilSpills(AttributeBean attributeBean, File[] files) {
+        List<OilSpill> oilSpills = new ArrayList<OilSpill>();
+
+        if (files != null && files.length > 0) {
+            if (FilenameUtils.getExtension(files[0].getAbsolutePath())
+                    .equalsIgnoreCase("shp")) {
+
+                // If files are SHIP ESRI ShapeFiles
+
+                ShapefileReader reader = null;
+                try {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("url", files[0].toURI().toURL());
+
+                    DataStore dataStore = DataStoreFinder.getDataStore(map);
+                    String typeName = dataStore.getTypeNames()[0];
+
+                    FeatureSource<SimpleFeatureType, SimpleFeature> source = dataStore
+                            .getFeatureSource(typeName);
+                    Filter filter = Filter.INCLUDE; // ECQL.toFilter("BBOX(THE_GEOM, 10,20,30,40)")
+
+                    FeatureCollection<SimpleFeatureType, SimpleFeature> collection = source
+                            .getFeatures(filter);
+                    FeatureIterator<SimpleFeature> features = collection.features();
+                    int numFeatures = 0;
+                    while (features.hasNext()) {
+                        SimpleFeature feature = features.next();
+                        numFeatures++;
+                        
+                        OilSpill oil = new OilSpill();
+                        
+                        oil.setId(feature.getID());
+                        Geometry geom = (Geometry) feature.getDefaultGeometryProperty().getValue();
+                        oil.setPosition(geom.toText());
+                        
+                        oil.setTimeStamp((String) feature.getAttribute("DATE-TIME"));
+                        
+                        oil.setBaricLat((Double) feature.getAttribute("BARIC_LAT"));
+                        oil.setBaricLon((Double) feature.getAttribute("BARIC_LON"));
+                        oil.setMaxLat((Double) feature.getAttribute("MAX_LAT"));
+                        oil.setMaxLon((Double) feature.getAttribute("MAX_LON"));
+                        oil.setMinLat((Double) feature.getAttribute("MIN_LAT"));
+                        oil.setMinLon((Double) feature.getAttribute("MIN_LON"));
+                        
+                        oil.setAreaKm((Double) feature.getAttribute("AREA_KM"));
+                        oil.setLengthKm((Double) feature.getAttribute("LENGTH_KM"));
+                        oil.setWidthKm((Double) feature.getAttribute("WIDTH_KM"));
+                        
+                        oil.setClassVal(String.valueOf(feature.getAttribute("CLASS_VAL")));
+                        oil.setAlarmLev((String) feature.getAttribute("ALARM_LEV"));
+                        oil.setPossibleS((String) feature.getAttribute("POSSIBLE_S"));
+                        oil.setRegionAff((String) feature.getAttribute("REGION_AFF"));
+                        oil.setCountry((String) feature.getAttribute("COUNTRY_AS"));
+                        oil.setSeepage((String) feature.getAttribute("SEEPAGE"));
+                        
+                        oilSpills.add(oil);
+                    }
+                    attributeBean.numOilSpills = numFeatures;
+                    attributeBean.numShipDetections = 0;
+                } catch (Exception e) {
+                    LOGGER.warn(e.getMessage(), e);
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            LOGGER.warn(e.getMessage(), e);
+                        }
+                    }
+                }
+            }
+        }
+
+        return oilSpills;
+    }
+    
     /**
      * @return
      */
@@ -709,12 +818,17 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
                 ps.setString(3, ds.getId()); // dsid
 
                 // TIMESTAMP
-                if (ds.getTimeStamp() != null) { // "timeStamp"
-                    Date d = guessTimeStamp(ds.getTimeStamp());
-                    if (d != null) {
-                        ps.setDate(4, new java.sql.Date(d.getTime()));
+                try {
+                    if (ds.getTimeStamp() != null) { // "timeStamp"
+                        Date d = guessTimeStamp(ds.getTimeStamp());
+                        if (d != null) {
+                            ps.setDate(4, new java.sql.Date(d.getTime()));
+                        }
+                    } else {
+                        ps.setDate(4, new java.sql.Date(1));
                     }
-                } else {
+                } catch (Exception e) {
+                    LOGGER.warn("Unable to insert TimeStamp for Ship Detection", e);
                     ps.setDate(4, new java.sql.Date(1));
                 }
 
@@ -806,6 +920,144 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
     }
 
     /**
+     * 
+     * @param attributeBean
+     * @param shipDetections
+     * @return
+     * @throws ActionException
+     */
+    public boolean insertOilSpillsIntoDb(AttributeBean attributeBean,
+            List<OilSpill> oilSpills) throws ActionException {
+        boolean result = false;
+
+        /*
+         * INSERT INTO oil_spills(
+         *   servicename, identifier, "timeStamp", baric_lat, baric_lon, max_lat, 
+         *   max_lon, min_lat, min_lon, area_km, length_km, width_km, class_val, 
+         *   alarm_lev, possible_s, region_aff, country_as, seepage, the_geom)
+         *   VALUES (?, ?, ?, ?, ?, ?, 
+         *           ?, ?, ?, ?, ?, ?, ?, 
+         *           ?, ?, ?, ?, ?, ?);
+         */
+
+        String sql = "INSERT INTO " + configuration.getOilSpillsTableName()
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ST_GeomFromText(?))";
+
+        Connection conn = null;
+
+        try {
+            conn = attributeBean.dataStore.getDataSource().getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            for (OilSpill ds : oilSpills) {
+                ps.setString(1, attributeBean.serviceName); // servicename
+                ps.setString(2, attributeBean.identifier); // identifier
+
+                // TIMESTAMP
+                try {
+                    if (ds.getTimeStamp() != null) { // "timeStamp"
+                        Date d = guessTimeStamp(ds.getTimeStamp());
+                        if (d != null) {
+                            ps.setDate(3, new java.sql.Date(d.getTime()));
+                        }
+                    } else {
+                        ps.setDate(3, new java.sql.Date(1));
+                    }
+                } catch (Exception e) {
+                    LOGGER.warn("Unable to insert TimeStamp for Ship Detection", e);
+                    ps.setDate(4, new java.sql.Date(1));
+                }
+
+                // BARIC LAT
+                if (ds.getBaricLat() != null)
+                    ps.setDouble(4, ds.getBaricLat());
+                else
+                    ps.setNull(4, java.sql.Types.DOUBLE);
+
+                // BARIC LON
+                if (ds.getBaricLon() != null)
+                    ps.setDouble(5, ds.getBaricLon());
+                else
+                    ps.setNull(5, java.sql.Types.DOUBLE);
+                
+                // MAX_LAT
+                if (ds.getMaxLat() != null)
+                    ps.setDouble(6, ds.getMaxLat());
+                else
+                    ps.setNull(6, java.sql.Types.DOUBLE);
+
+                // MAX LON
+                if (ds.getMaxLon() != null)
+                    ps.setDouble(7, ds.getMaxLon());
+                else
+                    ps.setNull(7, java.sql.Types.DOUBLE);
+
+                // MIN LAT
+                if (ds.getMinLat() != null)
+                    ps.setDouble(8, ds.getMinLat());
+                else
+                    ps.setNull(8, java.sql.Types.DOUBLE);
+
+                // MIN LON
+                if (ds.getMinLon() != null)
+                    ps.setDouble(9, ds.getMinLon());
+                else
+                    ps.setNull(9, java.sql.Types.DOUBLE);
+
+                // AREA KM
+                if (ds.getAreaKm() != null)
+                    ps.setDouble(10, ds.getAreaKm());
+                else
+                    ps.setNull(10, java.sql.Types.DOUBLE);
+
+                // LENGTH KM
+                if (ds.getLengthKm() != null)
+                    ps.setDouble(11, ds.getLengthKm());
+                else
+                    ps.setNull(11, java.sql.Types.DOUBLE);
+
+                // WIDTH KM
+                if (ds.getWidthKm() != null)
+                    ps.setDouble(12, ds.getWidthKm());
+                else
+                    ps.setNull(12, java.sql.Types.DOUBLE);
+
+                ps.setString(13, ds.getClassVal()); // 13 class_val,
+                
+                ps.setString(14, ds.getAlarmLev()); // 14 alarm_lev,
+                
+                ps.setString(15, ds.getPossibleS()); // 15 possible_s,
+                
+                ps.setString(16, ds.getRegionAff()); // 16 region_aff,
+                
+                ps.setString(17, ds.getCountry()); // 17 country_as,
+                
+                ps.setString(18, ds.getSeepage()); // 18 seepage
+                
+                // SHIP POSITION
+                ps.setString(19, ds.getPosition()); // the_geom
+
+                ps.addBatch();
+            }
+
+            int[] ids = ps.executeBatch();
+            result = ids != null && ids.length > 0;
+            ps.close();
+        } catch (SQLException e) {
+            throw new ActionException(this, e.getMessage());
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return result;
+    }
+    
+    /**
      * Tries to guess the time-stamp
      * 
      * @param ps
@@ -823,9 +1075,10 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
                 return d;
             } catch (ParseException e) {
                 // go forwards to the next format
+                LOGGER.warn("Unable to parse timeStamp : " + timeStamp + " using date format: " + formatString);
             }
         }
-        LOGGER.warn("unable to parse timeStamp : " + timeStamp);
+        LOGGER.error("No date format have been found for timeStamp : " + timeStamp);
 
         return null;
     }

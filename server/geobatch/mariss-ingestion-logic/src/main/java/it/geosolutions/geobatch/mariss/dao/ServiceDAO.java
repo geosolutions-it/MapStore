@@ -17,6 +17,7 @@
 package it.geosolutions.geobatch.mariss.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import it.geosolutions.geobatch.mariss.model.AreaOfInterest;
 import it.geosolutions.geobatch.mariss.model.Sensor;
@@ -44,7 +45,6 @@ public interface ServiceDAO {
     /**
      * WRITE
      */
-
     public boolean insert(Service service);
 
     public boolean insertOrUpdate(AreaOfInterest aoi);
@@ -52,4 +52,6 @@ public interface ServiceDAO {
     public boolean insertOrUpdate(String serviceId, List<Sensor> sensors);
 
     public boolean updateServiceStatus(Service servce, String status);
+
+    public boolean delete(String serviceId, Map<String, String> serviceAuxiliaryTables);
 }

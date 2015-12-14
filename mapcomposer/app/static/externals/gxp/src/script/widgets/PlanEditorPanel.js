@@ -157,8 +157,6 @@ gxp.PlanEditorPanel = Ext.extend(Ext.FormPanel, {
                 },
                 '-',
                 {
-                    xtype: "compositefield",
-                    items:[{
                         id: me.id + "_sensor_combo",
                         xtype: "combo",
                         fieldLabel: me.sensorText,
@@ -169,7 +167,7 @@ gxp.PlanEditorPanel = Ext.extend(Ext.FormPanel, {
                         displayField: 'text',
                         store: sensorStore,
                         name: "sensor",
-                        //allowBlank: false,
+                        allowBlank: false,
                         width: 60
                     },{
                         id: me.id + "_sensor_mode_combo",
@@ -182,9 +180,8 @@ gxp.PlanEditorPanel = Ext.extend(Ext.FormPanel, {
                         displayField: 'text',
                         store: sensorModeStore,
                         name: "sensorMode",
-                        //allowBlank: false,
+                        allowBlank: false,
                         flex: 1
-                    }]
                 }]
             }]
         });

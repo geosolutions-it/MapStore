@@ -22,11 +22,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.sql.DataSource;
 
 import it.geosolutions.geobatch.mariss.dao.ServiceDAO;
 import it.geosolutions.geobatch.mariss.model.AreaOfInterest;
+import it.geosolutions.geobatch.mariss.model.Product;
 import it.geosolutions.geobatch.mariss.model.Sensor;
 import it.geosolutions.geobatch.mariss.model.SensorMode;
 import it.geosolutions.geobatch.mariss.model.Service;
@@ -85,7 +88,7 @@ public class JdbcServiceDAO implements ServiceDAO {
 
             ps = conn.prepareStatement(sql);
             String userId = service.getUser();
-            ps.setString(1, userId + "@" + serviceId);
+            ps.setString(1, serviceId);
             AreaOfInterest aoi = null;
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -110,10 +113,32 @@ public class JdbcServiceDAO implements ServiceDAO {
                 sensor.setId(rs.getInt("id"));
                 sensors.add(sensor);
             }
+
+            service.setSensors(sensors);
+
             rs.close();
             ps.close();
 
-            service.setSensors(sensors);
+            // Retrieve the PRODUCTS
+            sql = "SELECT servicename, identifier, st_asewkt(bbox) as bbox, \"time\", variable, sartype, outfilelocation, originalfilepath, layername, partition, numoilspill, numshipdetect FROM ingestionproducts WHERE servicename = ?";
+
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, service.getServiceId());
+            List<Product> products = new ArrayList<Product>();
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Product prod = new Product(rs.getString("identifier"), rs.getString("bbox"),
+                        rs.getDate("time"), rs.getString("variable"), rs.getString("sartype"),
+                        rs.getString("outfilelocation"), rs.getString("originalfilepath"),
+                        rs.getString("layername"), rs.getString("partition"),
+                        rs.getInt("numoilspill"), rs.getInt("numshipdetect"));
+                products.add(prod);
+            }
+
+            service.setProducts(products);
+
+            rs.close();
+            ps.close();
 
             return service;
         } catch (SQLException e) {
@@ -168,17 +193,17 @@ public class JdbcServiceDAO implements ServiceDAO {
             ps.close();
 
             for (Service ss : services) {
-                String serviceId = userId + "@" + ss.getServiceId();
+                //String serviceId = userId + "@" + ss.getServiceId();
 
                 // Retrieve the AOI
                 sql = "SELECT fid, \"desc\", service_name, st_asewkt(the_geom) as thegeom, start, \"end\", status FROM AOIS WHERE service_name = ?";
 
                 ps = conn.prepareStatement(sql);
-                ps.setString(1, serviceId);
+                ps.setString(1, ss.getServiceId());
                 AreaOfInterest aoi = null;
                 rs = ps.executeQuery();
                 if (rs.next()) {
-                    aoi = new AreaOfInterest(serviceId, rs.getString("desc"),
+                    aoi = new AreaOfInterest(ss.getServiceId(), rs.getString("desc"),
                             rs.getString("thegeom"), rs.getDate("start"), rs.getDate("end"),
                             rs.getString("status"));
                     aoi.setId(rs.getInt("fid"));
@@ -204,6 +229,27 @@ public class JdbcServiceDAO implements ServiceDAO {
                 ps.close();
 
                 ss.setSensors(sensors);
+                
+                // Retrieve the PRODUCTS
+                sql = "SELECT servicename, identifier, st_asewkt(bbox) as bbox, \"time\", variable, sartype, outfilelocation, originalfilepath, layername, partition, numoilspill, numshipdetect FROM ingestionproducts WHERE servicename = ?";
+
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, ss.getServiceId());
+                List<Product> products = new ArrayList<Product>();
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    Product prod = new Product(rs.getString("identifier"), rs.getString("bbox"),
+                            rs.getDate("time"), rs.getString("variable"), rs.getString("sartype"),
+                            rs.getString("outfilelocation"), rs.getString("originalfilepath"),
+                            rs.getString("layername"), rs.getString("partition"),
+                            rs.getInt("numoilspill"), rs.getInt("numshipdetect"));
+                    products.add(prod);
+                }
+
+                ss.setProducts(products);
+
+                rs.close();
+                ps.close();
             }
 
             return services;
@@ -310,6 +356,14 @@ public class JdbcServiceDAO implements ServiceDAO {
             result = ps.executeUpdate() > 0;
             ps.close();
 
+            if (result) {
+                sql = "INSERT INTO SERVICE_ACCESS (\"SERVICE_ID\", \"USER\") VALUES (?, ?)";
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, service.getServiceId());
+                ps.setString(2, service.getUser());
+                result = ps.executeUpdate() > 0;
+                ps.close();
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
 
@@ -448,6 +502,62 @@ public class JdbcServiceDAO implements ServiceDAO {
             ps.setString(2, service.getUser());
             ps.setString(3, service.getServiceId());
             result = ps.execute() && ps.getUpdateCount() > 0;
+            ps.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public boolean delete(String serviceId, Map<String, String> serviceAuxiliaryTables) {
+        boolean result = false;
+
+        final String sql_template = "DELETE FROM {{table_name}} WHERE {{key_field}} = ?";
+
+        Connection conn = null;
+
+        if (serviceAuxiliaryTables != null && !serviceAuxiliaryTables.isEmpty()) {
+            for (Entry<String, String> entry : serviceAuxiliaryTables.entrySet()) {
+
+                String sql = sql_template.replace("{{table_name}}", entry.getKey())
+                        .replace("{{key_field}}", entry.getValue());
+
+                try {
+                    conn = dataSource.getConnection();
+                    PreparedStatement ps = conn.prepareStatement(sql);
+                    ps.setString(1, serviceId);
+                    ps.executeUpdate();
+                    ps.close();
+                } catch (SQLException e) {
+                    // Skip delete
+                } finally {
+                    if (conn != null) {
+                        try {
+                            conn.close();
+                        } catch (SQLException e) {
+                        }
+                    }
+                }
+            }
+        }
+
+        String sql = sql_template.replace("{{table_name}}", "SERVICE").replace("{{key_field}}",
+                "\"SERVICE_ID\"");
+
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, serviceId);
+            result = ps.executeUpdate() > 0;
             ps.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);

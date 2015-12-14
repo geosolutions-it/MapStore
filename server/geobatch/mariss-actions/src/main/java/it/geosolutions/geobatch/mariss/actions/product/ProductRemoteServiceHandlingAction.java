@@ -558,6 +558,7 @@ public class ProductRemoteServiceHandlingAction extends RemoteServiceHandlingAct
         config.setOutputFeature(configuration.getOutputFeature());
         config.setProductsTableName(configuration.getProductsTableName());
         config.setShipDetectionsTableName(configuration.getShipDetectionsTableName());
+        config.setOilSpillsTableName(configuration.getOilSpillsTableName());
         config.setGeoserverPWD(configuration.getGeoserverPWD());
         config.setGeoserverUID(configuration.getGeoserverUID());
         config.setGeoserverURL(configuration.getGeoserverURL());

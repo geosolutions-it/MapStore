@@ -60,7 +60,6 @@
         }
     }],
    "adminTools":[{
-
         "ptype": "mxp_categoryinitializer",
         "neededCategories": ["GEOBATCH_RUN_CONFIGS","ARCHIVEDLOGS","ARCHIVEDRUNS" ],
     },{

@@ -185,7 +185,7 @@ gxp.plugins.npa.Scenario = Ext.extend(gxp.plugins.Tool, {
         for (var layerName in this.layersgroup) {
 
             // skips layers thar there aren't in the layer list
-            if (layerName != 'ship_detections' && layerNameList.indexOf(layerName) == -1)
+            if ( (layerName != 'ship_detections' && layerName != 'oil_spills') && layerNameList.indexOf(layerName) == -1)
                 continue
 
             var index = this.target.mapPanel.layers.find("name", layerName);

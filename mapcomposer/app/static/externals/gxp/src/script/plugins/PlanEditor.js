@@ -189,7 +189,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         // generate backend urls based on this.target.config.adminUrl
         var adminUrl = this.target.config.adminUrl;
         // services available URL. 
-        this.servicesUrl = adminUrl + "mvc/serviceManager/extJSbrowser?action=get_serviceslist&folder=";
+        this.servicesUrl = adminUrl + "mvc/serviceManager/getServicesList?userid=";
         // submit service.
         this.submitUrl = adminUrl + "mvc/serviceManager/confirmServiceAOI?url=";
         // submit service.
@@ -203,9 +203,9 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             var me = this;
             this.store = new Ext.data.JsonStore({
                 url: this.getServicesUrl(),
-                pageSize: 10,
+                //pageSize: 10,
                 autoLoad: true,
-                fields : ["id", "text", "status", "leaf", "size", "iconCls", "loaded", "expanded", "mtime", "permission", "aoiDescription", "aoiStartTime", "aoiEndTime", "aoiGeometry", "aoiStatus"]
+                fields : ["serviceId", "userId", "status", "aoiDescription", "aoiStartTime", "aoiEndTime", "aoiGeometry", "aoiStatus"]
             });
             var servicesListgrid = new Ext.grid.GridPanel({
                 id: this.id + "_services_grid",
@@ -223,7 +223,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                         align  :'center',
                         width  : 30,
                         getClass: function(val, meta, rec) {
-                            var service  = rec.data.text;
+                            var service  = rec.data.serviceId;
                             var status   = rec.data.status;
 
                             if (status === "NEW" || status === "AOI") {
@@ -241,7 +241,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                         },
                         handler: function(grid, rowIndex, colIndex) {
                             var rec      = grid.store.getAt(rowIndex);
-                            var service  = rec.data.text;
+                            var service  = rec.data.serviceId;
                             var status   = rec.data.status;
                                                         
                             if (status === "NEW" || status === "AOI") {
@@ -291,7 +291,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                             }
                         }
                     },
-                    {header: 'ServiceID', dataIndex: "text", sortable: true},
+                    {header: 'ServiceID', dataIndex: "serviceId", sortable: true},
                     {header: 'Description', dataIndex: "aoiDescription", sortable: false},
                     {header: 'Service Status', dataIndex: "status", sortable: true},
                     {header: 'Aoi Status', dataIndex: "aoiStatus", sortable: true},
@@ -301,7 +301,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 listeners:{
                     rowclick: function(grid, rowIndex, columnIndex, e) {
                         var rec      = grid.store.getAt(rowIndex);
-                        var service  = rec.data.text;
+                        var service  = rec.data.serviceId;
                         var status   = rec.data.status;
                         
                         this.onSelectService(service, this.viewPanel, false);

@@ -40,6 +40,8 @@ public class Service {
 
     private List<Sensor> sensors = Collections.synchronizedList(new ArrayList<Sensor>());
 
+    private List<Product> products = Collections.synchronizedList(new ArrayList<Product>());
+
     /**
      * 
      */
@@ -77,6 +79,13 @@ public class Service {
                 return false;
             }
         } else if (!parent.equals(other.parent)) {
+            return false;
+        }
+        if (products == null) {
+            if (other.products != null) {
+                return false;
+            }
+        } else if (!products.equals(other.products)) {
             return false;
         }
         if (sensors == null) {
@@ -139,6 +148,20 @@ public class Service {
     }
 
     /**
+     * @return the products
+     */
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    /**
+     * @param products the products to set
+     */
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    /**
      * @return the serviceId
      */
     public String getServiceId() {
@@ -166,6 +189,7 @@ public class Service {
         result = prime * result + ((aoi == null) ? 0 : aoi.hashCode());
         result = prime * result + id;
         result = prime * result + ((parent == null) ? 0 : parent.hashCode());
+        result = prime * result + ((products == null) ? 0 : products.hashCode());
         result = prime * result + ((sensors == null) ? 0 : sensors.hashCode());
         result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
         result = prime * result + ((status == null) ? 0 : status.hashCode());
@@ -226,19 +250,43 @@ public class Service {
     public String toString() {
         final int maxLen = 10;
         StringBuilder builder = new StringBuilder();
-        builder.append("Service [id=").append(id).append(", ");
-        if (serviceId != null)
-            builder.append("serviceId=").append(serviceId).append(", ");
-        if (parent != null)
-            builder.append("parent=").append(parent).append(", ");
-        if (user != null)
-            builder.append("user=").append(user).append(", ");
-        if (status != null)
-            builder.append("status=").append(status).append(", ");
-        if (aoi != null)
-            builder.append("aoi=").append(aoi).append(", ");
-        if (sensors != null)
-            builder.append("sensors=").append(sensors.subList(0, Math.min(sensors.size(), maxLen)));
+        builder.append("Service [id=");
+        builder.append(id);
+        builder.append(", ");
+        if (serviceId != null) {
+            builder.append("serviceId=");
+            builder.append(serviceId);
+            builder.append(", ");
+        }
+        if (parent != null) {
+            builder.append("parent=");
+            builder.append(parent);
+            builder.append(", ");
+        }
+        if (user != null) {
+            builder.append("user=");
+            builder.append(user);
+            builder.append(", ");
+        }
+        if (status != null) {
+            builder.append("status=");
+            builder.append(status);
+            builder.append(", ");
+        }
+        if (aoi != null) {
+            builder.append("aoi=");
+            builder.append(aoi);
+            builder.append(", ");
+        }
+        if (sensors != null) {
+            builder.append("sensors=");
+            builder.append(sensors.subList(0, Math.min(sensors.size(), maxLen)));
+            builder.append(", ");
+        }
+        if (products != null) {
+            builder.append("products=");
+            builder.append(products.subList(0, Math.min(products.size(), maxLen)));
+        }
         builder.append("]");
         return builder.toString();
     }

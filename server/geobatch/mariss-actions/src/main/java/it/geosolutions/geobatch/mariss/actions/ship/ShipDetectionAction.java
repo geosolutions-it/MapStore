@@ -27,6 +27,7 @@ import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.mariss.actions.MarissBaseAction;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ConfigurationUtils;
 import it.geosolutions.geobatch.mariss.actions.netcdf.NetCDFAction;
+import it.geosolutions.geobatch.mariss.actions.netcdf.OilSpill;
 import it.geosolutions.geobatch.mariss.actions.netcdf.ShipDetection;
 import it.geosolutions.geobatch.mariss.actions.sar.AttributeBean;
 
@@ -112,86 +113,6 @@ public class ShipDetectionAction extends MarissBaseAction {
      * @throws ActionException
      * @throws IOException
      */
-    protected void ingestOilSpills(final Queue<EventObject> ret, File inputDir,
-            AttributeBean attributeBean) throws ActionException, IOException {
-        List<OilSpill> oilSpills = new ArrayList<OilSpill>();
-
-        // Prepare a Zip file containing the
-        // ShipDetection files
-        // Filtering the files
-        File[] files = getOilSpills(attributeBean, inputDir);
-
-        // Listing XML files
-        if (files != null && files.length > 0) {
-            int numFiles = files.length;
-
-            oilSpills.addAll(readOilSpills(attributeBean, files));
-
-            if (oilSpills.size() > 0) {
-                insertOilSpillsIntoDb(attributeBean, oilSpills);
-            }
-
-            // Append a txt file with the UID
-            File properties = new File(files[0].getParentFile(),
-                    "netcdf.properties");
-            properties.createNewFile();
-
-            // Append Useful properties
-            FileUtils.write(properties,
-                    "identifier=" + attributeBean.identifier + "\n");
-            if (attributeBean.timedim != null) {
-                FileUtils.write(properties,
-                        "time=" + new Timestamp(
-                                attributeBean.timedim.getTime()) + "\n",
-                        true);
-            }
-            FileUtils.write(properties,
-                    "originalFileName=" + attributeBean.absolutePath + "\n",
-                    true);
-            FileUtils.write(properties,
-                    "sartype=" + attributeBean.type + "\n", true);
-
-            FileUtils.write(properties,
-                    "service=" + attributeBean.serviceName + "\n", true);
-
-            File[] filesUpdated = new File[numFiles + 1];
-            System.arraycopy(files, 0, filesUpdated, 0, numFiles);
-            filesUpdated[numFiles] = properties;
-
-            // Creating new Zip file where the XML files
-            // must be zipped
-            File netcdfDir = new File(container.getParams()
-                    .get(ConfigurationUtils.OILSPILLS_DIRECTORY_KEY));
-            if (!netcdfDir.exists()) {
-                netcdfDir.mkdirs();
-            }
-            if (!netcdfDir.canWrite()) {
-                throw new ActionException(NetCDFAction.class,
-                        "Unable to find Ship Detection directory");
-            }
-            String filename = IDENTIFIER_SEPARATOR
-                    + attributeBean.identifier + IDENTIFIER_SEPARATOR
-                    + SERVICE_SEPARATOR + attributeBean.serviceName
-                    + SERVICE_SEPARATOR + "OilSpills";
-            File targetZipFile = new File(netcdfDir, filename + ".zip");
-            zipFile(files, targetZipFile);
-            insertDb(attributeBean, targetZipFile.getAbsolutePath(),
-                    configuration.getContainer().getDefaultNameSpace(),
-                    "OIL_SPILL", null, null);
-
-            // Append to the event list
-            ret.add(new FileSystemEvent(targetZipFile,
-                    FileSystemEventType.FILE_ADDED));
-        }
-    }
-    
-    /**
-     * @param ret
-     * @param inputDir
-     * @param attributeBean
-     * @throws ActionException
-     * @throws IOException
-     */
     protected void ingestShipDetections(final Queue<EventObject> ret, File inputDir,
             AttributeBean attributeBean) throws ActionException, IOException {
         List<ShipDetection> shipDetections = new ArrayList<ShipDetection>();
@@ -265,6 +186,86 @@ public class ShipDetectionAction extends MarissBaseAction {
         }
     }
 
+    /**
+     * @param ret
+     * @param inputDir
+     * @param attributeBean
+     * @throws ActionException
+     * @throws IOException
+     */
+    protected void ingestOilSpills(final Queue<EventObject> ret, File inputDir,
+            AttributeBean attributeBean) throws ActionException, IOException {
+        List<OilSpill> oilSpills = new ArrayList<OilSpill>();
+
+        // Prepare a Zip file containing the
+        // ShipDetection files
+        // Filtering the files
+        File[] files = getOilSpills(attributeBean, inputDir);
+
+        // Listing XML files
+        if (files != null && files.length > 0) {
+            int numFiles = files.length;
+
+            oilSpills.addAll(readOilSpills(attributeBean, files));
+
+            if (oilSpills.size() > 0) {
+                insertOilSpillsIntoDb(attributeBean, oilSpills);
+            }
+
+            // Append a txt file with the UID
+            File properties = new File(files[0].getParentFile(),
+                    "netcdf.properties");
+            properties.createNewFile();
+
+            // Append Useful properties
+            FileUtils.write(properties,
+                    "identifier=" + attributeBean.identifier + "\n");
+            if (attributeBean.timedim != null) {
+                FileUtils.write(properties,
+                        "time=" + new Timestamp(
+                                attributeBean.timedim.getTime()) + "\n",
+                        true);
+            }
+            FileUtils.write(properties,
+                    "originalFileName=" + attributeBean.absolutePath + "\n",
+                    true);
+            FileUtils.write(properties,
+                    "sartype=" + attributeBean.type + "\n", true);
+
+            FileUtils.write(properties,
+                    "service=" + attributeBean.serviceName + "\n", true);
+
+            File[] filesUpdated = new File[numFiles + 1];
+            System.arraycopy(files, 0, filesUpdated, 0, numFiles);
+            filesUpdated[numFiles] = properties;
+
+            // Creating new Zip file where the XML files
+            // must be zipped
+            File netcdfDir = new File(container.getParams()
+                    .get(ConfigurationUtils.OILSPILLS_DIRECTORY_KEY));
+            if (!netcdfDir.exists()) {
+                netcdfDir.mkdirs();
+            }
+            if (!netcdfDir.canWrite()) {
+                throw new ActionException(NetCDFAction.class,
+                        "Unable to find Ship Detection directory");
+            }
+            String filename = IDENTIFIER_SEPARATOR
+                    + attributeBean.identifier + IDENTIFIER_SEPARATOR
+                    + SERVICE_SEPARATOR + attributeBean.serviceName
+                    + SERVICE_SEPARATOR + "OilSpills";
+            File targetZipFile = new File(netcdfDir, filename + ".zip");
+            zipFile(files, targetZipFile);
+            insertDb(attributeBean, targetZipFile.getAbsolutePath(),
+                    configuration.getContainer().getDefaultNameSpace(),
+                    "OIL_SPILL", null, null);
+
+            // Append to the event list
+            ret.add(new FileSystemEvent(targetZipFile,
+                    FileSystemEventType.FILE_ADDED));
+        }
+    }
+    
     /**
      * Insert a product in the database
      * 

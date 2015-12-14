@@ -107,6 +107,11 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
     private String shipDetectionsTableName;
 
     /**
+     * Name of the oil spills table
+     */
+    private String oilSpillsTableName;
+
+    /**
      * Absolute path to the GeoServerDataDirectory
      */
     private String geoserverDataDirectory;
@@ -359,12 +364,27 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
     }
 
     /**
+     * @return the oilSpillsTableName
+     */
+    public String getOilSpillsTableName() {
+        return oilSpillsTableName;
+    }
+    
+    
+    /**
      * @param shipDetectionsTableName the shipDetectionsTableName to set
      */
     public void setShipDetectionsTableName(String shipDetectionsTableName) {
         this.shipDetectionsTableName = shipDetectionsTableName;
     }
 
+    /**
+     * @param oilSpillsTableName the oilSpillsTableName to set
+     */
+    public void setOilSpillsTableName(String oilSpillsTableName) {
+        this.oilSpillsTableName = oilSpillsTableName;
+    }
+    
     /**
      * @param remoteBrowserConfiguration the remoteBrowserConfiguration to set
      */

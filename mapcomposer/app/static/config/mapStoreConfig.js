@@ -7,7 +7,7 @@
             "ptype": "gxp_wmssource",
             "title": "MARISS",
             "version": "1.1.1",
-            "url": "http://mariss.geo-solutions.it/geoserver/mariss/ows",
+            "url": "http://192.168.1.133/geoserver/mariss/ows",
             "layerBaseParams": {
                 "TILED": true,
                 "TILESORIGIN": "-20037508.34,-20037508.34"
@@ -17,7 +17,7 @@
             "ptype": "gxp_wmssource",
             "title": "SDE",
             "version": "1.1.1",
-            "url": "http://mariss.geo-solutions.it/geoserver/ows",
+            "url": "http://192.168.1.133/geoserver/ows",
             "layerBaseParams": {
                 "TILED": true,
                 "TILESORIGIN": "-20037508.34,-20037508.34"
@@ -31,9 +31,6 @@
         },
         "google": {
             "ptype": "gxp_googlesource"
-        },
-        "bing": {
-            "ptype": "gxp_bingsource"
         },
         "ol": {
             "ptype": "gxp_olsource"
@@ -70,6 +67,13 @@
                 "source": "MARISS-Layers",
                 "title": "Ship Detections",
                 "name": "ship_detections",
+                "displayInLayerSwitcher": false,
+                "visibility": false,
+                "tiled": true
+            },{
+                "source": "MARISS-Layers",
+                "title": "Oil Spills",
+                "name": "oil_spills",
                 "displayInLayerSwitcher": false,
                 "visibility": false,
                 "tiled": true
@@ -156,18 +160,6 @@
                 "source": "osm",
                 "title": "Open Street Map",
                 "name": "mapnik",
-                "group": "background"
-            },
-            {
-                "source": "bing",
-                "title": "Bing Aerial",
-                "name": "Aerial",
-                "group": "background"
-            },
-            {
-                "source": "bing",
-                "title": "Bing Aerial With Labels",
-                "name": "AerialWithLabels",
                 "group": "background"
             },
             {
@@ -450,7 +442,7 @@
         {
             "ptype": "npa_cart_grid",
             "id": "cart",
-            "downloadService":"http://mariss.geo-solutions.it/opensdi2-manager/mvc/download/",
+            "downloadService":"http://192.168.1.133/opensdi2-manager/mvc/download/",
             "outputConfig": {
                 "viewConfig": {
                     "forceFit": true
@@ -513,6 +505,10 @@
                 "ship_detections": {
                     "tpl": "servicename = '{servicename}' AND identifier = '{identifier}'",
                     "visible": true
+                },
+                "oil_spills": {
+                    "tpl": "servicename = '{servicename}' AND identifier = '{identifier}'",
+                    "visible": true
                 }
             },
             "gIdTmp": "prodId_{identifier}",
@@ -521,8 +517,8 @@
         {
             "ptype": "gxp_wpsmanager",
             "id": "wpsSPM",
-            "url": "http://mariss.geo-solutions.it/geoserver/wps",
-            "geostoreUrl": "http://mariss.geo-solutions.it/opensdi2-manager/facade/geostore/rest",
+            "url": "http://192.168.1.133/geoserver/wps",
+            "geostoreUrl": "http://192.168.1.133/opensdi2-manager/facade/geostore/rest",
             "geostoreProxy": "/proxy?url=",
             "silentErrors": true,
             "checkLocation": true,

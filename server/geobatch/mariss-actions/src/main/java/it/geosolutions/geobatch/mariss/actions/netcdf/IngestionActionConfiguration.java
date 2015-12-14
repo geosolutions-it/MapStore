@@ -33,6 +33,8 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
     private ConfigurationContainer container;
 
     private String shipDetectionsTableName;
+    
+    private String oilSpillsTableName;
 
     /**
      * The file name to get the Product Attributes
@@ -80,6 +82,10 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
         return shipDetectionsTableName;
     }
 
+    public String getOilSpillsTableName() {
+        return oilSpillsTableName;
+    }
+    
     public String getServiceName() {
         return serviceName;
     }
@@ -120,7 +126,11 @@ public class IngestionActionConfiguration extends Ds2dsConfiguration {
     public void setShipDetectionsTableName(String shipDetectionsTableName) {
         this.shipDetectionsTableName = shipDetectionsTableName;
     }
-
+    
+    public void setOilSpillsTableName(String oilSpillsTableName) {
+        this.oilSpillsTableName = oilSpillsTableName;
+    }
+    
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }

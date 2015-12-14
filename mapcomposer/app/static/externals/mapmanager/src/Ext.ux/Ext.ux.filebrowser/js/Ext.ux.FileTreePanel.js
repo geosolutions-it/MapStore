@@ -636,6 +636,7 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	        if(true === o.success) {
 	            switch(options.params.action) {
 	                case 'file_delete':
+	                case 'folder_delete':
                         options.node.parentNode.removeChild(options.node);
 		                if(true !== this.eventsSuspended) {
 		                    this.fireEvent('delete', this, this.getPath(options.node));
@@ -688,6 +689,7 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 					break;
 
 					case 'file_delete':
+					case 'folder_delete':
 						if(true !== this.eventsSuspended) {
 							this.fireEvent('deletefailure', this, options.node);
 						}
@@ -798,16 +800,25 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 					return;
 				}
 				// setup request options
+				var params = {}
+				if (node.attributes.iconCls == "folder") {
+					params = {
+						 action:'folder_delete',
+						 folder:this.getPath(node)
+					};					
+				} else {
+					params = {
+						 action:'file_delete',
+						 file:this.getPath(node)
+					};
+				}
 				var options = {
 					 url:this.deleteUrl || this.url
 					,method:this.method
 					,scope:this
 					,callback:this.cmdCallback
 					,node:node
-					,params:{
-						 action:'file_delete'
-						,file:this.getPath(node)
-					}
+					,params:params
 				};
 //				Ext.Ajax.request(options);
 			    this.sendCmd(options);
