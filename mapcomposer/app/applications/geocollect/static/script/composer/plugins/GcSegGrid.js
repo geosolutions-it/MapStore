@@ -424,29 +424,29 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             var photoBrowserNotice=this.createPhotoBrowser();
         }
         
-         this.segdet=
+        this.segdet=
         new Ext.Panel({
             title:this.noticeDetailsPanelTitle,
             target: this.target,
             westVisible:false,
             layout:'border', 
             fKey:this.fKey, 
-           //   autoScroll: true,
-            //align : "stretch",
+            // autoScroll: true,
+            // align : "stretch",
             // pack  : 'start',
             items:[{
                 xtype:"panel",
                 region:'west',
                 ref:'seg',
                 width:300,
+                split: true, // enable resizing
                 items:[],
                 border:'true',
                 layout:'fit'
             },{
                 xtype:"tabpanel",
                 region:'center',
-                activeItem:0  ,
-            
+                activeItem:0,
                 height:500,
                 items:[
                     {
