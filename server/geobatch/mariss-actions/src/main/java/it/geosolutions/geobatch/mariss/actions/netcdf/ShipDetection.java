@@ -249,7 +249,7 @@ public class ShipDetection {
         the_geom = the_geom.trim();
         if (the_geom.startsWith("POINT")) {
             return "SRID=4326;" + the_geom;
-            
+
         } else {
             String[] coords = the_geom.split(" ");
             return "SRID=4326;POINT(" + coords[1] + " " + coords[0] + ")";

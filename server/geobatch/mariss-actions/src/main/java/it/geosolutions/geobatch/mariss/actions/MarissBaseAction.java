@@ -584,7 +584,7 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
 
         return files;
     }
-    
+
     /**
      * Read ship detection from the list of files provided
      * 
@@ -637,9 +637,9 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
                     while (features.hasNext()) {
                         SimpleFeature feature = features.next();
                         numFeatures++;
-                        
+
                         ShipDetection sd = new ShipDetection();
-                        
+
                         sd.setId(feature.getID());
                         Geometry geom = (Geometry) feature.getDefaultGeometryProperty().getValue();
                         sd.setPosition(geom.toText());
@@ -647,7 +647,7 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
                         sd.setHeading((Double) feature.getAttribute("TARGET_DIR"));
                         sd.setLength((Double) feature.getAttribute("LENGTH"));
                         sd.setTimeStamp((String) feature.getAttribute("TARGET_UTC"));
-                        
+
                         shipDetections.add(sd);
                     }
                     attributeBean.numOilSpills = 0;
@@ -679,8 +679,7 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
         List<OilSpill> oilSpills = new ArrayList<OilSpill>();
 
         if (files != null && files.length > 0) {
-            if (FilenameUtils.getExtension(files[0].getAbsolutePath())
-                    .equalsIgnoreCase("shp")) {
+            if (FilenameUtils.getExtension(files[0].getAbsolutePath()).equalsIgnoreCase("shp")) {
 
                 // If files are SHIP ESRI ShapeFiles
 
@@ -703,33 +702,33 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
                     while (features.hasNext()) {
                         SimpleFeature feature = features.next();
                         numFeatures++;
-                        
+
                         OilSpill oil = new OilSpill();
-                        
+
                         oil.setId(feature.getID());
                         Geometry geom = (Geometry) feature.getDefaultGeometryProperty().getValue();
                         oil.setPosition(geom.toText());
-                        
+
                         oil.setTimeStamp((String) feature.getAttribute("DATE-TIME"));
-                        
+
                         oil.setBaricLat((Double) feature.getAttribute("BARIC_LAT"));
                         oil.setBaricLon((Double) feature.getAttribute("BARIC_LON"));
                         oil.setMaxLat((Double) feature.getAttribute("MAX_LAT"));
                         oil.setMaxLon((Double) feature.getAttribute("MAX_LON"));
                         oil.setMinLat((Double) feature.getAttribute("MIN_LAT"));
                         oil.setMinLon((Double) feature.getAttribute("MIN_LON"));
-                        
+
                         oil.setAreaKm((Double) feature.getAttribute("AREA_KM"));
                         oil.setLengthKm((Double) feature.getAttribute("LENGTH_KM"));
                         oil.setWidthKm((Double) feature.getAttribute("WIDTH_KM"));
-                        
+
                         oil.setClassVal(String.valueOf(feature.getAttribute("CLASS_VAL")));
                         oil.setAlarmLev((String) feature.getAttribute("ALARM_LEV"));
                         oil.setPossibleS((String) feature.getAttribute("POSSIBLE_S"));
                         oil.setRegionAff((String) feature.getAttribute("REGION_AFF"));
                         oil.setCountry((String) feature.getAttribute("COUNTRY_AS"));
                         oil.setSeepage((String) feature.getAttribute("SEEPAGE"));
-                        
+
                         oilSpills.add(oil);
                     }
                     attributeBean.numOilSpills = numFeatures;
@@ -750,7 +749,7 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
 
         return oilSpills;
     }
-    
+
     /**
      * @return
      */
@@ -926,18 +925,14 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
      * @return
      * @throws ActionException
      */
-    public boolean insertOilSpillsIntoDb(AttributeBean attributeBean,
-            List<OilSpill> oilSpills) throws ActionException {
+    public boolean insertOilSpillsIntoDb(AttributeBean attributeBean, List<OilSpill> oilSpills)
+            throws ActionException {
         boolean result = false;
 
         /*
-         * INSERT INTO oil_spills(
-         *   servicename, identifier, "timeStamp", baric_lat, baric_lon, max_lat, 
-         *   max_lon, min_lat, min_lon, area_km, length_km, width_km, class_val, 
-         *   alarm_lev, possible_s, region_aff, country_as, seepage, the_geom)
-         *   VALUES (?, ?, ?, ?, ?, ?, 
-         *           ?, ?, ?, ?, ?, ?, ?, 
-         *           ?, ?, ?, ?, ?, ?);
+         * INSERT INTO oil_spills( servicename, identifier, "timeStamp", baric_lat, baric_lon, max_lat, max_lon, min_lat, min_lon, area_km, length_km,
+         * width_km, class_val, alarm_lev, possible_s, region_aff, country_as, seepage, the_geom) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+         * ?, ?, ?, ?);
          */
 
         String sql = "INSERT INTO " + configuration.getOilSpillsTableName()
@@ -979,7 +974,7 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
                     ps.setDouble(5, ds.getBaricLon());
                 else
                     ps.setNull(5, java.sql.Types.DOUBLE);
-                
+
                 // MAX_LAT
                 if (ds.getMaxLat() != null)
                     ps.setDouble(6, ds.getMaxLat());
@@ -1023,17 +1018,17 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
                     ps.setNull(12, java.sql.Types.DOUBLE);
 
                 ps.setString(13, ds.getClassVal()); // 13 class_val,
-                
+
                 ps.setString(14, ds.getAlarmLev()); // 14 alarm_lev,
-                
+
                 ps.setString(15, ds.getPossibleS()); // 15 possible_s,
-                
+
                 ps.setString(16, ds.getRegionAff()); // 16 region_aff,
-                
+
                 ps.setString(17, ds.getCountry()); // 17 country_as,
-                
+
                 ps.setString(18, ds.getSeepage()); // 18 seepage
-                
+
                 // SHIP POSITION
                 ps.setString(19, ds.getPosition()); // the_geom
 
@@ -1056,7 +1051,7 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
 
         return result;
     }
-    
+
     /**
      * Tries to guess the time-stamp
      * 
@@ -1075,7 +1070,8 @@ public abstract class MarissBaseAction extends BaseAction<EventObject> {
                 return d;
             } catch (ParseException e) {
                 // go forwards to the next format
-                LOGGER.warn("Unable to parse timeStamp : " + timeStamp + " using date format: " + formatString);
+                LOGGER.warn("Unable to parse timeStamp : " + timeStamp + " using date format: "
+                        + formatString);
             }
         }
         LOGGER.error("No date format have been found for timeStamp : " + timeStamp);

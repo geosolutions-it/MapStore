@@ -2601,8 +2601,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.opengis.net/gml", name = "CountList")
     public JAXBElement<List<String>> createCountList(List<String> value) {
-        return new JAXBElement<List<String>>(_CountList_QNAME, ((Class) List.class), null,
-                (value));
+        return new JAXBElement<List<String>>(_CountList_QNAME, ((Class) List.class), null, (value));
     }
 
     /**
@@ -5761,8 +5760,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.opengis.net/gml", name = "Null")
     public JAXBElement<List<String>> createNull(List<String> value) {
-        return new JAXBElement<List<String>>(_Null_QNAME, ((Class) List.class), null,
-                (value));
+        return new JAXBElement<List<String>>(_Null_QNAME, ((Class) List.class), null, (value));
     }
 
     /**

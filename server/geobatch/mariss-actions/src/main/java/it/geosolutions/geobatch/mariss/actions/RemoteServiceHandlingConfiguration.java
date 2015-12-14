@@ -369,8 +369,7 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
     public String getOilSpillsTableName() {
         return oilSpillsTableName;
     }
-    
-    
+
     /**
      * @param shipDetectionsTableName the shipDetectionsTableName to set
      */
@@ -384,7 +383,7 @@ public class RemoteServiceHandlingConfiguration extends Ds2dsConfiguration {
     public void setOilSpillsTableName(String oilSpillsTableName) {
         this.oilSpillsTableName = oilSpillsTableName;
     }
-    
+
     /**
      * @param remoteBrowserConfiguration the remoteBrowserConfiguration to set
      */

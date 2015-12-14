@@ -17,7 +17,7 @@ public class ConfigurationUtils {
     public final static String GEOTIFF_DIRECTORY_KEY = "GeoTiffDir.key";
 
     public final static String SHIPDETECTIONS_DIRECTORY_KEY = "ShipDetections.key";
-    
+
     public final static String OILSPILLS_DIRECTORY_KEY = "OilSpills.key";
 
     public final static String OPTIMIZATION_OPTION = "importer_options.key";

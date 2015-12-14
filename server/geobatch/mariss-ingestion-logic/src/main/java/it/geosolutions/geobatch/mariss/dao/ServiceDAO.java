@@ -37,6 +37,8 @@ public interface ServiceDAO {
     public Service findByServiceId(String serviceId);
 
     public List<Service> findByUser(String userId);
+    
+    public List<Service> getServiceAccessByUser(String userId);
 
     public List<SensorMode> getSensorModes();
 

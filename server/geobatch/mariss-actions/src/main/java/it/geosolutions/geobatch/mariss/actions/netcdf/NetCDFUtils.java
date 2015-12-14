@@ -475,8 +475,7 @@ public class NetCDFUtils {
                     int var = 0;
                     for (int i = 0; i <= polyDegree; i++) {
                         for (int j = 0; j <= i; j++) {
-                            double value = Math.pow(xi, i - j)
-                                    * Math.pow(yi, j);
+                            double value = Math.pow(xi, i - j) * Math.pow(yi, j);
                             regressionVec.setElement(var++, 0, value);
                         }
                     }

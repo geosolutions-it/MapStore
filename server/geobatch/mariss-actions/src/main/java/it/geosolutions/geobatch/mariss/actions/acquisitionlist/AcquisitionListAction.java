@@ -356,7 +356,8 @@ public class AcquisitionListAction extends RemoteServiceHandlingAction {
                                         configuration.getGeoserverDataDirectory());
                                 config.setOutputFeature(configuration.getOutputFeature());
                                 config.setProductsTableName(configuration.getProductsTableName());
-                                config.setShipDetectionsTableName(configuration.getShipDetectionsTableName());
+                                config.setShipDetectionsTableName(
+                                        configuration.getShipDetectionsTableName());
                                 config.setOilSpillsTableName(configuration.getOilSpillsTableName());
                                 config.setGeoserverPWD(configuration.getGeoserverPWD());
                                 config.setGeoserverUID(configuration.getGeoserverUID());

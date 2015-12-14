@@ -77,7 +77,7 @@ public class ShipDetectionAction extends MarissBaseAction {
                                 attributeBean.dataStore.setExposePrimaryKeyColumns(true);
 
                                 ingestShipDetections(ret, inputDir, attributeBean);
-                                
+
                                 ingestOilSpills(ret, inputDir, attributeBean);
                             } finally {
                                 ds.dispose();
@@ -133,27 +133,20 @@ public class ShipDetectionAction extends MarissBaseAction {
             }
 
             // Append a txt file with the UID
-            File properties = new File(files[0].getParentFile(),
-                    "netcdf.properties");
+            File properties = new File(files[0].getParentFile(), "netcdf.properties");
             properties.createNewFile();
 
             // Append Useful properties
-            FileUtils.write(properties,
-                    "identifier=" + attributeBean.identifier + "\n");
+            FileUtils.write(properties, "identifier=" + attributeBean.identifier + "\n");
             if (attributeBean.timedim != null) {
                 FileUtils.write(properties,
-                        "time=" + new Timestamp(
-                                attributeBean.timedim.getTime()) + "\n",
-                        true);
+                        "time=" + new Timestamp(attributeBean.timedim.getTime()) + "\n", true);
             }
-            FileUtils.write(properties,
-                    "originalFileName=" + attributeBean.absolutePath + "\n",
+            FileUtils.write(properties, "originalFileName=" + attributeBean.absolutePath + "\n",
                     true);
-            FileUtils.write(properties,
-                    "sartype=" + attributeBean.type + "\n", true);
+            FileUtils.write(properties, "sartype=" + attributeBean.type + "\n", true);
 
-            FileUtils.write(properties,
-                    "service=" + attributeBean.serviceName + "\n", true);
+            FileUtils.write(properties, "service=" + attributeBean.serviceName + "\n", true);
 
             File[] filesUpdated = new File[numFiles + 1];
             System.arraycopy(files, 0, filesUpdated, 0, numFiles);
@@ -161,8 +154,8 @@ public class ShipDetectionAction extends MarissBaseAction {
 
             // Creating new Zip file where the XML files
             // must be zipped
-            File netcdfDir = new File(container.getParams()
-                    .get(ConfigurationUtils.SHIPDETECTIONS_DIRECTORY_KEY));
+            File netcdfDir = new File(
+                    container.getParams().get(ConfigurationUtils.SHIPDETECTIONS_DIRECTORY_KEY));
             if (!netcdfDir.exists()) {
                 netcdfDir.mkdirs();
             }
@@ -170,19 +163,16 @@ public class ShipDetectionAction extends MarissBaseAction {
                 throw new ActionException(NetCDFAction.class,
                         "Unable to find Ship Detection directory");
             }
-            String filename = IDENTIFIER_SEPARATOR
-                    + attributeBean.identifier + IDENTIFIER_SEPARATOR
-                    + SERVICE_SEPARATOR + attributeBean.serviceName
-                    + SERVICE_SEPARATOR + "Ships";
+            String filename = IDENTIFIER_SEPARATOR + attributeBean.identifier + IDENTIFIER_SEPARATOR
+                    + SERVICE_SEPARATOR + attributeBean.serviceName + SERVICE_SEPARATOR + "Ships";
             File targetZipFile = new File(netcdfDir, filename + ".zip");
             zipFile(files, targetZipFile);
             insertDb(attributeBean, targetZipFile.getAbsolutePath(),
-                    configuration.getContainer().getDefaultNameSpace(),
-                    "SHIP_DETECTION", null, null);
+                    configuration.getContainer().getDefaultNameSpace(), "SHIP_DETECTION", null,
+                    null);
 
             // Append to the event list
-            ret.add(new FileSystemEvent(targetZipFile,
-                    FileSystemEventType.FILE_ADDED));
+            ret.add(new FileSystemEvent(targetZipFile, FileSystemEventType.FILE_ADDED));
         }
     }
 
@@ -213,27 +203,20 @@ public class ShipDetectionAction extends MarissBaseAction {
             }
 
             // Append a txt file with the UID
-            File properties = new File(files[0].getParentFile(),
-                    "netcdf.properties");
+            File properties = new File(files[0].getParentFile(), "netcdf.properties");
             properties.createNewFile();
 
             // Append Useful properties
-            FileUtils.write(properties,
-                    "identifier=" + attributeBean.identifier + "\n");
+            FileUtils.write(properties, "identifier=" + attributeBean.identifier + "\n");
             if (attributeBean.timedim != null) {
                 FileUtils.write(properties,
-                        "time=" + new Timestamp(
-                                attributeBean.timedim.getTime()) + "\n",
-                        true);
+                        "time=" + new Timestamp(attributeBean.timedim.getTime()) + "\n", true);
             }
-            FileUtils.write(properties,
-                    "originalFileName=" + attributeBean.absolutePath + "\n",
+            FileUtils.write(properties, "originalFileName=" + attributeBean.absolutePath + "\n",
                     true);
-            FileUtils.write(properties,
-                    "sartype=" + attributeBean.type + "\n", true);
+            FileUtils.write(properties, "sartype=" + attributeBean.type + "\n", true);
 
-            FileUtils.write(properties,
-                    "service=" + attributeBean.serviceName + "\n", true);
+            FileUtils.write(properties, "service=" + attributeBean.serviceName + "\n", true);
 
             File[] filesUpdated = new File[numFiles + 1];
             System.arraycopy(files, 0, filesUpdated, 0, numFiles);
@@ -241,8 +224,8 @@ public class ShipDetectionAction extends MarissBaseAction {
 
             // Creating new Zip file where the XML files
             // must be zipped
-            File netcdfDir = new File(container.getParams()
-                    .get(ConfigurationUtils.OILSPILLS_DIRECTORY_KEY));
+            File netcdfDir = new File(
+                    container.getParams().get(ConfigurationUtils.OILSPILLS_DIRECTORY_KEY));
             if (!netcdfDir.exists()) {
                 netcdfDir.mkdirs();
             }
@@ -250,22 +233,19 @@ public class ShipDetectionAction extends MarissBaseAction {
                 throw new ActionException(NetCDFAction.class,
                         "Unable to find Ship Detection directory");
             }
-            String filename = IDENTIFIER_SEPARATOR
-                    + attributeBean.identifier + IDENTIFIER_SEPARATOR
-                    + SERVICE_SEPARATOR + attributeBean.serviceName
-                    + SERVICE_SEPARATOR + "OilSpills";
+            String filename = IDENTIFIER_SEPARATOR + attributeBean.identifier + IDENTIFIER_SEPARATOR
+                    + SERVICE_SEPARATOR + attributeBean.serviceName + SERVICE_SEPARATOR
+                    + "OilSpills";
             File targetZipFile = new File(netcdfDir, filename + ".zip");
             zipFile(files, targetZipFile);
             insertDb(attributeBean, targetZipFile.getAbsolutePath(),
-                    configuration.getContainer().getDefaultNameSpace(),
-                    "OIL_SPILL", null, null);
+                    configuration.getContainer().getDefaultNameSpace(), "OIL_SPILL", null, null);
 
             // Append to the event list
-            ret.add(new FileSystemEvent(targetZipFile,
-                    FileSystemEventType.FILE_ADDED));
+            ret.add(new FileSystemEvent(targetZipFile, FileSystemEventType.FILE_ADDED));
         }
     }
-    
+
     /**
      * Insert a product in the database
      * 

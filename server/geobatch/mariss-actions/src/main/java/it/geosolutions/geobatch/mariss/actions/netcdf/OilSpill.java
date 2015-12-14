@@ -32,38 +32,38 @@ public class OilSpill {
     private Boolean includeInReport;
 
     private Double baricLat;
-    
+
     private Double baricLon;
-    
+
     private Double maxLat;
-    
+
     private Double maxLon;
-    
+
     private Double minLat;
-    
+
     private Double minLon;
-    
+
     private Double areaKm;
-    
+
     private Double lengthKm;
-    
+
     private Double widthKm;
-    
+
     private String classVal;
-    
+
     private String alarmLev;
-    
+
     private String possibleS;
-    
+
     private String regionAff;
-    
+
     private String country;
-    
+
     private String seepage;
 
     @XStreamAlias("pos")
     private String the_geom;
-    
+
     /**
      * @return the id
      */
@@ -91,7 +91,7 @@ public class OilSpill {
     public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
-    
+
     /**
      * @return the includeInReport
      */
@@ -105,7 +105,7 @@ public class OilSpill {
     public void setIncludeInReport(Boolean includeInReport) {
         this.includeInReport = includeInReport;
     }
-    
+
     /**
      * @return the the_geom
      */
@@ -330,5 +330,5 @@ public class OilSpill {
     public void setSeepage(String seepage) {
         this.seepage = seepage;
     }
-    
+
 }

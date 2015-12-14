@@ -105,6 +105,7 @@ GeoExt.Lang.add("it", {
         textGeneral:"Generale",
         textAttributes:"Attributi",
         textGroups:"Gruppi",
+        textServices: "Servizi",
 		textName: 'Nome',
 		textPassword: 'Password',
 		textPasswordEdit: 'Nuova Password',

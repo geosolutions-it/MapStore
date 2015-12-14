@@ -73,6 +73,12 @@
 			<groupId>it.geosolutions.geobatch</groupId>
 			<artifactId>gb-action-ds2ds</artifactId>
 			<version>${project.version}</version>
+                        <exclusions>
+                            <exclusion>
+                               <groupId>org.geotools</groupId>
+                               <artifactId>gt-arcsde</artifactId>
+                           </exclusion>
+                       </exclusions>
 		</dependency>
 
 		<!-- ============================== -->
@@ -527,6 +533,12 @@
         <dependency>
           <groupId>it.geosolutions.geobatch</groupId>
           <artifactId>gb-action-ds2ds</artifactId>
+            <exclusions>
+               <exclusion>
+                  <groupId>org.geotools</groupId>
+                  <artifactId>gt-arcsde</artifactId>
+               </exclusion>
+            </exclusions>
         </dependency>
       </dependencies>
       <build>

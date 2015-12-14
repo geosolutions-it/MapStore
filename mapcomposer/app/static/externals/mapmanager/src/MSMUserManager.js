@@ -206,16 +206,21 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
             * {string} text for General Tab title
             */
             textGeneral:"General",
-            /**
+           /**
             * Property: textAttributes
             * {string} text for Attributes Tab title
             */
             textAttributes:"Attributes",
-             /**
+           /**
             * Property: textGroups
             * {string} text for Groups Tab title
             */
             textGroups:"Groups",
+           /**
+            * Property: textServices
+            * {string} text for Services Tab title
+            */
+            textServices:"Services",
             
             titleConfirmDeleteMsg: "Confirm delete user",
             textConfirmDeleteMsg: "Are you sure you want to delete this user?",
@@ -1179,6 +1184,9 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                     };
                     //the admin user doesn't belongs to any group
                     if(userdata.role != 'ADMIN'){
+                      // /////////////////////
+                      // Groups Panel
+                      // /////////////////////
                       userFormTabPanel.items.push({
                           xtype: 'panel',
                           frame:true,
@@ -1225,7 +1233,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                                msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
                                                buttons: Ext.Msg.OK,
                                                icon: Ext.MessageBox.ERROR
-                                            })                                
+                                            });       
                                         }
                                     }),
                                     listeners:{
@@ -1260,12 +1268,100 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                     data: userdata,
                                     sortInfo: { field: "groupName", direction: "ASC" },
                                     fields: ['id','groupName','description']
-                                   
                                 })
-                                 
                             }]
                           }]
-                        });  
+                        });
+                        
+                        
+                      // /////////////////////
+                      // Services Panel
+                      // /////////////////////
+                      userFormTabPanel.items.push({
+                          xtype: 'panel',
+                          frame:true,
+                          iconCls:'update_manager_ic',
+                          layout:'fit',
+                          ref:'../services',
+                          id: 'services-field-set',
+                          title:this.textServices,//i18n
+                          autoScroll:true,
+                          border: false,
+                          listeners:{
+                            afterrender:function(p){
+                                p.doLayout();
+                            }
+                          },
+                           items:[{
+                            xtype: 'itemselector',
+                            name: 'services',
+                            labelWidth: 0,
+                            anchor:'100%',
+                            imagePath: 'externals/ext/ux/images/',
+                            multiselects:[{
+                                width: 175,
+                                height: 200,
+                                valueField:'serviceId',
+                                displayField:'serviceId',
+                                store:  new Ext.data.JsonStore({
+                                    autoDestroy: true,
+                                    autoLoad:true,
+                                    idProperty: 'id',
+                                    fields: ['serviceId', 'status', 'userId'],
+                                    proxy: new Ext.data.HttpProxy({
+                                        url: this.target.config.adminUrl + "mvc/serviceManager/getServicesList?userid=closeeye",
+                                        restful: true,
+                                        method : 'GET',
+                                        disableCaching: true,
+                                        sortInfo: { field: "serviceId", direction: "ASC" },
+                                        headers: {'Accept': 'application/json', 'Authorization' : userManager.auth},
+                                        failure: function (response) {
+                                            console.error(response); 
+                                              Ext.Msg.show({
+                                               title: userManager.failSuccessTitle,
+                                               msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+                                               buttons: Ext.Msg.OK,
+                                               icon: Ext.MessageBox.ERROR
+                                            });       
+                                        }
+                                    }),
+                                    listeners:{
+                                        //remove the user's groups from the available ones
+                                        load:function(store,records,options){
+                                            store.filterBy( function(f) {
+                                                    //the userdata.groups can also miss
+                                                    //in this case the filter let pass all the records
+                                                    if(!userdata || !userdata.services) return true;
+                                                    var name =  f.get('groupName'); 
+                                                    for(var i = 0; i < userdata.services.length;i++){
+                                                        if(userdata.services[i].groupName == name){
+                                                            return false;
+                                                        }
+                                                    }
+                                                    return true;
+                                                }
+                                            );
+                                        }
+                                    }
+                                })
+                              },{
+                                width: 175,
+                                height: 200,
+                                valueField:'serviceId',
+                                displayField:'serviceId',
+                                store: new Ext.data.JsonStore({
+                                    autoDestroy: true,
+                                    autoLoad:true,
+                                    root: 'services || []',
+                                    idProperty: 'id',
+                                    data: userdata,
+                                    sortInfo: { field: "serviceId", direction: "ASC" },
+                                    fields: ['serviceId', 'status', 'userId']
+                                })
+                            }]
+                          }]
+                        });
+                        
                     }
                  
                 

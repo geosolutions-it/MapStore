@@ -171,7 +171,51 @@ public class JdbcServiceDAO implements ServiceDAO {
     @Override
     public List<Service> findByUser(String userId) {
 
-        String sql = "SELECT * FROM SERVICE WHERE \"USER\" = ?";
+        String sql = (userId != null ? "SELECT * FROM SERVICE WHERE \"USER\" = ?" : "SELECT * FROM SERVICE");
+
+        Connection conn = null;
+
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            if (userId != null) {
+                ps.setString(1, userId);
+            }
+            List<Service> services = new ArrayList<Service>();
+            ResultSet rs = ps.executeQuery();
+            Service service;
+            while (rs.next()) {
+                service = new Service(rs.getString("SERVICE_ID"), rs.getString("PARENT"),
+                        rs.getString("USER"), rs.getString("STATUS"));
+                service.setId(rs.getInt("ID"));
+
+                services.add(service);
+            }
+            rs.close();
+            ps.close();
+
+            for (Service ss : services) {
+                ss = getServiceDetails(conn, ss);
+            }
+
+            return services;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public List<Service> getServiceAccessByUser(String userId) {
+
+        String sql = "SELECT SERVICE.* FROM SERVICE JOIN SERVICE_ACCESS ON SERVICE.\"SERVICE_ID\" = SERVICE_ACCESS.\"SERVICE_ID\" WHERE \"USER\" = ?";
 
         Connection conn = null;
 
@@ -193,63 +237,7 @@ public class JdbcServiceDAO implements ServiceDAO {
             ps.close();
 
             for (Service ss : services) {
-                //String serviceId = userId + "@" + ss.getServiceId();
-
-                // Retrieve the AOI
-                sql = "SELECT fid, \"desc\", service_name, st_asewkt(the_geom) as thegeom, start, \"end\", status FROM AOIS WHERE service_name = ?";
-
-                ps = conn.prepareStatement(sql);
-                ps.setString(1, ss.getServiceId());
-                AreaOfInterest aoi = null;
-                rs = ps.executeQuery();
-                if (rs.next()) {
-                    aoi = new AreaOfInterest(ss.getServiceId(), rs.getString("desc"),
-                            rs.getString("thegeom"), rs.getDate("start"), rs.getDate("end"),
-                            rs.getString("status"));
-                    aoi.setId(rs.getInt("fid"));
-                    ss.setAoi(aoi);
-                }
-                rs.close();
-                ps.close();
-
-                // Retrieve the SENSORS
-                sql = "SELECT id, sensor_type, sensor_mode, service_id FROM sensor WHERE service_id = ?";
-
-                ps = conn.prepareStatement(sql);
-                ps.setString(1, ss.getServiceId());
-                List<Sensor> sensors = new ArrayList<Sensor>();
-                rs = ps.executeQuery();
-                while (rs.next()) {
-                    Sensor sensor = new Sensor(rs.getString("sensor_type"),
-                            new SensorMode(rs.getString("sensor_mode")));
-                    sensor.setId(rs.getInt("id"));
-                    sensors.add(sensor);
-                }
-                rs.close();
-                ps.close();
-
-                ss.setSensors(sensors);
-                
-                // Retrieve the PRODUCTS
-                sql = "SELECT servicename, identifier, st_asewkt(bbox) as bbox, \"time\", variable, sartype, outfilelocation, originalfilepath, layername, partition, numoilspill, numshipdetect FROM ingestionproducts WHERE servicename = ?";
-
-                ps = conn.prepareStatement(sql);
-                ps.setString(1, ss.getServiceId());
-                List<Product> products = new ArrayList<Product>();
-                rs = ps.executeQuery();
-                while (rs.next()) {
-                    Product prod = new Product(rs.getString("identifier"), rs.getString("bbox"),
-                            rs.getDate("time"), rs.getString("variable"), rs.getString("sartype"),
-                            rs.getString("outfilelocation"), rs.getString("originalfilepath"),
-                            rs.getString("layername"), rs.getString("partition"),
-                            rs.getInt("numoilspill"), rs.getInt("numshipdetect"));
-                    products.add(prod);
-                }
-
-                ss.setProducts(products);
-
-                rs.close();
-                ps.close();
+                ss = getServiceDetails(conn, ss);
             }
 
             return services;
@@ -264,6 +252,77 @@ public class JdbcServiceDAO implements ServiceDAO {
             }
         }
 
+    }
+    
+    /**
+     * @param conn
+     * @param ss
+     * @return 
+     * @throws SQLException
+     */
+    protected Service getServiceDetails(Connection conn, Service ss) throws SQLException {
+        String sql;
+        PreparedStatement ps;
+        ResultSet rs;
+        // String serviceId = userId + "@" + ss.getServiceId();
+
+        // Retrieve the AOI
+        sql = "SELECT fid, \"desc\", service_name, st_asewkt(the_geom) as thegeom, start, \"end\", status FROM AOIS WHERE service_name = ?";
+
+        ps = conn.prepareStatement(sql);
+        ps.setString(1, ss.getServiceId());
+        AreaOfInterest aoi = null;
+        rs = ps.executeQuery();
+        if (rs.next()) {
+            aoi = new AreaOfInterest(ss.getServiceId(), rs.getString("desc"),
+                    rs.getString("thegeom"), rs.getDate("start"), rs.getDate("end"),
+                    rs.getString("status"));
+            aoi.setId(rs.getInt("fid"));
+            ss.setAoi(aoi);
+        }
+        rs.close();
+        ps.close();
+
+        // Retrieve the SENSORS
+        sql = "SELECT id, sensor_type, sensor_mode, service_id FROM sensor WHERE service_id = ?";
+
+        ps = conn.prepareStatement(sql);
+        ps.setString(1, ss.getServiceId());
+        List<Sensor> sensors = new ArrayList<Sensor>();
+        rs = ps.executeQuery();
+        while (rs.next()) {
+            Sensor sensor = new Sensor(rs.getString("sensor_type"),
+                    new SensorMode(rs.getString("sensor_mode")));
+            sensor.setId(rs.getInt("id"));
+            sensors.add(sensor);
+        }
+        rs.close();
+        ps.close();
+
+        ss.setSensors(sensors);
+
+        // Retrieve the PRODUCTS
+        sql = "SELECT servicename, identifier, st_asewkt(bbox) as bbox, \"time\", variable, sartype, outfilelocation, originalfilepath, layername, partition, numoilspill, numshipdetect FROM ingestionproducts WHERE servicename = ?";
+
+        ps = conn.prepareStatement(sql);
+        ps.setString(1, ss.getServiceId());
+        List<Product> products = new ArrayList<Product>();
+        rs = ps.executeQuery();
+        while (rs.next()) {
+            Product prod = new Product(rs.getString("identifier"), rs.getString("bbox"),
+                    rs.getDate("time"), rs.getString("variable"), rs.getString("sartype"),
+                    rs.getString("outfilelocation"), rs.getString("originalfilepath"),
+                    rs.getString("layername"), rs.getString("partition"),
+                    rs.getInt("numoilspill"), rs.getInt("numshipdetect"));
+            products.add(prod);
+        }
+
+        ss.setProducts(products);
+
+        rs.close();
+        ps.close();
+        
+        return ss;
     }
 
     @Override
