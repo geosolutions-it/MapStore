@@ -577,6 +577,44 @@ public class JdbcServiceDAO implements ServiceDAO {
     }
 
     @Override
+    public boolean updateServicesAccess(String userId, List<String> serviceIds) {
+        boolean result = false;
+
+        String sql = "DELETE FROM SERVICE_ACCESS WHERE \"USER\" = ?";
+
+        Connection conn = null;
+
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, userId);
+            ps.executeUpdate();
+            ps.close();
+
+            sql = "INSERT INTO SERVICE_ACCESS(\"USER\", \"SERVICE_ID\") VALUES (?, ?)";
+            ps = conn.prepareStatement(sql);
+
+            for (String serviceId : serviceIds) {
+                ps.setString(1, userId);
+                ps.setString(2, serviceId);
+                ps.addBatch();
+            }
+            result = ps.executeBatch().length > 0;            
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return result;
+    }
+    
+    @Override
     public boolean delete(String serviceId, Map<String, String> serviceAuxiliaryTables) {
         boolean result = false;
 

@@ -437,6 +437,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
 				};
 					
                 // create a content provider with init options
+                var me = this;
                 this.users = new GeoStore.Users(
                     { authorization: userManager.auth,
                       url: userManager.url
@@ -593,10 +594,48 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                    var loadMask = new Ext.LoadMask(Ext.getBody(), {msg:'Wait'});
                                    loadMask.show();
                                    userManager.users.findByPk( record.get('id'), function(data){
+                                   	
                                                         // refresh the store
-                                                        userManager.showEditUserWindow(data);
-                                                        loadMask.hide();
-                                                    },{includeattributes:true});
+                                                        serviceAccessStore = new Ext.data.JsonStore({
+						                                    autoDestroy: true,
+						                                    autoLoad:true,
+						                                    idProperty: 'id',
+						                                    fields: ['serviceId', 'status', 'userId'],
+						                                    proxy: new Ext.data.HttpProxy({
+						                                        url: me.target.config.adminUrl + "mvc/serviceManager/getServiceAccessByUser?userid="+record.data.name,
+						                                        restful: true,
+						                                        method : 'GET',
+						                                        disableCaching: true,
+						                                        sortInfo: { field: "serviceId", direction: "ASC" },
+						                                        headers: {'Accept': 'application/json', 'Authorization' : userManager.auth},
+						                                        failure: function (response) {
+						                                            console.error(response); 
+						                                              Ext.Msg.show({
+						                                               title: userManager.failSuccessTitle,
+						                                               msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
+						                                               buttons: Ext.Msg.OK,
+						                                               icon: Ext.MessageBox.ERROR
+						                                            });       
+						                                        }
+						                                    }),
+						                                    listeners:{
+						                                        //remove the user's groups from the available ones
+						                                        load:function(store,records,options){
+						                                        	var services = [];
+						                                        	for (var rr=0; rr<records.length; rr++) {
+						                                        		services[rr] = records[rr].data;
+						                                        	}
+						                                        	data.services = services;
+			                                                        userManager.showEditUserWindow(data);
+			                                                        loadMask.hide();
+						                                        }
+						                                    }
+						                                });
+						                                
+						                                serviceAccessStore.reload();
+                                                    },
+                                                    {includeattributes:true}
+                                   );
                                    
                                    //open edit user data window				
                                 }, 
@@ -1237,11 +1276,11 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                         }
                                     }),
                                     listeners:{
-                                        //remove the user's groups from the available ones
+                                        // remove the user's groups from the available ones
                                         load:function(store,records,options){
                                             store.filterBy( function(f) {
-                                                    //the userdata.groups can also miss
-                                                    //in this case the filter let pass all the records
+                                                    // the userdata.groups can also miss
+                                                    // in this case the filter let pass all the records
                                                     if(!userdata || !userdata.groups) return true;
                                                     var name =  f.get('groupName'); 
                                                     for(var i = 0; i < userdata.groups.length;i++){
@@ -1309,7 +1348,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                     idProperty: 'id',
                                     fields: ['serviceId', 'status', 'userId'],
                                     proxy: new Ext.data.HttpProxy({
-                                        url: this.target.config.adminUrl + "mvc/serviceManager/getServicesList?userid=closeeye",
+                                        url: this.target.config.adminUrl + "mvc/serviceManager/getServicesList",
                                         restful: true,
                                         method : 'GET',
                                         disableCaching: true,
@@ -1326,15 +1365,15 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                         }
                                     }),
                                     listeners:{
-                                        //remove the user's groups from the available ones
+                                        // remove the user's groups from the available ones
                                         load:function(store,records,options){
                                             store.filterBy( function(f) {
-                                                    //the userdata.groups can also miss
-                                                    //in this case the filter let pass all the records
+                                                    // the userdata.services can also miss
+                                                    // in this case the filter let pass all the records
                                                     if(!userdata || !userdata.services) return true;
-                                                    var name =  f.get('groupName'); 
+                                                    var name =  f.get('serviceId'); 
                                                     for(var i = 0; i < userdata.services.length;i++){
-                                                        if(userdata.services[i].groupName == name){
+                                                        if(userdata.services[i].serviceId == name){
                                                             return false;
                                                         }
                                                     }
@@ -1361,10 +1400,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                             }]
                           }]
                         });
-                        
                     }
-                 
-                
                 
                     var formEdit = new Ext.form.FormPanel({
                           //width: 415, height: 200, border:false,
@@ -1384,7 +1420,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                             xtype: 'hidden',
                                             name:'attribute.' + attrname,
                                             value: userdata.attribute[attrname]
-                                      })
+                                      });
                                     }
                                 }
                             }
@@ -1430,12 +1466,12 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                                 var values = form.getFieldValues();
                                                 if ( form.isValid() && (passwordField.getValue() == passwordConfField.getValue()) && (isAdmin ? roleDropdown.isValid(false) : true) ){
                                                     
-                                                    //get attributes with name attribute.<att_name>
+                                                    // get attributes with name attribute.<att_name>
                                                     var attribute = {};
                                                     for(var name in values ){
                                                         var arr = name.split('.');
                                                         if(arr.length >1 && arr[0]=='attribute'){
-                                                            //special behiviour for dates
+                                                            // special behiviour for dates
                                                             var value =values[name];
                                                             if(value instanceof Date){
                                                               var field = form.findField(name);
@@ -1449,7 +1485,8 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                                             }
                                                         }
                                                     }
-                                                    //create groups;
+                                                    var userName = nameField.getValue();
+                                                    // create groups;
                                                     var groups;
                                                     if(values.groups){
                                                       var arr = values.groups.split(',');
@@ -1460,25 +1497,64 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                                         groups.push({groupName:arr[i]});
                                                       }
                                                     }
-                                                    userManager.users.update( useridField.getValue(),
-                                                            { name: nameField.getValue(), 
+                                                    // create services
+                                                    var services;
+                                                    if(values.services){
+                                                      var arr = values.services.split(',');
+                                                      if(arr.length >0 ){
+                                                        services =[];
+                                                      }
+                                                      for (var i =0; i < arr.length;i++){
+                                                        services.push({serviceId:arr[i]});
+                                                      }
+                                                    }
+                                                    userManager.users.update(
+                                                    	    useridField.getValue(),
+                                                            { 
+                                                              name: nameField.getValue(), 
                                                               password:passwordField.getValue(), 
                                                               role:roleDropdown.getValue(),
                                                               attribute:attribute,
                                                               groups:groups,
                                                               enabled: values.enabled //only if present
                                                             }, 
-                                                              function(response) {
-                                                                winEdit.hide();
-                                                                formEdit.getForm().reset();
-                                                                if(typeof(userManager.reload) === 'function') {
-                                                                // refresh the store
-                                                                userManager.reload();
-                                                                }
-                                                                winEdit.destroy();
+                                                            function(response) {
+																var jsonDataContext = [];
+												                for (serviceId in services) {
+												                    if (services[serviceId] && JSON.stringify(services[serviceId]))
+                        												jsonDataContext.push(services[serviceId]);
+												                }
+												                var jsonData = JSON.stringify(jsonDataContext);
+												                
+												                var adminUrl = userManager.target.config.adminUrl;
+												                // services available URL. 
+												                var servicesUrl = adminUrl + "mvc/serviceManager/putServicesAccessList?user=" + userName;
+												                
+												                OpenLayers.Request.POST({
+												                    url: servicesUrl,
+												                    data: jsonData,
+												                    callback: function(request) {
+												
+												                        if(request.status == 200){
+			                                                                winEdit.hide();
+			                                                                formEdit.getForm().reset();
+			                                                                if(typeof(userManager.reload) === 'function') {
+			                                                                	// refresh the store
+			                                                                	userManager.reload();
+			                                                                }
+			                                                                winEdit.destroy();
+												                        }else{
+												                            Ext.Msg.show({
+												                                title: userManager.failSuccessTitle,
+												                                msg: userManager.invalidFormMsg,
+												                                buttons: Ext.Msg.OK,
+												                                icon: Ext.MessageBox.ERROR
+												                            });
+												                        }
+												                    },
+												                    scope: this
+												                });                                                            	
                                                             });
-                            
-                        
                                                 } else {
                                                       Ext.Msg.show({
                                                        title: userManager.failSuccessTitle,
@@ -1504,9 +1580,9 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                     ]
                                 })
                         });
-                        winEdit.show();	
-                                       
+                        winEdit.show();
             },
+            
             createManageGroupsButton : function(){
                 var um = this;
                 return {

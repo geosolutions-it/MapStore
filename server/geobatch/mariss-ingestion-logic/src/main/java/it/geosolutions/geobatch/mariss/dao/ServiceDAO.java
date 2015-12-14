@@ -54,6 +54,8 @@ public interface ServiceDAO {
     public boolean insertOrUpdate(String serviceId, List<Sensor> sensors);
 
     public boolean updateServiceStatus(Service servce, String status);
+    
+    public boolean updateServicesAccess(String userId, List<String> serviceIds);
 
     public boolean delete(String serviceId, Map<String, String> serviceAuxiliaryTables);
 }
