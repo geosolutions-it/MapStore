@@ -192,6 +192,15 @@
     background-image: url(img/map_cursor.png) !important;
 }
 
+.x-btn .gx-map-link, .x-menu-item .gx-map-link, .x-tree-node .gx-map-link {
+    background-image: url(img/link.png)  !important;
+}
+
+.x-btn .gx-map-edit, .x-menu-item .gx-map-edit, .x-tree-node .gx-map-edit {
+    background-image: url(img/silk/map_edit.png)  !important;
+}
+
+
 /* gxp_featureeditor */
 .x-btn .gxp-icon-addfeature, .x-menu-item .gxp-icon-addfeature {
     background-image: url(img/silk/pencil_add.png);
@@ -553,4 +562,33 @@ div.olMap div.gx-overlay-playback {
 	background-image: url(img/silk/magnifier.png) !important;
 	width:16px;
 	height:16px;
+}
+
+/*gxp_downloadpanel*/
+.labelField{
+	font-style: normal; 
+	color: #918E8F; 
+	font-variant: normal; 
+	font-weight: normal; 
+	font-size: 11px; 
+	line-height: normal; 
+	font-family: tahoma, arial, helvetica, sans-serif;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.crsInfoButton {
+   background-image: url(img/silk/information.png) !important;
+}
+/* Background for items selected in multiselect */
+.ux-mselect-selected{
+    background-color: rgb(204, 204, 204);
+}
+/** NEEDED TO MAKE MULTISELECT SCROLL **/
+.ux-mselect{
+    overflow:auto;
+    background:white;
+    position:relative; /* for calculating scroll offsets */
+    zoom:1;
+    overflow:auto;  
 }

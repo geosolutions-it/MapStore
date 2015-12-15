@@ -46,25 +46,39 @@ mxp.plugins.EntityManager = Ext.extend(mxp.plugins.Tool, {
      */
     iconCls: 'resource_edit',
 
-
+    /**
+     * Set whether the tab can be closed or not
+     */
+    closable: true,
     
+    /**
+     * Set whether the action button should be displayed or not
+     */
+    showActionButton: true,
+
     /** api: method[addActions]
      */
     addActions: function() {
         this.adminUrl = this.adminUrl || this.target.adminUrl;
-        var thisButton = new Ext.Button({
-            iconCls: this.iconCls, 
-            text: this.buttonText,
-            tooltip: this.tooltipText,
-            handler: function() { 
-                this.addOutput(); 
+        
+        var actions = [];
+        
+        if(this.showActionButton){
 
-               
-            },
-            scope: this
-        });
+            var thisButton = new Ext.Button({
+                iconCls: this.iconCls, 
+                text: this.buttonText,
+                tooltip: this.tooltipText,
+                handler: function() { 
+                    this.addOutput(); 
 
-        var actions = [thisButton];
+                   
+                },
+                scope: this
+            });
+            
+            actions = [thisButton];
+        }
 
         return mxp.plugins.EntityManager.superclass.addActions.apply(this, [actions]);
     },
@@ -84,7 +98,7 @@ mxp.plugins.EntityManager = Ext.extend(mxp.plugins.Tool, {
         var login = this.target.login ? this.target.login: 
                 this.loginManager && this.target.currentTools[this.loginManager] 
                 ? this.target.currentTools[this.loginManager] : null;
-        this.auth = this.target.auth;
+        this.auth = this.target.authHeader;
         
         this.outputConfig = this.outputConfig || {};
 
@@ -103,7 +117,7 @@ mxp.plugins.EntityManager = Ext.extend(mxp.plugins.Tool, {
             layout: 'border',
             itemId:'EntityManager',
             autoDestroy:true,
-            closable: true,
+            closable: this.closable,
             closeAction: 'close',
             header: false,
             deferredReneder:false,

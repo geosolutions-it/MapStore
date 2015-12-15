@@ -72,9 +72,19 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
     
    // width and height are not configurable at the moment
    // TODO investigate why this happens.
-   windowHeight: 600,
-   windowWidth: 600,
-    
+    windowHeight: 600,
+    windowWidth: 600,
+    /** api: config[showOnStartup]
+     *  ``Boolean`` Show the window on startup if true
+     */
+    showOnStartup:false,
+    /** api: config[windowOptions]
+     *  ``Object`` Options for override the window configuration
+     */
+    windowOptions:{
+        height:200,
+        width:500
+    },
     /** api: method[addActions]
      */
     addActions: function() {
@@ -98,8 +108,6 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
 	
     showHelp:function(){
 
-			//var url = 'http://' + window.location.host + '/' + this.fileDocURL;
-			//use an Iframe
         var me = this;        
         var iframeconfig = {
             waitMsg: this.loadingMessage,
@@ -138,7 +146,19 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
             }
 
         };
-
+        var bbar= [];
+        if(this.showAgainTool){
+            bbar.push({
+                xtype: 'checkbox',
+                boxLabel: this.dontShowThisMessageAgainText,
+                checked: ! this.isShowAllowed(),
+                listeners:{
+                    check: function(box,checked){
+                        localStorage[me.keyShowAgain] = ! checked;
+                    }
+                }
+            });
+        }
         new Ext.Window(Ext.apply({
            layout:'fit',
            iconCls:this.iconCls,
@@ -146,20 +166,11 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
            border:false,
            autoScroll:false,
            items: this.fileDocURL ? iframeconfig : {html: this.description, autoScroll:true, bodyStyle:'padding:10px'},
-            bbar:[{
-                xtype: 'checkbox',
-                boxLabel: this.dontShowThisMessageAgainText,
-                checked: ! this.isShowAllowed(),
-                listeners:{
-                    check: function(box,checked){
-                        localStorage[me.keyShowAgain] = ! checked;
-
-                    }
-                }
-            }],
+            bbar:bbar,
            modal:true
         },{
-            height:this.windowHeight,width:this.windowWidth
+            height:this.windowHeight,
+            width:this.windowWidth
         })).show();
 		
     },

@@ -5,8 +5,6 @@ CREATE EXTENSION postgis;
 
 SET default_with_oids = false;
 
-
-
 CREATE TABLE acq_list
 (
   fid serial NOT NULL,
@@ -417,6 +415,15 @@ ALTER TABLE public.sensors_id_seq OWNER TO mariss;
 ALTER SEQUENCE sensors_id_seq OWNED BY sensors.id;
 
 
+
+INSERT INTO sensor_modes VALUES (1, 'PRI');
+INSERT INTO sensor_modes VALUES (2, 'FI');
+
+INSERT INTO sensors VALUES (1, 'ESR1');
+INSERT INTO sensors VALUES (2, 'ESR2');
+INSERT INTO sensors VALUES (3, 'RS1');
+INSERT INTO sensors VALUES (4, 'RS2');
+
 --
 -- TOC entry 170 (class 1259 OID 20935)
 -- Dependencies: 3628 5
@@ -467,33 +474,76 @@ SET default_with_oids = true;
 -- Name: ship_detections; Type: TABLE; Schema: public; Owner: mariss; Tablespace: 
 --
 
-CREATE TABLE ship_detections (
-    servicename character varying,
-    identifier character varying,
-    dsid character varying,
-    "timeStamp" timestamp without time zone,
-    heading double precision,
-    speed double precision,
-    length double precision,
-    "MMSI" character varying,
-    confidencelevel double precision,
-    imageidentifier character varying,
-    imagetype character varying,
-    "RCS" double precision,
-    maxpixelvalue double precision,
-    shipcategory double precision,
-    confidencelevelcat character varying,
-    the_geom geometry,
-    CONSTRAINT enforce_dims_the_geom CHECK ((st_ndims(the_geom) = 2)),
-    CONSTRAINT enforce_geotype_the_geom CHECK (((geometrytype(the_geom) = 'POINT'::text) OR (the_geom IS NULL))),
-    CONSTRAINT enforce_srid_the_geom CHECK ((st_srid(the_geom) = 4326))
+-- Table: ship_detections
+
+-- DROP TABLE ship_detections;
+
+CREATE TABLE ship_detections
+(
+  servicename character varying,
+  identifier character varying,
+  dsid character varying,
+  "timeStamp" timestamp without time zone,
+  heading double precision,
+  speed double precision,
+  length double precision,
+  "MMSI" character varying,
+  confidencelevel double precision,
+  imageidentifier character varying,
+  imagetype character varying,
+  "RCS" double precision,
+  maxpixelvalue double precision,
+  shipcategory double precision,
+  confidencelevelcat character varying,
+  the_geom geometry,
+  CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
+  CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'POINT'::text OR the_geom IS NULL),
+  CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4326)
+)
+WITH (
+  OIDS=TRUE
 );
+ALTER TABLE ship_detections
+  OWNER TO mariss;
 
+-- Table: oil_spills
 
-ALTER TABLE public.ship_detections OWNER TO mariss;
+-- DROP TABLE oil_spills;
+
+CREATE TABLE oil_spills
+(
+  servicename character varying,
+  identifier character varying,
+  "timeStamp" timestamp without time zone,
+  baric_lat double precision,
+  baric_lon double precision,
+  max_lat double precision,
+  max_lon double precision,
+  min_lat double precision,
+  min_lon double precision,
+  area_km double precision,
+  length_km double precision,
+  width_km double precision,
+  class_val character varying,
+  alarm_lev character varying,
+  possible_s character varying,
+  region_aff character varying,
+  country_as character varying,
+  seepage character varying,
+  the_geom geometry,
+  CONSTRAINT enforce_dims_the_geom CHECK (st_ndims(the_geom) = 2),
+  CONSTRAINT enforce_geotype_the_geom CHECK (geometrytype(the_geom) = 'MULTIPOLYGON'::text OR the_geom IS NULL),
+  CONSTRAINT enforce_srid_the_geom CHECK (st_srid(the_geom) = 4326)
+)
+WITH (
+  OIDS=TRUE
+);
+ALTER TABLE oil_spills
+  OWNER TO mariss;
+
 
 SET default_with_oids = false;
-
+  
 --
 -- TOC entry 178 (class 1259 OID 20997)
 -- Dependencies: 3633 1304 5

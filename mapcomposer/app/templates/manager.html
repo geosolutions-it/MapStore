@@ -48,7 +48,7 @@
     <!-- common data  -->
     <script type="text/javascript" src="config/common/localConfig.js"></script>
     
-    
+    <link rel="stylesheet" type="text/css" href="externals/cookiechoices/cookiechoices.css">
 
     <script>
         // ///////////////////////////////////////////////////////////////
@@ -129,7 +129,8 @@
                 langData: langData,
                 initialLanguageString: initialLanguageString,
                 lang: code || defaultLanguage || "en",
-                code: code
+                code: code,
+                authenticationMethod: config.authenticationMethod || 'basic'
             });
             manager = new mxp.widgets.ManagerViewport({
                 layout:'border',
@@ -143,6 +144,12 @@
                     
                 }
             });
+           
+            /*Consent cookie text and link from transaltion files, google cookieChoices.js lib must be added to page's body*/
+            if(serverConfig.cookieConsent && cookieChoices.cookieText){
+            cookieChoices.showCookieConsentBar(cookieChoices.cookieText,
+            cookieChoices.dismissText, cookieChoices.linkText, cookieChoices.linkHref);
+            }
         };
         
         Ext.Ajax.request({
@@ -205,6 +212,6 @@
     <body>
         <% render content %>
 		<div id="wrap" style="visibility:hidden"></div>
+        <script  type="text/javascript" src="script/cookiechoices.js"></script>
     </body>
 </html>
-   

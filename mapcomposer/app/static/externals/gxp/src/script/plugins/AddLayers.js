@@ -28,12 +28,12 @@ Ext.namespace("gxp.plugins");
  *    TODO Make this plural - selected layers
  */
 gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
-    
+
     /** api: ptype = gxp_addlayers */
     ptype: "gxp_addlayers",
-    
+
 	id: "addlayers",
-	
+
     /** api: config[addActionMenuText]
      *  ``String``
      *  Text for add menu item (i18n).
@@ -45,12 +45,12 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
      *  Text for add action tooltip (i18n).
      */
     addActionTip: "Add layers",
-    
+
     /** api: config[addActionText]
      *  ``String``
      *  Text for the Add action. None by default.
      */
-   
+
     /** api: config[addServerText]
      *  ``String``
      *  Text for add server button (i18n).
@@ -62,18 +62,18 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
      *  Text for add layers button (i18n).
      */
     addButtonText: "Add layers",
-    
+
     /** api: config[removeFilterText]
      *  ``String``
      *  Text for clearing layer filter (i18n).
      */
-    removeFilterText: "Clear filter", 
+    removeFilterText: "Clear filter",
 
     /** api: config[filterEmptyText]
      *  ``String``
      *  Text to show up when no filter is specified (i18n).
      */
-    filterEmptyText: "Filter",     
+    filterEmptyText: "Filter",
 
     /** api: config[untitledText]
      *  ``String``
@@ -98,7 +98,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
      *  Text for the grid expander (i18n).
      */
     expanderTemplateText: "<p><b>Abstract:</b> {abstract}</p>",
-    
+
     /** api: config[availableLayersText]
      *  ``String``
      *  Text for the layer title (i18n).
@@ -110,25 +110,25 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
      *  Text for the layer selection (i18n).
      */
     layerSelectionText: "View available data from:",
-	
+
 	/** api: config[deleteSourceDialogTitle]
      *  ``String``
      */
 	deleteSourceDialogTitle: "Delete Source",
-	
+
 	/** api: config[deleteSourceDialogMsg]
      *  ``String``
      */
 	deleteSourceDialogMsg: "Are you sure to delete this source",
-	
+
 	deleteSourceText: "This source cannot be removed because is used for the current background of the map",
-    
+
     /** api: config[instructionsText]
      *  ``String``
      *  Text for additional instructions at the bottom of the grid (i18n).
      *  None by default.
      */
-    
+
     /** api: config[doneText]
      *  ``String``
      *  Text for Done button (i18n).
@@ -138,11 +138,11 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
     /** api: config[upload]
      *  ``Object | Boolean``
      *  If provided, a :class:`gxp.LayerUploadPanel` will be made accessible
-     *  from a button on the Available Layers dialog.  This panel will be 
-     *  constructed using the provided config.  By default, no upload 
+     *  from a button on the Available Layers dialog.  This panel will be
+     *  constructed using the provided config.  By default, no upload
      *  functionality is provided.
      */
-    
+
     /** api: config[uploadText]
      *  ``String``
      *  Text for upload button (only renders if ``upload`` is provided).
@@ -151,9 +151,9 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 
     /** api: config[nonUploadSources]
      *  ``Array``
-     *  If ``upload`` is enabled, the upload button will not be displayed for 
-     *  sources whose identifiers or URLs are in the provided array.  By 
-     *  default, the upload button will make an effort to be shown for all 
+     *  If ``upload`` is enabled, the upload button will not be displayed for
+     *  sources whose identifiers or URLs are in the provided array.  By
+     *  default, the upload button will make an effort to be shown for all
      *  sources with a url property.
      */
 
@@ -169,17 +169,17 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
      * The identifier of the source that we should start with.
      */
     startSourceId: null,
-    
+
     /** private: property[selectedSource]
      *  :class:`gxp.plugins.LayerSource`
      *  The currently selected layer source.
      */
     selectedSource: null,
-	
+
 	iconCls: "gxp-icon-addlayers",
-	
+
 	hideByDefault: false,
-    
+
     /** api: config[availableSources]
      *  ``Array``
      *  List of available sources for Add Server, with related configuration.
@@ -216,38 +216,38 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             }
         }
     ],
-    
+
     /** api: config[additionalSources]
      *  ``Array``
      *  List of sources to be added to default availableSources.
      */
     additionalSources: [],
-    
+
 	/** api: config[availableFormats]
      *  ``Array``
      *  List of available formats for map requests.
      */
 	availableFormats: [["image/png8"], ["image/png"], ["image/jpeg"]],
-	
+
 	/** api: config[availableVendorOptions]
      *  ``Array``
      *  List of available vendor options for source layers.
      */
 	availableVendorOptions: [
 		["FORMAT"],
-		["ANGLE"], 
-		["BUFFER"], 
-		["CQL_FILTER"], 
-		["ENV"], 
-		["FILTER"], 
-		["FORMAT_OPTIONS"], 
-		["PALETTE"], 
+		["ANGLE"],
+		["BUFFER"],
+		["CQL_FILTER"],
+		["ENV"],
+		["FILTER"],
+		["FORMAT_OPTIONS"],
+		["PALETTE"],
 		["TILED"],
 		["TILESORIGIN"]
 	],
-	
+
 	defaultVendor: {
-		"TILED": true,										
+		"TILED": true,
 		"FORMAT": "image/png8"
 	},
 
@@ -265,13 +265,13 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
              */
             "sourceselected"
         );
-        gxp.plugins.AddLayers.superclass.constructor.apply(this, arguments);        
+        gxp.plugins.AddLayers.superclass.constructor.apply(this, arguments);
     },
-    
+
     /** api: method[addActions]
      */
     addActions: function() {
-        var selectedLayer;        
+        var selectedLayer;
         var actions = gxp.plugins.AddLayers.superclass.addActions.apply(this, [{
             tooltip : this.addActionTip,
             text: this.addActionText,
@@ -282,11 +282,11 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             handler : this.showCapabilitiesGrid,
             scope: this
         }]);
-        
+
         this.target.on("ready", function() {actions[0].enable();});
         return actions;
     },
-        
+
     /** api: method[showCapabilitiesGrid]
      * Shows the window with a capabilities grid.
      */
@@ -294,16 +294,16 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         if(!this.capGrid) {
             this.initCapGrid();
         }
-		
+
         this.capGrid.show();
-		
+
 		// ///////////////////////////////////////////
 		// Enable or disable the source edit button
 		// ///////////////////////////////////////////
 		var capGridToolbar = this.capGrid.getTopToolbar();
 		var editButton = capGridToolbar.find("name", "edit_button");
 		var source = this.selectedSource;
-		
+
 		if(source.ptype == "gxp_wmssource"){
 			editButton[0].enable();
 		}else{
@@ -316,22 +316,22 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
      * Constructs a window with a capabilities grid.
      */
     initCapGrid: function() {
-        var source, data = [];        
+        var source, data = [];
         for (var id in this.target.layerSources) {
             source = this.target.layerSources[id];
-            if (source.store) {
-                data.push([id, source.title || id]);                
+             if (source.store && source.ptype !== "gxp_geojsonsource") {
+                data.push([id, source.title || id]);
             }
         }
         var sources = new Ext.data.ArrayStore({
             fields: ["id", "title"],
             data: data
         });
-		
+
         var expander = this.createExpander();
-        
+
         var addLayers = function() {
-            
+
             var apptarget = this.target;
            // var locCode= GeoExt.Lang.locale;
             var key = this.sourceComboBox.getValue();
@@ -340,17 +340,17 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             var records = capGridPanel.getSelectionModel().getSelections();
             var record;
             var defaultProps;
-            
+
             for (var i=0, ii=records.length; i<ii; ++i) {
-                
+
                 defaultProps = {
 				    name: records[i].get("name"),
 					title: records[i].get("title"),
                     source: key
                 };
 
-                record = source.createLayerRecord(defaultProps); 
-                  
+                record = source.createLayerRecord(defaultProps);
+
                 if (record) {
                     if (record.get("group") === "background") {
                         layerStore.insert(0, [record]);
@@ -378,7 +378,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                     }
                 }
             }
-            
+
             apptarget.modified = true;
         };
 
@@ -408,7 +408,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 scope: this
             }
         });
-        
+
         this.sourceComboBox = new Ext.form.ComboBox({
             store: sources,
             valueField: "id",
@@ -422,27 +422,27 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 select: function(combo, record, index) {
                     var source = this.target.layerSources[record.get("id")];
-                    
-                    capGridPanel.store.clearFilter();                    
+
+                    capGridPanel.store.clearFilter();
                     capGridPanel.reconfigure(source.store, capGridPanel.getColumnModel());
                     // TODO: remove the following when this Ext issue is addressed
                     // http://www.extjs.com/forum/showthread.php?100345-GridPanel-reconfigure-should-refocus-view-to-correct-scroller-height&p=471843
                     capGridPanel.getView().focusRow(0);
                     this.setSelectedSource(source);
-                    
+
                     filterText.reset();
-					
+
 					// Enable or disable the source edit button
 					if(source.ptype == "gxp_wmssource"){
 						capGridToolbar[4].enable();
 					}else{
 						capGridToolbar[4].disable();
-					}				
+					}
                 },
                 scope: this
             }
         });
-        
+
         var capGridToolbar = null;
         if (this.target.proxy || data.length > 1) {
             capGridToolbar = [
@@ -452,16 +452,16 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 this.sourceComboBox
             ];
         }
-        
+
         if (this.target.proxy) {
             capGridToolbar.push("-", new Ext.Button({
                 text: this.addServerText,
                 iconCls: "gxp-icon-addserver",
                 handler: function() {
-					newSourceWindow.showWindow();	
+					newSourceWindow.showWindow();
                 }
             }));
-			
+
 		    capGridToolbar.push(new Ext.Button({
                 text: "Edit",
 				tooltip: "Edit Selected Server",
@@ -473,24 +473,24 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                     newSourceWindow.bindSource(this.selectedSource);
                 }
             }));
-			
+
 		    capGridToolbar.push(new Ext.Button({
                 text: "Delete",
 				tooltip: "Delete Selected Server",
                 iconCls: "delete",
 				scope: this,
-                handler: function() {				
-					var removeFunction = function(buttonId, text, opt){        
-						if(buttonId === 'ok'){ 			
+                handler: function() {
+					var removeFunction = function(buttonId, text, opt){
+						if(buttonId === 'ok'){
 							// /////////////////////////////////////////////////////
 							// Remove the layers associated to the selected source
 							// /////////////////////////////////////////////////////
 							var layers = this.target.mapPanel.layers;
 
 							var selSources = this.selectedSource;
-							
+
 							// /////////////////////////////////////////////////////
-							// Check if the layer is the current selected BG 
+							// Check if the layer is the current selected BG
 							// in the map (if yes the source should not be removed).
 							// /////////////////////////////////////////////////////
 							var remove = true;
@@ -503,10 +503,10 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 									var visible = record.data.layer.visibility;
 									if(visible === true){
 										remove = false;
-									}								
+									}
 								}
-							}); 			
-						
+							});
+
 							// ///////////////////////////
 							// Remove the selected source
 							// ///////////////////////////
@@ -520,15 +520,15 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 									var source = record.get('source');
 
 									if(name && source == selSources.id){
-										layers.remove(record);								
+										layers.remove(record);
 									}
-								}); 
-								
+								});
+
 								var sourceRecordIdx = sources.find("id", selSources.id);
 								var sourceRecord = sources.getAt(sourceRecordIdx);
 								delete this.target.layerSources[sourceRecord.get("id")];
-								sources.remove(sourceRecord);				
-								
+								sources.remove(sourceRecord);
+
 								var sourcesCount = sources.getCount();
 								if(sourcesCount > 0){
 									this.sourceComboBox.onSelect(sources.getAt(0), 0);
@@ -536,8 +536,8 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 									this.sourceComboBox.clearValue();
 									var capGridStore = capGridPanel.getStore();
 									capGridStore.removeAll();
-								}							
-								
+								}
+
 								this.target.modified = true;
 							}else{
 								Ext.Msg.show({
@@ -550,7 +550,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 							}
 						}
 					}
-					
+
 					Ext.Msg.show({
 					   title: this.deleteSourceDialogTitle,
 					   msg: this.deleteSourceDialogMsg,
@@ -562,11 +562,11 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 }
             }));
         }
-        
+
         for(var count = 0, l = this.additionalSources.length; count < l; count++) {
             this.availableSources.push(this.additionalSources[count]);
         }
-        
+
         var newSourceWindow = new gxp.NewSourceWindow({
             modal: true,
 			defaultVendor: this.defaultVendor,
@@ -585,12 +585,12 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                             sourceCfg = Ext.apply(currentSource.config, sourceCfg);
                         }
                     }
-                    
+
                     this.target.addLayerSource({
                         config: sourceCfg,
                         callback: function(id) {
 							// ////////////////////////////////////////////
-                            // Add to combo and select: check before if 
+                            // Add to combo and select: check before if
 							// record already exists (the edit case)
 							// ////////////////////////////////////////////
 							var idx = sources.find("id",  id);
@@ -602,7 +602,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 								sources.insert(0, [record]);
 								this.sourceComboBox.onSelect(record, 0);
 							}
-                            
+
 							this.target.modified = true;
                             newSourceWindow.hide();
                         },
@@ -620,22 +620,22 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 					var sourceRecordIdx = sources.find("id", sourceId);
 					if(sourceRecordIdx >= 0){
 						// The record of the combo box store
-						var sourceRecord = sources.getAt(sourceRecordIdx);	
+						var sourceRecord = sources.getAt(sourceRecordIdx);
 						var title = sourceRecord.get("title");
 						if(sourceCfg.title != title){
 							sourceRecord.set("title", sourceCfg.title);
 							//sourceRecord.commit();
-						}					
-						
+						}
+
 						// The record of the real used sources store
 						var source = this.target.layerSources[sourceId];
-						
+
 						Ext.apply(source.initialConfig, sourceCfg);
 						Ext.apply(source, sourceCfg);
-						
+
 						if(source.store.baseParams.VERSION != sourceCfg.version){
 							source.store.baseParams.VERSION = sourceCfg.version;
-							
+
 							// //////////////////////////////
 							// Check also the authparam
 							// TODO: More checks on this
@@ -644,32 +644,32 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 								if(source.authParam){
 									delete source.store.baseParams[source.authParam];
 								}
-								
+
 								source.store.baseParams[sourceCfg.authParam] = source.getAuthParam();
 							}
 						}
-						
+
 						source.on("ready", function(){
 							newSourceWindow.hide();
 						});
 						source.on("failure", function(){
 							newSourceWindow.hide();
-						});						
-						
+						});
+
 						source.store.reload();
 						this.target.modified = true;
 					}
 				}
             }
         });
-        
+
         var items = {
             xtype: "container",
             region: "center",
             layout: "fit",
             items: [capGridPanel]
         };
-		
+
         if (this.instructionsText) {
             items.items.push({
                 xtype: "box",
@@ -682,7 +682,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 html: this.instructionsText
             });
         }
-        
+
         var filterText =  new Ext.form.TextField({
             emptyText : this.filterEmptyText,
             width : 60,
@@ -698,7 +698,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                             } else {
                                 return false;
                             }
-                        });                   
+                        });
                     } else {
                         this.store.clearFilter();
                     }
@@ -706,7 +706,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 scope : capGridPanel
             }
         });
-        
+
         var bbarItems = [
             filterText,
             new Ext.Button({
@@ -717,7 +717,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 },
                 iconCls: "gxp-icon-removefilter",
                 scope : capGridPanel
-            }),            
+            }),
             "->",
             new Ext.Button({
                 text: this.addButtonText,
@@ -734,7 +734,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 scope: this
             })
         ];
-        
+
         var uploadButton = this.createUploadButton();
         if (uploadButton) {
             bbarItems.unshift(uploadButton);
@@ -763,9 +763,9 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 scope: this
             }
         }, this.initialConfig.outputConfig));
-        
+
     },
-    
+
     /** private: method[setSelectedSource]
      *  :arg: :class:`gxp.plugins.LayerSource`
      */
@@ -773,7 +773,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         this.selectedSource = source;
         this.fireEvent("sourceselected", this, source);
     },
-    
+
     /** private: method[createUploadButton]
      *  If this tool is provided an ``upload`` property, a button will be created
      *  that launches a window with a :class:`gxp.LayerUploadPanel`.
@@ -827,7 +827,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                                             }
                                         });
                                         sel.selectRecords(newRecords);
-                                        // this needs to be deferred because the 
+                                        // this needs to be deferred because the
                                         // grid view has not refreshed yet
                                         window.setTimeout(function() {
                                             gridPanel.getView().focusRow(last);
@@ -840,7 +840,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                             scope: this
                         }
                     }, uploadConfig));
-                    
+
                     var win = new Ext.Window({
                         title: this.uploadText,
                         modal: true,
@@ -851,7 +851,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                 },
                 scope: this
             });
-            
+
             var urlCache = {};
             function getStatus(url, callback, scope) {
                 if (url in urlCache) {
@@ -871,7 +871,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
                     });
                 }
             }
-            
+
             this.on({
                 sourceselected: function(tool, source) {
                     button.hide();
@@ -899,11 +899,11 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
         }
         return button;
     },
-    
+
 	getSourceComboBox: function(){
 		return this.sourceComboBox;
 	},
-	
+
     /** private: method[isEligibleForUpload]
      *  :arg source: :class:`gxp.plugins.LayerSource`
      *  :returns: ``Boolean``
@@ -918,7 +918,7 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             (this.nonUploadSources || []).indexOf(source.id) === -1
         );
     },
-    
+
     /** api: config[createExpander]
      *  ``Function`` Returns an ``Ext.grid.RowExpander``. Can be overridden
      *  by applications/subclasses to provide a custom expander.

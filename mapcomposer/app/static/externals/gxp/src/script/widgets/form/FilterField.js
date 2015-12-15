@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2008-2011 The Open Planning Project
- * 
+ *
  * Published under the GPL license.
  * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
  * of the license.
@@ -24,21 +24,21 @@ Ext.namespace("gxp.form");
 
 /** api: constructor
  *  .. class:: FilterField(config)
- *   
+ *
  *      A form field representing a comparison filter.
  */
 gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
-    
+
     /** api:config[lowerBoundaryTip]
      *  ``String`` tooltip for the lower boundary textfield (i18n)
      */
     lowerBoundaryTip: "lower boundary",
-     
+
     /** api:config[upperBoundaryTip]
      *  ``String`` tooltip for the lower boundary textfield (i18n)
      */
     upperBoundaryTip: "upper boundary",
-     
+
     /** api: config[caseInsensitiveMatch]
      *  ``Boolean``
      *  Should Comparison Filters for Strings do case insensitive matching?  Default is ``"false"``.
@@ -52,7 +52,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
      *     of accessing this property directly.
      */
     filter: null,
-    
+
     /**
      * Property: attributes
      * {GeoExt.data.AttributeStore} A configured attributes store for use in
@@ -67,32 +67,32 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
     /** api:config[attributesComboConfig]
      *  ``Object`` Config object for attributes combobox.
      */
-    
+
     /**
      * Property: attributesComboConfig
      * {Object}
      */
     attributesComboConfig: null,
-    
+
     /** api:config[autoComplete]
      *  ``Boolean`` autocomplete enabled on text fields.
      */
     autoComplete: false,
-    
+
     /** api:config[autoCompleteCfg]
      *  ``Object`` autocomplete configuration object.
      */
     autoCompleteCfg: {},
-    
+
     /**
-     * 
-     */ 
+     *
+     */
     uniqueValuesStore : null,
-    
+
     valid: null,
-    
+
     pageSize: 5,
-    
+
     addValidation: function(config) {
         //Add VTYPE validation according to validators config
         var feature = (this.attributes.baseParams && this.attributes.baseParams.TYPENAME) ? this.attributes.baseParams.TYPENAME.split(":")[1] : 'feature';
@@ -102,7 +102,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             // currently we support only regex based validation
             if(validator.type === 'regex') {
                 var valueTest = new RegExp(validator.value);
-                
+
                 Ext.apply(config,{
                     validator: function(value) {
                         return valueTest.test(value) ? true : validator.invalidText;
@@ -112,18 +112,18 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
         }
         return config;
     },
-    
+
     addAutocompleteStore: function(config) {
         var uniqueValuesStore = new gxp.data.WPSUniqueValuesStore({
             pageSize: this.autoCompleteCfg.pageSize || this.pageSize,
             listeners: this.autoCompleteCfg.listeners || {}
         });
-        
+
         this.initUniqueValuesStore(uniqueValuesStore, this.autoCompleteCfg.url || this.attributes.url, this.attributes.baseParams.TYPENAME, this.attributes.format.namespaces, this.filter.property);
-        
+
         return Ext.apply(Ext.apply({}, config), {store: uniqueValuesStore});
     },
-    
+
     createValueWidget: function(type, value) {
         if(this.autoComplete && this.fieldType === 'string') {
             return Ext.apply({value:value}, this.addAutocompleteStore(this.autoCompleteDefault[type]));
@@ -131,11 +131,11 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             return Ext.apply({value:value}, this.fieldDefault[type][this.fieldType]);
         }
     },
-    
+
     createValueWidgets: function(type, value, force) {
         if(type !== this.filter.type || force) {
             this.setFilterType(type);
-            
+
             if(!this.valueWidgets) {
                 this.valueWidgets = this.items.get(2);
             }
@@ -143,16 +143,19 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             if (type === OpenLayers.Filter.Comparison.BETWEEN) {
                 this.valueWidgets.add(this.addValidation(this.createValueWidget('lower', value[0])));
                 this.valueWidgets.add(this.addValidation(this.createValueWidget('upper', value[1])));
-            } else {
+            } else if(type === OpenLayers.Filter.Comparison.IS_NULL){
+               this.filter.value='NULL';
+            }
+            else {
                 this.valueWidgets.add(this.addValidation(this.createValueWidget('single', value[0])));
             }
-            
+
             this.doLayout();
-            
+
             this.fireEvent("change", this.filter, this);
         }
     },
-    
+
     createDefaultConfigs: function() {
         this.defaultItemsProp = {
             'single': {
@@ -170,12 +173,12 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                         this.fireEvent("change", this.filter, this);
                     },
                     "blur": function(field){
-                    
+
                     },
                     scope: this
-                }   
+                }
             },
-            
+
            'lower': {
                 //value: this.filter.lowerBoundary,
                 //tooltip: this.lowerBoundaryTip,
@@ -197,7 +200,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                     scope: this
                 }
             },
-            
+
             'upper': {
                 grow: true,
                 growMin: 30,
@@ -214,9 +217,9 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                 }
             }
         };
-        
+
         this.fieldDefault = {};
-        
+
         for(key in this.defaultItemsProp) {
             this.fieldDefault[key] = {
                 'string': Ext.applyIf({
@@ -267,9 +270,9 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                 },this.defaultItemsProp[key])
             };
         }
-        
+
         this.autoCompleteDefault = {
-        
+
             'single': Ext.applyIf({
                 xtype: "gxp_wpsuniquevaluescb",
                 mode: "remote", // required as the combo store shouldn't be loaded before a field name is selected
@@ -372,33 +375,33 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                 growMin: 50,
                 anchor: "100%"
             },this.defaultItemsProp['upper'])
-        
-         
+
+
         };
-        
-        
+
+
     },
-    
+
 	createInitialValueWidgets: function() {
 		var record = this.attributes.getAt(this.attributes.find('name',this.filter.property));
 		if(record) {
-			this.fieldType = record.get("type").split(":")[1];
+			this.fieldType = (record.get("type").split(":")[1]) ? record.get("type").split(":")[1] : record.get("type");
 			this.createValueWidgets(this.filter.type, [this.filter.lowerBoundary || this.filter.value, this.filter.upperBoundary || this.filter.value], true);
 		}
 	},
-	
+
     initComponent: function() {
-        
+
         var me = this;
-        
+
         this.combineErrors = false;
-        
+
         if (!this.dateFormat) {
             this.dateFormat = Ext.form.DateField.prototype.format;
         }
         if (!this.timeFormat) {
             this.timeFormat = Ext.form.TimeField.prototype.format;
-        }        
+        }
 		var hasFilter = !!this.filter;
         if(!this.filter) {
             this.filter = this.createDefaultFilter();
@@ -422,7 +425,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
         }
 
         this.createDefaultConfigs();
-        
+
         var defAttributesComboConfig = {
             xtype: "combo",
             store: attributes,
@@ -439,21 +442,21 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             listeners: {
                 select: function(combo, record) {
                     this.filter.property = record.get("name");
-                    this.fieldType = record.get("type").split(":")[1];
+                    this.fieldType = (record.get("type").split(":")[1]) ? record.get("type").split(":")[1] : record.get("type");
                     if(!this.comparisonCombo) {
                         this.comparisonCombo = this.items.get(1);
                     }
-                    
+
                     this.comparisonCombo.enable();
                     this.comparisonCombo.reset();
-                    
+
                     if(!this.valueWidgets) {
                         this.valueWidgets = this.items.get(2);
                     }
                     this.valueWidgets.removeAll();
-                    
+
                     this.setFilterType(null);
-        
+
                     this.doLayout();
                     this.fireEvent("change", this.filter, this);
                 },
@@ -471,7 +474,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             },
             width: 120
         };
-        
+
         var defComparisonComboConfig = {
             xtype: "gxp_comparisoncombo",
             ref: "type",
@@ -479,7 +482,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             allowBlank: this.allowBlank,
             value: this.filter.type,
             listeners: {
-                select: function(combo, record) {                    
+                select: function(combo, record) {
                     this.createValueWidgets(record.get("value"), ['','']);
                 },
                 expand: function(combo) {
@@ -489,10 +492,10 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                         store.filter([
                           {
                             fn   : function(record) {
-                                return (record.get('name') === "=") || (record.get('name') === "<>") || (record.get('name') === "<") || (record.get('name') === ">") || (record.get('name') === "<=") || (record.get('name') === ">=") || (record.get('name') === "between");
+                                return (record.get('name') === "=") || (record.get('name') === "<>") || (record.get('name') === "<") || (record.get('name') === ">") || (record.get('name') === "<=") || (record.get('name') === ">=") || (record.get('name') === "between") || (record.get('name') === "isNull");
                             },
                             scope: this
-                          }                      
+                          }
                         ]);
                     }/*else if(this.fieldType === "boolean"){
                         store.filter([
@@ -501,22 +504,22 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                                 return (record.get('name') === "=");
                             },
                             scope: this
-                          }                      
+                          }
                         ]);
-                    }*/ 
+                    }*/
                 },
                 scope: this
             }
         };
-        
+
         this.attributesComboConfig = this.attributesComboConfig || {};
         Ext.applyIf(this.attributesComboConfig, defAttributesComboConfig);
-        
-        this.comparisonComboConfig = this.comparisonComboConfig || {};        
+
+        this.comparisonComboConfig = this.comparisonComboConfig || {};
         Ext.applyIf(this.comparisonComboConfig, defComparisonComboConfig);
 
-		
-		
+
+
 		if(hasFilter) {
 			if(this.attributes.getCount() === 0) {
 				attributes.on("load", function() {
@@ -529,12 +532,15 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
 				}, this, {single: true});
 			}
 		}
-		
+
         this.items = [this.attributesComboConfig, this.comparisonComboConfig, {
             xtype: 'container',
             isFormField: true,
             isValid: function() { return true; },
-            reset: function() {
+            layout  : 'hbox',
+            defaultMargins: '0 3 0 0',
+            width: 100,
+		    reset: function() {
                  this.eachItem(function(a) {
                     a.reset()
                 });
@@ -543,13 +549,10 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                 if (this.items && this.items.each) {
                     this.items.each(b, a || this)
                 }
-            },
-            layout  : 'hbox',            
-            defaultMargins: '0 3 0 0',
-            width: 100
+            }
         }];
-        
-        
+
+
         this.addEvents(
             /**
              * Event: change
@@ -560,7 +563,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
              * this - {gxp.form.FilterField} (TODO change sequence of event parameters)
              */
             "change"
-        ); 
+        );
 
         gxp.form.FilterField.superclass.initComponent.call(this);
     },
@@ -570,7 +573,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
      * Performs validation checks on the filter field.
      *
      * Returns:
-     * {Boolean} True if value is valid. 
+     * {Boolean} True if value is valid.
      */
     validateValue: function(value, preventMark) {
         if (this.filter.type === OpenLayers.Filter.Comparison.BETWEEN) {
@@ -581,7 +584,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                 this.filter.value !== null && this.filter.type !== null);
         }
     },
-    
+
     /**
      * Method: createDefaultFilter
      * May be overridden to change the default filter.
@@ -592,13 +595,13 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
     createDefaultFilter: function() {
         return new OpenLayers.Filter.Comparison({matchCase: !this.caseInsensitiveMatch});
     },
-    
+
     initUniqueValuesStore: function(store, url, layerName, namespaces, fieldName) {
         var wpsUrl = url;
         if (url.indexOf('wfs?', url.length - 'wfs?'.length) !== -1) {
             wpsUrl = url.substring(0, url.length-'wfs?'.length)+"wps";
         }
-            
+
         var prefix = "";
         var featureTypeName = layerName;
         var featureNS;
@@ -606,13 +609,13 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             prefix = layerName.split(':')[0];
             featureNS = namespaces[prefix] || '';
         }
-            
+
         var params = {
             url: wpsUrl,
             outputs: [{
                 identifier: "result",
                 mimeType: "application/json"
-            }],               
+            }],
             inputs: {
                 featureTypeName: featureTypeName,
                 featureNS: featureNS,
@@ -623,10 +626,10 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
         };
         store.setWPSParams(params);
     },
-    
+
     setFilterType: function(type) {
         this.filter.type = type;
-        
+
         // Ilike (ignore case)
         if(this.filter.type == "ilike"){
             this.filter.type = OpenLayers.Filter.Comparison.LIKE;

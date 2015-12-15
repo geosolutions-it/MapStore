@@ -6,7 +6,7 @@
     "gsSources": {
 		"bing": {
 			"ptype": "gxp_bingsource" 
-		}
+		}		
     },
 	"loadingPanel": {
 		"width": 100,

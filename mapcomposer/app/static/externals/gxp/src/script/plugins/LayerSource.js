@@ -137,8 +137,9 @@ gxp.plugins.LayerSource = Ext.extend(Ext.util.Observable, {
             group: record.get("group"),
 			uuid : record.get("uuid"),
 			gnURL: record.get("gnURL"),
+			wcs: record.get("wcs"),
             fixed: record.get("fixed"),
-	    tiled: !layer.getOptions().singleTile,
+			tiled: !layer.getOptions().singleTile,
             selected: record.get("selected")
         };
     }

@@ -1,5 +1,7 @@
-/** This file contains the common configuration options 
- *  that can be overridden by the serverConfig objects in templates */
+/** 
+ * This file contains the common configuration options that can 
+ * be overridden by the serverConfig objects in templates.
+ */
 var localConfig = {
    
    proxy:"/http_proxy/proxy/?url=",
@@ -7,4 +9,7 @@ var localConfig = {
    adminUrl:"/opensdi2-manager/",
    geoStoreBase:"/opensdi2-manager/facade/geostore/rest/",
    externalLogoutUrl:"/logout",
+   apikeys:{
+       "Bing" : "insert-your-Bing-API-key"
+   }
 };

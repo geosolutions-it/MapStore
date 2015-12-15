@@ -27,9 +27,9 @@ Ext.namespace("gxp.plugins");
  *    Plugin for displaying vector features in a grid. Requires a
  *    :class:`gxp.plugins.FeatureManager`. Also provides a context menu for
  *    the grid.
- */   
+ */
 gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
-    
+
     /** api: ptype = gxp_featuregrid */
     ptype: "gxp_featuregrid",
 
@@ -43,7 +43,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  in the bottom toolbar of the grid, if available.
      */
     showTotalResults: false,
-    
+
     /** api: config[alwaysDisplayOnMap]
      *  ``Boolean`` If set to true, the features that are shown in the grid
      *  will always be displayed on the map, and there will be no "Display on
@@ -51,7 +51,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  "Display on map" button will be shown.
      */
     alwaysDisplayOnMap: false,
-    
+
     /** api: config[showExportCSV]
      *  ``Boolean`` If set to true, show CSV export bottons.
      *  Deprecated. Use exportFormats = ["CSV"]
@@ -79,34 +79,34 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
     },
 
     /** api: config[exportAction]
-     *  ``String`` Export action type. 
-     *  It can be `button` (append one button for each export format) 
+     *  ``String`` Export action type.
+     *  It can be `button` (append one button for each export format)
      *  or `window` (append only one button `Export` and show options in a new window).
      *  Default is `window`.
      */
     exportAction: "window",
-    
+
     /** api: config[displayMode]
      *  ``String`` Should we display all features on the map, or only the ones
      *  that are currently selected on the grid. Valid values are "all" and
      *  "selected". Default is "all".
      */
     displayMode: "all",
-    
+
     /** api: config[autoExpand]
      *  ``Boolean`` If set to true, and when this tool's output is added to a
      *  container that can be expanded, it will be expanded when features are
      *  loaded. Default is false.
      */
     autoExpand: false,
-    
+
     /** api: config[autoCollapse]
      *  ``Boolean`` If set to true, and when this tool's output is added to a
      *  container that can be collapsed, it will be collapsed when no features
      *  are to be displayed. Default is false.
      */
     autoCollapse: false,
-    
+
     /** api: config[selectOnMap]
      *  ``Boolean`` If set to true, features can not only be selected on the
      *  grid, but also on the map, and multi-selection will be enabled. Only
@@ -114,18 +114,18 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  the underlying feature manager. Default is false.
      */
     selectOnMap: false,
-    
+
     /** api: config[comboFormatTpl]
      *  ``String`` Tpl for the export combo in the export window.
      */
     comboFormatTpl: "<tpl for=\".\"><div class=\"x-combo-list-item gxp-icon-featuregrid-export {iconCls}\">{name}</div></tpl>",
-    
+
     /** api: config[displayFeatureText]
      * ``String``
      * Text for feature display button (i18n).
      */
     displayFeatureText: "Display",
-    
+
     /** api: config[displayExportCSVText]
      * ``String``
      * Text for CSV Export buttons (i18n).
@@ -137,7 +137,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      * Text for Export buttons (i18n).
      */
     displayExportText: "Export to {0}",
-    
+
     /** api: config[exportCSVSingleText]
      * ``String``
      * Text for CSV Export Single Page button (i18n).
@@ -148,25 +148,25 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      * ``String``
      * Text for CSV Export Multiple Pages button (i18n).
      */
-    exportCSVMultipleText: "All Pages",       
+    exportCSVMultipleText: "All Pages",
 
     /** api: config[failedExportCSV]
      * ``String``
      * Text for CSV Export error (i18n).
      */
-    failedExportCSV: "Failed to find response for output format CSV",       
+    failedExportCSV: "Failed to find response for output format CSV",
 
     /** api: config[failedExport]
      * ``String``
      * Text for Export error (i18n).
      */
     failedExport: "Failed to find response for output format {0}",
-    
+
     /** api: config[nvalidParameterValueErrorText]
      * ``String``
      * Text for CSV Export error (i18n).
      */
-    invalidParameterValueErrorText: "Invalid Parameter Value",    
+    invalidParameterValueErrorText: "Invalid Parameter Value",
 
     /** api: config[zoomFirstPageTip]
      *  ``String``
@@ -233,51 +233,51 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  String for the Export button i18n).
      */
     exportTitleText: "Export",
-    
+
     /** api: config[title]
      *  ``String``
      *  Feature Grid title.
      */
     title: "Features",
-    
+
     /** api: config[defaultComboFormatValue]
      *  ``String``
      *  Default output format selection for export. Default is 'CSV'
      */
     defaultComboFormatValue: "CSV",
-	
+
 	/** api: config[zoomToFeature]
      *  ``String``
      */
 	zoomToFeature: "Zoom To Feature",
-    
+
     /** api: config[exportDoubleCheck]
      *  ``Boolean``
      *  Do check on feature grid export (one to show a possible error and another one to download the file)
      */
      exportDoubleCheck: true,
-     
+
 	/** api: config[exportCheckLimit]
      *  ``integer``
      *  if present, limit the number of feature to query for the first check
      */
      exportCheckLimit: null,
-     
+
 	/** api: config[pageLabel]
      *  ``String``
      */
 	pageLabel: "Page",
-	
+
 	/** api: config[pageOfLabel]
      *  ``String``
      */
-	pageOfLabel: "of",	
+	pageOfLabel: "of",
     /**
      * api: config[ignoreFields]
       ``Array`` do not display these records in grid
      */
     ignoreFields:["feature", "state", "fid"],
-	
+
     /** api: config[totalRecordsLabel]
      *  ``String``
      */
@@ -297,7 +297,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             );
         }
     },
-    
+
     /** api: method[addOutput]
      */
     addOutput: function(config) {
@@ -363,9 +363,9 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
 				}
 			}
 		);
-		
+
 		if(featureManager.pagingType == 1){
-			toolbarElements.push(				
+			toolbarElements.push(
 				'-'
 				, {
 					xtype: 'compositefield',
@@ -412,7 +412,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
 					}]
 				}
 			);
-			
+
 			if(this.showNumberOfRecords === true){
 				toolbarElements.push(
 					/*{
@@ -439,7 +439,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
 				);
 			}
 		}
-		
+
 		toolbarElements.push(
 				'-',
 			{
@@ -451,7 +451,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 handler: function() {
                     map.zoomToExtent(featureManager.getPageExtent());
                 }
-            }, 
+            },
 				'-'
 			, {
                 iconCls: "x-tbar-page-next",
@@ -479,7 +479,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             },
 			this.displayItem
 		);
-		
+
         var bbar = (featureManager.paging ? [toolbarElements] : []).concat(["->"].concat(!this.alwaysDisplayOnMap ? [{
                 text: this.displayFeatureText,
                 id: "showButton",
@@ -492,7 +492,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 scope: this
             }] : [])).concat(["->"]);
 
-        // Export formats 
+        // Export formats
         if(this.exportFormats){
             if(this.exportAction == 'window'){
                 bbar.push(this.getExportWindowButton());
@@ -526,6 +526,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             autoScroll: true,
             title: this.title,
             bbar: bbar,
+            featureMaxZoomLevel:(this.featureMaxZoomLevel)?this.featureMaxZoomLevel:null,
             listeners: {
                 "added": function(cmp, ownerCt) {
                     var onClear = OpenLayers.Function.bind(function() {
@@ -597,7 +598,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         var bounds = feature.geometry.getBounds();
                         if(bounds){
                             this.target.mapPanel.map.zoomToExtent(bounds);
-                            
+
                             var showButton = Ext.getCmp("showButton");
                             if(!showButton.pressed){
                                 showButton.toggle(true);
@@ -605,15 +606,15 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                             }
                         }
                     }
-                }               
+                }
             }]})
         }, config || {});
         var featureGrid = gxp.plugins.FeatureGrid.superclass.addOutput.call(this, config);
-        
+
         if (this.alwaysDisplayOnMap || this.selectOnMap) {
             featureManager.showLayer(this.id, this.displayMode);
         }
-       
+
 	   // /////////////////////////////////////
 	   // FeatureManager events's listeners
 	   // /////////////////////////////////////
@@ -627,29 +628,29 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             var next = (paging && (pageIndex !== numPages-1));
             featureGrid.lastPageButton.setDisabled(!next);
             featureGrid.nextPageButton.setDisabled(!next);
-			
+
 			if(featureManager.pagingType == 1){
 				featureGrid.currentPage.enable();
 				featureGrid.currentPage.setValue(featureManager.pageIndex + 1);
 				featureGrid.numberOfPagesLabel.setText(featureManager.numPages);
-				
+
 				if(me.showNumberOfRecords === true){
 					featureGrid.totalRecords.setText(featureManager.numberOfFeatures + "}");
 				}
 			}
         }, this);
-                
-        featureManager.on("layerchange", function(mgr, rec, schema) {		
+
+        featureManager.on("layerchange", function(mgr, rec, schema) {
 			if(featureManager.pagingType == 1){
 				featureGrid.currentPage.disable();
 				featureGrid.currentPage.setValue("0");
 				featureGrid.numberOfPagesLabel.setText("0");
-				
+
 				if(me.showNumberOfRecords === true){
 					featureGrid.totalRecords.setText("0}");
 				}
 			}
-			
+
             //TODO use schema instead of store to configure the fields
             var ignoreFields = this.ignoreFields;
             schema && schema.each(function(r) {
@@ -658,25 +659,25 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             featureGrid.ignoreFields = ignoreFields;
             featureGrid.setStore(featureManager.featureStore, schema);
         }, this);
-		
-		featureManager.on("clearfeatures", function(mgr, rec, schema) {		
+
+		featureManager.on("clearfeatures", function(mgr, rec, schema) {
 			if(featureManager.pagingType == 1){
 				featureGrid.currentPage.disable();
 				featureGrid.currentPage.setValue("0");
 				featureGrid.numberOfPagesLabel.setText("0");
-				
+
 				if(me.showNumberOfRecords === true){
 					featureGrid.totalRecords.setText("0}");
 				}
 			}
         }, this);
-        
+
         return featureGrid;
     },
 
     /** api: method[getExportWindowButton]
      *  Generate a export button to open a new dialog with the configured formats
-     */    
+     */
     getExportWindowButton: function(){
         var exportWindow = this.exportWindow;
         if(!exportWindow){
@@ -761,7 +762,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                                     msg: this.noFormatBodyText,
                                     buttons: Ext.Msg.OK,
                                     icon: Ext.MessageBox.ERROR
-                                }); 
+                                });
                             }
                         },
                         scope: this
@@ -778,7 +779,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                                     msg: this.noFormatBodyText,
                                     buttons: Ext.Msg.OK,
                                     icon: Ext.MessageBox.ERROR
-                                }); 
+                                });
                             }
                         },
                         scope: this
@@ -793,16 +794,16 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             disabled: true,
             iconCls: "gxp-icon-csvexport",
             ref: "../exportButton",
-            handler:function() {                    
+            handler:function() {
                 this.exportWindow.show();
             },
             scope: this
         };
-    }, 
+    },
 
     /** api: method[getExportButton]
      *  Generate a export button for an specific format
-     */    
+     */
     getExportButton: function(format){
         var displayExportText = String.format(this.displayExportText, format);
         return {
@@ -813,11 +814,11 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             ref: "../export" + format + "Button",
             menu:{
                 xtype: "menu",
-                showSeparator: true, 
+                showSeparator: true,
                 items: [{
                     iconCls: "gxp-icon-csvexport-single",
                     text: this.exportCSVSingleText,
-                    handler: function() {                    
+                    handler: function() {
                         this.me.doExport(true, this.format);
                     },
                     scope: {
@@ -827,7 +828,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 },{
                     iconCls: "gxp-icon-csvexport-multiple",
                     text: this.exportCSVMultipleText,
-                    handler: function() {                    
+                    handler: function() {
                         this.me.doExport(false, this.format);
                     },
                     scope: {
@@ -840,21 +841,19 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
     },
 
     /** api: method[doExport]
-     */    
+     */
     doExport: function(single, outputFormat){
-    
+
         var featureManager = this.target.tools[this.featureManager];
         var grid = this.output[0];
         var protocol = grid.getStore().proxy.protocol;
         var allPage = {};
-        
-        
-        
-        
+
+
         allPage.extent = featureManager.getPagingExtent("getMaxExtent");
-        
+
          //IF WFS_PAGING create filter with fid id
-        if (featureManager.pagingType === gxp.plugins.FeatureManager.WFS_PAGING) {
+        if (featureManager.pagingType === gxp.plugins.FeatureManager.WFS_PAGING && single) {
             var fidsA=[];
             featureManager.featureStore.each(function(r){
                 fidsA.push(r.get("fid"));
@@ -862,29 +861,29 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             var filter= new OpenLayers.Filter.FeatureId({fids: fidsA});
         }
        else{
-         var filter = featureManager.setPageFilter(single ? featureManager.page : allPage);               
+         var filter = featureManager.setPageFilter(single ? featureManager.page : allPage);
          }
-        
+
         var node = new OpenLayers.Format.Filter({
             version: protocol.version,
             srsName: protocol.srsName
         }).write(filter);
-        
+
         this.xml = new OpenLayers.Format.XML().write(node);
-        
+
         var colModel = grid.getColumnModel();
         //get all columns and see if they are visible
         var numColumns = colModel.getColumnCount(false);
         var propertyName = [];
-        
+
         for (var i=0; i<numColumns; i++){
             var header = colModel.getColumnHeader(i) ;
             if( header && header != "" && !colModel.isHidden(i)){
                 propertyName.push(header);
             }
-        }   
+        }
         var failedExport = String.format(this.failedExport, outputFormat);
-        
+
         // Url generation
         var url =  protocol.url;
         var propertyNamesString = "";
@@ -922,7 +921,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 callback: function(request) {
                     myMask.hide();
                     if(request.status == 200){
-                    
+
                         try
                           {
                                 var serverError = Ext.util.JSON.decode(request.responseText);
@@ -933,14 +932,14 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                                          "Error: " + serverError.exceptions[0].text,
                                     buttons: Ext.Msg.OK,
                                     icon: Ext.MessageBox.ERROR
-                                });                        
+                                });
                           }
                         catch(err)
                           {
                             // submit filter in a standard form (before check)
                             this.doDownloadPost(this.url, this.xml,outputFormat);
                           }
-                          
+
                     }else{
                         Ext.Msg.show({
                             title: failedExport,
@@ -951,24 +950,24 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     }
                 },
                 scope: this
-            });   
+            });
         }else{
             // submit filter in a standard form to skip double check
             this.doDownloadPost(this.url, this.xml,outputFormat);
-        }     
+        }
 
     },
 
     /** api: method[doDownloadPost]
-     * create a dummy iframe and a form. Submit the form 
-     */    
-     
+     * create a dummy iframe and a form. Submit the form
+     */
+
     doDownloadPost: function(url, data,outputFormat){
-        //        
+        //
         //delete other iframes appended
         //
         if(document.getElementById(this.downloadFormId)) {
-            document.body.removeChild(document.getElementById(this.downloadFormId)); 
+            document.body.removeChild(document.getElementById(this.downloadFormId));
         }
         if(document.getElementById(this.downloadIframeId)) {
             document.body.removeChild(document.getElementById(this.downloadIframeId));
@@ -982,7 +981,7 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         document.body.appendChild(iframe);
         iframe.onload = function(){
             if(!iframe.contentWindow) return;
-            
+
             var error ="";
             var body = iframe.contentWindow.document.getElementsByTagName('body')[0];
             var content ="";
@@ -1004,10 +1003,10 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                      "Error: " + error,
                 buttons: Ext.Msg.OK,
                 icon: Ext.MessageBox.ERROR
-            });   
+            });
         }
         var me = this;
-        
+
         // submit form with enctype = application/xml
         var form = document.createElement("form");
         this.downloadFormId = Ext.id();
@@ -1019,35 +1018,35 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         var iframeURL = (!urlregex.test(url) || url.indexOf(location.host)>0) ? url :  proxy + encodeURIComponent(url);
         form.setAttribute("action", iframeURL );
         form.setAttribute("target",this.downloadIframeId);
-        
-        var hiddenField = document.createElement("input");      
+
+        var hiddenField = document.createElement("input");
         hiddenField.setAttribute("name", "filter");
         hiddenField.value= data;
         form.appendChild(hiddenField);
         document.body.appendChild(form);
-        form.submit(); 
-    } 
+        form.submit();
+    }
     /** api: method[doDownloadPost]
-     */   
-/*     
+     */
+/*
     doDownloadPost: function(url, data){
-        //        
+        //
         //delete other iframes appended
         //
         if(document.getElementById(this.downloadFormId)) {
-            document.body.removeChild(document.getElementById(this.downloadFormId)); 
+            document.body.removeChild(document.getElementById(this.downloadFormId));
         }
         // submit form with filter
         var form = document.createElement("form");
         form.setAttribute("id", this.downloadFormId);
         form.setAttribute("method", "POST");
         form.setAttribute("action", url);
-        var hiddenField = document.createElement("input");      
+        var hiddenField = document.createElement("input");
         hiddenField.setAttribute("name", "filter");
         hiddenField.setAttribute("value", data);
         form.appendChild(hiddenField);
         document.body.appendChild(form);
-        form.submit(); 
+        form.submit();
     }
     */
 });

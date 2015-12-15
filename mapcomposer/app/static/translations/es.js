@@ -287,7 +287,7 @@ GeoExt.Lang.add("es", {
 	    removeGroupConfirmationText: "¿Está seguro de que quiere borrar el grupo seleccionado? Todas las capas contenidas en el mismo se borrarán del mapa."
     },
     
-    "gxp.plugins.SaveDefaultContext.prototype": { 
+    "gxp.plugins.SaveMapPlugin.prototype": { 
 	    saveDefaultContextMenuText: "Guardar contexto por defecto",
 	    saveDefaultContextActionTip: "Guardar contexto del mapa",
 	    contextSaveSuccessString: "Contexto salvado correctamente",
@@ -298,10 +298,14 @@ GeoExt.Lang.add("es", {
 		loginLabel: "Login",	
 		mapMetadataTitle: "Insertar Metadatos del Mapa",	
 		mapMedatataSetTitle: "Metadatos del Mapa",	
-		mapNombreLabel: "Nombre",	
-		mapDescripciónLabel: "Descripción",
+		mapNameLabel: "Nombre",	
+		mapDescriptionLabel: "Descripción",
 		addResourceButtonText: "Añadir Mapa",
-		conflictErrMsg: "Un mapa con el mismo nombre ya existe"
+		conflictErrMsg: "Un mapa con el mismo nombre ya existe",
+        selectionErrorTitle:"Error",
+        groupSelectionError:"Seleccione al menos un grupo",
+        permissionsLabel:"Permisos",
+        groupsLabel:"Grupos"
     },
 	
     "gxp.plugins.GeoReferences.prototype": {
@@ -561,9 +565,8 @@ GeoExt.Lang.add("es", {
         menuText: "GeoReferencias",
         tooltip: "GeoReferencias",
         addMarkerTooltip: "Reinicia Marcador",
-        emptyText: "Geocoder...",
         buttonText: "Dirección",
-        emptyText: "Dirección...",
+        geoCoderEmptyText: "Dirección...",
 		errorMsg: "No se encontró la dirección",
 		waitMsg: "Por favor, espere...",
 		addressTitle: "Direcciñon encontrada",
@@ -858,5 +861,12 @@ GeoExt.Lang.add("es", {
 	
 	"gxp.plugins.StaticPage.prototype": {
         tabTitle: "Página estática"
-    }  
+    }, 
+    "cookieChoices": {
+        "cookieText": "Las cookies nos ayudan a ofrecer nuestros servicios. Al utilizarlos, usted acepta el uso de cookies.",
+        "dismissText": "Entendido",
+        "linkText":"Más información",
+        "linkHref":"cookies-policy-en.html"
+
+  }  
 });

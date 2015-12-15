@@ -59,9 +59,13 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
             // grid: this,
             forceLogin: this.forceLogin,
             geoStoreBase : this.target.config.geoStoreBase,
-            token: this.target.auth,
+            adminUrl : this.target.config.adminUrl,
+            authHeader: this.target.authHeader,
+            token: this.target.token,
             statelessSession: this.statelessSession,
-            defaultHeaders: this.target.defaultHeaders
+            defaultHeaders: this.target.defaultHeaders,
+            authenticationMethod: this.target.authenticationMethod || 'basic',
+            sessionLogin: this.target.sessionLogin || false
         });
 
         // Add listeners for login and logout
@@ -80,9 +84,9 @@ mxp.plugins.Login = Ext.extend(mxp.plugins.Tool, {
     /** private: method[onLogin]
      *  Listener with actions to be executed when an user makes login.
      */
-    onLogin: function(user, auth, details){
-        this.target.onLogin(user, auth, details);
-        this.fireEvent("login", user, auth, details);
+    onLogin: function(user, auth, token, details){
+        this.target.onLogin(user, auth, token, details);
+        this.fireEvent("login", user, auth, token, details);
     },
 
     /** private: method[onLogout]

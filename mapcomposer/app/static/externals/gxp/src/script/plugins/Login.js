@@ -103,6 +103,9 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
 	logoutLoadingMask: "Logout ...",
     
     scale: 'small',
+    
+    windowWidth: 275,
+    windowHeight:140,
 	
 	reloadOnLogin: true,
     
@@ -167,7 +170,11 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
 				this.loginSuccess();
 			}     
 		}, this);
-		
+		if(this.showOnStartup){
+            this.target.on('ready',function(){
+                this.showLoginDialog();
+            },this);
+        }
 		return actions;
     },
 	
@@ -178,6 +185,7 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
         this.panel = new Ext.FormPanel({
             frame: true,
             labelWidth: 80,
+            region:'center',
             layout: "form",
             defaultType: "textfield",
             errorReader: {
@@ -225,25 +233,29 @@ gxp.plugins.Login = Ext.extend(gxp.plugins.Tool, {
                 scope: this
             }]
         });
-		
+
         this.win = new Ext.Window({
             iconCls:'user-icon',
             title: this.loginText,
-            layout: "fit",
-            width: 275,
+            layout: "border",
+            width: this.windowWidth,
             closable:this.closable,
             draggable:this.draggable,
             closeAction: 'close',
-            height: 140,
+            height: this.windowHeight,
             plain: true,
             border: false,
             modal: true,
             items: [this.panel]
         });
-		
+		if(this.addPanels){
+             this.win.add(this.addPanels);
+        }
         this.win.show();
+        
     },
     
+        
     getService: function(mUrl) {
         var pattern = /(.+:\/\/)?([^\/]+)(\/.*)*/i;
         var mHost = pattern.exec(mUrl);

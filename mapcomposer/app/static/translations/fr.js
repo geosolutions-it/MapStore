@@ -285,7 +285,7 @@ GeoExt.Lang.add("fr", {
 	    removeGroupConfirmationText: "Etes-vous certain de vouloir supprimer le groupe ? Tous les couches du groupe seront également supprimées de la carte."
     },
     
-    "gxp.plugins.SaveDefaultContext.prototype": { 
+    "gxp.plugins.SaveMapPlugin.prototype": { 
 	    saveDefaultContextMenuText: "Enregistrer le contexte par défaut",
 	    saveDefaultContextActionTip: "Enregistrer le contexte de carte",
 	    contextSaveSuccessString: "Enregistrement du contexte effectué avec succès",
@@ -299,7 +299,11 @@ GeoExt.Lang.add("fr", {
 		mapNameLabel: "Nom",	
 		mapDescriptionLabel: "Description",
 		addResourceButtonText: "Ajouter la carte",
-		conflictErrMsg: "Une carte avec le même nom existe déjà"
+		conflictErrMsg: "Une carte avec le même nom existe déjà",
+        selectionErrorTitle:"Erreur",
+        groupSelectionError:"Sélectionnez au moins un groupe",
+        permissionsLabel:"Autorisations",
+        groupsLabel:"Groupes"
     },
     "gxp.plugins.GeoReferences.prototype":{
         initialText: "Sélectionner une zone",
@@ -562,9 +566,8 @@ GeoExt.Lang.add("fr", {
         menuText: "Codification Géographique",
         tooltip: "Codification Géographique",
         addMarkerTooltip: "Réinitialiser le Marqueur",
-        emptyText: "Géocodage en cours...",
         buttonText: "Adresse",
-        emptyText: "Adresse...",
+        geoCoderEmptyText: "Adresse...",
 		errorMsg: "Aucune adresse trouvée",
 		waitMsg: "S'il vous plaît attendre...",
 		addressTitle: "Adresse trouvée",
@@ -902,7 +905,14 @@ GeoExt.Lang.add("fr", {
 	
 	"gxp.plugins.StaticPage.prototype": {
         tabTitle: "Page Statique"
-    } 
+    } ,
+      
+    "cookieChoices": {
+        "cookieText": "Les cookies nous permettent de vous proposer nos services plus facilement. En utilisant nos services, vous nous donnez expressément votre accord pour exploiter ces cookies.",
+        "dismissText": "OK",
+        "linkText":"En Savoir plus",
+        "linkHref":"cookies-policy-en.html"
+  }  
 });
 
 

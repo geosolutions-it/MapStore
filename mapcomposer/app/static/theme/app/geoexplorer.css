@@ -213,6 +213,11 @@ body {
 .gx-map-edit{
     background-image: url(img/silk/map_edit.png);
 }
+
+.gx-map-link {
+    background-image: url(img/silk/link.png);
+}
+
 .gx-map-add{
     background-image: url(img/silk/map_add.png);
 }

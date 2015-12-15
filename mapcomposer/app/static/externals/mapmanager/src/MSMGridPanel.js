@@ -539,6 +539,9 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 getToken: function(){
                     return null;
                 },
+                getAuthHeader: function(){
+                    return null;
+                },
                 getCurrentUser: function(){
                     return null;
                 },
@@ -934,7 +937,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									// /////////////////////////////////////
 									// Get info about logged user if any
 									// /////////////////////////////////////
-									var auth = grid.login.getToken();
+									var auth = grid.login.getAuthHeader();
 									
 									// /////////////////////////
 									// Fetch base url
@@ -1037,7 +1040,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			    // /////////////////////////////////////
 			  	// Get info about logged user if any
 				// /////////////////////////////////////
-			    var auth = grid.login.getToken();
+			    var auth = grid.login.getAuthHeader();
 				
 				// ///////////////////
 				// fetch base url
@@ -1116,7 +1119,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 					   items: new UserManagerView({
 					   			login: grid.login,
                                 ASSET: grid.config.ASSET,
-								auth: grid.login.getToken(),
+								auth: grid.login.getAuthHeader(),
 								url: grid.geoBaseUsersUrl,
                                 searchUrl: grid.geoSearchUsersUrl,
 								mapUrl: grid.geoBaseMapsUrl,
@@ -1132,7 +1135,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 } else {
                     new UserManagerView({
                         login: grid.login,
-                        auth: grid.login.getToken(),
+                        auth: grid.login.getAuthHeader(),
                         url: grid.geoBaseUsersUrl,
                         mapUrl: grid.geoBaseMapsUrl,
                         gridPanelBbar: grid.getBottomToolbar(),
@@ -1167,7 +1170,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			    });
 		   
 			    var urlField = new Ext.form.TextField({
-					fieldLabel: grid.embedUrlLabel,
+					fieldLabel: "VIEW",
 					labelStyle: 'font-weight:bold;',
 					width: 350,
 					value: embedMap.getAbsoluteUrl(url),
@@ -1192,12 +1195,16 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 			    });
 				
 				var composerUrl = url;
+				var embeddedUrl = url;
+				
 			    if(templateId){
-					composerUrl += "&configId=" + templateId;
-					if(composerUrl.indexOf("viewer") != -1){
-						composerUrl = composerUrl.replace(/viewer/, "composer");
-					}					
+					composerUrl += "&configId=" + templateId;	
+					embeddedUrl += "&configId=" + templateId;					
 				}
+				
+				if(composerUrl.indexOf("viewer") != -1){
+					composerUrl = composerUrl.replace(/viewer/, "composer");
+				}	
 				
 				var urlComposerField = new Ext.form.TextField({
 					fieldLabel: grid.composerUrlLabel,
@@ -1223,13 +1230,43 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 						}
 					]
 			    });
+				
+				if(embeddedUrl.indexOf("viewer") != -1){
+					embeddedUrl = embeddedUrl.replace(/viewer/, "embedded");
+				}	
+				
+				var urlEmbeddedField = new Ext.form.TextField({
+					fieldLabel: grid.embedUrlLabel,
+					labelStyle: 'font-weight:bold;',
+					width: 350,
+					value: embedMap.getAbsoluteUrl(embeddedUrl),
+					selectOnFocus: true,
+					readOnly: true
+			    }); 
+				
+				var urlEmbeddedComposite = new Ext.form.CompositeField({
+					items:[
+						urlEmbeddedField,
+						{
+							xtype: 'button',
+							tooltip: grid.showMapTooltip,
+							iconCls: "gx-map-go",
+							width: 20,
+							handler: function(){
+								var u = urlEmbeddedField.getValue();
+								window.open(u);
+							}
+						}
+					]
+			    });
 		   
 			    var directURL = new Ext.form.FieldSet({
 					title: grid.embedURL,
 					labelWidth: 50,
 					items:[
 						urlCompositeField,
-						urlComposerComposite
+						urlComposerComposite,
+						urlEmbeddedComposite
 					],
 					bodyStyle: 'padding: 15px'
 			    });
@@ -1734,7 +1771,7 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									// //////////////////////////////////
 									// Get info about logged user if any
 									// //////////////////////////////////
-									var auth = grid.login.getToken();
+									var auth = grid.login.getAuthHeader();
 									
 									// ////////////////////
 									// Fetch base url
@@ -1885,8 +1922,8 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
                 timeout: this.msmTimeout,
                 listeners:{
                     beforeload: function(proxy,params){
-                        if(grid.login){
-                            proxy.conn.headers['Authorization'] = grid.login.getToken();
+                        if(grid.login && grid.login.getAuthHeader()){
+                            proxy.conn.headers['Authorization'] = grid.login.getAuthHeader();
                         }else if(proxy.conn.headers && proxy.conn.headers['Authorization']){
                             delete proxy.conn.headers['Authorization'];
                         }

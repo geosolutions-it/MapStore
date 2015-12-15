@@ -41,6 +41,7 @@
         "height": 100,
         "center": true
     },
+	"cookieConsent":true,
     "map": {
         "projection": "EPSG:900913",
         "units": "m",

@@ -30,41 +30,41 @@ Ext.namespace("gxp.plugins");
  *
  *    The FeatureManager handles WFS feature loading, filtering, paging and
  *    transactions.
- */   
+ */
 gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
-    
+
     /** api: ptype = gxp_featuremanager */
     ptype: "gxp_featuremanager",
 
     /** api: config[noValidWmsVersionMsgTitle]
      *  ``String``
      *  Title string for no valid WMS version (i18n).
-     */    
+     */
     noValidWmsVersionMsgTitle: 'No valid WMS version',
-    
+
     /** api: config[noValidWmsVersionMsgText]
      *  ``String``
      *  Text string for no valid WMS version (i18n).
-     */    
-    noValidWmsVersionMsgText: "The queryForm plugin doesn't work with WMS Source version: ",   
-    
+     */
+    noValidWmsVersionMsgText: "The queryForm plugin doesn't work with WMS Source version: ",
+
     /** api: config[maxFeatures]
      *  ``Number`` Default is 100
      */
     maxFeatures: 100,
-    
+
     /** api: config[paging]
      *  ``Boolean`` Should paging be enabled? Default is true.
      */
     paging: true,
 
     /** api: config[pagingType]
-     * ``Integer`` Paging type to use, one of: 
+     * ``Integer`` Paging type to use, one of:
      * gxp.plugins.FeatureManager.QUADTREE_PAGING or
      * gxp.plugins.FeatureManager.WFS_PAGING
      */
     pagingType: null,
-    
+
     /** api: config[autoZoomPage]
      *  ``Boolean`` Set to true to always zoom the map to the currently
      *  selected page. Default is false.
@@ -77,7 +77,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  true unless ``layer`` is configured.
      */
     autoSetLayer: true,
-    
+
     /** api: config[layer]
      *  ``Object`` with source and name properties. The layer referenced here
      *  will be set as soon as it is added to the target's map. When this
@@ -89,7 +89,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  Default is false.
      */
     autoLoadFeatures: false,
-    
+
     /** api: config[symbolizer]
      *  ``Object`` An object with "Point", "Line" and "Polygon" properties,
      *  each with a valid symbolizer object for OpenLayers. Will be used to
@@ -106,47 +106,47 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  i.e. to have zindex use  "vecLayerOptions": {"rendererOptions":{"zIndexing": true}}
      *  in composer configuration
      */
-    
+
     /** api: config[format]
      *  ``String`` Optional response format to use for WFS GetFeature requests.
      *  Valid values are "GML2", "GML3" and "JSON". By default this is not set,
      *  which means that GML3 will be used.
      */
-    
+
     /** api: property[layerRecord]
      *  ``GeoExt.data.LayerRecord`` The currently selected layer for this
      *  FeatureManager
      */
     layerRecord: null,
-    
+
     /** api: property[featureStore]
      *  :class:`gxp.data.WFSFeatureStore` The FeatureStore that this tool
      *  manages.
      */
     featureStore: null,
-    
+
     /** private: property[hitCountProtocol]
      *  ``OpenLayers.Protocol.WFS``
      */
     hitCountProtocol: null,
-    
+
     /** api: property[featureLayer]
      *  ``OpenLayers.Layer.Vector`` The layer associated with this tool's
      *  featureStore.
      */
     featureLayer: null,
-    
+
     /** api: property[schema]
      *  ``GeoExt.data.AttributeStore`` or false if the ``featureLayer`` has no
      *   associated WFS FeatureType, or null if no layer is currently selected.
      */
     schema: null,
-    
+
     /** api: property[geometryType]
      *  ``String`` The geometry type of the featureLayer
      */
     geometryType: null,
-    
+
     /** private: property[toolsShowingLayer]
      *  ``Object`` keyed by tool id - tools that currently need to show the
      *  layer. Each entry holds a String, which is either "default" or
@@ -155,13 +155,13 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  "invisible".
      */
     toolsShowingLayer: null,
-    
+
     /** private: property[style]
      *  ``Object`` with an "all" and a "selected" property, each holding an
      *  ``OpenLayers.Style``
      */
     style: null,
-    
+
     /** private: property[pages]
      *  ``Array`` of page objects for paging mode when in QUADTREE paging mode.
      */
@@ -190,7 +190,9 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      *  WFS paging mode.
      */
     pageIndex: null,
-    
+
+    showUnqueryableAlert: true,
+
     /** private: method[constructor]
      */
     constructor: function(config) {
@@ -211,7 +213,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
              *    loadFeatures method
              */
             "beforequery",
-            
+
             /** api: event[query]
              *  Fired after a WFS GetFeature query, when the results are
              *  available.
@@ -224,7 +226,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
              *    the loadFeatures method
              */
             "query",
-            
+
             /** api: event[beforelayerchange]
              *  Fired before a layer change results in destruction of the
              *  current featureStore, and creation of a new one. This event
@@ -238,7 +240,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
              *    passed to the setLayer method
              */
             "beforelayerchange",
-            
+
             /** api: event[layerchange]
              *  Fired after a layer change, as soon as the layer's schema is
              *  available and a ``featureStore`` has been created.
@@ -252,7 +254,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
              *    is currently selected.
              */
             "layerchange",
-            
+
             /** api: event[beforsetpage]
              *  Fired if paging is on, before a different page is requested. This
              *  event can be used to abort the setPage method before any action
@@ -287,7 +289,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
              *  * numPages  - ``Integer`` the number of pages
              */
             "setpage",
-            
+
             /** api: event[beforeclearfeatures]
              *  Fired when the clearFeatures method is called, before clearing
              *  the features. This event can be used to abort clearFeatures
@@ -299,7 +301,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
              *  * tool - :class:`gxp.plugins.FeatureManager` this tool
              */
             "beforeclearfeatures",
-            
+
             /** api: event[clearfeatures]
              *  Fired when features have been cleared by the clearFeatures
              *  method.
@@ -314,21 +316,21 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         if (config && !config.pagingType) {
             this.pagingType = gxp.plugins.FeatureManager.QUADTREE_PAGING;
         }
-        
+
         // change autoSetLayer default if passed a layer config
         if (config && config.layer) {
             this.autoSetLayer = false;
         }
-        
-        gxp.plugins.FeatureManager.superclass.constructor.apply(this, arguments);        
+
+        gxp.plugins.FeatureManager.superclass.constructor.apply(this, arguments);
     },
-    
+
     /** private: method[init]
      */
     init: function(target) {
         gxp.plugins.FeatureManager.superclass.init.apply(this, arguments);
         this.toolsShowingLayer = {};
-        
+
         this.style = {
             "all": new OpenLayers.Style(null, {
                 rules: [new OpenLayers.Rule({
@@ -361,7 +363,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
               rules: [new OpenLayers.Rule({symbolizer: this.initialConfig.selectedSymbolizer || {display: "none"}})]
             })
         };
-        
+
         this.featureLayer = new OpenLayers.Layer.Vector(this.id, Ext.apply({
             displayInLayerSwitcher: false,
             visibility: false,
@@ -369,9 +371,9 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                  "select": this.initialConfig.selectedSymbolizer ? this.style["selected"] :  OpenLayers.Util.extend({display: ""},
                     OpenLayers.Feature.Vector.style["select"]),
                 "vertex": this.style["all"]
-            }, {extendDefault: false})    
+            }, {extendDefault: false})
         },this.vecLayerOptions||{}));
-        
+
         this.target.on({
             ready: function() {
                 this.target.mapPanel.map.addLayer(this.featureLayer);
@@ -386,7 +388,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             scope: this
         });
     },
-    
+
     /** api: method[activate]
      *  :returns: ``Boolean`` true when this tool was activated
      *
@@ -406,7 +408,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             return true;
         }
     },
-    
+
     /** api: method[deactivate]
      *  :returns: ``Boolean`` true when this tool was deactivated
      *
@@ -437,7 +439,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             return this.featureStore.layer.getDataExtent();
         }
     },
-    
+
     /** api: method[setLayer]
      *  :arg layerRecord: ``GeoExt.data.LayerRecord``
      *  :returns: ``Boolean`` The layer was changed.
@@ -461,7 +463,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         }
         return change;
     },
-    
+
     /** private: method[setSchema]
      *  :arg mgr: :class:`gxp.plugins.FeatureManager`
      *  :arg layer: ``GeoExt.data.LayerRecord``
@@ -470,7 +472,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
     setSchema: function(mgr, layer, schema) {
         this.schema = schema;
     },
-    
+
     /** api: method[showLayer]
      *  :arg id: ``String`` id of a tool that needs to show this tool's
      *      featureLayer.
@@ -481,7 +483,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         this.toolsShowingLayer[id] = display || "all";
         this.setLayerDisplay();
     },
-    
+
     /** api: method[hideLayer]
      *  :arg id: ``String`` id of a tool that no longer needs to show this
      *      tool's featureLayer. The layer will be hidden if no more tools need
@@ -491,7 +493,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         delete this.toolsShowingLayer[id];
         this.setLayerDisplay();
     },
-    
+
     /** private: mathod[setLayerDisplay]
      *  If ``toolsShowingLayer`` has entries, the layer will be added to the
      *  map, otherwise it will be removed. Tools can choose whether they want
@@ -503,7 +505,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         var mapLayer = this.featureLayer && this.featureLayer.map;
         if (mapLayer) {
             mapLayer.setLayerIndex(this.featureLayer, mapLayer.layers.length);
-        }      
+        }
         var show = this.visible();
         var map = this.target.mapPanel.map;
         if (show) {
@@ -525,7 +527,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             });
         }
     },
-    
+
     /** api: method[visible]
      *  :returns: ``mixed`` "all", "selected" or false
      *
@@ -541,7 +543,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         }
         return show;
     },
-    
+
     /** private: method[raiseLayer]
      *  Called whenever a layer is added to the map to keep this layer on top.
      */
@@ -551,7 +553,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             map.setLayerIndex(this.featureLayer, map.layers.length);
         }
     },
-    
+
     /** api: method[loadFeatures]
      *  :arg filter: ``OpenLayers.Filter`` Optional filter for the GetFeature
      *      request.
@@ -604,7 +606,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             }
         }
     },
-    
+
     /** api: method[clearFeatures]
      *  Unload all features.
      */
@@ -623,7 +625,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             }
         }
     },
-    
+
     /** private: method[setFeatureStore]
      *  :arg filter: ``OpenLayers.Filter``
      *  :arg autoLoad: ``Boolean``
@@ -632,20 +634,28 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         var record = this.layerRecord;
         var source = this.target.getSource(record);
         if (source && source instanceof gxp.plugins.WMSSource) {
-            source.getSchema(record, function(schema) {
+            source.getSchema(record, function(schema, owsType, error) {
                 if (schema === false) {
-                
-                    //information about why selected layers are not queriable.                
-                    var layer = record.get("layer");
-                    var wmsVersion = layer.params.VERSION;
-                    Ext.MessageBox.show({
-                        title: this.noValidWmsVersionMsgTitle,
-                        msg: this.noValidWmsVersionMsgText + wmsVersion,
-                        buttons: Ext.Msg.OK,
-                        animEl: 'elId',
-                        icon: Ext.MessageBox.INFO
-                    });
-                    
+
+					if(owsType == "WFS"){
+						//information about why selected layers are not queriable.
+						var layer = record.get("layer");
+						var wmsVersion = layer.params.VERSION;
+                        if (this.showUnqueryableAlert) {
+    						Ext.MessageBox.show({
+    							title: this.noValidWmsVersionMsgTitle,
+    							msg: this.noValidWmsVersionMsgText + wmsVersion,
+    							buttons: Ext.Msg.OK,
+    							animEl: 'elId',
+    							icon: Ext.MessageBox.INFO
+    						});
+                        } else {
+                            record.owsType = owsType;
+                        }
+					} else if (error) {
+                        record.error = error;
+                    }
+
                     this.clearFeatureStore();
                 } else {
                     var fields = [], geometryName;
@@ -680,15 +690,15 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                             fields.push(field);
                         }
                     }, this);
-                    
-                    var protocolOptions = {    
+
+                    var protocolOptions = {
                         srsName: this.target.mapPanel.map.getProjection(),
                         url: schema.url,
                         featureType: schema.reader.raw.featureTypes[0].typeName,
                         featureNS: schema.reader.raw.targetNamespace,
                         geometryName: geometryName
                     };
-                    
+
                     //
                     // Check for existing 'viewparams' inside the selected layer
                     //
@@ -703,12 +713,12 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                         resultType: "hits",
                         filter: filter
                     }, protocolOptions));
-                    
+
                     this.featureStore = new gxp.data.WFSFeatureStore(Ext.apply({
                         fields: fields,
                         proxy: {
                             protocol: {
-                                outputFormat: this.format 
+                                outputFormat: this.format
                             }
                         },
                         maxFeatures: this.maxFeatures,
@@ -734,9 +744,9 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         } else {
             this.clearFeatureStore();
             this.fireEvent("layerchange", this, record, false);
-        }        
+        }
     },
-    
+
     /** private: method[redrawMatchingLayers]
      *  :arg record: ``GeoExt.data.LayerRecord``
      *
@@ -752,7 +762,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             }
         });
     },
-    
+
     /** private: method[clearFeatureStore]
      */
     clearFeatureStore: function() {
@@ -793,7 +803,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         if (lonLatOk && page.numFeatures && page.numFeatures <= this.maxFeatures) {
             // nothing to do, leaf is a valid page
             callback.call(this, page);
-        } else if (lonLatOk && (i == index || nextOk)) {
+        } else if (i == index || nextOk) {
             // get the hit count if the page is relevant for the requested index
             this.hitCountProtocol.read({
                 callback: function(response) {
@@ -832,7 +842,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             });
         }
     },
-    
+
     /** private: method[createLeaf]
      *  :arg page: ``Object`` The page to process.
      *  :arg condition: ``Object`` Object with index, next or lonLat
@@ -862,7 +872,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             this.processPage(leaf, condition, callback, scope);
         }
     },
-    
+
     /** private: method[getPagingExtent]
      *  :arg meth: ``String`` Method to call on the target's map when neither
      *      a filter extent nor a layer extent are available. Useful values
@@ -895,7 +905,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
 				}
             }
         }
-		
+
 		var extent;
 		if(filter){
 			if(filter.value instanceof OpenLayers.Geometry.Polygon){
@@ -903,28 +913,28 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
 			}else if(filter.value instanceof OpenLayers.Bounds){
 				extent = filter.value;
 			}else if(filter.value instanceof OpenLayers.Geometry.Point){
-			
+
 				var geodesicPolygon = OpenLayers.Geometry.Polygon.createGeodesicPolygon(
 					filter.value,
 					filter.distance,
-					100, 
+					100,
 					0,
 					this.target.mapPanel.map.getProjectionObject()
 				);
-				
+
 				/*var regularPolygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
 					filter.value,
 					filter.distance,
-					100, 
+					100,
 					null
 				);*/
-				
+
 				extent = geodesicPolygon.getBounds();
 			}else{
 				extent = this.target.mapPanel.map[meth]();
-			}		
+			}
 		}
-		
+
         //var extent = filter ? filter.value : this.target.mapPanel.map[meth]();
         if (extent && layer.maxExtent) {
             if (extent.containsBounds(layer.maxExtent)) {
@@ -937,7 +947,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         }
         return extent;
     },
-    
+
     /** private: method[setPageFilter]
      *  :arg page: ``Object`` The page to create the filter for
      *  :returns: ``OpenLayers.Filter`` The filter to use for the provided page
@@ -968,7 +978,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         this.hitCountProtocol.options.filter = filter;
         return filter;
     },
-    
+
     /** api: method[nextPage]
      *  :arg callback: ``Function`` Optional callback to call when the page
      *      is available. The callback will receive the page as 1st argument.
@@ -987,7 +997,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         }
         this.setPage({index: index, allowEmpty: false}, callback, scope);
     },
-    
+
     /** api: method[previousPage]
      *  :arg callback: ``Function`` Optional callback to call when the page
      *      is available. The callback will receive the page as 1st argument.
@@ -1010,7 +1020,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
         }
         this.setPage({index: index, allowEmpty: false, next: this.page}, callback);
     },
-    
+
     /** api: method[setPage]
      *  :arg condition: ``Object`` Object to tell the method which page to set.
      *      If "lonLat" (``OpenLayers.LonLat``) is provided, the page
@@ -1075,7 +1085,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                     // choose a page on the top left
                     var extent = this.getPagingExtent("getExtent");
                     maxExtent = this.getPagingExtent("getMaxExtent");
-					
+
                     condition = {
                         lonLat: new OpenLayers.LonLat(
                             Math.max(maxExtent.left, extent.left),
@@ -1089,7 +1099,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                     condition.index = this.pages.length - 1;
                     condition.next = this.pages[0];
                 }
-				
+
                 this.page = null;
                 if (!this.pages) {
                     var layer = this.layerRecord.getLayer();
@@ -1155,7 +1165,7 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             }
         }
     }
-    
+
 });
 
 /**

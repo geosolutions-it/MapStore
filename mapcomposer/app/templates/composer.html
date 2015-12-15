@@ -35,7 +35,7 @@
 	
     <!-- canvg-1.2 resources -->
 	<script type="text/javascript" src="script/canvg-1.2.js"></script> 
-	
+	<script type="text/javascript" src="script/ux.js"></script>
     <!-- gxp resources -->
     <link rel="stylesheet" type="text/css" href="externals/gxp/src/theme/all.css">
 
@@ -55,7 +55,7 @@
     <!--[if IE]><link rel="stylesheet" type="text/css" href="theme/app/ie.css"/><![endif]-->        
 
     <script type="text/javascript" src="script/GeoExplorer.js"></script>
-    <script type="text/javascript" src="script/ux.js"></script>
+   
    
     <!-- csw resources -->
     <link rel="stylesheet" type="text/css" href="externals/csw/css/csw.css">
@@ -109,7 +109,7 @@
 		}*/   
 		
 		var app;        
-        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox; var useCookies; var templateId;
+        var modified = false, mapIdentifier = -1, authorization = false, fullScreen = false, bbox, useCookies, templateId, markersurl;
 		
 		// /////////////////////////////////////////////////////
 		// Extra parameters to add layers at startup
@@ -161,6 +161,10 @@
 					case "wmsurl" : 
 									wmsurl = param[1]; 
 									wmsurl = decodeURIComponent(wmsurl);
+									break;
+					case "markersurl" : 
+									markersurl = param[1]; 
+									markersurl = decodeURIComponent(markersurl);
 									break;
 					case "gsturl" : 
 									gsturl = param[1]; 
@@ -364,12 +368,37 @@
 			}			
 			
 			var appViewport = new Ext.Viewport(viewport);
-            
-            // /////////////////////////////////////////////////////////////
+
+			if(gsturl){
+				serverConfig.geoStoreBase = gsturl;
+			}
+
+			// //////////////////////////////////////////////////
+			// Check if content data has been provided via POST
+			// //////////////////////////////////////////////////
+			if(content.data){
+				var dataConfig = unescape(content.data);
+				try{
+					dataConfig = Ext.util.JSON.decode(dataConfig);
+					var customConfig = dataConfig.map_config;
+					if(customConfig){
+						// ////////////////////////////////////////////////////////////
+						// Properties of the internal configuration will be replaced 
+						// by those specified for the custom configuration
+						// ////////////////////////////////////////////////////////////
+						serverConfig = Ext.apply(serverConfig, customConfig);
+						sources = serverConfig.sources || serverConfig.gsSources;
+					}					
+				}catch(e){
+					console.log(e);
+				}
+			}
+			
+			// /////////////////////////////////////////////////////////////
             // Parsing WMS servers Sources for getCapabilities operation
             // /////////////////////////////////////////////////////////////
             try{
-                var sources = serverConfig.gsSources;
+                var sources = serverConfig.sources || serverConfig.gsSources;
             }catch(e){
                 sources = {
                     mapquest: {
@@ -396,17 +425,10 @@
                       icon: Ext.MessageBox.ERROR
                 });
             }
- 
-			/*var auth = 'Basic ' + Base64.encode('admin:admin');
-			      Ext.Ajax.defaultHeaders = {
-                'Authorization' : auth
-            };*/
-
-			if(gsturl){
-				serverConfig.geoStoreBase = gsturl;
-			}
 			
             app = new GeoExplorer.Composer({
+				markers: serverConfig.markers,
+				markersURL: markersurl || serverConfig.markersURL,
                 scaleOverlayMode : serverConfig.scaleOverlayMode || (serverConfig.advancedScaleOverlay ? 'advanced' : 'basic'),
 				defaultLanguage: serverConfig.defaultLanguage,	
 				actionToolScale: serverConfig.actionToolScale || "small",
@@ -430,11 +452,12 @@
 				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
                 georeferences: georeferences_data,
                 map: serverConfig.map,
-				customTools: serverConfig.customTools,
-				user: serverConfig.user,
+                customTools: serverConfig.customTools,
+                apikeys: serverConfig.apikeys
+                user: serverConfig.user,
 				config: serverConfig
             }, mapIdentifier, authorization && authorization == "false" ? null: authorization, fullScreen, templateId);   
-            
+			
             app.on({
                 'portalready' : function() {              	
                     if(fullScreen) {
@@ -472,7 +495,7 @@
 								
 							if(layersList){
 								var layers = layersList.split("#");
-								var resources = [];
+								var resources = [];								
 								
 								for(var i=0; i<layers.length; i++){
 									var keys = layers[i];
@@ -480,21 +503,26 @@
 									keys = unescape(keys);
 									keys = Ext.util.JSON.decode(keys);
 									
-									var lname = keys.layer;
-									var lwms = decodeURIComponent(keys.wms);
-									var pname = keys.pname;
 									var format = keys.format;
 									
-									resources.push({
-										msLayerTitle: lname,
-										msLayerName: lname,
-										msGroupName: pname,
-										wmsURL: lwms,
-										format: format
-									});
+									if(format == "wms" || format == "wmts"){
+										var lname = keys.layer;
+										var lwms = decodeURIComponent(keys.wms);
+										var pname = keys.pname;
+										
+										resources.push({
+											msLayerTitle: lname,
+											msLayerName: lname,
+											msGroupName: pname,
+											wmsURL: lwms,
+											format: format
+										});
+									}
 								}
-								
-								addMSLayer(resources);
+
+								if(resources.length > 0){
+									addMSLayer(resources);
+								}		
 							}
 						}else if(layName && wmsurl){
 							var title = layTitle ? layTitle : layName;
@@ -534,14 +562,19 @@
 					resources
 				);
 			};
+	    	/*Consent cookie text and link from transaltion files, google cookieChoices.js lib must be added to page's body*/
+            if(serverConfig.cookieConsent && cookieChoices.cookieText && !parent.manager){
+            cookieChoices.showCookieConsentBar(cookieChoices.cookieText,
+            cookieChoices.dismissText, cookieChoices.linkText, cookieChoices.linkHref);
+            };
 	    };
 
 	    // geostore base
 	    if(!serverConfig){
 	    	serverConfig = {};
 	    }
-		
-        serverConfig = Ext.applyIf(serverConfig, localConfig);
+        
+		serverConfig = Ext.applyIf(serverConfig, localConfig);
 		serverConfig.geoStoreBaseURL = serverConfig.geoStoreBase || ('http://' + window.location.host + '/geostore/rest/');
         serverConfig.adminUrl = serverConfig.adminUrl || ('http://' + window.location.host + '/admin/');
 

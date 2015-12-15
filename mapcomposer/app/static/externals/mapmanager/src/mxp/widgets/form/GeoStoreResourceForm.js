@@ -66,6 +66,7 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
     saveSuccessTitle:"Saved",
     saveSuccessMessage:"Resource saved succesfully",
     failSaveTitle: "Failed Saving resource",
+    failLoadTitle: "Failed Loading resource",
     resourceNotValid: "Resource not valid",
     deleteSuccessMessage: "Resource Deleted Successfully",
     permissionTitleText: "Permissions",
@@ -420,13 +421,24 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
             
             this.setLoading(true, this.loadingMessage);
             var me =this;
+            this.resourceManager.failure(function(response) {
+                Ext.Msg.show({
+                    title : me.failLoadTitle,
+                    msg : response.statusText + "(status " + response.status + "):  ",
+                    buttons : Ext.Msg.OK,
+                    icon : Ext.MessageBox.ERROR
+                });
+                me.save.disable();
+                me.removeAll();
+                me.setLoading(false);
+            });
             this.resourceManager.findByPk(resourceId, 
                 //Full Resource Load Success
                 function(data){
                     //fill the form
                     if(!data){
                          Ext.Msg.show({
-                           title: me.failSaveTitle,
+                           title: me.failLoadTitle,
                            msg: response.statusText + "(status " + response.status + "):  ",
                            buttons: Ext.Msg.OK,
                            icon: Ext.MessageBox.ERROR
@@ -464,7 +476,7 @@ mxp.widgets.GeoStoreResourceForm = Ext.extend(Ext.Panel, {
                     me.permission.setDisabled(! (record.get('canEdit')===true) );
                     me.setLoading(false);
                     //TODO load visibility
-                },{full:true})
+                },{full:true});
             
             
         }

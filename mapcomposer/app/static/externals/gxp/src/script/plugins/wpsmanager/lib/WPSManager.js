@@ -78,7 +78,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
      */
     instancePrefix: "wpsExecute",
 	
-	silentErrors: false,
+	silentErrors: true,
     
     /** api: config[pollingInterval] 
      *  ``Number`` polling interval in milliseconds for the download callback
@@ -103,14 +103,14 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
         });
         
         //OpenLayers.ProxyHost = (this.geostoreProxy) ? this.geostoreProxy : this.target.proxy;
-        
+        var me = this;
         if(! this.geoStoreClient){
             var geostoreClientConfig = {
                 url: (this.geostoreUrl) ? this.geostoreUrl : this.target.geoStoreBaseURL,
                 proxy: (this.geostoreProxy) ? this.geostoreProxy:this.target.proxy,
                 listeners: {
                     "geostorefailure": function(tool, msg){
-                        if(!this.silentErrors){  
+						if(!me.silentErrors){	
                             Ext.Msg.show({
                                 title: "Geostore Exception",
                                 msg: msg,
@@ -353,7 +353,7 @@ gxp.plugins.WPSManager =  Ext.extend(gxp.plugins.Tool,{
                     me.responseManager(responseObj,instanceName, callback, statusUpdated, instanceIndex);
                 },
                 failure:  function(response, opts){
-                    if(!me.silentErrors){
+				if(!me.silentErrors){
                         Ext.Msg.show({
                             title: "Instance Update Status Exception",
                             msg: response,

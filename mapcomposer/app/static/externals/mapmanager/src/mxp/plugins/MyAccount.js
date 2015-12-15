@@ -386,7 +386,7 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
                             var pass = form.getValues().password;
                             Ext.Ajax.request({
                               headers : {
-                                    'Authorization' : me.login.login.getToken(),
+                                    'Authorization' : me.login.login.getAuthHeader(),
                                     'Content-Type' : 'text/xml'
                               },
                               url: me.target.geoBaseUsersUrl + '/user/' + userObj.id,

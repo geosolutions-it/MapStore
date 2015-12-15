@@ -185,7 +185,7 @@ MSMTemplateGridPanel = Ext.extend(Ext.grid.GridPanel, {
 									// //////////////////////////////////
 									// Get info about logged user if any
 									// //////////////////////////////////
-									var auth = me.login.getToken();
+									var auth = me.login.getAuthHeader();
 									
 									// ////////////////////
 									// Fetch base url

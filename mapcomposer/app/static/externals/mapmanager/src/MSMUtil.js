@@ -249,6 +249,13 @@
 		return this;
 	};
 	
+    ContentProvider.prototype.getHeaders = function(headers) {
+        if(this.authorization_) {
+            headers["Authorization"] = this.authorization_;
+        }
+        return headers;
+    };
+    
 	/** 
 	 * Function: findByPk
 	 * find an element by its primary key in async mode
@@ -280,7 +287,10 @@
 		var Request = Ext.Ajax.request({
 	       url: uri.toString(), 
 	       method: 'GET',
-	       headers: this.getRequestHeaders(),
+           headers: this.getHeaders({
+				  'Content-Type' : 'text/xml',
+                  'Accept' : this.acceptTypes_
+		   }),
 	       scope: this,
 	       success: function(response, opts){
 				var data = self.afterFind( Ext.util.JSON.decode(response.responseText) ); 
@@ -334,7 +344,9 @@
 		var Request = Ext.Ajax.request({
 	       url: uri.toString(),
 	       method: 'GET',
-	       headers: this.getRequestHeaders(),
+           headers: this.getHeaders({
+	          'Accept' : this.acceptTypes_
+	       }),
 	       scope: this,
 	       success: function(response, opts){
 				var data = self.afterFind( Ext.util.JSON.decode(response.responseText) );
@@ -371,7 +383,9 @@
 		var Request = Ext.Ajax.request({
 	       url: url,
 	       method: 'PUT',
-	       headers: this.getRequestHeaders('text/xml'),
+           headers: this.getHeaders({
+	          'Accept' : this.acceptTypes_
+	       }),
 	       scope: this,
 		   params: data,
 	       success: function(response, opts){
@@ -410,7 +424,9 @@
 		var Request = Ext.Ajax.request({
 	       url: url,
 	       method: 'DELETE',
-	       headers: this.getRequestHeaders(),
+           headers: this.getHeaders({
+	          'Accept' : this.acceptTypes_
+	       }),
 	       scope: this,
 	       success: function(response, opts){
 				var json = Ext.util.JSON.decode(response.responseText);
@@ -449,7 +465,9 @@
 		var Request = Ext.Ajax.request({
 	       url: url,
 	       method: 'POST',
-	       headers: this.getRequestHeaders('text/xml'),
+           headers: this.getHeaders({
+	          'Accept' : this.acceptTypes_
+	       }),
 	       params: data,
 	       scope: this,
 	       success: function(response, opts){
@@ -553,10 +571,9 @@
 			Ext.Ajax.request({
 			   url: uri,
 			   method: 'DELETE',
-			   headers:{
-				  'Content-Type' : 'text/xml',
-				  'Authorization' : this.authorization_
-			   },
+			   headers: this.getHeaders({
+				  'Content-Type' : 'text/xml'
+               }),
 			   params: data,
 			   scope: this,
 			   success: function(response, opts){
@@ -685,7 +702,9 @@
 			Ext.Ajax.request({
 			   url: uri,
 			   method: 'DELETE',
-	       	   headers: this.getRequestHeaders('text/xml'),
+			   headers: this.getHeaders({
+				  'Content-Type' : 'text/xml'
+               }),
 			   params: data,
 			   scope: this,
 			   success: function(response, opts){
@@ -1144,7 +1163,9 @@
 			Ext.Ajax.request({
 			   url: uri,
 			   method: 'DELETE',
-	       	   headers: this.getRequestHeaders('text/xml'),
+			   headers: this.getHeaders({
+				  'Content-Type' : 'text/xml'
+               }),
 			   params: data,
 			   scope: this,
 			   success: function(response, opts){
@@ -1220,10 +1241,9 @@
 			Ext.Ajax.request({
 			   url: uri,
 			   method: 'DELETE',
-			   headers:{
-				  'Content-Type' : 'text/xml',
-				  'Authorization' : this.authorization_
-			   },
+			   headers: this.getHeaders({
+				  'Content-Type' : 'text/xml'
+			   }),
 			   scope: this,
 			   success: function(response, opts){
 					callback(response);
@@ -1270,11 +1290,10 @@
 			var Request = Ext.Ajax.request({
 		       url: uri.toString(),
 		       method: 'GET',
-		       headers:{
+               headers: this.getHeaders({
 		          'Content-Type' : 'application/json',
-		          'Accept' : this.acceptTypes_,
-		          'Authorization' : this.authorization_
-		       },
+		          'Accept' : this.acceptTypes_
+			   }),
 		       scope: this,
 		       success: function(response, opts){
 					var data = self.afterFind( Ext.util.JSON.decode(response.responseText) );

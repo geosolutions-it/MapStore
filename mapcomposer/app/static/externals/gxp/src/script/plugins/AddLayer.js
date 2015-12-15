@@ -245,7 +245,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	/**  
 	 * api: method[addLayerRecord]
      */
-	addLayerRecord: function(options, source){		
+	addLayerRecord: function(options, source, callback){		
 		var msLayerTitle = options.msLayerTitle;
 		var msLayerName = options.msLayerName;
 		var gnUrl = options.gnUrl;
@@ -260,7 +260,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			title: msLayerTitle,
 			source: source.id
 			// Currently the group setting is not supported for dynamic layer additions
-			/*,group: msGroupName*/
+			,group: msGroupName
 		};
 		
 		if(customParams){
@@ -315,8 +315,9 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					Math.min(extent.top, restricted.top)
 				);
 			}
-
-			map.zoomToExtent(extent, true);
+            
+            if(customParams && customParams.zoomToExtent)
+                map.zoomToExtent(extent, true);
 			
 			var report = {
 				name: msLayerName,
@@ -327,7 +328,11 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				id: source.id
 			};
 			
-			this.records.push({record: record, report: report});			
+			this.records.push({record: record, report: report});	
+
+			if(callback){
+				callback.call(this, record);
+			}
 		}else{
 			var report = {
 				name: msLayerName,
@@ -398,7 +403,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	/**  
 	 * api: method[addLayer]
      */
-	addLayer: function(resources){
+	addLayer: function(resources, callback){
 		//
 		// We check the type of the argument for retrocompatibility
 		//
@@ -410,22 +415,22 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				var resource = resources[i];
 				
 				if(resource){
-					this._addLayer(resource);
+					this._addLayer(resource, callback);
 				}			
 			}
 		}else{
-			this._addLayer(resources);
+			this._addLayer(resources, callback);
 		}
 	},
 	
-	_addLayer: function(resource){
+	_addLayer: function(resource, callback){
 		var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
 		
 		if(this.directAddLayer === true){
 			//
 			// Direct add layer to the map without WMS GetCapabilities
 			// 
-			this.addToMap(resource);
+			this.addToMap(resource, callback);
 		}else{
 			//
 			// Adding layer to the map with WMS GetCapabilities (the standard moded)
@@ -442,13 +447,12 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					
 			var source = this.checkLayerSource(resource.wmsURL);
 
-			if(source){
-			
+			if(source){			
 				if(!source.loaded){
 					source.on('ready', function(s){
 						mask.hide();
 						this.target.layerSources[s.id].loaded = true; 
-						this.addLayerRecord(resource, s);
+						this.addLayerRecord(resource, s, callback);
 					}, this);
 					// add listener if layer source fail to append the layer source error information
 					if(this.useEvents){
@@ -481,11 +485,11 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					// ///////////////////////////////////////////////////////////////
 					source.store.reload();
 				}else{
-					this.addLayerRecord(resource, source);
+					this.addLayerRecord(resource, source, callback);
 				}
 			}else{
 				mask.show();
-				this.addSource(resource.wmsURL, true, resource);
+				this.addSource(true, resource, callback);
 			}
 		}
 	},
@@ -544,17 +548,22 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	/**  
 	 * api: method[addSource]
      */
-	addSource: function(wmsURL, showLayer, options){			
-		var source = this.checkLayerSource(wmsURL);
+	addSource: function(showLayer, options, callback){			
+		var source = this.checkLayerSource(options.wmsURL);
 
 		if(!source){
 			var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
 			mask.show();
 			
 			var sourceOptions = {
-				url: wmsURL,
+				url: options.wmsURL,
 				ptype: options.format == "wmts" ? "gxp_wmtssource" : "gxp_wmssource"
 			};
+			
+			//
+			// Setting additional source options
+			//
+			Ext.applyIf(sourceOptions, options.sourceOptions);
 			
 			source = this.target.addLayerSource({
 				config: sourceOptions, // assumes default of gx_wmssource
@@ -618,7 +627,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 						
 						var store = combo.getStore();
 						
-						var index = store.find('id', source.id);
+						var index = store.find('id', id);
 						var record = store.getAt(index);
 						
 						combo.onSelect(record, 0);
@@ -626,9 +635,9 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					
 					mask.hide();
 					
-					this.target.layerSources[source.id].loaded = true;
+					this.target.layerSources[id].loaded = true;
 					if(showLayer && options){						
-						this.addLayerRecord(options, source);
+						this.addLayerRecord(options, this.target.layerSources[id], callback);
 					}else{
 						//
 						// Here only if we add only the WMS source.

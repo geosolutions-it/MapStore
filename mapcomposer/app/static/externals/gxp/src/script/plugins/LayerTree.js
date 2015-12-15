@@ -38,9 +38,9 @@ Ext.namespace("gxp.plugins");
  *
  *    Plugin for adding a tree of layers to a :class:`gxp.Viewer`. Also
  *    provides a context menu on layer nodes.
- */   
+ */
 gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
-    
+
     /** api: ptype = gxp_layertree */
     ptype: "gxp_layertree",
 
@@ -61,7 +61,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
      *  Text for baselayer node of layer tree (i18n).
      */
     baseNodeText: "Base Layers",
-    
+
     /** api: config[groups]
      *  ``Object`` The groups to show in the layer tree. Keys are group names,
      *  and values are either group titles or an object with ``title`` and
@@ -80,21 +80,21 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
      *      }
      */
     groups: null,
-    
+
     /** api: config[defaultGroup]
      *  ``String`` The name of the default group, i.e. the group that will be
      *  used when none is specified. Defaults to ``default``.
      */
     defaultGroup: "default",
-    
-    
+
+
     /** api: config[localLabelSep]
      *  ``String`` Language separator for the groups name
      */
     localLabelSep: "_",
-    
+
     /** api: config[localLabelSep]
-     *  ``Object`` Contains the index position (in the groupName array obtained from the group name splitted with the "localLabelSep" separator) 
+     *  ``Object`` Contains the index position (in the groupName array obtained from the group name splitted with the "localLabelSep" separator)
      *   for each language supported
      */
     localIndexs:{
@@ -103,7 +103,9 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
             "fr": 2,
             "de": 3
     },
-    
+
+    collapsedGroups: false,
+
     /** private: method[constructor]
      *  :arg config: ``Object``
      */
@@ -119,7 +121,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
             };
         }
     },
-    
+
     /** private: method[addOutput]
      *  :arg config: ``Object``
      */
@@ -133,13 +135,13 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                         node.select();
                     }
                 });
-                                
+
                 if (record === target.selectedLayer) {
                     node.on("rendernode", function() {
                         node.select();
 
                         // ///////////////////////////////////////////////////////////////////////
-                        // to check the group at startup (if the layer node should be checked) 
+                        // to check the group at startup (if the layer node should be checked)
                         // or when a layer is added.
                         // ///////////////////////////////////////////////////////////////////////
                         if(node.isLeaf() && node.getUI().isChecked()){
@@ -149,7 +151,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 }else{
                     node.on("rendernode", function() {
                         // ///////////////////////////////////////////////////////////////////////
-                        // to check the group at startup (if the layer node should be checked) 
+                        // to check the group at startup (if the layer node should be checked)
                         // or when a layer is added.
                         // ///////////////////////////////////////////////////////////////////////
                         if(node.isLeaf() && node.getUI().isChecked()){
@@ -159,34 +161,34 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 }
             }
         };
-        
+
         //
         // create our own layer node UI class, using the TreeNodeUIEventMixin
         //
         var LayerNodeUI = Ext.extend(gxp.tree.LayerNodeUI,
             new GeoExt.tree.TreeNodeUIEventMixin());
-        
+
         var treeRoot = new Ext.tree.TreeNode({
             text: this.rootNodeText,
             expanded: true,
             isTarget: false,
             allowDrop: true
         });
-        
+
         var groupConfig, defaultGroup = this.defaultGroup;
-        
-      
+
+
         /*
-         * The locIndex is obtained from the localIndexs, with the current local code, 
+         * The locIndex is obtained from the localIndexs, with the current local code,
          * which contains the index position for each language supported
          **/
         var locIndex= this.localIndexs[GeoExt.Lang.locale];
         var groupNames;
         for (var group in this.groups) {
-            
+
             /*
-             * The groupNames array, obtained from the group name 
-             * splitted with the "localLabelSep" separator, contains 
+             * The groupNames array, obtained from the group name
+             * splitted with the "localLabelSep" separator, contains
              * the group name for each language supported
              **/
             if(typeof this.groups[group] === "string"){
@@ -201,20 +203,20 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 groupConfig= this.groups[group];
             }
             /*
-             * If the language is not supported, the group name 
+             * If the language is not supported, the group name
              * is the first contained in groupNames
              **/
             if(groupNames.length > 0){
                 groupConfig.title= groupNames[locIndex] ? groupNames[locIndex] : groupNames[0];
             }
-            
+
             //
             // Managing withe spaces in strings
-            // 
+            //
             var text = groupConfig.title;
-            /*if(groupConfig.title.indexOf("_") != -1)        
+            /*if(groupConfig.title.indexOf("_") != -1)
                 text = text.replace(/_+/g, " ");   */
-                
+
             treeRoot.appendChild(new GeoExt.tree.LayerContainer({
                 text: text,
                 iconCls: "gxp-folder",
@@ -246,11 +248,25 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                                 if (record.get("fixed")) {
                                     attr.allowDrag = false;
                                 }
+
+                                var titles = record.get('title');
+                                if (titles && typeof titles != "string") {
+                                    /*
+                                     * If the language is not supported, the layer name
+                                     * is the first contained in titles
+                                     **/
+                                    if(titles.length > 0){
+                                        var layerTitle = (titles[locIndex] ? titles[locIndex] : titles[0]);
+                                        record.set('title', layerTitle);
+                                        layer.name = layerTitle;
+                                    }
+                                }
                             }
                         }
+
                         var node = GeoExt.tree.LayerLoader.prototype.createNode.apply(this, arguments);
                         addListeners(node, record);
-                        
+
                         return node;
                     }
                 }),
@@ -258,12 +274,17 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 allowDrag: true,
                 listeners: {
                     append: function(tree, node) {
-                        node.expand();
-                    }
+                        if (this.collapsedGroups) {
+                            node.collapse();
+                        } else {
+                            node.expand();
+                        }
+                    },
+                    scope: this
                 }
             }));
         }
-        
+
         config = Ext.apply({
             xtype: "treepanel",
             root: treeRoot,
@@ -285,12 +306,12 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                             this.selectionChanging = true;
                             changed = this.target.selectLayer(record);
                             this.selectionChanging = false;
-                            
+
                             this.target.selectGroup(null);
                         }else{
                             this.target.selectGroup(node);
                         }
-                        
+
                         return changed;
                     },
                     scope: this
@@ -320,7 +341,7 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                         return false;
                     }else{
                         this.nodeIndex = true;
-                        
+
                         if(node.attributes.group != "background"){
                             if(oldParent !== newParent) {
                                 if(newParent.attributes.group != "background"){
@@ -343,10 +364,10 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                                     if(node.attributes.group != undefined){
                                         this.oldOffset = 0;
                                         var previous = node.previousSibling;
-                                        
+
                                         while(previous != null){
                                             var childs = previous.childNodes.length;
-                                            this.oldOffset += childs;                                    
+                                            this.oldOffset += childs;
                                             previous = previous.previousSibling;
                                         }
                                     }else{
@@ -359,46 +380,46 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                         }
                     }
                 },
-                enddrag: function(tree, node, e){    
+                enddrag: function(tree, node, e){
                     target.modified = true;
                     //modified = true;
-                                   
-                    if(node.loader && node.attributes.group != undefined && this.nodeIndex){ 
+
+                    if(node.loader && node.attributes.group != undefined && this.nodeIndex){
                         var newOffset = 0;
-                        
+
                         var previous = node.previousSibling;
                         while(previous != null){
                             var childs = previous.childNodes.length;
-                            newOffset += childs;                            
+                            newOffset += childs;
                             previous = previous.previousSibling;
                         }
-                        
+
                         var records = [];
                         var store = node.loader.store;
-                        
+
                         for(var i=0; i<node.childNodes.length; i++){
                             var recordIndex = store.findBy(function(r) {
                                 return node.childNodes[i].layer === r.getLayer();
                             });
-                            
-                            var record = store.getAt(recordIndex);                            
+
+                            var record = store.getAt(recordIndex);
                             records.push({index: recordIndex, record: record});
-                        } 
+                        }
 
                         for(var u=0; u<records.length; u++){
                             store.remove(records[u].record);
-                        }  
+                        }
 
                         for(var k=records.length-1; k>=0; k--){
                             var indexOffset = this.oldOffset - newOffset;
                             store.insert(records[k].index + indexOffset, [records[k].record]);
-                        }       
-                        
+                        }
+
                         window.setTimeout(function() {
                             for(var x=0; x<tree.root.childNodes.length; x++){
                                 tree.root.childNodes[x].reload();
                             }
-                        });    
+                        });
                     }else{
                         // //////////////////////////////////////////////////////////////////
                         // If the new parent is unchecked the new child must be unchecked
@@ -408,9 +429,9 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                             node.getUI().toggleCheck(true);
                         else
                             node.getUI().toggleCheck(false);
-                            
+
                         // /////////////////////////////////////////////////////////////
-                        // If in the drag operation the old parent remains without 
+                        // If in the drag operation the old parent remains without
                         // checked nodes it must be unchecked
                         // /////////////////////////////////////////////////////////////
                         var oldChilds = this.oldParent.childNodes;
@@ -421,21 +442,21 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                                 checkedNodes++;
                             }
                         }
-                        
-                        if(checkedNodes < 1){    
+
+                        if(checkedNodes < 1){
                             this.oldParent.getUI().toggleCheck(false)
                         }
                     }
-                },   
-                checkchange: function(node, checked){  
+                },
+                checkchange: function(node, checked){
                     target.modified = true;
                     //modified = true;
-                
+
                     if(!node.isLeaf()){
                         var childs = node.childNodes;
                         var size = childs.length;
 
-                        if(!checked){ 
+                        if(!checked){
                             for(var i=0; i<size; i++){
                                 childs[i].getUI().toggleCheck(checked);
                             }
@@ -444,9 +465,9 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                             for(var y=0; y<size; y++){
                                 if(childs[y].getUI().isChecked())
                                     checkedNodes++;
-                            }    
-                                                    
-                            if(checkedNodes < 1){    
+                            }
+
+                            if(checkedNodes < 1){
                                 for(var z=0; z<size; z++){
                                     childs[z].getUI().toggleCheck(checked);
                                 }
@@ -459,14 +480,14 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                         }else if(!checked && parent.getUI().isChecked()){
                             var childNodes = parent.childNodes;
                             var childSize = childNodes.length;
-                            
+
                             var checkedNodes = 0;
                             for(var t=0; t<childSize; t++){
                                 if(parent.childNodes[t].getUI().isChecked())
                                     checkedNodes++;
-                            }  
-                                                        
-                            if(checkedNodes == 0){   
+                            }
+
+                            if(checkedNodes == 0){
                                 parent.getUI().toggleCheck(checked);
                             }
                         }
@@ -478,12 +499,11 @@ gxp.plugins.LayerTree = Ext.extend(gxp.plugins.Tool, {
                 items: []
             })
         }, config || {});
-        
+
         var layerTree = gxp.plugins.LayerTree.superclass.addOutput.call(this, config);
-        
+
         return layerTree;
     }
 });
 
 Ext.preg(gxp.plugins.LayerTree.prototype.ptype, gxp.plugins.LayerTree);
-
