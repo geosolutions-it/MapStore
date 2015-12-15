@@ -222,6 +222,14 @@
         "topInUnits": "m",
         "topOutUnits": "km"
     },
+    "removeTools": [
+    	{
+    		"ptype": "gxp_removelayer"
+    	},
+    	{
+    		"ptype": "gxp_removeoverlays"
+    	}
+    ],
     "customTools": [
         {
             "ptype": "gxp_embedmapdialog",
