@@ -915,7 +915,7 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                                    msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
                                                    buttons: Ext.Msg.OK,
                                                    icon: Ext.MessageBox.ERROR
-                                                })                                
+                                                });
                                             }
                                         }) 
                                     })

@@ -303,29 +303,6 @@
 	};	
 
 	/** 
-	 * Function: getRequestHeaders
-	 * obtain request headers to perform a geostore action
-	 *
-	 * Parameters:
-	 * contentType - {String} content type if you need something different than 'application/json' (for example 'text/xml')
-	 * acceptTypes - {String} accept type if you need something different than this.acceptTypes_
-	 * authorization - {String} authorization if you need something different than this.authorization_
-	 * Return: headers {Object} to perform the request
-	 * 
-	 */
-	ContentProvider.prototype.getRequestHeaders = function(contentType, acceptTypes, authorization){
-		var headers = {
-			'Content-Type' : contentType ? contentType: 'application/json',
-			'Accept' : acceptTypes? acceptTypes : this.acceptTypes_
-		};
-		// only add authorization if it's present
-		if(this.authorization_ || authorization){
-			headers['Authorization'] = authorization ? authorization: this.authorization_;
-		}
-		return headers;
-	};
-
-	/** 
 	 * Function: find
 	 * find all elements in async mode
 	 *
@@ -345,6 +322,7 @@
 	       url: uri.toString(),
 	       method: 'GET',
            headers: this.getHeaders({
+	          'Content-Type' : 'application/json',
 	          'Accept' : this.acceptTypes_
 	       }),
 	       scope: this,
@@ -384,6 +362,7 @@
 	       url: url,
 	       method: 'PUT',
            headers: this.getHeaders({
+	          'Content-Type' : 'text/xml',
 	          'Accept' : this.acceptTypes_
 	       }),
 	       scope: this,
@@ -425,6 +404,7 @@
 	       url: url,
 	       method: 'DELETE',
            headers: this.getHeaders({
+	          'Content-Type' : 'application/json',
 	          'Accept' : this.acceptTypes_
 	       }),
 	       scope: this,
@@ -466,6 +446,7 @@
 	       url: url,
 	       method: 'POST',
            headers: this.getHeaders({
+	          'Content-Type' : 'text/xml',
 	          'Accept' : this.acceptTypes_
 	       }),
 	       params: data,

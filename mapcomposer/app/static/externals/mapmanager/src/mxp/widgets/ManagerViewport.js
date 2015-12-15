@@ -212,10 +212,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
                     restful: true,
                     method : 'GET',
                     disableCaching: true,
-                    headers: this.authHeader ? {
-                        'Authorization' : this.authHeader
-                    } : {
-                        'Accept': 'application/json'
+                    headers: this.authHeader ? {'Authorization' : this.authHeader} : {'Accept': 'application/json'},
                     failure: function (response) {
                         Ext.Msg.show({
                            title: "Error",
@@ -405,7 +402,7 @@ mxp.widgets.ManagerViewport = Ext.extend(Ext.Viewport, {
             token: token,
             authHeader: auth 
         })
-      }      
+      },     
      /** private: method[restoreLoginState]
      *  Load login status from the session storage.
      */
