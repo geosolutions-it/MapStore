@@ -647,7 +647,27 @@ public class JdbcServiceDAO implements ServiceDAO {
             }
         }
 
-        String sql = sql_template.replace("{{table_name}}", "SERVICE").replace("{{key_field}}",
+        String sql = sql_template.replace("{{table_name}}", "SERVICE_ACCESS").replace("{{key_field}}",
+                "\"SERVICE_ID\"");
+
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, serviceId);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        sql = sql_template.replace("{{table_name}}", "SERVICE").replace("{{key_field}}",
                 "\"SERVICE_ID\"");
 
         try {
@@ -666,7 +686,7 @@ public class JdbcServiceDAO implements ServiceDAO {
                 }
             }
         }
-
+        
         return result;
     }
 

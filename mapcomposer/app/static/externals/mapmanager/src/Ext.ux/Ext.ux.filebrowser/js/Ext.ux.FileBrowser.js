@@ -93,6 +93,7 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
                 ,rename:{scope:this, fn:this.renameItem}
                 ,nodemove:{scope:this, fn:this.renameItem}
                 ,newdir:{scope:this, fn:this.newdir}
+                ,"close-service":{scope:this, fn:this.closeService}
                 ,render:{scope:this, fn:function(){
                     //this.fileTreePanel.loader.baseParams.root = this.root;
                     this.fileTreePanel.setReadOnly(this.readOnly);

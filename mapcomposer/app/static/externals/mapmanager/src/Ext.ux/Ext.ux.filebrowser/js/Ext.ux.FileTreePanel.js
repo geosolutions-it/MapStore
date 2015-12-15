@@ -44,6 +44,11 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	 * @cfg {String} deleteText Delete text (for message box title or other displayed texts)
 	 */
 	,deleteText:'Delete'
+	
+	/**
+	 * @cfg {String} closeServiceText Close ServiceID text (for message box title or other displayed texts)
+	 */
+	,closeServiceText:'Close ServiceID'
 
 	/**
 	 * @cfg {String} deleteUrl URL to use when deleting; this.url is used if not set (defaults to undefined)
@@ -542,6 +547,13 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 			 */
 			,'newdir'
 			/**
+			 * @event close-service
+			 * Fires after a ServiceID has been closed
+			 * @param {Ext.ux.FileTreePanel} this
+			 * @param {Ext.tree.AsyncTreeNode} new node/directory that has been created
+			 */
+			,'close-service'
+			/**
 			 * @event newdirfailure
 			 * Fires if creation of new directory failed
 			 * @param {Ext.ux.FileTreePanel} this
@@ -620,7 +632,7 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
     ,cmdCallback:function(options, success, response) {
         var i, o, node;
 	    var showMsg = true;
-
+	    
 	    // process Ajax success
 	    if(true === success) {
 
@@ -702,7 +714,9 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 				}
 
 				// show default message box with server error
-				this.showError(o.msg || response.responseText);
+				if (o.msg || response.responseText) {
+					this.showInfo(o.msg || response.responseText);
+				}
 			} // eo process command failure
 		} // eo process Ajax success
 
@@ -828,6 +842,48 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	// }}}
 	// {{{
 	/**
+	 * closes the passed node serviceID
+	 * @private
+	 * @param {Ext.tree.AsyncTreeNode} node
+	 */
+	,closeServiceID:function(node) {
+		Ext.Msg.show({
+			 title:this.closeServiceText
+			,msg:this.reallyWantText + ' ' + this.closeServiceText.toLowerCase()  + ' <b>' + node.text + '</b>?'
+			,icon:Ext.Msg.WARNING
+			,buttons:Ext.Msg.YESNO
+			,scope:this
+			,fn:function(response) {
+				// do nothing if answer is not yes
+				if('yes' !== response) {
+					this.getEl().dom.focus();
+					return;
+				}
+				// setup request options
+				var params = {}
+				if (node.attributes.iconCls == "folder") {
+					params = {
+						 action:'close_service_id',
+						 folder:node.text
+					};
+				}
+				var options = {
+					 url:this.deleteUrl || this.url
+					,method:this.method
+					,scope:this
+					,callback:this.cmdCallback
+					,node:node
+					,params:params
+				};
+//				Ext.Ajax.request(options);
+			    this.sendCmd(options);
+			    return true;
+			}
+		});
+	} // eo function closeServiceID
+	// }}}
+	// {{{
+	/**
 	 * requests file download from server
 	 * @private
 	 * @param {String} path Full path including file name but relative to server root path
@@ -894,10 +950,11 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	,getContextMenu:function(selectedNode) {
 		// TODO: Generalize it
 		var newdirText = this.newdirText;
+		var isService = false;
 		if(selectedNode){
-			if(!selectedNode.parentNode){
+			if (!selectedNode.parentNode) {
 				newdirText = "New VA-SP";
-			}else if(!selectedNode.parentNode.parentNode){
+			} else if(!selectedNode.parentNode.parentNode) {
 				newdirText = "New ServiceID";
 			}
 		}
@@ -1112,7 +1169,11 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 			case 'newdir':
 				this.createNewDir(node);
 			break;
-
+			
+			case 'close-service':
+				this.closeServiceID(node);
+			break;
+			
 			default:
 			break;
 		}
@@ -1577,6 +1638,24 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	// }}}
 	// {{{
 	/**
+	 * universal show info function
+	 * @private
+	 * @param {String} msg message
+	 * @param {String} title title
+	 */
+	,showInfo:function(msg, title) {
+		Ext.Msg.show({
+			 title:title
+			,msg:Ext.util.Format.ellipsis(msg, this.maxMsgLen)
+			,fixCursor:true
+			,icon:Ext.Msg.INFO
+			,buttons:Ext.Msg.OK
+			,minWidth:1200 > String(msg).length ? 360 : 600
+		});
+	} // eo function showInfo
+	// }}}
+	// {{{
+	/**
 	 * updates class of leaf after rename
 	 * @private
 	 * @param {Ext.tree.AsyncTreeNode} node Node to update class of
@@ -1608,7 +1687,6 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 	}
 
 	,applyPermissionOnMenu: function(node, menu){
-
 		var p = this.getPermission(node);
 
         menu.setItemDisabled("open-dwnld", (node.isLeaf()?false:true));
@@ -1620,12 +1698,19 @@ Ext.ux.FileTreePanel = Ext.extend(Ext.tree.TreePanel, {
 		menu.setItemDisabled('rename', this.readOnly || node === this.root || node.disabled || (this.checkNodeParameters && (!p.w || !node.attributes.canRename)));
 		menu.setItemDisabled('newdir', this.readOnly || (node.isLeaf() ? node.parentNode.disabled : node.disabled) || (this.checkNodeParameters && (!p.w || !node.attributes.canCreateFolder)));
 
-		// upload is the item 6
+		// is a ServiceID
+		if (node.id.split("/") && node.id.split("/").length == 3) {
+			menu.getItemByCmd('close-service').setDisabled(false);
+		} else {
+			menu.getItemByCmd('close-service').setDisabled(true);
+		}
+		
+		// upload is the item 7
 		if (this.checkNodeParameters && (!p.w || !node.attributes.canUpload)){
-			menu.items.get(6).setDisabled(true);
+			menu.items.get(7).setDisabled(true);
 		}else{
-			// console.log(menu.items.get(6));
-			menu.items.get(6).setDisabled(false);
+			// console.log(menu.items.get(7));
+			menu.items.get(7).setDisabled(false);
 		}
 
 		// show/hide logic

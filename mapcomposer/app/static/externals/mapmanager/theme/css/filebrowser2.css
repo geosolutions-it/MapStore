@@ -97,6 +97,10 @@ background-image:url(../img/fb/application_view_tile.png) !important;
 background-image:url(../img/fb/application_view_list.png) !important;
 }
 
+.icon-service-lock {
+background-image:url(../img/fb/lock.png) !important;
+}
+
 .icon-row-file {
 padding-left:20px;
 background-position:0 -2px;

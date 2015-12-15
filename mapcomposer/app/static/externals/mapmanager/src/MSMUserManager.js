@@ -1508,16 +1508,22 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                                                         services.push({serviceId:arr[i]});
                                                       }
                                                     }
-                                                    userManager.users.update(
-                                                    	    useridField.getValue(),
-                                                            { 
+                                                    
+                                                    var userUpdatedData = { 
                                                               name: nameField.getValue(), 
-                                                              password:passwordField.getValue(), 
                                                               role:roleDropdown.getValue(),
                                                               attribute:attribute,
                                                               groups:groups,
                                                               enabled: values.enabled //only if present
-                                                            }, 
+                                                           };
+                                                    
+                                                    if (passwordField.getValue() && !this.isEmpty(passwordField.getValue()) && !this.isBlank(passwordField.getValue())) {
+                                                    	userUpdatedData.password = passwordField.getValue();
+                                                    }
+                                                    
+                                                    userManager.users.update(
+                                                    	    useridField.getValue(),
+                                                            userUpdatedData, 
                                                             function(response) {
 																var jsonDataContext = [];
 												                for (serviceId in services) {
@@ -1613,7 +1619,15 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                         wingroup.show();
                     }
                 };
-            }
+            },
+            
+            isEmpty : function (str) {
+    			return (!str || 0 === str.length);
+    		},
+    		
+    		isBlank : function (str) {
+    			return (!str || /^\s*$/.test(str));
+			}
 		  		
 });
 

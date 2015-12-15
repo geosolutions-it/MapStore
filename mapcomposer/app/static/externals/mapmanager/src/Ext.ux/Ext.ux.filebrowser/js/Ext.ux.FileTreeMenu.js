@@ -59,6 +59,11 @@ Ext.ux.FileTreeMenu = function(config) {
             ,disabled:config.overView
             ,cmd:'delete'
         },{
+        	text: this.serviceLockText
+        	,iconCls:this.serviceLockIconCls
+        	,disabled:true
+        	,cmd:'close-service'
+        },{
             text:(config.newdirText ? config.newdirText : this.newdirText) + '... (Ctrl+N)'
             ,iconCls:this.newdirIconCls
             ,cmd:'newdir'
@@ -196,6 +201,16 @@ Ext.extend(Ext.ux.FileTreeMenu, Ext.menu.Menu, {
 	 * @cfg {String} renameText text for rename item
 	 */
 	,renameText: 'Rename'
+	
+	/**
+	 * @cfg {String} icon class for close service item
+	 */
+	,serviceLockIconCls:'icon-service-lock'
+	
+	/**
+	 * @cfg {String} serviceLockText text for close service item
+	 */
+	,serviceLockText: 'Close Service'
 
 	/**
 	 * @cfg {String} uploadFileText text for upload file item
@@ -239,6 +254,7 @@ Ext.extend(Ext.ux.FileTreeMenu, Ext.menu.Menu, {
 	 *		- rename
 	 *		- delete 
 	 *		- newdir
+	 *      - close-service
 	 *		- sep-upload (for separator before upload panel)
 	 *		- upload (for upload file item that does nothing)
 	 *		- upload-panel (for upload panel)
