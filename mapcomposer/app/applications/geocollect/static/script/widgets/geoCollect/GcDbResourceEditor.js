@@ -997,7 +997,7 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
     },
     getTemplateConfigPlugin : function() {
         var me = this;
-        if (this.template.customTools)
+        if (this.template.customTools) {
             Ext.each(this.template.customTools, function(t) {
                 if (t.ptype === "gxp_gcfeatureeditor") {
                     me.gcFeatureEditor = t;
@@ -1005,11 +1005,9 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
                     me.gcSegGrid = t;
                     me.gcHistoryGrid = me.gcSegGrid.configHistory;
                     me.gcSopGrid = me.gcSegGrid.configSurvey;
-                    ;
                 }
-
             });
-
+        }
     },
     addTemplateValuesSeg : function(store) {
         var me = this;

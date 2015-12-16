@@ -366,7 +366,7 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
                     if (ucExcludeFields.indexOf(record.get("name").toUpperCase()) !== -1) {
                         return "x-hide-nosize";
                     }
-                     if (ucRequiredFields.indexOf(record.get("name").toUpperCase()) !== -1) {
+                    if (ucRequiredFields.indexOf(record.get("name").toUpperCase()) !== -1) {
                         if(record.get("value")===null)                 
                         return "x-required";
                     }
@@ -503,19 +503,20 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
      */
     stopEditing: function(save) {
         if(this.editing) {
-             
-            if(save === true&& this.feature.state===this.getDirtyState())
-            if(!this.validateSeg())return;
+            if(save === true && this.feature.state===this.getDirtyState()){
+                if(!this.validateSeg()){
+                    return;
+                }
+            }
             //TODO remove the line below when
             // http://trac.openlayers.org/ticket/2210 is fixed.
-            if(this.modifyControl){this.modifyControl.deactivate();
-            this.modifyControl.destroy();
+            if(this.modifyControl){
+                this.modifyControl.deactivate();
+                this.modifyControl.destroy();
             };
-           var feature = this.feature;
+            var feature = this.feature;
             if (feature.state === this.getDirtyState()) {
                 if (save === true) {
-                   
-              
                     //TODO When http://trac.osgeo.org/openlayers/ticket/3131
                     // is resolved, remove the if clause below
                     if (this.schema) {
@@ -536,7 +537,7 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
                     this.editing = false;
                     feature.layer.destroyFeatures([feature]);
                     this.fireEvent("canceledit", this, null);
-                
+                    
                 } else {
                     //Caso nel quale cancello cambiamenti senza salvare
                     var layer = feature.layer;
@@ -592,32 +593,30 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
     },
     destroy:function(){
         this.b.destroy();
-        
     },
     validateSeg:function(){
-        
-         
-             var editors=this.grid.customEditors;
-             var  attributes=this.feature.attributes;
-             for(var index in attributes) { 
-                if (attributes.hasOwnProperty(index)) {
-                 var val=attributes[index];
-                 var editor=editors[index];
-                     if(editor){
-                         var field = editors[index].field;
-                            field.setValue(val);
+        var editors=this.grid.customEditors;
+        var attributes=this.feature.attributes;
+        for(var index in attributes) {
+            if (attributes.hasOwnProperty(index)) {
+                var val=attributes[index];
+                var editor=editors[index];
+                if(editor){
+                    var field = editors[index].field;
+                    field.setValue(val);
                     if(!field.validate()){
                         Ext.MessageBox.show({
-                                        msg: index+": "+field.getActiveError(),
-                                         buttons: Ext.Msg.OK,
-                                         animEl: 'elId',
-                                        icon: Ext.MessageBox.INFO
-                                     }); 
-                                     return false;
-                        }
+                            msg: index+": "+field.getActiveError(),
+                            buttons: Ext.Msg.OK,
+                            animEl: 'elId',
+                            icon: Ext.MessageBox.INFO
+                        }); 
+                        return false;
                     }
                 }
-        }return true;        
+            }
+        }
+        return true;        
     }
 });
 

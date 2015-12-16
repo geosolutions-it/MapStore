@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014 GeoSolutions S.A.S.
+ *  Copyright (C) 2014 - 2015 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -31,94 +31,97 @@ Ext.ns("mxp.widgets");
  * Allow to edit and commit changes for a GeoStore Resource
  * 
  */
-
 mxp.widgets.GcResourceEditor = Ext.extend(Ext.Panel, {
 
     /** api: xtype = mxp_gc_resource_editor */
-	xtype:'mxp_gc_resource_editor',
-	//Strings:
-	jsonPanel:'Advanced Configuration',
-	jsonToGuiBtnText:'Apply',
-	jsonToGuiBtnTooltip:'Apply Configuration To User  Interface',
-	guiToJSONBtnText:'Get',
+    xtype:'mxp_gc_resource_editor',
+    //Strings:
+    jsonPanel:'Advanced Configuration',
+    jsonToGuiBtnText:'Apply',
+    jsonToGuiBtnTooltip:'Apply Configuration To User  Interface',
+    guiToJSONBtnText:'Get',
     guiToJSONBtnTooltip:'Get Configuration  From User Interface',
     checkMissionBtn:"Validate",
     checkMissionBtnTooltip:"Validate Configuration",
     validateMsgValid:"Mission Template Valid",
     validateMsgInvalid:"Mission Template Invalid",
     validateMsgTitle:"Is Valid?",
-	layout:'accordion',
-	border:false,
-	resource:null, // la risorsa caricata
-	authParam:null,
-	template:null,
-	layoutConfig: {
+    layout:'accordion',
+    border:false,
+    resource:null, // la risorsa caricata
+    authParam:null,
+    template:null,
+    layoutConfig: {
         // layout-specific configs go here
         titleCollapse: true,
         hideCollapseTool:true,
         fill:true,
       
     },
-	
-initComponent: function() {
-    
-   
-    
-this.items=[{
-	xtype:"mxp_gc_db_resource_editor",
-	ref:"dbEdit",
-	authParam:this.authParam,
-	gcSource:this.gcSource,
-	listeners:{
-		ready:function(dbp){	
-		this.mobEdit.setStore(dbp);	
-		
-		},
-		change:function(dbp){
-			this.mobEdit.updateStore(dbp);	
-		},
-		resLoaded:function(){
-			//caricare le risorse in tutti i pannelli :-D
-			//Va ritardato
-			task= new Ext.util.DelayedTask(function(){
-    			 this.mobEdit.loadResourceData(this.resource);
-			 },this);
-			task.delay(500);
-		},
-	 afterrender: function(me, eOpts){
-                    me.header.on('mousedown',function(e){
-                    if(!me.collapsed)  me.stopCollapse=true;//Blocca chiusura panel alemeno non posso chiudere accordion e ne ho uno sempre aperto
-                });
+
+    initComponent: function() {
+
+        this.items=[{
+            xtype:"mxp_gc_db_resource_editor",
+            ref:"dbEdit",
+            authParam:this.authParam,
+            gcSource:this.gcSource,
+            listeners:{
+                ready:function(dbp){
+                    this.mobEdit.setStore(dbp);
                 },
-                beforecollapse: function(me, dir, an, opt){
-                
-                    if(me.stopCollapse){
-                        me.stopCollapse=false;
-                        return false;
-                    }
-                },	
-	scope:this	
-	}
-},{
-	xtype:'mxp_gc_mobile_resource_editor',
-	ref:'mobEdit',
-	listeners: {
+                change:function(dbp){
+                    this.mobEdit.updateStore(dbp);
+                },
+                resLoaded:function(){
+                    //caricare le risorse in tutti i pannelli :-D
+                    //Va ritardato
+                    task= new Ext.util.DelayedTask(function(){
+                        if(this.mobEdit){
+                            this.mobEdit.loadResourceData(this.resource);
+                        }
+                    },this);
+                    task.delay(500);
+                },
                 afterrender: function(me, eOpts){
                     me.header.on('mousedown',function(e){
-                    if(!me.collapsed)  me.stopCollapse=true;
-                });
+                        if(!me.collapsed){
+                            //Blocca chiusura panel almeno non posso chiudere accordion e ne ho uno sempre aperto
+                            me.stopCollapse=true;
+                        }
+                    });
                 },
                 beforecollapse: function(me, dir, an, opt){
-                
                     if(me.stopCollapse){
                         me.stopCollapse=false;
                         return false;
                     }
-                } 
+                },
+                scope:this
+            }
+        },{
+            xtype:'mxp_gc_mobile_resource_editor',
+            ref:'mobEdit',
+            listeners: {
+                
+                afterrender: function(me, eOpts){
+                    me.header.on('mousedown',function(e){
+                        if(!me.collapsed){
+                            me.stopCollapse=true;
+                        }
+                    });
+                },
+                beforecollapse: function(me, dir, an, opt){
+                    if(me.stopCollapse){
+                        me.stopCollapse=false;
+                        return false;
+                    }
                 }
-	
-},//pannello con json modificabile a mano non so se 
- new Ext.form.FormPanel({
+            }
+
+        },
+        //pannello con json modificabile a mano non so se 
+        new Ext.form.FormPanel({
                 frame:true,
                 layout:'fit',
                 xtype:'form',
@@ -127,65 +130,64 @@ this.items=[{
                 border:false,
                 ref:'jsonP',
                 listeners: {
-                afterrender: function(me, eOpts){
-                    me.header.on('mousedown',function(e){
-                    if(!me.collapsed)  me.stopCollapse=true;
-                });
+                    afterrender: function(me, eOpts){
+                        me.header.on('mousedown',function(e){
+                            if(!me.collapsed){
+                                me.stopCollapse=true;
+                            }
+                        });
+                    },
+                    beforecollapse: function(me, dir, an, opt){
+                        if(me.stopCollapse){
+                            me.stopCollapse=false;
+                            return false;
+                        }
+                    } 
                 },
-                beforecollapse: function(me, dir, an, opt){
-                
-                    if(me.stopCollapse){
-                        me.stopCollapse=false;
-                        return false;
+                tbar:[
+                    {
+                        xtype:'toolbar',
+                        items:[
+                        {
+                            text:this.checkMissionBtn,
+                            tooltip: this.checkMissionBtnTooltip,
+                            iconCls: "accept",
+                            handler: function(btn){
+                                Ext.Msg.show({
+                                    title:this.validateMsgTitle,
+                                    msg:this.jsonP.canCommit()? this.validateMsgValid:this.validateMsgInvalid,
+                                    animEl: 'elId',
+                                    icon: Ext.MessageBox.INFO
+                                });
+                            },
+                            scope:this
+                        }]
+                    },
+                    '-',
+                    {
+                        text:this.guiToJSONBtnText,
+                        tooltip: this.guiToJSONBtnTooltip,
+                        iconCls: "gui_json",
+                        style:{'text indent':0},
+                        handler: function(btn){
+                            //Se sono in editing il bottone è disabilitato|| 
+                            this.getResourceData(false);
+                        },
+                        scope:this
+                    },
+                    '-',
+                    {
+                        text:this.jsonToGuiBtnText,
+                        tooltip: this.jsonToGuiBtnTooltip,
+                        iconCls: "json_gui",
+                        handler: function(btn){
+                            //Se sono in editing il bottone è disabilitato||
+                            this.loadResourceData(this.jsonP.getResourceData());
+                        },
+                        scope:this
                     }
-                } 
-                
-                    
-                },
-                tbar:[	{xtype:'toolbar',
-			 				items:[
-			 				{
-                                text:this.checkMissionBtn,
-                                
-                                tooltip: this.checkMissionBtnTooltip,
-                                iconCls: "accept",
-                                handler: function(btn){ 
-                                    
-                                    Ext.Msg.show({
-                                        title:this.validateMsgTitle,
-                                        msg:this.jsonP.canCommit()? this.validateMsgValid:this.validateMsgInvalid,
-                                        animEl: 'elId',
-                                        icon: Ext.MessageBox.INFO
-});
-                                                                
-                                },scope:this}, ]},'-',
-			 				
-			 				
-			 				{
-		       					text:this.guiToJSONBtnText,
-			                    tooltip: this.guiToJSONBtnTooltip,
-			                    iconCls: "gui_json",
-			                    style:{'text indent':0},
-			                    handler: function(btn){ 
-			                    //Se sono in editing il bottone è disabilitato|| 
-			             	
-			                    			 this.getResourceData(false);
-     			                    	 },
-                                scope:this
-			                    
-			                  		},'-',{
-		       					text:this.jsonToGuiBtnText,
-			                    tooltip: this.jsonToGuiBtnTooltip,
-			                    iconCls: "json_gui",
-			                    handler: function(btn){ 
-			                    //Se sono in editing il bottone è disabilitato|| 
-			                   
-			                    			this.loadResourceData(this.jsonP.getResourceData());
-			                    	 },scope:this
-			                    
-			                  		}],
+                ],
                 items:[
-               			
                 {
                     xtype:'textarea',
                     name:'blob',
@@ -198,30 +200,30 @@ this.items=[{
                 },
                 loadResourceData: function(resource){
                     var f = this.getForm();
-					f.setValues({blob:resource});
+                    f.setValues({blob:resource});
                 },
                 canCommit :function(){
                     var f = this.getForm().getValues().blob;
-                    if (f.length<1)return false;
+                    if (f.length<1){
+                        return false;
+                    }
                     try{
-                    var res= Ext.util.JSON.decode(f);}
-                    catch (e){
+                        var res= Ext.util.JSON.decode(f);
+                    } catch (e){
                         return false;    
                     }
                     return true;
                 }
             })
+        ];
 
-
-];	
-
-this.on('render',function(){
-    this.parent =this.findParentByType('mxp_geostoreresourceform');
-    if(this.parent)
-        this.dbEdit.rForm=this.parent;
-},this),
-mxp.widgets.GcResourceEditor.superclass.initComponent.call(this, arguments);	
-},
+        this.on('render',function(){
+            this.parent =this.findParentByType('mxp_geostoreresourceform');
+            if(this.parent)
+                this.dbEdit.rForm=this.parent;
+        },this),
+        mxp.widgets.GcResourceEditor.superclass.initComponent.call(this, arguments);
+    },
 //Ritorna json completo da salvare montando i vari pezzi
 getResourceData: function(skipTemplate){
     //Devo recuperare il titolo da fuori!!
