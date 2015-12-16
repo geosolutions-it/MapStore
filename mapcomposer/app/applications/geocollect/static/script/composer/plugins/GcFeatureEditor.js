@@ -317,118 +317,119 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                 // must not configure the ModifyFeature control in standalone
                 // mode, and use the SelectFeature control that comes with the
                 // ModifyFeature control instead.
-             
-               
+                
                 if( segForm && segForm.editing) {
-                    
                      //evt.cancelBubble=false;
                      return false;
                 }
             },
             "featureselected": function(evt) {
-               var feature = evt.feature;
+                var feature = evt.feature;
                 var featureStore = featureManager.featureStore;
                 //if(this.selectControl.active) 
                 {
                     
-                    //Genero sempre la scheda per editing anche se non la uso!!:-D
+                    // Create editing form
+                    
+                    //Fetch existing editing form
+                    var ftGrid=gcseg.segdet.seg.items.get(0);
                        
-                        var ftGrid=gcseg.segdet.seg.items.get(0);//recupero quella presente se c'è
-                       
-                        segForm= new gxp.plugins.GcSegForm(Ext.apply(  
-                            {
-                        feature:feature,
-                        schema:featureManager.schema,
-                        allowDelete: true, 
-                        propertyNames:this.propertyNames,
-                        requiredFields:this.requiredFields, 
-                        listeners: {
-                            "startsegediting": function() {
-                                gcseg.segEditing=true;
-                                // if(!this.selectControl.active) this.selectControl.activate();
-                                this.actions[0].items[0].disable();
-                                this.actions[1].items[0].disable();
-                                gcseg.segGrid.getSelectionModel().lock();
-                                this.target.mapPanelContainer.getTopToolbar().disable();
-                                // featureManager.showLayer(
-                                //  this.id, this.showSelectedOnly && "selected"
-                                // );
-                            },
-                            "stopsegediting": function() {
-                                gcseg.segEditing=false;
-                                gcseg.segGrid.getSelectionModel().unlock();
-                                this.target.mapPanelContainer.getTopToolbar().enable();
-                                // var r = gcseg.segGrid.getSelectionModel().getSelected();//
-                                //  if(r)this.selectControl.select(r.data.feature);
-                                this.actions[0].items[0].enable();
-                                this.actions[1].items[0].enable();
-                                //TODO CONTROLLA SE HO TIGA SELEZIONATA E RISELEZIONA LA FEATURE!!
-
-                            },
-                            "featuremodified": function(popup, feature) {
-                                featureStore.on({
-                                    write: {
-                                        fn: function(st,act) {
-                                            if(act=='update'){
-                                                gcseg.segdet.seg_history.refreshHistory();
-                                            }
+                    segForm= new gxp.plugins.GcSegForm(
+                        Ext.apply({
+                            feature:feature,
+                            schema:featureManager.schema,
+                            allowDelete: true, 
+                            propertyNames:this.propertyNames,
+                            requiredFields:this.requiredFields, 
+                            listeners: {
+                                "startsegediting": function() {
+                                    gcseg.segEditing=true;
+                                    // if(!this.selectControl.active) this.selectControl.activate();
+                                    this.actions[0].items[0].disable();
+                                    this.actions[1].items[0].disable();
+                                    gcseg.segGrid.getSelectionModel().lock();
+                                    this.target.mapPanelContainer.getTopToolbar().disable();
+                                    // featureManager.showLayer(
+                                    //  this.id, this.showSelectedOnly && "selected"
+                                    // );
+                                },
+                                "stopsegediting": function() {
+                                    gcseg.segEditing=false;
+                                    gcseg.segGrid.getSelectionModel().unlock();
+                                    this.target.mapPanelContainer.getTopToolbar().enable();
+                                    // var r = gcseg.segGrid.getSelectionModel().getSelected();//
+                                    //  if(r)this.selectControl.select(r.data.feature);
+                                    this.actions[0].items[0].enable();
+                                    this.actions[1].items[0].enable();
+                                    //TODO CONTROLLA SE HO TIGA SELEZIONATA E RISELEZIONA LA FEATURE!!
+                                },
+                                "featuremodified": function(popup, feature) {
+                                    featureStore.on({
+                                        write: {
+                                            fn: function(st,act) {
+                                                if(act=='update'){
+                                                    gcseg.segdet.seg_history.refreshHistory();
+                                                }
+                                            },
+                                            single: true
                                         },
-                                        single: true
-                                    },
-                                    scope: this
-                                });                                
-                                if(feature.state === OpenLayers.State.DELETE) {                                    
-                                    /**
-                                     * If the feature state is delete, we need to
-                                     * remove it from the store (so it is collected
-                                     * in the store.removed list.  However, it should
-                                     * not be removed from the layer.  Until
-                                     * http://trac.geoext.org/ticket/141 is addressed
-                                     * we need to stop the store from removing the
-                                     * feature from the layer.
-                                     */
-                                    gcseg.segGrid.toggleInfo.toggle(false);
-                                    gcseg.disableTools();
-                                     featureStore._removing = true; // TODO: remove after http://trac.geoext.org/ticket/141
-                                    featureStore.remove(featureStore.getRecordFromFeature(feature));
-                                    delete featureStore._removing; // TODO: remove after http://trac.geoext.org/ticket/141
-                                   
-                                }
-                                
-                                featureStore.save();
-                            },
-                            "canceledit": function(popup, feature) {
-                                if(feature===null)  {
-                                    gcseg.segGrid.toggleInfo.toggle(false);
-                                    gcseg.disableTools();}
-
-                                featureStore.commitChanges();
-                                
-                            },
-                            scope: this
-                        }                    
-                    }, {'editorConfig':this.initialConfig.editorConfig}));
-                      gcseg.segdet.seg.insert(0,segForm);
+                                        scope: this
+                                    });                                
+                                    if(feature.state === OpenLayers.State.DELETE) {                                    
+                                        /**
+                                         * If the feature state is delete, we need to
+                                         * remove it from the store (so it is collected
+                                         * in the store.removed list.  However, it should
+                                         * not be removed from the layer.  Until
+                                         * http://trac.geoext.org/ticket/141 is addressed
+                                         * we need to stop the store from removing the
+                                         * feature from the layer.
+                                         */
+                                        gcseg.segGrid.toggleInfo.toggle(false);
+                                        gcseg.disableTools();
+                                         featureStore._removing = true; // TODO: remove after http://trac.geoext.org/ticket/141
+                                        featureStore.remove(featureStore.getRecordFromFeature(feature));
+                                        delete featureStore._removing; // TODO: remove after http://trac.geoext.org/ticket/141
+                                    }
+                                    featureStore.save();
+                                },
+                                "canceledit": function(popup, feature) {
+                                    if(feature===null)  {
+                                        gcseg.segGrid.toggleInfo.toggle(false);
+                                        gcseg.disableTools();
+                                    }
+                                    featureStore.commitChanges();
+                                },
+                                scope: this
+                            }                    
+                        },
+                        {
+                            'editorConfig': this.initialConfig.editorConfig,
+                            'excludeFields': this.initialConfig.excludeFields
+                        })
+                    );
+                    
+                    // Add new editing form
+                    gcseg.segdet.seg.insert(0,segForm);
                      
                     if(feature.state === OpenLayers.State.INSERT){
-                       //ATTIVO EDITING E APRO IL PANNELLO
+                        //ATTIVO EDITING E APRO IL PANNELLO
                         segForm.startEditing();
                         gcseg.segGrid.toggleInfo.toggle(true);
-                    
                     }
                     
+                    // Remove old editing form
                     if(ftGrid){
-                        
                          gcseg.segdet.seg.remove(ftGrid,true);
-                         
                     }
                     gcseg.segdet.doLayout();
-                     //Elimino i bottoni finti iniziali :-D
-                     gcseg.segGrid.fBtGroup.hide();
-                     gcseg.segGrid.getTopToolbar().add(segForm.b);
-                     gcseg.segGrid.getTopToolbar().doLayout();
                     
-                   }
+                    //Delete button placeholders
+                    gcseg.segGrid.fBtGroup.hide();
+                    gcseg.segGrid.getTopToolbar().add(segForm.b);
+                    gcseg.segGrid.getTopToolbar().doLayout();
+                    
+                }
             },
             "sketchcomplete": function(evt) {
                 // Why not register for featuresadded directly? We only want
