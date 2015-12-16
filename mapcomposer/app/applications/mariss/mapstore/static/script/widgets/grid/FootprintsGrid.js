@@ -86,11 +86,9 @@ gxp.npa.grid.FootprintsGrid = Ext.extend(gxp.grid.FeatureGrid, {
         },scope:this
     });
     
-        this.getTopToolbar().insert(0,this.resetBtn);
-        this.regionCt=Ext.getCmp('south');
-        
-       this.addEvents("filterreseted");       
-       
+       this.getTopToolbar().insert(0,this.resetBtn);
+       this.regionCt=Ext.getCmp('south');
+       this.addEvents("filterreseted");
        this.getSelectionModel().on('rowselect',function( sm, rowIndex, r ){
                      var feature = r.data.feature;
                      this.filterLayers(feature);
@@ -166,8 +164,163 @@ gxp.npa.grid.FootprintsGrid = Ext.extend(gxp.grid.FeatureGrid, {
         this.pCart.loadElement(row,this.pCartType);
         }
     },
-    
-/** api: method[getColumns]
+    loadAcqData:function(acqPlan){
+    	if (!acqPlan) return;
+    	var myWin = new Ext.Window({
+			height : 400,
+			width  : 550,
+			layout : 'fit',
+			title: "Acquisition Plan",
+			id: this.id + "_acqlist_wnd",
+			items:[{
+				id: this.id + "_acqlist",
+				autoScroll: true,
+				items:[]
+			}]
+		});
+		
+		myWin.show();
+		
+		var acqList = Ext.getCmp(this.id + "_acqlist");
+		var grid = this.getAcqListGrid(acqPlan);
+		acqList.add(grid);
+		try
+		{
+			acqList.doLayout();
+		}
+		catch(err)
+		{
+			//console.log(err);
+		}
+    },
+   /** private: method[refreshAcqListGrid]
+    *  Get acquisition list grid based on selected service
+    */ 
+    getAcqListGrid: function(acqPlanUrl){
+        	var me = this;
+
+            // Feature grid
+            
+            var proxy;
+            
+            if (acqPlanUrl) {
+            	proxy = new GeoExt.data.ProtocolProxy({
+		            protocol: new OpenLayers.Protocol.HTTP({
+		                url: acqPlanUrl,
+		                format: new OpenLayers.Format.GML()
+		            })
+		        });
+            }
+            
+            var acqListStore = new GeoExt.data.FeatureStore({
+                layer: this.acqListLayer,
+                fields: [
+                    {name: "service_name", type: "string"},
+                    {name: "ships", type: "number"},
+                    {name: "start", type: "string"},
+                    {name: "end", type: "string"},
+                    {name: "sensor", type: "string"},
+                    {name: "sensor_mode", type: "string"}
+                ],
+                proxy: proxy,
+                pageSize: 100,
+                autoLoad: true
+            });
+            
+            this.columnsHeadersText = {
+		        service_name: "ServiceName",
+		        start: "Start",
+		        end: "End",
+		        sensor: "Sensor",
+		        sensor_mode: "SensorMode",
+		        ships: "Ships count"
+		    };
+		    
+            this.acqListgrid = new Ext.grid.GridPanel({
+                height: 361,
+                width : 533,
+                sm: new GeoExt.grid.FeatureSelectionModel(),
+                // viewConfig: {
+                //     emptyText: this.emptyAcqListText
+                // },
+                store: acqListStore,
+                columns: [
+                    // {header: this.columnsHeadersText["service_name"], dataIndex: "service_name"},
+                    // {header: this.columnsHeadersText["ships"], dataIndex: "ships", sortable: true},
+                    {header: this.columnsHeadersText["start"], dataIndex: "start", sortable: true},
+                    {header: this.columnsHeadersText["end"], dataIndex: "end", sortable: true},
+                    {header: this.columnsHeadersText["sensor"], dataIndex: "sensor", sortable: true},
+                    {header: this.columnsHeadersText["sensor_mode"], dataIndex: "sensor_mode", sortable: true},
+                    {
+                        text: 'Show',
+                        header: 'Show',
+                        menuDisabled:true,
+                        resizable:false,
+                        xtype  :'actioncolumn',
+                        align  :'center',
+                        width  : 50,
+                        getClass: function(val, meta, rec) {
+                            this.tooltip = 'Show/Hide on Map';
+                            return 'view';
+                        },
+                        handler: function(grid, rowIndex, colIndex) {
+                            var rec      = grid.store.getAt(rowIndex);
+                            var geometry = rec.data.feature.geometry;
+                            
+                            if (!me.wfsLayer) {
+                            	for(var i=0; i<me.target.mapPanel.layers.getCount(); i++) {
+                            		if (me.target.mapPanel.layers.getAt(i).data.name === "aois") {
+                            			me.wfsLayer = me.target.mapPanel.layers.getAt(i);
+                            		}
+                            	}
+                            }
+                            
+                            if (me.wfsLayer) {
+	                            var feature = me.wfsLayer.features[0];
+	                            Ext.apply(feature,{
+	                                fid: '',
+	                                geometry: geometry
+	                            });
+	                            // delete draftLayer
+	                            if(me.wfsLayer){
+	                                me.wfsLayer.removeAllFeatures();
+	                                me.wfsLayer.addFeatures(feature);
+	                            }
+	                      	}
+                        }
+                    }
+                ],
+                listeners:{
+                    rowclick: function(grid, rowIndex, columnIndex, e) {
+                        var rec      = grid.store.getAt(rowIndex);
+                        var selModel = grid.getSelectionModel();
+                        try{
+                            if(selModel.getCount() == 0){
+                                Ext.getCmp(this.id + "_export_acq_button").disable();
+                            }else{
+                                Ext.getCmp(this.id + "_export_acq_button").enable();
+                            }
+                        } catch (e){
+                            
+                        }
+                    },
+                    scope:this
+                },
+                // tbar: [],
+                bbar:[
+                    new Ext.PagingToolbar({
+                        store: acqListStore,
+                        displayInfo: true,
+                        displayMsg: '{0}-{1} of {2}',
+                        emptyMsg: "No service available"
+                    }),
+                    "->",
+                    {}]
+            });
+            
+        return this.acqListgrid;
+    },
+	/** api: method[getColumns]
      *  :arg store: ``GeoExt.data.FeatureStore``
      *  :return: ``Array``
      *  
@@ -203,6 +356,22 @@ gxp.npa.grid.FootprintsGrid = Ext.extend(gxp.grid.FeatureGrid, {
                 if(bounds){
                     this.map.zoomToExtent(bounds);
                 }
+            }
+        });
+        
+        actions.push({
+            iconCls: 'acqplanaction',
+            tooltip: "Show Acquisition Plan",
+            handler: function (grid, rowIndex, colIndex) {
+                var store = grid.getStore();
+                var row = store.getAt(rowIndex);
+                var sm=this.getSelectionModel();
+                sm.selectRow(rowIndex);
+                var feature = row.data.feature;
+                // this.filterLayers(feature);
+                var usid = feature.data.usid;
+                var acqPlan = row.data.acq_plan_url;
+                this.loadAcqData(acqPlan);
             }
         });
 

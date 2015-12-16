@@ -23,9 +23,14 @@
     height:16px;
     margin-left:2px;
 }
+.x-action-col-cell  .acqplanaction{
+    background-image: url(../images/table.png) !important;
+    width:16px;
+    height:16px;
+    margin-left:2px;
+}
 .x-action-col-cell  .addScenario{
     background-image: url(../externals/gxp/src/theme/img/silk/folder_add.png) !important;
-    
     width:16px;
     height:16px;
 }

@@ -79,6 +79,9 @@ public class JdbcServiceDAO implements ServiceDAO {
                 service = new Service(rs.getString("SERVICE_ID"), rs.getString("PARENT"),
                         rs.getString("USER"), rs.getString("STATUS"));
                 service.setId(rs.getInt("ID"));
+                if (rs.getString("acq_plan_url") != null) {
+                    service.setAcqPlanUrl(rs.getString("acq_plan_url"));
+                }
             } else {
                 return null;
             }
@@ -187,8 +190,12 @@ public class JdbcServiceDAO implements ServiceDAO {
             while (rs.next()) {
                 service = new Service(rs.getString("SERVICE_ID"), rs.getString("PARENT"),
                         rs.getString("USER"), rs.getString("STATUS"));
+                
                 service.setId(rs.getInt("ID"));
-
+                if (rs.getString("acq_plan_url") != null) {
+                    service.setAcqPlanUrl(rs.getString("acq_plan_url"));
+                }
+                
                 services.add(service);
             }
             rs.close();
@@ -229,8 +236,11 @@ public class JdbcServiceDAO implements ServiceDAO {
             while (rs.next()) {
                 service = new Service(rs.getString("SERVICE_ID"), rs.getString("PARENT"),
                         rs.getString("USER"), rs.getString("STATUS"));
+                
                 service.setId(rs.getInt("ID"));
-
+                if (rs.getString("acq_plan_url") != null) {
+                    service.setAcqPlanUrl(rs.getString("acq_plan_url"));
+                }
                 services.add(service);
             }
             rs.close();
@@ -576,6 +586,37 @@ public class JdbcServiceDAO implements ServiceDAO {
         return result;
     }
 
+    @Override
+    public boolean updateServiceAcqPlan(Service service, String acqPlanUrl) {
+        boolean result = false;
+
+        String sql = "UPDATE SERVICE SET \"STATUS\" = ?, acq_plan_url = ? WHERE \"USER\" = ? AND \"SERVICE_ID\" = ?";
+
+        Connection conn = null;
+
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, "ACQUISITIONPLAN");
+            ps.setString(2, acqPlanUrl);
+            ps.setString(3, service.getUser());
+            ps.setString(4, service.getServiceId());
+            result = ps.execute() && ps.getUpdateCount() > 0;
+            ps.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
+
+        return result;
+    }
+    
     @Override
     public boolean updateServicesAccess(String userId, List<String> serviceIds) {
         boolean result = false;

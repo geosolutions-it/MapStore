@@ -205,7 +205,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 url: this.getServicesUrl(),
                 //pageSize: 10,
                 autoLoad: true,
-                fields : ["serviceId", "userId", "status", "aoiDescription", "aoiStartTime", "aoiEndTime", "aoiGeometry", "aoiStatus"]
+                fields : ["serviceId", "userId", "status", "aoiDescription", "aoiStartTime", "aoiEndTime", "aoiGeometry", "aoiStatus", "acqPlanUrl"]
             });
             var servicesListgrid = new Ext.grid.GridPanel({
                 id: this.id + "_services_grid",
@@ -243,9 +243,10 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                             var rec      = grid.store.getAt(rowIndex);
                             var service  = rec.data.serviceId;
                             var status   = rec.data.status;
+                            var acqPlanUrl = rec.data.acqPlanUrl;
                                                         
                             if (status === "NEW" || status === "AOI") {
-                                me.onSelectService(service, me.viewPanel, false);
+                                me.onSelectService(service, me.viewPanel, false, acqPlanUrl);
                                 
                                 var myWin = new Ext.Window({
                                     height : 400,
@@ -287,7 +288,32 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                                 });
                                 myWin.show();
 
-                                me.onSelectService(service, me.viewPanel, true);
+                                me.onSelectService(service, me.viewPanel, true, acqPlanUrl);
+                            }
+                            if (status === "ACQUISITIONPLAN") {
+                                var myWin = new Ext.Window({
+                                    height : 400,
+                                    width  : 550,
+                                    layout : 'fit',
+                                    title: me.acquisitionPanelTitleText,
+                                    id: me.id + "_acqlist_wnd",
+                                    items:[{
+                                        id: me.id + "_acqlist",
+                                        autoScroll: true,
+                                        items:[]
+                                    }]
+                                });
+                                
+                                myWin.on("close", function() {
+                                    if(Ext.getCmp(me.id + "_services_grid"))
+                                    {
+                                        me.store.reload();
+                                        Ext.getCmp(me.id + "_services_grid").getView().refresh();
+                                    }
+                                });
+                                myWin.show();
+
+                                me.onSelectService(service, me.viewPanel, true, acqPlanUrl);
                             }
                         }
                     },
@@ -304,7 +330,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                         var service  = rec.data.serviceId;
                         var status   = rec.data.status;
                         
-                        this.onSelectService(service, this.viewPanel, false);
+                        this.onSelectService(service, this.viewPanel, false, null);
                     },
                     scope:this
                 },
@@ -897,7 +923,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         }
     },
 
-    onSelectService: function(serviceName, panel, loadData){
+    onSelectService: function(serviceName, panel, loadData, acqPlanUrl){
         var targetFeatureManager = this.target.tools.productFeatureManager;
         var filter = new OpenLayers.Filter.Comparison({
             type: OpenLayers.Filter.Comparison.EQUAL_TO,
@@ -918,16 +944,16 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
 
         // this.viewPanel.enable();
         if (loadData)
-            this.loadAcqData();
+            this.loadAcqData(acqPlanUrl);
     },
 
    /** private: method[loadAcqData]
     *  Load acquisition list data
     */ 
-    loadAcqData: function(){
+    loadAcqData: function(acqPlanUrl){
         var acqList = Ext.getCmp(this.id + "_acqlist");
         //if(!this.acqListgrid){
-            var grid = this.getAcqListGrid();
+            var grid = this.getAcqListGrid(acqPlanUrl);
             acqList.add(grid);
             try
             {
@@ -1088,21 +1114,22 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
    /** private: method[refreshAcqListGrid]
     *  Get acquisition list grid based on selected service
     */ 
-    getAcqListGrid: function(){
+    getAcqListGrid: function(acqPlanUrl){
         var me = this;
         if(this.addFeatureTable /*&& !this.acqListgrid*/){
             // Feature grid
-            var acqListStore = new GeoExt.data.FeatureStore({
-                layer: this.acqListLayer,
-                fields: [
-                    {name: "service_name", type: "string"},
-                    {name: "ships", type: "number"},
-                    {name: "start", type: "string"},
-                    {name: "end", type: "string"},
-                    {name: "sensor", type: "string"},
-                    {name: "sensor_mode", type: "string"}
-                ],
-                proxy: new GeoExt.data.ProtocolProxy({
+            
+            var proxy;
+            
+            if (acqPlanUrl) {
+            	proxy = new GeoExt.data.ProtocolProxy({
+		            protocol: new OpenLayers.Protocol.HTTP({
+		                url: acqPlanUrl,
+		                format: new OpenLayers.Format.GML()
+		            })
+		        });
+            } else {
+            	proxy = new GeoExt.data.ProtocolProxy({
                     url: this.layerURL,
                     protocol: new OpenLayers.Protocol.WFS({
                         version: this.wfsVersion,
@@ -1113,77 +1140,29 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                         srsName: this.target.mapPanel.map.projection,
                         filter: this.getCurrentFilter()
                     })
-                }),
-                pageSize: 10,
+               });
+            }
+            
+            var acqListStore = new GeoExt.data.FeatureStore({
+                layer: this.acqListLayer,
+                fields: [
+                    {name: "service_name", type: "string"},
+                    {name: "ships", type: "number"},
+                    {name: "start", type: "string"},
+                    {name: "end", type: "string"},
+                    {name: "sensor", type: "string"},
+                    {name: "sensor_mode", type: "string"}
+                ],
+                proxy: proxy,
+                pageSize: 100,
                 autoLoad: true
             });
             
-            this.acqListgrid = new Ext.grid.GridPanel({
-                height: 361,
-                width : 533,
-                sm: new GeoExt.grid.FeatureSelectionModel(),
-                // viewConfig: {
-                //     emptyText: this.emptyAcqListText
-                // },
-                store: acqListStore,
-                columns: [
-                    // {header: this.columnsHeadersText["service_name"], dataIndex: "service_name"},
-                    // {header: this.columnsHeadersText["ships"], dataIndex: "ships", sortable: true},
-                    {header: this.columnsHeadersText["start"], dataIndex: "start", sortable: true},
-                    {header: this.columnsHeadersText["end"], dataIndex: "end", sortable: true},
-                    {header: this.columnsHeadersText["sensor"], dataIndex: "sensor", sortable: true},
-                    {header: this.columnsHeadersText["sensor_mode"], dataIndex: "sensor_mode", sortable: true},
-                    {
-                        text: 'Show',
-                        header: 'Show',
-                        menuDisabled:true,
-                        resizable:false,
-                        xtype  :'actioncolumn',
-                        align  :'center',
-                        width  : 50,
-                        getClass: function(val, meta, rec) {
-                            this.tooltip = 'Show/Hide on Map';
-                            return 'view';
-                        },
-                        handler: function(grid, rowIndex, colIndex) {
-                            var rec      = grid.store.getAt(rowIndex);
-                            var geometry = rec.data.feature.geometry;
-                            
-                            var feature = me.wfsLayer.features[0];
-                            Ext.apply(feature,{
-                                fid: '',
-                                geometry: geometry
-                            });
-                            // delete draftLayer
-                            if(me.wfsLayer){
-                                me.wfsLayer.removeAllFeatures();
-                                me.wfsLayer.addFeatures(feature);
-                            }
-                        }
-                    }
-                ],
-                listeners:{
-                    rowclick: function(grid, rowIndex, columnIndex, e) {
-                        var rec      = grid.store.getAt(rowIndex);
-                        var selModel = grid.getSelectionModel();
-                        if(selModel.getCount() == 0){
-                            Ext.getCmp(this.id + "_export_acq_button").disable();
-                        }else{
-                            Ext.getCmp(this.id + "_export_acq_button").enable();
-                        }
-                    },
-                    scope:this
-                },
-                // tbar: [],
-                bbar:[
-                    new Ext.PagingToolbar({
-                        store: acqListStore,
-                        displayInfo: true,
-                        displayMsg: '{0}-{1} of {2}',
-                        emptyMsg: "No service available"
-                    }),
-                    "->",
-                    {
+            var exportBtn = {};
+            if (acqPlanUrl) {
+            	exportBtn = {};
+            } else {
+                exportBtn = {
                         text: this.exportAcqListText,
                         id: this.id + "_export_acq_button",
                         disabled: true,
@@ -1232,7 +1211,79 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                             // open the GML on a popup: this.doExportLayer("GML2", this.layerAcqListName, null, true, null, fids);
                         },
                         scope: this
-                    }]
+                    };
+            	}
+                    
+            this.acqListgrid = new Ext.grid.GridPanel({
+                height: 361,
+                width : 533,
+                sm: new GeoExt.grid.FeatureSelectionModel(),
+                // viewConfig: {
+                //     emptyText: this.emptyAcqListText
+                // },
+                store: acqListStore,
+                columns: [
+                    // {header: this.columnsHeadersText["service_name"], dataIndex: "service_name"},
+                    // {header: this.columnsHeadersText["ships"], dataIndex: "ships", sortable: true},
+                    {header: this.columnsHeadersText["start"], dataIndex: "start", sortable: true},
+                    {header: this.columnsHeadersText["end"], dataIndex: "end", sortable: true},
+                    {header: this.columnsHeadersText["sensor"], dataIndex: "sensor", sortable: true},
+                    {header: this.columnsHeadersText["sensor_mode"], dataIndex: "sensor_mode", sortable: true},
+                    {
+                        text: 'Show',
+                        header: 'Show',
+                        menuDisabled:true,
+                        resizable:false,
+                        xtype  :'actioncolumn',
+                        align  :'center',
+                        width  : 50,
+                        getClass: function(val, meta, rec) {
+                            this.tooltip = 'Show/Hide on Map';
+                            return 'view';
+                        },
+                        handler: function(grid, rowIndex, colIndex) {
+                            var rec      = grid.store.getAt(rowIndex);
+                            var geometry = rec.data.feature.geometry;
+                            
+                            var feature = me.wfsLayer.features[0];
+                            Ext.apply(feature,{
+                                fid: '',
+                                geometry: geometry
+                            });
+                            // delete draftLayer
+                            if(me.wfsLayer){
+                                me.wfsLayer.removeAllFeatures();
+                                me.wfsLayer.addFeatures(feature);
+                            }
+                        }
+                    }
+                ],
+                listeners:{
+                    rowclick: function(grid, rowIndex, columnIndex, e) {
+                        var rec      = grid.store.getAt(rowIndex);
+                        var selModel = grid.getSelectionModel();
+                        try{
+                            if(selModel.getCount() == 0){
+                                Ext.getCmp(this.id + "_export_acq_button").disable();
+                            }else{
+                                Ext.getCmp(this.id + "_export_acq_button").enable();
+                            }
+                        } catch (e){
+                            
+                        }
+                    },
+                    scope:this
+                },
+                // tbar: [],
+                bbar:[
+                    new Ext.PagingToolbar({
+                        store: acqListStore,
+                        displayInfo: true,
+                        displayMsg: '{0}-{1} of {2}',
+                        emptyMsg: "No service available"
+                    }),
+                    "->",
+                    exportBtn]
             });
         }
         return this.acqListgrid;
@@ -1443,7 +1494,6 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
      *  Export a layer in a format. Optionally submitted to backend and/or downloaded in an iframe
      */    
     doExportLayer: function(outputFormat, layerName, submitUrl, downloadGenerated, submitCallback, fids){
-
         var me = this;
         
         var filter = this.getCurrentFilter();

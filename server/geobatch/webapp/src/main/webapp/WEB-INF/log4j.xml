@@ -31,10 +31,10 @@
 	<!-- CAMEL -->
 	<logger name="org.apache.camel">
 		<!-- <level value="warning" /> -->
-		<level value="debug" /><!-- DEBUG -->
+		<level value="warning" /><!-- DEBUG -->
 	</logger>
 	<logger name="it.geosolutions.geobatch">
-		<level value="debug" /><!-- DEBUG -->
+		<level value="warning" /><!-- DEBUG -->
 	</logger>
 
 	<logger name="org.quartz">
@@ -58,7 +58,8 @@
 	<root>
 		<level value="error" />
 		<appender-ref ref="rolling" />
-		<appender-ref ref="console" />
+		<!-- appender-ref ref="console" / -->
 	</root>
 
 </log4j:configuration>
+

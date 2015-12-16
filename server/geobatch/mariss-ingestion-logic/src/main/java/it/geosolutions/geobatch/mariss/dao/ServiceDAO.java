@@ -55,6 +55,8 @@ public interface ServiceDAO {
 
     public boolean updateServiceStatus(Service servce, String status);
     
+    public boolean updateServiceAcqPlan(Service service, String acqPlanUrl);
+    
     public boolean updateServicesAccess(String userId, List<String> serviceIds);
 
     public boolean delete(String serviceId, Map<String, String> serviceAuxiliaryTables);

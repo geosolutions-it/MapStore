@@ -336,8 +336,6 @@ gxp.plugins.npa.ResultsGrid = Ext.extend(gxp.plugins.FeatureGrid, {
 
         var bbar = (featureManager.paging ? [toolbarElements] : []);
 
-
-
         var displayBtn = new Ext.Button({
             text: this.displayFeatureText,
             iconCls: "gxp-icon-addtomap",

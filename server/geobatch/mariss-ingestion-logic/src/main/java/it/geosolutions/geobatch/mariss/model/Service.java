@@ -35,6 +35,8 @@ public class Service {
     private String user;
 
     private String status;
+    
+    private String acqPlanUrl;
 
     private AreaOfInterest aoi;
 
@@ -244,6 +246,20 @@ public class Service {
      */
     public void setUser(String user) {
         this.user = user;
+    }
+
+    /**
+     * @return the acqPlanUrl
+     */
+    public String getAcqPlanUrl() {
+        return acqPlanUrl;
+    }
+
+    /**
+     * @param acqPlanUrl the acqPlanUrl to set
+     */
+    public void setAcqPlanUrl(String acqPlanUrl) {
+        this.acqPlanUrl = acqPlanUrl;
     }
 
     @Override

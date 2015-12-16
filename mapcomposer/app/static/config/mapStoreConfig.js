@@ -434,7 +434,8 @@
                     "servicename": "ServiceID",
                     "time": "Time",
                     "numoilspill": "# Oil Spill",
-                    "numshipdetect": "# Ship Detect"
+                    "numshipdetect": "# Ship Detect",
+                    "acq_plan_url": ""
                 },
                 "timeFormat": "g:i:s A"
             },
