@@ -1,0 +1,19 @@
+<it.geosolutions.geobatch.actions.sync.model.FileMetadataWrapper>
+  <metadata>
+    <entry>
+      <string>originalFilePath</string>
+      <string>/home/nali/work/projects/mariss/data/gb_data_dir/data/ftp/user1/service3/PRODUCTS/working/home/nali/work/projects/mariss/data/gb_data_dir/data/ftp/user1/service3/PRODUCTS/working/0_RS2_ELB_1FSCLS20110828_175847_00000025xEL1_16bxx_19339_0FF53_DER.tgz</string>
+    </entry>
+    <entry>
+      <string>service</string>
+      <string>service3</string>
+    </entry>
+    <entry>
+      <string>user</string>
+      <string>user1</string>
+    </entry>
+  </metadata>
+  <files>
+    <string>/home/nali/work/projects/mariss/data/gb_data_dir/data/ftp/user1/service3/PRODUCTS/working/home/nali/work/projects/mariss/data/gb_data_dir/data/ftp/user1/service3/PRODUCTS/working/0_RS2_ELB_1FSCLS20110828_175847_00000025xEL1_16bxx_19339_0FF53_DER.tgz</string>
+  </files>
+</it.geosolutions.geobatch.actions.sync.model.FileMetadataWrapper>

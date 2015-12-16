@@ -1,0 +1,915 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowConfiguration>
+<!-- 
+
+	This Flow contains the product ingestion. Starts with an xml file with metadata and the original file
+	This is extracted and the metadata are copied into the extracted directory. 
+	The next actions will work on this directory, using the metadata copied in the extracted directory.
+
+ -->
+	<id>productIngestion</id>
+
+	<name>Products ingestion</name>
+	<description>Process Products</description>
+
+	<autorun>true</autorun>
+
+
+	<EventGeneratorConfiguration>
+
+		<serviceID>fsEventGeneratorService</serviceID>
+
+		<wildCard>*.xml</wildCard>
+		<watchDirectory>productIngestion/in</watchDirectory>
+		<osType>OS_UNDEFINED</osType>
+		<eventType>FILE_ADDED</eventType>
+		<!-- <interval>0 * * * * ?</interval>CRON: every minute at sec 0 -->
+		<interval>20</interval> <!-- each 20 sec -->
+	</EventGeneratorConfiguration>
+
+	<EventConsumerConfiguration>
+
+		<listenerId>ConsumerLogger0</listenerId>
+		<listenerId>Cumulator</listenerId>
+		<performBackup>false</performBackup>
+
+		<!-- ************************************ -->
+		<!-- ******* Inputs Preparation ********* -->
+		<!-- ************************************ -->
+		<ActionWrapperConfiguration>
+			<id>prepare_input_dir</id>
+			<name>Prepare Input Directory</name>
+			<description>Extract the archive and save metadata (service id,
+				product id and so on...) inside it</description>
+
+			<listenerId>ConsumerLogger0</listenerId>
+			<listenerId>Cumulator</listenerId>
+			<ignoreConfigurationFail>true</ignoreConfigurationFail>
+
+			<actionOptions>
+				<entry> <!-- The output file will be generated with the inputDirectory as source -->
+					<string>createAttributeFile</string>
+					<ActionOption>
+						<inputSource>inputFileReader,extract</inputSource>
+					</ActionOption>
+				</entry>
+			</actionOptions>
+			<!-- PREPARE INPUTS -->
+			<actions>
+				<!-- Read Input XML with metadata -->
+				<XstreamConfiguration>
+					<id>inputFileReader</id>
+					<description>Xstream action</description>
+					<name>Convert To File</name>
+					<dirty>false</dirty>
+					
+					<failIgnored>false</failIgnored>
+				</XstreamConfiguration>
+				<!-- Dispatch the input file (archive) in the From the previous action 
+					(from XML) to the next action (extract) -->
+				<FileDispacherConfiguration>
+					<id>dispatchIn</id>
+					<description>dispach output of extract to a configuration file
+					</description>
+					<name>Initialize Action</name>
+					
+					<listenerId>ConsumerLogger0</listenerId>
+					<listenerId>Cumulator</listenerId>
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+				<!-- Extract the archive into the temp dir -->
+				<ExtractConfiguration>
+					<id>extract</id>
+					<description>Extracts files in its temp directory</description>
+					<name>Extract Files</name>
+					<dirty>false</dirty>
+					
+					<listenerId>ConsumerLogger0</listenerId>
+					<listenerId>Cumulator</listenerId>
+					<failIgnored>false</failIgnored>
+					<!-- Can be: NULL - tempDir will be used Relative Directory - will be 
+						created into the tempDir Absolute - it will be used as is -->
+					<destination>extract</destination>
+				</ExtractConfiguration>
+
+				<!-- Create a File Wrapper Object with the extracted directory in the 
+					file list -->
+				<FileDispacherConfiguration>
+					<id>dispatchOut</id>
+					<description>dispach output of extract to a configuration file
+					</description>
+					<name>Finalize Action</name>
+					
+					<listenerId>ConsumerLogger0</listenerId>
+					<listenerId>Cumulator</listenerId>
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+				<!-- Copy the Metadata Object into the extracted directory -->
+				<MetadataReadWrite>
+					<id>createAttributeFile</id>
+					<description>Creates the attribute File in the directory extracted
+					</description>
+					<name>Create Attribute File</name>
+					
+					<failIgnored>false</failIgnored>
+					<fileName>Product_Attributes.xml</fileName>
+				</MetadataReadWrite>
+			</actions>
+			<outputId>dispatchOut</outputId>
+		</ActionWrapperConfiguration>
+		
+		
+		<!-- ************************************ -->
+		<!-- ******* Products Analysis ********* -->
+		<!-- ************************************ -->
+		
+		<ActionWrapperConfiguration>
+			<id>productanalysis</id>
+			<name>Product Analysis</name>
+			<description>Analyze and generate additional metadata. Try to guess product order entry</description>
+
+			<listenerId>ConsumerLogger1</listenerId>
+			<listenerId>Cumulator</listenerId>
+			<ignoreConfigurationFail>true</ignoreConfigurationFail>
+
+			<actionOptions>
+				<entry> <!-- Redirect directory and FileMetaDataWrapper as input of the FileMetadataWrapper -->
+					<string>writeAttributeFile</string>
+					<ActionOption>
+						<inputSource>dispatchIn,productanalyzer</inputSource>
+					</ActionOption>
+				</entry>
+			</actionOptions>
+			<actions>
+				<!-- Dispatch the FileWrapper content file (directory) in the XML for 
+					the next action (extract) -->
+				<FileDispacherConfiguration>
+					<id>dispatchIn</id>
+					<name>Retrieve directory</name>
+					<description>Retrieve directory to inspect</description>
+
+					
+					
+				<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+				<!-- Read Metadata -->
+				<MetadataReadWrite>
+					<id>readAttributeFile</id>
+					<description>Creates the attribute File in the directory extracted
+					</description>
+					<name>Create Attribute File</name>
+					
+					<failIgnored>false</failIgnored>
+					<fileName>Product_Attributes.xml</fileName>
+				</MetadataReadWrite>
+				<!-- Product Analysis -->
+				<ProductAnalyzer>
+					<id>productanalyzer</id>
+					<name>Product Analysis</name>
+					<description>
+						Inspect the product and gets the time start.
+						(TODO) guess the product from the acquisition list
+					</description>
+
+					<outputFeature>
+						<dataStore>
+							<entry>
+								<string>dbtype</string>
+								<string>postgis</string>
+							</entry>
+							<entry>
+								<string>host</string>
+								<string>localhost</string>
+							</entry>
+							<entry>
+								<string>port</string>
+								<string>5432</string>
+							</entry>
+							<entry>
+								<string>database</string>
+								<string>mariss</string>
+							</entry>
+							<entry>
+								<string>schema</string>
+								<string>public</string>
+							</entry>
+							<entry>
+								<string>user</string>
+								<string>mariss</string>
+							</entry>
+							<entry>
+								<string>passwd</string>
+								<string>mariss</string>
+							</entry>
+						</dataStore>
+					</outputFeature>
+
+					<container>
+						<maskOneIsValid>true</maskOneIsValid>
+						<pattern>.*([0-9]{8}_[0-9]{6})_.*,.*([0-9]{14})_([0-9]{14})_.*,.*([0-9]{8}T[0-9]{6})_.*</pattern>
+
+						<dateFormats>
+							<string>yyyyMMdd'_'HHmmss</string>
+							<string>yyyyMMddHHmmss</string>
+							<string>yyyyMMdd'T'HHmmss</string>
+						</dateFormats>
+						<params>
+							<entry>
+								<string>NetCDFDir.key</string>
+								<string>data/netcdfdatadir</string>
+							</entry>
+						</params>
+					</container>
+				</ProductAnalyzer>
+				<MetadataReadWrite>
+					<id>writeAttributeFile</id>
+					<description>Writes the attribute File with new metadata
+					</description>
+					<name>Create Attribute File</name>
+					
+					<failIgnored>false</failIgnored>
+					<fileName>Product_Attributes.xml</fileName>
+				</MetadataReadWrite>
+				
+				<FileDispacherConfiguration>
+					<id>dispatchOut</id>
+					<description>create output descriptor</description>
+					<name>Create Output Descriptor</name>
+				
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+			</actions>
+		</ActionWrapperConfiguration>
+		
+		
+		<!-- ************************************ -->
+		<!-- ***** Products PRE-PROCESING ******* -->
+		<!-- ************************************ -->
+
+		<ActionWrapperConfiguration>
+			<id>product_preprocessing</id>
+			<name>Product pre-processing</name>
+			<description>Run custom scripts on product content</description>
+
+			<listenerId>ConsumerLogger3</listenerId>
+			<listenerId>Cumulator</listenerId>
+			<ignoreConfigurationFail>true</ignoreConfigurationFail>
+
+			<actionOptions></actionOptions>
+			<actions>
+				<!-- Dispatch the FileWrapper content file (directory) in the XML for 
+					the next action (extract) -->
+				<FileDispacherConfiguration>
+					<id>dispatchIn</id>
+					<name>Retrieve directory</name>
+					<description>Retrieve directory to inspect</description>
+	
+					<listenerConfigurations />
+
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+				<!-- Run pre-processing configuration -->
+						<ScriptingConfiguration>
+							<id>preprocessing_script</id>
+							<description>Preprocess script to change product files</description>
+							<name>Groovy Pre-Processing action</name>
+							<listenerId>ConsumerLogger0</listenerId>
+							<listenerId>Cumulator</listenerId>
+							<language>groovy</language>
+							<!-- Can be relative to the working dir or absolute -->
+							<scriptFile>preprocess.groovy</scriptFile>
+
+							<properties>
+								 <entry>
+									<string>content</string>
+									<string>productFolder</string>
+								  </entry>
+								  <!-- do not use lang reserved key (f.e.: int, String, etc...) -->
+							</properties>
+						</ScriptingConfiguration>
+
+				<FileDispacherConfiguration>
+					<id>dispatchOut</id>
+					<description>create output descriptor</description>
+					<name>Create Output Descriptor</name>
+					<listenerConfigurations />
+					<listenerId>ConsumerLogger0</listenerId>
+					<listenerId>Cumulator</listenerId>
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+			</actions>
+		</ActionWrapperConfiguration>
+		
+
+		
+		<!-- ************************************ -->
+		<!-- ******* Products ingestion ********* -->
+		<!-- ************************************ -->
+
+		<!-- SAR WAVE -->
+		<ActionWrapperConfiguration>
+			<id>sarWave</id>
+			<name>Ingestion Sar Wave contents</name>
+			<description>Imports Sar Wave if Any</description>
+
+			<listenerId>ConsumerLogger4</listenerId>
+			<listenerId>Cumulator</listenerId>
+			<ignoreConfigurationFail>true</ignoreConfigurationFail>
+
+			<actionOptions></actionOptions>
+			<actions>
+				<!-- Dispatch the FileWrapper content file (directory) in the XML for 
+					the next action (extract) -->
+				<FileDispacherConfiguration>
+					<id>dispatchIn</id>
+					<name>Retrieve directory</name>
+					<description>Retrieve directory to inspect</description>
+
+					<listenerConfigurations />
+
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+				<!-- Ingest Sar wave -->
+				<SARWave>
+					<id>SARWave</id>
+					<description>Test for SARWave Ingestion (Refactor this)
+					</description>
+					<listenerConfigurations />
+					<listenerId>ConsumerLogger0</listenerId>
+					<listenerId>Cumulator</listenerId>
+
+					<outputFeature>
+						<dataStore>
+							<entry>
+								<string>dbtype</string>
+								<string>postgis</string>
+							</entry>
+							<entry>
+								<string>host</string>
+								<string>localhost</string>
+							</entry>
+							<entry>
+								<string>port</string>
+								<string>5432</string>
+							</entry>
+							<entry>
+								<string>database</string>
+								<string>mariss</string>
+							</entry>
+							<entry>
+								<string>schema</string>
+								<string>public</string>
+							</entry>
+							<entry>
+								<string>user</string>
+								<string>mariss</string>
+							</entry>
+							<entry>
+								<string>passwd</string>
+								<string>mariss</string>
+							</entry>
+						</dataStore>
+					</outputFeature>
+					<metocDictionaryPath>dictionary/metoc-dictionary.xml</metocDictionaryPath>
+					<geoserverPWD>theslap</geoserverPWD>
+					<geoserverUID>admin</geoserverUID>
+					<geoserverURL>http://localhost:10090/geoserver</geoserverURL>
+					<productsTableName>ingestionproducts</productsTableName>
+					<shipDetectionsTableName>ship_detections</shipDetectionsTableName>
+					<oilSpillsTableName>oil_spills</oilSpillsTableName>
+					<geoserverDataDirectory>/opt/data/gs_data_dir</geoserverDataDirectory>
+
+					<name>Ingest SARWave</name>
+					<container>
+						<maskOneIsValid>true</maskOneIsValid>
+						<pattern>.*([0-9]{8})_([0-9]{6})_.*</pattern>
+						<defaultNameSpace>sde</defaultNameSpace>
+						<defaultNameSpaceURI></defaultNameSpaceURI>
+
+						<params>
+							<entry>
+								<string>NetCDFDir.key</string>
+								<string>data/netcdfdatadir</string>
+							</entry>
+						</params>
+					</container>
+				</SARWave>
+
+				<FileDispacherConfiguration>
+					<id>dispatchOut</id>
+					<description>create output descriptor</description>
+					<name>Create Output Descriptor</name>
+					<listenerConfigurations />
+					<listenerId>ConsumerLogger0</listenerId>
+					<listenerId>Cumulator</listenerId>
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+			</actions>
+		</ActionWrapperConfiguration>
+
+		<!-- SAR WMF -->
+		<ActionWrapperConfiguration>
+			<id>sarWave</id>
+			<name>Ingestion of Sar WMF contents</name>
+			<description>Imports Sar WMF if Any</description>
+
+			<listenerId>ConsumerLogger5</listenerId>
+			<listenerId>Cumulator</listenerId>
+			<ignoreConfigurationFail>true</ignoreConfigurationFail>
+
+			<actionOptions></actionOptions>
+			<actions>
+				<!-- Dispatch the FileWrapper content file (directory) and create a file 
+					event for the next action -->
+				<FileDispacherConfiguration>
+					<id>dispatchIn</id>
+					<description>retrieve extracted directory to inspect</description>
+					<name>Initialize Action</name>
+					<listenerConfigurations />
+					<listenerId>ConsumerLogger0</listenerId>
+					<listenerId>Cumulator</listenerId>
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+
+				<SARWmf>
+					<id>SARWmf</id>
+					<description>Test for SARWmf Ingestion (Refactor this)
+					</description>
+					<name>Ingest SARWind</name>
+					<listenerConfigurations />
+					<listenerId>ConsumerLogger0</listenerId>
+					<listenerId>Cumulator</listenerId>
+
+					<outputFeature>
+						<dataStore>
+							<entry>
+								<string>dbtype</string>
+								<string>postgis</string>
+							</entry>
+							<entry>
+								<string>host</string>
+								<string>localhost</string>
+							</entry>
+							<entry>
+								<string>port</string>
+								<string>5432</string>
+							</entry>
+							<entry>
+								<string>database</string>
+								<string>mariss</string>
+							</entry>
+							<entry>
+								<string>schema</string>
+								<string>public</string>
+							</entry>
+							<entry>
+								<string>user</string>
+								<string>mariss</string>
+							</entry>
+							<entry>
+								<string>passwd</string>
+								<string>mariss</string>
+							</entry>
+						</dataStore>
+					</outputFeature>
+					<metocDictionaryPath>dictionary/metoc-dictionary.xml</metocDictionaryPath>
+					<geoserverPWD>theslap</geoserverPWD>
+					<geoserverUID>admin</geoserverUID>
+					<geoserverURL>http://localhost:10090/geoserver</geoserverURL>
+					<productsTableName>ingestionproducts</productsTableName>
+					<shipDetectionsTableName>ship_detections</shipDetectionsTableName>
+					<oilSpillsTableName>oil_spills</oilSpillsTableName>
+					<geoserverDataDirectory>/opt/data/gs_data_dir</geoserverDataDirectory>
+					<container>
+
+						<maskOneIsValid>false</maskOneIsValid>
+						<pattern>.*([0-9]{8})_([0-9]{6})_.*</pattern>
+						<defaultNameSpace>sde</defaultNameSpace>
+						<defaultNameSpaceURI></defaultNameSpaceURI>
+						<actionClass>it.geosolutions.geobatch.mariss.actions.netcdf.SARWnfAction
+						</actionClass>
+						<params>
+							<entry>
+								<string>NetCDFDir.key</string>
+								<string>data/netcdfdatadir</string>
+							</entry>
+						</params>
+					</container>
+				</SARWmf>
+		
+				<FileDispacherConfiguration>
+					<id>dispatchOut</id>
+					<description>dispach output of extract to a configuration file
+					</description>
+					<name>Finalize Action</name>
+					<listenerConfigurations />
+					<listenerId>ConsumerLogger0</listenerId>
+					<listenerId>Cumulator</listenerId>
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+			</actions>
+		</ActionWrapperConfiguration>
+
+		<!-- SAR WIND -->
+		<ActionWrapperConfiguration>
+			<id>sarWind</id>
+			<name>Ingestion Sar Wind contents</name>
+			<description>Imports Sar Wind if Any</description>
+
+			<listenerId>ConsumerLogger6</listenerId>
+			<listenerId>Cumulator</listenerId>
+			<ignoreConfigurationFail>true</ignoreConfigurationFail>
+
+			<actionOptions></actionOptions>
+			<actions>
+				<!-- Dispatch the FileWrapper content file (directory) and create a file 
+					event for the next action -->
+				<FileDispacherConfiguration>
+					<id>dispatchIn</id>
+					<description>retrieve extracted directory to inspect</description>
+					<name>Initialize Action</name>
+					<listenerConfigurations />
+					<listenerId>ConsumerLogger0</listenerId>
+					<listenerId>Cumulator</listenerId>
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+
+
+				<SARWind>
+					<id>SARWind</id>
+					<description>Test for SARWind Ingestion (Refactor this)
+					</description>
+					<name>Ingest SARWind</name>
+					<listenerConfigurations />
+					<listenerId>ConsumerLogger0</listenerId>
+					<listenerId>Cumulator</listenerId>
+
+					<outputFeature>
+						<dataStore>
+							<entry>
+								<string>dbtype</string>
+								<string>postgis</string>
+							</entry>
+							<entry>
+								<string>host</string>
+								<string>localhost</string>
+							</entry>
+							<entry>
+								<string>port</string>
+								<string>5432</string>
+							</entry>
+							<entry>
+								<string>database</string>
+								<string>mariss</string>
+							</entry>
+							<entry>
+								<string>schema</string>
+								<string>public</string>
+							</entry>
+							<entry>
+								<string>user</string>
+								<string>mariss</string>
+							</entry>
+							<entry>
+								<string>passwd</string>
+								<string>mariss</string>
+							</entry>
+						</dataStore>
+					</outputFeature>
+					<metocDictionaryPath>dictionary/metoc-dictionary.xml</metocDictionaryPath>
+					<geoserverPWD>theslap</geoserverPWD>
+					<geoserverUID>admin</geoserverUID>
+					<geoserverURL>http://localhost:10090/geoserver</geoserverURL>
+					<productsTableName>ingestionproducts</productsTableName>
+					<shipDetectionsTableName>ship_detections</shipDetectionsTableName>
+					<oilSpillsTableName>oil_spills</oilSpillsTableName>
+					<geoserverDataDirectory>/opt/data/gs_data_dir</geoserverDataDirectory>
+
+
+					<container>
+						<maskOneIsValid>false</maskOneIsValid>
+						<pattern>.*([0-9]{8})_([0-9]{6})_.*</pattern>
+						<defaultNameSpace>sde</defaultNameSpace>
+						<defaultNameSpaceURI></defaultNameSpaceURI>
+						<actionClass>it.geosolutions.geobatch.mariss.actions.netcdf.SARWindAction
+						</actionClass>
+						<params>
+							<entry>
+								<string>NetCDFDir.key</string>
+								<string>data/netcdfdatadir</string>
+							</entry>
+							
+							
+						</params>
+					</container>
+				</SARWind>
+				<FileDispacherConfiguration>
+					<id>dispatchOut</id>
+					<description>dispach output of extract to a configuration file
+					</description>
+					<name>Finalize Action</name>
+					<listenerConfigurations />
+					<listenerId>ConsumerLogger0</listenerId>
+					<listenerId>Cumulator</listenerId>
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+			</actions>
+		</ActionWrapperConfiguration>
+
+		<!-- SAR TIFF -->
+		<ActionWrapperConfiguration>
+			<id>SARGeoTiff</id>
+			<name>Check Sar Tiff</name>
+			<description>Imports Sar Tiff</description>
+
+			<listenerId>ConsumerLogger7</listenerId>
+			<listenerId>Cumulator</listenerId>
+			<ignoreConfigurationFail>true</ignoreConfigurationFail>
+
+			<actionOptions></actionOptions>
+			<actions>
+
+				<FileDispacherConfiguration>
+					<id>dispatchIn</id>
+					<description>retrieve extracted directory to inspect</description>
+					<name>Initialize Action</name>
+					<listenerConfigurations />
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+
+				<SARGeoTiffActionConfiguration>
+					<id>SARGeoTiffActio</id>
+					<name>Ingest SARGeoTiff</name>
+					<description>Test for SARGeoTiff Ingestion (Refactor this)
+					</description>
+					
+					<listenerConfigurations />
+					
+
+					<outputFeature>
+						<dataStore>
+							<entry>
+								<string>dbtype</string>
+								<string>postgis</string>
+							</entry>
+							<entry>
+								<string>host</string>
+								<string>localhost</string>
+							</entry>
+							<entry>
+								<string>port</string>
+								<string>5432</string>
+							</entry>
+							<entry>
+								<string>database</string>
+								<string>mariss</string>
+							</entry>
+							<entry>
+								<string>schema</string>
+								<string>public</string>
+							</entry>
+							<entry>
+								<string>user</string>
+								<string>mariss</string>
+							</entry>
+							<entry>
+								<string>passwd</string>
+								<string>mariss</string>
+							</entry>
+						</dataStore>
+					</outputFeature>
+					<metocDictionaryPath>dictionary/metoc-dictionary.xml</metocDictionaryPath>
+					<geoserverPWD>theslap</geoserverPWD>
+					<geoserverUID>admin</geoserverUID>
+					<geoserverURL>http://localhost:10090/geoserver</geoserverURL>
+					<productsTableName>ingestionproducts</productsTableName>
+					<shipDetectionsTableName>ship_detections</shipDetectionsTableName>
+					<oilSpillsTableName>oil_spills</oilSpillsTableName>
+					<geoserverDataDirectory>/opt/data/gs_data_dir</geoserverDataDirectory>
+					<container>
+						<maskOneIsValid>false</maskOneIsValid>
+						<pattern>.*([0-9]{8}T[0-9]{6})_([0-9]{8}T[0-9]{6})_.*</pattern>
+						<defaultNameSpace>sde</defaultNameSpace>
+						<defaultNameSpaceURI></defaultNameSpaceURI>
+						
+						<params>
+							<entry>
+								<string>GeoTiffDir.key</string>
+								<string>data/geotiffs</string>
+							</entry>
+							<entry>
+								<string>importer_options.key</string>
+								<string>
+									{
+									   "transforms":[
+									      {
+									         "type":"GdalWarpTransform",
+									         "options":[
+									            "-t_srs",
+									            "EPSG:4326"
+									         ]
+									      },
+									      {
+									         "type":"GdalTranslateTransform",
+									         "options":[
+									         		"-co", "TILED=YES", 
+									         		"-co", "BLOCKXSIZE=512",
+									         		 "-co", "BLOCKYSIZE=512"
+							         		 ]
+									      },
+									      {
+									         "type":"GdalAddoTransform",
+									         "options":[
+									            "-r",
+									            "average"
+									         ],
+									         "levels":[2, 4, 8, 16]
+									      }
+									   ]
+									}
+								</string>
+							</entry>
+						</params>
+					</container>
+				</SARGeoTiffActionConfiguration>
+				<FileDispacherConfiguration>
+					<id>dispatchOut</id>
+					<description>dispach output of extract to a configuration file
+					</description>
+					<name>Finalize Action</name>
+					<listenerConfigurations />
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+			</actions>
+		</ActionWrapperConfiguration> 
+
+		<!-- SHIP DETECTION -->
+		<ActionWrapperConfiguration>
+			<id>shipDetection</id>
+			<name>Ingestion of Ship Dectections</name>
+			<description>Imports Ship Dectections</description>
+
+			<listenerId>ConsumerLogger8</listenerId>
+			<listenerId>Cumulator</listenerId>
+			<ignoreConfigurationFail>true</ignoreConfigurationFail>
+
+			<actionOptions></actionOptions>
+			<actions>
+				<!-- Dispatch the FileWrapper content file (directory) and create a file 
+					event for the next action -->
+				<FileDispacherConfiguration>
+					<id>dispatchIn</id>
+					<description>retrieve extracted directory to inspect</description>
+					<name>Initialize Action</name>
+					<listenerConfigurations />
+					<listenerId>ConsumerLogger0</listenerId>
+					<listenerId>Cumulator</listenerId>
+					<failIgnored>false</failIgnored>
+				</FileDispacherConfiguration>
+
+
+				<ShipDectection>
+					<id>ShipDectection</id>
+					<name>Ingest Ship Dectections</name>
+					<description>ShipDectection Ingestion from xml files in the product
+					</description>
+
+					<listenerConfigurations />
+					
+
+					<outputFeature>
+						<dataStore>
+							<entry>
+								<string>dbtype</string>
+								<string>postgis</string>
+							</entry>
+							<entry>
+								<string>host</string>
+								<string>localhost</string>
+							</entry>
+							<entry>
+								<string>port</string>
+								<string>5432</string>
+							</entry>
+							<entry>
+								<string>database</string>
+								<string>mariss</string>
+							</entry>
+							<entry>
+								<string>schema</string>
+								<string>public</string>
+							</entry>
+							<entry>
+								<string>user</string>
+								<string>mariss</string>
+							</entry>
+							<entry>
+								<string>passwd</string>
+								<string>mariss</string>
+							</entry>
+						</dataStore>
+					</outputFeature>
+					<metocDictionaryPath>dictionary/metoc-dictionary.xml</metocDictionaryPath>
+					<geoserverPWD>theslap</geoserverPWD>
+					<geoserverUID>admin</geoserverUID>
+					<geoserverURL>http://localhost:10090/geoserver</geoserverURL>
+					<productsTableName>ingestionproducts</productsTableName>
+					<shipDetectionsTableName>ship_detections</shipDetectionsTableName>
+					<oilSpillsTableName>oil_spills</oilSpillsTableName>
+					<geoserverDataDirectory>/opt/data/gs_data_dir</geoserverDataDirectory>
+
+
+					<container>
+						<maskOneIsValid>false</maskOneIsValid>
+						<pattern>.*([0-9]{8})_([0-9]{6})_.*</pattern>
+						<defaultNameSpace>sde</defaultNameSpace>
+						<defaultNameSpaceURI></defaultNameSpaceURI>
+						<dateFormats>
+							<string>YYYY-MM-dd'T'HH:mm:ss.SSS'Z'</string>
+							<string>YYYY-MM-dd'T'HH:mm:ss'Z'</string>
+							<string>YYYY-MM-dd HH:mm:ss.SSS</string>
+							<string>YYYY-MM-dd HH:mm:ss</string>
+						</dateFormats>
+						<params>
+							<entry>
+								<string>NetCDFDir.key</string>
+								<string>data/netcdfdatadir</string>
+							</entry>
+							<entry>
+								<string>ShipDetections.key</string>
+								<string>data/shipdetection</string>
+							</entry>
+                                                        <entry>
+                                                                <string>OilSpills.key</string>
+                                                                <string>data/oilspill</string>
+                                                        </entry>
+						</params>
+					</container>
+				</ShipDectection>
+					<FileDispacherConfiguration>
+						<id>dispatchOut</id>
+						<description>dispach output of extract to a configuration file
+						</description>
+						<name>Dispact results</name>
+						<failIgnored>false</failIgnored>
+					</FileDispacherConfiguration>
+			</actions>
+		</ActionWrapperConfiguration>
+
+
+	</EventConsumerConfiguration>
+
+	<ListenerConfigurations>
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ConsumerLogger0</id>
+			<loggerName>it.geosolutions.ConsLogger</loggerName>
+		</LoggingProgressListener>
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ConsumerLogger1</id>
+			<loggerName>it.geosolutions.ConsLogger</loggerName>
+		</LoggingProgressListener>
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ConsumerLogger2</id>
+			<loggerName>it.geosolutions.ConsLogger</loggerName>
+		</LoggingProgressListener>
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ConsumerLogger3</id>
+			<loggerName>it.geosolutions.ConsLogger</loggerName>
+		</LoggingProgressListener>
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ConsumerLogger4</id>
+			<loggerName>it.geosolutions.ConsLogger</loggerName>
+		</LoggingProgressListener>
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ConsumerLogger5</id>
+			<loggerName>it.geosolutions.ConsLogger</loggerName>
+		</LoggingProgressListener>
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ConsumerLogger6</id>
+			<loggerName>it.geosolutions.ConsLogger</loggerName>
+		</LoggingProgressListener>
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ConsumerLogger7</id>
+			<loggerName>it.geosolutions.ConsLogger</loggerName>
+		</LoggingProgressListener>
+		<LoggingProgressListener>
+			<serviceID>loggingListenerService</serviceID>
+			<id>ConsumerLogger8</id>
+			<loggerName>it.geosolutions.ConsLogger</loggerName>
+		</LoggingProgressListener>
+		<CumulatingProgressListener>
+			<serviceID>cumulatingListenerService</serviceID>
+			<id>Cumulator</id>
+			<appendToListenerForwarder>true</appendToListenerForwarder>
+		</CumulatingProgressListener>
+	</ListenerConfigurations>
+
+</FlowConfiguration>

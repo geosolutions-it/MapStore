@@ -1,4 +1,4 @@
-﻿-- This is a complete script to create empty tables for Mariss tested with Postgres 9.3
+-- This is a complete script to create empty tables for Mariss tested with Postgres 9.3
 
 
 CREATE EXTENSION postgis;
@@ -430,12 +430,16 @@ INSERT INTO sensors VALUES (4, 'RS2');
 -- Name: service; Type: TABLE; Schema: public; Owner: mariss; Tablespace: 
 --
 
-CREATE TABLE service (
-    "ID" integer NOT NULL,
-    "SERVICE_ID" text NOT NULL,
-    "PARENT" text NOT NULL,
-    "USER" character varying(80) NOT NULL,
-    "STATUS" character varying(80) DEFAULT 'NEW'::character varying NOT NULL
+CREATE TABLE service
+(
+  "ID" integer NOT NULL,
+  "SERVICE_ID" text NOT NULL,
+  "PARENT" text NOT NULL,
+  "USER" character varying(80) NOT NULL,
+  "STATUS" character varying(80) NOT NULL DEFAULT 'NEW'::character varying,
+  acq_plan_url text,
+  CONSTRAINT service_pkey PRIMARY KEY ("ID"),
+  CONSTRAINT service_unique_service_id UNIQUE ("SERVICE_ID")
 );
 
 
@@ -464,6 +468,31 @@ ALTER TABLE public."service_ID_seq" OWNER TO mariss;
 --
 
 ALTER SEQUENCE "service_ID_seq" OWNED BY service."ID";
+
+
+CREATE TABLE service_access
+(
+  "ID" integer NOT NULL,
+  "SERVICE_ID" text NOT NULL,
+  "USER" character varying(80) NOT NULL,
+  CONSTRAINT service_access_pkey PRIMARY KEY ("ID")
+);
+
+ALTER TABLE public.service_access OWNER TO mariss;
+
+CREATE SEQUENCE "service_access_ID_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."service_access_ID_seq" OWNER TO mariss;
+
+ALTER SEQUENCE "service_access_ID_seq" OWNED BY service_access."ID";
+
+-- -------------------------------------------------------
 
 
 SET default_with_oids = true;
@@ -884,6 +913,7 @@ ALTER TABLE ONLY sensors ALTER COLUMN id SET DEFAULT nextval('sensors_id_seq'::r
 
 ALTER TABLE ONLY service ALTER COLUMN "ID" SET DEFAULT nextval('"service_ID_seq"'::regclass);
 
+ALTER TABLE ONLY service_access ALTER COLUMN "ID" SET DEFAULT nextval('"service_access_ID_seq"'::regclass);
 
 --
 -- TOC entry 3632 (class 2604 OID 21000)
@@ -1156,4 +1186,6 @@ GRANT ALL ON TABLE spatial_ref_sys TO PUBLIC;
 -- Table: geometry_columns
 
 -- DROP TABLE geometry_columns;
+
+
 
