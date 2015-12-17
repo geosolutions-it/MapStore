@@ -216,7 +216,7 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
                         url: schema.url,
                         featureType: schema.reader.raw.featureTypes[0].typeName,
                         featureNS: schema.reader.raw.targetNamespace,
-                        geometryName: geometryName,
+                        geometryName: geometryName
 
                     };
                     //

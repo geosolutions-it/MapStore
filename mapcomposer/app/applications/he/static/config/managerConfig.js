@@ -74,6 +74,17 @@
         "ptype": "mxp_usermanager",
         "showEnabled":true,
         "pageSize":20,
+        "customUsersAttributes": [{
+            "id"       :"expires",
+            "header"   : "Expiration Date",
+            "sortable" : true,
+            "dataIndex": "expires"
+        },{
+            "id"       :"company",
+            "header"   : "Company Name",
+            "sortable" : true,
+            "dataIndex": "company"
+        }],
         "customFields":[{
                 "xtype": "textfield",
                 "anchor":"90%",
@@ -94,7 +105,7 @@
                 "fieldLabel": "Company",
                 "inputType": "text",
                 "value": ""
-                
+
             },{
                 "xtype": "datefield",
                 "anchor":"90%",
@@ -103,7 +114,7 @@
                 "fieldLabel": "Expiring Date",
                 "inputType": "text",
                 "value": ""
-                
+
             },{
                 "xtype": "textarea",
                 "anchor":"90%",
@@ -114,7 +125,7 @@
                 "fieldLabel": "Notes",
                 "inputType": "text",
                 "value": ""
-                
+
             }],
         "loginManager": "loginTool",
         "actionTarget":{
@@ -176,7 +187,7 @@
         "hideAttributes":["UUID","notes"],
         "actionTarget":{
           "target": "north.tbar",
-          "index": 1 
+          "index": 1
         }
     },{
         "ptype": "mxp_login",

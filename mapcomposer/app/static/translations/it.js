@@ -184,7 +184,7 @@ GeoExt.Lang.add("it", {
         nextPageTip: "Prossima Feature",
         lastPageTip: "Ultima Feature",
         ftLabel: "Feature",
-        ftOfLabel: "di",  
+        ftOfLabel: "di"
     },
 
     "gxp.plugins.Zoom.prototype": {
@@ -364,7 +364,7 @@ GeoExt.Lang.add("it", {
 		removePropDialogMsg: "questa proprietà non può essere rimossa: ",
 		newSourceDialogTitle: "Nuova Sorgente",
 		newSourceDialogMsg: "Alcune proprietà della sorgente selezionatasono invalide.",
-		mandatoryLabelText: "Tutti i campi contrassegnati con (*) sono obbligatori.",
+		mandatoryLabelText: "Tutti i campi contrassegnati con (*) sono obbligatori."
     },
 
     "gxp.ScaleOverlay.prototype": { 

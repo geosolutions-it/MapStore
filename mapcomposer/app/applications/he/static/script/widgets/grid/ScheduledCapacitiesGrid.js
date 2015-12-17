@@ -161,7 +161,7 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                                         request:'GetFeature',
                                         outputFormat: 'application/json',
                                         typeName:"gascapacity:gcd_v_scheduled_capacity_by_pipeline_detail",
-                                        viewparams: store.viewparams + ";cpcty_RID:" + feature.data.cpcty_RID,
+                                        viewparams: store.viewparams + ";cpcty_RID:" + feature.data.cpcty_RID
                                     })
                                 }),
                                 //xtype: 'gxp_C3Chart'

@@ -393,8 +393,7 @@ GeoExt.ux.PrintPreview = Ext.extend(Ext.Container, {
                     this.updateLayout();
                 },
                 cls : "gx-item-margin-left",
-                scope: this,
-                
+                scope: this
             });
             
             var compactLegendCheckbox = new Ext.form.Checkbox({
