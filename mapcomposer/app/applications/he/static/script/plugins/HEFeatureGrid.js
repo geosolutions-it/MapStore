@@ -83,7 +83,7 @@ gxp.plugins.he.HEFeatureGrid = Ext.extend(gxp.plugins.FeatureGrid, {
                 }
                 
                 return false;
-            },
+            }
 
     
 });

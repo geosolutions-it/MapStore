@@ -829,7 +829,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
                         service:'WFS',
                         version:'1.1.0',
                         request:'GetFeature',
-                        outputFormat: 'application/json',
+                        outputFormat: 'application/json'
                     }, this.vendorParams || {})
                 }],
             tools: windowTools

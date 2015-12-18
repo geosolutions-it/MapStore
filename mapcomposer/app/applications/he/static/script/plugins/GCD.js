@@ -155,7 +155,7 @@ gxp.plugins.he.GCD = Ext.extend(gxp.plugins.Tool, {
                 }
             }
         }
-    },
+    }
 });
 
 Ext.preg(gxp.plugins.he.GCD.prototype.ptype, gxp.plugins.he.GCD);

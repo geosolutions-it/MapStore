@@ -563,7 +563,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
                     }, {
                         boxLabel: 'Averages',
                         name: 'aggregation',
-                        inputValue: 'avg',
+                        inputValue: 'avg'
                     }]
                     //SEPARATOR
                 }

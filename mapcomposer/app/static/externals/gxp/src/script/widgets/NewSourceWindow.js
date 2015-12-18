@@ -792,7 +792,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 			generalForm.setValues({
 				title: source.title ? source.title : "",
 				version: source.version ? source.version : "1.1.1",
-				authParam: source.authParam ? source.authParam : "",
+				authParam: source.authParam ? source.authParam : ""
 			});
 		
 			if(source.layersCachedExtent){
@@ -802,7 +802,7 @@ gxp.NewSourceWindow = Ext.extend(Ext.Window, {
 					minx: source.layersCachedExtent[0] ? source.layersCachedExtent[0] : "",
 					miny: source.layersCachedExtent[1] ? source.layersCachedExtent[1] : "",
 					maxx: source.layersCachedExtent[2] ? source.layersCachedExtent[2] : "",
-					maxy: source.layersCachedExtent[3] ? source.layersCachedExtent[3] : "",
+					maxy: source.layersCachedExtent[3] ? source.layersCachedExtent[3] : ""
 				});
 			}
 			

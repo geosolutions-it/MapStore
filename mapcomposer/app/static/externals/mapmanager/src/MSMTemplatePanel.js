@@ -179,7 +179,7 @@ MSMTemplatePanel = Ext.extend(Ext.Panel, {
 				footerMinWidth: values.footer.container.minWidth,
 				footerMaxHeight: values.footer.container.maxHeight,
 				footerHeight: values.footer.container.height,
-				footerWidth: values.footer.container.width,
+				footerWidth: values.footer.container.width
 			});
 		}catch (e){
 			console.error("Error parsing template data");
