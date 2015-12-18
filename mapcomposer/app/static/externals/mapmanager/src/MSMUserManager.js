@@ -637,21 +637,20 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                             },
                             headers: {'Accept': 'application/json', 'Authorization' : userManager.auth}
                         })
-                        
-					});
+                    });
                     
-					var paging = new Ext.PagingToolbar({
+                    var paging = new Ext.PagingToolbar({
                         pageSize: this.pageSize,
-										store: this.store,
-										grid: this,
+                        store: this.store,
+                        grid: this,
                         displayInfo: true,
-						displayMsg: this.displayMsg,
-						beforePageText: this.beforePageText,
-						afterPageText: this.afterPageText
-                    });	         
-				
-                    this.bbar = paging;					
-								
+                        displayMsg: this.displayMsg,
+                        beforePageText: this.beforePageText,
+                        afterPageText: this.afterPageText
+                    });
+                    
+                    this.bbar = paging;
+                    
                     userManager.reload = function() {
                         userManager.store.reload();
                     };
@@ -663,7 +662,6 @@ UserManagerView = Ext.extend(Ext.grid.GridPanel, {
                             }
                         });                        
 
-				
 				} else { //not Admin
 
 					var userdata = {id: this.login.userid, name: this.login.username, role: this.login.role };
