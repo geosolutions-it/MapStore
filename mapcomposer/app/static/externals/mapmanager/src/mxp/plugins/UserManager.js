@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /** api: (define)
  *  module = mxp.plugins
  *  class = UserManager
@@ -30,7 +30,7 @@ Ext.ns("mxp.plugins");
  *    Open a user manager panel
  */
 mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
-    
+
     /** api: ptype = mxp_usermanager */
     ptype: "mxp_usermanager",
 
@@ -43,7 +43,7 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
     setActiveOnOutput: true,
     showEnabled: false,
 
-    loginManager: null, 
+    loginManager: null,
 
     /**
      * Property: addManageGroupsButton
@@ -58,18 +58,18 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
         autoWidth: true,
         viewConfig: {
             forceFit: true
-        }       
+        }
     },
 
     /** api: method[addActions]
      */
     addActions: function() {
-        
+
         var thisButton = new Ext.Button({
             text: this.buttonText,
             iconCls:'open_usermanager',
             tooltip: this.tooltipText,
-            handler: function() { 
+            handler: function() {
                 // add output if not present
                 this.addOutput();
             },
@@ -80,21 +80,21 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
 
         return mxp.plugins.UserManager.superclass.addActions.apply(this, [actions]);
     },
-    
+
     /** api: method[addOutput]
      *  :arg config: ``Object`` configuration for the ``Ext.Component`` to be
      *      added to the ``outputTarget``. Properties of this configuration
      *      will be overridden by the applications ``outputConfig`` for the
      *      tool instance.
-     *  :return: ``Ext.Component`` The component added to the ``outputTarget``. 
+     *  :return: ``Ext.Component`` The component added to the ``outputTarget``.
      *
      *  Adds output to the tool's ``outputTarget``. This method is meant to be
      *  called and/or overridden by subclasses.
      */
     addOutput: function(config) {
 
-        var login = this.target.login ? this.target.login: 
-                this.loginManager && this.target.currentTools[this.loginManager] 
+        var login = this.target.login ? this.target.login:
+                this.loginManager && this.target.currentTools[this.loginManager]
                 ? this.target.currentTools[this.loginManager] : null;
 
         // create a user manager panel
@@ -120,6 +120,10 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
         //add custom fields
         if(this.customFields){
           usermanager.customFields= this.customFields;
+        }
+        //add customUsersAttributes fields
+        if(this.customUsersAttributes){
+          usermanager.customUsersAttributes= this.customUsersAttributes;
         }
         //TODO
         var groupManager = {
@@ -155,7 +159,7 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
             && this.outputTarget){
             for(var i = 0; i < this.output.length; i++){
                 if(this.output[i].ownerCt
-                    && this.output[i].ownerCt.xtype 
+                    && this.output[i].ownerCt.xtype
                     && this.output[i].ownerCt.xtype == "tabpanel"
                     && !this.output[i].isDestroyed){
                     var outputConfig = config || this.outputConfig;
@@ -168,7 +172,7 @@ mxp.plugins.UserManager = Ext.extend(mxp.plugins.Tool, {
                             this.output[i].ownerCt.setActiveTab(index);
                             return;
                         }
-                    } 
+                    }
                 }
             }
         }

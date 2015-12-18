@@ -44,7 +44,7 @@ gxp.he.ContractsByCategory = Ext.extend(Ext.Container, {
         service:'WFS',
         version:'1.1.0',
         request:'GetFeature',
-        outputFormat: 'application/json',
+        outputFormat: 'application/json'
     },
     initComponent: function () {
         this.byCategoryStore = new Ext.data.JsonStore({

@@ -241,7 +241,7 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
             var config = Ext.apply(this.runConfigs[flowId],{
                 flowId: flowId,
                 geoBatchRestURL: this.geoBatchRestURL,
-                adminUrl: this.target.adminUrl,                
+                adminUrl: this.target.adminUrl
             });
             var handler = Ext.create(config);
             if(handler.isForm()) {

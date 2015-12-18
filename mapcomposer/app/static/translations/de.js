@@ -182,7 +182,7 @@ GeoExt.Lang.add("de", {
         nextPageTip: "Nächste Feature",
         lastPageTip: "LetzteFeature",
         ftLabel: "Feature",
-        ftOfLabel: "von", 
+        ftOfLabel: "von"
     },
 
     "gxp.plugins.Zoom.prototype": {

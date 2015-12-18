@@ -189,7 +189,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                         loadMask:true,
                         autoExpandColumn: entity.autoExpandColumn,
                         viewConfig: {
-                            forceFit:true,
+                            forceFit:true
                             //fitcontainer:true
                         },
                         tbar:[{
@@ -201,7 +201,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                                 scope:this,
                                 handler : function(btn){
                                    this.createEntity(btn.refOwner.entity,btn.refOwner);
-                                },
+                                }
                             },{
                                 xtype:'button',
                                 text: entity.refreshText || this.refreshText,
