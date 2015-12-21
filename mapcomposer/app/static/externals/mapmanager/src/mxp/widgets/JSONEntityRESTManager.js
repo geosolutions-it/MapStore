@@ -211,6 +211,12 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
             
             var store = new Ext.data.Store(storeConfig);
             
+            var searchComponent = new MapStore.ux.SearchField({
+                store: store,
+                paramNames : entity.paramNames,
+                hidden: !entity.canSearch
+            }) ;
+
             editors.push({
                 id: entity.id,
                 border:false,
@@ -251,7 +257,9 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                                 handler : function(btn){
                                    btn.refOwner.store.reload();
                                 }
-                            },"->",{
+                            },"->"
+                            ,searchComponent
+                            ,{
                                 xtype:'button',
                                 text: entity.dumpText || this.dumpText,
                                 iconCls:'inbox-download_ic',
