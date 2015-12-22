@@ -234,9 +234,9 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                         entity: entity, // add the entity the configuration available everywhere
                         loadMask:true,
                         autoExpandColumn: entity.autoExpandColumn,
+                        minColumnWidth: entity.minColumnWidth || 25,
                         viewConfig: {
-                            forceFit:true,
-                            //fitcontainer:true
+                            autoFill:true
                         },
                         tbar:[{
                                 xtype:'button',
