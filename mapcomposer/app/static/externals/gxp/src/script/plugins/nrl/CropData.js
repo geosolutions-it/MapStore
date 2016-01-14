@@ -153,6 +153,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
             {name:'cid',   mapping: 'properties.cid'} //TODO this should be added statically somewhere
     ],
     startCommodity:'Wheat',
+    sourceWarn: "Before comparing alternative sources of crop data, read the disclaimer by clicking on the button at the bottom-left of this page",
 
     addOutput: function(config) {
         var conf = {
@@ -417,6 +418,9 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                     ],
                     listeners: {
                         change: function(c,checked){
+                            if(checked.inputValue == 'compareSources') {
+								c.ownerCt.compareMsg.show();
+                            }else {c.ownerCt.compareMsg.hide()}
                             this.ownerCt.changeMode(checked.inputValue);
                             if(checked.inputValue == 'composite' && !c.ownerCt.outputmode.isVisible()){
                             	c.ownerCt.outputmode.show();
@@ -429,6 +433,13 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 //
                 // UNIT OF MEASURE
                 //
+                },{
+                    xtype: 'displayfield',
+                    hidden:true,
+                    ref: 'compareMsg',
+                    anchor:'100%',
+                    value: this.sourceWarn
+
                 },{
                     xtype: 'nrl_checkboxcelectiongrid',
                     title: 'Sources',
