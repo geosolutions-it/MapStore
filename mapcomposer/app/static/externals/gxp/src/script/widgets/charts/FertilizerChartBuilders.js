@@ -207,7 +207,7 @@ nrl.chartbuilder.fertilizer = {
             }else{
                 aoi = chartData[chartIndex].title;
             }
-            //info += '<span style="font-size:10px;">Region: '+ aoi + '</span><br />';
+            info += '<span style="font-size:10px;">Region: '+ aoi + '</span><br />';
 
             var fromYear = Math.floor(queryParams.from_time_hash/12);
             var fromMonth = nrl.chartbuilder.util.numberToMonthName(queryParams.from_time_hash%12 + 1);
