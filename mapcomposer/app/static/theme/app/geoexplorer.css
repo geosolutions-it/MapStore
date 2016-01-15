@@ -36,7 +36,7 @@ body {
 .x-tree-node img.gx-folder, .x-tree-node-collapsed img.gx-folder{
     background: url(../../externals/ext/resources/images/default/tree/folder.gif);
 }
- 
+
 .x-tree-node-expanded img.gx-folder {
     background: url(../../externals/ext/resources/images/default/tree/folder-open.gif);
 }
@@ -139,31 +139,31 @@ body {
    background-image: url(img/silk/layers.png);
 }
 
-.x-btn .icon-zoom-in { 
+.x-btn .icon-zoom-in {
     background-image: url(img/silk/magnifier_zoom_in.png);
 }
 
-.x-btn .icon-zoom-out { 
+.x-btn .icon-zoom-out {
     background-image: url(img/silk/magnifier_zoom_out.png);
 }
 
-.x-btn .icon-zoom-previous { 
+.x-btn .icon-zoom-previous {
     background-image: url(img/silk/arrow_left.png);
 }
 
-.x-btn .icon-zoom-next { 
+.x-btn .icon-zoom-next {
     background-image: url(img/silk/arrow_right.png);
 }
 
-.x-btn .icon-zoom-visible { 
+.x-btn .icon-zoom-visible {
     background-image: url(img/silk/arrow_out.png);
 }
 
-.x-btn .icon-zoom-to, .x-menu-item .icon-zoom-to { 
+.x-btn .icon-zoom-to, .x-menu-item .icon-zoom-to {
     background-image: url(img/silk/magnifier.png);
 }
 
-.x-btn .icon-pan { 
+.x-btn .icon-pan {
     background-image: url(img/geosilk/pan.png);
 }
 
@@ -311,7 +311,7 @@ div.olLayerDiv svg{
 
 tr.regionblock td{
 	border-top:1px solid black;
-	
+
 }
 
 .loading-iframe {
@@ -364,3 +364,6 @@ tr.regionblock td{
 .user-icon{
     background-image: url(img/silk/user.png);
 }
+.gx-help {
+    background-image: url(img/silk/help.png);
+    }
