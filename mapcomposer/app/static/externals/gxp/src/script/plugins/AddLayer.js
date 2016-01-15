@@ -17,83 +17,83 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 Ext.namespace("gxp.plugins");
 
 /** api: constructor
  *  .. class:: AddLayer(config)
  *
  *    Base class to add a new layer on the map accordingly the gxp rules.
- *    This means WMS source check/creation and also creation fo layerrecord 
+ *    This means WMS source check/creation and also creation fo layerrecord
  *    (for the layer tree) to add the new layer to the map.
  *
  *    ``createLayerRecord`` method.
- *      
+ *
  *	  Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
- */   
+ */
 gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
-   
+
     /** api: ptype = gxp_addlayer */
     ptype: "gxp_addlayer",
-	
+
 	id: "addlayer",
-	
+
     /** private: property[target]
      *  ``Object``
      *  The object that this plugin is plugged into.
      */
-     
+
     /** api: property[untitledText]
      *  ``String``
      *  A descriptive title for this layer source.
      */
     untitledText: "",
-	
+
 	/** api: property[waitMsg]
      *  ``String``
      *  A wait message for this layer source loading.
      */
 	waitMsg: "Please Wait ...",
-	
+
 	/** api: property[capabilitiesFailureMsg]
      *  ``String``
      *  A status message for a failure in the WMSCapabilities loading.
      */
-	capabilitiesFailureMsg: " The WMS Capabilities cannot be added due to problems service side", 
-	
+	capabilitiesFailureMsg: " The WMS Capabilities cannot be added due to problems service side",
+
     /** api: property[useEvents]
      *  ``Boolean``
-     *  
+     *
      */
 	useEvents: false,
-	
+
 	/** api: property[directAddLayer]
      *  ``Boolean``
-     *  
+     *
      */
 	directAddLayer: false,
-	
+
     /** api: property[showReport]
      *  ``Boolean``
-     *  
+     *
      */
 	showReport: false,
-	
+
 	/** api: property[showCapabilitiesGrid]
      *  ``Boolean``
-     *  
+     *
      */
 	showCapabilitiesGrid: false,
-	
+
 	/** api: property[showCapabilitiesGrid]
      *  ``Boolean``
-     *  
+     *
      */
 	disableAllNotifications: false,
-	
+
     /** api: property[directAddLayerProps]
      *  ``Boolean``
-     *  
+     *
      */
 	directAddLayerProps:{
 		params:{
@@ -109,16 +109,17 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			buffer: 1
 		}
 	},
-	
+
 	alwaysZoomToExtent: true,
-    
+    records: [],
+
     /** private: method[constructor]
      */
     constructor: function(config) {
         this.initialConfig = config;
-		
+
         Ext.apply(this, config);
-        
+
         this.addEvents(
             /** api: event[ready]
              *  Fires when the layer source is ready for action.
@@ -129,42 +130,42 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
              */
             "failure"
         );
-		
+
         gxp.plugins.AddLayer.superclass.constructor.apply(this, arguments);
     },
-    
+
     /** api: method[init]
      *  :arg target: ``Object`` The object initializing this plugin.
      */
     init: function(target) {
 		gxp.plugins.AddLayer.superclass.init.apply(this, arguments);
         this.target = target;
-		
+
 		//
 		// Manage the report of the added resources (layers on WMS services)
 		//
 		var exceptionReport = [];
 		var reportWin;
-		
+
 		this.on({
 			scope: this,
 			'ready' : function(records){
-				if((this.showReport == "always" || this.showReport == "errors") && 
+				if((this.showReport == "always" || this.showReport == "errors") &&
 					this.directAddLayer === false && this.disableAllNotifications === false){
-					
+
 					for(var h=0; h<records.length; h++){
 						var record = records[h];
-						
+
 						if(record.report){
 							if(this.showReport == "errors"){
 								if(record.report.msg){
 									exceptionReport.push(record.report);
-								}								
+								}
 							}else{
 								exceptionReport.push(record.report);
 							}
 						}
-						
+
 						if(reportWin){
 							reportWin.hide();
 							reportWin.destroy();
@@ -172,29 +173,29 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 
 						var html = "<html>" +
 							"<body>" +
-								"<table style=\"border-collapse: collapse;\">" + 
+								"<table style=\"border-collapse: collapse;\">" +
 									"<thead>" +
 										"<tr>" +
-											"<th style=\"padding: 3px 7px 2px; background-color: #555555; color: #FFFFFF;\">Resource Name</th>" + 
-											"<th style=\"padding: 3px 7px 2px; background-color: #555555; color: #FFFFFF;\">Resource Type</th>" + 
-											"<th style=\"padding: 3px 7px 2px; background-color: #555555; color: #FFFFFF;\">Note</th>" + 
+											"<th style=\"padding: 3px 7px 2px; background-color: #555555; color: #FFFFFF;\">Resource Name</th>" +
+											"<th style=\"padding: 3px 7px 2px; background-color: #555555; color: #FFFFFF;\">Resource Type</th>" +
+											"<th style=\"padding: 3px 7px 2px; background-color: #555555; color: #FFFFFF;\">Note</th>" +
 											//"<th>URL</th>" +
 										"</tr>" +
 									"</thead>" +
 									"<tbody>";
-															
+
 						var urls = [];
 						for(var i=0; i<exceptionReport.length; i++){
 							var exists = false;
 							for(var j=0; j<urls.length; j++){
-								if(exceptionReport[i].url == urls[j].url && 
-									exceptionReport[i].name == urls[j].name && 
+								if(exceptionReport[i].url == urls[j].url &&
+									exceptionReport[i].name == urls[j].name &&
 										!exceptionReport[i].msg){
 									exists = true;
 									break;
 								}
 							}
-					
+
 							if(!exists){
 								urls.push({url: exceptionReport[i].url, name: exceptionReport[i].name});
 								var row = "<tr>" +
@@ -203,16 +204,16 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 										"<th style=\"padding: 3px 7px 2px; background-color: #D0D6D9; color: #000000; border: 1px solid #555555;\">" + (!exceptionReport[i].msg ? "" : "Error in remote service. <a style=\"cursor: pointer; font-weight: bold; color: #1030E3;\" onClick=\"javascript:app.tools['addlayer'].showMessages('GetCapabilities', '" + escape(exceptionReport[i].msg) + "', Ext.MessageBox.ERROR)\">Show more</a>") + "</th>" +
 										//"<th>" + exceptionReport[i].url + "</th>" +
 									"</tr>"
-										  
+
 								html += row;
 							}
-						}	
+						}
 
 						html +=               "</tbody>" +
 										"</table>" +
-									"</body>" + 
+									"</body>" +
 								"</html>";
-						
+
 						if(exceptionReport.length > 0){
 							reportWin = new Ext.Window({
 								title: "List of requested resources",
@@ -222,17 +223,17 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 								autoHeigth: true,
 								autoWidth: true,
 								maxHeigth: 500,
-								maxWidth: 600																						
-							});	
-						
+								maxWidth: 600
+							});
+
 							reportWin.show();
-						}						
+						}
 					}
 				}
 			}
-		});	
+		});
     },
-	
+
 	showMessages: function(title, report, type){
 		if(this.disableAllNotifications === false){
 			Ext.Msg.show({
@@ -240,14 +241,14 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				 msg: unescape(report),
 				 width: 300,
 				 icon: type
-			});  
+			});
 		}
 	},
-	
-	/**  
+
+	/**
 	 * api: method[addLayerRecord]
      */
-	addLayerRecord: function(options, source, callback){		
+	addLayerRecord: function(options, source, callback){
 		var msLayerTitle = options.msLayerTitle;
 		var msLayerName = options.msLayerName;
 		var gnUrl = options.gnUrl;
@@ -256,7 +257,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 		var gnLangStr = options.gnLangStr;
 		var customParams = options.customParams;
 		var msGroupName = options.msGroupName;
-		
+
 		var props = {
 			name: msLayerName,
 			title: msLayerTitle,
@@ -264,40 +265,40 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			// Currently the group setting is not supported for dynamic layer additions
 			,group: msGroupName
 		};
-		
+
 		if(customParams){
 			props = Ext.applyIf(
 				props,
 				customParams
 			);
 		}
-		  
+
 		if(msLayerUUID)
 			props.uuid = msLayerUUID;
-		
+
 		if(gnUrl && gnLangStr)
 			props.gnURL = gnUrl + "srv/" + gnLangStr + "/";
-		  
-		var record = source.createLayerRecord(props);   
-			
+
+		var record = source.createLayerRecord(props);
+
 		//var report;
 		if (record) {
-			var layerStore = this.target.mapPanel.layers;  
+			var layerStore = this.target.mapPanel.layers;
 			layerStore.add([record]);
 
 			modified = true; // TODO: refactor this
-					
+
 		    //
 			// If tabs are used the View tab is Activated
 			//
 			if(this.target.renderToTab && enableViewTab){
 				var portalContainer = Ext.getCmp(this.target.renderToTab);
-				
+
 				if(portalContainer instanceof Ext.TabPanel){
 					portalContainer.setActiveTab(1);
-				}				
-			}					
-						
+				}
+			}
+
 			// //////////////////////////
 			// Zoom To Layer extent
 			// //////////////////////////
@@ -317,10 +318,10 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 					Math.min(extent.top, restricted.top)
 				);
 			}
-            
+
             if(this.alwaysZoomToExtent || (customParams && customParams.zoomToExtent))
                 map.zoomToExtent(extent, true);
-			
+
 			var report = {
 				name: msLayerName,
 				title: msLayerTitle,
@@ -329,8 +330,8 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				url: source.url,
 				id: source.id
 			};
-			
-			this.records.push({record: record, report: report});	
+
+			this.records.push({record: record, report: report});
 
 			if(callback){
 				callback.call(this, record);
@@ -344,52 +345,52 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				url: source.url,
 				id: source.id
 			};
-				
+
 			this.records.push({record: undefined, report: report});
-			
+
 			//
 			// Show the capabilities grid if any layers was not found
 			//
 			this.showCapGrid(source.id);
 		}
-		
+
 		if(this.useEvents && this.records.length == this.resourcesSize){
 			this.fireEvent('ready', this.records);
 		}
 	},
-	
+
 	showCapGrid: function(sourceId){
-		// 
+		//
 		// Show the capabilities grid
 		//
 		if(this.showCapabilitiesGrid === true && this.disableAllNotifications === false){
 			var addLayerAction = this.target.tools["addlayers"];
-			
+
 			addLayerAction.showCapabilitiesGrid();
-			
+
 			//
-			// Select the required source 'sourceId' 
+			// Select the required source 'sourceId'
 			//
 			var combo = addLayerAction.getSourceComboBox();
-			
+
 			var store = combo.getStore();
-			
+
 			var index = store.find('id', sourceId);
 			var record = store.getAt(index);
-			
+
 			combo.onSelect(record, 0);
-		}	
+		}
 	},
 
-    /**  
+    /**
 	 * api: method[checkLayerSource]
      */
 	checkLayerSource: function(wmsURL){
 	    var s;
 		for (var id in this.target.layerSources) {
-			  var src = this.target.layerSources[id];    
-			  var url  = src.initialConfig.url; 
-			  
+			  var src = this.target.layerSources[id];
+			  var url  = src.initialConfig.url;
+
 			  // //////////////////////////////////////////
 			  // Checking if source URL aldready exists
 			  // //////////////////////////////////////////
@@ -397,12 +398,12 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				  s = src;
 				  break;
 			  }
-		} 
+		}
 
 		return s;
 	},
-	
-	/**  
+
+	/**
 	 * api: method[addLayer]
      */
 	addLayer: function(resources, callback){
@@ -412,31 +413,31 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 		//
 		if(resources instanceof Array){
 			this.resourcesSize = resources.length;
-			
+
 			for(var i=0; i<resources.length; i++){
 				var resource = resources[i];
-				
+
 				if(resource){
 					this._addLayer(resource, callback);
-				}			
+				}
 			}
 		}else{
 			this._addLayer(resources, callback);
 		}
 	},
-	
+
 	_addLayer: function(resource, callback){
 		var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
-		
+
 		if(this.directAddLayer === true){
 			//
 			// Direct add layer to the map without WMS GetCapabilities
-			// 
+			//
 			this.addToMap(resource, callback);
 		}else{
 			//
 			// Adding layer to the map with WMS GetCapabilities (the standard moded)
-			// 			
+			//
 			/*var msLayerTitle = options.msLayerTitle;
 			var msLayerName = options.msLayerName;
 			var msGroupName = options.msGroupName;
@@ -446,15 +447,15 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			var msLayerUUID = options.msLayerUUID;
 			var gnLangStr = options.gnLangStr;
 			var customParams = options.customParams;*/
-					
+
 			var source = this.checkLayerSource(resource.wmsURL);
 
-			if(source){			
+			if(source){
 
 				if(!source.loaded){
 					source.on('ready', function(s){
 						mask.hide();
-						this.target.layerSources[s.id].loaded = true; 
+						this.target.layerSources[s.id].loaded = true;
 						this.addLayerRecord(resource, s, callback);
 					}, this);
 					// add listener if layer source fail to append the layer source error information
@@ -469,22 +470,22 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 								msg: this.capabilitiesFailureMsg,
 								id: s.id
 							};
-							
+
 							this.records.push({record: undefined, report: report});
-							
+
 							if(this.records.length == this.resourcesSize){
 								this.fireEvent('ready', this.records);
 							}
 						}, this);
 					}
 				}
-				
+
 				var index = source.store.findExact("name", resource.msLayerName);
-				
+
 				if (index < 0) {
 					// ///////////////////////////////////////////////////////////////
-					// In this case is necessary reload the local store to refresh 
-					// the getCapabilities records 
+					// In this case is necessary reload the local store to refresh
+					// the getCapabilities records
 					// ///////////////////////////////////////////////////////////////
 					source.store.reload();
 				}else{
@@ -496,13 +497,13 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			}
 		}
 	},
-	
+
 	addToMap: function(options){
 		var msLayerTitle = options.msLayerTitle;
 		var msLayerName = options.msLayerName;
 		var msGroupName = options.msGroupName;
 		var wmsURL = options.wmsURL;
-		
+
 		//
 		// Clean the WMS URL
 		//
@@ -510,17 +511,17 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			var parts = wmsURL.split("?");
 			wmsURL = parts[0];
 		}
-		
+
 		var params = {
 			STYLES: this.directAddLayerProps.params.styles,
 			FORMAT: this.directAddLayerProps.params.format,
 			TRANSPARENT: this.directAddLayerProps.params.transparent,
 			LAYERS: msLayerName
 		};
-			
+
 		var layer = new OpenLayers.Layer.WMS(
-			msLayerTitle, 
-			wmsURL, 
+			msLayerTitle,
+			wmsURL,
 			params, {
 				displayInLayerSwitcher: this.directAddLayerProps.options.displayInLayerSwitcher,
 				singleTile: this.directAddLayerProps.options.singleTile,
@@ -529,9 +530,9 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				buffer: this.directAddLayerProps.options.buffer
 			}
 		);
-		
-		this.target.mapPanel.map.addLayer(layer); 
-		
+
+		this.target.mapPanel.map.addLayer(layer);
+
 		var report = {
 			name: msLayerName,
 			group: msGroupName,
@@ -540,106 +541,106 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			msg: "",
 			id: layer.id
 		};
-									
+
 		this.records.push({record: layer, report: report});
-		
+
 		if(this.useEvents && this.records.length == this.resourcesSize){
 			this.fireEvent('ready', this.records);
 		}
 	},
-	
-	/**  
+
+	/**
 	 * api: method[addSource]
      */
-	addSource: function(showLayer, options, callback){			
+	addSource: function(showLayer, options, callback){
 		var source = this.checkLayerSource(options.wmsURL);
 
 		if(!source){
 			var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
 			mask.show();
-			
+
 			var sourceOptions = {
 				url: options.wmsURL,
 				ptype: options.format == "wmts" ? "gxp_wmtssource" : "gxp_wmssource"
 			};
-			
+
 			//
 			// Setting additional source options
 			//
 			Ext.applyIf(sourceOptions, options.sourceOptions);
-			
+
 			source = this.target.addLayerSource({
 				config: sourceOptions, // assumes default of gx_wmssource
 				//
 				// Waiting GetCapabilities response from the server.
-				//	
+				//
 				callback: function(id) {
 					var addLayerAction = this.target.tools["addlayers"];
-					var combo = addLayerAction.getSourceComboBox();	
+					var combo = addLayerAction.getSourceComboBox();
 
 					// ////////////////////////////////////////////////////////////
 					// At the first time the CapGrid is not initialized so:
-					// - the source is present but the combo store is 
+					// - the source is present but the combo store is
 					//   undefined.
-					// - when the showCapabilitiesGrid is called by the user, 
-					//   if the showCapabilitiesGrid == false, or automatically 
-					//   if == true the CapGrid is initialized and the all the 
+					// - when the showCapabilitiesGrid is called by the user,
+					//   if the showCapabilitiesGrid == false, or automatically
+					//   if == true the CapGrid is initialized and the all the
 					//   layerSources loaded inside the combo array store.
-					// 
-					// For all the following steps the CapGrid is already 
+					//
+					// For all the following steps the CapGrid is already
 					// initialized so:
 					// - the new layerSource is loaded but we have to put manually
 					//   the new record inside the combo store.
 					// /////////////////////////////////////////////////////////////
 					if(combo){
 						var store = combo.getStore();
-						
+
 						//
 						// Add to combo and select
 						//
 						var index = store.find('id', id);
-						
+
 						var record;
 						if(index > -1){
-							record = store.getAt(index);						
+							record = store.getAt(index);
 							record.set("title", this.target.layerSources[id].title || this.untitledText);
 						}else{
 							record = new store.recordType({
 								id: id,
 								title: this.target.layerSources[id].title || this.untitledText
 							});
-							
+
 							store.insert(0, [record]);
 						}
-						
+
 						combo.onSelect(record, 0);
 					}
-					
-					// 
+
+					//
 					// Show the capabilities grid
 					//
-					if(this.showCapabilitiesGrid === true && !showLayer 
+					if(this.showCapabilitiesGrid === true && !showLayer
 						&& this.disableAllNotifications === false){
-						
+
 						addLayerAction.showCapabilitiesGrid();
-						
+
 						//
 						// Select the newly created source
 						//
 						combo = addLayerAction.getSourceComboBox();
-						
+
 						var store = combo.getStore();
-						
+
 						var index = store.find('id', id);
 						var record = store.getAt(index);
-						
+
 						combo.onSelect(record, 0);
-					}				
-					
+					}
+
 					mask.hide();
-					
+
 					this.target.layerSources[id].loaded = true;
-					if(showLayer && options){						
+					if(showLayer && options){
 						this.addLayerRecord(options, this.target.layerSources[id], callback);
 					}else{
 						//
@@ -652,25 +653,25 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 							type: "service",
 							id: source.id
 						};
-						
+
 						this.records.push({record: source, report: report});
-						
+
 						if(this.useEvents && this.records.length == this.resourcesSize){
 							this.fireEvent('ready', this.records);
 						}
-					}					
+					}
 				},
 				// /////////////////////////////////////////////////////////////////////////
-				// To manage failure in GetCapabilities request (invalid request url in 
+				// To manage failure in GetCapabilities request (invalid request url in
 				// GeoNetwork configuration or server error).
 				// /////////////////////////////////////////////////////////////////////////
 				fallback: function(source, msg) {
 					mask.hide();
-					
-					if(!this.showReport){ 						
+
+					if(!this.showReport){
 						this.showMessages("GetCapabilities", this.capabilitiesFailureMsg + " - " + msg, Ext.MessageBox.ERROR);
 					}
-					
+
 					var report = {
 						name: options.msLayerName,
 						group: options.msGroupName,
@@ -679,9 +680,9 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 						msg: this.capabilitiesFailureMsg + " - " + msg,
 						id: source.id
 					};
-					
+
 					this.records.push({record: source, report: report});
-					
+
 					if(this.useEvents && this.records.length == this.resourcesSize){
 						this.fireEvent('ready', this.records);
 					}
@@ -689,25 +690,25 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				scope: this
 			});
 		}else{
-			// 
+			//
 			// Show the capabilities grid
 			//
 			if(this.showCapabilitiesGrid === true && this.disableAllNotifications === false){
 				var addLayerAction = this.target.tools["addlayers"];
 				addLayerAction.showCapabilitiesGrid();
-				
+
 				//
 				// Select requested source
 				//
 				var combo = addLayerAction.getSourceComboBox();
-				
+
 				var store = combo.getStore();
-				
-				var index = store.find('id', this.source.id);
+
+				var index = store.find('id', source.id);
 				var record = store.getAt(index);
-				
+
 				combo.onSelect(record, 0);
-			}	
+			}
 		}
 	}
 });

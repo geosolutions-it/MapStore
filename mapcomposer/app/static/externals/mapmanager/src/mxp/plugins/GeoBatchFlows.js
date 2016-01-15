@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /** api: (define)
  *  module = mxp.plugins
  *  class = Tool
@@ -29,72 +29,72 @@ Ext.ns("mxp.plugins");
  *  .. class:: GeoBatchFlows(config)
  *
  *    Open a plugin to interact with GeoBatch flows :
- *    * obtain information and clean consumers of all the flows on a GeoBath Instance 
+ *    * obtain information and clean consumers of all the flows on a GeoBath Instance
  */
 mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
-    
+
     /** api: ptype = mxp_geobatch_flows */
     ptype: "mxp_geobatch_flows",
-    
+
     // i18n
     buttonText: "Workflows",
-	
+
     flowsListTitle:'Flows',
-	
+
     runButtonText:'Run',
-	
+
     consumersGridTitle: 'Active',
-	
+
     archivedGridTitle: 'Archived',
     // end i18n
-    
+
     flowRunFormCategory: 'GEOBATCH_RUN_CONFIGS',
-	
-    loginManager: null,    
-	
+
+    loginManager: null,
+
     setActiveOnOutput: true,
-	
+
     showConsumersDetails: false,
-	
+
     forceOrder: false,
     /* api configuration
         closable: if true the output element is closable
     */
     closable: true,
-	
+
     /* api configuration
     baseDir: '/home/geosolutions/admin/',
-    
+
      /** api: configuration[runConfigs]
       * a map of run configurations.
       * has the base configuration for each flow to run
       */
     runConfigs: {},
-	
+
     /** api: configuration[skipFlowsNotInRunConfigs]
       * a true/false value used to only show flows configured
       * runConfigs. By default all geobatch flows are shown.
       */
     skipFlowsNotInRunConfigs: false,
-	
+
      /** api: configuration[defaultRunConfig]
       * a default configuration to use.
-      * if present it will be used as configuration when a 
+      * if present it will be used as configuration when a
       * runConfig is not found in runConfigs map
       * if null, no run config is defined for this flow,
       * so the action can not be runned from this UI
       */
     defaultRunConfig: null,
-	
+
     /** api: method[addActions]
      */
-    addActions: function() {        
+    addActions: function() {
         var thisButton = new Ext.Button({
-            iconCls:'geobatch_ic', 
+            iconCls:'geobatch_ic',
             text: this.buttonText,
             tooltip: this.tooltipText,
-            handler: function() { 
-                this.addOutput();                
+            handler: function() {
+                this.addOutput();
             },
             scope: this
         });
@@ -103,26 +103,26 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
 
         return mxp.plugins.GeoBatchFlows.superclass.addActions.apply(this, [actions]);
     },
-    
+
     /** api: method[addOutput]
      *  :arg config: ``Object`` configuration for the ``Ext.Component`` to be
      *      added to the ``outputTarget``. Properties of this configuration
      *      will be overridden by the applications ``outputConfig`` for the
      *      tool instance.
-     *  :return: ``Ext.Component`` The component added to the ``outputTarget``. 
+     *  :return: ``Ext.Component`` The component added to the ``outputTarget``.
      *
      *  Adds output to the tool's ``outputTarget``. This method is meant to be
      *  called and/or overridden by subclasses.
      */
     addOutput: function(config) {
-        var login = this.target.login ? this.target.login: 
-                this.loginManager && this.target.currentTools[this.loginManager] 
+        var login = this.target.login ? this.target.login:
+                this.loginManager && this.target.currentTools[this.loginManager]
                 ? this.target.currentTools[this.loginManager] : null;
-				
+
         this.auth = this.target.auth;
         this.geoStoreRestURL = this.geoStoreRestURL || this.target.config.geoStoreBase || "/geostore/rest/";
         this.outputConfig = this.outputConfig || {};
-		
+
         // create the selection model
         var selectionModel = new Ext.grid.RowSelectionModel({
             singleSelect:true,
@@ -146,18 +146,18 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
                             runBtn.setDisabled(true);
                             runBtn.flowId = null;
                             runBtn.flowName = null;
-                        }                        
+                        }
                     }
-                } 
+                }
             }
         });
-		
+
         //button for button runner
         var buttons = ['->'];
-        
+
         var me = this;
-		
-        //configuration of the left grid of the flows 
+
+        //configuration of the left grid of the flows
         var flowsGrid = {
             xtype:'mxw_geobatch_flows_grid',
             tbar:buttons,
@@ -168,7 +168,7 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
             autoScroll:true,
             width:500,
             ref:'list',
-            collapsible:true,   
+            collapsible:true,
             auth: this.auth,
             sm: selectionModel,
             forceOrder: this.forceOrder,
@@ -178,14 +178,14 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
             },
             scope: this
         }
-        
+
         Ext.apply(this.outputConfig,{
             layout: 'border',
             itemId:'GBflows',
             xtype:'panel',
             closable: this.closable,
             closeAction: 'close',
-            iconCls: 'geobatch_ic',  
+            iconCls: 'geobatch_ic',
             header: false,
             deferredReneder:false,
             hideMode:'offsets',
@@ -231,21 +231,21 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
                         showDetails: this.showConsumersDetails,
                         plugins: this.consumersPlugins
                     }]
-                },  
+                },
                 flowsGrid
             ]
         });
-		
+
         // In user information the output is generated in the component and we can't check the item.initialConfig.
         if(this.output.length > 0
             && this.outputTarget){
             for(var i = 0; i < this.output.length; i++){
                 if(this.output[i].ownerCt
-                    && this.output[i].ownerCt.xtype 
+                    && this.output[i].ownerCt.xtype
                     && this.output[i].ownerCt.xtype == "tabpanel"
                     && !this.output[i].isDestroyed){
                     var outputConfig = config || this.outputConfig;
-					
+
                     // Not duplicate tabs
                     for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
                         var item = this.output[i].ownerCt.items.items[index];
@@ -255,23 +255,23 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
                             this.output[i].ownerCt.setActiveTab(index);
                             return;
                         }
-                    } 
+                    }
                 }
             }
         }
-		
+
         this.tab = mxp.plugins.GeoBatchFlows.superclass.addOutput.apply(this, arguments);
         return this.tab;
     },
-	
+
     runWorkflow: function(flowId,flowName){
         if(this.runConfigs[flowId]){
             var config = Ext.apply(this.runConfigs[flowId],{
                 flowId: flowId,
                 geoBatchRestURL: this.geoBatchRestURL,
-                adminUrl: this.target.adminUrl,                
+                adminUrl: this.target.adminUrl
             });
-			
+
             var handler = Ext.create(config);
             if(handler.isForm()) {
                 this.showRunLocalForm(flowId, flowName, handler, config);
@@ -289,29 +289,29 @@ mxp.plugins.GeoBatchFlows = Ext.extend(mxp.plugins.Tool, {
             }
         }
     },
-    
-    showRunLocalForm: function(flowId, flowName, handler, config){       
+
+    showRunLocalForm: function(flowId, flowName, handler, config){
         var win = new Ext.Window({
 			iconCls:'update_manager_ic',
 			xtype:'form',
 			title:this.runButtonText + " " + flowName,
 			width: 325,
-			height: config.height || 400, 
+			height: config.height || 400,
 			//path:'csv/New Folder',
 			minWidth:250,
 			minHeight:200,
 			layout:'fit',
 			autoScroll:false,
 			//closeAction:'hide',
-			maximizable: true, 
+			maximizable: true,
 			modal:true,
 			resizable:true,
 			draggable:true,
 			items: [handler]
         });
-		
+
         win.show();
-		
+
         handler.on({
             success: function(flowId){
                 win.close();

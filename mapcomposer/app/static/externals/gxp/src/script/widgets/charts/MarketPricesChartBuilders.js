@@ -267,9 +267,9 @@ nrl.chartbuilder.marketprices.commodity = {
                         var fromYear = fromData.year;
                         var toYear = toData.year;
                         if (toYear - fromYear == 0) {
-                            //info += '<span style="font-size:10px;">Year: ' + fromYear + '</span><br />';
+                            info += '<span style="font-size:10px;">Year: ' + fromYear + '</span><br />';
                         } else {
-                            //info += '<span style="font-size:10px;">Years: ' + fromYear + ' - ' + toYear + '</span><br />';
+                            info += '<span style="font-size:10px;">Years: ' + fromYear + ' - ' + toYear + '</span><br />';
                         }
                     }
                     break;
@@ -293,8 +293,32 @@ nrl.chartbuilder.marketprices.commodity = {
             return info;
         };
 
-        var getChartTitle = function(chartData, chartIndex) {
-            var title = 'Market Prices: ';
+        var getChartTitle = function(chartData, chartIndex, queryParams) {
+            var timeInfo = "";
+            var fromData = nrl.chartbuilder.util.getDekDate(queryParams.start_abs_dec_year);
+            var toData = nrl.chartbuilder.util.getDekDate(queryParams.end_abs_dec_year);
+            switch (queryParams.time_opt) {
+                case 'month':
+                    {
+                        var fromYear = fromData.year;
+                        var toYear = toData.year;
+                        if (toYear - fromYear == 0) {
+                            timeInfo += ' ' + fromYear;
+                        } else {
+                            timeInfo += ' ' + fromYear + ' - ' + toYear;
+                        }
+                    }
+                    break;
+                case 'decade_year':
+                    {
+                        var from = nrl.chartbuilder.util.numberToMonthName(fromData.month) + '(' + fromData.year + ')';
+                        var to = nrl.chartbuilder.util.numberToMonthName(toData.month) + '(' + toData.year + ')';
+
+                        timeInfo += ' ' + from + ' - ' + to;
+                    }
+                    break;
+            }
+            var title = 'Market Prices ' + timeInfo + ': ';
             var region = (chartData[chartIndex].title == 'aggregate' ? 'REGION' : chartData[chartIndex].title);
             title += region;
             return title;
@@ -322,7 +346,7 @@ nrl.chartbuilder.marketprices.commodity = {
             var chartConfig = this.getChartConfig(opt, customOpt);
 
             var info = getChartInfo(data, r, queryParams);
-            var chartTitle = getChartTitle(data, r);
+            var chartTitle = getChartTitle(data, r, queryParams);
 
             var store = new Ext.data.JsonStore({
                 data: data[r],
@@ -512,6 +536,30 @@ nrl.chartbuilder.marketprices.region = {
                 crops = chartData[chartIndex].title;
             }
 
+            var fromData = nrl.chartbuilder.util.getDekDate(queryParams.start_abs_dec_year);
+            var toData = nrl.chartbuilder.util.getDekDate(queryParams.end_abs_dec_year);
+            switch (queryParams.time_opt) {
+                case 'month':
+                    {
+                        var fromYear = fromData.year;
+                        var toYear = toData.year;
+                        if (toYear - fromYear == 0) {
+                            info += '<span style="font-size:10px;">Year: ' + fromYear + '</span><br />';
+                        } else {
+                            info += '<span style="font-size:10px;">Years: ' + fromYear + ' - ' + toYear + '</span><br />';
+                        }
+                    }
+                    break;
+                case 'decade_year':
+                    {
+                        var from = nrl.chartbuilder.util.numberToMonthName(fromData.month) + '(' + fromData.year + ')';
+                        var to = nrl.chartbuilder.util.numberToMonthName(toData.month) + '(' + toData.year + ')';
+
+                        info += '<span style="font-size:10px;">Time Range: ' + from + ' - ' + to + '</span><br />';
+                    }
+                    break;
+            }
+
             if (queryParams.currency == 'market_price_usd'){
                 if (queryParams.exrate == 1){
                     info += '<span style="font-size:10px;">Exchange rate: variable (ingestion date)</span><br />';
@@ -523,8 +571,32 @@ nrl.chartbuilder.marketprices.region = {
             return info;
         };
 
-        var getChartTitle = function(chartData, chartIndex) {
-            var title = 'Market Prices: ';
+        var getChartTitle = function(chartData, chartIndex, queryParams) {
+            var timeInfo = "";
+            var fromData = nrl.chartbuilder.util.getDekDate(queryParams.start_abs_dec_year);
+            var toData = nrl.chartbuilder.util.getDekDate(queryParams.end_abs_dec_year);
+            switch (queryParams.time_opt) {
+                case 'month':
+                    {
+                        var fromYear = fromData.year;
+                        var toYear = toData.year;
+                        if (toYear - fromYear == 0) {
+                            timeInfo += ' ' + fromYear;
+                        } else {
+                            timeInfo += ' ' + fromYear + ' - ' + toYear;
+                        }
+                    }
+                    break;
+                case 'decade_year':
+                    {
+                        var from = nrl.chartbuilder.util.numberToMonthName(fromData.month) + '(' + fromData.year + ')';
+                        var to = nrl.chartbuilder.util.numberToMonthName(toData.month) + '(' + toData.year + ')';
+
+                        timeInfo += ' ' + from + ' - ' + to;
+                    }
+                    break;
+            }
+            var title = 'Market Prices ' + timeInfo + ': ';
             var region = (chartData[chartIndex].title == 'aggregate' ? 'REGION' : chartData[chartIndex].title);
             title += region;
             return title;
@@ -550,7 +622,7 @@ nrl.chartbuilder.marketprices.region = {
             var chartConfig = this.getChartConfig(opt, customOpt);
 
             var info = getChartInfo(data, r, queryParams);
-            var chartTitle = getChartTitle(data, r);
+            var chartTitle = getChartTitle(data, r, queryParams);
 
             var store = new Ext.data.JsonStore({
                 data: data[r],

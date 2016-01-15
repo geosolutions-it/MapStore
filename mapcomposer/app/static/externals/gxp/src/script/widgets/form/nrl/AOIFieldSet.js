@@ -45,13 +45,13 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 			ref:'singleSelector',
             displayField:"name",
             pageSize:10
-            
+
         },
         district:{
             typeName:"nrl:district_boundary",
             queriableAttributes:[
                 "district",
-                "province"                
+                "province"
             ],
             recordModel:[
                 {
@@ -73,11 +73,11 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 				{
                    name:"properties",
                    mapping:"properties"
-                } 
+                }
             ],
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"       
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"
         },
-        province:{            
+        province:{
             typeName:"nrl:province_boundary",
             recordModel:[
                 {
@@ -102,14 +102,14 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
                 "province"
             ],
             displayField:"name",
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"                            
-        }    
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
+        }
     },
     disabledGrantype: [],
     constructor: function(config){
         Ext.apply(this, config);
         nrl.form.AOIFieldSet.superclass.constructor.call(this, config);
-        
+
         this.addEvents(
             /** api: event[regionsChange]
              *  Fires when a region is added or removed.
@@ -126,7 +126,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 
         this.currentComboConfig = Ext.apply({},this.comboConfigs.base,this.comboConfigs.province);
 		this.items = [
-			{ 
+			{
 				fieldLabel: 'Type',
 				xtype: 'radiogroup',
 				ref: 'gran_type',
@@ -144,11 +144,11 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 					change: function(cbg, checkedarray){
 						var as = cbg.ownerCt.AreaSelector;
                         //TODO ask to confirm, before loose all selection
-                        
+
 						as.store.removeAll();
 						if (! cbg.getValue())return;
 						var val = cbg.getValue().inputValue	;
-						
+
 						var newLayerName = cbg.ownerCt.layers[val];
                         if(newLayerName){
                             as.displayField = cbg.ownerCt.comboConfigs[val].displayField;
@@ -156,9 +156,12 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
                             as.comboConfig  = Ext.apply(
                                 {},
                                 cbg.ownerCt.comboConfigs.base,
-                                cbg.ownerCt.comboConfigs[val]
+                                Ext.apply(
+									cbg.ownerCt.comboConfigs[val],
+									{typeName: newLayerName}
+								)
                             );
-                            
+
                             as.setDisabled(false);
                         }else{
                             as.setDisabled(true);
@@ -167,7 +170,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
                             as.setDisabled(true);
                         }else{
                             as.setDisabled(false);
-                        } 
+                        }
 
 						var outputValue = cbg.getValue().inputValue;
                         // check if disable with 'this.disableWidth' config param
@@ -177,7 +180,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
                                 if(outputValue == this.disableWidth[i]){
                                     disable = true;
                                     break;
-                                }    
+                                }
                             }
                         }
 						if(disable){
@@ -206,7 +209,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 					update: function(store){
 						records = store.getRange();
 						var len = records.length ;
-						if (len <= 0 ){ 
+						if (len <= 0 ){
 							sel = "";
 						}else{
 							var attrs = records[0].get("attributes");
@@ -216,7 +219,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 						for (var i = 1; i < len; i++) {
 							var attrs = records[i].get("attributes");
 							var name = attrs[this.gran_type.getValue().inputValue];
-							
+
 							sel +="\\,'" + name +"'";
 						}
 						this.selectedRegions.setValue(sel);
@@ -225,16 +228,15 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 					},
 					scope:this
 				}
-            },{   
-                xtype:'hidden',//<--hidden field  
-                name:this.name, //name of the field sent to the server  
+            },{
+                xtype:'hidden',//<--hidden field
+                name:this.name, //name of the field sent to the server
 				ref: 'selectedRegions',
-                value:''//value of the field  
+                value:''//value of the field
         }
 		];
-		
+
 		return nrl.form.AOIFieldSet.superclass.initComponent.apply(this, arguments);
 	}
 });
 Ext.reg('nrl_aoifieldset',nrl.form.AOIFieldSet);
-

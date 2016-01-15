@@ -173,7 +173,7 @@ nrl.chartbuilder.irrigation.flow = {
     makeChart: function(data, opt, customOpt, queryParams) {
 
         var charts = [];
-        
+
         var info = nrl.chartbuilder.irrigation.commons.getChartInfo('flow');
 
         for (var r = 0; r < data.length; r++) {
@@ -409,7 +409,7 @@ nrl.chartbuilder.irrigation.supply = {
 
                             Ext.each(this.points, function(i, point) {
                                 s += '<br/><span style="color:' + i.series.color + '">' + i.series.name + ': </span>' +
-                                    '<span style="font-size:12px;">' + i.y.toFixed(2) + '</span>';
+                                    '<span style="font-size:12px;">' + i.y.toFixed(3) + '</span>';
                             });
 
                             return s;

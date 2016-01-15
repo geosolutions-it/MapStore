@@ -20,15 +20,15 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
     // Begin i18n.
     backText: "Back",
     nextText: "Next",
-    fullScreenText: "Full Screen",	
+    fullScreenText: "Full Screen",
     cswFailureAddLayer: ' The layer cannot be added to the map',
 	cswZoomToExtentMsg: "BBOX not available",
 	cswZoomToExtent: "CSW Zoom To Extent",
-	
+
     /**
     * Property: cswMsg
     * {string} string to add in loading message
-    * 
+    *
     */
     cswMsg: 'Loading...',
     // End i18n.
@@ -62,7 +62,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            legendConfig : {
 		                legendPanelId : 'legendPanel',
 		                defaults: {
-		                    style: 'padding:5px',                  
+		                    style: 'padding:5px',
 		                    baseParams: {
 		                        LEGEND_OPTIONS: 'forceLabels:on;fontSize:10',
 		                        WIDTH: 20, HEIGHT: 20
@@ -107,10 +107,10 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            actionTarget: {target: "paneltbar", index: 16}
 		        }, {
                     id: "zoombox_separator",
-		            actions: ["-"], 
+		            actions: ["-"],
                     actionTarget: "paneltbar"
 		        }, {
-		            ptype: "gxp_zoombox", 
+		            ptype: "gxp_zoombox",
                     id: "zoombox_plugin",
                     toggleGroup: this.toggleGroup,
 		            actionTarget: {target: "paneltbar", index: 17}
@@ -120,7 +120,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            actionTarget: {target: "paneltbar", index: 18}
 		        }, {
                     id: "navigationhistory_separator",
-		            actions: ["-"], 
+		            actions: ["-"],
                     actionTarget: "paneltbar"
 		        }, {
 		            ptype: "gxp_navigationhistory",
@@ -128,20 +128,20 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 		            actionTarget: {target: "paneltbar", index: 19}
 		        }, {
                     id: "wmsgetfeatureinfo_menu_separator",
-		            actions: ["-"], 
+		            actions: ["-"],
                     actionTarget: "paneltbar"
 		        }, {
-		            ptype: "gxp_wmsgetfeatureinfo_menu", 
+		            ptype: "gxp_wmsgetfeatureinfo_menu",
                     id: "wmsgetfeatureinfo_plugin",
 					toggleGroup: this.toggleGroup,
 					useTabPanel: true,
 		            actionTarget: {target: "paneltbar", index: 20}
 		        }, {
                     id: "measure_separator",
-		            actions: ["-"], 
+		            actions: ["-"],
                     actionTarget: "paneltbar"
 		        }, {
-		            ptype: "gxp_measure", 
+		            ptype: "gxp_measure",
                     id: "measure_plugin",
                     toggleGroup: this.toggleGroup,
 		            actionTarget: {target: "paneltbar", index: 21}
@@ -153,7 +153,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     config.tools = this.removeTool(config.tools, config.removeTools[r]);
                 }
             }
-            
+
 			if(config.customTools)
 			{
 				for(var c=0; c < config.customTools.length; c++)
@@ -173,13 +173,13 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                             break;
 						}
 					}
-				
+
 					if(!toolIsDefined){
                         config.tools.push(config.customTools[c])
                     }
 				}
 			}
-			
+
         }//END: if(!config.tools)
 
         if (config.showGraticule == true){
@@ -189,14 +189,14 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actionTarget: {target: "paneltbar", index: 22}
             })
         }
-		
+
 		config.tools.push({
 			actions: ["-"], actionTarget: "paneltbar"
 		});
-		
+
 		// ////////////////////////////////////////////////////////////
-		// Check if the Save plugin already exists (for example this 
-		// could be exists in an imported configuraztion file (.map), 
+		// Check if the Save plugin already exists (for example this
+		// could be exists in an imported configuraztion file (.map),
 		// see the ImportExport plugin).
 		// ////////////////////////////////////////////////////////////
 		var savePlugin = false;
@@ -206,7 +206,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				break;
 			}
 		}
-		
+
 		if(!savePlugin){
 			config.tools.push({
 				ptype: "gxp_saveDefaultContext",
@@ -215,7 +215,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 				needsAuthorization: true
 			});
 		}
-        
+
         GeoExplorer.Composer.superclass.constructor.apply(this, arguments);
     },
 
@@ -225,14 +225,14 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
         this.loginButton = null;
         GeoExplorer.Composer.superclass.destroy.apply(this, arguments);
     },
-    
-    
+
+
     /**
      * api: method[createTools]
      * Create the toolbar configuration for the main view.
      */
     createTools: function() {
-    
+
         var tools = GeoExplorer.Composer.superclass.createTools.apply(this, arguments);
 
         if(!this.fScreen){
@@ -246,17 +246,17 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                     if(button.pressed){
                         Ext.getCmp('east').collapse();
 						Ext.getCmp('west').collapse();
-						Ext.getCmp('header').collapse();
-						
-					
+						Ext.getCmp('msheader').collapse();
+
+
                     } else {
                         Ext.getCmp('east').expand();
 						Ext.getCmp('west').expand();
-						Ext.getCmp('header').expand();
-						
-						
-					
-						
+						Ext.getCmp('msheader').expand();
+
+
+
+
                     }
                 }
             });
@@ -273,18 +273,18 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
 
 			tools.unshift(layerChooser);
 		}
-        
+
          return tools;
 
     },
-	
+
 	/** private: method[addLoadingMask]
      */
-	addLoadingMask: function(panel) {		
+	addLoadingMask: function(panel) {
 		var loading = Ext.DomHelper.append(panel.el.parent(), {
 			tag:'div',
 			cls:'loading-iframe'
-		}, true);		
+		}, true);
 		var iframe = panel.el.dom;
 		if (iframe.attachEvent){
 			iframe.attachEvent("onload", function(){

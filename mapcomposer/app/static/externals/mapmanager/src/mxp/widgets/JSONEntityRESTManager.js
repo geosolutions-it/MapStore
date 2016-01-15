@@ -17,20 +17,20 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 Ext.ns("mxp.widgets");
 //HACK TO MAKE FIND FIELD RECOURSIVE (TO SUPPORT MULTIPLE CHECKBOXES
 
 /**
  * Generic Entity Manager for Json CRUD services.
  * These services can be provided by OpenSDI Manager 2
- * 
- * 
+ *
+ *
  */
 mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
 	 /** api: xtype = mxp_geostore_category_manger */
     xtype: "json_entity_rest_manager",
-    loginManager: null,    
+    loginManager: null,
     setActiveOnOutput: true,
     /**
      * i18n
@@ -112,22 +112,22 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
             activeItem:0,
             autoScroll:false,
             region:'center',
-            
-            
+
+
             ref:'editorContainer',
             items: this.createEntityEditors()
         });
-        
+
         this.items=[leftPanel,this.editorContainer]
 
-		
+
 		mxp.widgets.JSONEntityRESTManager.superclass.initComponent.call(this, arguments);
 	},
-   
+
     /**
      * private method[loadEditor] Open a resource in the editor from its button
      * ``Ext.Button`` button with the same itemId
-     * 
+     *
      */
     loadEditor: function(btn,cat){
         var category =cat;
@@ -139,9 +139,9 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
         editor.doLayout();
         //load data
         grid.store.load();
-        
+
     },
-    
+
     createEntityButtons: function(){
         var buttons = [];
         for(var i = 0; i < this.entities.length; i++){
@@ -155,9 +155,9 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                 itemId: entity.id,
                 handler: this. loadEditor,
                 scope:this
-            });  
+            });
         }
-        
+
         return buttons;
     },
     /**
@@ -165,7 +165,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
      * creates the entity editors.
      */
     createEntityEditors: function(){
-        
+
         var editors = [];
         var me = this;
         for(var i = 0; i < this.entities.length; i++){
@@ -189,7 +189,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                         loadMask:true,
                         autoExpandColumn: entity.autoExpandColumn,
                         viewConfig: {
-                            forceFit:true,
+                            forceFit:true
                             //fitcontainer:true
                         },
                         tbar:[{
@@ -201,7 +201,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                                 scope:this,
                                 handler : function(btn){
                                    this.createEntity(btn.refOwner.entity,btn.refOwner);
-                                },
+                                }
                             },{
                                 xtype:'button',
                                 text: entity.refreshText || this.refreshText,
@@ -219,7 +219,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                                 hidden: !entity.api.dump,
                                 scope:this,
                                 handler : function(btn){
-                                   this.dumpData(btn.refOwner.entity); 
+                                   this.dumpData(btn.refOwner.entity);
                                 }
                             },{
                                 xtype:'button',
@@ -229,7 +229,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                                 hidden: !entity.api.restore,
                                 scope:this,
                                 handler : function(btn){
-                                   this.restoreData(btn.refOwner.entity); 
+                                   this.restoreData(btn.refOwner.entity);
                             }
                         }],
                         columns:columns,
@@ -242,7 +242,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                                     var formPanel = container.form;
                                     var form = formPanel.getForm();
                                     form.loadRecord(record);*/
-                                    
+
                                 }
                             }
                         }),
@@ -251,7 +251,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                             autoSave: true,
                             // load using HTTP
                             url: this.baseUrl + entity.basePath,
-                            
+
                             fields: entity.fields,
                             reader:  new Ext.data.JsonReader({
                                 fields: entity.fields,
@@ -261,14 +261,14 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                                 totalProperty: entity.totalProperty || "total",
                                 writer: this.writer
                             }),
-                            
+
 
                             listeners:{
                              beforeload: function(store,opt){
-                                
+
                              },
                              load:function(store,records,opts){
-                                
+
                              }
                             }
                         }),
@@ -279,15 +279,15 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                                 grid.store.load();
                             }
                         }
-                        
-                        
+
+
                 }]
-            });  
+            });
         }
         return editors;
     },
     /**
-     * private method[createColumns] 
+     * private method[createColumns]
      * create columns for an entity
      */
     createColumns: function(entity){
@@ -309,7 +309,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                         getClass: function(v, meta, rec) {
                            if(rec.get('canEdit') && rec.get('canEdit') == false )return 'x-hide-display';
                             return 'x-grid-center-icon action_column_btn';
-                          
+
                         }
                     }]
             });
@@ -331,29 +331,29 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                         getClass: function(v, meta, rec) {
                             if(rec.get('canDelete') && rec.get('canDelete') == false )return 'x-hide-display';
                             return 'x-grid-center-icon action_column_btn';
-                          
+
                         }
                     }]
             });
         }
         return columns;
-    
+
     },
     /**
-     * private method[getEntityEditor] 
+     * private method[getEntityEditor]
      * get an entity editor for the selected entity,
      * using the passed mode
-     * ``Object`` entity 
+     * ``Object`` entity
      * ``string`` mode (create or edit)
      */
     getEntityEditor: function (entity,mode){
         var formFields = entity.form ? entity.form[mode] : entity.formFields;
-        //Workaround: 
+        //Workaround:
         // the form fields are written from extjs constructor (for combobox)
         // and after the first destruction they can are not usable anymore.
         // we have to copy each field to make the new form work.
-        
-        
+
+
         var editor = {
                     xtype: 'form',
                     frame:true,
@@ -363,7 +363,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                         anchor: '100%',
                         xtype:'textfield'
                     },
-                    //allowed items for the selected mode or 
+                    //allowed items for the selected mode or
                     items: formFields,
                     buttons: [{
                         text: this.saveText,
@@ -376,18 +376,18 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                         handler: function(button){
                             var form = button.refOwner.getForm();
                             this.upsertEntity(button);
-                            
+
                         }
                     }]
-                    
+
                 };
         return editor;
     },
-    
+
     /**
-     * private method[editEntity] 
+     * private method[editEntity]
      * show editing window from a record in a grid,
-     * is binded to action column action event 
+     * is binded to action column action event
      */
     editEntity: function(grid, rowIndex, colIndex) {
         var rec = grid.store.getAt(rowIndex);
@@ -396,66 +396,65 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                     iconCls:'pencil_ic',
                     title:  entity.editTitle  || this.editTitle,
                     height: entity.editHeight || 500,
-                    width:  entity.editWidth  || 300, 
+                    width:  entity.editWidth  || 300,
                     store:grid.store,
                     minWidth:250,
                     minHeight:200,
                     layout:'fit',
                     autoScroll:false,
-                    maximizable: true, 
+                    maximizable: true,
                     modal:true,
                     resizable:true,
                     draggable:true,
                     title:this.edit,
-                    layout:'fit',
                     items:  this.getEntityEditor(entity,'edit'),
                     listeners: {
                         scope: this,
                         afterrender : function(win){
                             //TODO get complete resource
                             win.editor.getForm().loadRecord(rec);
-                           
+
                         }
                     }
-                    
-                    
+
+
         });
         win.show();
         //TODO edit
-        
+
     },
     /**
-     * private method[createEntity] 
+     * private method[createEntity]
      * create a new entity-
      * ``Object`` entity the configuration of the Entity
      */
     createEntity: function(entity,grid) {
-        
+
         var win = new Ext.Window({
                     iconCls:'add',
                     title: entity.createTitle || this.createTitle,
                     height: entity.editHeight || 500,
-                    width: entity.editWidth || 300, 
+                    width: entity.editWidth || 300,
                     minWidth:250,
                     minHeight:200,
                     layout:'fit',
                     autoScroll:false,
-                    maximizable: true, 
+                    maximizable: true,
                     modal:true,
                     resizable:true,
                     draggable:true,
                     title:this.edit,
                     layout:'fit',
                     items:  this.getEntityEditor(entity,'create')
-                    
+
         });
-        
+
         win.show();
         //TODO edit
-        
+
     },
     /**
-     * private method[confirmDeleteEntity] 
+     * private method[confirmDeleteEntity]
      * show a window to confirm delete
      * Same parameters of the grid action column handler
      */
@@ -470,18 +469,18 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
             function(btn) {
                 if(btn=='yes') {
                     me.deleteEntity(rec,entity,me.onSuccess,me.onFailure);
-                    
+
                     //TODO LOAD MASK
                     //loadMask.show();
-                    
+
                 }
             });
-        
+
     },
     /**
      * private method[upsertEntity] CREATES OR UPDATE AN ENTITY (BASED ON THE entity api object or with default values).
      * ``ExtButton`` the button that run the event (contains useful references to the other GUI component.
-     *               button fires events ('success','failure') 
+     *               button fires events ('success','failure')
      */
     upsertEntity: function(button){
         var entity = button.entity;
@@ -492,12 +491,12 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
         if(entity.api && entity.api[mode] ){
           api = entity.api[mode] ;
           api["url"] = this.baseUrl + api["url"];
-          
+
         }
 
-       
+
         //var Record = Ext.data.Record.create(entity.fields);
-        
+
         data = this.getJsonFromForm(form,entity);
         Ext.Ajax.request({
 
@@ -512,7 +511,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
             extraParams: {
                 entity: entity,
                 mode: mode
-                
+
             },
             method: api.method,
             scope:  this,
@@ -527,7 +526,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
         });
     },
     /**
-     * private method[deleteEntity] 
+     * private method[deleteEntity]
      * delete an entity-
      * ``Object`` Record the record to delete
      * ``Object`` entity the configuration of the Entity
@@ -563,7 +562,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
             success: success,
             failure: error
         });
-    },    
+    },
     /**
      * fold the mapping and recreate the original object
      */
@@ -580,8 +579,8 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
             var mapping = field.mapping || field.name ||field;
             //inverse conversion (should be biettive transformation)
             res[mapping] = data[name];
-           
-            
+
+
         }
         return res;
     },
@@ -601,14 +600,14 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
             if(entity.idProperty == name){
                 res[mapping] = rec.id;
             }
-           
-            
+
+
         }
         return res;
     },
-    
+
     /**
-     * private method[dumpData] 
+     * private method[dumpData]
      * prompt dump
      */
     dumpData: function(entity){
@@ -617,12 +616,12 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                     iconCls:'inbox-download_ic',
                     title:me.dumpDataText,
                     width: 700,
-                    height: 600, 
+                    height: 600,
                     minWidth:250,
                     minHeight:200,
                     layout:'fit',
                     autoScroll:false,
-                    maximizable: true, 
+                    maximizable: true,
                     modal:true,
                     resizable:true,
                     draggable:true,
@@ -631,7 +630,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                         iconCls:'refresh_ic',
                         handler: function(btn){
                             win.refreshDump();
-                        } 
+                        }
                     }],
                     items: [{
                         xtype:'textarea',
@@ -645,7 +644,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                         scope: this,
                         afterrender : function(win){
                             win.refreshDump();
-                             
+
                         }
                     },
                     refreshDump: function(){
@@ -656,9 +655,9 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                           api = Ext.apply({},entity.api[mode]);
                           //api["url"] = this.replaceValues(api["url"],data,entity);
                           api["url"] = me.baseUrl + api["url"];
-                        }   
+                        }
                         var url =api.url;
-                        
+
                         Ext.Ajax.request({
                             method: api.method,
                             url: url,
@@ -668,7 +667,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                             },
                             scope: this,
                             success: function(response, form, action) {
-                                
+
                                 win.log.setValue(response.responseText);
                                 loadMask.hide();
                             },
@@ -682,7 +681,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
         win.show();
     },
      /**
-     * private method[restoreData] 
+     * private method[restoreData]
      * prompt dump
      */
     restoreData: function(entity){
@@ -691,16 +690,16 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                     iconCls:'inbox-upload_ic',
                     title:me.restoreDataText,
                     width: 700,
-                    height: 600, 
+                    height: 600,
                     minWidth:250,
                     minHeight:200,
                     layout:'fit',
                     autoScroll:false,
-                    maximizable: true, 
+                    maximizable: true,
                     modal:true,
                     resizable:true,
                     draggable:true,
-                    
+
                     items: [{
                         xtype:'textarea',
                         layout:'fit',
@@ -716,7 +715,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                         handler: function(btn){
                             var dump =  btn.refOwner.log.getValue();
                             win.restoreDump(dump);
-                        } 
+                        }
                     }],
                     restoreDump: function(dump){
                         var loadMask = new Ext.LoadMask(win.getEl(), {msg:me.loadingMessage});
@@ -726,9 +725,9 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                           api = Ext.apply({},entity.api[mode]);
                           //api["url"] = this.replaceValues(api["url"],data,entity);
                           api["url"] = me.baseUrl + api["url"];
-                        }   
+                        }
                         var url =api.url;
-                        
+
                         Ext.Ajax.request({
                             method: api.method,
                             headers: api.headers || {
@@ -762,7 +761,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
     /**
      * replace string with {VARNAME} notation with content from data object
      */
-    replaceValues : function(destination,data,entity){        
+    replaceValues : function(destination,data,entity){
         destination = destination.replace(/{(\w+)}/g, function() {
            var varName = arguments[1];
            return data[varName];
@@ -780,7 +779,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
             msg: response.statusText + "(status " + response.status + "):  " ,
             buttons: Ext.Msg.OK,
             icon: Ext.MessageBox.ERROR
-        });	
+        });
     },
     /**
      * private method[onSuccess]
@@ -788,7 +787,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
      */
     onSuccess : function(response,options){
         var msg = response.responseText;
-        var mode = options.extraParams.mode;        
+        var mode = options.extraParams.mode;
         var entity = options.extraParams.entity;
         //create and update have response text with Id
         if(mode == 'create' || mode == 'update'){
@@ -800,8 +799,8 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
             title: this.successText,
             msg: msg,
             buttons: Ext.Msg.OK,
-            icon: Ext.MessageBox.INFO  
-        });	
+            icon: Ext.MessageBox.INFO
+        });
         this.editorContainer.getComponent(entity.id).grid.store.reload();
     }
 });

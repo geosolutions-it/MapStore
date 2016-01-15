@@ -44,7 +44,7 @@ Ext.onReady(function() {
         width: 800,
         height: 350,
         items: [mapPanel, legendPanel]
-    });    
+    });
 });
 
 function showPrintWindow() {
@@ -64,7 +64,7 @@ function showPrintWindow() {
                 map: {controls: [
                     new OpenLayers.Control.Navigation({
                         zoomBoxEnabled: false,
-                        zoomWheelEnabled: false,
+                        zoomWheelEnabled: false
                     }),
                     new OpenLayers.Control.PanPanel()
                 ]}
@@ -74,7 +74,7 @@ function showPrintWindow() {
                 // restriction. For async requests, we would set method to "POST".
                 method: "GET",
                 //method: "POST",
-                
+
                 // capabilities from script tag in Printing.html.
                 capabilities: printCapabilities,
                 listeners: {

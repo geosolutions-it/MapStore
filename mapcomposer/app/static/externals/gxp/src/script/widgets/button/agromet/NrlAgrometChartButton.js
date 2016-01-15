@@ -43,13 +43,13 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
     windowManagerOptions:{title:"Agromet"},
     /**
      * private method[createOptionsFildset]
-     * ``String`` title the title of the fieldset 
+     * ``String`` title the title of the fieldset
      * ``Object`` opts the chartopts object to manage
      * ``String`` prefix the prefix to use in radio names
      */
-    
+
     menu : {
-        
+
         items:[{
             ref:'../chartoptions',
             iconCls:'ic_wrench',
@@ -74,20 +74,20 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                         var label = opt.name;
                         fieldSetList.push(nrl.chartbuilder.util.createOptionsFildset(label,opt,id));
                     }
-                    
-                    
+
+
                 }
-                
+
                 var win = new Ext.Window({
                     iconCls:'ic_wrench',
                     title:   mainButton.optionsTitle,
                     height: 400,
-                    width:  350, 
+                    width:  350,
                     minWidth:250,
                     minHeight:200,
                     layout:'fit',
                     autoScroll:true,
-                    maximizable: true, 
+                    maximizable: true,
                     modal:true,
                     resizable:true,
                     draggable:true,
@@ -100,8 +100,8 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                         layout:'form',
                         items: fieldSetList
                     }
-                    
-                    
+
+
                 });
                 win.show();
             }
@@ -111,7 +111,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 		series:{
 			current:{
 					color: '#FF0000',
-                    lcolor: 'rgb(207,235,148)',                    
+                    lcolor: 'rgb(207,235,148)',
 					type: 'line',
 					dataIndex: 'current',
 					unit:'(000 tons)',
@@ -129,8 +129,8 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 				},
 			aggregated:{
 					color: '#808080',
-                    lcolor: 'rgb(240,140,137)', 
-                    dashStyle: 'dash',                    
+                    lcolor: 'rgb(240,140,137)',
+                    dashStyle: 'dash',
 					type: 'line',
 					dataIndex: 'aggregated',
 					unit:'(000 ha)',
@@ -139,26 +139,26 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 		},
         height: 400
 	},
-	
+
     handler: function () {
         var today = new Date();
         var dd = today.getDate();
         var mm = today.getMonth()+1; //January is 0!
         var yyyy = today.getFullYear();
-        if(dd<10){dd='0'+dd} 
-        if(mm<10){mm='0'+mm} 
-        var today = mm+'/'+dd+'/'+yyyy;    
-        
+        if(dd<10){dd='0'+dd}
+        if(mm<10){mm='0'+mm}
+        var today = mm+'/'+dd+'/'+yyyy;
+
         var numRegion = [];
         var regStore = this.form.output.aoiFieldSet.AreaSelector.store
         var records = regStore.getRange();
-		
+
         for (var i=0;i<records.length;i++){
 			var attrs = records[i].get("attributes");
 			var region = attrs.district ? attrs.district + "," + attrs.province : attrs.province;
             numRegion.push(region.toLowerCase());
         }
-        
+
         var data = this.form.output.getForm().getValues();
         var regionList = data.region_list.toLowerCase();
         var season = data.season.toLowerCase();
@@ -186,7 +186,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                 if( i == factorStore.length - 1){
                     factorList += "'" + factorValue + "'";
                 }else{
-                    factorList += "'" + factorValue.concat("'\\,");                    
+                    factorList += "'" + factorValue.concat("'\\,");
                 }
             }
         }
@@ -208,18 +208,18 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                         chartTitle += numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1);
                     }else{
                         chartTitle += numRegion[i].slice(0,1).toUpperCase() + numRegion[i].slice(1) + ", ";
-                    }                
+                    }
                 }else{
                     splitRegion = numRegion[i].split(',');
                     if(i==numRegion.length-1){
                         chartTitle += splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + ")";
                     }else{
                         chartTitle += splitRegion[0].slice(0,1).toUpperCase() + splitRegion[0].slice(1) + " (" + splitRegion[1].toUpperCase() + "), ";
-                    }                       
-                }            
+                    }
+                }
             }
-        //} 
-        
+        //}
+
         var listVar = {
             today: today,
             chartTitle: chartTitle,
@@ -237,18 +237,18 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
             compositevalues: compositevalues,
             anomaliesoutput: data.anomaliesoutput
         };
-        
+
         //loading mask
         var loadingMsg ="Please wait...";
         /* not needed anymore
         if( (granType == "province" || numRegion.length >20 ) && factorValues.lenth >1){
-            loadingMsg += "<br/>This request could take a long time to be served";        
+            loadingMsg += "<br/>This request could take a long time to be served";
         }
         */
         var myMask = new Ext.LoadMask(this.findParentByType('form').getEl(),
         {msg:loadingMsg} );
-        
-        myMask.show();		
+
+        myMask.show();
 		var makeDataStore = function(jsonData){
 			return new Ext.data.JsonStore({
 				data: jsonData,
@@ -318,6 +318,11 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 			},
 			success: function(reply, opt){
 				var jsonData1 = Ext.util.JSON.decode(reply.responseText);
+				if (jsonData1.features.length <=0){
+                    Ext.Msg.alert("No data","Data not available for these search criteria");
+					myMask.hide();
+                    return;
+                }
 				// second request if needed...
 				if (data.mode == 'composite' && data.compositevalues == 'anomalies'){
 					this.jsonData1 = jsonData1;
@@ -386,7 +391,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 			}
 		});
     },
-	
+
 	createResultPanel:function(store, listVar, allPakistanRegions){
         customOpt = {
             highChartExportUrl : this.highChartExportUrl
@@ -396,10 +401,10 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
         if(mode == "composite"){
             opt = this.optionsCompareComposite
         }else{
-        
+
         }
 		var charts  = nrl.chartbuilder.agromet[mode].makeChart(store, opt, listVar, allPakistanRegions,customOpt);
-		
+
         var wins = gxp.WindowManagerPanel.Util.createChartWindows(charts,listVar);
         gxp.WindowManagerPanel.Util.showInWindowManager(wins,this.tabPanel,this.targetTab,this.windowManagerOptions);
 	}

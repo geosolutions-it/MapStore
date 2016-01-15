@@ -200,6 +200,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                         fieldSetList.push(mainButton.createOptionsFildset(source,optionsCompare.series[source],source));
                     }
                     //fieldSetList.push(mainButton.createStackChartsOptions(stackedCharts, data.compare_variable));
+                    stackedCharts.series.stacking = null; // <-- avoid stacking for yield if previously selected for other variables.
                 }
                 var win = new Ext.Window({
                     iconCls:'ic_wrench',
@@ -214,7 +215,6 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                     modal:true,
                     resizable:true,
                     draggable:true,
-                    layout:'fit',
                     items:  {
                         ref:'form',
                         xtype:'form',
@@ -541,6 +541,8 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                     }
 					var charts  = nrl.chartbuilder.crop.compareCommodity.makeChart(data, this.optionsCompareCommodities, listVar, aggregatedDataOnly, customOpt);
                 }else if (this.mode === 'compareSources'){
+                    var regionList = this.refOwner.aoiFieldSet.selectedRegions.value.replace(/['\\]/g,'').split(',');
+                    this.optionsCompareSources.regionList = regionList;
                     var data = nrl.chartbuilder.crop.compareSources.getData(jsonData, variable, this.refOwner.aoiFieldSet.AreaSelector.store, customOpt);
                     var charts = nrl.chartbuilder.crop.compareSources.makeChart(data, this.optionsCompareSources, customOpt);
                 }

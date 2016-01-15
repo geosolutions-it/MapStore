@@ -43,6 +43,7 @@ gxp.widgets.button.NrlIrrigationTabButton = Ext.extend(Ext.Button, {
     text: 'Generate Table',
     queryOptions: {},
     handler: function () {
+        var tOpt = (this.refOwner.timerange.getValue().inputValue == 'annual' ? 'monthly' : '10-day');
         var getViewParams = {
             getTimeOptions: function(form){
                 // gets the options used in the query for grouping data
@@ -154,11 +155,11 @@ gxp.widgets.button.NrlIrrigationTabButton = Ext.extend(Ext.Button, {
                 return 'nrl:irrigation_data_supply';
         };
 
-        var getPropertyName = function(sourceType) {
+        var getPropertyName = function(sourceType, timeOpt) {
             if (sourceType == 'flow') {
-                return 'river,abs_dec,waterflow';
+                return 'river,abs_dec,waterflow,year,month' + (timeOpt == 'monthly' ? '' : ',decade');
             } else {
-                return 'province,district,abs_dec,withdrawal';
+                return 'province,district,abs_dec,withdrawal,year,month' + (timeOpt == 'monthly' ? '' : ',decade');
             }
         };
 
@@ -166,7 +167,7 @@ gxp.widgets.button.NrlIrrigationTabButton = Ext.extend(Ext.Button, {
 
         var viewparams = getViewParams[sourceType](this.refOwner);
         var typeName = getTypeName(sourceType);
-        var propertyName = getPropertyName(sourceType);
+        var propertyName = getPropertyName(sourceType, tOpt);
 
         var storeConf = {
             flow: {
@@ -202,6 +203,7 @@ gxp.widgets.button.NrlIrrigationTabButton = Ext.extend(Ext.Button, {
                 // sets the property name for the csv exporting query
                 store.exportParams = req.params;
                 store.exportParams.propertyName = pNameList.join(',');
+                store.exportParams.propertyName = store.exportParams.propertyName.replace('abs_dec', 'year');
 
                 var sortRules;
                 if(this.queryOptions.source_type == 'flow'){
