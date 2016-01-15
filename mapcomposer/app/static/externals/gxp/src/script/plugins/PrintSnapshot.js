@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2008-2011 The Open Planning Project
- * 
+ *
  * Published under the BSD license.
  * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
  * of the license.
@@ -26,21 +26,21 @@ Ext.namespace("gxp.plugins");
  *    Provides an action to print a snapshot of the map.
  */
 gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
-    
+
     /** api: ptype = gxp_printsnapshot */
     ptype: "gxp_printsnapshot",
 
 	/** private: property[iconCls]
      */
     iconCls: "gxp-icon-printsnapshot",
-    
+
 	/** api: config[customParams]
      *  ``Object`` Key-value pairs of custom data to be sent to the print
      *  service. Optional. This is e.g. useful for complex layout definitions
      *  on the server side that require additional parameters.
      */
     customParams: null,
-    
+
     /** api: config[fileName]
      *  ``String``
      *  The name of the file to download
@@ -57,84 +57,112 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
      *  Text for print action tooltip (i18n).
      */
     tooltip: "Snapshot",
-	
+
 	/** api: config[service]
      *  ``String``
      *  The ServiceBox URL.
      */
 	service: null,
-	
+
     /** api: config[noSupportedLayersErrorMsg]
      *  ``String`` (i18n).
      */
 	noSupportedLayersErrorMsg: "The following layers can not be printed because of terms of usage:",
-    
+
     /** api: config[suggestionLayersMsg]
      *  ``String`` (i18n).
      */
     suggestionLayersMsg:"try to use OpenStreetMap or MapQuest Layers instead",
-	
+
 	/** api: config[generatingErrorMsg]
      *  ``String`` (i18n).
      */
 	generatingErrorMsg: "Error occurred while generating the Map Snapshot",
-	
+
 	/** api: config[printStapshotTitle]
      *  ``String`` (i18n).
      */
 	printStapshotTitle: "Print Snapshot",
-	
+
 	/** api: config[serverErrorMsg]
      *  ``String`` (i18n).
      */
 	serverErrorMsg: "Error occurred while generating the Map Snapshot: Server Error",
-	
+
 	/**
 	 * notSupportedTooltip
      * ``String`` (i18n).
 	 */
 	notSupportedTooltip: "This tool is not supported by your browser",
-    
+
     /**
 	 * textLoadingTooltip
      * ``String`` (i18n).
 	 */
 	textLoadingTooltip: "Generating the Snapshot, Please wait...",
-    
-    /** 
+
+    /**
      * private: method[constructor]
      */
     constructor: function(config) {
         gxp.plugins.PrintSnapshot.superclass.constructor.apply(this, arguments);
     },
-    
+
     /**
      * api config[addAttribution]
      * use CORS headers.
-     * Does a fist request that try to download the images without using proxy. 
+     * Does a fist request that try to download the images without using proxy.
      * if fails, do a second request using the proxy
      */
     useCORS: true,
-    
+
     /**
      * Add the attribution html to the generated picture
      */
     addAttribution: true,
-    
+
     /**
      * api config[drawVectorLayers]
      * draw all vector layers.
      */
     drawVectorLayers:true,
-    
-    /** 
+
+    disabledIn: [],
+
+    enableByBrowserList: function() {
+        if (Ext.isFirefox == undefined) {
+            Ext.isFirefox = typeof InstallTrigger !== 'undefined';
+        }
+
+        var browserList = [];
+
+        for (var i=0; i<this.disabledIn.length; i++) {
+            browserList.push(this.disabledIn[i].toUpperCase());
+        }
+
+        var enable = true
+
+        if (false || !!document.documentMode) { // At least IE6
+            enable = browserList.indexOf('INTERNETEXPLORER') == -1;
+        }
+        if (Ext.isChrome) {
+            enable = browserList.indexOf('CHROME') == -1;
+        }
+        if (Ext.isFirefox) {
+            enable = browserList.indexOf('FIREFOX') == -1;
+        }
+
+        return enable;
+    },
+
+    /**
      * api: method[addActions]
      */
     addActions: function() {
 		var me = this;
 		var canvas = document.getElementById("printcanvas");
-		//disable tool if not supported 
-		var disabled = !(canvas && canvas.getContext);
+		//disable tool if not supported
+		var disabled = !(this.enableByBrowserList() && (canvas && canvas.getContext));
     	var actions = gxp.plugins.Print.superclass.addActions.call(this, [{
                 menuText: this.menuText,
                 tooltip: disabled ? this.notSupportedTooltip : this.tooltip,
@@ -161,7 +189,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                     var me = this;
                     html2canvas( app.mapPanel.map.div,{
                             proxy: proxy,
-                           // allowTaint:true,  
+                           // allowTaint:true,
                             //CORS errors not managed with ie11, so disable
                             useCORS: me.useCORS && !Ext.isIE11,
                             //logging:true,
@@ -171,8 +199,8 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                                     if(me.drawVectorLayers && suppLayers.vectorialLayers && suppLayers.vectorialLayers.length>0){
                                         me.drawVector(c,suppLayers.vectorialLayers);
                                     }
-                                    
-                                    
+
+
                                      var canvasData = c.toDataURL("image/png;base64");
                                      if(Ext.isIE || Ext.isIE11){
                                         me.uploadCanvas(canvasData);
@@ -180,7 +208,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                                         me.localDownload(canvasData);
                                     }
                                 }
-                                
+
                                  //debug
                                  //window.open(c.toDataURL("image/png;base64"));
 
@@ -198,7 +226,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                                             }
                                     });
                                 }else{
-                                   
+
                                    finish(c);
                                 }
 
@@ -207,7 +235,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                     return;
                     //this.oldHandler(btn);
                 	},
-                
+
                 listeners: {
                     render: function() {
                         // wait to load until render so we can enable on success
@@ -217,7 +245,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
         this.button = actions[0].items[0];
 		return actions;
     },
-    
+
     /**
      * private method[startLoading]
      * Show loading message (as tooltip) and disable the button.
@@ -225,9 +253,9 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
     startLoading : function(){
         this.button.setTooltip(this.textLoadingTooltip);
         this.button.setDisabled(true);
-        
+
     },
-    
+
     /**
      * private method[stopLoading]
      * Remove loading message (as tooltip) and enable the button.
@@ -235,9 +263,9 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
     stopLoading : function(){
          this.button.setTooltip(this.tooltip);
         this.button.setDisabled(false);
-       
+
     },
-    
+
     /**
      * private method[getSupportedLayers]
      * Check if layers are supported. return an object with supported,notSupported and vectorialLayers.
@@ -278,22 +306,22 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
             return (
                 layer instanceof OpenLayers.Layer.WMS ||
                 layer instanceof OpenLayers.Layer.OSM ||
-                layer.name == 'None'                  ||  
+                layer.name == 'None'                  ||
                 layer instanceof OpenLayers.Layer.Vector
             );
         }
         return getSupportedLayers();
     },
-    
+
      /**
      * private method[notSupportedMessage]
      * Show the message about the not supported layers.
      */
     notSupportedMessage: function(layers){
-        var messageTrail=""; 
+        var messageTrail="";
         for(var i = 0; i< layers.notSupported.length ; i++){
             messageTrail+=layers.notSupported[i] +",";
-         } 
+         }
          Ext.Msg.show({
              title: this.printStapshotTitle,
              msg: this.noSupportedLayersErrorMsg + ":<br/>" +messageTrail +"<br/>"+ this.suggestionLayersMsg ,
@@ -337,10 +365,10 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
         // Print final image
         canvas.getContext('2d').drawImage(canvas2, 0,0);
     },
-    
+
     /**
      * private method[localDownload]
-     * Use a link and emulate click to download the data:image in the canvasData argument. 
+     * Use a link and emulate click to download the data:image in the canvasData argument.
      * Works for Chrome and Firefox
      */
     localDownload: function(canvasData){
@@ -355,9 +383,9 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
         downloadLink.click();
         document.body.removeChild(downloadLink);
         this.stopLoading();
-    
+
     },
-    
+
     /** api: method[uploadCanvas]
      * upload base64 ecoded canvas data to servicebox and finalize with download response.
      * A service that forces download is needed for Internet Explorer (now IE11 download attribute in link is not supported)
@@ -382,7 +410,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                         var fname = this.fileName;
 
                         var mUrl = this.service + "UploadCanvas";
-                            mUrl = mHost[2] == location.host ? mUrl + "?ID=" + response.responseText + 
+                            mUrl = mHost[2] == location.host ? mUrl + "?ID=" + response.responseText +
                                 "&fn=" + fname : proxy + encodeURIComponent(mUrl + "?ID=" + response.responseText + "&fn=" + fname);
 
                         this.target.safeLeaving =true;
@@ -404,7 +432,7 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
                          width: 300,
                          icon: Ext.MessageBox.ERROR
                     });
-                }	
+                }
                 this.stopLoading();
             },
             failure:  function(response, opts){
@@ -418,18 +446,18 @@ gxp.plugins.PrintSnapshot = Ext.extend(gxp.plugins.Tool, {
             }
         });
     },
-    
+
     /**
      * private method[copy2Win]
-     * debug utility fuction to check the image without a remote service. 
-     * 
+     * debug utility fuction to check the image without a remote service.
+     *
      */
     copy2Win : function (c){
         destWin = window.open("","destWin");
         var destWinDoc = destWin.document;
         var destWinHTML = "<!DOCTYPE html><html><head><title>POPUP</title><body><div id='destWin' style='width:640px; height:480px; border:1px solid red'><img src='" +
             c.toDataURL("image/png") + "' alt='Copy!' /></div></body></html>";
-        destWinDoc.write(destWinHTML);    
+        destWinDoc.write(destWinHTML);
         destWinDoc.appendChild(c);
     }
 });

@@ -17,61 +17,61 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 Ext.ns("mxp.widgets");
 
 /**
  * Generic GeoBatch Form to manage GeoBatch process lauches.
- * 
+ *
  * Author: Tobia Di Pisa at tobia.dipisa@geo-solutions.it
  */
 mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 
     iconCls: 'update_manager_ic',
-	
+
     /** api: xtype[geobatch_run_form]
      */
     xtype: 'geobatch_run_form',
-	
+
     /** api: config[fileBrowserUrl]
      * ``string`` the url for the file browser
      */
     fileBrowserUrl: "mvc/fileManager/extJSbrowser",
-	
+
      /** api: config[flowId]
      * ``string`` the id of the flow to run
      */
     flowId: null,
-	
+
     /**
      * Regex to enable the Run Button
      * the regex work on the relative path of the file
      * as fileId is.
      */
     fileRegex: ".*",
-	
+
     /** api: config[fileId]
      * ``string`` the id of the file to run.
-     * 
+     *
      * e.g. /csv/myFile.csv
      */
     fileId: null,
-	
+
     /** api: config[baseDir]
      * ``string`` baseDir to concatenate to the dir from the file browser
-     * 
-     * e.g. 
-     * baseDir: "/var/data" 
+     *
+     * e.g.
+     * baseDir: "/var/data"
      * fileId from Server "/csv/myFile.csv"
      * forwarded file path: "/var/data/csv/myFile.csv"
      */
     baseDir: '',
-    
+
     events: [
         /** public event[success]
          * Fired when the flow starts successful
          *
-         * arguments: 
+         * arguments:
          * ``string`` the id of the consumer
          */
         'success',
@@ -83,43 +83,43 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
          */
         'fail'
 	],
-	
+
     layout: 'card',
-	
+
 	activeItem: 0,
-	
+
 	bodyStyle: "padding: 5px;",
-	
+
     autoScroll: false,
-	
+
     // i18n
     runButtonText: "Run",
-	
+
     uploadButtonText: "Upload",
-	
+
 	selectButtonText: "Select",
-	
+
 	cancelButtonText: "Cancel",
-	
+
     successText: "Success",
-	
+
     errorText:"Error",
-	
+
     runSuccessText: "The workflow has been started successfully<br/>",
     //end of i18n
-    
+
     initComponent: function() {
-		var decadConfig = {};		
+		var decadConfig = {};
 		if(this.decadConfig){
 			if(this.decadConfig.dataUrl){
-				decadConfig.dataUrl = this.decadConfig.dataUrl;				
+				decadConfig.dataUrl = this.decadConfig.dataUrl;
 			}
-			
+
 		    if(this.decadConfig.dataUrl){
-				decadConfig.layer = this.decadConfig.layer;				
+				decadConfig.layer = this.decadConfig.layer;
 			}
 		}
-	
+
 		this.items = [{
 			xtype: "panel",
 			layout: "form",
@@ -137,13 +137,13 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 						hideLabel: true,
 						ref: "../../region",
 						items:[{
-							boxLabel: "Distric Boundary", 
-							name: 'region', 
+							boxLabel: "Distric Boundary",
+							name: 'region',
 							inputValue: "DISTRICT",
 							checked: true
 						},{
-							boxLabel: "Province Boundary", 
-							name: 'region', 
+							boxLabel: "Province Boundary",
+							name: 'region',
 							inputValue: "PROVINCE"
 						}],
 						listeners:{
@@ -162,17 +162,17 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 						hideLabel: true,
 						ref: "../../mask",
 						items:[{
-							boxLabel: "Crop Mask", 
-							name: 'mask', 
-							inputValue: "STANDARD",							
+							boxLabel: "Crop Mask",
+							name: 'mask',
+							inputValue: "STANDARD",
 							checked: true
 						}, {
-							boxLabel: "Disabled", 
-							name: 'mask', 
+							boxLabel: "Disabled",
+							name: 'mask',
 							inputValue: "DISABLED"
 						}, {
-							boxLabel: "Custom", 
-							name: 'mask', 
+							boxLabel: "Custom",
+							name: 'mask',
 							inputValue: "CUSTOM"
 						}],
 						listeners:{
@@ -211,7 +211,7 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
             ref: 'fileBrowser',
             closable: true,
             closeAction: 'close',
-            autoWidth: true, 
+            autoWidth: true,
             header: false,
             viewConfig: {
                 forceFit: true
@@ -227,7 +227,7 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
             listeners: {
                 scope:this,
                 afterrender: function(fb){
-                    //auto select if fileId 
+                    //auto select if fileId
                     var sm = fb.fileTreePanel.getSelectionModel();
                     if(fb.refOwner.fileId){
                         var node = fb.fileTreePanel.getNodeById(fb.refOwner.fileId);
@@ -235,23 +235,23 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
                             sm.select(node);
                         }
                     }
-					
-                    var selectBtn = fb.refOwner.select; 
-					
-                    //enable or disable button                    
-                    sm.on('selectionchange', function(smod, node){                        
+
+                    var selectBtn = fb.refOwner.select;
+
+                    //enable or disable button
+                    sm.on('selectionchange', function(smod, node){
 						var patt = new RegExp(this.fileRegex);
 						var res = patt.test(node.id);
 						if(res){
 							selectBtn.setDisabled(false);
 						}else{
 							selectBtn.setDisabled(true);
-						}                    
+						}
 					}, this);
                 }
             }
         }];
-	
+
         this.buttons = [{
             text: this.uploadButtonText,
             ref: '../upload',
@@ -263,9 +263,10 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 					autoScroll:true,
 					layout: 'fit',
 					url: filebrowser.url.substring(0, filebrowser.url.lastIndexOf('/')) + '/upload',
+                    mediaContent: this.mediaContent,
 					multipart: true,
 					listeners:{
-						beforestart:function() {  
+						beforestart:function() {
 							var multipart_params =  pluploadPanel.multipart_params || {};
 							Ext.apply(multipart_params, {
 								folder: this.path
@@ -276,7 +277,7 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 							this.fileBrowser.fileTreePanel.root.reload()
 						},
 						uploadcomplete:function() {
-							
+
 						},
 						scope: this
 					}
@@ -289,7 +290,7 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 					resizable: true,
 					items: [pluploadPanel]
 				});
-				
+
 				win.show();
             },
 			scope: this
@@ -310,9 +311,9 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 						msg: "Some form fields are invalid!",
 						buttons: Ext.Msg.OK,
 						icon: Ext.MessageBox.ERROR
-					});	
+					});
 				}
-            } 
+            }
         }, {
             ref: '../select',
             tooltip: this.selectButtonText,
@@ -323,13 +324,13 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
             handler: function(btn){
                 var filebrowser = btn.refOwner.fileBrowser;
                 var node = filebrowser.fileTreePanel.selModel.getSelectedNode();
-				
+
 				if(node && node.id){
 					this.enableFileBrowser(false);
 					this.selectedFile.setValue(node.id);
 					this.selectedFile.enable();
-				}				
-            } 
+				}
+            }
         }, {
             ref: '../cancel',
             tooltip: this.cancelButtonText,
@@ -344,33 +345,33 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 				}else{
 					this.selectedFile.enable();
 				}
-            } 
+            }
         }];
-		
-        mxp.widgets.GeoBatchRunForm.superclass.initComponent.call(this, arguments);       
+
+        mxp.widgets.GeoBatchRunForm.superclass.initComponent.call(this, arguments);
     },
-	
+
     /**
      * private method[validateForm]
      */
 	validateForm: function(){
 		return this.decadFieldSet.isValid();
 	},
-	
+
 	/**
      * private method[enableFileBrowser]
      */
-	enableFileBrowser: function(enable){	
+	enableFileBrowser: function(enable){
 		if(enable === true){
 			this.layout.setActiveItem(1);
-			
+
 			this.buttons[0].show();
 			this.buttons[1].hide();
 			this.buttons[2].show();
 			this.buttons[3].show();
 		}else{
 			this.layout.setActiveItem(0);
-			
+
 			this.buttons[0].hide();
 			this.buttons[1].show();
 			this.buttons[2].hide();
@@ -378,37 +379,37 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 		}
 
 	},
-    
+
     /**
      * public method[isForm]
      */
 	isForm: function() {
 		return true;
 	},
-	
+
 	/**
      * private method[runLocal]
      */
     runLocal: function(flowId, node){
-	
+
 		var fileName = this.decadFieldSet.getFileName();
-		
-		var xmlData = 
+
+		var xmlData =
 			"<StatsBean>" +
 				"<classifier>" + this.region.getValue().inputValue + "</classifier>" +
 				"<forestMask>" + this.mask.getValue().inputValue + "</forestMask>" +
 				"<ndviFileName>" + fileName + "</ndviFileName>" +
 				"<forestMaskFullPath>"  + "file://" + this.baseDir + this.selectedFile.getValue() + "</forestMaskFullPath>" +
 			"</StatsBean>";
-		
+
         Ext.Ajax.request({
-	       url: this.geoBatchRestURL + 'flows/' + flowId +'/run', 
+	       url: this.geoBatchRestURL + 'flows/' + flowId +'/run',
 	       method: 'POST',
 	       headers:{
 	          'Content-Type': 'application/xml',
 	          'Accept': this.acceptTypes_,
 			  // TODO:
-	          'Authorization': this.authorization_ 
+	          'Authorization': this.authorization_
 	       },
            xmlData: xmlData,
 	       scope: this,
@@ -422,7 +423,7 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
 	       }
 	    });
     },
-	
+
     /**
      * private method[onFailure]
      * manage the negative response of Run call
@@ -433,9 +434,9 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
             msg: response.statusText + "(status " + response.status + "):  " + response.responseText,
             buttons: Ext.Msg.OK,
             icon: Ext.MessageBox.ERROR
-        });	
+        });
     },
-	
+
     /**
      * private method[onSuccess]
      * manage positive response of Run call (ID of the consumer)
@@ -445,9 +446,9 @@ mxp.widgets.GeoBatchRunForm = Ext.extend(Ext.Panel, {
             title: this.successText,
             msg: this.runSuccessText,
             buttons: Ext.Msg.OK,
-            icon: Ext.MessageBox.INFO  
-        });	
-    }    
+            icon: Ext.MessageBox.INFO
+        });
+    }
 });
 
 Ext.reg(mxp.widgets.GeoBatchRunForm.prototype.xtype, mxp.widgets.GeoBatchRunForm);

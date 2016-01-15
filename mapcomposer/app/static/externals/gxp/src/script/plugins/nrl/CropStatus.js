@@ -91,7 +91,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                 }
             ],
             displayField:"district",
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>({province})</div></tpl>"
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{district}</span></h3>({province})</div></tpl>"
         },
         PROVINCE:{
             fieldLabel: 'Province',
@@ -122,7 +122,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                 "province"
             ],
             displayField:"fname",
-            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{name}</span></h3>(Province)</div></tpl>"
+            tpl:"<tpl for=\".\"><div class=\"search-item\"><h3>{fname}</span></h3>(Province)</div></tpl>"
 
         }
 
@@ -203,11 +203,11 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                                         this.output.syncSize();
                                     }
 
-                                    if(this.output.submitButton.xtype == 'gxp_nrlCropStatusChartButton'){
-                                        this.output.optBtn.setDisabled(this.output.submitButton.disabled);
-                                    }else{
-                                        this.output.optBtn.disable();
-                                    }
+                                    // if(this.output.submitButton.xtype == 'gxp_nrlCropStatusChartButton'){
+                                    //     this.output.optBtn.setDisabled(this.output.submitButton.disabled);
+                                    // }else{
+                                    //     this.output.optBtn.disable();
+                                    // }
                                 },
                                 scope: this
                             }
@@ -344,7 +344,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                     }
                 })
             ],
-            buttons:['->', {
+            buttons:['->',/* {
                 iconCls:'ic_wrench',
                 ref: '../optBtn',
                 disabled: true,
@@ -353,7 +353,7 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                         this.refOwner.submitButton.chartoptions.fireEvent('click');
                     }
                 }
-            }, {
+            },*/ {
                 xtype: 'gxp_nrlCropStatusChartButton',
 				ref: '../submitButton',
                 highChartExportUrl: this.highChartExportUrl,
@@ -382,11 +382,11 @@ gxp.plugins.nrl.CropStatus = Ext.extend(gxp.plugins.Tool, {
                 this.output.submitButton.setDisabled(store.getCount()<=0)
             }
 
-            if(this.output.submitButton.xtype == 'gxp_nrlCropStatusChartButton'){
-                this.output.optBtn.setDisabled(this.output.submitButton.disabled);
-            }else{
-                this.output.optBtn.disable();
-            }
+            // if(this.output.submitButton.xtype == 'gxp_nrlCropStatusChartButton'){
+            //     this.output.optBtn.setDisabled(this.output.submitButton.disabled);
+            // }else{
+            //     this.output.optBtn.disable();
+            // }
 		},this);
 
 		//hide selection layer on tab change

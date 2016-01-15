@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2008-2011 The Open Planning Project
- * 
+ *
  * Published under the GPL license.
  * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
  * of the license.
@@ -15,9 +15,9 @@ Ext.ns('gxp.data', 'gxp.plugins');
 gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
     noLayerInProjectionError: "No layer in the current map projection is available on this server",
     warningTitle: "Warning",
-    
+
     preferredEncoding: "KVP",
-    
+
     constructor: function(meta, recordType) {
         meta = meta || {};
         if (!meta.format) {
@@ -35,7 +35,7 @@ gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
                     {name: "tileMapUrl", type: "string"},
                     {name: "properties", type: "string"},
                     {name: "formats", type: "auto"},
-                    {name: "styles", type: "auto"},
+                    {name: "styles", type: "auto"}
                 ]);
         }
         gxp.data.WMTSCapabilitiesReader.superclass.constructor.call(
@@ -88,11 +88,11 @@ gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
                     }
                 }
         }
-        
+
         return encodingStyles;
     },
     supportsEncoding: function(getUrl, encoding) {
-        return getUrl.constraints && getUrl.constraints.GetEncoding && getUrl.constraints.GetEncoding.allowedValues 
+        return getUrl.constraints && getUrl.constraints.GetEncoding && getUrl.constraints.GetEncoding.allowedValues
                         && getUrl.constraints.GetEncoding.allowedValues[encoding] === true
     },
     normalizeTemplate: function(template) {
@@ -164,7 +164,7 @@ gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
                                                         OpenLayers.METERS_PER_INCH /
                                                         OpenLayers.INCHES_PER_UNIT[units]);
                                             }
-                                            
+
                                             var config = {
                                                     name: layer.title,
                                                     layer: layer.identifier,
@@ -174,7 +174,7 @@ gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
                                                     matrixSet: layer.tileMatrixSetLinks[j].tileMatrixSet,
                                                     matrixIds: matrixIds,
                                                     maxExtent: this.getMaxExtent(
-                                                        layer.bounds || new OpenLayers.Bounds(-180,-90,180,90), 
+                                                        layer.bounds || new OpenLayers.Bounds(-180,-90,180,90),
                                                         this.meta.mapProjection
                                                     ),
                                                     resolutions: resolutions,
@@ -192,7 +192,7 @@ gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
                                                 layer.resourceUrl.tile.template) {
                                                 config.url = this.normalizeTemplate(layer.resourceUrl.tile.template);
                                             }
-                                            
+
                                             records.push(new this.recordType({
                                                 layer: new OpenLayers.Layer.WMTS(config),
                                                 title: layer.title,
@@ -207,7 +207,7 @@ gxp.data.WMTSCapabilitiesReader = Ext.extend(Ext.data.DataReader, {
                                         } else {
                                         wrongProjCount++;
                                     }
-                                } 
+                                }
                         }
                     }
                 }
@@ -325,8 +325,8 @@ gxp.plugins.WMTSSource = Ext.extend(gxp.plugins.LayerSource, {
                 method: "GET"
             }),
             reader: new gxp.data.WMTSCapabilitiesReader({
-                baseUrl: this.url, 
-                version: this.version, 
+                baseUrl: this.url,
+                version: this.version,
                 mapProjection: this.getMapProjection(),
                 preferredEncoding: this.preferredEncoding || undefined
             })
@@ -344,13 +344,13 @@ gxp.plugins.WMTSSource = Ext.extend(gxp.plugins.LayerSource, {
         if (index > -1) {
             var record = this.store.getAt(index);
             var layer = record.getLayer();
-            if (layer.matrixSet !== null) {			
+            if (layer.matrixSet !== null) {
 				// data for the new record
 				var data = Ext.applyIf({
 					group: config.group,
 					source: config.source
 				}, record.data);
-				
+
 				// add additional fields
 				var fields = [
 					{name: "group", type: "string"},
@@ -363,7 +363,7 @@ gxp.plugins.WMTSSource = Ext.extend(gxp.plugins.LayerSource, {
 
 				var Record = GeoExt.data.LayerRecord.create(fields);
 				var r = new Record(data, layer.id);
-			
+
                 return r;
             }
         }

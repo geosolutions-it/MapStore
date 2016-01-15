@@ -339,7 +339,8 @@
             "actionTarget": {
                 "target": "paneltbar",
                 "index": 3
-            }
+            },
+            "disabledIn": ["internetExplorer", "Firefox"]
         },
         {
             "ptype": "gxp_print",
@@ -410,7 +411,7 @@
             },
             "outputTarget": "nrl",
             "portalRef": "gxp_portal_staticpage",
-            "helpPath": "/test/help/cropdata/path"
+            "helpPath": "/~test/croportal/hlp_cropdata_en.asp"
         },
         {
             "ptype": "nrl_agromet",
@@ -434,7 +435,7 @@
                 "province": "nrl:province_view"
             },
             "portalRef": "gxp_portal_staticpage",
-            "helpPath": "/test/help/agromet/path"
+            "helpPath": "/~test/croportal/hlp_agromet_en.asp"
         },
         {
             "ptype": "nrl_fertilizers",
@@ -455,11 +456,11 @@
             },
             "outputTarget": "nrl",
             "layers": {
-                "district": "nrl:district_select",
+                "district": "nrl:district_crop",
                 "province": "nrl:province_view"
             },
             "portalRef": "gxp_portal_staticpage",
-            "helpPath": "/test/help/fertilizer/path"
+            "helpPath": "/~test/croportal/hlp_fertilizer_en.asp"
         },{
             "ptype": "nrl_irrigation",
             "layerStyle": {
@@ -482,11 +483,11 @@
             "outputTarget": "nrl",
             "layers": {
                 "province": "nrl:province_view",
-                "district": "nrl:district_select"
+                "district": "nrl:district_crop"
             },
             "areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')",
             "portalRef": "gxp_portal_staticpage",
-            "helpPath": "/test/help/irrigation/path"
+            "helpPath": "/~test/croportal/hlp_water_en.asp"
         },
         {
             "ptype": "nrl_market_prices",
@@ -519,11 +520,11 @@
             "outputTarget": "nrl",
             "layers": {
                 "province": "nrl:province_view",
-                "district": "nrl:district_select"
+                "district": "nrl:district_crop"
             },
             "areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')",
             "portalRef": "gxp_portal_staticpage",
-            "helpPath": "/test/help/market_prices/path"
+            "helpPath": "/~test/croportal/hlp_market_en.asp"
         },
         {
             "ptype": "nrl_crop_status",
@@ -542,7 +543,7 @@
             },
             "outputTarget": "nrl",
             "portalRef": "gxp_portal_staticpage",
-            "helpPath": "/test/help/crop_status/path"
+            "helpPath": "/~test/croportal/hlp_status_en.asp"
         },
         {
             "ptype": "nrl_report_crop_data",
@@ -569,7 +570,7 @@
             "areaFilter": "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
             "outputTarget": "nrl",
             "portalRef": "gxp_portal_staticpage",
-            "helpPath": "/test/help/crop_report/path"
+            "helpPath": "/~test/croportal/hlp_report_en.asp"
         },
         {
             "ptype": "gxp_printreporthelper",

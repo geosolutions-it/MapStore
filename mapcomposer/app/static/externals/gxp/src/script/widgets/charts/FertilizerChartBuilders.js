@@ -327,8 +327,9 @@ nrl.chartbuilder.fertilizer = {
                             var s = '<b>'+ xVal +'</b>';
 
                             Ext.each(this.points, function(i, point) {
+                                var percentageStr = i.percentage != undefined ? (' (' + i.percentage.toFixed(2) + '%)') : '';
                                 s += '<br/><span style="color:'+i.series.color+'">'+ i.series.name +': </span>'+
-                                    '<span style="font-size:12px;">'+ i.y.toFixed(2) +'</span>';
+                                     '<span style="font-size:12px;">'+ i.y.toFixed(2) + percentageStr + '</span>';
                             });
 
                             return s;

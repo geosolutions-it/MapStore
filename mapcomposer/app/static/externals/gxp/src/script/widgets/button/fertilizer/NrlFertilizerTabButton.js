@@ -225,7 +225,7 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
             }else{
                 aoi = aoiList.join(', ');
             }
-            
+
             info += '<span style="font-size:10px;">Region: '+ aoi + '</span><br />'
 
             var fromYear = Math.floor(queryParams.from_time_hash/12);
@@ -347,6 +347,7 @@ gxp.widgets.button.NrlFertilizerTabButton = Ext.extend(Ext.Button, {
                     handler: function(){
                         var store = this.ownerCt.ownerCt.getStore();
                         var exportParams = store.exportParams;
+                        exportParams.propertyName = exportParams.propertyName.replace(/time[,]?/,'');
                         var dwl = store.url + "?";
                         exportParams.outputFormat = "CSV";
                         for (var i in exportParams){

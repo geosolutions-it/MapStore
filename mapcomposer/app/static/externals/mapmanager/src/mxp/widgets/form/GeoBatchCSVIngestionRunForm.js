@@ -131,6 +131,7 @@ mxp.widgets.GeoBatchCSVIngestionRunForm = Ext.extend(Ext.Panel, {
                             layout: 'fit',
                             url: this.adminUrl + this.fileBrowserUrl.substring(0, this.fileBrowserUrl.lastIndexOf('/')) + '/upload',
                             multipart: true,
+                            mediaContent: this.mediaContent,
                             listeners: {
                                 beforestart: function() {
                                     var multipart_params = pluploadPanel.multipart_params || {};
@@ -312,7 +313,7 @@ mxp.widgets.GeoBatchCSVIngestionRunForm = Ext.extend(Ext.Panel, {
                     fieldLabel: 'Source',
                     ref: 'src',
                     isValid: function(){
-                        return this.getValue() != '';
+                        return this.getRawValue() != '';
                     },
                     anchor: '100%',
                     triggerAction: 'all',
@@ -333,6 +334,9 @@ mxp.widgets.GeoBatchCSVIngestionRunForm = Ext.extend(Ext.Panel, {
                     }),
                     listeners: {
                         'select': function(combo){
+                            this.refOwner.refOwner.refOwner.allowRun();
+                        },
+                        'keyup': function(combo){
                             this.refOwner.refOwner.refOwner.allowRun();
                         }
                     }
