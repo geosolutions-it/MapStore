@@ -73,6 +73,7 @@ gxp.plugins.SearchBoxMenu = Ext.extend(gxp.plugins.Tool, {
             item.outputTarget="searchboxmenu";
             item.itemsContainer=true;
             item.separator=false;
+            item.hideOnClick=false;
             item.noButton=true;
             var p= new gxp.plugins.WFSSearchBox(item);
                 p.init(target);
@@ -106,6 +107,9 @@ gxp.plugins.SearchBoxMenu = Ext.extend(gxp.plugins.Tool, {
                 'afterrender':function(){
                     this.menu.insert(10,this.resetMarkerBtn); 
                 },
+                'beforehide': function(){
+                    return this.canClose();
+                },
                 scope:this,
 
             },
@@ -123,7 +127,7 @@ gxp.plugins.SearchBoxMenu = Ext.extend(gxp.plugins.Tool, {
         var m = gxp.plugins.SearchBoxMenu.superclass.addOutput.call(this, [this.button]);
 
         for(sBox in this.WFSSearchBoxes){
-            this.WFSSearchBoxes[sBox].addOutput();
+            this.WFSSearchBoxes[sBox].addOutput();  
         }
 
         return m;
@@ -132,14 +136,23 @@ gxp.plugins.SearchBoxMenu = Ext.extend(gxp.plugins.Tool, {
     resetCombo:function(){
 
         for(sBox in this.WFSSearchBoxes){
-            var wfsSearch=this.WFSSearchBoxes[sBox];
+            var wfsSearch = this.WFSSearchBoxes[sBox];
             var markerLyr = this.target.mapPanel.map.getLayersByName(wfsSearch.markerName);  
-                    if (markerLyr.length){
-                        this.target.mapPanel.map.removeLayer(markerLyr[0]);
-                    }
-             wfsSearch.combo.reset();
+            if (markerLyr.length){
+                this.target.mapPanel.map.removeLayer(markerLyr[0]);
             }
+             wfsSearch.combo.reset();
         }
+    },
+    canClose: function(){
+        for(var sBox in this.WFSSearchBoxes){
+             var wfsSearch = this.WFSSearchBoxes[sBox];
+             if(wfsSearch.combo && wfsSearch.combo.isExpanded() ){
+                return false;
+             }
+        }
+        return true;
+    }
 
 });
 
