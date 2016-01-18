@@ -29,9 +29,6 @@
         "google": {
             "ptype": "gxp_googlesource"
         },
-        "bing": {
-            "ptype": "gxp_bingsource"
-        },
         "ol": {
             "ptype": "gxp_olsource"
         }
@@ -108,20 +105,6 @@
                 "source": "osm",
                 "title": "Open Street Map",
                 "name": "mapnik",
-                "group": "background",
-                "visibility": false
-            },
-            {
-                "source": "bing",
-                "title": "Bing Aerial",
-                "name": "Aerial",
-                "group": "background",
-                "visibility": false
-            },
-            {
-                "source": "bing",
-                "title": "Bing Aerial With Labels",
-                "name": "AerialWithLabels",
                 "group": "background",
                 "visibility": false
             },
