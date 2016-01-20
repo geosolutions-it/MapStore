@@ -66,11 +66,12 @@
                     "fileRegex": "\\.csv$",
                     "path": "/",
                     "ingestionSources": [
-                        "Cropdata",
-                        "Agromet",
-                        "Fertilizer",
-                        "Market Prices",
-                        "Water Resources"
+                        ["Cropdata", "Crop Data"],
+                        ["Cropstatus", "Crop Status"],
+                        ["Agromet", "Agromet Variables"],
+                        ["Fertilizer", "Fertilizer"],
+                        ["Market Prices", "Market Prices"],
+                        ["Water Resources", "Water Resources"]
                     ],
                     "propertiesLists": {
                         "marketPrices": ["denominator", "exchangeRate"],
