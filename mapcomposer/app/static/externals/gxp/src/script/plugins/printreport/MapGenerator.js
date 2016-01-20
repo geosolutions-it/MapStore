@@ -153,7 +153,14 @@ gxp.plugins.printreport.MapGenerator = Ext.extend(gxp.plugins.printreport.Genera
         //Legend graphic url: '${map2Url}?VIEWPARAMS=${map2ViewParams}&TRANSPARENT=true&CQL_FILTER=${map2CqlFilter}&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetLegendGraphic&EXCEPTIONS=application%2Fvnd.ogc.se_xml&LAYER=${map2Layer}&STYLE=${map2Style}&SCALE=${map2Scale}&LEGEND_OPTIONS=${map2LegendOptions}'
         // view config.yaml
         // to generate legend url dynamically
-        this.printConfig["map" + mapIndex + "Url"] = encodeURI(layer.url);
+        var getAbsUrl = function(path){
+                var pathArray = location.href.split( '/' );
+                var protocol = pathArray[0];
+                var host = pathArray[2];
+                return protocol + '//' + host + path;
+        }
+        var abs_url = layer.url.indexOf("/")  === 0 ? getAbsUrl(layer.url) : layer.url;
+        this.printConfig["map" + mapIndex + "Url"] = encodeURI(abs_url);
         this.printConfig["map" + mapIndex + "Layer"] = encodeURI(layer.params.LAYERS);
         this.printConfig["map" + mapIndex + "Scale"] = encodeURI(this.printConfig.scale);
         this.printConfig["map" + mapIndex + "LegendOptions"] = this.printConfig.legendOptions; // maybe already encoded

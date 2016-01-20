@@ -56,7 +56,7 @@
             "ptype": "mxp_geobatch_flows",
             "autoOpen": true,
             "closable": false,
-            "geoBatchRestURL": "http://cip-pakistan.geo-solutions.it/geobatch/rest/",
+            "geoBatchRestURL": "/geobatch/rest/",
             "skipFlowsNotInRunConfigs": true,
             "runConfigs": {
                 "csvingestion": {
@@ -76,8 +76,8 @@
                         "marketPrices": ["denominator", "exchangeRate"],
                         "cropData": ["src"]
                     },
-                    "factorUrl": "http://cip-pakistan.geo-solutions.it/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:measure_units_for_crop&outputFormat=json",
-                    "sourcesUrl": "http://cip-pakistan.geo-solutions.it/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_sources&outputFormat=json",
+                    "factorUrl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:measure_units_for_crop&outputFormat=json",
+                    "sourcesUrl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_sources&outputFormat=json",
                     "mediaContent": "./externals/mapmanager/theme/media/"
                 },
                 "ndviingestion": {
@@ -95,7 +95,7 @@
                     "fileRegex": "\\.shp$",
                     "path": "/",
                     "decadConfig": {
-                        "dataUrl": "http://cip-pakistan.geo-solutions.it/geoserver/ndvi/ows",
+                        "dataUrl": "/geoserver/ndvi/ows",
                         "layer": "ndvi:ndvi"
                     },
                     "mediaContent": "./externals/mapmanager/theme/media/"
