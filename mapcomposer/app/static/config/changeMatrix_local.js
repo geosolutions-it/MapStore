@@ -21,9 +21,6 @@
 		"google": {
 			"ptype": "gxp_googlesource" 
 		},
-		"bing": {
-			"ptype": "gxp_bingsource" 
-		}, 
 		"ol": { 
 			"ptype": "gxp_olsource" 
 		}
@@ -57,11 +54,6 @@
 				"source": "google",
 				"title" : "Google Hybrid",
 				"name"  : "HYBRID",
-				"group" : "background"
-			},{
-				"source": "bing",
-				"title" : "Bing Aerial",
-				"name"  : "Aerial",
 				"group" : "background"
 			},{
 				"source": "mapquest",
@@ -466,15 +458,31 @@
 				[41, "Peat bogs"],
 				[42, "Olive groves"],
 				[43, "Vineyards"]
-			 ]]
+			 ]],
+			 [4,[
+				[1, "Natural grasslands"],
+				[2, "Sparsely vegetated areas"],
+				[3, "Artificial surfaces"],
+				[4, "Forests"],
+				[5, "Water bodies"],
+				[6, "Fruit trees and berry plantations"],
+				[7, "Olive groves"],
+				[8, "Pastures"],
+				[9, "Rice fields"],
+				[10, "Non-irrigated arable land"],
+				[11, "Permanently irrigated land"],
+				[12, "Complex cultivation patterns"],
+				[13, "Vineyards"]
+			  ]]
 			],
             "classes": [
             	{"layer": "it.crisp:corine_L1", "level": 1, "values": [1,2,3,4,5]},
             	{"layer": "it.crisp:corine_L2", "level": 2, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]},
             	{"layer": "it.crisp:corine_L3", "level": 3, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]},
-            	{"layer": "it.crisp:touring", "level": 3, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]}
+            	{"layer": "it.crisp:touring", "level": 4, "values": [0,1,2,3,4,5,6,7,8,9,10,11,12,13]}
             ],
             "splitPanels": true,
+            "wfsChangeMatrisGridPanelID": "wfsChangeMatrisGridPanel_tabpanel",
             "panelsConfig": [{
             	"title": "Land Cover",
             	"clcLevelMode": "combobox",
@@ -495,7 +503,8 @@
             		"defaultProcessStyle": "raster",
             		"styleSelection": {
             			"3": "sprawl",
-            			"4": "sprawl"
+            			"4": "sprawl",
+						"8": "frag"
             		},
             		"imperviousnessProccessName": "gs:SoilSealingImperviousness",
             		"imperviousnessLayer": "imperviousness",
