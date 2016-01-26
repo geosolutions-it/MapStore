@@ -287,9 +287,27 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 						});
 						return;
 					}
-					var responseData = JSON.parse(record.get(me.featureTypeDetails));
 
 					var wfsResumeTool = me.target.tools[me.wfsResumeID];
+                    
+                    /*
+                     * Check if featureType is "weatherstats" and check if "featureTypeDetails" === "stats"
+                     * If so, if featureTypeDetails is not empty, the chart is add, otherwise the layers is added to the map
+                     */
+                    if (gpanel.featureType === "weatherstats" && me.featureTypeDetails === "stats"){
+                        if(record.get(me.featureTypeDetails) !== ""){
+                            var responseData = JSON.parse(record.get(me.featureTypeDetails));
+                        }else{
+                            if(wfsResumeTool){
+                                var layerName = record.get("layerName");
+                                wfsResumeTool.addLayer(layerName, "Raster", gpanel.featureType);
+                            }
+                            return;
+                        }
+                    }else{
+                        var responseData = JSON.parse(record.get(me.featureTypeDetails));
+                    }
+
                     if(wfsResumeTool){
                     	var grid = wfsResumeTool.createResultsGrid(responseData, responseData.rasterName, responseData.refYear, responseData.nowYear, record.data.referenceName, me.featureType);
 						/*
@@ -380,13 +398,39 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 
 							deleteProtocol.filterDelete(fidFilter, {
 								callback : function(resp) {
+									//
+									// Remove the related layer from the layer tree
+									//
 									var layers = mapPanel.layers;
 									layers.data.each(function(record, index, totalItems) {
-
-										if (record.get('name') == layerName || record.get('title') == layerSrcTitle) {
+										var name = record.get('name');
+										var title = record.get('title');
+										if (name == layerName || title == layerSrcTitle) {
 											layers.remove(record);
 										}
 									});
+									
+									//
+									// Remove all the involved plot tabs
+									//
+									var hasTabPanel = false;
+									var container;
+									if (me.target.renderToTab) {
+										container = Ext.getCmp(me.target.renderToTab);
+										if (container && container.isXType('tabpanel')){
+											hasTabPanel = true;
+										}
+									}
+							
+									if (hasTabPanel) {
+										var existingLayerTabs = container.find("rasterName", layerName.split(":")[1]);
+										for(var i=0; i<existingLayerTabs.length; i++){
+											if(existingLayerTabs[i]){
+												container.remove(existingLayerTabs[i]);
+											}
+										}
+									}
+									
 									me.refresh();
 								}
 							});
@@ -539,6 +583,14 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 
 			var wfsStore = new GeoExt.data.FeatureStore({
 				wfsParam : me,
+            	listeners:{
+            		'load': function(store, records, options){
+                        if(wfsGrid.rendered){
+                            var selModel = wfsGrid.getSelectionModel();
+                            selModel.selectFirstRow();
+                        }
+                    }
+            	},                
 				sortInfo : {
 					field : "runEnd",
 					direction : "DESC"

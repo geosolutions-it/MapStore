@@ -1,5 +1,5 @@
 {
-   "geoStoreBase":"http://localhost:8080/geostore/rest/",
+   "geoStoreBase":"http://143.225.214.136/geostore/rest/",
    "proxy":"/proxy/?url=",
    "defaultLanguage": "en",
    "tab": true,
@@ -10,7 +10,7 @@
    		"jrc": {
 			"ptype": "gxp_wmssource",
 			"title": "JRC GeoServer",
-			"url": "http://localhost:8080/geoserver/ows"
+			"url": "http://143.225.214.136/geoserver/ows"
 		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
@@ -171,8 +171,8 @@
 	"customTools":[{
            "ptype": "gxp_wpsmanager",
            "id": "wpsManager",
-           "url": "http://localhost:8080/geoserver/wps",
-           "geostoreUrl": "http://localhost:8080/geostore/rest",
+           "url": "http://143.225.214.136/geoserver/wps",
+           "geostoreUrl": "http://143.225.214.136/geostore/rest",
            "geostoreUser": "admin",
            "geostorePassword": "admin",
            "geostoreProxy": "/proxy?url="
@@ -180,7 +180,7 @@
             "ptype": "gxp_wfsgrid",
             "addLayerTool": "addlayer",
 	        "id": "wfsChangeMatrisGridPanel",
-            "wfsURL": "http://localhost:8080/geoserver/wfs",
+            "wfsURL": "http://143.225.214.136/geoserver/wfs",
             "featureType": "changematrix",
             "featureNS": "http://www.crisp.it",
             "pageSize": 10,
@@ -318,7 +318,7 @@
 			}],
             "geocoderConfig": {
 	            "wpsBufferProcessID" : "JTS:buffer",
-	            "wfsBaseURL" : "http://localhost:8080/geoserver/wfs?",
+	            "wfsBaseURL" : "http://143.225.214.136/geoserver/wfs?",
 	            "spatialOutputCRS" : "EPSG:4326",
 	            "showSelectionSummary" : true,
 	            "zoomToCurrentExtent" : false,
@@ -482,6 +482,7 @@
             	{"layer": "it.crisp:touring", "level": 4, "values": [0,1,2,3,4,5,6,7,8,9,10,11,12,13]}
             ],
             "splitPanels": true,
+            "wfsChangeMatrisGridPanelID": "wfsChangeMatrisGridPanel_tabpanel",
             "panelsConfig": [{
             	"title": "Land Cover",
             	"clcLevelMode": "combobox",
@@ -502,7 +503,8 @@
             		"defaultProcessStyle": "raster",
             		"styleSelection": {
             			"3": "sprawl",
-            			"4": "sprawl"
+            			"4": "sprawl",
+						"8": "frag"
             		},
             		"imperviousnessProccessName": "gs:SoilSealingImperviousness",
             		"imperviousnessLayer": "imperviousness",
@@ -516,7 +518,7 @@
         },{
         	"ptype": "gxp_wfsresume",
         	"id": "gxp_wfsresume",
-        	"url": "http://localhost:8080/geoserver/wms?"
+        	"url": "http://143.225.214.136/geoserver/wms?"
         },{
             "actions": ["->"],
             "actionTarget": "paneltbar"

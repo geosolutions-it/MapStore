@@ -97,8 +97,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				1: false,
 				2: false,
 				3: false,
-				4: false,
-				5: false,
+				4: true,
+				5: true,
 				6: true,
 				7: true
 			},
@@ -243,7 +243,12 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
     		layout : 'form',
 			//height: 400,
 			autoScroll: true,
-	        items: this.getRoiItems(config)
+	        items: this.getRoiItems(config),
+			listeners: {
+				expand: function(panel){
+					panel.doLayout();
+				}
+			}
 	    }];
 	},
 
@@ -388,7 +393,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		return [{
 			title : this.basedOnCLCText,
 			xtype : 'fieldset',
-			autoWidth : true,
+			autoWidth : false,
+			width: 310,
 			collapsible : false,
 			layout : 'fit',
 			defaultType : 'radiogroup',
@@ -423,7 +429,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
         },{
 			title : this.basedOnImperviousnessText,
 			xtype : 'fieldset',
-			autoWidth : true,
+			autoWidth : false,
+			width: 310,
 			collapsible : false,
 			layout : 'fit',
 			defaultType : 'radiogroup',
@@ -563,6 +570,11 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			// var params = this.getWPSParams();
 			// this.showResult(responseData);
 			
+            //activate tab
+            var changematrixTool = this.target.tools["changeMatrixTool"];            
+            var tab = Ext.getCmp(changematrixTool.wfsChangeMatrisGridPanelID);
+            tab.setActiveTab(this.geocoderConfig.targetResultGridId + "_panel");
+            
 			var wfsGrid = Ext.getCmp(this.geocoderConfig.targetResultGridId);
 			if(wfsGrid) {
 				var lastOptions = wfsGrid.store.lastOptions;
@@ -762,6 +774,12 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			}
 		}
 		
+		if (this.useCuda) {
+			params.jcuda = true;
+		} else {
+			params.jcuda = false;
+		}
+		
 		// get inputs
 		var inputs = {
 			name : new OpenLayers.WPSProcess.LiteralData({
@@ -796,6 +814,9 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				value : this.roiFieldSet.returnType != null 
 					&& this.roiFieldSet.returnType.getValue 
 					&& this.roiFieldSet.returnType.getValue() == 'subs' ? "AU_SUBS" : "AU_LIST"
+			}),			
+			jcuda : new OpenLayers.WPSProcess.LiteralData({
+				value : params.jcuda.toString()
 			})
 		};
 
