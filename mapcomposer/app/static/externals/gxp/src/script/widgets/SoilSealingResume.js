@@ -295,7 +295,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 				indexUoM = "No pixels";
 				break;
 			case 9:
-				indexUoM = "ha/person";
+				//indexUoM = "ha/person";
+				indexUoM = "ha";
 				break;
 			case 10:
 				indexUoM = "persons/year";
@@ -639,7 +640,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 				indexUoM = "No pixels";
 				break;
 			case 9:
-				indexUoM = "ha/person";
+				//indexUoM = "ha/person";
+				indexUoM = "ha";
 				break;
 			case 10:
 				indexUoM = "persons/year";
