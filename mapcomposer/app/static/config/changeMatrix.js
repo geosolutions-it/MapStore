@@ -21,9 +21,6 @@
 		"google": {
 			"ptype": "gxp_googlesource" 
 		},
-		"bing": {
-			"ptype": "gxp_bingsource" 
-		}, 
 		"ol": { 
 			"ptype": "gxp_olsource" 
 		}
@@ -57,11 +54,6 @@
 				"source": "google",
 				"title" : "Google Hybrid",
 				"name"  : "HYBRID",
-				"group" : "background"
-			},{
-				"source": "bing",
-				"title" : "Bing Aerial",
-				"name"  : "Aerial",
 				"group" : "background"
 			},{
 				"source": "mapquest",
