@@ -22,7 +22,7 @@ GeoExt.Lang.add("de", {
         gsGetPermissionError:"Nicht in der Lage, die Ressourcenberechtigungen abrufen."
     },
     "gxp.plugins.PrintSnapshotHE.prototype" :{
-        noSupportedLayersErrorMsg: " ist nicht zum Drucken zur Verfügung.<br/>Bitte wählen Sie eine der folgenden Optionen als Hintergrundschicht und versuchen Sie es erneut:<br/>",    
+        noSupportedLayersErrorMsg: " ist nicht zum Drucken zur Verfügung.<br/>Bitte wählen Sie eine der folgenden Optionen als Hintergrundschicht und versuchen Sie es erneut:<br/>",
         suggestionLayersMsg: "-> OpenStreetMap <br/> -> MapQuest OpenStreetMap <br/> -> MapQuest Imagery"
     },
     "gxp.plugins.Print.prototype": {
@@ -30,11 +30,11 @@ GeoExt.Lang.add("de", {
     },
     "gxp.plugins.he.GeoStoreStyleWriter.prototype": {
         mainLoadingMask: "Warten Sie mal...",
-        geostoreStyleErrorTitle: "Fehler.",   
+        geostoreStyleErrorTitle: "Fehler.",
         geostoreStyleCreationErrorMsg: "Fehler beim Erstellen des GeoStore Stil.",
-        geostoreStyleUpdateErrorMsg: "Error updating geostore style.",    
+        geostoreStyleUpdateErrorMsg: "Error updating geostore style.",
         geostoreStyleSearchErrorMsg: "Fehler beim Aktualisieren GeoStore Stil.",
-        geostoreStyleDeleteSuccessMsg: "GeoStore Stil erfolgreich gelöscht.",    
+        geostoreStyleDeleteSuccessMsg: "GeoStore Stil erfolgreich gelöscht.",
         geostoreStyleDeleteErrorMsg: "GeoStore Stil nicht gelöscht."
     },
 
@@ -64,19 +64,52 @@ GeoExt.Lang.add("de", {
          stylesFieldsetTitle: "Stile",
          rulesFieldsetTitle: "Regeln",
          errorTitle: "Fehler beim Speichern Stil",
-         errorMsg: "Es gab einen Fehler beim Speichern des Stil zurück an den Server.",                 
+         errorMsg: "Es gab einen Fehler beim Speichern des Stil zurück an den Server.",
          searchStyleResourcesErrorTitle: "Fehler",
          searchStyleResourcesErrorMsg: "Da lief was falsch beim Laden von Stilen"
     },
-    
+
     "gxp.plugins.he.StylerHE.prototype": {
         menuText: "Style bearbeiten",
-        tooltip: "Layer Styles verwalten",    
+        tooltip: "Layer Styles verwalten",
         geostoreStyleCategoryCreatedSuccessTitle: "GeoStore Kategorie Schöpfung.",
         geostoreStyleCategoryCreatedSuccessMsg: "GeoStore LAYERS_STYLES Kategorie erfolgreich erstellt.",
         geostoreStyleCategoryCreatedErrorTitle: "Fehler beim Erstellen der Kategorie.",
         geostoreStyleCategoryCreatedErrorMsg: "GeoStore Ressourcen Behinderte, nur Admin kann fehlende LAYERS_STYLES Kategorie erstellen.",
         geostoreStyleCategorySearchErrorTitle: "Fehlersuche Kategorien.",
         geostoreStyleCategorySearchErrorMsg: "Etwas falsch in den Suchkategorien ging."
+    },
+
+    "gxp.form.MapsComboBox.prototype": {
+        fieldLabel: "User-Karten",
+        emptyText:"Karten",
+        valueNotFoundText: "Karten"
+    },
+
+    "gxp.plugins.he.MapSelector.prototype": {
+        mapActionText: "Karte Menü",
+        mapActionTip: "Karte Menü",
+        saveText: "Ersparen",
+        createText: "Erstellen",
+        deleteText: "Löschen",
+        contextSaveSuccessString: "Karte kontext erfolgreich gespeichert",
+        contextSaveFailString: "Karte kontext nicht erfolgreich gespeichert",
+        contextCreateSuccessString: "Karte erfolgreich erstellt",
+        contextCreateFailString: "Karte nicht erfolgreich erstellt",
+        contextDeleteSuccessString: "Karte erfolgreich gelöscht",
+        contextDeleteFailString: "Karte nicht erfolgreich gelöscht",
+        saveTitle: "Save Map Context?",
+        saveMsg: "Möchten Sie die Änderungen speichern möchten?",
+        createTitle: "Neue Karte erstellen?",
+        createMsg: "Möchten Sie Karte Kontext als neue Karte speichern?",
+        deleteTitle: "Karte löschen?",
+        deleteMsg: "Möchten Sie Ihre Karte löschen möchten?",
+        addResourceButtonText: "Hinzufügen Karte",
+        contextMsg: "Laden...",
+        mapMetadataTitle: "Legen Karte Metadaten",
+        mapMedatataSetTitle: "Karte Metadaten",
+        mapNameLabel: "Name",
+        mapDescriptionLabel: "Beschreibung",
+        conflictErrMsg: "Eine Karte mit dem gleichen Namen ist bereits vorhanden"
     }
 });
