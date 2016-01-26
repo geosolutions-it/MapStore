@@ -551,7 +551,9 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		// ///////////////////
 		var me = this;
 
-		var itemsWidth = this.width ? (this.width - 25): 250;
+		this.width = 305;
+		
+		var itemsWidth = this.width ? (this.width - 25) : 250;
 		// var itemsWidth = 250;
 
 		// i18n for geocoderSelectors
@@ -1367,7 +1369,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 			xtype : 'fieldset',
 			autoWidth : this.autoWidth,
 			layout : 'form',
-			width : itemsWidth,
+			width : itemsWidth + 2,
 			defaultType : 'numberfield',
 			bodyStyle : 'padding:5px',
 			defaults : {
@@ -1417,7 +1419,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 				}
 			}
 		};
-
+		
 		return gxp.widgets.form.SpatialSelectorField.superclass.initComponent.call(this);
 	},
 

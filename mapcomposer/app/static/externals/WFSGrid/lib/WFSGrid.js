@@ -398,13 +398,39 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 
 							deleteProtocol.filterDelete(fidFilter, {
 								callback : function(resp) {
+									//
+									// Remove the related layer from the layer tree
+									//
 									var layers = mapPanel.layers;
 									layers.data.each(function(record, index, totalItems) {
-
-										if (record.get('name') == layerName || record.get('title') == layerSrcTitle) {
+										var name = record.get('name');
+										var title = record.get('title');
+										if (name == layerName || title == layerSrcTitle) {
 											layers.remove(record);
 										}
 									});
+									
+									//
+									// Remove all the involved plot tabs
+									//
+									var hasTabPanel = false;
+									var container;
+									if (me.target.renderToTab) {
+										container = Ext.getCmp(me.target.renderToTab);
+										if (container && container.isXType('tabpanel')){
+											hasTabPanel = true;
+										}
+									}
+							
+									if (hasTabPanel) {
+										var existingLayerTabs = container.find("rasterName", layerName.split(":")[1]);
+										for(var i=0; i<existingLayerTabs.length; i++){
+											if(existingLayerTabs[i]){
+												container.remove(existingLayerTabs[i]);
+											}
+										}
+									}
+									
 									me.refresh();
 								}
 							});

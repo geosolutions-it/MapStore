@@ -150,6 +150,7 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 	        items: this.getRoiItems(config)
 	    },{
     		title: this.weatherProgClimateTitleText,
+			layout : 'fit',
 	        items: this.getWeatherProgClimateItems(config)
 	    },{
     		title: this.timeSelectionTitleText,
@@ -267,6 +268,71 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
                 	boxLabel: this.climateVarMeanTempLabel, 
                 	name: 'weatherProgClimateVar', 
                 	inputValue: "temp_mean",
+                    disabled: false
+                },{
+                	boxLabel: "Average Soil Relative Humidity", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "hrsoil_mean",
+                    disabled: false
+                },{
+                	boxLabel: "Maximum Air Relative Humidity", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "hum_max",
+                    disabled: false
+                },{
+                	boxLabel: "Average Air Relative Humidity", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "hum_mean",
+                    disabled: false
+                },{
+                	boxLabel: "Minimum Air Relative Humidity", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "hum_min",
+                    disabled: false
+                },{
+                	boxLabel: "Leaf Wetness", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "leaf_wet",
+                    disabled: false
+                },{
+                	boxLabel: "Maximum Air Pressure", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "press_max",
+                    disabled: false
+                },{
+                	boxLabel: "Average Air Pressure", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "press_mean",
+                    disabled: false
+                },{
+                	boxLabel: "Minimum Air Pressure", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "press_min",
+                    disabled: false
+                },{
+                	boxLabel: "Cumulative Solar Radiation", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "rad_int",
+                    disabled: false
+                },{
+                	boxLabel: "Average Solar Radiation", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "rad_mean",
+                    disabled: false
+                },{
+                	boxLabel: "Average Soil Temperature", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "tsoil_mean",
+                    disabled: false
+                },{
+                	boxLabel: "Wind Direction", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "wind_dir",
+                    disabled: false
+                },{
+                	boxLabel: "Wind Speed", 
+                	name: 'weatherProgClimateVar', 
+                	inputValue: "wind_speed",
                     disabled: false
                 }],
             	listeners:{
@@ -581,7 +647,7 @@ gxp.widgets.form.WeatherProgPanel = Ext.extend(gxp.widgets.form.AbstractOperatio
 		var currentExtent = map.getExtent();
 		
 		//transform to a Geometry (instead of Bounds)
-		if (me.roiFieldSet && me.roiFieldSet.collapsed !== false && me.roiFieldSet.outputType.value) {
+		if (me.roiFieldSet && me.roiFieldSet.geocodingPanel.getStore().getCount() > 0 && me.roiFieldSet.outputType.value) {
 			params.roi = me.roiFieldSet.currentExtent;
 		} else {
 			//currentExtent = map.getMaxExtent();

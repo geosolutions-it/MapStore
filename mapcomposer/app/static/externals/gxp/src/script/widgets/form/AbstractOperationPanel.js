@@ -735,7 +735,8 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 			return {
 	            xtype: 'panel',
 	            layout : 'vBox',
-	            height: 600,
+	            height: 625,
+				border: false,
 	        	items:[roiFieldSetConfig]
 	        };
 		/*}else{*/

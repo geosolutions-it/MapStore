@@ -10,7 +10,7 @@
    		"jrc": {
 			"ptype": "gxp_wmssource",
 			"title": "JRC GeoServer",
-			"url": "http://143.225.214.136/geoserver/ows"
+			"url": "http://143.225.214.136/geoserverWeatherProg/ows"
 		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
@@ -113,7 +113,7 @@
 	"customTools":[{
            "ptype": "gxp_wpsmanager",
            "id": "wpsManager",
-           "url": "http://143.225.214.136/geoserver/wps",
+           "url": "http://143.225.214.136/geoserverWeatherProg/wps",
            "geostoreUrl": "http://143.225.214.136/geostore/rest",
            "geostoreUser": "admin",
            "geostorePassword": "admin",
@@ -122,9 +122,9 @@
             "ptype": "gxp_wfsgrid",
             "addLayerTool": "addlayer",
 	        "id": "wfsChangeMatrisGridPanel",
-            "wfsURL": "http://143.225.214.136/geoserver/wfs",
-            "featureType": "changematrix",
-            "featureNS": "http://www.crisp.it",
+            "wfsURL": "http://143.225.214.136/geoserverWeatherProg/wfs",
+            "featureType": "weatherstats",
+            "featureNS": "http://www.geo-solutions.it",
             "pageSize": 10,
             "autoRefreshInterval": 3000,
             "srsName": "EPSG:32632", 
@@ -137,7 +137,7 @@
                 },
                 {
                  "type": "delete",
-                 "layerNameAttribute" : "ftUUID",
+                 "layerNameAttribute" : "layerName",
                  "idAttribute" : "fid"
                 }
             ],
@@ -217,7 +217,7 @@
 			}],
             "geocoderConfig": {
 	            "wpsBufferProcessID" : "JTS:buffer",
-	            "wfsBaseURL" : "http://143.225.214.136/geoserver/wfs?",
+	            "wfsBaseURL" : "http://143.225.214.136/geoserverWeatherProg/wfs?",
 	            "spatialOutputCRS" : "EPSG:4326",
 	            "showSelectionSummary" : true,
 	            "zoomToCurrentExtent" : false,
@@ -254,7 +254,7 @@
 					"decimalPrecision": 2,
 					"distanceUnits": "m"
 				 },
-	            "geocoderTypeName" : "it.crisp:geocoder",
+	            "geocoderTypeName" : "it.geosolutions:geocoder",
 	            "geocoderTypeTpl" : "<tpl for=\".\"><hr><div class=\"search-item\"><h3>{name}</span></h3>Parent: {custom}</div></tpl>",
 	            "geocoderTypeRecordModel":[
 	                    {
@@ -280,12 +280,12 @@
 				],
 				"geocoderTypeDisplayField":"name",
 				"geocoderTypePageSize" : 10,
-	            "wpsChgMatrixProcessName" : "gs:ChangeMatrix",
+	            "wpsChgMatrixProcessName" : "gs:WeatherStatistics",
 	            "wpsUnionProcessID" : "JTS:union",
 				"source": "jrc",
-				"nsPrefix": "it.crisp",
-	            "storeName" : "unina_ds",
-	            "typeName" : "changematrix",
+				"nsPrefix": "it.geosolutions",
+	            "storeName" : "weatherprog",
+	            "typeName" : "weatherstats",
 	            "jiffleStyle" : "jiffle_style"
             },
             "splitPanels": true,
@@ -295,7 +295,7 @@
             	"geocoderConfig": {
             		"selectReturnType": true,
             		"wpsProcessName": "gs:WeatherStatistics",
-            		"storeName": "unina_ds",                  
+            		"storeName": "weatherprog",                  
             		"typeName": "weatherstats",
             		"geocoderLayer": "geocoder",
             		"geocoderPopulationLayer": "geocoder_population",                    
@@ -310,7 +310,7 @@
         },{
         	"ptype": "gxp_wfsresume",
         	"id": "gxp_wfsresume",
-        	"url": "http://143.225.214.136/geoserver/wms?"
+        	"url": "http://143.225.214.136/geoserverWeatherProg/wms?"
         },{
             "actions": ["->"],
             "actionTarget": "paneltbar"
