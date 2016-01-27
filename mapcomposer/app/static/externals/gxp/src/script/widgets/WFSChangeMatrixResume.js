@@ -549,7 +549,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 									            // In this case is necessary reload the local store to refresh 
 									            // the getCapabilities records 
 									            // ///////////////////////////////////////////////////////////////
-									            src.store.reload();
+									            //src.store.reload();
 												
 												src.on('ready', function(){
 													me.addLayerRecord(src, props);
@@ -655,21 +655,21 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				                            
 				                            if (src) {
 					                            var props ={
-					                            			source: me.target.layerSources.jrc.id,
-					                                        name: me.geocoderConfig.nsPrefix+":"+rasterName,
-					                                        url: me.url,
-					                                        title: name,
-					                                        tiled:true,
-					                                        layers: rasterName,
-					                                        group: me.interactiveChgMatrixLabel,
-					                                        env: "dataEnv:ref=0,cur="+currClassIndex
+				                            			source: me.target.layerSources.jrc.id,
+				                                        name: me.geocoderConfig.nsPrefix+":"+rasterName,
+				                                        url: me.url,
+				                                        title: name,
+				                                        tiled:true,
+				                                        layers: rasterName,
+				                                        group: me.interactiveChgMatrixLabel,
+				                                        env: "dataEnv:ref=0,cur="+currClassIndex
 					                                };
 
 									            // ///////////////////////////////////////////////////////////////
 									            // In this case is necessary reload the local store to refresh 
 									            // the getCapabilities records 
 									            // ///////////////////////////////////////////////////////////////
-									            src.store.reload();
+									            //src.store.reload();
 									            
 												src.on('ready', function(){
 													me.addLayerRecord(src, props);

@@ -503,7 +503,7 @@ gxp.widgets.WeatherProgResume = Ext.extend(gxp.widgets.WFSResume, {
         // In this case is necessary reload the local store to refresh 
         // the getCapabilities records 
         // ///////////////////////////////////////////////////////////////
-        src.store.reload();
+        //src.store.reload();
 
         if (index < 0) {
             src.on('ready', function(){
