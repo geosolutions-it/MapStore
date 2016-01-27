@@ -91,7 +91,7 @@ gxp.plugins.RemoveGroup = Ext.extend(gxp.plugins.Tool, {
                                 if(record.get('group') == groupRecord.attributes.group){
                                     layers.remove(record);
                                 }
-                            }); 
+                            });
                             
                             groupRecord.destroy();                            
                         }

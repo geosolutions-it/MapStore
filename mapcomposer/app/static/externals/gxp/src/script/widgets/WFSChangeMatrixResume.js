@@ -927,20 +927,11 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 		if (record) {
 			var layerStore = this.target.mapPanel.layers;
 			
-			/*
-			
-			//
-			// Remove the related layer from the layer tree
-			//
-			layerStore.data.each(function(record, index, totalItems) {
-				var name = record.get('name');
-				var title = record.get('title');
-				if (name == layerName || title == layerSrcTitle) {
-					layerStore.remove(record);
-				}
-			});
-			
-			*/
+			layerStore.data.each(function(rr, index, totalItems ) {
+                if(rr.get('group') == record.get('group')){
+                    layers.remove(rr);
+                }
+            });
 			
 			layerStore.add([record]);
 

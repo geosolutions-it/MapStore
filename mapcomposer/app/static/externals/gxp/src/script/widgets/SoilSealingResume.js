@@ -845,6 +845,13 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 				  
 		if (record) {
 			var layerStore = this.target.mapPanel.layers;  
+			
+			layerStore.data.each(function(rr, index, totalItems ) {
+                if(rr.get('group') == record.get('group')){
+                    layers.remove(rr);
+                }
+            });
+            
 			layerStore.add([record]);
 
 			modified = true; // TODO: refactor this
