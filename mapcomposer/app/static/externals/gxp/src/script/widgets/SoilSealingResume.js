@@ -799,15 +799,16 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 
 				    }
 					
+					// ///////////////////////////////////////////////////////////////
+					// In this case is necessary reload the local store to refresh 
+					// the getCapabilities records 
+					// ///////////////////////////////////////////////////////////////
+					src.store.reload();
+					
 					if (index < 0) {
 						src.on('ready', function(){
 							this.addLayerRecord(src, props);
 						}, this);
-						// ///////////////////////////////////////////////////////////////
-						// In this case is necessary reload the local store to refresh 
-						// the getCapabilities records 
-						// ///////////////////////////////////////////////////////////////
-						src.store.reload();
 					}else{
 						this.addLayerRecord(src, props);
 					}
@@ -950,16 +951,17 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
             tree.root.insertBefore(node, tree.root.firstChild.nextSibling);
 
         }
+
+        // ///////////////////////////////////////////////////////////////
+        // In this case is necessary reload the local store to refresh 
+        // the getCapabilities records 
+        // ///////////////////////////////////////////////////////////////
+        src.store.reload();
         
         if (index < 0) {
             src.on('ready', function(){
                 this.addLayerRecord(src, props);
             }, this);
-            // ///////////////////////////////////////////////////////////////
-            // In this case is necessary reload the local store to refresh 
-            // the getCapabilities records 
-            // ///////////////////////////////////////////////////////////////
-            src.store.reload();
         }else{
             this.addLayerRecord(src, props);
         }    

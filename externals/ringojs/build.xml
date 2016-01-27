@@ -63,7 +63,7 @@
     <target name="compile" depends="init">
         <mkdir dir="${classes}"/>
         <javac srcdir="${src}"
-            target="1.5"
+            target="1.7"
             destdir="${classes}"
             debug="${debug}"
             deprecation="${deprecation}"
