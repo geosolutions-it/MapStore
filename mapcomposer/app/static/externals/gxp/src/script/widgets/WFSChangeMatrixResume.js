@@ -396,6 +396,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 										var pieChartTitle = null;
 										var pieChartSubTitle = null;
 										var dataSeries = [];
+										var colors = [];
 										// Check if either a row or a column has been clicked
 										if (gridColLabel == '[Sum]') { // Row
 
@@ -438,13 +439,14 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 													
 													if (dataItem[0] != gridRowLabel)
 														dataSeries.push(dataItem);
+														colors.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][grid.getColumnModel().getDataIndex(r)-1][2]);
 												}
 											}
 											
 											/**
 											 * Dynamically create the chart
 											 */
-											addPieChartToTabPanel(me.pieChartTabTitle, pieChartTitle, pieChartSubTitle, dataSeries);
+											addPieChartToTabPanel(me.pieChartTabTitle, pieChartTitle, pieChartSubTitle, dataSeries, colors);
 										}
 										else if (gridRowLabel == '[Sum]') { // Column
 
@@ -486,13 +488,14 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 													dataItem.push(parseFloat(row.json[columnIndex])*100/parseFloat(total));
 													if (dataItem[0] != gridColLabel)
 														dataSeries.push(dataItem);
+														colors.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][grid.getColumnModel().getDataIndex(columnIndex)-1][2]);
 												}
 											}
 											
 											/**
 											 * Dynamically create the chart
 											 */
-											addPieChartToTabPanel(me.pieChartTabTitle, pieChartTitle, pieChartSubTitle, dataSeries);
+											addPieChartToTabPanel(me.pieChartTabTitle, pieChartTitle, pieChartSubTitle, dataSeries, colors);
 										}
 									}
 								}, {
@@ -790,7 +793,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				series : [{
 					type : 'pie',
 					data : data,
-					colors: ["red", "yellow", "red", "yellow", "red", "yellow", "red"]
+					colors: colors
 				}],
 				chartConfig : {
 					chart : {
