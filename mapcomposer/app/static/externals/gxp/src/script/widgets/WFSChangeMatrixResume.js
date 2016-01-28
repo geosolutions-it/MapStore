@@ -435,6 +435,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 												if (parseFloat(record.json[r]) != 0) {
 													dataItem.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][grid.getColumnModel().getDataIndex(r)-1][1]);
 													dataItem.push(parseFloat(record.json[r])*100/parseFloat(total));
+													
 													if (dataItem[0] != gridRowLabel)
 														dataSeries.push(dataItem);
 												}
@@ -754,11 +755,11 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				dataRow.push(d + 1);
 				dataRow.push(dd + 1);
 				dataRow.push(settings.data[d][dd + 1]);
-				dataRow.push('black');
 
 				dataMatrix.push(dataRow);
 			}
 			data.data = dataMatrix;
+			data.color = 'black';
 			series.push(data);
 		}
 
@@ -788,7 +789,8 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				closable : true,
 				series : [{
 					type : 'pie',
-					data : data
+					data : data,
+					colors: ["red", "yellow", "red", "yellow", "red", "yellow", "red"]
 				}],
 				chartConfig : {
 					chart : {
