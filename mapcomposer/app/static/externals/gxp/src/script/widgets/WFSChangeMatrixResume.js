@@ -434,13 +434,13 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											for (var r=2;r<record.json.length;r++) {
 												var dataItem = [];
 												if (parseFloat(record.json[r]) != 0) {
-													debugger;
 													dataItem.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][grid.getColumnModel().getDataIndex(r)-1][1]);
 													dataItem.push(parseFloat(record.json[r])*100/parseFloat(total));
 													
-													if (dataItem[0] != gridRowLabel)
+													if (dataItem[0] != gridRowLabel) {
 														dataSeries.push(dataItem);
 														colors.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][grid.getColumnModel().getDataIndex(r)-1][2]);
+													}
 												}
 											}
 											
@@ -485,12 +485,13 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 												var dataItem = [];
 												var row = grid.getStore().getAt(r-1);
 												if (parseFloat(row.json[columnIndex]) != 0) {
-													debugger;
 													dataItem.push(row.json[0]);
 													dataItem.push(parseFloat(row.json[columnIndex])*100/parseFloat(total));
-													if (dataItem[0] != gridColLabel)
+													
+													if (dataItem[0] != gridColLabel) {
 														dataSeries.push(dataItem);
-														colors.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][grid.getColumnModel().getDataIndex(columnIndex)-1][2]);
+														colors.push(me.classesIndexes[me.classes[classDataIndex].level-1][1][grid.getColumnModel().getDataIndex(r)-1][2]);
+													}
 												}
 											}
 											
@@ -752,6 +753,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 		// Scatter High-Chart Panel
 		// ///////////////////////////////////////
 		var series = [];
+		debugger;
 		for (var d = 1; d < settings.data.length; d++) {
 			var data = {};
 			var dataMatrix = [];
