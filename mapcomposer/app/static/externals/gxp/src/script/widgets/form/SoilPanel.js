@@ -170,7 +170,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		 *  ``String``
 		 *  Default selection method enabled. @see this.spatialSelectors
 		 */
-		defaultSelectionMethod: 'geocoder',
+		defaultSelectionMethod: 'bbox',
 		/** api: config[spatialSelectors]
 		 *  ``Object``
 		 * Enable/disable spatial selectors options.
@@ -565,7 +565,25 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 					if(selected.inputValue == 3 || selected.inputValue == 4){
 						this.classesselector.setDisabled(true);
 						// Active next accordion: roiTitleText
-						this.activeElementByTitle(this.roiTitleText);
+						  // Activate Roi spatialSelectors accordingly to the selected index
+						  if(this.items && this.items.each){
+								this.items.each(function (item){
+									if(item.title == this.roiTitleText){
+										this.roiFieldSetConfig.spatialSelectors = [{
+											name  : 'BBOX',
+											label : 'Bounding Box',
+											value : 'bbox'
+										}, {
+											name  : 'GeoCoder',
+											label : 'Administrative Areas',
+											value : 'geocoder'
+										}];
+										item.items = this.getRoiItems(config);
+										item.expand();
+									}
+								});
+							}
+						//this.activeElementByTitle(this.roiTitleText);
 					}else{
 						this.classesselector.setDisabled(false);
 						// Active next accordion: clcLevelBuilder
