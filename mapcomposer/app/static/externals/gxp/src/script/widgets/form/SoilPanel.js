@@ -262,6 +262,16 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	        items: this.getRoiItems(config),
 			listeners: {
 				expand: function(panel){
+					config.spatialSelectors = [{
+						name  : 'BBOX',
+						label : 'Bounding Box',
+						value : 'bbox'
+					}, {
+						name  : 'GeoCoder',
+						label : 'Administrative Areas',
+						value : 'geocoder'
+					}];
+					this.items = this.getRoiItems(config);
 					panel.doLayout();
 				}
 			}
@@ -566,7 +576,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 						this.classesselector.setDisabled(true);
 						// Active next accordion: roiTitleText
 						  // Activate Roi spatialSelectors accordingly to the selected index
-						  if(this.items && this.items.each){
+						  /*if(this.items && this.items.each){
 								this.items.each(function (item){
 									if(item.title == this.roiTitleText){
 										this.roiFieldSetConfig.spatialSelectors = [{
@@ -582,8 +592,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 										item.expand();
 									}
 								});
-							}
-						//this.activeElementByTitle(this.roiTitleText);
+							}*/
+						this.activeElementByTitle(this.roiTitleText);
 					}else{
 						this.classesselector.setDisabled(false);
 						// Active next accordion: clcLevelBuilder
