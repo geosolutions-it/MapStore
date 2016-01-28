@@ -753,7 +753,6 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 		// Scatter High-Chart Panel
 		// ///////////////////////////////////////
 		var series = [];
-		debugger;
 		for (var d = 1; d < settings.data.length; d++) {
 			var data = {};
 			var dataMatrix = [];
@@ -766,7 +765,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				dataMatrix.push(dataRow);
 			}
 			data.data = dataMatrix;
-			data.color = 'black';
+			data.color = this.classesIndexes[me.classes[classDataIndex].level-1][1][d-1][2];
 			series.push(data);
 		}
 
