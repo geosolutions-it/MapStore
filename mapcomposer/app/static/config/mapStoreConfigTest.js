@@ -607,18 +607,16 @@
             "actionTarget": "paneltbar"
         },
         {
-            "ptype":"gxp_help",
+            "ptype":"gxp_disclaimer",
+            "id": "disclaimer",
             "actionTarget": "appTabs.bbar",
             "text":"Disclaimer",
-            "tooltip":"About This Exemple",
-            "title":"Crop Source Disclaimer",
+            "tooltip":"Open the Disclaimer",
             "index": 26,
             "showOnStartup":false,
             "iconCls":"icon-about",
-            "description": "<h1>SUPARCO Source</h1><br><p>The Pakistan Space and Upper Atmosphere Research Commission (SUPARCO) publishes estimates <br/> of major crops in Pakistan at provincial scale. They are based on Area Framing and Satellite Image <br/> Classification methodologies. In order to allow SUPARCO estimates to be managed in the Crop <br/> Information Portal, provincial data have been disaggregated by District through the application of a <br/> model which does not reflect the actual distribution or area, production and yield. Thus, users of the <br/> Crop Portal performing comparisons of SUPARCO estimates with official data must consider that <br/> the results are accurate for Province comparisons only. Comparison of Districts are inaccurate <br/> and must not be used to make assumptions.</p>",
-            "windowOptions":{
-                "constrain":true
-            }
+            "portalRef": "gxp_portal_staticpage",
+            "disclaimerPath": "/~test/croportal/doc_cip_disclaimer_en.asp"
         }
     ]
 }
