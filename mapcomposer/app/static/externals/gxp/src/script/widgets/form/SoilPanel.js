@@ -238,6 +238,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
      *  Custom elements for the soil sealing panel
      */
 	generateItems: function(config){
+		var me = this;
+		
 		return [{
     		title: this.clcLevelTitleText,
     		layout : 'fit',
@@ -262,7 +264,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	        items: this.getRoiItems(config),
 			listeners: {
 				expand: function(panel){
-					config.spatialSelectors = [{
+					var spatialSelectors = [{
 						name  : 'BBOX',
 						label : 'Bounding Box',
 						value : 'bbox'
@@ -271,7 +273,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 						label : 'Administrative Areas',
 						value : 'geocoder'
 					}];
-					this.items = this.getRoiItems(config);
+					me.roiFieldSet.setSpatialSelectors(spatialSelectors);
 					panel.doLayout();
 				}
 			}

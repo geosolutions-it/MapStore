@@ -1426,6 +1426,19 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 	// Temp key to update status when reset
 	updating: false,
 
+    setSpatialSelectors: function(spatialSelectors) {
+    	var me = this;
+    	
+		// //////////////////////////
+		// Reset the previous control
+		// //////////////////////////
+		me.reset();
+		
+		me.outputType.store.loadData(spatialSelectors);
+		me.outputType.store.reload();
+		//me.outputType.doLayout();
+    },
+    
 	reset: function() {
 		var me = this;
 		// //////////////////////////
