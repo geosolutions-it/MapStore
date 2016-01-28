@@ -752,14 +752,14 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					}
 					var group = "Soil Sealing";
                     var props ={
-                    			source: this.target.layerSources.jrc.id,
-                                name: layerName,
-                                url: this.url,
-                                title: layerTitle,
-                                tiled:true,
-                                group: group,
-                                layers: layerName
-                        };
+                			source: this.target.layerSources.jrc.id,
+                            name: layerName,
+                            url: this.url,
+                            title: layerTitle,
+                            tiled:true,
+                            group: group,
+                            layers: layerName
+                    };
 												
 				    var index = src.store.findExact("name", layerName);
 				    
@@ -796,7 +796,6 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
                         });
                         
                         tree.root.insertBefore(node, tree.root.firstChild.nextSibling);
-
 				    }
 					
 					// ///////////////////////////////////////////////////////////////
@@ -846,11 +845,11 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		if (record) {
 			var layerStore = this.target.mapPanel.layers;  
 			
-			layerStore.data.each(function(rr, index, totalItems ) {
+			/*layerStore.data.each(function(rr, index, totalItems ) {
                 if(rr.get('group') == record.get('group')){
                     layers.remove(rr);
                 }
-            });
+            });*/
             
 			layerStore.add([record]);
 

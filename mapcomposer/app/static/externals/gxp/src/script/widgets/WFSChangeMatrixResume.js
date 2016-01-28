@@ -544,16 +544,6 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				                                        group: me.interactiveChgMatrixLabel,
 				                                        env: "dataEnv:ref="+referenceClassIndex+",cur=0"
 					                                };
-
-									            // ///////////////////////////////////////////////////////////////
-									            // In this case is necessary reload the local store to refresh 
-									            // the getCapabilities records 
-									            // ///////////////////////////////////////////////////////////////
-									            //src.store.reload();
-												
-												src.on('ready', function(){
-													me.addLayerRecord(src, props);
-												}, me);
 												
 											    var index = src.store.findExact("name", me.geocoderConfig.nsPrefix+":"+rasterName);
 											    
@@ -594,14 +584,18 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 
 											    }
 											    												
+									            // ///////////////////////////////////////////////////////////////
+									            // In this case is necessary reload the local store to refresh 
+									            // the getCapabilities records 
+									            // ///////////////////////////////////////////////////////////////
+									            //src.store.reload();
+												
 												if (index < 0) {
-													// ///////////////////////////////////////////////////////////////
-													// In this case is necessary reload the local store to refresh 
-													// the getCapabilities records 
-													// ///////////////////////////////////////////////////////////////
-													src.store.reload();
-												}else{													
-													me.addLayerRecord(src, props);
+													src.on('ready', function(){
+														this.addLayerRecord(src, props);
+													}, this);
+												}else{
+													this.addLayerRecord(src, props);
 												}
 				                            }
     										
@@ -665,16 +659,6 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				                                        env: "dataEnv:ref=0,cur="+currClassIndex
 					                                };
 
-									            // ///////////////////////////////////////////////////////////////
-									            // In this case is necessary reload the local store to refresh 
-									            // the getCapabilities records 
-									            // ///////////////////////////////////////////////////////////////
-									            //src.store.reload();
-									            
-												src.on('ready', function(){
-													me.addLayerRecord(src, props);
-												}, me);
-												
 											    var index = src.store.findExact("name", me.geocoderConfig.nsPrefix+":"+rasterName);
 
 											    var tree = Ext.getCmp("layertree");
@@ -714,15 +698,20 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 
 											    }
 											    
+									            // ///////////////////////////////////////////////////////////////
+									            // In this case is necessary reload the local store to refresh 
+									            // the getCapabilities records 
+									            // ///////////////////////////////////////////////////////////////
+									            //src.store.reload();
+									            
 												if (index < 0) {
-													// ///////////////////////////////////////////////////////////////
-													// In this case is necessary reload the local store to refresh 
-													// the getCapabilities records 
-													// ///////////////////////////////////////////////////////////////
-													src.store.reload();
+													src.on('ready', function(){
+														this.addLayerRecord(src, props);
+													}, this);
 												}else{
-													me.addLayerRecord(src, props);
+													this.addLayerRecord(src, props);
 												}
+												
 				                            }
 
     										/*
@@ -926,12 +915,6 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				  
 		if (record) {
 			var layerStore = this.target.mapPanel.layers;
-			
-			layerStore.data.each(function(rr, index, totalItems ) {
-                if(rr.get('group') == record.get('group')){
-                    layers.remove(rr);
-                }
-            });
 			
 			layerStore.add([record]);
 
