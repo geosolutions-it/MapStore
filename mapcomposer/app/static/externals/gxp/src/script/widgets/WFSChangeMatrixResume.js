@@ -754,6 +754,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				dataRow.push(d + 1);
 				dataRow.push(dd + 1);
 				dataRow.push(settings.data[d][dd + 1]);
+				dataRow.push('black');
 
 				dataMatrix.push(dataRow);
 			}
