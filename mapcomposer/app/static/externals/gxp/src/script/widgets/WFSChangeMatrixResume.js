@@ -784,7 +784,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 		// ///////////////////////////////////////
 		// Pie High-Chart Panel
 		// ///////////////////////////////////////
-		var addPieChartToTabPanel = function(pieChartTabTitle, pieChartTitle, pieChartSubTitle, data) {
+		var addPieChartToTabPanel = function(pieChartTabTitle, pieChartTitle, pieChartSubTitle, data, colors) {
 			var changeMatrixPieChart = new Ext.ux.HighChart({
 				title : pieChartTabTitle,
 				animation : true,
