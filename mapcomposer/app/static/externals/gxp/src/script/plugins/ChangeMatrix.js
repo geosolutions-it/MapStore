@@ -260,12 +260,12 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.TableableTool, {
 		   mapping:"id"
 		},
 		{
-	   		name:"name",
-	   		mapping:"properties.name"
+	   	   name:"name",
+	   	   mapping:"properties.name"
 		},
 		{
-	   		name:"geometry",
-	   		mapping:"geometry"
+	   	   name:"geometry",
+	   	   mapping:"geometry"
 		}
  	],
 

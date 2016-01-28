@@ -176,6 +176,22 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		 * Enable/disable spatial selectors options.
 		 */
 		spatialSelectors : [{
+			name  : 'BBOX',
+			label : 'Bounding Box',
+			value : 'bbox'
+		}, {
+			name  : 'Polygon',
+			label : 'Polygon',
+			value : 'polygon'
+		}, {
+			name  : 'Circle',
+			label : 'Circle',
+			value : 'circle'
+		}, {
+			name  : 'Buffer',
+			label : 'Buffer',
+			value : 'buffer'
+		}, {
 			name  : 'GeoCoder',
 			label : 'Administrative Areas',
 			value : 'geocoder'

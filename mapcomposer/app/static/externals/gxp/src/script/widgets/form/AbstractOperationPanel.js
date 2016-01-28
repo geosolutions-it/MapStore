@@ -698,15 +698,15 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 
 		// Fieldset configuration
 		var roiFieldSetConfig = {
-				xtype:'gxp_spatial_selector_field',
-				ref: '/roiFieldSet',
-				id: this.id + '_roiFieldSet',
-				layout : 'table',
-				column: 1,
-				loadingMaskId: this.id,
-				wpsManager: this.wpsManager,
-				forceFit: true,
-	            autoScroll: true
+			xtype:'gxp_spatial_selector_field',
+			ref: '/roiFieldSet',
+			id: this.id + '_roiFieldSet',
+			layout : 'table',
+			column: 1,
+			loadingMaskId: this.id,
+			wpsManager: this.wpsManager,
+			forceFit: true,
+            autoScroll: true
 		};
 
 		// configuration for long screens
