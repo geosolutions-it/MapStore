@@ -329,7 +329,9 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
                     sortFeatures(jsonData1.features);
 
 					var refYear = data.year;
-					var fromYear = refYear - 2;
+                    // Will use an existing query to get the current value, but it needs an year range
+                    // setting to 5 years in the past
+					var fromYear = refYear - 5;
 					var toYear = refYear;
 					var newParams =
 						(fromYear   ? "start_year:"  + fromYear + ";" : "") +
@@ -355,6 +357,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 							},
 							success: function(reply, opt){
 								var jsonData2 = Ext.util.JSON.decode(reply.responseText);
+                                
                                 sortFeatures(jsonData2.features);
 
                                 var isAbsAnomalies = data.anomaliesoutput == 'abs';
@@ -362,8 +365,8 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 								for (var i=0; i<this.jsonData1.features.length; i++){
 									var feature1 = this.jsonData1.features[i];
 									var feature2 = jsonData2.features[i];
-
-                                    if (feature1.properties.current && feature2.properties.aggregated){
+                                    // feature2 can be undefined
+                                    if (feature1.properties.aggregated && feature2 && feature2.properties.current){
                                         feature1.properties.current = ( isAbsAnomalies
                                             ? feature2.properties.current - feature1.properties.aggregated
                                             : 100 * (feature2.properties.current/feature1.properties.aggregated - 1)
