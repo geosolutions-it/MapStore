@@ -592,10 +592,10 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 												
 												if (index < 0) {
 													src.on('ready', function(){
-														this.addLayerRecord(src, props);
-													}, this);
+														me.addLayerRecord(src, props);
+													}, me);
 												}else{
-													this.addLayerRecord(src, props);
+													me.addLayerRecord(src, props);
 												}
 				                            }
     										
@@ -706,10 +706,10 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 									            
 												if (index < 0) {
 													src.on('ready', function(){
-														this.addLayerRecord(src, props);
+														me.addLayerRecord(src, props);
 													}, this);
 												}else{
-													this.addLayerRecord(src, props);
+													me.addLayerRecord(src, props);
 												}
 												
 				                            }
