@@ -264,16 +264,24 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	        items: this.getRoiItems(config),
 			listeners: {
 				expand: function(panel){
-					var spatialSelectors = [{
-						name  : 'BBOX',
-						label : 'Bounding Box',
-						value : 'bbox'
-					}, {
-						name  : 'GeoCoder',
-						label : 'Administrative Areas',
-						value : 'geocoder'
-					}];
-					me.roiFieldSet.setSpatialSelectors(spatialSelectors);
+					var index = me.getForm().getValues().sealingIndex;
+					var subIndex = null;
+					if(index > 70){
+						subIndex = index == 71 ? 'a' : index == 72 ? 'b' : 'c';
+						index = 7;
+					}
+					
+					
+					var spatialSelectors = me.roiFieldSetConfig.spatialSelectors;
+					if (index == 3 || index == 4)
+					{
+						spatialSelectors = [{
+							name  : 'GeoCoder',
+							label : 'Administrative Areas',
+							value : 'geocoder'
+						}];
+					}
+					me.roiFieldSet.setSpatialSelectors(spatialSelectors, "geocoder");
 					panel.doLayout();
 				}
 			}
@@ -577,24 +585,6 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 					if(selected.inputValue == 3 || selected.inputValue == 4){
 						this.classesselector.setDisabled(true);
 						// Active next accordion: roiTitleText
-						  // Activate Roi spatialSelectors accordingly to the selected index
-						  /*if(this.items && this.items.each){
-								this.items.each(function (item){
-									if(item.title == this.roiTitleText){
-										this.roiFieldSetConfig.spatialSelectors = [{
-											name  : 'BBOX',
-											label : 'Bounding Box',
-											value : 'bbox'
-										}, {
-											name  : 'GeoCoder',
-											label : 'Administrative Areas',
-											value : 'geocoder'
-										}];
-										item.items = this.getRoiItems(config);
-										item.expand();
-									}
-								});
-							}*/
 						this.activeElementByTitle(this.roiTitleText);
 					}else{
 						this.classesselector.setDisabled(false);
