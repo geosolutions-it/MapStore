@@ -810,6 +810,23 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			}
 		}
 		
+		//get the current extent
+		var map = this.target.mapPanel.map;
+		var currentExtent = map.getExtent();
+		
+		//transform to a Geometry (instead of Bounds)
+		if (this.roiFieldSet && this.roiFieldSet.collapsed !== true && this.roiFieldSet.outputType.value) {
+			params.roi = this.roiFieldSet.currentExtent;
+		} else {
+			//currentExtent = map.getMaxExtent();
+			//change the extent projection if it differs from 4326
+			if (map.getProjection() != 'EPSG:4326') {
+				currentExtent.transform(map.getProjectionObject(), new OpenLayers.Projection('EPSG:4326'));
+			}
+			// set ROI parameter
+			params.roi = currentExtent.toGeometry();
+		}
+		
 		if (this.useCuda) {
 			params.jcuda = true;
 		} else {
@@ -844,13 +861,18 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				value : this.geocoderConfig.geocoderPopulationLayer
 			}),
 			admUnits: new OpenLayers.WPSProcess.LiteralData({
-				value : this.roiFieldSet.getSelectedAreas()
+				value : this.roiFieldSet.outputType.getValue() == 'geocoder' ?
+				    this.roiFieldSet.getSelectedAreas() : null
 			}),
 			admUnitSelectionType: new OpenLayers.WPSProcess.LiteralData({
 				value : this.roiFieldSet.returnType != null 
 					&& this.roiFieldSet.returnType.getValue 
 					&& this.roiFieldSet.returnType.getValue() == 'subs' ? "AU_SUBS" : "AU_LIST"
-			}),			
+			}),
+			ROI : new OpenLayers.WPSProcess.ComplexData({
+				value : params.roi.toString(),
+				mimeType : 'application/wkt'
+			}),		
 			jcuda : new OpenLayers.WPSProcess.LiteralData({
 				value : params.jcuda.toString()
 			})
