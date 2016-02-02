@@ -756,7 +756,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
                             name: layerName,
                             url: this.url,
                             title: layerTitle,
-                            tiled:true,
+                            tiled: true,
                             group: group,
                             layers: layerName
                     };
@@ -774,7 +774,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
                             text: group,
                             iconCls: "gxp-folder",
                             expanded: true,
-                            checked: false,
+                            checked: true,
                             group: group == "default" ? undefined : group,
                             loader: new GeoExt.tree.LayerLoader({
                                 baseAttrs: undefined,
@@ -802,15 +802,19 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					// In this case is necessary reload the local store to refresh 
 					// the getCapabilities records 
 					// ///////////////////////////////////////////////////////////////
-					src.store.reload();
+					var addLayer = this.target.tools["addlayer"];
+                                        
+		            var options = {
+						msLayerTitle: layerTitle,
+						msLayerName: layerName,
+						wmsURL: this.url,
+						msLayerUUID: layerName,
+						msGroupName: group
+					};
 					
-					if (index < 0) {
-						src.on('ready', function(){
-							this.addLayerRecord(src, props);
-						}, this);
-					}else{
-						this.addLayerRecord(src, props);
-					}
+					addLayer.addLayer(
+						options
+					);
 
 					/*
 					 * Check if tabs exists and if so switch to View Tab 
@@ -835,144 +839,6 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			return null;
 		}
 	},
-
-	/**  
-	 * api: method[addLayerRecord]
-     */
-	addLayerRecord: function(src, props){
-		var record = src.createLayerRecord(props);   
-				  
-		if (record) {
-			var layerStore = this.target.mapPanel.layers;  
-			
-			/*layerStore.data.each(function(rr, index, totalItems ) {
-                if(rr.get('group') == record.get('group')){
-                    layers.remove(rr);
-                }
-            });*/
-            
-			layerStore.add([record]);
-
-			modified = true; // TODO: refactor this
-
-			// Merge Params
-            var layerObject = record.get("layer");
-					
-		    //
-			// If tabs are used the View tab is Activated
-			//
-			if(this.target.renderToTab && this.enableViewTab){
-				var portalContainer = Ext.getCmp(this.target.renderToTab);
-				
-				if(portalContainer instanceof Ext.TabPanel){
-					portalContainer.setActiveTab(1);
-				}				
-			}					
-						
-			// //////////////////////////
-			// Zoom To Layer extent
-			// //////////////////////////
-			var layer = record.get('layer');
-			var extent = layer.restrictedExtent || layer.maxExtent || this.target.mapPanel.map.maxExtent;
-			var map = this.target.mapPanel.map;
-
-			// ///////////////////////////
-			// Respect map properties
-			// ///////////////////////////
-			var restricted = map.restrictedExtent || map.maxExtent;
-			if (restricted) {
-				extent = new OpenLayers.Bounds(
-					Math.max(extent.left, restricted.left),
-					Math.max(extent.bottom, restricted.bottom),
-					Math.min(extent.right, restricted.right),
-					Math.min(extent.top, restricted.top)
-				);
-			}
-
-			map.zoomToExtent(extent, true);
-		}
-	},
-	/**  
-	 * api: method[addLayer]
-     */    
-    /*addLayer: function(layerName, title, featureType){
-        var layerTitle = title && layerName ? title + " - " + layerName: layerName;
-        var src;				                            
-        for (var id in this.target.layerSources) {
-              var s = this.target.layerSources[id];    
-              
-              // //////////////////////////////////////////
-              // Checking if source URL aldready exists
-              // //////////////////////////////////////////
-              if(s != undefined && s.id == this.geocoderConfig.source){
-                  src = s;
-                  break;
-              }
-        }
-        var group = "Weather Prog";
-        var props ={
-                    source: this.target.layerSources.jrc.id,
-                    name: this.geocoderConfig.nsPrefix + ":" + layerName,
-                    url: this.url,
-                    title: layerTitle,
-                    tiled:true,
-                    group: group,
-                    layers: layerName
-            };
-                                    
-        var index = src.store.findExact("name", this.geocoderConfig.nsPrefix + ":" + layerName);
-        
-        var tree = Ext.getCmp("layertree");
-        var groupExists = false;
-        for (var node=0; node<tree.root.childNodes.length; node++)
-            if (group == tree.root.childNodes[node].text)
-                groupExists = true;
-        
-        if (!groupExists) {
-            var node = new GeoExt.tree.LayerContainer({
-                text: group,
-                iconCls: "gxp-folder",
-                expanded: true,
-                checked: false,
-                group: group == "default" ? undefined : group,
-                loader: new GeoExt.tree.LayerLoader({
-                    baseAttrs: undefined,
-                    store: this.target.mapPanel.layers,
-                    filter: (function(group) {
-                        return function(record) {
-                            return (record.get("group") || "default") == group &&
-                                record.getLayer().displayInLayerSwitcher == true;
-                        };
-                    })(group)
-                }),
-                singleClickExpand: true,
-                allowDrag: true,
-                listeners: {
-                    append: function(tree, node) {
-                        node.expand();
-                    }
-                }
-            });
-            
-            tree.root.insertBefore(node, tree.root.firstChild.nextSibling);
-
-        }
-
-        // ///////////////////////////////////////////////////////////////
-        // In this case is necessary reload the local store to refresh 
-        // the getCapabilities records 
-        // ///////////////////////////////////////////////////////////////
-        src.store.reload();
-        
-        if (index < 0) {
-            src.on('ready', function(){
-                this.addLayerRecord(src, props);
-            }, this);
-        }else{
-            this.addLayerRecord(src, props);
-        }    
-    
-    },*/
 	
     randomColorsRGB: function(total){
         var i = 360 / (total - 1); // distribute the colors evenly on the hue range

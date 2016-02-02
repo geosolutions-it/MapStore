@@ -106,7 +106,6 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	 * api: method[addLayerRecord]
      */
 	addLayerRecord: function(){
-		  
 		var props = {
 			name: this.msLayerName,
 			title: this.msLayerTitle,
@@ -118,6 +117,10 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 				props,
 				this.customParams
 			);
+		}
+		
+		if(this.msGroupName){
+			props.group = this.msGroupName;
 		}
 		  
 		if(this.msLayerUUID)
@@ -149,6 +152,15 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 			// Zoom To Layer extent
 			// //////////////////////////
 			var layer = record.get('layer');
+			
+            if (layer){
+            	if(this.env) {
+	                layer.mergeNewParams({
+	                    env : this.env
+	                });
+	         	}
+            }
+            			
 			var extent = layer.restrictedExtent || layer.maxExtent || this.target.mapPanel.map.maxExtent;
 			var map = this.target.mapPanel.map;
 
@@ -193,7 +205,7 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 	/**  
 	 * api: method[addLayer]
      */
-	addLayer: function(options){		
+	addLayer: function(options){
 		var mask = new Ext.LoadMask(Ext.getBody(), {msg: this.waitMsg});
 		
 		this.msLayerTitle = options.msLayerTitle;
@@ -204,6 +216,8 @@ gxp.plugins.AddLayer = Ext.extend(gxp.plugins.Tool, {
 		this.msLayerUUID = options.msLayerUUID;
 		this.gnLangStr = options.gnLangStr;
 		this.customParams = options.customParams;
+		this.msGroupName = options.msGroupName;
+		this.env = options.env;
 				
 		this.source = this.checkLayerSource(this.wmsURL);
 

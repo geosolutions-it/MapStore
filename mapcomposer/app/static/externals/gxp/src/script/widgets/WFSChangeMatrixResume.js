@@ -546,7 +546,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				                                        name: me.geocoderConfig.nsPrefix+":"+rasterName,
 				                                        url: me.url,
 				                                        title: name,
-				                                        tiled:true,
+				                                        tiled: true,
 				                                        layers: rasterName,
 				                                        group: me.interactiveChgMatrixLabel,
 				                                        env: "dataEnv:ref="+referenceClassIndex+",cur=0"
@@ -566,7 +566,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 			                                            text: me.interactiveChgMatrixLabel,
 			                                            iconCls: "gxp-folder",
 			                                            expanded: true,
-			                                            checked: false,
+			                                            checked: true,
 			                                            group: group == "default" ? undefined : group,
 			                                            loader: new GeoExt.tree.LayerLoader({
 			                                                baseAttrs: undefined,
@@ -595,15 +595,20 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 									            // In this case is necessary reload the local store to refresh 
 									            // the getCapabilities records 
 									            // ///////////////////////////////////////////////////////////////
-									            src.store.reload();
+									            var addLayer = me.target.tools["addlayer"];
+									            
+									            var options = {
+													msLayerTitle: name,
+													msLayerName: me.geocoderConfig.nsPrefix+":"+rasterName,
+													wmsURL: me.url,
+													msLayerUUID: rasterName,
+													msGroupName: me.interactiveChgMatrixLabel,
+													env: "dataEnv:ref="+referenceClassIndex+",cur=0"
+												};
 												
-												if (index < 0) {
-													src.on('ready', function(){
-														me.addLayerRecord(src, props);
-													}, me);
-												}else{
-													me.addLayerRecord(src, props);
-												}
+												addLayer.addLayer(
+													options
+												);
 				                            }
     										
     										/*
@@ -660,7 +665,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				                                        name: me.geocoderConfig.nsPrefix+":"+rasterName,
 				                                        url: me.url,
 				                                        title: name,
-				                                        tiled:true,
+				                                        tiled: true,
 				                                        layers: rasterName,
 				                                        group: me.interactiveChgMatrixLabel,
 				                                        env: "dataEnv:ref=0,cur="+currClassIndex
@@ -709,16 +714,20 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 									            // In this case is necessary reload the local store to refresh 
 									            // the getCapabilities records 
 									            // ///////////////////////////////////////////////////////////////
-									            //src.store.reload();
+									            var addLayer = me.target.tools["addlayer"];
 									            
-												if (index < 0) {
-													src.on('ready', function(){
-														me.addLayerRecord(src, props);
-													}, this);
-												}else{
-													me.addLayerRecord(src, props);
-												}
+									            var options = {
+													msLayerTitle: name,
+													msLayerName: me.geocoderConfig.nsPrefix+":"+rasterName,
+													wmsURL: me.url,
+													msLayerUUID: rasterName,
+													msGroupName: me.interactiveChgMatrixLabel,
+													env: "dataEnv:ref=0,cur="+currClassIndex
+												};
 												
+												addLayer.addLayer(
+													options
+												);
 				                            }
 
     										/*
@@ -914,62 +923,6 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 				 },*/
 			}
 		});
-	},
-
-	/**  
-	 * api: method[addLayerRecord]
-     */
-	addLayerRecord: function(src, props){
-		var record = src.createLayerRecord(props);   
-				  
-		if (record) {
-			var layerStore = this.target.mapPanel.layers;
-			
-			layerStore.add([record]);
-
-			modified = true; // TODO: refactor this
-
-			// Merge Params
-            var layerObject = record.get("layer");
-            if (layerObject){
-                layerObject.mergeNewParams({
-                    env : props.env
-                });
-            }
-					
-		    //
-			// If tabs are used the View tab is Activated
-			//
-			if(this.target.renderToTab && this.enableViewTab){
-				var portalContainer = Ext.getCmp(this.target.renderToTab);
-				
-				if(portalContainer instanceof Ext.TabPanel){
-					portalContainer.setActiveTab(1);
-				}				
-			}					
-						
-			// //////////////////////////
-			// Zoom To Layer extent
-			// //////////////////////////
-			var layer = record.get('layer');
-			var extent = layer.restrictedExtent || layer.maxExtent || this.target.mapPanel.map.maxExtent;
-			var map = this.target.mapPanel.map;
-
-			// ///////////////////////////
-			// Respect map properties
-			// ///////////////////////////
-			var restricted = map.restrictedExtent || map.maxExtent;
-			if (restricted) {
-				extent = new OpenLayers.Bounds(
-					Math.max(extent.left, restricted.left),
-					Math.max(extent.bottom, restricted.bottom),
-					Math.min(extent.right, restricted.right),
-					Math.min(extent.top, restricted.top)
-				);
-			}
-
-			map.zoomToExtent(extent, true);
-		}
 	}
 
 });
