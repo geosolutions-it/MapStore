@@ -1432,8 +1432,6 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		// //////////////////////////
 		// Reset the previous control
 		// //////////////////////////
-		me.reset();
-
 		me.outputType.store.loadData(spatialSelectors);
 
 		if (defaultValue) {
