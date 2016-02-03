@@ -39,7 +39,7 @@
     "tools": [
         {
             "ptype": "mxp_categoryinitializer",
-            "neededCategories": ["GEOBATCH_RUN_CONFIGS", "ARCHIVEDLOGS"]
+            "neededCategories": ["GEOBATCH_RUN_CONFIGS", "ARCHIVEDLOGS", "ARCHIVEDRUNS"]
         },
         {
             "ptype": "mxp_login",
@@ -61,7 +61,7 @@
             "runConfigs": {
                 "csvingestion": {
                     "xtype": "geobatch_csv_ingestion_run_form",
-                    "baseDir": "/home/geosolutions/admin",
+                    "baseDir": "/opt/admin_dir",
                     "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
                     "fileRegex": "\\.csv$",
                     "path": "/",
@@ -83,7 +83,7 @@
                 },
                 "ndviingestion": {
                     "xtype": "geobatch_run_local_form",
-                    "baseDir": "/home/geosolutions/admin",
+                    "baseDir": "/opt/admin_dir",
                     "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
                     "fileRegex": "\\.ti[f]{1,2}$",
                     "path": "/",
@@ -91,7 +91,7 @@
                 },
                 "ndvistats": {
                     "xtype": "geobatch_run_form",
-                    "baseDir": "/home/geosolutions/admin",
+                    "baseDir": "/opt/admin_dir",
                     "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
                     "fileRegex": "\\.shp$",
                     "path": "/",
@@ -103,7 +103,7 @@
                 },
                 "createupdatelayer": {
                     "xtype": "geobatch_run_local_form",
-                    "baseDir": "/home/geosolutions/admin",
+                    "baseDir": "/opt/admin_dir",
                     "fileBrowserUrl": "mvc/fileManager/extJSbrowser",
                     "fileRegex": "\\.zip$",
                     "path": "/",
