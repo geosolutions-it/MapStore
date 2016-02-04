@@ -770,6 +770,14 @@
                                         {
                                             "label": "Denominator",
                                             "name": "denominator"
+                                        },
+                                        {
+                                            "label": "Water Supply",
+                                            "name": "watersupply"
+                                        },
+                                        {
+                                            "label": "Water Flow",
+                                            "name": "waterflow"
                                         }
                                     ],
                                     "xtype": "jsonstore"
@@ -845,6 +853,14 @@
                                         {
                                             "label": "Denominator",
                                             "name": "denominator"
+                                        },
+                                        {
+                                            "label": "Water Supply",
+                                            "name": "watersupply"
+                                        },
+                                        {
+                                            "label": "Water Flow",
+                                            "name": "waterflow"
                                         }
                                     ],
                                     "mode": "local",
