@@ -266,11 +266,15 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				expand: function(panel){
 					var index = me.getForm().getValues().sealingIndex;
 					var subIndex = null;
-					if(index > 70){
+					if(index > 70 && index < 80){
 						subIndex = index == 71 ? 'a' : index == 72 ? 'b' : 'c';
 						index = 7;
 					}
 					
+					if(index > 80 && index < 90){
+						subIndex = index == 81 ? 'rural' : index == 82 ? 'urban' : null;
+						index = 8;
+					}
 					
 					var spatialSelectors = me.roiFieldSetConfig.spatialSelectors;
 					if (index == 3 || index == 4)
@@ -497,6 +501,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 					layout : 'fit',
 					defaultType : 'radiogroup',
 					items : [{
+						ref   : '../../sealingIndexImpervious',
 			            cls: 'x-check-group-alt',
 						name : 'sealingIndex',
 		            	columns: 1,
@@ -524,9 +529,46 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		            	}
 		          	}]
                 },{
-                	boxLabel: this.framesText, 
-                	name: 'sealingIndex', 
-                	inputValue: 8
+                	title : this.framesText,
+					xtype : 'fieldset',
+					autoWidth : true,
+					collapsible : false,
+					layout : 'fit',
+					defaultType : 'radiogroup',
+					items : [{
+						ref   : '../../sealingIndexImpervious',
+			            cls: 'x-check-group-alt',
+						name : 'sealingIndex',
+		            	columns: 1,
+					    defaults: {
+					        // applied to each contained panel
+					        bodyStyle: 'padding:1px'
+					    },
+					    items:
+		                [{                	
+		                	boxLabel: 'Rural', 
+		                	name: 'sealingIndex', 
+		                	inputValue: 81
+		                },{                	
+		                	boxLabel: 'Urban', 
+		                	name: 'sealingIndex', 
+		                	inputValue: 82
+		                },{
+			          		xtype     : 'textfield',
+			          		name      : 'radius',
+							ref       : '../../sealingIndexImpervious',
+							cls       : 'x-check-group-alt',
+							width     : 140,
+							fieldLabel: 'Radius (m)',
+							boxLabel  : 'Radius (m)',
+		                    emptyText : 'Radius in meters (m)',
+		                    value     : 100
+			          	}],
+		                listeners:{
+		            		change: me.sealingIndexSelect,
+		            		scope: me
+		            	}
+		          	}]
                 },{
                 	boxLabel: this.consumeOnlyText, 
                 	name: 'sealingIndex', 
@@ -601,11 +643,6 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
      */
 	submitForm: function() {
 		if(this.validate()){
-			//TODO: Get result from WPS process
-			// var responseData = this.getFakeResponse();
-			// var params = this.getWPSParams();
-			// this.showResult(responseData);
-			
             //activate tab
             var changematrixTool = this.target.tools["changeMatrixTool"];            
             var tab = Ext.getCmp(changematrixTool.wfsChangeMatrisGridPanelID);
@@ -617,7 +654,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	         	wfsGrid.store.reload(lastOptions);
 	         	wfsGrid.getView().refresh();
 			}
-			
+
 			this.startWPSRequest(this.getForm().getValues());
 		}
 	},
@@ -792,9 +829,14 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		// index and subindex for 7
 		var index = params.sealingIndex;
 		var subIndex = null;
-		if(index > 70){
+		if(index > 70 && index < 80){
 			subIndex = index == 71 ? 'a' : index == 72 ? 'b' : 'c';
 			index = 7;
+		}
+		
+		if(index > 80 && index < 90){
+			subIndex = index == 81 ? 'rural' : index == 82 ? 'urban' : null;
+			index = 8;
 		}
 
 		// default style
@@ -831,6 +873,10 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			params.jcuda = true;
 		} else {
 			params.jcuda = false;
+		}
+		
+		if (!params.radius) {
+			params.radius = 100;
 		}
 		
 		// get inputs
@@ -872,7 +918,10 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			ROI : new OpenLayers.WPSProcess.ComplexData({
 				value : params.roi.toString(),
 				mimeType : 'application/wkt'
-			}),		
+			}),
+			radius : new OpenLayers.WPSProcess.LiteralData({
+				value : params.radius
+			}),	
 			jcuda : new OpenLayers.WPSProcess.LiteralData({
 				value : params.jcuda.toString()
 			})
@@ -894,7 +943,6 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				mimeType : 'text/plain; subtype=cql'
 			});
 		}
-
 		
 		var processName;
 		if(index < 5){
@@ -919,7 +967,6 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			processName = this.geocoderConfig.imperviousnessProccessName;
 		}
 		
-
 		var requestObject = {
 			type : "raw",
 			inputs : inputs,
