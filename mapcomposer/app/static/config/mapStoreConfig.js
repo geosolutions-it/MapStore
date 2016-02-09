@@ -1,6 +1,6 @@
 {
    "scaleOverlayMode": "none",
-   "gsSources":{  
+   "gsSources":{
    		"comunege": {
 			"ptype": "gxp_wmssource",
 			"title": "Comune Genova",
@@ -8,7 +8,7 @@
 			"SRS": "EPSG:900913",
 			"version":"1.1.1",
 			"layersCachedExtent": [
-				-20037508.34, -20037508.34, 
+				-20037508.34, -20037508.34,
 				20037508.34, 20037508.34
 			],
 			"layerBaseParams":{
@@ -20,18 +20,18 @@
 		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
-		}, 
-		"osm": { 
+		},
+		"osm": {
 			"ptype": "gxp_osmsource"
 		},
 		"google": {
-			"ptype": "gxp_googlesource" 
+			"ptype": "gxp_googlesource"
 		},
 		"bing": {
-			"ptype": "gxp_bingsource" 
-		}, 
-		"ol": { 
-			"ptype": "gxp_olsource" 
+			"ptype": "gxp_bingsource"
+		},
+		"ol": {
+			"ptype": "gxp_olsource"
 		}
 	},
 	"loadingPanel": {
@@ -114,7 +114,7 @@
 				},{
 					"xtype": "container",
 					"title": "Metadati",
-					"iconCls": "csw-viewer",             
+					"iconCls": "csw-viewer",
 					"border": false,
 					"layout": "fit",
 					"id": "metadata"
@@ -123,8 +123,8 @@
         },
         {
               "xtype": "panel",
-              "title": "Pannello Ricerche",  
-			  "floatable": false,			  
+              "title": "Pannello Ricerche",
+			  "floatable": false,
               "border": false,
               "id": "east",
               "width": 400,
@@ -137,13 +137,13 @@
               "header": true,
               "collapsedonfull": true
         }
-        
+
     ],
     "removeTools": ["googleearth_plugin", "googleearth_separator", "zoombox_plugin", "navigationhistory_plugin", "navigationhistory_separator", "gxp_wmsgetfeatureinfo_menu"],
 	"scaleOverlayUnits":{
-        "bottomOutUnits":"nmi",    
-        "bottomInUnits":"nmi",    
-        "topInUnits":"m",    
+        "bottomOutUnits":"nmi",
+        "bottomInUnits":"nmi",
+        "topInUnits":"m",
         "topOutUnits":"km"
     },
 	"customTools":[
@@ -156,7 +156,7 @@
 			"id": "addlayer"
 		},
 		{
-			"ptype": "gxp_wmsgetfeatureinfo_menu", 
+			"ptype": "gxp_wmsgetfeatureinfo_menu",
 			"regex": "[\\s\\S]*[\\w]+[\\s\\S]*",
 			"useTabPanel": true,
 			"toggleGroup": "toolGroup",
@@ -167,7 +167,7 @@
 			"actionTarget": {"target": "paneltbar", "index": 2},
 			"embeddedTemplateName": "viewer",
 			"showDirectURL": true
-		}, 
+		},
 		{
             "ptype": "gxp_featuremanager",
             "id": "featuremanager",
@@ -175,7 +175,7 @@
 			"pagingType": 1,
             "autoLoadFeatures": false
         }, {
-			"actions": ["-"], 
+			"actions": ["-"],
 			"actionTarget": "paneltbar"
 		}, {
             "ptype": "gxp_featureeditor",
@@ -195,13 +195,13 @@
                 "index":16
             }
 		}, {
-			"actions": ["-"], 
+			"actions": ["-"],
 			"actionTarget": "paneltbar"
 		}, {
             "ptype": "gxp_synchlayerenable",
             "id": "synchlayerenable_plugin",
             "actionTarget": ["layertree.contextMenu"]
-        }, {	 
+        }, {
             "ptype": "gxp_synchronizer",
             "id": "synchronizer_plugin",
             "refreshTimeInterval": 5,
@@ -250,7 +250,7 @@
                 "start": 1,
                 "limit": 10,
                 "timeout": 60000
-            }            
+            }
 		}, {
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
@@ -259,10 +259,10 @@
 			"directAddLayer": false,
 			"id": "addlayer"
 		}, {
-			"actions": ["-"], 
+			"actions": ["-"],
 			"actionTarget": "paneltbar"
 		}, {
-			"actions": ["->"], 
+			"actions": ["->"],
 			"actionTarget": "paneltbar"
 		}, {
 			"ptype": "gxp_help",
@@ -290,6 +290,7 @@
 			"index": 26
 		},{
 		  "ptype": "gxp_spatialqueryform",
+          "enableChartOptionsFieldset": false,
 		  "featureManager": "featuremanager",
 		  "featureGridContainer": "south",
 		  "outputTarget": "east",
@@ -301,7 +302,7 @@
             "sources": ["comunege"],
             "url": "http://mappe.comune.genova.it/geoserver/wps",
             "pageSize": 10
-          },          
+          },
 		  "outputConfig":{
 			  "outputSRS": "EPSG:900913",
 			  "selectStyle":{
@@ -310,11 +311,11 @@
 				  "fillOpacity": 0.4,
 				  "strokeWidth": 1
 			  },
-			  "spatialFilterOptions": {	
-				  "lonMax": 20037508.34,   
+			  "spatialFilterOptions": {
+				  "lonMax": 20037508.34,
 				  "lonMin": -20037508.34,
-				  "latMax": 20037508.34,   
-				  "latMin": -20037508.34  
+				  "latMax": 20037508.34,
+				  "latMin": -20037508.34
 			  },
 			  "bufferOptions": {
 				"minValue": 1,
@@ -514,12 +515,12 @@
     	}
     },{
         "ptype": "gxp_zoombox",
-        "id": "custom_zoombox_plugin", 
+        "id": "custom_zoombox_plugin",
         "toggleGroup": "toolGroup",
         "appendZoomOut": false,
         "actionTarget": {
-        	"target": "paneltbar", 
-        	"index": 4  
+        	"target": "paneltbar",
+        	"index": 4
         }
     }, {
 		"ptype": "gxp_about",
