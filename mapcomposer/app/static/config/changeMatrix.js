@@ -481,19 +481,27 @@
             	{"layer": "it.crisp:corine_L3", "level": 3, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]},
             	{"layer": "it.crisp:touring", "level": 4, "values": [0,1,2,3,4,5,6,7,8,9,10,11,12,13]}
             ],
+            "layersPixelSizes": [
+            	{"layer": "it.crisp:touring",     "pixelSize": 400},
+            	{"layer": "it.crisp:corine_L1",   "pixelSize": 400},
+            	{"layer": "it.crisp:corine_L2",   "pixelSize": 400},
+            	{"layer": "it.crisp:corine_L3",   "pixelSize": 400},
+            	{"layer": "it.crisp:urban_grids", "pixelSize": 400}
+            ],
             "splitPanels": true,
             "wfsChangeMatrisGridPanelID": "wfsChangeMatrisGridPanel_tabpanel",
-            "panelsConfig": [{
-            	"title": "Land Cover",
-            	"clcLevelMode": "combobox",
-            	"geocoderConfig": {
+            "panelsConfig": [
+               {
+            	 "title": "Land Cover",
+            	 "clcLevelMode": "combobox",
+            	 "geocoderConfig": {
             		"selectReturnType": false,
             		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_0"
-            	},
-            	"xtype": "gxp_changematrixpanel"
-        	},{
-            	"title": "Soil Sealing",
-            	"geocoderConfig": {
+            	 },
+            	 "xtype": "gxp_changematrixpanel"
+        	   },{
+            	 "title": "Soil Sealing",
+            	 "geocoderConfig": {
             		"selectReturnType": true,
             		"wpsProcessName": "gs:SoilSealingCLC",
             		"storeName": "unina_ds",
@@ -509,10 +517,10 @@
             		"imperviousnessProccessName": "gs:SoilSealingImperviousness",
             		"imperviousnessLayer": "imperviousness",
             		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_1"
-            	},
-            	"xtype": "gxp_soilpanel"
-            }]
-        },{
+            	 },
+            	 "xtype": "gxp_soilpanel"
+               }]
+          },{
         	"ptype": "gxp_georeferences",
         	"actionTarget": "paneltbar"
         },{

@@ -545,15 +545,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 					        bodyStyle: 'padding:1px'
 					    },
 					    items:
-		                [{                	
-		                	boxLabel: 'Rural', 
-		                	name: 'sealingIndex', 
-		                	inputValue: 81
-		                },{                	
-		                	boxLabel: 'Urban', 
-		                	name: 'sealingIndex', 
-		                	inputValue: 82
-		                },{
+		                [{
 			          		xtype     : 'textfield',
 			          		name      : 'radius',
 							ref       : '../../sealingIndexImpervious',
@@ -563,7 +555,15 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 							boxLabel  : 'Radius (m)',
 		                    emptyText : 'Radius in meters (m)',
 		                    value     : 100
-			          	}],
+			          	},{                	
+		                	boxLabel: 'Rural', 
+		                	name: 'sealingIndex', 
+		                	inputValue: 81
+		                },{                	
+		                	boxLabel: 'Urban', 
+		                	name: 'sealingIndex', 
+		                	inputValue: 82
+		                }],
 		                listeners:{
 		            		change: me.sealingIndexSelect,
 		            		scope: me
@@ -879,6 +879,18 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			params.radius = 100;
 		}
 		
+		var pixelSize = 400;
+		if(this.layersPixelSizes && params.raster)
+		{
+			for(var lp=0; lp<this.layersPixelSizes.length; lp++)
+			{
+				if(this.layersPixelSizes[lp].layer == params.raster)
+				{
+					pixelSize = this.layersPixelSizes[lp].pixelSize;
+				}
+			}
+		}
+		
 		// get inputs
 		var inputs = {
 			name : new OpenLayers.WPSProcess.LiteralData({
@@ -921,7 +933,10 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			}),
 			radius : new OpenLayers.WPSProcess.LiteralData({
 				value : params.radius
-			}),	
+			}),
+			pixelSize : new OpenLayers.WPSProcess.LiteralData({
+				value : pixelSize
+			}),
 			jcuda : new OpenLayers.WPSProcess.LiteralData({
 				value : params.jcuda.toString()
 			})

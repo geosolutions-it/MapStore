@@ -527,6 +527,7 @@ gxp.plugins.ChangeMatrix = Ext.extend(gxp.plugins.TableableTool, {
 		panelConfig.wpsManager = this.wpsManager;
 		panelConfig.classes = this.classes;
 		panelConfig.classesIndexes = this.classesIndexes;
+		panelConfig.layersPixelSizes = this.layersPixelSizes;
 
 		return Ext.create(panelConfig);
 	}
