@@ -422,6 +422,7 @@ gxp.plugins.nrl.Irrigation = Ext.extend(gxp.plugins.Tool, {
                     marginTop: '6px'
                 },
                 xtype: 'nrl_aoifieldset',
+                hideNational: this.hideNational,
                 hidden: true,
                 name: 'region_list',
                 ref: 'aoiFieldSet',

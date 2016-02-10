@@ -321,6 +321,7 @@ gxp.plugins.nrl.MarketPrices = Ext.extend(gxp.plugins.Tool, {
                     marginTop: '6px'
                 },
                 xtype: 'nrl_aoifieldset',
+                hideNational: this.hideNational,
                 name: 'region_list',
                 ref: 'aoiFieldSet',
                 layerStyle: this.layerStyle,

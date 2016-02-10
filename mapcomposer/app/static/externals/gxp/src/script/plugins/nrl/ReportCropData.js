@@ -516,6 +516,7 @@ gxp.plugins.nrl.ReportCropData = Ext.extend(gxp.plugins.nrl.CropStatus, {
         if(!this.aoiSimpleSelection){
             return this.aoiFieldSet = {
                 xtype:'nrl_aoifieldset',
+                hideNational: this.hideNational,
                 target:this.target,
                 name:'region_list',
                 ref:'aoiFieldSet',

@@ -270,6 +270,7 @@ gxp.plugins.nrl.AgroMet = Ext.extend(gxp.plugins.Tool, {
 					anchor:'100%'
 				},{
 					xtype: 'nrl_aoifieldset',
+                    hideNational: this.hideNational,
 					name:'region_list',
 					ref:'aoiFieldSet',
                     layerStyle:this.layerStyle,

@@ -416,6 +416,7 @@
             "unitsUrl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:measure_units_for_crop&outputFormat=json",
             "highChartExportUrl": "/highcharts-export/",
             "sourcesUrl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_sources&outputFormat=json",
+            "hideNational": true,
 			"areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','SINDH','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
 		  "layers":{
 			"district":"nrl:district_crop",
@@ -439,6 +440,7 @@
             "dataUrl": "/geoserver/ows",
             "factorsurl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
             "highChartExportUrl": "/highcharts-export/",
+            "hideNational": true,
 		"areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','SINDH','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
 		"titleText": "Agromet Variables",
 		  "outputConfig":{
@@ -465,6 +467,7 @@
             "factorsurl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
             "metadataUrl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:fertilizers_metadata&outputFormat=json",
             "highChartExportUrl": "/highcharts-export/",
+            "hideNational": true,
 			"areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','SINDH','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
             "titleText": "Fertilizers",
             "outputConfig": {
@@ -501,6 +504,7 @@
                 "province": "nrl:province_view",
                 "district": "nrl:district_crop"
             },
+            "hideNational": true,
             "areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','SINDH','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
             "portalRef": "gxp_portal_staticpage",
             "helpPath": "/~test/croportal/hlp_water_en.asp"
@@ -538,6 +542,7 @@
                 "province": "nrl:province_view",
                 "district": "nrl:district_crop"
             },
+            "hideNational": true,
             "areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','SINDH','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
             "portalRef": "gxp_portal_staticpage",
             "helpPath": "/~test/croportal/hlp_market_en.asp"
@@ -554,6 +559,7 @@
             "rangesUrl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
             "dataUrl": "/geoserver/ows",
             "highChartExportUrl": "/highcharts-export/",
+            "hideNational": true,
 			"areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','SINDH','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
 		  "outputConfig":{
 			 "id":"nrlCropStatus" 
@@ -584,6 +590,7 @@
 		    },
 		  "defaultAreaTypeMap": "district",
 		  "disclaimerText": "Disclaimer: Data, information and products in this report are provided \"as is\", without warranty of any kind, either express or implied. All rights are reserved by the Government of Pakistan",
+            "hideNational": true,
             "areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','SINDH','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
             "outputTarget": "nrl",
             "portalRef": "gxp_portal_staticpage",

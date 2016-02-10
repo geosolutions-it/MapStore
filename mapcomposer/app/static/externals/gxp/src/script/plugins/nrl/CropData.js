@@ -352,6 +352,15 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
 								if(item.inputValue == "pakistan"){
 									item.setDisabled(!pakenabled);
 								}
+                                //Check Province (District), the only available option if hideNational
+                                if(this.hideNational && outputValue === "map" && item.checked === true){
+                                    item.setValue('province');
+                                }
+                                // hide National (District) if hide National
+                                if (this.hideNational && item.inputValue == "district"){
+                                     item.setVisible(outputValue !== "map");
+                                }
+                                
 								var el = item.wrap.child('.x-form-cb-label');
 								el.update(mapConvert[item.inputValue]);
                             },this);
@@ -395,6 +404,7 @@ gxp.plugins.nrl.CropData = Ext.extend(gxp.plugins.Tool, {
                 //
                 },{
                     xtype: 'nrl_aoifieldset',
+                    hideNational: this.hideNational,
                     name:'region_list',
                     ref:'aoiFieldSet',
                     layerStyle:this.layerStyle,
