@@ -380,6 +380,7 @@
                 "fillOpacity": 0.2,
                 "cursor": "pointer"
             },
+			"areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA')",
             "dataUrl": "/geoserver/ows",
             "rangesUrl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
             "unitsUrl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:measure_units_for_crop&outputFormat=json",
@@ -407,7 +408,7 @@
             "dataUrl": "/geoserver/ows",
             "factorsurl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
             "highChartExportUrl": "/highcharts-export/",
-            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')",
+            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA')",
             "titleText": "Agromet Variables",
             "outputConfig": {
                 "id": "Agromet"
@@ -433,6 +434,7 @@
             "factorsurl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
             "metadataUrl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:fertilizers_metadata&outputFormat=json",
             "highChartExportUrl": "/highcharts-export/",
+			"areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA')",
             "titleText": "Fertilizers",
             "outputConfig": {
                 "id": "Fertilizers"
@@ -468,7 +470,7 @@
                 "province": "nrl:province_view",
                 "district": "nrl:district_crop"
             },
-            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')",
+            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA')",
             "portalRef": "gxp_portal_staticpage",
             "helpPath": "/~test/croportal/hlp_water_en.asp"
         },
@@ -505,7 +507,7 @@
                 "province": "nrl:province_view",
                 "district": "nrl:district_crop"
             },
-            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')",
+            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA')",
             "portalRef": "gxp_portal_staticpage",
             "helpPath": "/~test/croportal/hlp_market_en.asp"
         },
@@ -521,6 +523,7 @@
             "rangesUrl": "/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
             "dataUrl": "/geoserver/ows",
             "highChartExportUrl": "/highcharts-export/",
+			"areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA')",
             "outputConfig": {
                 "id": "nrlCropStatus"
             },

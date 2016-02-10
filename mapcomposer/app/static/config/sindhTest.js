@@ -416,6 +416,7 @@
             "unitsUrl": "http://cip-pakistan.geo-solutions.it/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:measure_units_for_crop&outputFormat=json",
             "highChartExportUrl": "http://cip-pakistan.geo-solutions.it/highcharts-export/",
             "sourcesUrl": "http://cip-pakistan.geo-solutions.it/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_sources&outputFormat=json",
+            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','PUNJAB','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
 		  "layers":{
 			"district":"nrl:district_crop",
                 "province": "nrl:province_view"
@@ -438,7 +439,7 @@
             "dataUrl": "http://cip-pakistan.geo-solutions.it/geoserver/ows",
             "factorsurl": "http://cip-pakistan.geo-solutions.it/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
             "highChartExportUrl": "http://cip-pakistan.geo-solutions.it/highcharts-export/",
-		"areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')",
+		"areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','PUNJAB','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
 		"titleText": "Agromet Variables",
 		  "outputConfig":{
 			 "id":"Agromet" 
@@ -464,6 +465,7 @@
             "factorsurl": "http://cip-pakistan.geo-solutions.it/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:agrometdescriptor&max&outputFormat=json",
             "metadataUrl": "http://cip-pakistan.geo-solutions.it/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:fertilizers_metadata&outputFormat=json",
             "highChartExportUrl": "http://cip-pakistan.geo-solutions.it/highcharts-export/",
+            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','PUNJAB','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
             "titleText": "Fertilizers",
             "outputConfig": {
                 "id": "Fertilizers"
@@ -499,7 +501,7 @@
                 "province": "nrl:province_view",
                 "district": "nrl:district_crop"
             },
-            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')",
+            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','PUNJAB','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
             "portalRef": "gxp_portal_staticpage",
             "helpPath": "/~test/croportal/hlp_water_en.asp"
         },
@@ -536,7 +538,7 @@
                 "province": "nrl:province_view",
                 "district": "nrl:district_crop"
             },
-            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','DISPUTED AREA')",
+            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','PUNJAB','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
             "portalRef": "gxp_portal_staticpage",
             "helpPath": "/~test/croportal/hlp_market_en.asp"
         },
@@ -552,6 +554,7 @@
             "rangesUrl": "http://cip-pakistan.geo-solutions.it/geoserver/nrl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nrl:cropdata_ranges&outputFormat=json",
             "dataUrl": "http://cip-pakistan.geo-solutions.it/geoserver/ows",
             "highChartExportUrl": "http://cip-pakistan.geo-solutions.it/highcharts-export/",
+            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','PUNJAB','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
 		  "outputConfig":{
 			 "id":"nrlCropStatus"
 		  },
@@ -581,7 +584,7 @@
 		    },
 		  "defaultAreaTypeMap": "district",
 		  "disclaimerText": "Disclaimer: Data, information and products in this report are provided \"as is\", without warranty of any kind, either express or implied. All rights are reserved by the Government of Pakistan",
-            "areaFilter": "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
+            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA','BALOCHISTAN','PUNJAB','AJK','FATA','KHYBER PAKHTUNKHWA','Khyber Pakhtunkhwa','FEDERAL')",
             "outputTarget": "nrl",
             "portalRef": "gxp_portal_staticpage",
             "helpPath": "/~test/croportal/hlp_report_en.asp"
