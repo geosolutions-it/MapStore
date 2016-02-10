@@ -34,6 +34,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 	displayField: 'province',
 	selectableLayer: 'nrl:province_boundary',
     disableWidth:['pakistan'],
+    hideNational: false,
 	comboConfigs:{
         base:{
             anchor:'100%',
@@ -138,7 +139,7 @@ nrl.form.AOIFieldSet = Ext.extend(Ext.form.FieldSet, {
 				items:[
 					{boxLabel: 'Province' , name: 'areatype', inputValue: 'province' , checked: true, disabled: this.grantypesState['province']},
 					{boxLabel: 'District', name: 'areatype', inputValue: 'district', disabled: this.grantypesState['district']},
-                    {boxLabel: 'Pakistan', name: 'areatype', inputValue: 'pakistan', disabled: this.grantypesState['pakistan']}
+                    {boxLabel: 'Pakistan', name: 'areatype', inputValue: 'pakistan', disabled: this.grantypesState['pakistan'], hidden: this.hideNational}
 				],
 				listeners: {
 					change: function(cbg, checkedarray){
