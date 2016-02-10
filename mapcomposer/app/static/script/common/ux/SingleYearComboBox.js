@@ -31,14 +31,26 @@ Ext.ux.SingleYearComboBox = Ext.extend(Ext.form.ComboBox,{
 	autoLoad:true,
 	displayField:'year',
 	valueField:'year',
-	store:new Ext.data.ArrayStore({
-		data: [
-				[2000],[2001],[2002],[2003],[2004],[2005],[2006],[2006],[2007],[2008],[2009],[2010],[2011],[2012]//TODO externalize data
-				
-		],
-		fields:[{name:'year',dataIndex:0}]
-		
-	}),
+	
+    initComponent: function() {
+         if(this.store){
+            this.store.on('load', function(store,records,opt){
+                    if (records.length<1) return;
+                    var value =this.getStore().getAt(0).get(this.valueField);
+                    this.setValueAndFireSelect(value);
+                },this);
+        } else {
+            this.store = new Ext.data.ArrayStore({
+                data: [
+                        [2000],[2001],[2002],[2003],[2004],[2005],[2006],[2006],[2007],[2008],[2009],[2010],[2011],[2012]//TODO externalize data
+                ],
+                fields:[{name:'year',dataIndex:0}]
+
+            });
+        }
+		return Ext.ux.SingleYearComboBox.superclass.initComponent.apply(this, arguments);
+	},
+        
     //private: fixes expand when load data
 	onLoad: function(){
 		Ext.ux.SingleYearComboBox.superclass.onLoad.call(this);
