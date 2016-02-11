@@ -613,7 +613,9 @@ nrl.chartbuilder.marketprices.region = {
             }];
             for (var region in opt.series) {
                 fields.push({
-                    name: region
+                    name: region,
+                    type: 'float',
+                    useNull: true
                 });
             }
 
