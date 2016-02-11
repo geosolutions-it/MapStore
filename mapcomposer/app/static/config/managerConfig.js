@@ -409,7 +409,7 @@
                             {
                                 "allowBlank": false,
                                 "displayField": "name",
-                                "fieldLabel": "Production Uom",
+                                "fieldLabel": "Area Uom",
                                 "hiddenName": "area_default_unit",
                                 "mode": "local",
                                 "name": "area_default_unit",
@@ -430,7 +430,7 @@
                             {
                                 "allowBlank": false,
                                 "displayField": "name",
-                                "fieldLabel": "Production Uom",
+                                "fieldLabel": "Yield Uom",
                                 "hiddenName": "yield_default_unit",
                                 "mode": "local",
                                 "name": "yield_default_unit",
