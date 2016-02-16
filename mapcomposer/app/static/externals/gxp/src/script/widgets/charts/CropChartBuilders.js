@@ -424,7 +424,7 @@ nrl.chartbuilder.crop.composite = {
 					text += 'Crop Data Analysis: Composite - ' + chartTitle;
 				}
 			}
-			text += (customOpt.compositeMode != 'abs' ? '<br /><span>' + nrl.chartbuilder.util.toTitleCase(commodity) + ' ' + listVar.toYear + ' - (average ' + listVar.fromYear + "-"+ listVar.toYear + ')</span>' : '<br />' + commodity);
+			text += (customOpt.compositeMode != 'abs' ? '<br /><span>' + nrl.chartbuilder.util.toTitleCase(commodity) + ' ' + listVar.toYear + ' - (average ' + listVar.fromYear + "-"+ listVar.toYear + ')</span>' : '<br />' + (cropTitles.length > 0 ? cropTitles[0].toUpperCase() : commodity) );
 
 			//
 			// AOI Subtitle customization
@@ -440,7 +440,7 @@ nrl.chartbuilder.crop.composite = {
 				aoiSubtitle += chartTitle;
 			}
 
-			var commoditiesListStr = nrl.chartbuilder.util.toTitleCase(listVar.commodity.replace(/[']/g, '').replace(/\\,/g,', ').toUpperCase());
+			var commoditiesListStr = nrl.chartbuilder.util.toTitleCase((cropTitles.length > 0 ? cropTitles[0].toUpperCase() : listVar.commodity.replace(/[']/g, '').replace(/\\,/g,', ').toUpperCase()));
 			chart = new Ext.ux.HighChart({
 				series: chartConfig.series,
 				alignYAxisZero: (customOpt.compositeMode != 'abs'),

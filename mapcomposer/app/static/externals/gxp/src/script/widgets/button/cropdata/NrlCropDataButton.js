@@ -328,7 +328,7 @@ gxp.widgets.button.NrlCropDataButton = Ext.extend(Ext.SplitButton, {
                 //create string " 'crop1'\,'crop2' " as view param
                 crops = "'" + cropIds.join("'\\,'") + "'";
 			}
-		} else if (this.mode === 'compareRegion'){                                         // sends commodity label to 'CropChartBuilders.js'
+		} else if (this.mode === 'compareRegion' || this.mode === 'composite'){            // sends commodity label to 'CropChartBuilders.js'
             var cropTitle = this.form.output.Commodity.getSelectedRecord().get("label");   // to build chart title (part of issue #104 fixing)
             cropTitles.push(cropTitle);                                                    // in 'comparsion by region' mode.
         }
