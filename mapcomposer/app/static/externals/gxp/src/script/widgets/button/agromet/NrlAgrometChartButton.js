@@ -319,7 +319,7 @@ gxp.widgets.button.NrlAgrometChartButton = Ext.extend(Ext.SplitButton, {
 			success: function(reply, opt){
 				var jsonData1 = Ext.util.JSON.decode(reply.responseText);
 				if (jsonData1.features.length <=0){
-                    Ext.Msg.alert("No data","Data not available for these search criteria");
+                    Ext.Msg.alert("No data","Data not available for these search criteria or year range too short");
 					myMask.hide();
                     return;
                 }
