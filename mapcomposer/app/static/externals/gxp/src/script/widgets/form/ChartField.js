@@ -57,7 +57,9 @@ gxp.form.ChartField = Ext.extend(Ext.form.CompositeField, {
                 attributes = this.attributes;
             }
         }
-
+        this.xFieldType = '';
+        this.yFieldType = '';
+        this.pippo = [];
         var defAttributesComboConfig = {
             xtype: "combo",
             id: this.id,
@@ -69,13 +71,13 @@ gxp.form.ChartField = Ext.extend(Ext.form.CompositeField, {
             mode: mode,
             triggerAction: "all",
             ref: "property",
-            allowBlank: this.allowBlank,
+            allowBlank: false, // this.allowBlank,
             displayField: "name",
             valueField: "name",
             value: undefined,
             listeners: {
                 select: function(combo, record) {
-
+                    this.enableDisableChartButton();
                 },
                 // workaround for select event not being fired when tab is hit
                 // after field was autocompleted with forceSelection
@@ -132,7 +134,17 @@ gxp.form.ChartField = Ext.extend(Ext.form.CompositeField, {
 
         gxp.form.ChartField.superclass.initComponent.call(this);
     },
-
+    enableDisableChartButton: function(){
+        
+        var xFieldValue = this.ownerCt.ownerCt.ownerCt.xaxisAttributeField.items.items[0].getValue();
+        var yFieldValue = this.ownerCt.ownerCt.ownerCt.yaxisAttributeField.items.items[0].getValue();
+        var toolbar = this.ownerCt.ownerCt.ownerCt.ownerCt.chartToolbar.items.items[0];
+        if(xFieldValue && yFieldValue){
+            toolbar.enable();
+        }else{
+            toolbar.disable();
+        }
+    },
     createAggregationsCombo: function() {
 
         var data = [
@@ -151,7 +163,7 @@ gxp.form.ChartField = Ext.extend(Ext.form.CompositeField, {
             }),
             value: 0,
             originalValue: 0,
-            ref: "chartAggCombo",
+            ref: "../../chartAggCombo",
             displayField: "name",
             valueField: "value",
             triggerAction: "all",

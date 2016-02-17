@@ -514,6 +514,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 
                 queryForm.chartBuilder.reset = function() {
                     this.chartTypeCombo.reset();
+                    this.chartToolbar.items.items[0].disable();
                     var items = this.findByType("gxp_chartfield");
                     for(var i = 0; i < items.length; i++) {
                         var item = items[i];

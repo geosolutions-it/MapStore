@@ -290,6 +290,7 @@
 			"index": 26
 		},{
 		  "ptype": "gxp_spatialqueryform",
+          "enableChartOptionsFieldset": true,
 		  "featureManager": "featuremanager",
 		  "featureGridContainer": "south",
 		  "outputTarget": "east",
