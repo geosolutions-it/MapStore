@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2008-2011 The Open Planning Project
+* Copyright (c) 2014-2016 Geo-Solutions
 *
 * Published under the GPL license.
 * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
@@ -32,9 +32,6 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
     
     /** api: ptype = gxp_featuregrid */
     ptype: "gxp_gcseggrid",
-
-
-   
 
     /** private: property[schema]
      *  ``GeoExt.data.AttributeStore``
@@ -127,18 +124,18 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
     
     deleteButtonText: "Delete",
     
-     //Strings
-   btnDetailsIconCls: "gc-icon-notice",
-   btnDetailsText:  "Notice Details",
-   btnDetailsTooltip: "Show Notice Details",
-   btnMapIconCls: "gc-icon-map",
-   btnMapText:  "Map",
-   btnMapTooltip: "Show Map",
-   noticeDetailsPanelTitle:"Notice Details",
-   photoBrowserPanelTitle:"Surveys Images",
-   noticePhotoBrowserPanelTitle:"Notice Images",
-   surveysPanelTitle:"Surveys",
-   noticePanelTitle:"Notice",
+    //Strings
+    btnDetailsIconCls: "gc-icon-notice",
+    btnDetailsText:  "Notice Details",
+    btnDetailsTooltip: "Show Notice Details",
+    btnMapIconCls: "gc-icon-map",
+    btnMapText:  "Map",
+    btnMapTooltip: "Show Map",
+    noticeDetailsPanelTitle:"Notice Details",
+    photoBrowserPanelTitle:"Surveys Images",
+    noticePhotoBrowserPanelTitle:"Notice Images",
+    surveysPanelTitle:"Surveys",
+    noticePanelTitle:"Notice",
     /** api: config[displayFeatureText]
      * ``String``
      * Text for feature display button (i18n).
@@ -264,15 +261,13 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  Default output format selection for export. Default is 'CSV'
      */
     defaultComboFormatValue: "CSV",
-	
-	/** api: config[zoomToFeature]
+    
+    /** api: config[zoomToFeature]
      *  ``String``
      */
-	zoomToFeature: "Zoom To Feature",
+    zoomToFeature: "Zoom To Feature",
     
-   
-   fKey:"",//chiave esterna per caricare tabelle history e sopralluoghi
-   
+    fKey:"",//chiave esterna per caricare tabelle history e sopralluoghi
    
     /** api: config[exportDoubleCheck]
      *  ``Boolean``
@@ -280,26 +275,26 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      */
      exportDoubleCheck: true,
      
-	/** api: config[exportCheckLimit]
+    /** api: config[exportCheckLimit]
      *  ``integer``
      *  if present, limit the number of feature to query for the first check
      */
      exportCheckLimit: null,
      
-	/** api: config[pageLabel]
+    /** api: config[pageLabel]
      *  ``String``
      */
-	pageLabel: "Page",
-	
-	/** api: config[pageOfLabel]
+    pageLabel: "Page",
+    
+    /** api: config[pageOfLabel]
      *  ``String``
      */
-	pageOfLabel: "of",	
-	
+    pageOfLabel: "of",  
+    
     /** api: config[totalRecordsLabel]
      *  ``String``
      */
-	totalRecordsLabel: "Total Records",
+    totalRecordsLabel: "Total Records",
     filterPropertyNames: true,
 
     /** private: method[displayTotalResults]
@@ -319,7 +314,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
     init:function(targt)
     {
         gxp.plugins.FeatureManager.superclass.init.apply(this, arguments);        
-      //TODO RIMUOVERE E METTERE IN CONFIGURAZIONE
+        //TODO RIMUOVERE E METTERE IN CONFIGURAZIONE
         // /////////////////////////////////////////////////////
         // Get the user's corrensponding authkey if present 
         // (see MSMLogin.getLoginInformation for more details)
@@ -350,18 +345,18 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      */
     createPhotoBrowser:function(){
         
-          var photoBrowser= new Ext.DataView({
-                         itemSelector: 'div.thumb-wrap',
-                         style:'overflow:auto',
-                         ref:'picview',
-                         multiSelect: true,
-                         title:'Pictures',
-                         authParam:this.authParam,
-                         authKey:this.authkey,
-                         //ref:'../../../phBrowser',
-                         picturesBrowserConfig:this.configSurvey.picturesBrowserConfig,
-                     store: new Ext.data.JsonStore({
-                                url: "http://geosolution.it",
+        var photoBrowser= new Ext.DataView({
+            itemSelector: 'div.thumb-wrap',
+            style:'overflow:auto',
+            ref:'picview',
+            multiSelect: true,
+            title:'Pictures',
+            authParam:this.authParam,
+            authKey:this.authkey,
+            //ref:'../../../phBrowser',
+            picturesBrowserConfig:this.configSurvey.picturesBrowserConfig,
+            store: new Ext.data.JsonStore({
+                    url: "http://geosolution.it",
                     autoLoad: false,
                     root: 'data',
                     id:'name',
@@ -372,38 +367,44 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     listeners:{
                         load:function (store,records,req){
                             if(records.length <= 0 ){
-                              if(photoBrowser.ownerCt.isVisible()) photoBrowser.ownerCt.ownerCt.layout.setActiveItem(0);
-                               photoBrowser.ownerCt.disable();
-                            }else photoBrowser.ownerCt.enable();
+                                if(photoBrowser.ownerCt.isVisible()){
+                                    photoBrowser.ownerCt.ownerCt.layout.setActiveItem(0);
+                                }
+                                photoBrowser.ownerCt.disable();
+                            }else{
+                                photoBrowser.ownerCt.enable();
+                            }
                         }
                     }
                 }),
-                         loadPhotos:function(r){
-                         var ds=this.getStore();
-                         var url=this.picturesBrowserConfig.baseUrl
-                         +'?action=get_filelist&folder='
-                         +this.picturesBrowserConfig.folder
-                         +r.data[this.picturesBrowserConfig.featureProperty]+"/"+r.data.fid;
-                         if(this.authKey)url+="&"+this.authParam+"="+this.authKey;
-                        ds.proxy.setUrl(url,true);
-                        ds.load();
-                },
-
-                tpl: new Ext.XTemplate(
-                    '<tpl for=".">',
-                    '<div class="thumb-wrap" id="{name}">',
-                    '<div class="thumb"><img height="100px" width="100px" src="'+this.configSurvey.picturesBrowserConfig.baseUrl+'?action=get_image&file={web_path}" class="thumb-img"></div>',
-                    '<span></span></div>',
-                    '</tpl>'
-                ),
-                listeners:{
-                    dblclick:function (scope, index, node, e){
-                        window.open(node.getElementsByTagName("img")[0].src);
-                    }
+            loadPhotos:function(r){
+                var ds=this.getStore();
+                var url=this.picturesBrowserConfig.baseUrl
+                        +'?action=get_filelist&folder='
+                        +this.picturesBrowserConfig.folder
+                        +r.data[this.picturesBrowserConfig.featureProperty]+"/"+r.data.fid;
+                if(this.authKey){
+                    url+="&"+this.authParam+"="+this.authKey;
                 }
-            });
+                ds.proxy.setUrl(url,true);
+                ds.load();
+            },
 
-            return photoBrowser;        
+            tpl: new Ext.XTemplate(
+                '<tpl for=".">',
+                '<div class="thumb-wrap" id="{name}">',
+                '<div class="thumb"><img height="100px" width="100px" src="'+this.configSurvey.picturesBrowserConfig.baseUrl+'?action=get_image&file={web_path}" class="thumb-img"></div>',
+                '<span></span></div>',
+                '</tpl>'
+            ),
+            listeners:{
+                dblclick:function (scope, index, node, e){
+                    window.open(node.getElementsByTagName("img")[0].src);
+                }
+            }
+        });
+
+        return photoBrowser;        
         
     },
     
@@ -415,7 +416,9 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         var mapPanelContainer= this.target.mapPanelContainer;
         var target=this.target;
         var bParams={};
-        if(this.authkey)bParams[this.authParam] = this.authkey;
+        if(this.authkey){
+            bParams[this.authParam] = this.authkey;
+        }
         //Creo il pannello che carica i dettagli segnalazione!!
         if(this.configSurvey.picturesBrowserConfig){
             var photoBrowser=this.createPhotoBrowser();
@@ -448,101 +451,93 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 region:'center',
                 activeItem:0,
                 height:500,
-                items:[
-                    {
-                     xtype:'panel',
-                     layout:'accordion',
-                     title:this.noticePanelTitle,
-                   items:[ Ext.apply({
-                        xtype:"gxp_gchistroygrid",
-                        ref:'../../seg_history',
-                        mapPanel:this.target.mapPanel,
-                         baseParams:bParams
-                    },this.initialConfig.configHistory||{}),
-                    {
-                         title:this.noticePhotoBrowserPanelTitle,
-                         disabled:true,
-                         hidden:(!photoBrowserNotice),
-                         items:[photoBrowserNotice||{}],
-                     }
-                    
+                items:[{
+                    xtype:'panel',
+                    layout:'accordion',
+                    title:this.noticePanelTitle,
+                    items:[ Ext.apply({
+                            xtype:"gxp_gchistroygrid",
+                            ref:'../../seg_history',
+                            mapPanel:this.target.mapPanel,
+                            baseParams:bParams
+                        },
+                        this.initialConfig.configHistory||{}),
+                        {
+                            title:this.noticePhotoBrowserPanelTitle,
+                            disabled:true,
+                            hidden:(!photoBrowserNotice),
+                            items:[photoBrowserNotice||{}]
+                        }
                     ]
-                    },
-                    {
-                     xtype:'panel',
-                     layout:'accordion',
-                     title:this.surveysPanelTitle,
+                },{
+                    xtype:'panel',
+                    layout:'accordion',
+                    title:this.surveysPanelTitle,
                     items: [Ext.apply({
-                    xtype:"gxp_gcsopgrid",
-                    target:this.target,
-                    baseParams:bParams,
-                    authParam:this.authParam,
-                    authKey:this.authkey,
-                    wfsURL: "http://84.33.2.28:8081/geoserver/it.geosolutions/ows",
-                    typeName: "rilevamenti_effettuati",
-                    ref:"../../sop",
-                    listeners:{'sopselected':photoBrowser.loadPhotos,scope:photoBrowser
-                    }
-                     },this.initialConfig.configSurvey||{})
-                     ,
-                     
+                        xtype:"gxp_gcsopgrid",
+                        target:this.target,
+                        baseParams:bParams,
+                        authParam:this.authParam,
+                        authKey:this.authkey,
+                        wfsURL: "http://84.33.2.28:8081/geoserver/it.geosolutions/ows",
+                        typeName: "rilevamenti_effettuati",
+                        ref:"../../sop",
+                        listeners:{
+                            'sopselected':photoBrowser.loadPhotos,scope:photoBrowser
+                        }
+                    },
+                    this.initialConfig.configSurvey||{}),
                     {
-                         title:this.photoBrowserPanelTitle,
-                         disabled:true,
-                         hidden:(!photoBrowser),
-                         items:[photoBrowser||{}],
-                     }] 
-                    }
-                
-                 ]
-                
-            }
-          
-            ],
-            
-            
+                        title:this.photoBrowserPanelTitle,
+                        disabled:true,
+                        hidden:(!photoBrowser),
+                        items:[photoBrowser||{}],
+                    }] 
+                }]
+            }],
+
             listeners: {
                 beforeadd: function(record) {                   
                     return record.get("group") !== "background";
                 },
-                pluginready: function(istance) {
-                }
+                pluginready: function(istance) {}
             },
             showMe:function(record){
                 if(!this.target.mapPanelContainer.items.get(2).isVisible()){
-                  this.target.toolbar.hide();
+                    this.target.toolbar.hide();
                     //Se visibile cambi solo i dati delle tabelle altrimetni lo attivi
                     var west = Ext.getCmp('west');
                     //Nascondo west se è aperto
-                if(west.isVisible()) {
-                    west.collapse();
-                    this.westVisible=true;
-                    }else this.westVisible=false;
-                //Attivo il pannello
-              this.target.mapPanelContainer.layout.setActiveItem(2);
-               }
-               
-               if(record){
-                this.seg_history.loadHistory(record.data[this.fKey]);
-                this.sop.loadSop(record.data[this.fKey]);
-                   if(photoBrowserNotice) photoBrowserNotice.loadPhotos(record);
-                this.doLayout();
+                    if(west.isVisible()) {
+                        west.collapse();
+                        this.westVisible=true;
+                    }else{
+                        this.westVisible=false;
+                    }
+                    //Attivo il pannello
+                    this.target.mapPanelContainer.layout.setActiveItem(2);
                 }
-               
+                if(record){
+                    this.seg_history.loadHistory(record.data[this.fKey]);
+                    this.sop.loadSop(record.data[this.fKey]);
+                    if(photoBrowserNotice){
+                        photoBrowserNotice.loadPhotos(record);
+                    }
+                    this.doLayout();
+                }
             },
-             hideMe:function(){
-                  this.target.toolbar.show();
+            hideMe:function(){
+                this.target.toolbar.show();
                 if(this.westVisible){
                     var west = Ext.getCmp('west');
-                     west.expand();
-                 }
+                    west.expand();
+                }
                 //Attivi mappa
                this.target.mapPanelContainer.layout.setActiveItem(0);
             }
-            
         });
-       //Aggingo al panello mappa
-            mapPanelContainer.add(this.segdet);
+        //Aggingo al panello mappa
+        mapPanelContainer.add(this.segdet);
         
         // a minimal SelectFeature control - used just to provide select and
         // unselect, won't be added to the map unless selectOnMap is true
@@ -574,129 +569,125 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 autoActivateControl: false,
                 listeners: {
                     "beforerowselect": function(sm, rowIndex, keepExisting, record ) {
-                    //Se sono in editing il sel model è bloccato :-S    
-                 
+                        //Se sono in editing il sel model è bloccato :-S    
                     },
                     "rowselect": function(r) {
-                       //Abilito i bottoni!
-                       this.enableTools();
-                     featureManager.showLayer(
-                        featureManager.layer.id, "selected"
-                    );
+                        //Abilito i bottoni!
+                        this.enableTools();
+                        featureManager.showLayer(
+                            featureManager.layer.id,
+                            "selected"
+                        );
                     },
                     "rowdeselect": function() {
-                       //Abilito i bottoni!
-                      this.disableTools();
-                    
- 
+                        //Abilito i bottoni!
+                        this.disableTools();
                     },
-                    
                     scope: this
                 }
             };
         }
         this.displayItem = new Ext.Toolbar.TextItem({});
-
-		var toolbarElements = [];
-		toolbarElements.push(
-			{
-				iconCls: "x-tbar-page-first",
-				ref: "../firstPageButton",
-				tooltip: this.firstPageTip,
-				disabled: true,
-				handler: function() {
-					featureManager.setPage({index: 0});
-				}
-			}, {
-				iconCls: "x-tbar-page-prev",
-				ref: "../prevPageButton",
-				tooltip: this.previousPageTip,
-				disabled: true,
-				handler: function() {
-					featureManager.previousPage();
-				}
-			}
-		);
-		
-		if(featureManager.pagingType == 1){
-			toolbarElements.push(				
-				'-'
-				, {
-					xtype: 'compositefield',
-					width: 120,
-					items: [{
-							xtype: 'label',
-							text: this.pageLabel,
-							autoWidth: true,
-							style: {
-								marginTop: '3px'
-							}
-						},{
-							ref: "../../currentPage",
-							xtype: "textfield",
-							width: 40,
-							value: "0",
-							disabled: true,
-							enableKeyEvents: true,
-							listeners:{
-								scope: this,
-								keypress: function(field, e){
-									var charCode = e.getCharCode();
-									if(charCode == 13){
-										var value = field.getValue();
-										featureManager.setPage({index: value - 1});
-									}
-								}
-							}
-						},{
-							xtype: 'label',
-							width: 15,
-							text: this.pageOfLabel,
-							style: {
-								marginTop: '3px'
-							}
-						},{
-							xtype: 'label',
-							ref: "../../numberOfPagesLabel",
-							width: 20,
-							text: '0',
-							style: {
-								marginTop: '3px'
-							}
-					}]
-				}
-			);
-			
-			if(this.showNumberOfRecords === true){
-				toolbarElements.push(
-					/*{
-						xtype: 'compositefield',
-						width: 120,
-						items: [*/{
-								xtype: 'label',
-								text: "{" + this.totalRecordsLabel + " - ",
-								autoWidth: true,
-								style: {
-									marginTop: '3px'
-								}
-							}, {
-								xtype: 'label',
-								ref: "../totalRecords",
-								width: 20,
-								text: "0}",
-								style: {
-									marginTop: '3px'
-								}
-							}
-						/*]
-					}*/
-				);
-			}
-		}
-		
-		toolbarElements.push(
-				'-',
-			{
+        var toolbarElements = [];
+        toolbarElements.push(
+            {
+                iconCls: "x-tbar-page-first",
+                ref: "../firstPageButton",
+                tooltip: this.firstPageTip,
+                disabled: true,
+                handler: function() {
+                    featureManager.setPage({index: 0});
+                }
+            }, {
+                iconCls: "x-tbar-page-prev",
+                ref: "../prevPageButton",
+                tooltip: this.previousPageTip,
+                disabled: true,
+                handler: function() {
+                    featureManager.previousPage();
+                }
+            }
+        );
+        
+        if(featureManager.pagingType == 1){
+            toolbarElements.push(               
+                '-'
+                ,{
+                    xtype: 'compositefield',
+                    width: 120,
+                    items: [{
+                            xtype: 'label',
+                            text: this.pageLabel,
+                            autoWidth: true,
+                            style: {
+                                marginTop: '3px'
+                            }
+                        },{
+                            ref: "../../currentPage",
+                            xtype: "textfield",
+                            width: 40,
+                            value: "0",
+                            disabled: true,
+                            enableKeyEvents: true,
+                            listeners:{
+                                scope: this,
+                                keypress: function(field, e){
+                                    var charCode = e.getCharCode();
+                                    if(charCode == 13){
+                                        var value = field.getValue();
+                                        featureManager.setPage({index: value - 1});
+                                    }
+                                }
+                            }
+                        },{
+                            xtype: 'label',
+                            width: 15,
+                            text: this.pageOfLabel,
+                            style: {
+                                marginTop: '3px'
+                            }
+                        },{
+                            xtype: 'label',
+                            ref: "../../numberOfPagesLabel",
+                            width: 20,
+                            text: '0',
+                            style: {
+                                marginTop: '3px'
+                            }
+                    }]
+                }
+            );
+            
+            if(this.showNumberOfRecords === true){
+                toolbarElements.push(
+                    /*{
+                        xtype: 'compositefield',
+                        width: 120,
+                        items: [*/{
+                                xtype: 'label',
+                                text: "{" + this.totalRecordsLabel + " - ",
+                                autoWidth: true,
+                                style: {
+                                    marginTop: '3px'
+                                }
+                            }, {
+                                xtype: 'label',
+                                ref: "../totalRecords",
+                                width: 20,
+                                text: "0}",
+                                style: {
+                                    marginTop: '3px'
+                                }
+                            }
+                        /*]
+                    }*/
+                );
+            }
+        }
+        
+        toolbarElements.push(
+            '-',
+            {
                 iconCls: "gxp-icon-zoom-to",
                 ref: "../zoomToPageButton",
                 tooltip: this.zoomPageExtentTip,
@@ -706,8 +697,8 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     map.zoomToExtent(featureManager.getPageExtent());
                 }
             }, 
-				'-'
-			, {
+            '-'
+            , {
                 iconCls: "x-tbar-page-next",
                 ref: "../nextPageButton",
                 tooltip: this.nextPageTip,
@@ -724,12 +715,12 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     featureManager.setPage({index: "last"});
                 }
             }, {
-				xtype: 'tbspacer', 
-				width: 10
-			}, 
-			this.displayItem
-		);
-		
+                xtype: 'tbspacer', 
+                width: 10
+            }, 
+            this.displayItem
+        );
+        
         var bbar = (featureManager.paging ? [toolbarElements] : []).concat(["->"].concat(!this.alwaysDisplayOnMap ? [{
                /*text: this.displayFeatureText,
                 id: "showButton",
@@ -783,70 +774,63 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             tbar:[{
                 xtype:'buttongroup',
                 ref:'/zommInfo',
-                
                 disabled:true,
-                items:[
-                {
-                ref:'/../toggleInfo',
-                disabled:false,
-                width:100,
-                iconCls:this.btnDetailsIconCls ,
-                text:this.btnDetailsText  ,
-                tooltip: this.btnDetailsTooltip ,
-                enableToggle: true,
-                toggleHandler: function(btn, pressed) { 
-                  this.showInfo=(pressed)? true:false;
-                  if(!pressed){ 
-                      this.segdet.hideMe();
-                      btn.setIconClass(this.btnDetailsIconCls);
-                        btn.setText(this.btnDetailsText);
-                    btn.setTooltip(this.btnDetailsTooltip);
-                     
-                      }else{
-                          this.segdet.showMe(this.output[0].selModel.getSelected());
-                                                  btn.setIconClass(this.btnMapIconCls);
-                                                btn.setText(this.btnMapText);
-                                            btn.setTooltip(this.btnMapTooltip);
-                          }
-                if(!this.segEditing) (pressed)?this.segGrid.getTopToolbar().items.first().disable() : this.segGrid.getTopToolbar().items.first().enable();  
-                },
-                scope:this
+                items:[{
+                    ref:'/../toggleInfo',
+                    disabled:false,
+                    width:100,
+                    iconCls:this.btnDetailsIconCls ,
+                    text:this.btnDetailsText  ,
+                    tooltip: this.btnDetailsTooltip ,
+                    enableToggle: true,
+                    toggleHandler: function(btn, pressed) {
+                        this.showInfo=(pressed)? true:false;
+                        if(!pressed){
+                            this.segdet.hideMe();
+                            btn.setIconClass(this.btnDetailsIconCls);
+                            btn.setText(this.btnDetailsText);
+                            btn.setTooltip(this.btnDetailsTooltip);
+                        }else{
+                              this.segdet.showMe(this.output[0].selModel.getSelected());
+                              btn.setIconClass(this.btnMapIconCls);
+                              btn.setText(this.btnMapText);
+                              btn.setTooltip(this.btnMapTooltip);
+                        }
+                        if(!this.segEditing){
+                            (pressed)?this.segGrid.getTopToolbar().items.first().disable() : this.segGrid.getTopToolbar().items.first().enable();
+                        }                            
+                    },
+                    scope:this
+                },{
+                    text: this.zoomToFeature,                                
+                    ref:'/../zToF',
+                    tooltip: this.zoomToFeature,
+                    iconCls: 'gxp-icon-zoom-to',
+                    scope: this,
+                    handler: function(cmp){
+                        if(this.segGrid.toggleInfo.pressed===true)this.segGrid.toggleInfo.toggle(false);
+                        var selection = this.segGrid.getSelectionModel().getSelections()[0];
+                        var feature = selection.data.feature;
+                        if(feature){
+                            var geom=feature.geometry;
+                            this.target.mapPanel.map.setCenter(new OpenLayers.LonLat(geom.x,geom.y),15,false,true);
+                        }
+                    }               
+                }]
             },{
-                text: this.zoomToFeature,                                
-                ref:'/../zToF',
-                tooltip: this.zoomToFeature,
-                iconCls: 'gxp-icon-zoom-to',
-                scope: this,
-                handler: function(cmp){
-                    if(this.segGrid.toggleInfo.pressed===true)this.segGrid.toggleInfo.toggle(false);
-                    var selection = this.segGrid.getSelectionModel().getSelections()[0];
-                    var feature = selection.data.feature;
-                   
-                    if(feature){
-                        var geom=feature.geometry;
-                        this.target.mapPanel.map.setCenter(new OpenLayers.LonLat(geom.x,geom.y),15,false,true);
-                      
-                    }
-                }               
-            }
-            ]},{
                 xtype:'buttongroup',
                 ref:'./fBtGroup',
                 disabled:true,
                 items:[{
                     width:60,
                     text: this.editButtonText,
-                    iconCls: "edit",
+                    iconCls: "edit"
                 },{
                     text: this.deleteButtonText,
-                  width:60,
-                    iconCls: "delete",
-                    
+                    width:60,
+                    iconCls: "delete"
                 }]
-                
-                
-            }
-            ],
+            }],
             listeners: {
                 "added": function(cmp, ownerCt) {
                     var onClear = OpenLayers.Function.bind(function() {
@@ -893,32 +877,35 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         "clearfeatures": onClear
                     });
                 },
-            
                 scope: this
             },
-          
         }, config || {});
         var featureGrid = gxp.plugins.GcSegGrid.superclass.addOutput.call(this, config);
         
         this.segGrid=featureGrid;
-      //  this.segGrid.getSelectionModel().lock(); 
+        // this.segGrid.getSelectionModel().lock(); 
        
-        featureGrid.selModel.on('rowselect',function(sm, rowIndex, r ){
-                       if(!r.data.feature.geometry) this.segGrid.zToF.disable();
-                       else if(this.segGrid.zToF.disabled)this.segGrid.zToF.enable();            
-                     if(this.showInfo==true)this.segdet.showMe(r);
-                     
+        featureGrid.selModel.on(
+            'rowselect',
+            function(sm, rowIndex, r ){
+                if(!r.data.feature.geometry){
+                    this.segGrid.zToF.disable();
+                } else if(this.segGrid.zToF.disabled){
+                    this.segGrid.zToF.enable();
+                }
+                if(this.showInfo==true){
+                    this.segdet.showMe(r);
+                }
             },this);
-        
-        
+
         if (this.alwaysDisplayOnMap || this.selectOnMap) {
             featureManager.showLayer(this.id, this.displayMode);
         }
        
-	   // /////////////////////////////////////
-	   // FeatureManager events's listeners
-	   // /////////////////////////////////////
-	    var me = this;
+        // /////////////////////////////////////
+        // FeatureManager events's listeners
+        // /////////////////////////////////////
+        var me = this;
         featureManager.paging && featureManager.on("setpage", function(mgr, condition, callback, scope, pageIndex, numPages) {
             this.disableTools();
             this.segGrid.toggleInfo.toggle(false);
@@ -930,29 +917,29 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             var next = (paging && (pageIndex !== numPages-1));
             featureGrid.lastPageButton.setDisabled(!next);
             featureGrid.nextPageButton.setDisabled(!next);
-			
-			if(featureManager.pagingType == 1){
-				featureGrid.currentPage.enable();
-				featureGrid.currentPage.setValue(featureManager.pageIndex + 1);
-				featureGrid.numberOfPagesLabel.setText(featureManager.numPages);
-				
-				if(me.showNumberOfRecords === true){
-					featureGrid.totalRecords.setText(featureManager.numberOfFeatures + "}");
-				}
-			}
+            
+            if(featureManager.pagingType == 1){
+                featureGrid.currentPage.enable();
+                featureGrid.currentPage.setValue(featureManager.pageIndex + 1);
+                featureGrid.numberOfPagesLabel.setText(featureManager.numPages);
+                
+                if(me.showNumberOfRecords === true){
+                    featureGrid.totalRecords.setText(featureManager.numberOfFeatures + "}");
+                }
+            }
         }, this);
                 
-        featureManager.on("layerchange", function(mgr, rec, schema) {		
-			if(featureManager.pagingType == 1){
-				featureGrid.currentPage.disable();
-				featureGrid.currentPage.setValue("0");
-				featureGrid.numberOfPagesLabel.setText("0");
-				
-				if(me.showNumberOfRecords === true){
-					featureGrid.totalRecords.setText("0}");
-				}
-			}
-		
+        featureManager.on("layerchange", function(mgr, rec, schema) {      
+            if(featureManager.pagingType == 1){
+                featureGrid.currentPage.disable();
+                featureGrid.currentPage.setValue("0");
+                featureGrid.numberOfPagesLabel.setText("0");
+                
+                if(me.showNumberOfRecords === true){
+                    featureGrid.totalRecords.setText("0}");
+                }
+            }
+        
             //TODO use schema instead of store to configure the fields
             var ignoreFields = ["feature", "state", "fid"].concat(this.ignoreFields);
             schema && schema.each(function(r) {
@@ -964,36 +951,32 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             }
             featureGrid.setStore(featureManager.featureStore, schema);
         }, this);
-		
-		featureManager.on("clearfeatures", function(mgr, rec, schema) {		
-			if(featureManager.pagingType == 1){
-				featureGrid.currentPage.disable();
-				featureGrid.currentPage.setValue("0");
-				featureGrid.numberOfPagesLabel.setText("0");
-				
-				if(me.showNumberOfRecords === true){
-					featureGrid.totalRecords.setText("0}");
-				}
-			}
+        
+        featureManager.on("clearfeatures", function(mgr, rec, schema) {
+            if(featureManager.pagingType == 1){
+                featureGrid.currentPage.disable();
+                featureGrid.currentPage.setValue("0");
+                featureGrid.numberOfPagesLabel.setText("0");
+                
+                if(me.showNumberOfRecords === true){
+                    featureGrid.totalRecords.setText("0}");
+                }
+            }
         }, this);
-        
-        
+
         return featureGrid;
     },
-
 
     enableTools: function(){
                        this.segGrid.zommInfo.enable();
                        var btns=this.segGrid.getTopToolbar().items.last();
-                       if (btns!=this.segGrid.fBtnGroup)btns.enable();
-
+                       if (btns!=this.segGrid.fBtnGroup){
+                           btns.enable();
+                       }
     },
     disableTools: function(){
-        
          this.segGrid.zommInfo.disable();
          this.segGrid.getTopToolbar().items.last().disable();
-        
-        
     },
     /** api: method[getExportWindowButton]
      *  Generate a export button to open a new dialog with the configured formats
@@ -1043,9 +1026,9 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 readOnly : false,
                 tpl: this.comboFormatTpl,
                 listConfig: {
-                      getInnerTpl: function(displayField) {
+                    getInnerTpl: function(displayField) {
                         return '<div class="{iconCls}"> {' + displayField + '}' + "</div>";
-                      }
+                    }
                 },
                 store : new Ext.data.JsonStore({
                     fields : [{
@@ -1230,9 +1213,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 callback: function(request) {
                     myMask.hide();
                     if(request.status == 200){
-                    
-                        try
-                          {
+                        try {
                                 var serverError = Ext.util.JSON.decode(request.responseText);
                                 Ext.Msg.show({
                                     title: "Error",
@@ -1242,13 +1223,10 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                                     buttons: Ext.Msg.OK,
                                     icon: Ext.MessageBox.ERROR
                                 });                        
-                          }
-                        catch(err)
-                          {
+                        } catch(err) {
                             // submit filter in a standard form (before check)
                             this.doDownloadPost(this.url, this.xml,outputFormat);
-                          }
-                          
+                        }
                     }else{
                         Ext.Msg.show({
                             title: failedExport,
@@ -1289,7 +1267,9 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         iframe.setAttribute("name",this.downloadIframeId);
         document.body.appendChild(iframe);
         iframe.onload = function(){
-            if(!iframe.contentWindow) return;
+            if(!iframe.contentWindow){
+                return;
+            }
             
             var error ="";
             var body = iframe.contentWindow.document.getElementsByTagName('body')[0];
