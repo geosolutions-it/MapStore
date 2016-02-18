@@ -421,8 +421,9 @@
 				scaleOverlayUnits: serverConfig.scaleOverlayUnits,
                 georeferences: georeferences_data,
                 map: serverConfig.map,
-				customTools: serverConfig.customTools,
-				customComposerWest:serverConfig.customComposerWest
+                customTools: serverConfig.customTools,
+                apikeys: serverConfig.apikeys,
+                customComposerWest:serverConfig.customComposerWest
             }, mapIdentifier, authorization && authorization == "false" ? null: authorization, fullScreen, templateId);   
             
             app.on({
