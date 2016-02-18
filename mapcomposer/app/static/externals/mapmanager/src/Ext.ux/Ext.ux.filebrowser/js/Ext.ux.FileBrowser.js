@@ -311,7 +311,7 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
             });
 
             this.toolsMenuItems = [
-                {text:"Icones", view:"icones", iconCls:"icon-view", handler:this.switchView, scope:this}
+                {text:"Icons", view:"icones", iconCls:"icon-view", handler:this.switchView, scope:this}
                 ,{text:"List", view:"list", iconCls:"icon-list", handler:this.switchView, scope:this}
             ];
 
