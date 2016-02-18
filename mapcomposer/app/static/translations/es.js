@@ -923,6 +923,11 @@ GeoExt.Lang.add("es", {
         yAxisLabel: "Eje Y, la agregación",
         groupByLabel: "Group by",
         valueLabel: "Value, la agregación",
-        gaugeMaxText: "Max"
+        gaugeMaxText: "Max",
+        chartPanelTitle: "Grupo Gráfico"
+    },
+
+    "gxp.charts.GenerateCharts.prototype": {
+        chartTypeTitleText: 'Test data'
     }
 });

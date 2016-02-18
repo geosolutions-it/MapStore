@@ -942,6 +942,11 @@ GeoExt.Lang.add("de", {
         yAxisLabel: "Y-Achse, Aggregation",
         groupByLabel: "Group by",
         valueLabel: "Value, Aggregation",
-        gaugeMaxText: "Max"
+        gaugeMaxText: "Max",
+        chartPanelTitle: "Diagramm-Panel"
+    },
+
+    "gxp.charts.GenerateCharts.prototype": {
+        chartTypeTitleText: 'Test data'
     }
 });

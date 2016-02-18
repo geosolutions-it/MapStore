@@ -38,6 +38,13 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
      */
     cls: "gxp-chartbuilder",
 
+    baseParams:{
+        service:'WFS',
+        version:'1.1.0',
+        request:'GetFeature',
+        outputFormat: 'application/json'
+    },
+    
     /** i18n */
     createChartText: "Generate",
     histogramChartText: "Histogram",
@@ -50,6 +57,7 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
     groupByLabel: "Group by",
     valueLabel: "Value, Aggregation",
     gaugeMaxText: "Max",
+    chartPanelTitle: "Chart Panel",
 
     initComponent: function() {
 
@@ -65,6 +73,7 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
                 this.createChildChartPanel(),
                 {
                     xtype: "toolbar",
+                    ref: "../chartToolbar",
                     items: this.createToolBar()
                 }
             ]
@@ -91,14 +100,53 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
         var bar = [{
             text: this.createChartText,
             iconCls: "gxp-icon-buildchart",
+            disabled: false,
             handler: function() {
-                Ext.MessageBox.show({
-                    title: 'Info',
-                    msg: 'This functionality is not yet implemented!',
-                    buttons: Ext.Msg.OK,
-                    animEl: 'elId',
-                    icon: Ext.MessageBox.INFO
+                
+                var xFieldType = this.form.xaxisAttributeField.xFieldType.split(":")[1];
+                var yFieldType = this.form.yaxisAttributeField.yFieldType.split(":")[1];
+                
+                // Chart configuration
+                var chartConfig = {
+                    chartType: this.chartTypeCombo.getValue(),
+                    aggType: this.form.yaxisAttributeField.chartAggCombo.getValue(),
+                    xaxisValue: this.form.xaxisAttributeField.property.getValue(),
+                    yaxisValue: this.form.yaxisAttributeField.property.getValue(),
+                    gaugeMax: this.form.gaugemax.gaugemaxfield.getValue()
+                };
+                
+                this.store = new Ext.data.JsonStore({
+                    root: 'features',
+                    messageProperty: 'crs',
+                    autoLoad: true,
+                    fields: [
+                       {name: 'value', type: yFieldType, mapping: 'properties.'+chartConfig.yaxisValue},
+                       {name: 'label', type: xFieldType, mapping: 'properties.'+chartConfig.xaxisValue}
+                    ],
+                    url: this.attributes.url,
+                    baseParams: Ext.apply({
+                        typeName:this.attributes.baseParams.TYPENAME,
+                    }, this.baseParams)
                 });
+                
+                var canvasWindow = new Ext.Window({
+                    title: this.chartPanelTitle,
+                    layout:'border',
+                    modal: true,
+                    autoScroll:false,
+                    height:Math.min(Ext.getBody().getViewSize().height,450),
+                    width:800,
+                    maximizable:true,
+                    items:[{
+                        xtype: 'gxp_chartcontainer',
+                        ref: 'chartsPanel',
+                        chartConfig: chartConfig,
+                        store: this.store,
+                        region:'center',
+                        border:false
+                    }]/*,
+                    tools: windowTools*/
+                }).show();
             },
             scope: this
         }];
@@ -107,10 +155,10 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
 
     createChartTypeCombo: function() {
         var data = [
-            [0,this.histogramChartText],
-            [1,this.lineChartText],
-            [2,this.pieChartText],
-            [3,this.gaugeChartText]
+            ['bar',this.histogramChartText],
+            ['line',this.lineChartText],
+            ['pie',this.pieChartText],
+            ['gauge',this.gaugeChartText]
         ];
         return {
             xtype: "combo",
@@ -119,8 +167,8 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
                 data: data,
                 fields: ["value", "name"]
             }),
-            value: 0,
-            originalValue: 0,
+            value: 'bar',
+            originalValue: 'bar',
             ref: "../chartTypeCombo",
             displayField: "name",
             valueField: "value",
@@ -129,9 +177,9 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
             editable: false,
             listeners: {
                 select: function(combo, record) {
-                    if(record.get('value') === 2){
+                    if(record.get('value') === 'pie'){
                         this.manageChartsFieldsOptions(false,true);
-                    }else if(record.get('value') === 3){
+                    }else if(record.get('value') === 'gauge'){
                         this.manageChartsFieldsOptions(true,true);
                     }else{
                         this.manageChartsFieldsOptions(false,false);
@@ -156,7 +204,7 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
             name: "xaxis",
             fieldLabel: this.xAxisLabel,
             attributes: this.attributes,
-            allowBlank: true,
+            ref: "../../xaxisAttributeField",
             listeners: {
                 change: function() {
 
@@ -165,22 +213,23 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
             }
         };
 
-        var xAxisContainerCfg = Ext.applyIf({
+        var xAxisContainerCfg = {
             xtype: "container",
             id: "xaxis_id",
+            name: "xaxiscontainer",
             layout: "form",
             labelWidth: 130,
             hideLabels: false,
             defaults: {anchor: "100%"},
             items: xAxisFieldCfg
-        }, xAxisFieldCfg);
+        };
 
         var yAxisFieldCfg = {
             xtype: "gxp_chartfield",
             name: "yaxis",
             fieldLabel: this.yAxisLabel,
             attributes: this.attributes,
-            allowBlank: true,
+            ref: "../../yaxisAttributeField",
             listeners: {
                 change: function() {
 
@@ -189,22 +238,25 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
             }
         };
 
-        var yAxisContainerCfg = Ext.applyIf({
+        var yAxisContainerCfg = {
             xtype: "container",
             id: "yaxis_id",
+            name: "yaxiscontainer",
             layout: "form",
             labelWidth: 130,
             hideLabels: false,
             defaults: {anchor: "100%"},
             items: yAxisFieldCfg
-        }, yAxisFieldCfg);
+        };
 
         var gaugeMaxFieldCfg = {
             xtype: "compositefield",
             id: "gaugemax_id",
             name: "gaugemax",
+            ref: "../../gaugemax",
             fieldLabel: this.gaugeMaxText,
             items:[{
+                ref: "gaugemaxfield",
                 xtype: 'numberfield',
                 width: 60,
                 allowBlank: true
@@ -240,10 +292,15 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
         var items = this.childChartContainer.items.items;
         for(var i = 0; i<items.length; i++){
             if(items[i].name === 'gaugemax'){
-                showMax ? items[i].show() : items[i].hide();
+                if(showMax){
+                    items[i].show();
+                }else{
+                    items[i].hide();
+                    items[i].items.items[0].reset();
+                }
                 this.childChartContainer.doLayout();
             }
-            if(items[i].name === 'xaxis'){
+            if(items[i].name === 'xaxiscontainer'){
                 if(groupBy){
                     if(items[i].el)
                         items[i].el.dom.lastChild.children[0].innerHTML = this.groupByLabel + ":";
@@ -254,7 +311,7 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
                     this.childChartContainer.doLayout();
                 }
             }
-            if(items[i].name === 'yaxis'){
+            if(items[i].name === 'yaxiscontainer'){
                 if(groupBy){                
                     if(items[i].el)
                         items[i].el.dom.lastChild.children[0].innerHTML = this.valueLabel + ":";
@@ -265,6 +322,19 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
                     this.childChartContainer.doLayout();
                 }
             }
+        }
+    },
+    
+    checkAxisFilled: function(chartConfig){
+        if(!chartConfig.xaxis || !chartConfig.xaxis){
+            Ext.MessageBox.show({
+                title: 'Info',
+                msg: 'Devi selezionare ',
+                buttons: Ext.Msg.OK,
+                animEl: 'elId',
+                icon: Ext.MessageBox.INFO
+            });
+            return;
         }
     }
 
