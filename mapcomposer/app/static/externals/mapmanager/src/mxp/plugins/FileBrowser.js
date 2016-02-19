@@ -126,7 +126,7 @@ mxp.plugins.FileBrowser = Ext.extend(mxp.plugins.Tool, {
 
         Ext.apply(this.outputConfig, {
             xtype: "FileBrowser",
-            itemId: this.multiTab ? this.browserItemId: null,
+            browserItemId: this.browserItemId,
             layout: 'border',
             iconCls: this.iconCls,
             closable: true,
@@ -151,7 +151,7 @@ mxp.plugins.FileBrowser = Ext.extend(mxp.plugins.Tool, {
         // In user information the output is generated in the component and we can't check the item.initialConfig.
         if(
             this.output.length > 0
-            && this.outputTarget && !this.multiTab){
+            && this.outputTarget && this.multiTab){
             for(var i = 0; i < this.output.length; i++){
                 if(this.output[i].ownerCt
                     && this.output[i].ownerCt.xtype 
@@ -161,7 +161,7 @@ mxp.plugins.FileBrowser = Ext.extend(mxp.plugins.Tool, {
                     // Not duplicate tabs
                     for(var index = 0; index < this.output[i].ownerCt.items.items.length; index++){
                         var item = this.output[i].ownerCt.items.items[index];
-                        var isCurrentItem = this.browserItemId == item.initialConfig["itemId"];
+                        var isCurrentItem = this.browserItemId == item.initialConfig["browserItemId"];
                         if(isCurrentItem){
                             this.output[i].ownerCt.setActiveTab(index);
                             return;

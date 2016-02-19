@@ -382,7 +382,13 @@ mxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
                         var item = this.output[i].ownerCt.items.items[index];
                         var isCurrentItem = true;
                         for (var key in outputConfig){
-                            if(outputConfig[key]){
+                            // hideMode will be added later so it will not appear in the outputConfig
+                            // skip objects too because the will fail the comparison even if equal
+                            if (
+                                key != "hideMode"
+                                && outputConfig[key]
+                                && typeof outputConfig[key] !== 'object'
+                            ){
                                 isCurrentItem = isCurrentItem && (outputConfig[key] == item.initialConfig[key]);
                             }
                         }

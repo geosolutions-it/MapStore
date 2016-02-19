@@ -124,9 +124,10 @@
             "authParam":"authkey"
         }
     },{ 
-        "ptype": "mxp_servicemanager",
+        "ptype": "mxp_filebrowser",
         "buttonText": "Photos",
-        "notDuplicateOutputs":true,
+        "iconCls":"camera-icon",
+        "notDuplicateOutputs": true,
         "actionTarget":{
             "target": "north.tbar",
             "index": 5
