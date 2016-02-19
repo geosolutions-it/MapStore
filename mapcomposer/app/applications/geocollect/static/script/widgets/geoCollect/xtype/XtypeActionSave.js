@@ -69,8 +69,8 @@ this.items=[{
  * 					"name":"send",
  *					"iconCls":"ic_send",
  *					"attributes":{
- * 						"url":"http://84.33.2.28:8082/opensdi2-manager/mvc/geocollect/action/store",
- *						"mediaurl":"http://84.33.2.28:8082/opensdi2-manager/mvc/geocollect/data",
+ * 						"url":"http://geocollect.geo-solutions.it/opensdi2-manager/mvc/geocollect/action/store",
+ *						"mediaurl":"http://geocollect.geo-solutions.it/opensdi2-manager/mvc/geocollect/data",
  *						"confirmMessage":"Inviare?"
  *					}
  * 
@@ -84,8 +84,7 @@ loadXtype:function(o){
 /**
  * api: method[getXtype]
  * Create xtype mobile widget from form panel
- * Return:
-	xtype actionsend
+ * Return: xtype actionsend
  *	"actions":[{    
  * 					xtype: 'actionsend'
  * 					"id":2,  //Fisso
@@ -94,8 +93,8 @@ loadXtype:function(o){
  * 					"name":"send",
  *					"iconCls":"ic_send",
  *					"attributes":{
- * 						"url":"http://84.33.2.28:8082/opensdi2-manager/mvc/geocollect/action/store",
- *						"mediaurl":"http://84.33.2.28:8082/opensdi2-manager/mvc/geocollect/data",
+ * 						"url":"http://geocollect.geo-solutions.it/opensdi2-manager/mvc/geocollect/action/store",
+ *						"mediaurl":"http://geocollect.geo-solutions.it/opensdi2-manager/mvc/geocollect/data",
  *						"confirmMessage":"Inviare?"
  *					}
  *

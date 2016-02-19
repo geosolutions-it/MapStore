@@ -4,7 +4,7 @@
    	"geosolutions":
    	 {
 			"ptype": "gxp_wmssource",
-			"url": "http://84.33.2.28:8081/geoserver/it.geosolutions/ows",
+			"url": "http://geocollect.geo-solutions.it/geoserver/it.geosolutions/ows",
 			"title": "GeoSolutions GeoServer",
 			"SRS": "EPSG:3003",
 			"version":"1.1.1",
