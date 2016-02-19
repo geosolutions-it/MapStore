@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2008-2011 The Open Planning Project
+* Copyright (c) 2014-2016 Geo-Solutions
 *
 * Published under the GPL license.
 * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
@@ -22,7 +22,7 @@ Ext.namespace("gxp.grid");
 gxp.grid.GcHistoryGrid = Ext.extend(Ext.grid.GridPanel, {
 
   /** api: xtype = gxp_googlegeocodercombo */
-    xtype: "gxp_gchistroygrid",
+    xtype: "gxp_gchistorygrid",
     
     /** private: config[typeAhead]
      * the queryParameter for WFS
