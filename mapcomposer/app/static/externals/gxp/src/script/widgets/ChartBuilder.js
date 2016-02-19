@@ -37,13 +37,6 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
      *  ``"gxp-chartbuilder"``).
      */
     cls: "gxp-chartbuilder",
-
-    baseParams:{
-        service:'WFS',
-        version:'1.1.0',
-        request:'GetFeature',
-        outputFormat: 'application/json'
-    },
     
     /** i18n */
     createChartText: "Generate",
@@ -109,44 +102,17 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
                 // Chart configuration
                 var chartConfig = {
                     chartType: this.chartTypeCombo.getValue(),
+                    title: "New " + this.chartTypeCombo.getValue() + " Chart",
+                    typeName:this.attributes.baseParams.TYPENAME,
+                    url: this.attributes.url,
                     aggType: this.form.yaxisAttributeField.chartAggCombo.getValue(),
                     xaxisValue: this.form.xaxisAttributeField.property.getValue(),
                     yaxisValue: this.form.yaxisAttributeField.property.getValue(),
-                    gaugeMax: this.form.gaugemax.gaugemaxfield.getValue()
+                    gaugeMax: this.form.gaugemax.gaugemaxfield.getValue(),
+                    xFieldType: this.form.xaxisAttributeField.xFieldType.split(":")[1],
+                    yFieldType: this.form.yaxisAttributeField.yFieldType.split(":")[1]
                 };
-                
-                this.store = new Ext.data.JsonStore({
-                    root: 'features',
-                    messageProperty: 'crs',
-                    autoLoad: true,
-                    fields: [
-                       {name: 'value', type: yFieldType, mapping: 'properties.'+chartConfig.yaxisValue},
-                       {name: 'label', type: xFieldType, mapping: 'properties.'+chartConfig.xaxisValue}
-                    ],
-                    url: this.attributes.url,
-                    baseParams: Ext.apply({
-                        typeName:this.attributes.baseParams.TYPENAME,
-                    }, this.baseParams)
-                });
-                
-                var canvasWindow = new Ext.Window({
-                    title: this.chartPanelTitle,
-                    layout:'border',
-                    modal: true,
-                    autoScroll:false,
-                    height:Math.min(Ext.getBody().getViewSize().height,450),
-                    width:800,
-                    maximizable:true,
-                    items:[{
-                        xtype: 'gxp_chartcontainer',
-                        ref: 'chartsPanel',
-                        chartConfig: chartConfig,
-                        store: this.store,
-                        region:'center',
-                        border:false
-                    }]/*,
-                    tools: windowTools*/
-                }).show();
+                this.chartReportingTool.addChart(chartConfig, true);
             },
             scope: this
         }];
