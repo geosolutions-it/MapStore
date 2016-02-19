@@ -51,6 +51,7 @@ gxp.charts.ChartContainer = Ext.extend(Ext.Container, {
         var me = this;
         this.items = [{
                 xtype:'gxp_chart_panel',
+                title: this.chartTypeTitleText,
                 anchor:'100%',
                 layout:'border',
                 height:400,

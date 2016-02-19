@@ -506,6 +506,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             if (schema) {
                 queryForm.chartOptionsFieldset.add({
                     xtype: "gxp_chartbuilder",
+                    chartReportingTool : this.target.tools[me.chartReportingTool],
                     ref: "../chartBuilder",
                     attributes: schema,
                     allowBlank: true
