@@ -37,12 +37,6 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     pleaseSelectChartText: "Please select a chart first",
     reloadConfigText: "Reload Configuration",
     editChartOptionsText: "Edit",
-    wfsBaseParams:{
-        service:'WFS',
-        version:'1.1.0',
-        request:'GetFeature',
-        outputFormat: 'application/json'
-    },
     
     // REMOVE THIS WHEN ALL FEATURES ARE IMPLEMENTED
     tbi : function(){
@@ -172,19 +166,18 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     },
     generateChart: function(record){
         var chartConfig = record.data;
-        // THIS IS A DUMMY STORE FOR WFS
-       var store = new Ext.data.JsonStore({
-            root: 'features',
-            messageProperty: 'crs',
+        var store = new Ext.data.ArrayStore({
+            root: 'AggregationResults',
             autoLoad: true,
             fields: [
-               {name: 'value', type: chartConfig.yFieldType, mapping: 'properties.'+chartConfig.yaxisValue},
-               {name: 'label', type: chartConfig.xFieldType, mapping: 'properties.'+chartConfig.xaxisValue}
+                {name: 'label', type: chartConfig.xFieldType},
+                {name: 'value', type: chartConfig.yFieldType}
             ],
-            url: chartConfig.url,
-            baseParams: Ext.apply({
-                typeName:chartConfig.typeName,
-            }, this.wfsBaseParams)
+            proxy : new Ext.data.HttpProxy({
+                method: 'POST',
+                url: chartConfig.url,
+                xmlData: this.getWpsRequest(chartConfig)
+            })
         });
 
         var canvasWindow = new Ext.Window({
@@ -207,6 +200,66 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
         }).show();
         this.openWindows[record.get('id')] = canvasWindow;
         
+    },
+    getWpsRequest: function(chartConfig) {
+        return String.format(
+            '<?xml version="1.0" encoding="UTF-8"?>' +
+            '<wps:Execute service="WPS" ' +
+            '  version="1.0.0" ' +
+            '  xmlns="http://www.opengis.net/wps/1.0.0" ' +
+            '  xmlns:gml="http://www.opengis.net/gml" ' +
+            '  xmlns:ogc="http://www.opengis.net/ogc" ' +
+            '  xmlns:ows="http://www.opengis.net/ows/1.1" ' +
+            '  xmlns:wcs="http://www.opengis.net/wcs/1.1.1" ' +
+            '  xmlns:wfs="http://www.opengis.net/wfs" ' +
+            '  xmlns:wps="http://www.opengis.net/wps/1.0.0" ' +
+            '  xmlns:xlink="http://www.w3.org/1999/xlink" ' +
+            '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+            '  xsi:schemaLocation="http://www.opengis.net/wps/1.0.0' + 
+            '  http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd">' +
+            '  <ows:Identifier>gs:Aggregate</ows:Identifier>' +
+            '  <wps:DataInputs>' +
+            '    {0}' +
+            '    {1}' +
+            '    {2}' +
+            '    {3}' +
+            '    {4}' +
+            '  </wps:DataInputs>' +
+            '  <wps:ResponseForm>' +
+            '    <wps:RawDataOutput mimeType="application/json">' +
+            '      <ows:Identifier>result</ows:Identifier>' +
+            '    </wps:RawDataOutput>' +
+            '  </wps:ResponseForm>' +
+            '</wps:Execute>', 
+            this.getWpsGetFeatureInput(chartConfig.typeName, chartConfig.ogcFilter), 
+            this.getWpsLiteralInput("aggregationAttribute", chartConfig.xaxisValue), 
+            this.getWpsLiteralInput("function", chartConfig.aggFunction), 
+            this.getWpsLiteralInput("singlePass", "false"), 
+            this.getWpsLiteralInput("groupByAttributes", chartConfig.yaxisValue));
+    },
+    getWpsLiteralInput: function(name, value) {
+        return String.format(
+            '<wps:Input>' +
+            '  <ows:Identifier>{0}</ows:Identifier>' +
+            '  <wps:Data>' +
+            '    <wps:LiteralData>{1}</wps:LiteralData>' +
+            '  </wps:Data>' +
+            '</wps:Input>', name, value);
+    },
+    getWpsGetFeatureInput: function(name, filter) {
+        return String.format(
+            '<wps:Input>' +
+            '  <ows:Identifier>features</ows:Identifier>' +
+            '  <wps:Reference method="POST" mimeType="text/xml" xlink:href="http://geoserver/wfs">' +
+            '    <wps:Body>' +
+            '      <wfs:GetFeature outputFormat="GML2" service="WFS" version="1.0.0">' +
+            '        <wfs:Query typeName="{0}">' +
+            '        {1}' +
+            '        </wfs:Query>' +
+            '      </wfs:GetFeature>' +
+            '    </wps:Body>' +
+            '  </wps:Reference>' +
+            '</wps:Input>', name, filter);
     },
     download: function(text, name, type) {
       var a = document.createElement("a");

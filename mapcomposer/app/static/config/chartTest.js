@@ -300,7 +300,8 @@
             "sources": ["comunege"],
             "url": "http://mappe.comune.genova.it/geoserver/wps",
             "pageSize": 10
-          },          
+          },
+          "wpsUrl": "http://mappe.comune.genova.it/geoserver/wps",
 		  "outputConfig":{
 			  "outputSRS": "EPSG:900913",
 			  "selectStyle":{

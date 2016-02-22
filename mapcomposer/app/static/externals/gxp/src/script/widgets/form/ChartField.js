@@ -152,7 +152,7 @@ gxp.form.ChartField = Ext.extend(Ext.form.CompositeField, {
             [1,"Sum"],
             [2,"Max"],
             [3,"Min"],
-            [4,"Avg"]
+            [4,"Average"]
         ];
 
         return {
