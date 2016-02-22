@@ -68,14 +68,9 @@
 				"name": "HYBRID",
 				"group": "background"
 			},{
-				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
-				"group": "background"
-			},{
-				"source": "osm",
-				"title": "Open Street Map",
-				"name": "mapnik",
+				"source": "bing",
+				"title": "Bing Aerial With Labels",
+				"name": "AerialWithLabels",
 				"group": "background"
 			},{
 				"source": "bing",
@@ -83,9 +78,14 @@
 				"name": "Aerial",
 				"group": "background"
 			},{
-				"source": "bing",
-				"title": "Bing Aerial With Labels",
-				"name": "AerialWithLabels",
+				"source": "osm",
+				"title": "Open Street Map",
+				"name": "mapnik",
+				"group": "background"
+			},{
+				"source": "mapquest",
+				"title": "MapQuest OpenStreetMap",
+				"name": "osm",
 				"group": "background"
 			},{
 				"source": "ol",
