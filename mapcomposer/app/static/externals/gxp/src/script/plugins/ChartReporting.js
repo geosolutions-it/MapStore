@@ -185,7 +185,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             layout:'border',
             modal: true,
             autoScroll:false,
-            height:Math.min(Ext.getBody().getViewSize().height,456),
+            height:Math.min(Ext.getBody().getViewSize().height, 700),
             width:800,
             maximizable:true,
             items:[{
@@ -195,6 +195,30 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 store: store,
                 region:'center',
                 border:false
+            },{
+                region:'south',
+                height: 250,
+                title: 'Data',
+                collapsible: true,
+                layout:'fit',
+                items:[{
+                    xtype:'grid',
+                    store: store,
+                    viewConfig: {
+                        forceFit: true
+                    },
+                    autoScroll: true,
+                    colModel: new Ext.grid.ColumnModel({
+                        defaults: {
+                            width: 120,
+                            sortable: true
+                        },
+                        columns: [
+                            {id: 'groupbyattribute', header: chartConfig.xaxisValue, dataIndex: 'label'},
+                            {header: 'valueattribute',  header: chartConfig.aggFunction + "(" + chartConfig.yaxisValue + ")" , dataIndex: 'value'}
+                        ]
+                    })
+                }]
             }]/*,
             tools: windowTools*/
         }).show();
