@@ -39,7 +39,7 @@
     "tools": [
         {
             "ptype": "mxp_categoryinitializer",
-            "neededCategories": ["GEOBATCH_RUN_CONFIGS", "ARCHIVEDLOGS"]
+            "neededCategories": ["GEOBATCH_RUN_CONFIGS", "ARCHIVEDLOGS", "ARCHIVEDRUNS"]
         },
         {
             "ptype": "mxp_login",
@@ -409,7 +409,7 @@
                             {
                                 "allowBlank": false,
                                 "displayField": "name",
-                                "fieldLabel": "Production Uom",
+                                "fieldLabel": "Area Uom",
                                 "hiddenName": "area_default_unit",
                                 "mode": "local",
                                 "name": "area_default_unit",
@@ -430,7 +430,7 @@
                             {
                                 "allowBlank": false,
                                 "displayField": "name",
-                                "fieldLabel": "Production Uom",
+                                "fieldLabel": "Yield Uom",
                                 "hiddenName": "yield_default_unit",
                                 "mode": "local",
                                 "name": "yield_default_unit",
@@ -770,6 +770,14 @@
                                         {
                                             "label": "Denominator",
                                             "name": "denominator"
+                                        },
+                                        {
+                                            "label": "Water Supply",
+                                            "name": "watersupply"
+                                        },
+                                        {
+                                            "label": "Water Flow",
+                                            "name": "waterflow"
                                         }
                                     ],
                                     "xtype": "jsonstore"
@@ -845,6 +853,14 @@
                                         {
                                             "label": "Denominator",
                                             "name": "denominator"
+                                        },
+                                        {
+                                            "label": "Water Supply",
+                                            "name": "watersupply"
+                                        },
+                                        {
+                                            "label": "Water Flow",
+                                            "name": "waterflow"
                                         }
                                     ],
                                     "mode": "local",

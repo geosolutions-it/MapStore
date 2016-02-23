@@ -113,20 +113,6 @@
                 "visibility": false
             },
             {
-                "source": "bing",
-                "title": "Bing Aerial",
-                "name": "Aerial",
-                "group": "background",
-                "visibility": false
-            },
-            {
-                "source": "bing",
-                "title": "Bing Aerial With Labels",
-                "name": "AerialWithLabels",
-                "group": "background",
-                "visibility": false
-            },
-            {
                 "source": "google",
                 "title": "Google Terrain",
                 "name": "TERRAIN",
@@ -571,7 +557,7 @@
             },
             "defaultAreaTypeMap": "district",
             "disclaimerText": "Disclaimer: Data, information and products in this report are provided \"as is\", without warranty of any kind, either express or implied. All rights are reserved by the Government of Pakistan",
-            "areaFilter": "province NOT IN ('DISPUTED TERRITORY','GILGIT BALTISTAN','DISPUTED AREA')",
+            "areaFilter": "province NOT IN ('GILGIT BALTISTAN','AJK','DISPUTED TERRITORY','DISPUTED AREA')",
             "outputTarget": "nrl",
             "portalRef": "gxp_portal_staticpage",
             "helpPath": "/~test/croportal/hlp_report_en.asp"
