@@ -147,10 +147,6 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
     },
 
     getFinalFilter: function(scope, queryForm) {
-            var container = scope.featureGridContainer ? Ext.getCmp(scope.featureGridContainer) : null;
-            if(container){
-                container.expand();
-            }
             // Collect all selected filters
             var filters = [];
             var filterFieldItems = queryForm.filterBuilder.childFilterContainer;
@@ -253,7 +249,22 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 });
             }
     },
-
+    openView: function(containerId,componentIndex){
+        //expand featuregridContainer
+        var container = containerId ? Ext.getCmp(containerId) : null;
+        if(container){
+            container.expand();
+            if(container.getXType() === 'tabpanel'){
+                 container.setActiveTab(componentIndex);
+            } else {
+                var tabPanels = container.findByType('tabpanel');
+                if(componentIndex !== undefined && tabPanels.length == 1){
+                    tabPanels[0].setActiveTab(componentIndex);
+                }
+            }
+            
+        }
+    },
     /** api: method[addOutput]
      */
     addOutput: function(config) {
@@ -420,11 +431,12 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 var pluginFilter = result.pluginFilter;
 
                 if(filters.length > 0){
-
+                        
+                        this.openView(this.featureGridContainer, this.featureGridTabIndex);
                         if(pluginFilter){
                             filters.push(pluginFilter);
                         }
-
+                        
                         this.featureManagerTool.loadFeatures(filters.length > 1 ?
                             new OpenLayers.Filter.Logical({
                                 type: OpenLayers.Filter.Logical.AND,
@@ -526,7 +538,6 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     allowBlank: true,
                     wpsUrl: me.wpsUrl,
                     getFeaturesFilter: function() {
-
                         var result = me.getFinalFilter(me, queryForm);
                         var filters = result.filters;
                         var pluginFilter = result.pluginFilter;
@@ -550,6 +561,9 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                         }
 
                         return "";
+                    },
+                    openReportingTool: function(){
+                        me.openView(me.featureGridContainer,me.chartReportTabIndex);
                     }
                 });
                 me.chartBuilder = queryForm.chartBuilder;
