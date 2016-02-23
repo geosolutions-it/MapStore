@@ -291,6 +291,8 @@
           "chartReportingTool": "reportingPanel",
 		  "featureManager": "featuremanager",
 		  "featureGridContainer": "south",
+          "featureGridTabIndex": "featuregrid",
+          "chartReportTabIndex": "reporting",
 		  "outputTarget": "east",
 		  "showSelectionSummary": true,
 		  "actions": null,

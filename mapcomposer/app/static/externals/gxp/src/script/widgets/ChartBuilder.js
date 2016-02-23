@@ -121,12 +121,15 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
                     ogcFilter: this.getFeaturesFilter()
                 };
                 this.chartReportingTool.addChart(chartConfig, true);
+                this.openReportingTool();
             },
             scope: this
         }];
         return bar;
     },
-
+    openReportingTool: function(){
+        
+    },
     createChartTypeCombo: function() {
         var data = [
             ['bar',this.histogramChartText],
