@@ -107,6 +107,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
      */
     enableChartOptionsFieldset: false,
 
+    wpsUrl: null,
+
     init: function(target) {
 
         var me = this;
@@ -142,6 +144,114 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 
     getFormId: function(){
         return this.id + "_spatialQueryForm";
+    },
+
+    getFinalFilter: function(scope, queryForm) {
+            var container = scope.featureGridContainer ? Ext.getCmp(scope.featureGridContainer) : null;
+            if(container){
+                container.expand();
+            }
+            // Collect all selected filters
+            var filters = [];
+            var filterFieldItems = queryForm.filterBuilder.childFilterContainer;
+            var filterFieldItem = filterFieldItems.findByType("gxp_filterfield");
+
+            var f = 0;
+            var invalidItems = 0;
+            while(filterFieldItem[f]){
+
+                var formItems = filterFieldItem[f].innerCt.findBy(function(c) {
+                    return c.isFormField;
+                });
+
+                for(var x = 0;x<formItems.length;x++){
+                    var validateItem = formItems[x];
+                    //if(!validateItem.isValid(true) && ( validateItem.vtype == "customValidationTextValue" || validateItem.vtype == "customValidationTextLowerBoundary" || validateItem.vtype == "customValidationTextUpperBundary")){
+                    if(!validateItem.isValid(true)){
+                        invalidItems++;
+                    }
+                }
+                f++;
+            }
+            //END
+
+            if(queryForm.spatialSelectorFieldset && !queryForm.spatialSelectorFieldset.collapsed){
+                var currentFilter = scope.spatialSelector.getQueryFilter();
+                if (currentFilter) {
+                    filters.push(currentFilter);
+                }
+            }
+
+            if(queryForm.filterBuilder && !queryForm.filterBuilder.collapsed){
+                var attributeFilter = queryForm.filterBuilder.getFilter();
+                attributeFilter && filters.push(attributeFilter);
+            }
+
+            // //////////////////////////////////////////////
+            // Finally check for any other existing filters
+            // (i.e. 'cql_filter') defined by other plugins.
+            // //////////////////////////////////////////////
+            var layerRecord = scope.featureManagerTool.layerRecord;
+            var layer = layerRecord.getLayer();
+
+            var pluginFilter;
+            if(layer && layer.vendorParams){
+                var pFilters = [];
+
+                // Check for cql_filter
+                var pluginCqlFilter = layer.vendorParams.cql_filter;
+                if(pluginCqlFilter){
+                    var cqlFormat = new OpenLayers.Format.CQL();
+                    try{
+                        var cqlFilter = cqlFormat.read(pluginCqlFilter);
+                        pFilters.push(cqlFilter);
+                    }catch(e){
+                        invalidItems++;
+                    }
+                }
+
+                // Check for OGC XML filter
+                var pluginXMLOGCFilter = layer.vendorParams.filter;
+                if(pluginXMLOGCFilter){
+                    var ogcFormat = new OpenLayers.Format.Filter();
+                    try{
+                        var ogcFilter = ogcFormat.read(pluginXMLOGCFilter);
+                        pFilters.push(ogcFilter);
+                    }catch(e){
+                        invalidItems++;
+                    }
+                }
+
+                if(pFilters.length > 0){
+                    pluginFilter = new OpenLayers.Filter.Logical({
+                        type: OpenLayers.Filter.Logical.AND,
+                        filters: pFilters
+                    });
+                }
+
+                // /////////////////////////////////////////////////
+                // Set or refresh viewparams in featureManager
+                // /////////////////////////////////////////////////
+                if(layer.vendorParams.viewparams){
+                    scope.featureManagerTool.featureStore.setViewParams(layer.vendorParams.viewparams);
+                    scope.featureManagerTool.hitCountProtocol.viewparams = layer.vendorParams.viewparams;
+                    scope.featureManagerTool.hitCountProtocol.options.viewparams = layer.vendorParams.viewparams;
+                }
+            }
+
+            if(invalidItems == 0){
+                return {
+                    filters: filters,
+                    pluginFilter: pluginFilter,
+                };
+            }else{
+                Ext.Msg.show({
+                    title: scope.invalidRegexFieldMsgTitle,
+                    msg: scope.invalidRegexFieldMsgText,
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.MessageBox.ERROR
+                });
+            }
     },
 
     /** api: method[addOutput]
@@ -304,100 +414,13 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             text: this.queryActionText,
             iconCls: "gxp-icon-find",
             handler: function() {
-                var container = this.featureGridContainer ? Ext.getCmp(this.featureGridContainer) : null;
-                if(container){
-                    container.expand();
-                }
-                // Collect all selected filters
-                var filters = [];
-                var filterFieldItems = queryForm.filterBuilder.childFilterContainer;
-                var filterFieldItem = filterFieldItems.findByType("gxp_filterfield");
 
-                var f = 0;
-                var invalidItems = 0;
-                while(filterFieldItem[f]){
+                var result = this.getFinalFilter(this, queryForm);
+                var filters = result.filters;
+                var pluginFilter = result.pluginFilter;
 
-                    var formItems = filterFieldItem[f].innerCt.findBy(function(c) {
-                        return c.isFormField;
-                    });
+                if(filters.length > 0){
 
-                    for(var x = 0;x<formItems.length;x++){
-                        var validateItem = formItems[x];
-                        //if(!validateItem.isValid(true) && ( validateItem.vtype == "customValidationTextValue" || validateItem.vtype == "customValidationTextLowerBoundary" || validateItem.vtype == "customValidationTextUpperBundary")){
-                        if(!validateItem.isValid(true)){
-                            invalidItems++;
-                        }
-                    }
-                    f++;
-                }
-                //END
-
-                if(queryForm.spatialSelectorFieldset && !queryForm.spatialSelectorFieldset.collapsed){
-                    var currentFilter = this.spatialSelector.getQueryFilter();
-                    if (currentFilter) {
-                        filters.push(currentFilter);
-                    }
-                }
-
-                if(queryForm.filterBuilder && !queryForm.filterBuilder.collapsed){
-                    var attributeFilter = queryForm.filterBuilder.getFilter();
-                    attributeFilter && filters.push(attributeFilter);
-                }
-
-                // //////////////////////////////////////////////
-                // Finally check for any other existing filters
-                // (i.e. 'cql_filter') defined by other plugins.
-                // //////////////////////////////////////////////
-                var layerRecord = this.featureManagerTool.layerRecord;
-                var layer = layerRecord.getLayer();
-
-                var pluginFilter;
-                if(layer && layer.vendorParams){
-                    var pFilters = [];
-
-                    // Check for cql_filter
-                    var pluginCqlFilter = layer.vendorParams.cql_filter;
-                    if(pluginCqlFilter){
-                        var cqlFormat = new OpenLayers.Format.CQL();
-                        try{
-                            var cqlFilter = cqlFormat.read(pluginCqlFilter);
-                            pFilters.push(cqlFilter);
-                        }catch(e){
-                            invalidItems++;
-                        }
-                    }
-
-                    // Check for OGC XML filter
-                    var pluginXMLOGCFilter = layer.vendorParams.filter;
-                    if(pluginXMLOGCFilter){
-                        var ogcFormat = new OpenLayers.Format.Filter();
-                        try{
-                            var ogcFilter = ogcFormat.read(pluginXMLOGCFilter);
-                            pFilters.push(ogcFilter);
-                        }catch(e){
-                            invalidItems++;
-                        }
-                    }
-
-                    if(pFilters.length > 0){
-                        pluginFilter = new OpenLayers.Filter.Logical({
-                            type: OpenLayers.Filter.Logical.AND,
-                            filters: pFilters
-                        });
-                    }
-
-                    // /////////////////////////////////////////////////
-                    // Set or refresh viewparams in featureManager
-                    // /////////////////////////////////////////////////
-                    if(layer.vendorParams.viewparams){
-                        this.featureManagerTool.featureStore.setViewParams(layer.vendorParams.viewparams);
-                        this.featureManagerTool.hitCountProtocol.viewparams = layer.vendorParams.viewparams;
-                        this.featureManagerTool.hitCountProtocol.options.viewparams = layer.vendorParams.viewparams;
-                    }
-                }
-
-                if(invalidItems == 0){
-                    if(filters.length > 0){
                         if(pluginFilter){
                             filters.push(pluginFilter);
                         }
@@ -409,23 +432,14 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                             }) :
                             filters[0]
                         );
-                    }else{
+                }else{
                         Ext.Msg.show({
                             title: this.noFilterSelectedMsgTitle,
                             msg: this.noFilterSelectedMsgText,
                             buttons: Ext.Msg.OK,
                             icon: Ext.MessageBox.ERROR
                         });
-                    }
-                }else{
-                    Ext.Msg.show({
-                        title: this.invalidRegexFieldMsgTitle,
-                        msg: this.invalidRegexFieldMsgText,
-                        buttons: Ext.Msg.OK,
-                        icon: Ext.MessageBox.ERROR
-                    });
                 }
-
             },
             scope: this
         });
@@ -509,7 +523,34 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     chartReportingTool : this.target.tools[me.chartReportingTool],
                     ref: "../chartBuilder",
                     attributes: schema,
-                    allowBlank: true
+                    allowBlank: true,
+                    wpsUrl: me.wpsUrl,
+                    getFeaturesFilter: function() {
+
+                        var result = me.getFinalFilter(me, queryForm);
+                        var filters = result.filters;
+                        var pluginFilter = result.pluginFilter;
+
+                        if(filters.length > 0){
+
+                                if(pluginFilter){
+                                    filters.push(pluginFilter);
+                                }
+
+                                var finalFilter = filters.length > 1 ?
+                                            new OpenLayers.Filter.Logical({
+                                                type: OpenLayers.Filter.Logical.AND,
+                                                filters: filters
+                                            }) : filters[0];
+                                return new OpenLayers.Format.XML().write(
+                                    new OpenLayers.Format.Filter({
+                                    version: '1.1.0',
+                                    srsName: me.target.mapPanel.map.getProjectionObject()
+                                }).write(finalFilter));
+                        }
+
+                        return "";
+                    }
                 });
                 me.chartBuilder = queryForm.chartBuilder;
 
