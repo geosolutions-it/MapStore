@@ -10,13 +10,22 @@ Ext.ux.GridBrowser = Ext.extend(Ext.grid.GridPanel, {
 
     ,enableDragDrop:true
 
+    ,rowExpander: null
+    
     ,initComponent:function() {
 
-        this.cm = new Ext.grid.ColumnModel([
+        var columns = [
             {id:"id", header:"Label", dataIndex:"text", sortable:true, renderer:{fn:this.fileRenderer,scope:this}}
             ,{header:"Last Modified", dataIndex:"mtime", align:"right", fixed:false, width:100, sortable:true, renderer:this.timeRenderer}
 	        ,{header:"Size", dataIndex:"size", align:"right", fixed:true, width:100, sortable:true, renderer:this.sizeRenderer}
-        ]);
+        ];
+        
+        if(this.rowExpander){
+            columns.unshift(this.rowExpander);
+            this.plugins = this.rowExpander;
+        };
+    
+        this.cm = new Ext.grid.ColumnModel(columns);
 
         this.selModel = new Ext.grid.RowSelectionModel({
             singleSelect:true
@@ -55,7 +64,7 @@ Ext.ux.GridBrowser = Ext.extend(Ext.grid.GridPanel, {
     ,sizeRenderer:function(value, metaData, record) {
         var html = '<div style="padding:2px 0 1px 0;">';
         if (record.data.leaf != undefined && record.data.leaf === true)
-            html += (value/1000) + " Ko";
+            html += (value/1000) + " Kb";
         return html+'</div>';
     }
 

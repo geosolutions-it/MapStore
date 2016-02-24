@@ -419,6 +419,15 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      */
     createGridPhotoBrowser:function(){
         
+        var expander = new Ext.ux.grid.RowExpander({
+            tpl : new Ext.Template(
+                '<div class="thumb-wrap" id="{name}">',
+                '<div class="thumb"><a target="_blank" href="'+this.configSurvey.picturesBrowserConfig.baseUrl+'?action=get_image&file={web_path}">',
+                '<img height="100px" width="100px" src="'+this.configSurvey.picturesBrowserConfig.baseUrl+'?action=get_image&file={web_path}" class="thumb-img"></div>',
+                '</a><span></span></div>'
+            )
+        });
+    
         var photoBrowserDataView = new Ext.ux.GridBrowser({
             style:'overflow:auto',
             ref:'picview',
@@ -427,6 +436,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             authParam:this.authParam,
             authKey:this.authkey,
             picturesBrowserConfig:this.configSurvey.picturesBrowserConfig,
+            rowExpander: expander,
             store: new Ext.data.JsonStore({
                     url: "http://geosolution.it",
                     autoLoad: false,
