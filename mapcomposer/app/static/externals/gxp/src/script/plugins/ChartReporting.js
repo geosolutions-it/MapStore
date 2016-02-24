@@ -256,10 +256,10 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             '  </wps:ResponseForm>' +
             '</wps:Execute>', 
             this.getWpsGetFeatureInput(chartConfig.typeName, chartConfig.ogcFilter), 
-            this.getWpsLiteralInput("aggregationAttribute", chartConfig.xaxisValue), 
+            this.getWpsLiteralInput("aggregationAttribute", chartConfig.yaxisValue), 
             this.getWpsLiteralInput("function", chartConfig.aggFunction), 
             this.getWpsLiteralInput("singlePass", "false"), 
-            this.getWpsLiteralInput("groupByAttributes", chartConfig.yaxisValue));
+            this.getWpsLiteralInput("groupByAttributes", chartConfig.xaxisValue));
     },
     getWpsLiteralInput: function(name, value) {
         return String.format(
