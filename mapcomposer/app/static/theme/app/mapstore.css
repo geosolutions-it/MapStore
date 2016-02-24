@@ -358,6 +358,10 @@ div#homelogos ul li a:hover {
 .icon-chart-report{
     background-image: url(img/charts/chart_curve.png);
 }
+
+.icon-table-save{
+    background-image: url(img/charts/table_save.png);
+}
 /* types */
 .chart-report-panel .chart-item.chart-item-pie{
     background-image: url(img/charts/pie.png);
