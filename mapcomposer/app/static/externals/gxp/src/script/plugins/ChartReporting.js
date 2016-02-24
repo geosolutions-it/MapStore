@@ -37,6 +37,9 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     pleaseSelectChartText: "Please select a chart first",
     reloadConfigText: "Reload Configuration",
     editChartOptionsText: "Edit",
+    exportCsvText: "Export as CSV", 
+    dataText: "Data",
+    csvSeparator: ",",
     
     // REMOVE THIS WHEN ALL FEATURES ARE IMPLEMENTED
     tbi : function(){
@@ -198,12 +201,14 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             },{
                 region:'south',
                 height: 250,
-                title: 'Data',
+                title: this.dataText,
                 collapsible: true,
                 layout:'fit',
                 items:[{
                     xtype:'grid',
                     store: store,
+                    loadMask: new Ext.LoadMask(Ext.getBody(), {msg: "Please wait..."}),
+                    ref:'dataGrid',
                     viewConfig: {
                         forceFit: true
                     },
@@ -217,7 +222,34 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                             {id: 'groupbyattribute', header: chartConfig.xaxisValue, dataIndex: 'label'},
                             {header: 'valueattribute',  header: chartConfig.aggFunction + "(" + chartConfig.yaxisValue + ")" , dataIndex: 'value'}
                         ]
-                    })
+                    }),
+                    bbar: ["->",{
+                        xtype: 'button',
+                        ref:'../../csvExport',
+                        iconCls: 'icon-table-save',
+                        text: this.exportCsvText,
+                        scope: this,
+                        handler: function(btn){
+                            var lstore = btn.refOwner.dataGrid.getStore();
+                            var rows = [];
+                            var data = lstore.getRange()
+                            for(var i = 0; i < data.length; i++){
+                                var item = data[i];
+                                rows.push([item.get('label'), item.get('value')]);
+                            }
+                            var headers = [
+                               chartConfig.xaxisValue,
+                               chartConfig.aggFunction + "(" + chartConfig.yaxisValue + ")"
+                            ];
+                            var finalFile = headers.join(this.csvSeparator);
+                            for(var i = 0; i < rows.length; i++){
+                                var row = rows[i];
+                                finalFile += "\n" + row.join(this.csvSeparator);
+                            }
+                            this.download(finalFile, chartConfig.title + ".csv", "attachment/csv");
+                            
+                        }
+                    }]
                 }]
             }]/*,
             tools: windowTools*/
@@ -286,11 +318,36 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             '</wps:Input>', name, filter);
     },
     download: function(text, name, type) {
-      var a = document.createElement("a");
-      var file = new Blob([text], {type: type});
-      a.href = URL.createObjectURL(file);
-      a.setAttribute("download",name);
-      a.click();
+        var a = document.createElement("a");
+        var file = new Blob([text], {type: type});
+        // a.href = URL.createObjectURL(file);
+        saveAs(file, name);
+        // a.href = 'data:' + type + ',' +  encodeURI(text);
+        // a.target = '_blank';
+        // a.href = URL.createObjectURL(file);
+        // a.setAttribute("download",name);
+        // this.emulateClick(a);
+    },
+    emulateClick: function(comp){
+        try { //in firefox
+            comp.click();
+            return;
+        } catch(ex) {}
+        try { // in chrome
+            if(document.createEvent) {
+                var e = document.createEvent('MouseEvents');
+                e.initEvent( 'click', true, true );
+                comp.dispatchEvent(e);
+                return;
+            }
+        } catch(ex) {}
+        try { // in IE
+            if(document.createEventObject) {
+                 var evObj = document.createEventObject();
+                 comp.fireEvent("onclick", evObj);
+                 return;
+            }
+        } catch(ex) {}
     },
     openFileWindow: function(){
         var me = this;
@@ -354,7 +411,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                     width: 180
                                 },
                                 {
-                                    xtype     : 'button',
+                                    xtype: 'button',
                                     text: 'Load',
                                     flex      : 1,
                                     scope: this,
