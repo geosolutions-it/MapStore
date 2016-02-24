@@ -412,6 +412,68 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
 
     },
 
+        /**
+     * private method[createGridPhotoBrowser]
+     * Create e DataView that loads surveys photos
+     * return Ext.DataView();
+     */
+    createGridPhotoBrowser:function(){
+        
+        var photoBrowserDataView = new Ext.ux.GridBrowser({
+            style:'overflow:auto',
+            ref:'picview',
+            multiSelect: true,
+            autoHeight: true,
+            authParam:this.authParam,
+            authKey:this.authkey,
+            picturesBrowserConfig:this.configSurvey.picturesBrowserConfig,
+            store: new Ext.data.JsonStore({
+                    url: "http://geosolution.it",
+                    autoLoad: false,
+                    root: 'data',
+                    id:'name',
+                    fields:[
+                        'name', 'web_path','mtime','size','leaf',
+                        {name: 'shortName', mapping: 'name'},
+                        {name: 'text', mapping: 'name'}
+                    ],
+                    listeners:{
+                        load:function (store,records,req){
+                            if(records.length <= 0 ){
+                                if(photoBrowserDataView.ownerCt.isVisible()){
+                                    photoBrowserDataView.ownerCt.ownerCt.layout.setActiveItem(0);
+                                }
+                                photoBrowserDataView.ownerCt.disable();
+                            }else{
+                                photoBrowserDataView.ownerCt.enable();
+                            }
+                        }
+                    }
+            }),
+            loadPhotos:function(r){
+                if(r == null){
+                    photoBrowserDataView.ownerCt.disable();
+                    return;
+                }
+                var ds=this.getStore();
+                var url=this.picturesBrowserConfig.baseUrl
+                        +'?action=get_filelist&folder='
+                        +this.picturesBrowserConfig.folder
+                        +r.data[this.picturesBrowserConfig.featureProperty]+"/"+r.data.fid;
+                if(this.authKey){
+                    url+="&"+this.authParam+"="+this.authKey;
+                }
+                ds.proxy.setUrl(url,true);
+                ds.load();
+            },
+            readOnly:true,
+            ddGroup:null
+        });
+
+        return photoBrowserDataView;
+
+    },
+    
     /** api: method[addOutput]
      */
     addOutput: function(config) {
@@ -425,7 +487,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         }
         //Creo il pannello che carica i dettagli segnalazione!!
         if(this.configSurvey.picturesBrowserConfig){
-            var photoBrowser=this.createPhotoBrowser();
+            var photoBrowser=this.createGridPhotoBrowser();
         }
         if(this.configHistory.picturesBrowserConfig){
             var photoBrowserNotice=this.createPhotoBrowser();

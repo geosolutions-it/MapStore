@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2016 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -132,7 +132,6 @@ mxp.plugins.FileBrowser = Ext.extend(mxp.plugins.Tool, {
             closable: true,
             closeAction: 'close',
             autoWidth: true,
-            // iconCls: "template_manger_ic",  // TODO: icon
             header: false,
             viewConfig: {
                 forceFit: true

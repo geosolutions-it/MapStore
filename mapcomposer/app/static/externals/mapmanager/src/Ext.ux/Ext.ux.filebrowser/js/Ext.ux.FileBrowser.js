@@ -524,6 +524,7 @@ Ext.ux.FileBrowser = Ext.extend(Ext.Panel, {
             ,text:node.attributes.text
             ,leaf:node.attributes.leaf
             ,size:node.attributes.size
+            ,mtime:node.attributes.mtime
             ,iconCls: node.attributes.iconCls
         }));
     }

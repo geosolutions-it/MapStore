@@ -14,6 +14,7 @@ Ext.ux.GridBrowser = Ext.extend(Ext.grid.GridPanel, {
 
         this.cm = new Ext.grid.ColumnModel([
             {id:"id", header:"Label", dataIndex:"text", sortable:true, renderer:{fn:this.fileRenderer,scope:this}}
+            ,{header:"Last Modified", dataIndex:"mtime", align:"right", fixed:false, width:100, sortable:true, renderer:this.timeRenderer}
 	        ,{header:"Size", dataIndex:"size", align:"right", fixed:true, width:100, sortable:true, renderer:this.sizeRenderer}
         ]);
 
@@ -55,6 +56,14 @@ Ext.ux.GridBrowser = Ext.extend(Ext.grid.GridPanel, {
         var html = '<div style="padding:2px 0 1px 0;">';
         if (record.data.leaf != undefined && record.data.leaf === true)
             html += (value/1000) + " Ko";
+        return html+'</div>';
+    }
+
+    ,timeRenderer:function(value, metaData, record) {
+        var html = '<div style="padding:2px 0 1px 0;">';
+        if (record.data.leaf != undefined && record.data.leaf === true){
+            html += new Date(value).toString();
+        }
         return html+'</div>';
     }
 
