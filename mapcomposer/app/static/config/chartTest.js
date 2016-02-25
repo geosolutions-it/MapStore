@@ -221,7 +221,8 @@
             "iconCls": "icon-chart-report"
         }, {
 			"ptype": "gxp_categoryinitializer",
-            "silentErrors": true
+            "silentErrors": true,
+            "neededCategories": ["TEMPLATE", "MAP", "MAPSTORECONFIG", "ADMINCONFIG", "CHARTS"]
 		}, {
 		   "ptype": "gxp_mouseposition",
 		   "displayProjectionCode":"EPSG:4326",
