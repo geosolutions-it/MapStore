@@ -67,6 +67,7 @@ gxp.charts.ChartContainer = Ext.extend(Ext.Container, {
                     store:this.store,
                     type: this.chartConfig.chartType,
                     gaugeMax: this.chartConfig.gaugeMax,
+                    color: this.chartConfig.color,
                     valueField:'value',
                     labelField:'label',
                     autoColorOptions:{base:180,range:300, s: 0.67,v :0.67},

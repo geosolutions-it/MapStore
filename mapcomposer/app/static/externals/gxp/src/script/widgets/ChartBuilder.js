@@ -101,20 +101,17 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
             iconCls: "gxp-icon-buildchart",
             disabled: false,
             handler: function() {
-                
-                var xFieldType = this.form.xaxisAttributeField.xFieldType.split(":")[1];
-                var yFieldType = this.form.yaxisAttributeField.yFieldType.split(":")[1];
-                
                 // Chart configuration
                 var chartConfig = {
                     chartType: this.chartTypeCombo.getValue(),
                     title: "New " + this.chartTypeCombo.getValue() + " Chart",
                     typeName:this.attributes.baseParams.TYPENAME,
                     url: this.wpsUrl,
-                    aggType: this.form.yaxisAttributeField.chartAggCombo.getValue(),
+                    // aggType: this.form.yaxisAttributeField.chartAggCombo.getValue(),
                     xaxisValue: this.form.xaxisAttributeField.property.getValue(),
                     yaxisValue: this.form.yaxisAttributeField.property.getValue(),
                     gaugeMax: this.form.gaugemax.gaugemaxfield.getValue(),
+                    color:"98BCCE",
                     xFieldType: this.form.xaxisAttributeField.xFieldType.split(":")[1],
                     yFieldType: this.form.yaxisAttributeField.yFieldType.split(":")[1],
                     aggFunction: this.form.yaxisAttributeField.chartAggCombo.lastSelectionText,
@@ -161,6 +158,8 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
                     }else{
                         this.manageChartsFieldsOptions(false,false);
                     }
+                    
+                    this.childChartContainer.ownerCt.xaxisAttributeField.enableDisableChartButton();
                 },
                 scope: this
             },

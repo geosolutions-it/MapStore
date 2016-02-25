@@ -69,7 +69,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                'title',
                'chartType',
                'typeName',
-               'aggType',
+               'aggFunction',
                'url',
                'xaxisValue','yaxisValue',
                'xFieldType','yFieldType',
@@ -101,7 +101,162 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                         tooltip: me.editChartOptionsText,
                         iconCls: 'icon-chart-edit',
                         scope: this,
-                        handler: me.tbi
+                        handler: function(){
+                            var obj = view.store.getAt(index);
+                            var win = new Ext.Window({
+                                layout:'fit',
+                                width:280,
+                                modal: true,
+                                title:'Edit Chart',
+                                // height:300,
+                                autoHeight:true,
+                                closeAction:'close',
+                                plain: true,
+                                items: [{
+                                    xtype: 'form',
+                                    labelWidth: 75,
+                                    data: obj,
+                                    frame:true,
+                                    bodyStyle:'padding:5px 5px 0',
+                                    width: 600,
+                                    autoHeight:true,
+                                    defaults: {anchor: '0'},
+                                    defaultType: 'textfield',
+                                    listeners: {
+                                        scope: this,
+                                        'afterlayout': function(f){
+                                            var Record = Ext.data.Record.create([
+                                                {name: 'id', type: 'string'},
+                                                {name: 'title', type: 'string'},
+                                                {name: 'chartType', type: 'string'},
+                                                {name: 'aggFunction', type: 'string'},
+                                                {name: 'color', type: 'string'},
+                                                {name: 'gaugeMax', type: 'float'}
+                                            ]);
+                                            f.form.loadRecord(new Record(
+                                                f.form.data.data
+                                            ));
+                                            if (f.form.data.data.chartType === 'gauge')
+                                                f.gaugeMax.setVisible(true);
+                                            if (f.form.data.data.chartType === 'gauge' || f.form.data.data.chartType === 'pie')
+                                                f.colorpicker.setVisible(false);
+                                        }
+                                    },
+                                    items: [
+                                        {
+                                            xtype: 'textfield',
+                                            name: 'id',
+                                            hidden: true
+                                        },
+                                        {
+                                            xtype: 'textfield',
+                                            name: 'title',
+                                            fieldLabel: 'Titolo Grafico',
+                                            anchor: '-10'
+                                        },
+                                        {
+                                            anchor: '-10',
+                                            xtype: 'combo',
+                                            mode: 'local',
+                                            triggerAction: 'all',
+                                            forceSelection: true,
+                                            editable: false,
+                                            fieldLabel: 'Aggregazione',
+                                            name: 'aggFunction',
+                                            displayField: 'name',
+                                            valueField: 'value',
+                                            store: new Ext.data.JsonStore({
+                                                fields: ['name', 'value'],
+                                                data: [
+                                                    {name: 'Count', value: 'Count'},
+                                                    {name: 'Sum', value: 'Sum'},
+                                                    {name: 'Max', value: 'Max'},
+                                                    {name: 'Min', value: 'Min'},
+                                                    {name: 'Average', value: 'Average'}
+                                                ]
+                                            }),
+                                            listeners: {
+                                                expand: function(combo){
+                                                    this.chartDataConfig = view.store.getAt(index);
+                                                    combo.getStore().filterBy(function(record,id){
+                                                        if(record.get('value') !== 'Count' && /(string|date|dateTime).*/.exec(this.chartDataConfig.get('yFieldType'))){
+                                                            return false;
+                                                        }else{
+                                                            return true;
+                                                        }
+                                                    },this);
+                                                }
+                                            }
+                                        },{
+                                            anchor: '-10',
+                                            xtype: 'combo',
+                                            mode: 'local',
+                                            triggerAction: 'all',
+                                            forceSelection: true,
+                                            editable: false,
+                                            fieldLabel: 'Tipo grafico',
+                                            name: 'chartType',
+                                            displayField: 'name',
+                                            valueField: 'value',
+                                            store: new Ext.data.JsonStore({
+                                                fields: ['name', 'value'],
+                                                data: [
+                                                    {name: 'Istogramma', value: 'bar'},
+                                                    {name: 'Linea', value: 'line'},
+                                                    {name: 'Torta', value: 'pie'},
+                                                    {name: 'Cruscotto', value: 'gauge'}
+                                                ]
+                                            }),
+                                            listeners: {
+                                                select: function(combo, record){
+                                                    combo.ownerCt.gaugeMax.setVisible(record.get("value") === 'gauge');
+                                                    combo.ownerCt.colorpicker.setVisible(record.get("value") !== 'gauge' && record.get("value") !== 'pie');
+                                                }
+                                            }
+                                        },{
+                							xtype: 'colorpickerfield',
+                							fieldLabel: 'Colore',
+                                            editable: false,
+                                            ref: 'colorpicker',
+                							name: 'color',
+                                            anchor: '-10',
+                                            value: 'FFFFFF'
+                						},{
+                                            xtype: 'numberfield',
+                                            name: 'gaugeMax',
+                                            ref: 'gaugeMax',
+                                            fieldLabel: 'Max',
+                                            anchor: '-10',
+                                            hidden: true
+                                        }
+                                    ],
+                                    buttons: [
+                                        {
+                                            iconCls: 'icon-disk',
+                                            text: me.saveText,
+                                            handler: function() {
+                                                var record = view.store.getAt(index);
+                                                var data = this.ownerCt.ownerCt.form.getFieldValues();
+                                                for (var r in data) {
+                                                    if (data.hasOwnProperty(r)) {
+                                                       if(record.data.hasOwnProperty(r)){
+                                                           record.set(r, data[r]);
+                                                       }
+                                                    }
+                                                }
+                                                win.close();
+                                            }
+                                        },{
+                                            iconCls: 'cancel',
+                                            text: 'Close',
+                                            handler: function(){
+                                                win.close();
+                                            }
+                                        }]
+                                    }]
+                            });
+                            win.show();
+                        }
                         },{
                         text: me.reloadConfigText,
                         tooltip: me.reloadConfigText,

@@ -36,7 +36,8 @@ gxp.form.ChartField = Ext.extend(Ext.form.CompositeField, {
      * {Object}
      */
     attributesComboConfig: null,
-
+    xFiledType: null,
+    yFieldType: null,
     initComponent: function() {
 
         var me = this;
@@ -57,9 +58,7 @@ gxp.form.ChartField = Ext.extend(Ext.form.CompositeField, {
                 attributes = this.attributes;
             }
         }
-        this.xFieldType = '';
-        this.yFieldType = '';
-        this.pippo = [];
+
         var defAttributesComboConfig = {
             xtype: "combo",
             id: this.id,
@@ -77,6 +76,12 @@ gxp.form.ChartField = Ext.extend(Ext.form.CompositeField, {
             value: undefined,
             listeners: {
                 select: function(combo, record) {
+                    if(this.name === 'xaxis')
+                        this.xFieldType = record.get('type');
+                        
+                    if(this.name === 'yaxis')
+                        this.yFieldType = record.get('type');
+                        
                     this.enableDisableChartButton();
                 },
                 // workaround for select event not being fired when tab is hit
@@ -170,14 +175,14 @@ gxp.form.ChartField = Ext.extend(Ext.form.CompositeField, {
             mode: "local",
             listeners: {
                 select: function(combo, record) {
-                    var yaxisAttributesCombo = this.items.items[0];
-                    if(yaxisAttributesCombo.name === "yaxis"){
-                        var yaxisValueCombo = yaxisAttributesCombo.getValue();
-                        var yaxisSelectedRecord = yaxisAttributesCombo.findRecord("name",yaxisValueCombo);
+                    var attributesCombo = this.items.items[0];
+                    if(attributesCombo.name === "yaxis"){
+                        var yaxisValueCombo = attributesCombo.getValue();
+                        var yaxisSelectedRecord = attributesCombo.findRecord("name",yaxisValueCombo);
                         if(yaxisSelectedRecord){
                             if(record.get("value") > 0){
                                 if(this.checkAttributesDataType(yaxisSelectedRecord.get("type")))
-                                    yaxisAttributesCombo.reset();
+                                    attributesCombo.reset();
                             }
                         }
                     }
