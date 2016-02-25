@@ -480,16 +480,25 @@ gxp.charts.ChartJsChart = Ext.extend(Ext.Container, {
         }
         
     },
+    hexToRgba(hex,opacity){
+        hex = hex.replace('#','');
+        r = parseInt(hex.substring(0,2), 16);
+        g = parseInt(hex.substring(2,4), 16);
+        b = parseInt(hex.substring(4,6), 16);
+
+        result = 'rgba('+r+','+g+','+b+','+opacity/100+')';
+        return result;
+    },
     refresh: function(){
 
         this.datasets = [{
             label: "My First dataset",
-            fillColor: "rgba(151,187,205,0.2)",
-            strokeColor: "rgba(151,187,205,1)",
-            pointColor: "rgba(151,187,205,1)",
+            fillColor: this.hexToRgba(this.color,20), // "rgba(151,187,205,0.2)",
+            strokeColor: this.hexToRgba(this.color,100), //"rgba(151,187,205,1)",
+            pointColor: this.hexToRgba(this.color,100), //"rgba(151,187,205,1)",
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(151,187,205,1)",
+            pointHighlightStroke: this.hexToRgba(this.color,100), //"rgba(151,187,205,1)",
             data: []
         }];
         
