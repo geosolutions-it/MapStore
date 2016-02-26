@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2016 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -88,12 +88,7 @@ mxp.plugins.GeostoreMissionResourceEditor = Ext.extend(mxp.plugins.Tool, {
         
         this.outputConfig = this.outputConfig || {};
 
-        var uploadUrl = this.uploadUrl ? this.uploadUrl : // the upload URL is configured in th plugin
-            this.target.adminUrl ? this.target.adminUrl + "mvc/fileManager/upload" : // use relative path from adminUrl
-            "/opensdi2-manager/mvc/fileManager/upload"; // by default search on root opensdi-manager2
-            
         var me = this;
-        
        
         this.outputConfig = Ext.apply(this.outputConfig,{
             xtype:'geostore_category_manger',

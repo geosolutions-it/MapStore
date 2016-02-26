@@ -279,7 +279,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``integer``
      *  if present, limit the number of feature to query for the first check
      */
-     exportCheckLimit: null,
+    exportCheckLimit: null,
 
     /** api: config[pageLabel]
      *  ``String``
@@ -297,6 +297,14 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
     totalRecordsLabel: "Total Records",
     filterPropertyNames: true,
 
+    /**
+     * PLUpload config
+     */
+    pluploadWindowWidth: 400,
+    pluploadWindowHeigth: 300,
+    pluploadWindowResizable: false,
+    pluploadMultipart: true,
+    
     /** private: method[displayTotalResults]
      */
     displayTotalResults: function() {
@@ -427,7 +435,12 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 '</a><span></span></div>'
             )
         });
-    
+        
+        var photoUploadUrl = this.uploadUrl ? this.uploadUrl: // the upload URL is configured in the plugin
+            localConfig.adminUrl ? localConfig.adminUrl + "mvc/fileManager/upload" : // use relative path from adminUrl
+            "/opensdi2-manager/mvc/fileManager/upload"; // by default search on root opensdi-manager2
+            
+            
         var photoBrowserDataView = new Ext.ux.GridBrowser({
             style:'overflow:auto',
             ref:'picview',
@@ -466,18 +479,76 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     return;
                 }
                 var ds=this.getStore();
-                var url=this.picturesBrowserConfig.baseUrl
-                        +'?action=get_filelist&folder='
-                        +this.picturesBrowserConfig.folder
+                photoBrowserDataView.currentFolder = this.picturesBrowserConfig.folder
                         +r.data[this.picturesBrowserConfig.featureProperty]+"/"+r.data.fid;
+                var url=this.picturesBrowserConfig.baseUrl
+                        + '?action=get_filelist&folder='
+                        + photoBrowserDataView.currentFolder ;
                 if(this.authKey){
                     url+="&"+this.authParam+"="+this.authKey;
                 }
                 ds.proxy.setUrl(url,true);
                 ds.load();
             },
+            reload:function(  ){
+                if(photoBrowserDataView.currentFolder){
+                    var ds=this.getStore();
+                    var url=this.picturesBrowserConfig.baseUrl
+                        + '?action=get_filelist&folder='
+                        + photoBrowserDataView.currentFolder ;
+                    if(this.authKey){
+                        url+="&"+this.authParam+"="+this.authKey;
+                    }
+                    ds.proxy.setUrl(url,true);
+                    ds.load();
+                }
+            },
             readOnly:true,
-            ddGroup:null
+            ddGroup:null,
+            tbar:{
+                items: [
+                    '->',
+                    {
+                        // xtype: 'button', // default for Toolbars, same as 'tbbutton'
+                        text: 'Upload',
+                        iconCls:'icon-upload',
+                        scope: this,
+                        handler: function(){
+
+                            var pluploadPanel = new Ext.ux.PluploadPanel({
+                                autoScroll:true,
+                                layout:'fit',
+                                url: photoUploadUrl,
+                                multipart: true,
+                                mediaContent: "./externals/mapmanager/theme/media",
+                                currentFolder : this.currentFolder,
+                                listeners:{
+                                    beforestart:function() {  
+                                        var multipart_params =  pluploadPanel.multipart_params || {};
+                                        Ext.apply(multipart_params, {
+                                            folder: photoBrowserDataView.currentFolder
+                                        })
+                                        pluploadPanel.multipart_params = multipart_params;
+                                    },
+                                    fileUploaded:function(file) {
+                                        photoBrowserDataView.reload();
+                                    },
+                                    scope: this
+                                }
+                            });
+                            var win = new Ext.Window({
+                                title: this.uploadText,
+                                width: this.pluploadWindowWidth,
+                                height: this.pluploadWindowHeigth,
+                                layout:'fit',
+                                resizable: this.pluploadWindowResizable,
+                                items: [pluploadPanel]
+                            });
+                            win.show();
+                        }
+                    }
+                ]
+            }
         });
 
         return photoBrowserDataView;

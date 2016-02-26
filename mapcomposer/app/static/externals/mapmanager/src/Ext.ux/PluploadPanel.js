@@ -348,19 +348,20 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
         );
     },
     FileUploaded: function(uploader, file, status) {
-        var response = Ext.util.JSON.decode( status.response );
-        // flash runtime don't return response
-        if (uploader.runtime == "flash" 
-                || (response.success == true || status.status == 200)) {
-            file.server_error = 0;
-            this.success.push(file);
-        }
-        else {
-            if ( response.message ) {
-                file.msg = '<span style="color: red">' + response.message + '</span>';
+        if(status && status.response && status.response.length > 0){
+            var response = Ext.util.JSON.decode( status.response );
+            // flash runtime don't return response
+            if (uploader.runtime == "flash" 
+                    || (response.success == true || status.status == 200)) {
+                file.server_error = 0;
+                this.success.push(file);
+            } else {
+                if ( response.message ) {
+                    file.msg = '<span style="color: red">' + response.message + '</span>';
+                }
+                file.server_error = 1;
+                this.failed.push(file);
             }
-            file.server_error = 1;
-            this.failed.push(file);
         }
         this.update_store( file );
         this.fireEvent("fileUploaded", file);

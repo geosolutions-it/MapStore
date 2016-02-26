@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2016 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -135,10 +135,7 @@ mxp.plugins.ServiceManager = Ext.extend(mxp.plugins.Tool, {
             url: actionURL
         });
 
-
-
-         if(this.output.length > 0
-            && this.outputTarget){
+        if(this.output.length > 0 && this.outputTarget){
             for(var i = 0; i < this.output.length; i++){
                 if(this.output[i].ownerCt
                     && this.output[i].ownerCt.xtype 
