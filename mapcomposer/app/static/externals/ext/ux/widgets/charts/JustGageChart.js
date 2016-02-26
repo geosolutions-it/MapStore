@@ -89,7 +89,7 @@ gxp.charts.JustGageChart = Ext.extend(Ext.Panel, {
                     id:this.id + "_" + i + "_gaugesPanelId", 
                     layout:'fit',
                     header: true,
-                    title: this.data.value[i],
+                    title: this.data.title[i],
                     //height: 320,
                     width: 200,
                     items:[
@@ -105,6 +105,7 @@ gxp.charts.JustGageChart = Ext.extend(Ext.Panel, {
                     max: this.gaugeMax ? this.gaugeMax : this.data.value[i]
                 });
             }
+            this.data = undefined;
 
         }
 
