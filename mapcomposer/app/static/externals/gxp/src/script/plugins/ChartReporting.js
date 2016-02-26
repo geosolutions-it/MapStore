@@ -355,7 +355,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 border:false
             },{
                 region:'south',
-                height: 250,
+                height: 240,
                 title: this.dataText,
                 collapsible: true,
                 layout:'fit',
@@ -406,8 +406,43 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                         }
                     }]
                 }]
-            }]/*,
-            tools: windowTools*/
+            }],
+            tools : [{
+                id:'print',
+                scope: this,
+                handler: function(event, toolEl, panel){
+                    //regex is for IE11 so we have to use a servlet
+                    if(Ext.isIE11 === undefined){
+                        Ext.isIE11 = !!navigator.userAgent.match(/Trident.*rv[ :]*11\./);
+                    }
+                    var me = this;
+                    // canvasWindow.chartsPanel.items.items[0].items.items[0].getEl().dom is mad. Use a method from the panel
+                    var target = canvasWindow.chartsPanel.items.items[0].items.items[0].getEl().dom
+                    var tgtparent = target.parentElement;
+                    var originalClass = target.className;
+                    
+                    $(target).appendTo(document.body)
+                    $(target).addClass("html2canvasreset");
+                    html2canvas( target , {
+                            proxy: this.target.proxy,
+                           // allowTaint:true,  
+                            //CORS errors not managed with ie11, so disable
+                            useCORS: !Ext.isIE11,
+                            //logging:true,
+                            onrendered: function(c) {
+                                
+                                target.className = originalClass;
+                                var canvasData = c.toBlob(function(blob){
+                                    me.download(blob,chartConfig.title + ".png","image/png");
+                                });
+                                
+                                
+                                $(target).appendTo(tgtparent);
+                            }
+                    });
+
+                }
+            }]
         }).show();
         this.openWindows[record.get('id')] = canvasWindow;
         
