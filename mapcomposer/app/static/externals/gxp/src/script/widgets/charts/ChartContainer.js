@@ -57,7 +57,8 @@ gxp.charts.ChartContainer = Ext.extend(Ext.Container, {
                 height:400,
                 legendRef:'legendPanel',
                 store:this.store,
-                showLegend: this.chartConfig.chartType !== 'gauge' && this.chartConfig.chartType !== 'line' && this.chartConfig.chartType !== 'bar',
+                // showLegend: this.chartConfig.chartType !== 'gauge' && this.chartConfig.chartType !== 'line' && this.chartConfig.chartType !== 'bar',
+                showLegend: this.chartConfig.chartType !== 'gauge',
                 autoScroll: this.chartConfig.chartType === 'gauge',
                 chartOptions:{
                     xtype: this.chartConfig.chartType === 'gauge' ? 'gxp_JustGageChart' : 'gxp_ChartJsChart',

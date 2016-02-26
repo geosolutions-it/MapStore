@@ -10,3 +10,15 @@ ul.pie-legend li span{
     border-radius: 0.5em; /* Comment out if you prefer squarish samples */
     margin-right: 0.5em;
 }
+ul.bar-line-legend li{
+    margin: 5px;
+}
+ul.bar-line-legend li span{
+    display: block;
+    float: left;
+    width: 1em;
+    height: 1em;
+    border: 2px solid; /* Comment out if you don't want to show the fillColor */
+    border-radius: 0.5em; /* Comment out if you prefer squarish samples */
+    margin-right: 0.5em;
+}
