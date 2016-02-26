@@ -38,6 +38,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     reloadConfigText: "Reload Configuration",
     editChartOptionsText: "Edit",
     exportCsvText: "Export as CSV", 
+    clearAllText: "Remove all charts",
     dataText: "Data",
     csvSeparator: ",",
     
@@ -300,6 +301,20 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                     handler:function() {
                         me.openFileWindow();
                     }
+            }],
+            bbar:["->",{
+                xtype: "button",
+                iconCls: 'cancel',
+                text: this.clearAllText,
+                handler: function(){
+                    Ext.Msg.confirm(null, me.clearAllText , function(btn, text){
+                      if (btn == 'yes'){
+                         me.chartStore.removeAll(); 
+                      } else {
+                        this.close;
+                      }
+                    });
+                }
             }],
             xtype: "panel",
             border: false,

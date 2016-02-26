@@ -411,6 +411,6 @@ div#homelogos ul li a:hover {
     width: auto !important;
     height: auto !important;
     max-height: auto !important;
-    /* z-index : -1 !important; */
+    z-index : -1 !important;
     padding : 0px !important;
 }
