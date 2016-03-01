@@ -91,7 +91,7 @@ Ext.ux.GridBrowser = Ext.extend(Ext.grid.GridPanel, {
         var gridbrowser = this;
         Ext.each(records, function(record) {
             var iconCls = record.get("leaf") === true ? "row-file" : "icon-row-folder";
-            html += '<div class="'+iconCls+' '+ gridbrowser.getFileCls(value) +'">'+record.get("text")+'</div>';
+            html += '<div class="'+iconCls+' ">'+record.get("text")+'</div>';
         }, this);
         return html;
     }
