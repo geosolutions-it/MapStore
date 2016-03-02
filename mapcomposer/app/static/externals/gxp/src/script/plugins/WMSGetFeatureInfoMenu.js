@@ -518,6 +518,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             xtype: "gx_popup",
             title: this.popupTitle,
             layout: this.useTabPanel ? "fit" : "accordion",
+            autoScroll: true,
             location: latLon,
             map: this.target.mapPanel,
             width: 490,
@@ -773,7 +774,80 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
         }
 
         return featureGrids;
-    },   
+    },
+    
+    /**
+     * private method[createGridPhotoBrowser]
+     * Create e DataView that loads surveys photos
+     * return Ext.DataView();
+     */
+    createGridPhotoBrowser:function(feature){
+        
+        var expander = new Ext.ux.grid.RowExpander({
+            tpl : new Ext.Template(
+                '<div class="thumb-wrap" id="{name}">',
+                '<div class="thumb"><a target="_blank" href="'+this.picturesBrowserConfig.baseUrl+'?action=get_image&file={web_path}">',
+                '<img height="100px" width="100px" src="'+this.picturesBrowserConfig.baseUrl+'?action=get_image&file={web_path}" class="thumb-img"></div>',
+                '</a><span></span></div>'
+            )
+        });
+    
+        var photoBrowserDataView = new Ext.ux.GridBrowser({
+            style:'overflow:auto',
+            ref:'picview',
+            multiSelect: true,
+            autoHeight: true,
+            authParam:this.authParam,
+            authKey:this.authkey,
+            picturesBrowserConfig:this.picturesBrowserConfig,
+            rowExpander: expander,
+            store: new Ext.data.JsonStore({
+                    url: this.picturesBrowserConfig.baseUrl
+					     +'?action=get_filelist&folder='
+						 +this.picturesBrowserConfig.folder
+						 +feature.data[this.picturesBrowserConfig.featureProperty]+"/"+feature.fid,
+                    autoLoad: true,
+                    root: 'data',
+                    id:'name',
+                    fields:[
+                        'name', 'web_path','mtime','size','leaf',
+                        {name: 'shortName', mapping: 'name'},
+                        {name: 'text', mapping: 'name'}
+                    ],
+                    listeners:{
+						load:function (store,records,req){
+							if(records.length <= 0 ){
+								photoBrowserDataView.refOwner.getBottomToolbar( ).hide();
+								photoBrowserDataView.refOwner.doLayout();
+							}
+						}
+                    }
+            }),
+            loadPhotos:function(r){
+                if(r == null){
+                    photoBrowserDataView.ownerCt.disable();
+                    return;
+                }
+                var ds=this.getStore();
+                var url=this.picturesBrowserConfig.baseUrl
+                        +'?action=get_filelist&folder='
+                        +this.picturesBrowserConfig.folder
+                        +r.data[this.picturesBrowserConfig.featureProperty]+"/"+r.data.fid;
+                if(this.authKey){
+                    url+="&"+this.authParam+"="+this.authKey;
+                }
+                ds.proxy.setUrl(url,true);
+                ds.load();
+            },
+            readOnly:true,
+            ddGroup:null
+        });
+
+        return photoBrowserDataView;
+
+    },
+    
+    
     /** private: method[obtainFeatureGrid]
      *  Obtain feature grid
      * :arg feature: ``Object`` Feature data.
@@ -806,7 +880,10 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             }
         };
 		if(this.picturesBrowserConfig){
-			 featureGridConfig.title = null;
+			featureGridConfig.title = null;
+             
+            var view = this.createGridPhotoBrowser(feature);
+            /*
 			 var view = new Ext.DataView({
 				itemSelector: 'div.thumb-wrap',
 				style:'overflow:auto',
@@ -848,9 +925,11 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 					}
 				}
 			});
+            */
 			var tpanel = {
 				xtype:'panel',
 				layout:'card',
+                minHeight: 100,
 				activeItemIndex:0,
 				activeItem:0,
 				bbar: ['->', {
