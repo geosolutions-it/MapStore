@@ -477,8 +477,18 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 }
                 // process command failure
                 else {
-                    // show default message box with server error
-                    showError(o.msg || response.responseText);
+                    switch(options.params.action) {
+                        case 'file_delete':
+                            showError(o.msg || "Cannot delete file" );
+                            break;
+                        case 'file_rename':
+                            showError(o.msg || "Cannot rename file" );
+                            break;
+                        default:
+                            // show default message box with server error
+                            showError(o.msg || response.responseText);
+                            break;
+                    }
                 }
             }
             // process Ajax failure
