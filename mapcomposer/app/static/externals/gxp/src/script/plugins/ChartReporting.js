@@ -21,8 +21,8 @@ Ext.namespace("gxp.plugins");
  *  .. class:: FeatureGrid(config)
  *
  *    Plugin for displaying current session generated charts.
- *   
- */   
+ *
+ */
 gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
 
     /** api: ptype = gxp_chartReporting */
@@ -39,7 +39,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     pleaseSelectChartText: "Please select a chart first",
     reloadConfigText: "Reload Configuration",
     editChartOptionsText: "Edit",
-    exportCsvText: "Export as CSV", 
+    exportCsvText: "Export as CSV",
     clearAllText: "Remove all charts",
     dataText: "Data",
     csvSeparator: ",",
@@ -60,8 +60,10 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     editChartText: 'Edit Chart',
     loadText: "Load",
     browseText: "Browse...",
-    
-    
+    invalidChartText: "Invalid chart",
+
+    spatialSelectorFormId: null,
+
     // REMOVE THIS WHEN ALL FEATURES ARE IMPLEMENTED
     tbi : function(){
         Ext.Msg.show({
@@ -72,7 +74,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
 
     init : function(target) {
         this.target = target;
-        gxp.plugins.ChartReporting.superclass.init.call(this, target);   
+        gxp.plugins.ChartReporting.superclass.init.call(this, target);
         this.geoStoreUrl = this.geoStoreUrl ? this.geoStoreUrl : this.target.geoStoreBaseURL;
     },
     /**
@@ -100,10 +102,9 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                'xaxisValue','yaxisValue',
                'xFieldType','yFieldType',
                'gaugeMax',
+               'spatialSelectorForm',
                {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'}
-                
             ],
-           
         });
         var chartPanel = {
             xtype: "gxp_chartreportingpanel",
@@ -288,7 +289,9 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                         tooltip: me.reloadConfigText,
                         iconCls: 'icon-reload-settings',
                         scope: this,
-                        handler: me.tbi
+                        handler: function() {
+                            me.reloadSettings(view.store.getAt(index))
+                        }
                    }]});
                    contextMenu.showAt(e.xy);
                    e.preventDefault();
@@ -343,7 +346,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 handler: function(){
                     Ext.Msg.confirm(null, me.clearAllText , function(btn, text){
                       if (btn == 'yes'){
-                         me.chartStore.removeAll(); 
+                         me.chartStore.removeAll();
                       } else {
                         this.close;
                       }
@@ -356,9 +359,9 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             layout: "fit",
             items: [chartPanel]
         }, config || {});
-       
+
         this.chartPanel = gxp.plugins.ChartReporting.superclass.addOutput.call(this, config);
-        
+
         return this.chartPanel;
     },
     shareChart: function(obj) {
@@ -494,7 +497,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                 finalFile += "\n" + row.join(this.csvSeparator);
                             }
                             this.download(finalFile, chartConfig.title + ".csv", "attachment/csv");
-                            
+
                         }
                     }]
                 }]
@@ -506,7 +509,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             }]
         }).show();
         this.openWindows[record.get('id')] = canvasWindow;
-        
+
     },
     getWpsRequest: function(chartConfig) {
         return String.format(
@@ -522,7 +525,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             '  xmlns:wps="http://www.opengis.net/wps/1.0.0" ' +
             '  xmlns:xlink="http://www.w3.org/1999/xlink" ' +
             '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-            '  xsi:schemaLocation="http://www.opengis.net/wps/1.0.0' + 
+            '  xsi:schemaLocation="http://www.opengis.net/wps/1.0.0' +
             '  http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd">' +
             '  <ows:Identifier>gs:Aggregate</ows:Identifier>' +
             '  <wps:DataInputs>' +
@@ -537,11 +540,11 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             '      <ows:Identifier>result</ows:Identifier>' +
             '    </wps:RawDataOutput>' +
             '  </wps:ResponseForm>' +
-            '</wps:Execute>', 
-            this.getWpsGetFeatureInput(chartConfig.typeName, chartConfig.ogcFilter), 
-            this.getWpsLiteralInput("aggregationAttribute", chartConfig.yaxisValue), 
-            this.getWpsLiteralInput("function", chartConfig.aggFunction), 
-            this.getWpsLiteralInput("singlePass", "false"), 
+            '</wps:Execute>',
+            this.getWpsGetFeatureInput(chartConfig.typeName, chartConfig.ogcFilter),
+            this.getWpsLiteralInput("aggregationAttribute", chartConfig.yaxisValue),
+            this.getWpsLiteralInput("function", chartConfig.aggFunction),
+            this.getWpsLiteralInput("singlePass", "false"),
             this.getWpsLiteralInput("groupByAttributes", chartConfig.xaxisValue));
     },
     getWpsLiteralInput: function(name, value) {
@@ -613,14 +616,14 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 plain: true,
                 items: [{
                     xtype: 'form',
-                    labelWidth: 75, 
+                    labelWidth: 75,
                     frame:true,
                     bodyStyle:'padding:5px 5px 0',
                     width: 350,
                     autoHeight:true,
                     defaults: {width: 240},
                     defaultType: 'textfield',
-                    items: [ 
+                    items: [
                         new Ext.ux.form.FileUploadField({
                             id: "chart-file-form",
                             buttonText: me.browseText,
@@ -689,7 +692,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                         handler: function(){
                             win.close();
                         }
-                    }]  
+                    }]
                 }]
         });
         win.show();
@@ -733,8 +736,8 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
         }
     },
     getEveryoneGroupIdFromUserDetails: function(userDetails) {
-        if (!userDetails 
-            || !userDetails.user 
+        if (!userDetails
+            || !userDetails.user
             || !userDetails.user.groups
             || !userDetails.user.groups.group) {
             return undefined;
@@ -747,7 +750,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             if(groups[i].groupName == 'everyone') {
                 return groups[i].id;
             }
-        } 
+        }
         return undefined;
     },
     getChartById: function(chartId) {
@@ -767,7 +770,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             failure:  function(response, opts) {
                 loadMask.hide();
                 Ext.Msg.show({ 
-                    msg: this.invalidSharedId, 
+                    msg: this.invalidSharedId,
                     buttons: Ext.Msg.OK,
                     icon: Ext.MessageBox.ERROR
                 });
@@ -834,7 +837,11 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             scope: this,
             success:  function(response, opts) {
                 loadMask.hide();
-                Ext.Msg.alert(null, this.chartSharedIdText + ': ' + resourceId);
+                Ext.Msg.show({
+                    title: 'Enter values:',
+                    buttons: Ext.Msg.OK,
+                    msg: this.chartSharedIdText + ': ' + '<input value="' + resourceId + '" readonly="readonly" size="5"/>'
+                });
             },
             failure:  function(response, opts) {
                 loadMask.hide();
@@ -846,6 +853,15 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 });
             }
         });
+    },
+    reloadSettings: function(record) {
+        if (record.data.spatialSelectorFormState && record.data.spatialSelectorFormState.chartOptions) {
+            record.data.spatialSelectorFormState.chartOptions.type = record.data.chartType;
+            record.data.spatialSelectorFormState.chartOptions.function = record.data.aggFunction;
+            record.data.spatialSelectorFormState.chartOptions.max = record.data.gaugeMax;
+        }
+        var spatialSelectorQueryForm = this.target.tools[this.spatialSelectorFormId];
+        spatialSelectorQueryForm.setState(record.data.spatialSelectorFormState);
     }
 });
 

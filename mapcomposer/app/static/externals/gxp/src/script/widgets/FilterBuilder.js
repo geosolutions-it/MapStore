@@ -411,6 +411,11 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
         this.childFilterContainer.add(newChild);
         this.filter.filters[0].filters.push(filter);
         this.childFilterContainer.doLayout();
+        var component = newChild.items.items[1];
+        if (component.xtype !== 'gxp_filterfield') {
+            component = newChild.items.items[1].items.items[0];
+        }
+        return component;
     },
     
     /** private: method[removeCondition]

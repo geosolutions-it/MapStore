@@ -427,6 +427,8 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 
 			this.addFeatureSummary(geometry);
 			this.output.fireEvent("geometrySelect", geometry);
+
+			this.currentValidGeometry = geometry;
 		} 
     },
 

@@ -143,6 +143,50 @@ OpenLayers.Control.SetBox = OpenLayers.Class(OpenLayers.Control, {
             }
         }      
     },
+    setBbox: function (bbox) {
+
+        if (!bbox) {
+            return;
+        }
+
+        var control;
+      
+        if(this.map.enebaleMapEvent)
+            control = this.map.enebaleMapEvent;
+        else
+            control = false;
+           
+        if(control){        
+            if(this.aoi!=null){       
+                this.boxes.removeFeatures(this.aoi);
+            }
+            
+            var bounds = bbox;
+
+            if(this.layerName){
+                var x=this.map.getLayersByName(this.layerName);
+                var index=null;
+                if(x.length>0){
+                    index=this.map.getLayerIndex(x[0]);
+                    this.map.removeLayer(x[0]);
+                }
+                var me=this;
+                this.boxes  = new OpenLayers.Layer.Vector( this.layerName,{
+                    displayInLayerSwitcher: me.displayInLayerSwitcher,
+                    styleMap: me.aoiStyle
+                });
+                this.aoi = new OpenLayers.Feature.Vector(bounds.toGeometry());
+                this.boxes.addFeatures(this.aoi);
+                this.map.addLayer(this.boxes);
+
+                if(index)
+                    this.map.setLayerIndex(this.boxes,index); 
+            }
+
+            if(this.onChangeAOI)
+                this.onChangeAOI();
+        }      
+    },
 
     CLASS_NAME: "OpenLayers.Control.SetBox"
 });

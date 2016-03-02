@@ -54,6 +54,8 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
 
     wpsUrl: null,
 
+    spatialSelectorForm: null,
+
     getFeaturesFilter: function() {
         return "";
     },
@@ -101,6 +103,7 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
             iconCls: "gxp-icon-buildchart",
             disabled: false,
             handler: function() {
+                var state = this.spatialSelectorForm.getState();
                 // Chart configuration
                 var chartConfig = {
                     chartType: this.chartTypeCombo.getValue(),
@@ -115,7 +118,8 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
                     xFieldType: this.form.xaxisAttributeField.xFieldType.split(":")[1],
                     yFieldType: this.form.yaxisAttributeField.yFieldType.split(":")[1],
                     aggFunction: this.form.yaxisAttributeField.chartAggCombo.lastSelectionText,
-                    ogcFilter: this.getFeaturesFilter()
+                    ogcFilter: this.getFeaturesFilter(),
+                    spatialSelectorFormState: state
                 };
                 this.chartReportingTool.addChart(chartConfig, true);
                 this.openReportingTool();
