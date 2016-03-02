@@ -426,6 +426,66 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      * return Ext.DataView();
      */
     createGridPhotoBrowser:function(){
+
+        /**
+         * universal show error function
+         * @private
+         * @param {String} msg message
+         * @param {String} title title
+         */
+        var showError = function(msg, title) {
+            Ext.Msg.show({
+                 title: title || "Error"
+                ,msg:Ext.util.Format.ellipsis(msg, 2000)
+                ,fixCursor:true
+                ,icon:Ext.Msg.ERROR
+                ,buttons:Ext.Msg.OK
+                ,minWidth:1200 > String(msg).length ? 360 : 600
+            });
+        };
+    
+        /**
+         * runs after an Ajax requested command has completed/failed
+         * @private
+         * @param {Object} options Options used for the request
+         * @param {Boolean} success true if ajax call was successful (cmd may have failed)
+         * @param {Object} response ajax call response object
+         */
+        var cmdCallback = function(options, success, response) {
+            var i, o, node;
+            var showMsg = true;
+
+            // process Ajax success
+            if(true === success) {
+
+                // try to decode JSON response
+                try {
+                    o = Ext.decode(response.responseText);
+                }
+                catch(ex) {
+                    showError(response.responseText);
+                }
+
+                // process command success
+                if(true === o.success) {
+                    switch(options.params.action) {
+                        case 'file_delete':
+                        case 'file_rename':
+                            photoBrowserDataView.reload();
+                        break;
+                    }
+                }
+                // process command failure
+                else {
+                    // show default message box with server error
+                    showError(o.msg || response.responseText);
+                }
+            }
+            // process Ajax failure
+            else {
+                this.showError(o && o.msg || "Error sending request to server");
+            }
+        };
         
         var expander = new Ext.ux.grid.RowExpander({
             
@@ -513,7 +573,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                                             values:values,
                                             baseUrl:photoBrowserDataView.picturesBrowserConfig.baseUrl
                                         },
-                                        this.downloadItem  // clickListener
+                                        this.renameItem  // clickListener
                                     ]);
                                 break;
                             case '_deleteBtn':
@@ -527,7 +587,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                                             values:values,
                                             baseUrl:photoBrowserDataView.picturesBrowserConfig.baseUrl
                                         },
-                                        this.downloadItem  // clickListener
+                                        this.deleteItem  // clickListener
                                     ]);
                                 break;
                             default:
@@ -537,20 +597,64 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         return result;
                     },
                     defererUtil: function(id, args, listenerFunc){
-                        // Here we are using the "options" object to pass listener arguments
+                        // Here we use the "options" object to pass listener arguments
                         Ext.get(id).on('click', listenerFunc, this, args);
                     },
-                    downloadItem:function(event,target, args) {
+                    downloadItem:function(event, target, args) {
                         var filepath = args.baseUrl + "?action=file_download&file=" + args.values.web_path;
                         window.open(filepath);
                     },
-                    renameItem:function(event,target, args) {
-                        Ext.MessageBox.prompt("title", "msg", null, null, false, "ciao");
-                        window.open(filepath);
+                    renameItem:function(event, target, args) {
+                        
+                        var onEditComplete = function(btnId, newName) {
+                            
+                            var path = args.values.web_path.substring(0,args.values.web_path.lastIndexOf("/")+1);
+                            
+                            var options = {
+                                 url: args.baseUrl
+                                ,method: 'POST'
+                                ,scope: this
+                                ,callback: cmdCallback
+                                ,params:{
+                                     action: 'file_rename'
+                                    ,oldName: args.values.web_path
+                                    ,name: path + '/' + newName
+                                }
+                            };
+
+                            Ext.Ajax.request(options);
+                        }
+                        
+                        Ext.MessageBox.prompt("Rename", "Insert the new filename", onEditComplete, this, false, args.values.shortName);
+
                     },
-                    deleteItem:function(event,target, args) {
-                        var filepath = args.baseUrl + "?action=file_download&file=" + args.values.web_path;
-                        window.open(filepath);
+                    deleteItem:function(event, target, args) {
+                        
+                        Ext.Msg.show({
+                            title: "Delete"
+                            ,msg: "Do you really want to" + ' ' + "delete"  + ' <b>' + args.values.shortName + '</b>?'
+                            ,icon:Ext.Msg.WARNING
+                            ,buttons:Ext.Msg.YESNO
+                            ,scope:this
+                            ,fn:function(response) {
+                                // do nothing if answer is not yes
+                                if('yes' !== response) {
+                                    return;
+                                }
+                                // setup request options
+                                var options = {
+                                     url: args.baseUrl
+                                    ,method: 'POST'
+                                    ,scope:this
+                                    ,callback: cmdCallback
+                                    ,params:{
+                                         action: 'file_delete'
+                                        ,file: args.values.web_path
+                                    }
+                                };
+                                Ext.Ajax.request(options);
+                            }
+                        });
                     }
                 }
             )
@@ -559,7 +663,6 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         var photoUploadUrl = this.uploadUrl ? this.uploadUrl: // the upload URL is configured in the plugin
             localConfig.adminUrl ? localConfig.adminUrl + "mvc/fileManager/upload" : // use relative path from adminUrl
             "/opensdi2-manager/mvc/fileManager/upload"; // by default search on root opensdi-manager2
-            
             
         var photoBrowserDataView = new Ext.ux.GridBrowser({
             style:'overflow:auto',
@@ -672,7 +775,6 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         });
 
         return photoBrowserDataView;
-
     },
     
     /** api: method[addOutput]
