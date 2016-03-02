@@ -428,11 +428,131 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
     createGridPhotoBrowser:function(){
         
         var expander = new Ext.ux.grid.RowExpander({
-            tpl : new Ext.Template(
+            
+            // The RowExpander will apply record.data to this XTemplate
+            // In this context: values=record.data
+            tpl : new Ext.XTemplate(
                 '<div class="thumb-wrap" id="{name}">',
                 '<div class="thumb"><a target="_blank" href="'+this.configSurvey.picturesBrowserConfig.baseUrl+'?action=get_image&file={web_path}">',
                 '<img height="100px" width="100px" src="'+this.configSurvey.picturesBrowserConfig.baseUrl+'?action=get_image&file={web_path}" class="thumb-img"></div>',
-                '</a><span></span></div>'
+                '</a><span></span></div>',
+                '<table class="x-btn x-btn-text-icon" align="right" cellspacing="5" cellpadding="5" border="0" style="table-layout:auto">',
+                    '<tr>',
+                    '<td >'+
+                        '<tpl>'+
+                            '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0"  >' +
+                            '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonId(values,\'_downloadBtn\')]}\'>' +
+                            '<tr><td class="x-btn-tl"><i>&nbsp;</i></td><td class="x-btn-tc"></td><td class="x-btn-tr"><i>&nbsp;</i></td></tr>' +
+                            '<tr><td class="x-btn-ml"><i>&nbsp;</i></td>' +
+                            '<td class="x-btn-mc"><em unselectable="on" class="">'+
+                            '<button type="button" style="background-position:center;padding:10px;" class=" x-btn-text icon-open-download" title="Download" ></button>'+
+                            '</em></td><td class="x-btn-mr"><i>&nbsp;</i></td>' +
+                            '</tr><tr><td class="x-btn-bl"><i>&nbsp;</i></td><td class="x-btn-bc"></td><td class="x-btn-br"><i>&nbsp;</i></td></tr>' +
+                            '</tbody>' +
+                            '</table>' +
+                        '</tpl>'+
+                    '</td>',
+                    '<td >'+
+                        '<tpl>'+
+                            '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0"  >' +
+                            '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonId(values,\'_renameBtn\')]}\'>' +
+                            '<tr><td class="x-btn-tl"><i>&nbsp;</i></td><td class="x-btn-tc"></td><td class="x-btn-tr"><i>&nbsp;</i></td></tr>' +
+                            '<tr><td class="x-btn-ml"><i>&nbsp;</i></td>' +
+                            '<td class="x-btn-mc"><em unselectable="on" class="">'+
+                            '<button type="button" style="background-position:center;padding:10px;" class=" x-btn-text icon-pencil" title="Rename" ></button>'+
+                            '</em></td><td class="x-btn-mr"><i>&nbsp;</i></td>' +
+                            '</tr><tr><td class="x-btn-bl"><i>&nbsp;</i></td><td class="x-btn-bc"></td><td class="x-btn-br"><i>&nbsp;</i></td></tr>' +
+                            '</tbody>' +
+                            '</table>' +
+                        '</tpl>'+
+                    '</td>',
+                    '<td >'+
+                        '<tpl>'+
+                            '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0"  >' +
+                            '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonId(values,\'_deleteBtn\')]}\'>' +
+                            '<tr><td class="x-btn-tl"><i>&nbsp;</i></td><td class="x-btn-tc"></td><td class="x-btn-tr"><i>&nbsp;</i></td></tr>' +
+                            '<tr><td class="x-btn-ml"><i>&nbsp;</i></td>' +
+                            '<td class="x-btn-mc"><em unselectable="on" class="">'+
+                            '<button type="button" style="background-position:center;padding:10px;" class=" x-btn-text icon-cross" title="Delete" ></button>'+
+                            '</em></td><td class="x-btn-mr"><i>&nbsp;</i></td>' +
+                            '</tr><tr><td class="x-btn-bl"><i>&nbsp;</i></td><td class="x-btn-bc"></td><td class="x-btn-br"><i>&nbsp;</i></td></tr>' +
+                            '</tbody>' +
+                            '</table>' +
+                        '</tpl>'+
+                    '</td>',
+                    '</tr>'+
+                '</table>',
+                {
+                    getButtonId: function(values, buttonRef) {
+                        var result = Ext.id() + buttonRef;
+                        
+                        // Add listener based on reference
+                        switch(buttonRef){
+                            case '_downloadBtn':
+                                // defer() ensures the getButtonId() result has been consumed
+                                this.defererUtil.defer(
+                                    1,  
+                                    this, // scope
+                                    [  // Arguments
+                                        result, // Button ID
+                                        {
+                                            values:values,
+                                            baseUrl:photoBrowserDataView.picturesBrowserConfig.baseUrl
+                                        },
+                                        this.downloadItem  // clickListener
+                                    ]);
+                                break;
+                            case '_renameBtn':
+                                // defer() ensures the getButtonId() result has been consumed
+                                this.defererUtil.defer(
+                                    1,  
+                                    this, // scope
+                                    [  // Arguments
+                                        result, // Button ID
+                                        {
+                                            values:values,
+                                            baseUrl:photoBrowserDataView.picturesBrowserConfig.baseUrl
+                                        },
+                                        this.downloadItem  // clickListener
+                                    ]);
+                                break;
+                            case '_deleteBtn':
+                                // defer() ensures the getButtonId() result has been consumed
+                                this.defererUtil.defer(
+                                    1,  
+                                    this, // scope
+                                    [  // Arguments
+                                        result, // Button ID
+                                        {
+                                            values:values,
+                                            baseUrl:photoBrowserDataView.picturesBrowserConfig.baseUrl
+                                        },
+                                        this.downloadItem  // clickListener
+                                    ]);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        return result;
+                    },
+                    defererUtil: function(id, args, listenerFunc){
+                        // Here we are using the "options" object to pass listener arguments
+                        Ext.get(id).on('click', listenerFunc, this, args);
+                    },
+                    downloadItem:function(event,target, args) {
+                        var filepath = args.baseUrl + "?action=file_download&file=" + args.values.web_path;
+                        window.open(filepath);
+                    },
+                    renameItem:function(event,target, args) {
+                        Ext.MessageBox.prompt("title", "msg", null, null, false, "ciao");
+                        window.open(filepath);
+                    },
+                    deleteItem:function(event,target, args) {
+                        var filepath = args.baseUrl + "?action=file_download&file=" + args.values.web_path;
+                        window.open(filepath);
+                    }
+                }
             )
         });
         
