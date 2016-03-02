@@ -489,6 +489,12 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         
         var expander = new Ext.ux.grid.RowExpander({
             
+            /**
+             * Property: enableCaching
+             * {boolean} catch events of buttons
+             */
+            enableCaching: false,
+            
             // The RowExpander will apply record.data to this XTemplate
             // In this context: values=record.data
             tpl : new Ext.XTemplate(
@@ -608,6 +614,16 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         
                         var onEditComplete = function(btnId, newName) {
                             
+                            // do nothing if answer is not ok
+                            if('ok' !== btnId) {
+                                return;
+                            }
+                            
+                            // do nothing if fileName is not changed
+                            if(newName == args.values.shortName) {
+                                return;
+                            }
+                            
                             var path = args.values.web_path.substring(0,args.values.web_path.lastIndexOf("/")+1);
                             
                             var options = {
@@ -673,6 +689,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             authKey:this.authkey,
             picturesBrowserConfig:this.configSurvey.picturesBrowserConfig,
             rowExpander: expander,
+            enableDragDrop: false,
             store: new Ext.data.JsonStore({
                     url: "http://geosolution.it",
                     autoLoad: false,
@@ -715,6 +732,11 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             },
             reload:function(  ){
                 if(photoBrowserDataView.currentFolder){
+                    // Collapse all the rows to trigger button creation on newt expand
+                    for (var i = 0; i < this.rowExpander.grid.store.getCount(); i++) {
+                        this.rowExpander.grid.view.getRow(i) && this.rowExpander.collapseRow(i);
+                    }
+                    
                     var ds=this.getStore();
                     var url=this.picturesBrowserConfig.baseUrl
                         + '?action=get_filelist&folder='
