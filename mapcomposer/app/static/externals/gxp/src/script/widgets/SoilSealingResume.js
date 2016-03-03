@@ -683,6 +683,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
      *  Obtain bar.
      */
 	generateBar: function(config, title){
+
 		// generate bar for add layers
 		var items = [];
 		var item1 = null, item0 = null;
@@ -691,14 +692,14 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		if(config.refTime
 			&& config.refTime.output
 			&& config.refTime.output.layerName){
-			item0 = this.generateBarItem(config.refTime.output.layerName, this.referenceTimeTitleText, title);	
+			item0 = this.generateBarItem(config.refTime.output.layerName, config.refTime.time.substring(0,4)+" ["+this.referenceTimeTitleText+"]", title);	
 		}
 
 		// curr time layer
 		if(config.curTime
 			&& config.curTime.output
 			&& config.curTime.output.layerName){
-			item1 = this.generateBarItem(config.curTime.output.layerName, this.currentTimeTitleText, title);	
+			item1 = this.generateBarItem(config.curTime.output.layerName, config.curTime.time.substring(0,4)+" ["+this.currentTimeTitleText+"]", title);	
 		}
 
 		// push items
