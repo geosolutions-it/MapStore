@@ -493,7 +493,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             }
             // process Ajax failure
             else {
-                this.showError(o && o.msg || "Error sending request to server");
+                showError(o && o.msg || "Error sending request to server");
             }
         };
         
@@ -825,7 +825,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             var photoBrowser=this.createGridPhotoBrowser();
         }
         if(this.configHistory.picturesBrowserConfig){
-            var photoBrowserNotice=this.createPhotoBrowser();
+            var photoBrowserNotice=this.createGridPhotoBrowser();
         }
 
         this.segdet=
@@ -1735,29 +1735,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         document.body.appendChild(form);
         form.submit();
     }
-    /** api: method[doDownloadPost]
-     */
-/*
-    doDownloadPost: function(url, data){
-        //
-        //delete other iframes appended
-        //
-        if(document.getElementById(this.downloadFormId)) {
-            document.body.removeChild(document.getElementById(this.downloadFormId));
-        }
-        // submit form with filter
-        var form = document.createElement("form");
-        form.setAttribute("id", this.downloadFormId);
-        form.setAttribute("method", "POST");
-        form.setAttribute("action", url);
-        var hiddenField = document.createElement("input");
-        hiddenField.setAttribute("name", "filter");
-        hiddenField.setAttribute("value", data);
-        form.appendChild(hiddenField);
-        document.body.appendChild(form);
-        form.submit();
-    }
-    */
+
 });
 
 Ext.preg(gxp.plugins.GcSegGrid.prototype.ptype, gxp.plugins.GcSegGrid);
