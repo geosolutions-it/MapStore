@@ -444,7 +444,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 	 * ``String``
 	 * Text for the Geocoding Panel Button Destroy (i18n).
 	 */
-	geocodingPanelBtnDestroyTxt : "Hide Geometries",
+	geocodingPanelBtnDestroyTxt : "Delete Geometries",
 	
 	/** api: config[geocodingPanelBtnDeleteTxt]
 	 * ``String``
@@ -1375,7 +1375,22 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 			defaults : {
 				width : itemsWidth
 			},
-			items : [selectionMethodCombo]
+			items : [
+				selectionMethodCombo,
+				{
+					xtype:'button',
+					tooltip: this.geocodingPanelBtnDestroyTxt,
+					ref: 'destroyAllButton',
+					cls: 'x-btn-text-icon',
+					icon : 'theme/app/img/geosilk/vector_delete.png',
+					scope: me,
+					height: 16,
+                    width: 16,
+					handler: function() {
+						me.reset();								
+					}
+				}				
+			]
 		},
 		me.returnTypeFieldSet,
 		me.spatialFieldSet,
