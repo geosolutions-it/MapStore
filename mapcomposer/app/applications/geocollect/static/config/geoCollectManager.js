@@ -78,84 +78,18 @@
         "loginManager": "loginTool",
         "actionTarget": null
     },{
-        "ptype": "mxp_templatemanager",
-        "loginManager": "loginTool",
-		"actionTarget":{
-          "target": "north.tbar",
-          "index": 0
-        }
-    },{
         "ptype": "mxp_myaccount",
         "loginManager": "loginTool",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 1
+          "index": 0
         }
     },{
         "ptype": "mxp_usermanager",
         "loginManager": "loginTool",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 2
-        }
-    },{ 
-        "ptype": "mxp_geostore_mission_resource_editor",
-        "category": "GEOCOLLECT",
-        "loginManager": "loginTool",
-        "buttonText": "Mission Configuration",
-        "actionTarget":{
-            "target": "north.tbar",
-            "index": 4
-        },
-        "attributeFields":[{
-                    "xtype":"textfield",
-                    "readOnly":true,
-                     "id":"attribute.templateId",
-                     "anchor":'95%',
-                     "fieldLabel": "Template Id",
-                     "name":"attribute.templateId"
-         }
-         
-         ],
-        "resourceEditor":{
-            "xtype":"mxp_gc_resource_editor",
-            "ref":"/missionResEdit",
-            "gcSource":"http://geocollect.geo-solutions.it/geoserver/it.geosolutions/ows?srsName=EPSG:4326&cql_filter=gcid>0&",
-            "authParam":"authkey"
-        }
-    },{ 
-        "ptype": "mxp_filebrowser",
-        "buttonText": "Photos",
-        "iconCls":"camera-icon",
-        "notDuplicateOutputs": true,
-        "actionTarget":{
-            "target": "north.tbar",
-            "index": 5
-        }
-    },{
-        "ptype": "mxp_login",
-        "pluginId": "loginTool",
-        "actionTarget":{
-          "target": "north.tbar",
-          "index": 10
-        }
-    },{
-        "ptype": "mxp_languageselector",
-        "actionTarget":{
-          "target": "north.tbar",
-          "index": 20
-        }
-    }],
-    "loggedTools":[{
-        "ptype": "mxp_mapmanager",
-        "loginManager": "loginTool",
-        "actionTarget": null
-    },{
-        "ptype": "mxp_myaccount",
-        "loginManager": "loginTool",
-        "actionTarget":{
-          "target": "north.tbar",
-          "index": 1 
+          "index": 1
         }
     },{ 
         "ptype": "mxp_geostore_mission_resource_editor",
@@ -181,6 +115,40 @@
             "ref":"/missionResEdit",
             "gcSource":"http://geocollect.geo-solutions.it/geoserver/it.geosolutions/ows?srsName=EPSG:4326&cql_filter=gcid>0&",
             "authParam":"authkey"
+        }
+    },{ 
+        "ptype": "mxp_filebrowser",
+        "buttonText": "Photos",
+        "iconCls":"camera-icon",
+        "notDuplicateOutputs": true,
+        "actionTarget":{
+            "target": "north.tbar",
+            "index": 3
+        }
+    },{
+        "ptype": "mxp_login",
+        "pluginId": "loginTool",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 10
+        }
+    },{
+        "ptype": "mxp_languageselector",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 20
+        }
+    }],
+    "loggedTools":[{
+        "ptype": "mxp_mapmanager",
+        "loginManager": "loginTool",
+        "actionTarget": null
+    },{
+        "ptype": "mxp_myaccount",
+        "loginManager": "loginTool",
+        "actionTarget":{
+          "target": "north.tbar",
+          "index": 1 
         }
     },{
         "ptype": "mxp_login",
