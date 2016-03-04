@@ -797,7 +797,6 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             style:'overflow:auto',
             ref:'picview',
             multiSelect: true,
-            autoHeight: true,
             authParam:this.authParam,
             authKey:this.authkey,
             picturesBrowserConfig:this.picturesBrowserConfig,
