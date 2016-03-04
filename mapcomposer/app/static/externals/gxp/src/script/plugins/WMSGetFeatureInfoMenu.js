@@ -328,12 +328,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                             // no response at all
                             } else if(layersToQuery === 0 && !atLeastOneResponse) {
                                 this.closePopups();
-                                Ext.Msg.show({
-                                    title: this.popupTitle,
-                                    msg: this.noDataMsg,
-                                    buttons: Ext.Msg.OK,
-                                    icon: Ext.MessageBox.WARNING
-                                });
+                                // TODO: insert a non-intrusive notification with this.noDataMsg when a Notification library is available
                             }
                             
                         },
