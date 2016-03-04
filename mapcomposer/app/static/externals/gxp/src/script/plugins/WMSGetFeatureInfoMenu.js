@@ -423,7 +423,8 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      * :arg features: ``Array`` With features.
      */
     displayPopup: function(evt, title, text, onClose, scope, features) {
-        var popup;
+        this.lastEvent = evt;
+        var popup; 
         // Issue #91: Change pupupKey to lat/lon
         var pixel = new OpenLayers.Pixel(evt.xy.x, evt.xy.y);
         var latLon = this.target.mapPanel.map.getLonLatFromPixel(pixel);
@@ -782,7 +783,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      * return Ext.DataView();
      */
     createGridPhotoBrowser:function(feature){
-        
+
         var expander = new Ext.ux.grid.RowExpander({
             tpl : new Ext.Template(
                 '<div class="thumb-wrap" id="{name}">',
@@ -855,6 +856,9 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      */
     obtainFeatureGrid: function(feature, title){
 
+        var gcseggrid = this.target.tools["gcseggrid"];
+        var lastEvent = this.lastEvent;
+        
         var fields = [];
 
         Ext.iterate(feature.data,function(fieldName,fieldValue) {
@@ -933,6 +937,26 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 				activeItemIndex:0,
 				activeItem:0,
 				bbar: ['->', {
+					ref:'../manage',
+					iconCls: 'gc-icon-notice',
+					text: 'Manage',
+                    scope: this,
+					handler: function(btn){
+                                gcseggrid.noFeatureClick(lastEvent);
+                                gcseggrid.segGrid.zommInfo.on(
+                                    'enable',
+                                    function(){
+                                        this.toggle(true);
+                                        gcseggrid.segdet.centerPanel.noticeAccordion.noticePhotoBrowser.expand();
+                                    },
+                                    gcseggrid.segGrid.toggleInfo,
+                                    {
+                                        single: true
+                                    }
+                                );
+                                this.closePopups();
+                        }
+                    }, {
 					ref:'../switch',
 					//hidden:true,
 					iconCls: 'gxp-icon-printsnapshot',
