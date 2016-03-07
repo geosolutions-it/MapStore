@@ -1,6 +1,6 @@
 /**
  * Dark blue theme for Highcharts JS
- * @author Torstein Hønsi
+ * @author Torstein Honsi
  */
 
 Highcharts.theme = {
@@ -8,9 +8,9 @@ Highcharts.theme = {
 		"#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
 	chart: {
 		backgroundColor: {
-			linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+			linearGradient: [0, 0, 250, 500],
 			stops: [
-				[0, 'rgb(48, 48, 96)'],
+				[0, 'rgb(48, 96, 48)'],
 				[1, 'rgb(0, 0, 0)']
 			]
 		},
@@ -130,6 +130,7 @@ Highcharts.theme = {
 		}
 	},
 
+
 	navigation: {
 		buttonOptions: {
 			symbolStroke: '#DDDDDD',
@@ -244,7 +245,7 @@ Highcharts.theme = {
 
 	// special colors for some of the
 	legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
-	legendBackgroundColorSolid: 'rgb(35, 35, 70)',
+	background2: 'rgb(35, 35, 70)',
 	dataLabelsColor: '#444',
 	textColor: '#C0C0C0',
 	maskColor: 'rgba(255,255,255,0.3)'
