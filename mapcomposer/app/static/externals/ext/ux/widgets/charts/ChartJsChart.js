@@ -225,7 +225,7 @@ gxp.charts.ChartJsChart = Ext.extend(Ext.Container, {
             if (this.legendRef && this.refOwner[this.legendRef]) {
                 var legendHtml = this.chart.generateLegend();
                 if(this.ownerCt.ownerCt.chartConfig.chartType === 'bar' || this.ownerCt.ownerCt.chartConfig.chartType === 'line'){
-                    this.refOwner[this.legendRef].update('<div><ul class="bar-line-legend"><div><li><span style="background-color:#'+this.color+'"></span><div class="comm-how"><b>Y</b>: '+this.ownerCt.ownerCt.chartConfig.aggFunction + '(' + this.ownerCt.ownerCt.chartConfig.yaxisValue + ')</br></div></div></li></ul></div>');    
+                    this.refOwner[this.legendRef].update('<div><ul class="bar-line-legend"><div><li><span style="background-color:#'+this.color+'"></span><div class="comm-how"> '+this.ownerCt.ownerCt.chartConfig.aggFunction + '(' + this.ownerCt.ownerCt.chartConfig.yaxisValue + ')</br></div></div></li></ul></div>');    
                 }else{
                     this.refOwner[this.legendRef].update(legendHtml);
                 }
