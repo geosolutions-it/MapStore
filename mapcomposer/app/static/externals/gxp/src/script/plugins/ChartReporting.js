@@ -735,6 +735,8 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
         return undefined;
     },
     getChartById: function(chartId) {
+        var loadMask = new Ext.LoadMask(Ext.getBody(), { msg: "Please wait..." });
+        loadMask.show();
         Ext.Ajax.request({
             url: this.geoStoreUrl + 'resources/resource/' + chartId + '/?full=true',
             method: 'GET',
@@ -744,10 +746,12 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             scope: this,
             success:  function(response, opts) {
                 this.loadFromString(Ext.util.JSON.decode(response.responseText).Resource.data.data);
+                loadMask.hide();
             },
             failure:  function(response, opts) {
+                loadMask.hide();
                 Ext.Msg.show({ 
-                    msg: me.invalidSharedId, 
+                    msg: this.invalidSharedId, 
                     buttons: Ext.Msg.OK,
                     icon: Ext.MessageBox.ERROR
                 });
@@ -764,6 +768,8 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                          '       <data><![CDATA[ ' + chartInfo.data + ']]></data>' +
                          '   </store>' +
                          '</Resource>';
+        var loadMask = new Ext.LoadMask(Ext.getBody(), { msg: "Please wait..." });
+        loadMask.show();
         Ext.Ajax.request({
             url: this.geoStoreUrl + 'resources',
             method: 'POST',
@@ -774,9 +780,10 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             params: requestBody,
             scope: this,
             success:  function(response, opts) {
-                this.makeResourcePublic(response.responseText);
+                this.makeResourcePublic(response.responseText, loadMask);
             },
             failure:  function(response, opts) {
+                loadMask.hide();
                 Ext.Msg.show({
                     title: 'GeoStore Exception',
                     msg: this.cannotCreateResourceText,
@@ -786,7 +793,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             }
         });
     },
-    makeResourcePublic: function(resourceId) {
+    makeResourcePublic: function(resourceId, loadMask) {
         var userDetails = this.getUserDetails();
         var everyoneGroupId = this.getEveryoneGroupIdFromUserDetails(userDetails);
         var authHeader = userDetails.token;
@@ -810,9 +817,11 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             params: requestBody,
             scope: this,
             success:  function(response, opts) {
+                loadMask.hide();
                 Ext.Msg.alert(null, this.chartSharedIdText + ': ' + resourceId);
             },
             failure:  function(response, opts) {
+                loadMask.hide();
                 Ext.Msg.show({
                     title: 'GeoStore Exception',
                     msg: this.cannotMakeResourcePublicText,
