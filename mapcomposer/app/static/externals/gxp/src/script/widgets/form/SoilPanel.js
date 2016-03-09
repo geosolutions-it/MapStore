@@ -63,6 +63,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	framesText: 'Frammentazione',
 	consumeOnlyText: 'Consumo Suolo',
 	consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
+	urbanFabricClassesText: 'Modello di Sviluppo Urbano',
 
 	// Validation
 	invalidFormDialogText: "Please review the form fields:<ul>",
@@ -99,7 +100,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				3: false,
 				4: true,
 				5: true,
-				6: true,
+				6: false, // Urban Fabric Classes [1 Time]
 				7: true
 			},
 			filterT1ComboBox: true,
@@ -119,7 +120,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				3: false,
 				4: false,
 				5: false,
-				6: false,
+				6: true, // Urban Fabric Classes [2 Time]
 				7: false
 			},
 			filterT1ComboBox: false
@@ -277,7 +278,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 					}
 					
 					var spatialSelectors = me.roiFieldSetConfig.spatialSelectors;
-					if (index == 3 || index == 4)
+					if (index == 3 || index == 4 || index == 11)
 					{
 						spatialSelectors = [{
 							name  : 'GeoCoder',
@@ -577,6 +578,10 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
                 	boxLabel: this.consumeOnlyConfText, 
                 	name: 'sealingIndex', 
                 	inputValue: 10
+                },{
+                	boxLabel: this.urbanFabricClassesText,
+                	name: 'sealingIndex',
+                	inputValue: 11
                 }],
             	listeners:{
             		change: this.sealingIndexSelect,

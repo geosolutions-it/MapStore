@@ -66,6 +66,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 	framesText: 'Frammentazione',
 	consumeOnlyText: 'Consumo Suolo',
 	consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
+	urbanFabricClassesText: 'Modello di Sviluppo Urbano',
 	// EoF i18n
     
     /** api: config[url]
@@ -109,7 +110,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			8: this.framesText,
 			9: this.consumeOnlyText,
 			10: this.consumeOnlyConfText,
-
+			11: this.urbanFabricClassesText
 		});
 
 		if(gxp.widgets.SoilSealingResume.superclass.initComponent){
@@ -187,7 +188,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		var adminUnitsTabs;
 
 		// Administrative units tab only for index 1
-		if(data.index.id == 1){
+		if(data.index.id == 1) {
 			adminUnitsTabs = [];
 			var adminUnitsItems = [];
 			var tabIndex = 1;
@@ -301,6 +302,9 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			case 10:
 				indexUoM = "persons/year";
 				break;
+			case 11:
+				indexUoM = "";
+				break;
 		}
 
 		// Prepare xAxis
@@ -322,14 +326,24 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		var addLayersBar = this.generateBar(data, title);
 
 		// reference time chart
-		barChartItems.push(
-			this.generateColumnChart(
-				referenceTimeTitle, 
-				data.refTime.time, 
-				refTimeColChartsData, 
-				xAxis, 
-				yAxis)
-		);
+		if(data.index.id === 11) {
+			barChartItems.push(
+				this.generateModelScatterMultiAxisChart(
+					this.referenceTimeTitleText, 
+					data.refTime.time, 
+					refTimePieChartsData[i]
+				)
+			);
+		} else {
+			barChartItems.push(
+				this.generateColumnChart(
+					referenceTimeTitle, 
+					data.refTime.time, 
+					refTimeColChartsData, 
+					xAxis, 
+					yAxis)
+			);
+		}
 
 		// curr time chart
 		if(curTimeColChartsData){
@@ -343,13 +357,12 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					yAxis)
 			);
 		}else{
-			if (data.index.id === 8){
+			if (data.index.id === 8 || data.index.id === 11){
 				barChartTitle = referenceTimeTitle;
 			}else{
 				barChartTitle += " - " + referenceTimeTitle;
 			}
 		}
-		
 		
 		// bar charts
 		var barChartTab = new Ext.Panel({
@@ -361,7 +374,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		if(data.index.id !== 8){
 			barChartTab.add(barChartItems);
 		};
-		
+				
 		// Generated items
 		var items = [];
 		if(adminUnitsTabs && adminUnitsTabs.length > 0){
@@ -615,6 +628,179 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		});
 	},
 
+    /** api: method[generatePieChart]
+     *  :arg title: ``String`` Title for the pie chart
+     *  :arg subTitle: ``String`` Subtitle for the pie chart
+     *  :arg data: ``Object`` Data for the pie chart
+     *  :returns: ``Ext.ux.HighChart`` Pie Chart component.
+     */
+	generateModelScatterMultiAxisChart: function(title, subTitle, data){
+		debugger;
+		return new Ext.ux.HighChart({
+			title : title,
+			animation : true,
+			chartConfig : {
+		        chart: {
+		            zoomType: 'xy',
+		            type: 'boxplot'
+		        },
+		        title: {
+		            text: 'Modello Di Sviluppo Urbano'
+		        },
+		        subtitle: {
+		            text: 'Source: ISPRA'
+		        },
+		        credits: {
+		            text: 'Data from <a href="www.isprambiente.gov.it/en">ISPRA</a>',
+		            href: 'www.isprambiente.gov.it/en',
+		            position: {
+		                x: -40
+		            }
+		        },
+				series: [{
+		            name: 'EDClass',
+		            type: 'scatter',
+		            pointPlacement:0.0,
+		            data: [
+		              { x: 25, y: 185, name: 'Enna'},
+		              { x: 30, y: 200, name: 'Fermo'},
+		              { x: 80, y: 400, name: 'Vercelli'}
+		            ],
+		            shadow: false,
+		            visible: true
+		        },{
+		            name: 'RMPS',
+		            type: 'errorbar',
+		            yAxis: 1,
+		            data: [
+		              [25, 5.5, 6.0], 
+		              [30, 6.1, 9.0], 
+		              [80, 12.0, 15.0]
+		            ]
+		        }],		        
+		        xAxis: [{
+		        		min: 20,
+		            max: 100,
+		            title: {
+		                text: 'LCPI',
+		                style: {
+		                    color: Highcharts.getOptions().colors[1]
+		                }
+		            },
+		            plotLines: [{
+		                color: 'black',
+		                dashStyle: 'dot',
+		                width: 2,
+		                value: 70,
+		                label: {
+		                    rotation: 0,
+		                    y: 15,
+		                    style: {
+		                        fontStyle: 'italic'
+		                    },
+		                    //ext: 'Monocentrica'
+		                },
+		                zIndex: 100
+		            }]
+		        }],
+		        yAxis: [{ // Primary yAxis
+		            min: 0,
+		            gridLineWidth: 0,
+		            tickInterval: 100,
+		            title: {
+		                text: 'EDClass',
+		                style: {
+		                    color: Highcharts.getOptions().colors[0]
+		                }
+		            },
+		            plotLines: [{
+		                color: 'black',
+		                dashStyle: 'dot',
+		                width: 2,
+		                value: 250,
+		                label: {
+		                    align: 'right',
+		                    style: {
+		                        fontStyle: 'italic'
+		                    },
+		                    //text: 'Compatta',
+		                    x: -10
+		                },
+		                zIndex: 100
+		            }],
+		            opposite: true
+		        }, { // Secondary yAxis
+		        	min: 0,
+		            max: 30,
+		            tickInterval: 3,
+		            title: {
+		                text: 'RMPS',
+		                style: {
+		                    color: Highcharts.getOptions().colors[0]
+		                }
+		            },
+		            opposite: false
+		        }],
+		        // Enable for both axes
+		        tooltip: {
+		            shared: false,
+		            crosshairs: [true,true],
+		            backgroundColor: '#FFFFFF',
+		            borderColor: 'black',
+		            borderRadius: 10,
+		            borderWidth: 3
+		        },
+		        legend: {
+		            layout: 'vertical',
+		            align: 'left',
+		            x: 80,
+		            verticalAlign: 'top',
+		            y: 55,
+		            floating: true,
+		            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+		            enabled: false
+		        },
+		        plotOptions: {
+		        		scatter: {
+		                dataLabels: {
+		                    enabled: true,
+		                    format: '{point.name}',
+		                    rotation: 30,
+		                    x: 20,
+		                    y: 2,
+		                    style: {
+		                      fontSize: '9px',
+		                      fontWeight: 'bold',
+		                      color: 'red'
+		                    }
+		                },
+		                tooltip: {
+		                    headerFormat: '<b>{series.name}</b><br>',
+		                    pointFormat: 'LCPI value: {point.x}, {series.name} value: {point.y}'
+		                }
+		            },
+		            errorbar: {
+		                dataLabels: {
+		                    enabled: true,
+		                    format: '{point.name}',
+		                    rotation: 30,
+		                    x: 20,
+		                    y: 2,
+		                    style: {
+		                      fontSize: '8px',
+		                      color: 'black'
+		                    }
+		                },
+		                tooltip: {
+		                    headerFormat: '<b>{series.name}</b><br>',
+		                    pointFormat: 'LCPI value: {point.x}, {series.name} value: {point.y} - low: {point.low}'
+		                }
+		            }
+		        }		        
+			}
+		});		
+	},
+	
 	getLevels: function(indexId, subIndex, referenceName, clcLevels){
 		var indexUoM = "";
 		switch(indexId) {
@@ -645,6 +831,9 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 				break;
 			case 10:
 				indexUoM = "persons/year";
+				break;
+			case 11:
+				indexUoM = "";
 				break;
 		}
 		
@@ -683,7 +872,6 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
      *  Obtain bar.
      */
 	generateBar: function(config, title){
-
 		// generate bar for add layers
 		var items = [];
 		var item1 = null, item0 = null;
@@ -844,14 +1032,16 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
     randomColorsRGB: function(total){
         var i = 360 / (total - 1); // distribute the colors evenly on the hue range
         var r = []; // hold the generated colors
-        var hsvToRgb = function(h,s,v){
+        var hsvToRgb = function(h,s,v) {
             var rgb= Ext.ux.ColorPicker.prototype.hsvToRgb(h,s,v);
             return rgb;
-        }
+        };
+        
         for (var x=0; x<total; x++)
         {
             r.push(hsvToRgb(i * x, 0.57, 0.63)); // you can also alternate the saturation and value for even more contrast between the colors
         }
+        
         return r;
     },
 	
@@ -861,11 +1051,13 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
         var hsvToRgb = function(h,s,v){
             var rgb= Ext.ux.ColorPicker.prototype.hsvToRgb(h,s,v);
             return "#" +  Ext.ux.ColorPicker.prototype.rgbToHex( rgb );
-        }
+        };
+        
         for (var x=0; x<total; x++)
         {
             r.push(hsvToRgb(i * x, 0.57, 0.63)); // you can also alternate the saturation and value for even more contrast between the colors
         }
+        
         return r;
     }
 	

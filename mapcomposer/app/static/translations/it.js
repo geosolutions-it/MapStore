@@ -718,6 +718,7 @@ GeoExt.Lang.add("it", {
         framesText: 'Frammentazione',
         consumeOnlyText: 'Consumo Suolo',
         consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
+        urbanFabricClassesText: 'Modello di Sviluppo Urbano',
         invalidFormDialogText: "Please review the form fields:<ul>",
         invalidFormTitleText: "Errore",
         invalidYearsFormDialogText: "Years range not selected",
@@ -751,7 +752,8 @@ GeoExt.Lang.add("it", {
         urbanDiffusionCText: 'Other Polygons Ratio',
         framesText: 'Frammentazione',
         consumeOnlyText: 'Consumo Suolo',
-        consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo'
+        consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
+        urbanFabricClassesText: 'Modello di Sviluppo Urbano'
     }
 
 });

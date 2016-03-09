@@ -693,6 +693,7 @@ GeoExt.Lang.add("en", {
         framesText: 'Fragmentation',
         consumeOnlyText: 'Land Take',
         consumeOnlyConfText: 'Potential Loss or Food Supply',
+        urbanFabricClassesText: 'Model of Urban Development',
         invalidFormDialogText: "Please review the form fields:<ul>",
         invalidFormTitleText: "Error",
         invalidYearsFormDialogText: "Years range not selected",
@@ -726,7 +727,8 @@ GeoExt.Lang.add("en", {
         urbanDiffusionCText: 'Other Polygons Ratio',
         framesText: 'Fragmentation',
         consumeOnlyText: 'Land Take',
-        consumeOnlyConfText: 'Potential Loss or Food Supply'
+        consumeOnlyConfText: 'Potential Loss or Food Supply',
+        urbanFabricClassesText: 'Model of Urban Development'
     }
 
 });
