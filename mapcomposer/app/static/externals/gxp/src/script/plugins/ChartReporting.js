@@ -48,6 +48,19 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     provideSharedIdText: "Please provide a shared ID",
     cannotCreateResourceText: "Unable to create resource",
     cannotMakeResourcePublicText: "Unable to make resource public",
+    chartTypeText: "Tipo grafico",
+    aggregationText: "Aggregazione",
+    chartTitleText: "Titolo Grafico",
+    colourText: "Colore",
+    histogramText: "Istogramma",
+    lineText: 'Linea',
+    pieText: 'Torta',
+    gaugeText: 'Cruscotto',
+    closeText: 'Close',
+    editChartText: 'Edit Chart',
+    loadText: "Load",
+    browseText: "Browse...",
+    
     
     // REMOVE THIS WHEN ALL FEATURES ARE IMPLEMENTED
     tbi : function(){
@@ -120,7 +133,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                 layout:'fit',
                                 width:280,
                                 modal: true,
-                                title:'Edit Chart',
+                                title: me.editChartText,
                                 // height:300,
                                 autoHeight:true,
                                 closeAction:'close',
@@ -164,7 +177,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                         {
                                             xtype: 'textfield',
                                             name: 'title',
-                                            fieldLabel: 'Titolo Grafico',
+                                            fieldLabel: me.chartTitleText,
                                             anchor: '-10'
                                         },
                                         {
@@ -174,7 +187,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                             triggerAction: 'all',
                                             forceSelection: true,
                                             editable: false,
-                                            fieldLabel: 'Aggregazione',
+                                            fieldLabel: me.aggregationText,
                                             name: 'aggFunction',
                                             displayField: 'name',
                                             valueField: 'value',
@@ -207,17 +220,17 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                             triggerAction: 'all',
                                             forceSelection: true,
                                             editable: false,
-                                            fieldLabel: 'Tipo grafico',
+                                            fieldLabel: this.chartTypeText,
                                             name: 'chartType',
                                             displayField: 'name',
                                             valueField: 'value',
                                             store: new Ext.data.JsonStore({
                                                 fields: ['name', 'value'],
                                                 data: [
-                                                    {name: 'Istogramma', value: 'bar'},
-                                                    {name: 'Linea', value: 'line'},
-                                                    {name: 'Torta', value: 'pie'},
-                                                    {name: 'Cruscotto', value: 'gauge'}
+                                                    {name: me.histogramText, value: 'bar'},
+                                                    {name: me.lineText, value: 'line'},
+                                                    {name: me.pieText, value: 'pie'},
+                                                    {name: me.gaugeText, value: 'gauge'}
                                                 ]
                                             }),
                                             listeners: {
@@ -228,7 +241,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                             }
                                         },{
                 							xtype: 'colorpickerfield',
-                							fieldLabel: 'Colore',
+                							fieldLabel: me.colourText,
                                             editable: false,
                                             ref: 'colorpicker',
                 							name: 'color',
@@ -261,7 +274,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                             }
                                         },{
                                             iconCls: 'cancel',
-                                            text: 'Close',
+                                            text: me.closeText,
                                             handler: function(){
                                                 win.close();
                                             }
@@ -385,7 +398,38 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 xmlData: this.getWpsRequest(chartConfig)
             })
         });
+        var exportPng = function(event, toolEl, panel){
+            //regex is for IE11 so we have to use a servlet
+            if(Ext.isIE11 === undefined){
+                Ext.isIE11 = !!navigator.userAgent.match(/Trident.*rv[ :]*11\./);
+            }
+            var me = this;
+            // canvasWindow.chartsPanel.items.items[0].items.items[0].getEl().dom is mad. Use a method from the panel
+            var target = canvasWindow.chartsPanel.items.items[0].items.items[0].getEl().dom
+            var tgtparent = target.parentElement;
+            var originalClass = target.className;
 
+            $(target).appendTo(document.body)
+            $(target).addClass("html2canvasreset");
+            html2canvas( target , {
+                    proxy: this.target.proxy,
+                   // allowTaint:true,  
+                    //CORS errors not managed with ie11, so disable
+                    useCORS: !Ext.isIE11,
+                    //logging:true,
+                    onrendered: function(c) {
+
+                        target.className = originalClass;
+                        var canvasData = c.toBlob(function(blob){
+                            me.download(blob,chartConfig.title + ".png","image/png");
+                        });
+
+
+                        $(target).appendTo(tgtparent);
+                    }
+            });
+
+        };
         var canvasWindow = new Ext.Window({
             title: chartConfig.title,
             layout:'border',
@@ -458,38 +502,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             tools : [{
                 id:'print',
                 scope: this,
-                handler: function(event, toolEl, panel){
-                    //regex is for IE11 so we have to use a servlet
-                    if(Ext.isIE11 === undefined){
-                        Ext.isIE11 = !!navigator.userAgent.match(/Trident.*rv[ :]*11\./);
-                    }
-                    var me = this;
-                    // canvasWindow.chartsPanel.items.items[0].items.items[0].getEl().dom is mad. Use a method from the panel
-                    var target = canvasWindow.chartsPanel.items.items[0].items.items[0].getEl().dom
-                    var tgtparent = target.parentElement;
-                    var originalClass = target.className;
-                    
-                    $(target).appendTo(document.body)
-                    $(target).addClass("html2canvasreset");
-                    html2canvas( target , {
-                            proxy: this.target.proxy,
-                           // allowTaint:true,  
-                            //CORS errors not managed with ie11, so disable
-                            useCORS: !Ext.isIE11,
-                            //logging:true,
-                            onrendered: function(c) {
-                                
-                                target.className = originalClass;
-                                var canvasData = c.toBlob(function(blob){
-                                    me.download(blob,chartConfig.title + ".png","image/png");
-                                });
-                                
-                                
-                                $(target).appendTo(tgtparent);
-                            }
-                    });
-
-                }
+                handler: exportPng
             }]
         }).show();
         this.openWindows[record.get('id')] = canvasWindow;
@@ -594,6 +607,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 width:360,
                 modal: true,
                 // height:300,
+                title: me.loadChartText,
                 autoHeight:true,
                 closeAction:'close',
                 plain: true,
@@ -609,6 +623,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                     items: [ 
                         new Ext.ux.form.FileUploadField({
                             id: "chart-file-form",
+                            buttonText: me.browseText,
                             fieldLabel: this.loadFromFileText,
                             width: 240,
                             listeners: {
@@ -651,7 +666,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                 },
                                 {
                                     xtype: 'button',
-                                    text: 'Load',
+                                    text: me.loadText,
                                     flex: 1,
                                     scope: this,
                                     handler: function(){
@@ -669,7 +684,8 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                         }
                        ],
                     buttons: [{
-                        text: 'Close',
+                        iconCls: 'cancel',
+                        text: me.closeText,
                         handler: function(){
                             win.close();
                         }
