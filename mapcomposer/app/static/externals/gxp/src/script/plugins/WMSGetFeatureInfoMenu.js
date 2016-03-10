@@ -902,8 +902,8 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 			featureGridConfig.title = null;
              
             var view = this.createGridPhotoBrowser(feature);
-            /*
-			 var view = new Ext.DataView({
+            
+			var gallery = new Ext.DataView({
 				itemSelector: 'div.thumb-wrap',
 				style:'overflow:auto',
 				ref:'picview',
@@ -944,7 +944,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 					}
 				}
 			});
-            */
+            
 			var tpanel = {
 				xtype:'panel',
 				layout:'card',
@@ -952,6 +952,17 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 				activeItemIndex:0,
 				activeItem:0,
 				bbar: ['->', {
+					ref:'../galleryBtn',
+					hidden:true,
+					iconCls: 'gc-icon-images',
+					text: 'Gallery',
+                    enableToggle: true,
+					toggleHandler: function(btn, state){
+						var layout = btn.refOwner.getLayout();
+                        btn.refOwner.activeItemIndex = state ? 2 : 1;
+						layout.setActiveItem(btn.refOwner.activeItemIndex);
+                    }
+                    }, {
 					ref:'../manage',
 					iconCls: 'gc-icon-notice',
 					text: 'Manage',
@@ -982,10 +993,16 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 						layout.setActiveItem(btn.refOwner.activeItemIndex);
 						btn.setText(btn.refOwner.activeItemIndex == 0 ? "Images" :"Attributes");
 						btn.setIconClass(btn.refOwner.activeItemIndex == 0 ? 'gxp-icon-printsnapshot' : 'gxp-icon-csvexport-single') ;
+                        if(btn.refOwner.activeItemIndex == 0 ){
+                            btn.refOwner.galleryBtn.hide()
+                        } else{
+                            btn.refOwner.galleryBtn.show()
+                            btn.refOwner.galleryBtn.toggle(false, true);
+                        }
 					}
 				}],
 				title: title,
-				items: [featureGridConfig,view]
+				items: [featureGridConfig,view, gallery]
 			};
 			return tpanel;
 		}
