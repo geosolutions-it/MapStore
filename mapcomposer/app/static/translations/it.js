@@ -753,7 +753,11 @@ GeoExt.Lang.add("it", {
         framesText: 'Frammentazione',
         consumeOnlyText: 'Consumo Suolo',
         consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
-        urbanFabricClassesText: 'Modello di Sviluppo Urbano'
+        urbanFabricClassesText: 'Modello di Sviluppo Urbano',
+	    urbanDevelPolycentricLabel: "Policentrica",
+	    urbanDevelMonocentricDispersedLabel: "Monocentrica Dispersa",
+	    urbanDevelWidespreadLabel: "Diffusa",
+	    urbanDevelMonocentricCompactLabel: "Monocentrica Compatta",
     }
 
 });

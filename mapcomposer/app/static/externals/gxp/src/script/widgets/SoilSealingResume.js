@@ -67,6 +67,10 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 	consumeOnlyText: 'Consumo Suolo',
 	consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
 	urbanFabricClassesText: 'Modello di Sviluppo Urbano',
+    urbanDevelPolycentricLabel: "Policentrica",
+    urbanDevelMonocentricDispersedLabel: "Monocentrica Dispersa",
+    urbanDevelWidespreadLabel: "Diffusa",
+    urbanDevelMonocentricCompactLabel: "Monocentrica Compatta",
 	// EoF i18n
     
     /** api: config[url]
@@ -327,11 +331,18 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 
 		// reference time chart
 		if(data.index.id === 11) {
+			var quadrantsLabels = [];
+    		quadrantsLabels[0] = this.urbanDevelPolycentricLabel;
+    		quadrantsLabels[1] = this.urbanDevelMonocentricDispersedLabel;
+    		quadrantsLabels[2] = this.urbanDevelWidespreadLabel;
+    		quadrantsLabels[3] = this.urbanDevelMonocentricCompactLabel;
+			
 			barChartItems.push(
 				this.generateModelScatterMultiAxisChart(
-					this.referenceTimeTitleText, 
+					this.urbanFabricClassesText, 
 					data.refTime.time, 
-					refTimePieChartsData[i]
+					data.refTime.output,
+					quadrantsLabels
 				)
 			);
 		} else {
@@ -634,21 +645,61 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
      *  :arg data: ``Object`` Data for the pie chart
      *  :returns: ``Ext.ux.HighChart`` Pie Chart component.
      */
-	generateModelScatterMultiAxisChart: function(title, subTitle, data){
-		debugger;
+	generateModelScatterMultiAxisChart: function(title, subTitle, data, quadrants){
+		
+		admUnits = data.admUnits;
+		values   = data.complexValues;
+				
+		var edClassObjects = [];
+		var rmpsObjects    = [];
+		
+		for(var i=0; i<admUnits.length; i++)
+		{
+			admName   = admUnits[i];
+			admValues = values[i][0]; // Ref Time
+			
+			edClassObjects[i] = {x: admValues[0], y: admValues[2], name: admName};
+			rmpsObjects[i]    = [admValues[0], (admValues[2]/1000)*30, admValues[1]];
+		}
+
+        var text1;
+        var text2;
+        var text3;
+        var text4;
+		
 		return new Ext.ux.HighChart({
 			title : title,
+			loadMask:true,
 			animation : true,
 			chartConfig : {
 		        chart: {
 		            zoomType: 'xy',
-		            type: 'boxplot'
+		            type: 'boxplot',
+		            events: {
+		            	load: function() {
+					        text1 = this.renderer.text(quadrants[0]).attr({x: this.xAxis[0].toPixels(21), y: this.yAxis[1].toPixels(28)}).add();
+					        text2 = this.renderer.text(quadrants[1]).attr({x: this.xAxis[0].toPixels(88), y: this.yAxis[1].toPixels(28)}).add();
+					        text3 = this.renderer.text(quadrants[2]).attr({x: this.xAxis[0].toPixels(21), y: this.yAxis[1].toPixels(1)}).add();
+					        text4 = this.renderer.text(quadrants[3]).attr({x: this.xAxis[0].toPixels(88), y: this.yAxis[1].toPixels(1)}).add();		            		
+		            	},
+		            	redraw: function () {
+		            		text1.destroy();
+		            		text2.destroy();
+		            		text3.destroy();
+		            		text4.destroy();
+
+					        text1 = this.renderer.text(quadrants[0]).attr({x: this.xAxis[0].toPixels(21), y: this.yAxis[1].toPixels(28)}).add();
+					        text2 = this.renderer.text(quadrants[1]).attr({x: this.xAxis[0].toPixels(88), y: this.yAxis[1].toPixels(28)}).add();
+					        text3 = this.renderer.text(quadrants[2]).attr({x: this.xAxis[0].toPixels(21), y: this.yAxis[1].toPixels(1)}).add();
+					        text4 = this.renderer.text(quadrants[3]).attr({x: this.xAxis[0].toPixels(88), y: this.yAxis[1].toPixels(1)}).add();		            		
+		            	}
+		            }
 		        },
 		        title: {
-		            text: 'Modello Di Sviluppo Urbano'
+		            text: title
 		        },
 		        subtitle: {
-		            text: 'Source: ISPRA'
+		            text: subTitle
 		        },
 		        credits: {
 		            text: 'Data from <a href="www.isprambiente.gov.it/en">ISPRA</a>',
@@ -661,22 +712,14 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		            name: 'EDClass',
 		            type: 'scatter',
 		            pointPlacement:0.0,
-		            data: [
-		              { x: 25, y: 185, name: 'Enna'},
-		              { x: 30, y: 200, name: 'Fermo'},
-		              { x: 80, y: 400, name: 'Vercelli'}
-		            ],
+		            data: edClassObjects,
 		            shadow: false,
 		            visible: true
 		        },{
 		            name: 'RMPS',
 		            type: 'errorbar',
 		            yAxis: 1,
-		            data: [
-		              [25, 5.5, 6.0], 
-		              [30, 6.1, 9.0], 
-		              [80, 12.0, 15.0]
-		            ]
+		            data: rmpsObjects
 		        }],		        
 		        xAxis: [{
 		        		min: 20,
@@ -796,9 +839,9 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		                    pointFormat: 'LCPI value: {point.x}, {series.name} value: {point.y} - low: {point.low}'
 		                }
 		            }
-		        }		        
+		        }
 			}
-		});		
+		});
 	},
 	
 	getLevels: function(indexId, subIndex, referenceName, clcLevels){

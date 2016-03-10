@@ -728,7 +728,11 @@ GeoExt.Lang.add("en", {
         framesText: 'Fragmentation',
         consumeOnlyText: 'Land Take',
         consumeOnlyConfText: 'Potential Loss or Food Supply',
-        urbanFabricClassesText: 'Model of Urban Development'
+        urbanFabricClassesText: 'Model of Urban Development',
+	    urbanDevelPolycentricLabel: "Polycentric",
+	    urbanDevelMonocentricDispersedLabel: "Monocentric Dispersed",
+	    urbanDevelWidespreadLabel: "Widespread",
+	    urbanDevelMonocentricCompactLabel: "Monocentric Compact"
     }
 
 });
