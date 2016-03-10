@@ -1,5 +1,5 @@
 /**
- *  Copyright (C) 2007 - 2012 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2016 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -121,9 +121,16 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 
     /** api: config[defaultGroupTitleText]
      *  ``String``
-     *  Default feature title in 'grid' showing. Layer name replaces '{0}' and index in tue request replaces '{1}'.
+     *  Default feature title in 'grid' showing. Layer name replaces '{0}' and index in the request replaces '{1}'.
      */
     defaultGroupTitleText: "{0} [{1}]",
+    
+    /** api: config[customGroupTitleText]
+     *  ``function``
+     *  Custom function to generate the in 'grid' showing.
+     *  It will get the arguments: feature, layer name and index in the request.
+     */
+    customGroupTitleText: null,
     
     /** private: config[lastMapSize]
      *  ``OpenLayers.Size``
@@ -141,19 +148,27 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      *  ``string``
      *  Optional id of panel to show the getFeatureInfo instead of popup
      */
-     infoPanelId: null,
+    infoPanelId: null,
      
     /** api: config[disableAfterClick]
      *  ``Boolean``
      *  
      */
-     disableAfterClick: false,
+    disableAfterClick: false,
      
     /** api: method[addActions]
      */
     addActions: function() {
         this.popupCache = {};
         this.activeIndex = 0;
+        
+        // GeoCollect custom titles
+        this.customGroupTitleText = function(feature, parentTitle, index){
+          if(!feature || !feature.data || !feature.data.gc_created){
+              return String.format(this.defaultGroupTitleText, parentTitle, index++);
+          }
+          return Ext.util.Format.date(feature.data.gc_created, 'Y-m-d G:i');;
+        };
         
 		var items = [new Ext.menu.CheckItem({
             tooltip: this.infoActionTip,
@@ -762,8 +777,14 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 
         if (features) {
             var index = 0;
+            var childTitle = parentTitle;
             Ext.each(features,function(feature) {
-                featureGrids.push(this.obtainFeatureGrid(feature, String.format(this.defaultGroupTitleText, parentTitle, index++)));
+                if(this.customGroupTitleText){
+                    childTitle = this.customGroupTitleText(feature, parentTitle, index++);
+                }else{
+                    childTitle = String.format(this.defaultGroupTitleText, parentTitle, index++)
+                }
+                featureGrids.push(this.obtainFeatureGrid(feature, childTitle));
             }, this);
         }else {
             featureGrids.push(this.obtainFromText(text));
