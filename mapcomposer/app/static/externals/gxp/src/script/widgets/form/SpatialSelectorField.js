@@ -894,6 +894,8 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 				}
 			};
 
+		this.selectionMethodCombo = selectionMethodCombo;
+
 		// ///////////////////////////////////////////
 		// Spatial AOI Selector FieldSet
 		// ///////////////////////////////////////////

@@ -110,6 +110,8 @@ gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod = Ext.extend(gxp.wi
 
     	this.output = this;
 
+    	this.confbuffer = confbuffer;
+
     	this.items = [confbuffer];
 
         gxp.widgets.form.spatialselector.BufferSpatialSelectorMethod.superclass.initComponent.call(this);

@@ -21,8 +21,8 @@ Ext.namespace("gxp.plugins");
  *  .. class:: FeatureGrid(config)
  *
  *    Plugin for displaying current session generated charts.
- *   
- */   
+ *
+ */
 gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
 
     /** api: ptype = gxp_chartReporting */
@@ -39,7 +39,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     pleaseSelectChartText: "Please select a chart first",
     reloadConfigText: "Reload Configuration",
     editChartOptionsText: "Edit",
-    exportCsvText: "Export as CSV", 
+    exportCsvText: "Export as CSV",
     clearAllText: "Remove all charts",
     dataText: "Data",
     csvSeparator: ",",
@@ -48,7 +48,22 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     provideSharedIdText: "Please provide a shared ID",
     cannotCreateResourceText: "Unable to create resource",
     cannotMakeResourcePublicText: "Unable to make resource public",
-    
+    chartTypeText: "Tipo grafico",
+    aggregationText: "Aggregazione",
+    chartTitleText: "Titolo Grafico",
+    colourText: "Colore",
+    histogramText: "Istogramma",
+    lineText: 'Linea',
+    pieText: 'Torta',
+    gaugeText: 'Cruscotto',
+    closeText: 'Close',
+    editChartText: 'Edit Chart',
+    loadText: "Load",
+    browseText: "Browse...",
+    invalidChartText: "Invalid chart",
+
+    spatialSelectorFormId: null,
+
     // REMOVE THIS WHEN ALL FEATURES ARE IMPLEMENTED
     tbi : function(){
         Ext.Msg.show({
@@ -59,7 +74,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
 
     init : function(target) {
         this.target = target;
-        gxp.plugins.ChartReporting.superclass.init.call(this, target);   
+        gxp.plugins.ChartReporting.superclass.init.call(this, target);
         this.geoStoreUrl = this.geoStoreUrl ? this.geoStoreUrl : this.target.geoStoreBaseURL;
     },
     /**
@@ -87,10 +102,9 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                'xaxisValue','yaxisValue',
                'xFieldType','yFieldType',
                'gaugeMax',
+               'spatialSelectorForm',
                {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'}
-                
             ],
-           
         });
         var chartPanel = {
             xtype: "gxp_chartreportingpanel",
@@ -120,7 +134,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                 layout:'fit',
                                 width:280,
                                 modal: true,
-                                title:'Edit Chart',
+                                title: me.editChartText,
                                 // height:300,
                                 autoHeight:true,
                                 closeAction:'close',
@@ -164,7 +178,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                         {
                                             xtype: 'textfield',
                                             name: 'title',
-                                            fieldLabel: 'Titolo Grafico',
+                                            fieldLabel: me.chartTitleText,
                                             anchor: '-10'
                                         },
                                         {
@@ -174,7 +188,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                             triggerAction: 'all',
                                             forceSelection: true,
                                             editable: false,
-                                            fieldLabel: 'Aggregazione',
+                                            fieldLabel: me.aggregationText,
                                             name: 'aggFunction',
                                             displayField: 'name',
                                             valueField: 'value',
@@ -207,17 +221,17 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                             triggerAction: 'all',
                                             forceSelection: true,
                                             editable: false,
-                                            fieldLabel: 'Tipo grafico',
+                                            fieldLabel: this.chartTypeText,
                                             name: 'chartType',
                                             displayField: 'name',
                                             valueField: 'value',
                                             store: new Ext.data.JsonStore({
                                                 fields: ['name', 'value'],
                                                 data: [
-                                                    {name: 'Istogramma', value: 'bar'},
-                                                    {name: 'Linea', value: 'line'},
-                                                    {name: 'Torta', value: 'pie'},
-                                                    {name: 'Cruscotto', value: 'gauge'}
+                                                    {name: me.histogramText, value: 'bar'},
+                                                    {name: me.lineText, value: 'line'},
+                                                    {name: me.pieText, value: 'pie'},
+                                                    {name: me.gaugeText, value: 'gauge'}
                                                 ]
                                             }),
                                             listeners: {
@@ -228,7 +242,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                             }
                                         },{
                 							xtype: 'colorpickerfield',
-                							fieldLabel: 'Colore',
+                							fieldLabel: me.colourText,
                                             editable: false,
                                             ref: 'colorpicker',
                 							name: 'color',
@@ -261,7 +275,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                             }
                                         },{
                                             iconCls: 'cancel',
-                                            text: 'Close',
+                                            text: me.closeText,
                                             handler: function(){
                                                 win.close();
                                             }
@@ -275,7 +289,9 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                         tooltip: me.reloadConfigText,
                         iconCls: 'icon-reload-settings',
                         scope: this,
-                        handler: me.tbi
+                        handler: function() {
+                            me.reloadSettings(view.store.getAt(index))
+                        }
                    }]});
                    contextMenu.showAt(e.xy);
                    e.preventDefault();
@@ -330,7 +346,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 handler: function(){
                     Ext.Msg.confirm(null, me.clearAllText , function(btn, text){
                       if (btn == 'yes'){
-                         me.chartStore.removeAll(); 
+                         me.chartStore.removeAll();
                       } else {
                         this.close;
                       }
@@ -343,9 +359,9 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             layout: "fit",
             items: [chartPanel]
         }, config || {});
-       
+
         this.chartPanel = gxp.plugins.ChartReporting.superclass.addOutput.call(this, config);
-        
+
         return this.chartPanel;
     },
     shareChart: function(obj) {
@@ -385,7 +401,38 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 xmlData: this.getWpsRequest(chartConfig)
             })
         });
+        var exportPng = function(event, toolEl, panel){
+            //regex is for IE11 so we have to use a servlet
+            if(Ext.isIE11 === undefined){
+                Ext.isIE11 = !!navigator.userAgent.match(/Trident.*rv[ :]*11\./);
+            }
+            var me = this;
+            // canvasWindow.chartsPanel.items.items[0].items.items[0].getEl().dom is mad. Use a method from the panel
+            var target = canvasWindow.chartsPanel.items.items[0].items.items[0].getEl().dom
+            var tgtparent = target.parentElement;
+            var originalClass = target.className;
 
+            $(target).appendTo(document.body)
+            $(target).addClass("html2canvasreset");
+            html2canvas( target , {
+                    proxy: this.target.proxy,
+                   // allowTaint:true,  
+                    //CORS errors not managed with ie11, so disable
+                    useCORS: !Ext.isIE11,
+                    //logging:true,
+                    onrendered: function(c) {
+
+                        target.className = originalClass;
+                        var canvasData = c.toBlob(function(blob){
+                            me.download(blob,chartConfig.title + ".png","image/png");
+                        });
+
+
+                        $(target).appendTo(tgtparent);
+                    }
+            });
+
+        };
         var canvasWindow = new Ext.Window({
             title: chartConfig.title,
             layout:'border',
@@ -450,7 +497,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                 finalFile += "\n" + row.join(this.csvSeparator);
                             }
                             this.download(finalFile, chartConfig.title + ".csv", "attachment/csv");
-                            
+
                         }
                     }]
                 }]
@@ -458,42 +505,11 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             tools : [{
                 id:'print',
                 scope: this,
-                handler: function(event, toolEl, panel){
-                    //regex is for IE11 so we have to use a servlet
-                    if(Ext.isIE11 === undefined){
-                        Ext.isIE11 = !!navigator.userAgent.match(/Trident.*rv[ :]*11\./);
-                    }
-                    var me = this;
-                    // canvasWindow.chartsPanel.items.items[0].items.items[0].getEl().dom is mad. Use a method from the panel
-                    var target = canvasWindow.chartsPanel.items.items[0].items.items[0].getEl().dom
-                    var tgtparent = target.parentElement;
-                    var originalClass = target.className;
-                    
-                    $(target).appendTo(document.body)
-                    $(target).addClass("html2canvasreset");
-                    html2canvas( target , {
-                            proxy: this.target.proxy,
-                           // allowTaint:true,  
-                            //CORS errors not managed with ie11, so disable
-                            useCORS: !Ext.isIE11,
-                            //logging:true,
-                            onrendered: function(c) {
-                                
-                                target.className = originalClass;
-                                var canvasData = c.toBlob(function(blob){
-                                    me.download(blob,chartConfig.title + ".png","image/png");
-                                });
-                                
-                                
-                                $(target).appendTo(tgtparent);
-                            }
-                    });
-
-                }
+                handler: exportPng
             }]
         }).show();
         this.openWindows[record.get('id')] = canvasWindow;
-        
+
     },
     getWpsRequest: function(chartConfig) {
         return String.format(
@@ -509,7 +525,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             '  xmlns:wps="http://www.opengis.net/wps/1.0.0" ' +
             '  xmlns:xlink="http://www.w3.org/1999/xlink" ' +
             '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-            '  xsi:schemaLocation="http://www.opengis.net/wps/1.0.0' + 
+            '  xsi:schemaLocation="http://www.opengis.net/wps/1.0.0' +
             '  http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd">' +
             '  <ows:Identifier>gs:Aggregate</ows:Identifier>' +
             '  <wps:DataInputs>' +
@@ -524,11 +540,11 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             '      <ows:Identifier>result</ows:Identifier>' +
             '    </wps:RawDataOutput>' +
             '  </wps:ResponseForm>' +
-            '</wps:Execute>', 
-            this.getWpsGetFeatureInput(chartConfig.typeName, chartConfig.ogcFilter), 
-            this.getWpsLiteralInput("aggregationAttribute", chartConfig.yaxisValue), 
-            this.getWpsLiteralInput("function", chartConfig.aggFunction), 
-            this.getWpsLiteralInput("singlePass", "false"), 
+            '</wps:Execute>',
+            this.getWpsGetFeatureInput(chartConfig.typeName, chartConfig.ogcFilter),
+            this.getWpsLiteralInput("aggregationAttribute", chartConfig.yaxisValue),
+            this.getWpsLiteralInput("function", chartConfig.aggFunction),
+            this.getWpsLiteralInput("singlePass", "false"),
             this.getWpsLiteralInput("groupByAttributes", chartConfig.xaxisValue));
     },
     getWpsLiteralInput: function(name, value) {
@@ -594,21 +610,23 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 width:360,
                 modal: true,
                 // height:300,
+                title: me.loadChartText,
                 autoHeight:true,
                 closeAction:'close',
                 plain: true,
                 items: [{
                     xtype: 'form',
-                    labelWidth: 75, 
+                    labelWidth: 75,
                     frame:true,
                     bodyStyle:'padding:5px 5px 0',
                     width: 350,
                     autoHeight:true,
                     defaults: {width: 240},
                     defaultType: 'textfield',
-                    items: [ 
+                    items: [
                         new Ext.ux.form.FileUploadField({
                             id: "chart-file-form",
+                            buttonText: me.browseText,
                             fieldLabel: this.loadFromFileText,
                             width: 240,
                             listeners: {
@@ -651,7 +669,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                 },
                                 {
                                     xtype: 'button',
-                                    text: 'Load',
+                                    text: me.loadText,
                                     flex: 1,
                                     scope: this,
                                     handler: function(){
@@ -669,11 +687,12 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                         }
                        ],
                     buttons: [{
-                        text: 'Close',
+                        iconCls: 'cancel',
+                        text: me.closeText,
                         handler: function(){
                             win.close();
                         }
-                    }]  
+                    }]
                 }]
         });
         win.show();
@@ -717,8 +736,8 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
         }
     },
     getEveryoneGroupIdFromUserDetails: function(userDetails) {
-        if (!userDetails 
-            || !userDetails.user 
+        if (!userDetails
+            || !userDetails.user
             || !userDetails.user.groups
             || !userDetails.user.groups.group) {
             return undefined;
@@ -731,10 +750,12 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             if(groups[i].groupName == 'everyone') {
                 return groups[i].id;
             }
-        } 
+        }
         return undefined;
     },
     getChartById: function(chartId) {
+        var loadMask = new Ext.LoadMask(Ext.getBody(), { msg: "Please wait..." });
+        loadMask.show();
         Ext.Ajax.request({
             url: this.geoStoreUrl + 'resources/resource/' + chartId + '/?full=true',
             method: 'GET',
@@ -744,10 +765,12 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             scope: this,
             success:  function(response, opts) {
                 this.loadFromString(Ext.util.JSON.decode(response.responseText).Resource.data.data);
+                loadMask.hide();
             },
             failure:  function(response, opts) {
+                loadMask.hide();
                 Ext.Msg.show({ 
-                    msg: me.invalidSharedId, 
+                    msg: this.invalidSharedId,
                     buttons: Ext.Msg.OK,
                     icon: Ext.MessageBox.ERROR
                 });
@@ -764,6 +787,8 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                          '       <data><![CDATA[ ' + chartInfo.data + ']]></data>' +
                          '   </store>' +
                          '</Resource>';
+        var loadMask = new Ext.LoadMask(Ext.getBody(), { msg: "Please wait..." });
+        loadMask.show();
         Ext.Ajax.request({
             url: this.geoStoreUrl + 'resources',
             method: 'POST',
@@ -774,9 +799,10 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             params: requestBody,
             scope: this,
             success:  function(response, opts) {
-                this.makeResourcePublic(response.responseText);
+                this.makeResourcePublic(response.responseText, loadMask);
             },
             failure:  function(response, opts) {
+                loadMask.hide();
                 Ext.Msg.show({
                     title: 'GeoStore Exception',
                     msg: this.cannotCreateResourceText,
@@ -786,7 +812,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             }
         });
     },
-    makeResourcePublic: function(resourceId) {
+    makeResourcePublic: function(resourceId, loadMask) {
         var userDetails = this.getUserDetails();
         var everyoneGroupId = this.getEveryoneGroupIdFromUserDetails(userDetails);
         var authHeader = userDetails.token;
@@ -810,9 +836,15 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             params: requestBody,
             scope: this,
             success:  function(response, opts) {
-                Ext.Msg.alert(null, this.chartSharedIdText + ': ' + resourceId);
+                loadMask.hide();
+                Ext.Msg.show({
+                    title: 'Enter values:',
+                    buttons: Ext.Msg.OK,
+                    msg: this.chartSharedIdText + ': ' + '<input value="' + resourceId + '" readonly="readonly" size="5"/>'
+                });
             },
             failure:  function(response, opts) {
+                loadMask.hide();
                 Ext.Msg.show({
                     title: 'GeoStore Exception',
                     msg: this.cannotMakeResourcePublicText,
@@ -821,6 +853,15 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 });
             }
         });
+    },
+    reloadSettings: function(record) {
+        if (record.data.spatialSelectorFormState && record.data.spatialSelectorFormState.chartOptions) {
+            record.data.spatialSelectorFormState.chartOptions.type = record.data.chartType;
+            record.data.spatialSelectorFormState.chartOptions.function = record.data.aggFunction;
+            record.data.spatialSelectorFormState.chartOptions.max = record.data.gaugeMax;
+        }
+        var spatialSelectorQueryForm = this.target.tools[this.spatialSelectorFormId];
+        spatialSelectorQueryForm.setState(record.data.spatialSelectorFormState);
     }
 });
 

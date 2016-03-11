@@ -179,33 +179,7 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 		});
 		
 		this.bufferField.addListener("keyup", function(){        
-			if(this.coordinatePicker.isValid() && this.bufferField.isValid()){						
-				var coords = this.coordinatePicker.getCoordinate();
-				var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
-				var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
-				
-				var polygon;
-				if(this.geodesic){
-					polygon = OpenLayers.Geometry.Polygon.createGeodesicPolygon(
-						point,
-						this.bufferField.getValue(),
-						100, 
-						0,
-						this.map.getProjectionObject()
-					);
-				}else{
-					polygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
-						point,
-						this.bufferField.getValue(),
-						100, 
-						0
-					);
-				}
-				
-				this.drawBuffer(polygon);
-			}else{
-				this.resetBuffer();
-			}
+			this.keyup();
 		}, this, {delay: 1500});
 		
 		this.items = [
@@ -217,7 +191,35 @@ gxp.widgets.form.BufferFieldset = Ext.extend(Ext.form.FieldSet,  {
 		
 		gxp.widgets.form.BufferFieldset.superclass.initComponent.call(this);
     },
-	
+    keyup: function() {
+		if(this.coordinatePicker.isValid() && this.bufferField.isValid()){						
+			var coords = this.coordinatePicker.getCoordinate();
+			var lonlat = new OpenLayers.LonLat(coords[0], coords[1]);
+			var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
+			
+			var polygon;
+			if(this.geodesic){
+				polygon = OpenLayers.Geometry.Polygon.createGeodesicPolygon(
+					point,
+					this.bufferField.getValue(),
+					100, 
+					0,
+					this.map.getProjectionObject()
+				);
+			}else{
+				polygon = OpenLayers.Geometry.Polygon.createRegularPolygon(
+					point,
+					this.bufferField.getValue(),
+					100, 
+					0
+				);
+			}
+			
+			this.drawBuffer(polygon);
+		}else{
+			this.resetBuffer();
+		}
+    },
     drawBuffer: function(regularPolygon){
         if(this.selectStyle){
             this.resetBuffer();

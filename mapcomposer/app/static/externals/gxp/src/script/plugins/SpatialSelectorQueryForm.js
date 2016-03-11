@@ -56,6 +56,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 
     generateChartText: "Charts",
 
+    invalidStateText: "Invalid state",
+
     /** api: config[spatialSelectorsConfig]
      * ``Object``
      * Spatial selector pluggins configurations.
@@ -108,6 +110,10 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
     enableChartOptionsFieldset: false,
 
     wpsUrl: null,
+
+    queryForm: null,
+
+    state: null,
 
     init: function(target) {
 
@@ -368,58 +374,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             scope: this,
             text: this.cancelButtonText,
             iconCls: "cancel",
-            handler: function() {
-                this.resetFeatureManager();
-                this.spatialSelector.reset();
-
-				var selectionMethodCombo = this.spatialSelector.selectionMethodCombo;
-				selectionMethodCombo.reset();
-
-				var spatialSelectorFieldset = me.output[0].spatialSelectorFieldset;
-				spatialSelectorFieldset.collapse();
-
-				var attributeFieldset = me.output[0].attributeFieldset;
-				attributeFieldset.collapse();
-
-                var chartOptionsFieldset = me.output[0].chartOptionsFieldset;
-				chartOptionsFieldset.collapse();
-
-                var methodSelection = this.output[0].outputType;
-
-                if (me.draw) {me.draw.deactivate();};
-                if (me.drawings) {me.drawings.destroyFeatures();};
-                if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
-                if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};
-
-                var ownerCt = this.outputTarget ? queryForm.ownerCt :
-                    queryForm.ownerCt.ownerCt;
-                if (ownerCt && ownerCt instanceof Ext.Window) {
-                    ownerCt.hide();
-                } else {
-                    this.addFilterBuilder(
-                        this.featureManagerTool, this.featureManagerTool.layerRecord,
-                        this.featureManagerTool.schema
-                    );
-                }
-
-                if(me.filterLayer){
-                    var layer = this.featureManagerTool.layerRecord.getLayer();
-                     delete layer.params.CQL_FILTER;
-                     delete layer.vendorParams.cql_filter;
-
-                     if(this.target.tools.layertree_plugin){
-                         var selmodel = this.target.tools.layertree_plugin.output[0].selModel;
-                         var node =selmodel.getSelectedNode();
-                         node.setIconCls('gx-tree-layer-icon');
-                     }
-
-                     layer.redraw();
-                 }
-
-                 spatialSelector.filterGeometryName = this.featureStore
-                     && this.featureStore.geometryName
-                     ? this.featureManagerTool.featureStore.geometryName : this.featureManagerTool.featureStore.geometryName;
-            }
+            handler: this.reset
         });
         bbarButtons.push({
             text: this.queryActionText,
@@ -522,6 +477,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         }, config || {});
 
         var queryForm = gxp.plugins.QueryForm.superclass.addOutput.call(this, config);
+        this.queryForm = queryForm;
         var methodSelection = this.output[0].outputType;
 
         // Chart Builder Panel
@@ -537,6 +493,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                     attributes: schema,
                     allowBlank: true,
                     wpsUrl: me.wpsUrl,
+                    spatialSelectorForm: me,
                     getFeaturesFilter: function() {
                         var result = me.getFinalFilter(me, queryForm);
                         var filters = result.filters;
@@ -586,6 +543,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             }
 
             queryForm.chartOptionsFieldset.doLayout();
+
+            me.handleChartOptions();
         }
 
         this.addFilterBuilder = function(mgr, rec, schema) {
@@ -682,6 +641,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             spatialSelector.filterGeometryName = this.featureStore
                 && this.featureStore.geometryName
                 ? this.featureStore.geometryName : null;
+
+            me.handleFilterConditions();
         };
 
         this.featureManagerTool.on("layerchange", this.addFilterBuilder);
@@ -720,7 +681,503 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             scope: this
         });
 
+        var container = this.outputTarget ? this.queryForm.ownerCt : this.queryForm.ownerCt.ownerCt;
+        container.on("afterlayout", this.updateState, me);
+
         return queryForm;
+    },
+    reset: function() {
+        
+        this.state = null;
+
+        var me = this;
+        this.resetFeatureManager();
+        this.spatialSelector.reset();
+
+        var selectionMethodCombo = this.spatialSelector.selectionMethodCombo;
+        selectionMethodCombo.reset();
+
+        var spatialSelectorFieldset = me.output[0].spatialSelectorFieldset;
+        spatialSelectorFieldset.collapse();
+
+        var attributeFieldset = me.output[0].attributeFieldset;
+        attributeFieldset.collapse();
+
+        var chartOptionsFieldset = me.output[0].chartOptionsFieldset;
+        chartOptionsFieldset.collapse();
+
+        var methodSelection = this.output[0].outputType;
+
+        if (me.draw) {me.draw.deactivate();};
+        if (me.drawings) {me.drawings.destroyFeatures();};
+        if (me.filterCircle) {me.filterCircle = new OpenLayers.Filter.Spatial({});};
+        if (me.filterPolygon) {me.filterPolygon = new OpenLayers.Filter.Spatial({});};
+
+        var ownerCt = this.outputTarget ? this.queryForm.ownerCt :
+            this.queryForm.ownerCt.ownerCt;
+        if (ownerCt && ownerCt instanceof Ext.Window) {
+            ownerCt.hide();
+        } else {
+            this.addFilterBuilder(
+                this.featureManagerTool, this.featureManagerTool.layerRecord,
+                this.featureManagerTool.schema
+            );
+        }
+
+        if(me.filterLayer){
+            var layer = this.featureManagerTool.layerRecord.getLayer();
+             delete layer.params.CQL_FILTER;
+             delete layer.vendorParams.cql_filter;
+
+             if(this.target.tools.layertree_plugin){
+                 var selmodel = this.target.tools.layertree_plugin.output[0].selModel;
+                 var node =selmodel.getSelectedNode();
+                 node.setIconCls('gx-tree-layer-icon');
+             }
+
+             layer.redraw();
+         }
+
+         this.spatialSelector.filterGeometryName = this.featureStore
+             && this.featureStore.geometryName
+             ? this.featureManagerTool.featureStore.geometryName : this.featureManagerTool.featureStore.geometryName;
+    },
+    stateReset: function() {
+        if (this.featureManagerTool.featureStore) {
+            this.reset();
+        }
+    },
+    getState: function() {
+
+        var state = {};
+
+        state.sourceName = this.featureManagerTool.layerRecord.data.source;
+        state.layerName = this.featureManagerTool.layerRecord.data.name;
+
+        if (!this.queryForm.spatialSelectorFieldset.collapsed) {
+            state.spatialSelectorFilter = this.getSpatialSelectorState();
+        }
+
+        if (!this.queryForm.attributeFieldset.collapsed) {
+            state.attributesFilter = this.getAttributeFilterState();
+        }
+
+        state.chartOptions = this.getChartBuilderState();
+
+        return state;
+    },
+    getSpatialSelectorState: function() {
+
+        var spatialSelectorState = {};
+
+        spatialSelectorState.key = this.spatialSelector.selectionMethodCombo.getValue();
+        var spatialSelector = this.spatialSelector.spatialSelectors[spatialSelectorState.key];
+
+        if (spatialSelectorState.key === 'bbox') {
+
+            spatialSelectorState.top = spatialSelector.spatialFieldset.northField.getValue();
+            spatialSelectorState.bottom = spatialSelector.spatialFieldset.southField.getValue();
+            spatialSelectorState.left = spatialSelector.spatialFieldset.westField.getValue();
+            spatialSelectorState.right = spatialSelector.spatialFieldset.eastField.getValue();
+
+        } else if (spatialSelectorState.key === 'buffer') {
+
+            spatialSelectorState.longitude = spatialSelector.bufferFieldset.coordinatePicker.longitudeField.getValue();
+            spatialSelectorState.latitude = spatialSelector.bufferFieldset.coordinatePicker.latitudeField.getValue();  
+            spatialSelectorState.distance = spatialSelector.bufferFieldset.bufferField.getValue();
+
+        } else if (spatialSelectorState.key === 'circle' || spatialSelectorState.key === 'polygon') {
+
+            spatialSelectorState.wkt = spatialSelector.currentValidGeometry.toString();
+
+        } else if (spatialSelectorState.key === 'municipi' || spatialSelectorState.key === 'unita') {
+
+            spatialSelectorState.name = spatialSelector.geocodingField.getValue();
+        }
+
+        if (spatialSelector.geometryOperationFieldset && !spatialSelector.geometryOperationFieldset.collapsed) {
+
+            spatialSelectorState.operation = spatialSelector.geometryOperation.getValue();
+           
+            if (!spatialSelector.distanceFieldset.collapsed) {
+
+                spatialSelectorState.distance = spatialSelector.distance.getValue();
+                spatialSelectorState.unit = spatialSelector.dunits.getValue();                    
+            }
+        }
+
+        return spatialSelectorState;
+    },
+    getAttributeFilterState: function() {
+
+        var attributeFilterState = {};
+
+        var getConditionState = function(condition) {
+
+            var conditionState = {};
+
+            conditionState.attribute = condition.items.items[0].getValue();
+            conditionState.operator = condition.items.items[1].lastSelectionText;
+            conditionState.values = [];
+
+            for (var i = 0; i < condition.items.items[2].items.items.length; i++) {
+                conditionState.values.push(condition.items.items[2].items.items[i].getValue());
+            }
+
+            return conditionState;
+        };
+
+        attributeFilterState.filterConditions = [];
+
+        for(var i = 0; i < this.filterBuilder.childFilterContainer.items.items.length; i++) {
+            var condition = this.filterBuilder.childFilterContainer.items.items[i].items.items[1];
+            if (i === 0) {
+                condition = this.filterBuilder.childFilterContainer.items.items[0].items.items[1].items.items[0];
+            }
+            attributeFilterState.filterConditions.push(getConditionState(condition));
+        }
+
+        attributeFilterState.filterType = this.filterBuilder.builderTypeCombo.getValue();
+
+        return attributeFilterState;
+    },
+    getChartBuilderState: function() {
+        var chartBuilderState = {};
+        chartBuilderState.xaxis = this.chartBuilder.form.xaxisAttributeField.property.getValue();
+        chartBuilderState.yaxis = this.chartBuilder.form.yaxisAttributeField.property.getValue();
+        return chartBuilderState;
+    },
+    setState: function(state) {
+
+        // we reset the current form
+        this.stateReset();
+
+        // we set the state
+        this.state = JSON.parse(JSON.stringify(state));
+
+        // we expand the main container
+        var container = this.outputTarget ? this.queryForm.ownerCt : this.queryForm.ownerCt.ownerCt;
+        container.expand();
+        container.doLayout();
+    },
+    updateState: function() {
+
+        // we add the chart layers to the active layers if need or we select it 
+        if (!this.state || !this.state.sourceName || !this.state.layerName) {
+            return;
+        }
+        this.addLayerByName(this.state.sourceName, this.state.layerName);
+    
+        // if there is a spatial selector we add is state to the current form
+        if (this.state.spatialSelectorFilter) {
+            this.addSpatialSelector(this.state.spatialSelectorFilter);
+            delete this.state['spatialSelectorFilter'];
+        }
+    },
+    addSpatialSelector: function(spatialSelectorInfo) {
+
+        // we get the spacial select field and we expand it
+        var spatialSelectorFieldset = this.output[0].spatialSelectorFieldset;
+        spatialSelectorFieldset.expand();
+
+        // we initiate the filter combo with the appropriate filter (bbox, circle, buffer, etc ...)
+        var combo = this.spatialSelector.selectionMethodCombo;
+        var comboRecord = combo.getStore().findExact('name', spatialSelectorInfo.key);
+        combo.setValue(spatialSelectorInfo.key);
+        combo.fireEvent('select', combo, [comboRecord]);
+
+        // handling spatial selectors based on the key
+        if (spatialSelectorInfo.key === 'bbox') {
+            this.handleBboxFilter(spatialSelectorInfo); 
+        } else if (spatialSelectorInfo.key === 'buffer') {
+            this.handlerBufferFilter(spatialSelectorInfo); 
+        } else if (spatialSelectorInfo.key === 'circle') {
+            this.handlerCircleFilter(spatialSelectorInfo);
+        } else if (spatialSelectorInfo.key === 'polygon') {
+            this.handlerPolygonFilter(spatialSelectorInfo);
+        } else if (spatialSelectorInfo.key === 'municipi' || spatialSelectorInfo.key === 'unita') {
+            var spatialSelector = this.spatialSelector.spatialSelectors[spatialSelectorInfo.key];
+            spatialSelector.geocodingField.setValue(spatialSelectorInfo.name);
+            spatialSelector.geocodingField.fireEvent("change");
+        }
+
+        // setting the geometry operation if available
+        if (spatialSelectorInfo.operation) {
+            this.handleGeometryOperation(spatialSelectorInfo);  
+        }
+    },
+    handleGeometryOperation: function(spatialSelectorInfo) {
+        
+        // we get the containers
+        var spatialSelector = this.spatialSelector.spatialSelectors[spatialSelectorInfo.key];
+        var geometryOperationContainer = spatialSelector.items.items[0];
+        var distanceContainer = spatialSelector.items.items[1];
+
+        // we expand the geometry operation container
+        spatialSelector.geometryOperationFieldset.expand();
+
+        // we set the geometry operation
+        var geometryOperationCombo = spatialSelector.geometryOperation;
+        var geometryOperationRecordIndex = geometryOperationCombo.getStore().findExact('name', spatialSelectorInfo.operation);
+        geometryOperationCombo.setValue(spatialSelectorInfo.operation);
+        geometryOperationCombo.fireEvent('select', geometryOperationCombo, 
+            geometryOperationCombo.getStore().getAt(geometryOperationRecordIndex));
+
+        // we set the distance if available
+        if(spatialSelectorInfo.distance && spatialSelectorInfo.unit) {
+            this.handleGeometryDistance(spatialSelector, spatialSelectorInfo.distance, spatialSelectorInfo.unit);
+        }
+    },
+    handleGeometryDistance: function(spatialSelector, distance, unit) {
+
+        // we expand the container (it should already be expanded)
+        spatialSelector.distanceFieldset.expand();
+
+        // we get the fields from the container
+        var distanceField = spatialSelector.distance;
+        var unitField = spatialSelector.dunits;
+
+        // we set the values
+        distanceField.setValue(distance);
+        distanceField.fireEvent('change', distanceField, distance);
+        unitField.setValue(unit);
+        unitField.fireEvent('change', unitField, unit);
+    },
+    handleBboxFilter: function(spatialSelectorInfo) {
+        var bbox = new OpenLayers.Bounds(spatialSelectorInfo.left, spatialSelectorInfo.bottom, 
+            spatialSelectorInfo.right, spatialSelectorInfo.top);
+        this.spatialSelector.spatialSelectors.bbox.output.selectBBOX.setBbox(bbox);
+        this.spatialSelector.spatialSelectors.bbox.output.setBBOX(bbox);
+        this.spatialSelector.spatialSelectors.bbox.output.fireEvent('onChangeAOI', bbox);
+    },
+    handlerBufferFilter: function(spatialSelectorInfo) {
+
+        // we get all the fields from the main components
+        var buffer = this.spatialSelector.spatialSelectors.buffer;
+        var longitudeField = buffer.bufferFieldset.coordinatePicker.longitudeField;
+        var latitudeField = buffer.bufferFieldset.coordinatePicker.latitudeField;  
+        var bufferField = buffer.bufferFieldset.bufferField;
+
+        // we set the buffer values
+        longitudeField.setValue(spatialSelectorInfo.longitude);
+        longitudeField.fireEvent("change");
+        latitudeField.setValue(spatialSelectorInfo.latitude);
+        latitudeField.fireEvent("change");
+        bufferField.setValue(spatialSelectorInfo.distance);
+        bufferField.fireEvent("change");
+        bufferField.fireEvent("keyup");
+    },
+    handlerCircleFilter: function(spatialSelectorInfo) {
+
+        // we get the circle component
+        var circle = this.spatialSelector.spatialSelectors.circle;
+
+        // we create the circle geometry
+        var geometry = OpenLayers.Geometry.fromWKT(spatialSelectorInfo.wkt); 
+
+        // we set the circle geometry
+        circle.draw.drawFeature(geometry);
+    },
+    handlerPolygonFilter: function(spatialSelectorInfo) {
+
+        // we get the polygon component
+        var polygon = this.spatialSelector.spatialSelectors.polygon;
+
+        // we create the polygon geometry
+        var geometry = OpenLayers.Geometry.fromWKT(spatialSelectorInfo.wkt); 
+
+        // we set the polygon geometry
+        polygon.draw.drawFeature(geometry);
+    },
+    handleFilterConditions: function() {
+
+        // if we have filters conditions we add them to the current form
+        if (!this.state || !this.state.attributesFilter) {
+            return;
+        }
+
+        var filterConditions = this.state.attributesFilter.filterConditions;
+
+        // helper function for creating a new condition
+        var createCondition = function(filterBuilder, attribute, operator, values, index) {
+
+            // we create a new condition of type gxp_filterfield, one already exists so we skip it
+            var condition = filterBuilder.childFilterContainer.items.items[0].items.items[1].items.items[0];
+            if (index !== 0) {
+                condition = filterBuilder.addCondition();
+            }
+
+            // we get the condition components
+            var attributeField = condition.items.items[0];
+            var operatorField = condition.items.items[1];
+            var valuesField = condition.items.items[2];
+
+            // setting attribute value
+            var attributeRecordIndex = attributeField.getStore().findExact('name', attribute);
+            attributeField.setValue(attribute);
+            attributeField.fireEvent('select', attributeField, attributeField.getStore().getAt(attributeRecordIndex));
+
+            // setting operator value
+            var operatorRecordIndex = operatorField.getStore().findExact('name', operator);
+            operatorField.setValue(operator);
+            operatorField.fireEvent('select', operatorField, operatorField.getStore().getAt(operatorRecordIndex));
+
+            // setting values, we expect a number of container items equal to the number of values 
+            for (var i = 0; i < values.length; i++) {
+                var valueField = valuesField.items.items[i];
+                valueField.setValue(values[i]);
+                if (valueField.xtype == 'gxp_wpsuniquevaluescb') {
+                    var valueRecordIndex = valueField.getStore().findExact('name', attribute);
+                    valueField.fireEvent('select', valueField, valueField.getStore().getAt(valueRecordIndex));
+                } else {
+                    valueField.fireEvent('change', valueField, values[i]);
+                }
+            }
+        };
+
+        // we expand the filter conditions container
+        var attributeFieldset = this.output[0].attributeFieldset;
+        attributeFieldset.expand();
+
+        // we create a new condition for every existing condition
+        for(var i = 0; i < filterConditions.length; i++) {
+            var condition = filterConditions[i];
+            createCondition(this.filterBuilder, condition.attribute, condition.operator, condition.values, i);
+        }
+
+        // we set the filter type
+        var filterTypeCombo = this.filterBuilder.builderTypeCombo;
+        var filterTypeRecordIndex = filterTypeCombo.getStore().findExact('value', this.state.attributesFilter.filterType);
+        filterTypeCombo.setValue(this.state.attributesFilter.filterType);
+        filterTypeCombo.fireEvent('select', filterTypeCombo, filterTypeCombo.getStore().getAt(filterTypeRecordIndex));
+
+        delete this.state['attributesFilter'];
+    },
+    handleChartOptions: function() {
+
+        // if we have chart options conditions we add them to the current form
+        if (!this.state || !this.state.chartOptions) {
+            return;
+        }
+        var chartOptions = this.state.chartOptions;
+
+        // we expand the chart builder container
+        var chartOptionsFieldset = this.output[0].chartOptionsFieldset;
+        chartOptionsFieldset.expand();
+
+        // we get the charts fields
+        var charTypeField = this.chartBuilder.chartTypeCombo;
+        var xaxisField = this.chartBuilder.form.xaxisAttributeField.property;
+        var yaxisField = this.chartBuilder.form.yaxisAttributeField.property;
+        var functionField = this.chartBuilder.form.yaxisAttributeField.chartAggCombo;
+
+        // we search by the chart type in the store
+        var charTypeFieldStore = charTypeField.getStore();
+        var chartTypeRecord;
+        charTypeFieldStore.each(function(record) {   
+            if (record.data.value === chartOptions.type) {
+                chartTypeRecord = record;
+            }
+        }, this);
+
+        // we set the chart type value
+        charTypeField.setValue(chartTypeRecord.data.value);
+        charTypeField.fireEvent('select', charTypeField, chartTypeRecord);
+
+        // we set the xaxis value
+        var xaxisFieldIndex = xaxisField.getStore().findExact('name', chartOptions.xaxis);
+        xaxisField.setValue(chartOptions.xaxis);
+        xaxisField.fireEvent('select', xaxisField, xaxisField.getStore().getAt(xaxisFieldIndex));
+
+         // we set the yaxis value
+        var yaxisFieldIndex = yaxisField.getStore().findExact('name', chartOptions.yaxis);
+        yaxisField.setValue(chartOptions.yaxis);
+        yaxisField.fireEvent('select', yaxisField, yaxisField.getStore().getAt(yaxisFieldIndex));
+
+        // we set the aggregate function value
+        var functionFieldIndex = functionField.getStore().findExact('name', chartOptions.function);
+        functionField.setValue(chartOptions.function);
+        functionField.fireEvent('select', functionField, functionField.getStore().getAt(functionFieldIndex));
+
+        // we set the gauge max value if available
+        if(chartOptions.max) {
+            var gaugeMaxField = this.chartBuilder.form.gaugemax.gaugemaxfield;
+            gaugeMaxField.setValue(chartOptions.max);
+            gaugeMaxField.fireEvent('change', gaugeMaxField, chartOptions.max);
+        }
+
+        delete this.state['chartOptions'];
+    },
+    addLayerByName: function(sourceName, layerName) {
+
+        // we search the layers in the current maps layers
+        var layer;
+        for (var i = 0; i < this.target.mapPanel.layers.data.items.length; i++) {
+            if (this.target.mapPanel.layers.data.items[i].data.name === layerName) {
+                layer = this.target.mapPanel.layers.data.items[i];
+            }
+        }
+
+        // if the layer is not yet present we need to add it
+        if (!layer) {
+
+            // we get the layers from the source where we should search for the layer
+            var source = this.target.layerSources[sourceName];
+            if (this.invalidState(source)) {
+                return;
+            }
+            var storeLayers = source.store.data.items;
+
+            // we search for our layer in the source layers
+            for (var i = 0; i < storeLayers.length; ++i) {
+                var storeLayer = storeLayers[i];
+                if (storeLayer.data.name === layerName) {
+                    layer = storeLayer;
+                    break;
+                }
+            }
+            if (this.invalidState(layer)) {
+                return;
+            }
+
+            // we create a layer record using the found layer
+            var layerInfo = {
+                name: layer.get("name"),
+                title: layer.get("title"),
+                source: sourceName
+            };
+            layer = source.createLayerRecord(layerInfo); 
+            if (this.invalidState(layer)) {
+                return;
+            }        
+
+            // we add this layer to the map
+            if (layer.get("group") === "background") {
+                this.target.mapPanel.layers.insert(0, [layer]);
+            } else {
+                this.target.mapPanel.layers.add([layer]);
+            }
+            this.target.modified = true;
+        }
+
+        // we update the feature manager tool with our layer
+        if (this.featureManagerTool.layerRecord && this.featureManagerTool.layerRecord.data.name === layer.data.name) {
+            this.featureManagerTool.layerRecord = null;
+        }
+        this.featureManagerTool.setLayer(layer);
+
+        delete this.state['sourceName'];
+        delete this.state['layerName'];
+    },
+    invalidState: function(condition) {
+        if (!condition) {
+            Ext.Msg.show({
+                msg: this.invalidStateText,
+                buttons: Ext.Msg.OK,
+                icon: Ext.Msg.ERROR
+            });
+        }
+        return !condition;
     }
 });
 

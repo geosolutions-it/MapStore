@@ -177,16 +177,8 @@
             "actionTarget":{
                 "target":"paneltbar",
                 "index":24
-            },
-			"snappingAgent": "snapping-agent"
-        }, {
-			"ptype": "gxp_advancedsnappingagent",
-			"id": "snapping-agent",
-			"actionTarget":{
-                "target":"paneltbar",
-                "index":16
             }
-		}, {
+        }, {
 			"actions": ["-"], 
 			"actionTarget": "paneltbar"
 		}, {
@@ -218,7 +210,8 @@
             "ptype": "gxp_chartReporting",
             "outputTarget": "reporting",
             "id": "reportingPanel",
-            "iconCls": "icon-chart-report"
+            "iconCls": "icon-chart-report",
+            "spatialSelectorFormId": "bboxquery"
         }, {
 			"ptype": "gxp_categoryinitializer",
             "silentErrors": true,

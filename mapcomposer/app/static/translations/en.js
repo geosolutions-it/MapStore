@@ -924,5 +924,37 @@ GeoExt.Lang.add("en", {
 
     "gxp.charts.GenerateCharts.prototype": {
         chartTypeTitleText: 'Test data'
-    }
+    },
+    "gxp.plugins.ChartReporting.prototype": {
+        saveText: "Save",
+        shareText: "Share",
+        loadChartText: "Load Chart",
+        loadFromFileText: "Open from a file",
+        loadByIdText: "Open from a shared ID",
+        fileErrorText: "Unable to parse the input file",
+        pleaseSelectChartText: "Please select a chart first",
+        reloadConfigText: "Reload Configuration",
+        editChartOptionsText: "Edit",
+        exportCsvText: "Export as CSV", 
+        clearAllText: "Remove all charts",
+        dataText: "Data",
+        csvSeparator: ",",
+        chartSharedIdText: "Chart shared ID",
+        invalidSharedId: "Invalid shared ID",
+        provideSharedIdText: "Please provide a shared ID",
+        cannotCreateResourceText: "Unable to create resource",
+        cannotMakeResourcePublicText: "Unable to make resource public",
+        chartTypeText: "Chart Type",
+        aggregationText: "Aggregation",
+        chartTitleText: "Chart Title",
+        colourText: "Color",
+        histogramText: "histogram",
+        lineText: 'Line',
+        pieText: 'Pie',
+        gaugeText: 'Gauge',
+        closeText: 'Close',
+        editChartText: 'Edit Chart',
+        loadText: "Load",
+        browseText: "Browse..."
+        
 });
