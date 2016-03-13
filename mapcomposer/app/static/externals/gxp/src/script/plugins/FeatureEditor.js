@@ -435,12 +435,9 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
         this.schema = schema;
         var disable = !schema || !auth; // !this.target.isAuthorized();
         this.actions[0].setDisabled(disable);
-        this.actions[1].setDisabled(disable);
+        this.actions[1].setDisabled(disable); 
         if (disable) {
-            // not a wfs capable layer or not authorized
-			if(snappingAgent){
-				snappingAgent.actions[0].setDisabled(disable);
-			}      
+            // not a wfs capable layer or not authorized  
             return;
         }
 

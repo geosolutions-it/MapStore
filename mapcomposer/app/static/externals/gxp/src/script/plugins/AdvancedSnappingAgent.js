@@ -81,6 +81,7 @@ gxp.plugins.AdvancedSnappingAgent = Ext.extend(gxp.plugins.Tool, {
      */
     addSnappingTarget: function(snapTarget) {
         snapTarget = Ext.apply({}, snapTarget);
+
 		var featureManager;
 		
 		var strategyBBOX = new OpenLayers.Strategy.BBOX({ratio: 1.5});
@@ -90,6 +91,11 @@ gxp.plugins.AdvancedSnappingAgent = Ext.extend(gxp.plugins.Tool, {
             paging: false,
             listeners: {
                 layerchange: function() {
+
+                    if (!this.target.getAuth()) {
+                        return;
+                    }
+
 					// FIX about undefined geometryType on DB
                     if(featureManager.featureStore && featureManager.geometryType != "Geometry"){                    
                         var map = this.target.mapPanel.map;
@@ -134,7 +140,12 @@ gxp.plugins.AdvancedSnappingAgent = Ext.extend(gxp.plugins.Tool, {
                             maxResolution: snapTarget.maxResolution
                         });
                         
-                        map.addLayer(layer);
+                        this.currentLayer = layer;
+
+                        if (this.actions[0].items[0].pressed) {
+                            map.addLayer(layer);
+                        }
+
                         map.events.on({
                             moveend: function() {
                                 var min = snapTarget.minResolution || Number.NEGATIVE_INFINITY;
@@ -157,8 +168,11 @@ gxp.plugins.AdvancedSnappingAgent = Ext.extend(gxp.plugins.Tool, {
                         this.actions[0].enable();
 						
                     }else{
+                        this.currentLayer = null;
                         this.actions[0].disable();
                     }
+
+                    this.snapTarget = snapTarget;
                 },
                 scope: this
             }
@@ -206,7 +220,7 @@ gxp.plugins.AdvancedSnappingAgent = Ext.extend(gxp.plugins.Tool, {
 	addActions: function() {
 	    var actions = [{
             enableToggle: true,
-			pressed: true,
+			pressed: false,
 			disabled: true,
             iconCls: this.iconCls,
             tooltip: this.tooltipText,
@@ -214,8 +228,16 @@ gxp.plugins.AdvancedSnappingAgent = Ext.extend(gxp.plugins.Tool, {
                 for(var i=0; i< this.controls.length; i++){
 					var control = this.controls[i];
 					if(button.pressed){
+                        if (this.currentLayer) {
+                            this.target.mapPanel.map.addLayer(this.currentLayer);
+                        }
 						control.activate();
 					}else{
+                        var map = this.target.mapPanel.map;
+                        var featureLayer = map.getLayersByName(this.snapTarget.name || "snapping_target")[0];
+                        if(featureLayer){
+                            map.removeLayer(featureLayer);
+                        }
 						control.deactivate();
 					}
 				}
