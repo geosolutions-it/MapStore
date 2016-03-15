@@ -294,7 +294,13 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
                     field: Ext.create(fieldCfg),
                     listeners: listeners
                 });
-               
+                
+                // cannot access fKey property from this scope
+                if( name == "GCID" || name == "gcid"){
+                    if(value == "" || value == null){
+                        value = (new Date()).getTime().toString();
+                    }
+                }
                 attributes[name] = value;
             }, this);
             feature.attributes = attributes;
