@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v3.0.7 (2013-10-24)
+ * @license Highcharts JS v3.0.10 (2014-03-10)
  *
  * Standalone Highcharts Framework
  *
@@ -159,7 +159,15 @@ function augment(obj) {
 
 					args.preventDefault = preventDefault;
 					args.target = target;
-					args.type = name; // #2297	
+
+					// If the type is not set, we're running a custom event (#2297). If it is set,
+					// we're running a browser event, and setting it will cause en error in
+					// IE8 (#2465).
+					if (!args.type) {
+						args.type = name;
+					}
+					
+
 					
 					// If the event handler return false, prevent the default handler from executing
 					if (fn.call(this, args) === false) {
@@ -296,7 +304,7 @@ return {
 				// HTML styles
 				} else {
 					styles = {};
-					styles[elem] = this.now + this.unit;
+					styles[this.prop] = this.now + this.unit;
 					Highcharts.css(elem, styles);
 				}
 				
@@ -342,9 +350,10 @@ return {
 					ret,
 					done,
 					options = this.options,
+					elem = this.elem,
 					i;
-
-				if (this.elem.stopAnimation) {
+				
+				if (elem.stopAnimation || (elem.attr && !elem.element)) { // #2616, element including flag is destroyed
 					ret = false;
 
 				} else if (gotoEnd || t >= options.duration + this.startTime) {
@@ -363,7 +372,7 @@ return {
 
 					if (done) {
 						if (options.complete) {
-							options.complete.call(this.elem);
+							options.complete.call(elem);
 						}
 					}
 					ret = false;
@@ -496,19 +505,16 @@ return {
 		return results;
 	},
 
+	/**
+	 * Get the element's offset position, corrected by overflow:auto. Loosely based on jQuery's offset method.
+	 */
 	offset: function (el) {
-		var left = 0,
-			top = 0;
-
-		while (el) {
-			left += el.offsetLeft;
-			top += el.offsetTop;
-			el = el.offsetParent;
-		}
+		var docElem = document.documentElement,
+			box = el.getBoundingClientRect();
 
 		return {
-			left: left,
-			top: top
+			top: box.top  + (window.pageYOffset || docElem.scrollTop)  - (docElem.clientTop  || 0),
+			left: box.left + (window.pageXOffset || docElem.scrollLeft) - (docElem.clientLeft || 0)
 		};
 	},
 
