@@ -177,8 +177,18 @@
             "actionTarget":{
                 "target":"paneltbar",
                 "index":24
+            },
+            "snappingAgent": "snapping-agent"
+        }, 
+        {
+           "ptype": "gxp_advancedsnappingagent",
+           "id": "snapping-agent",
+           "actionTarget":{
+                "target":"paneltbar",
+                "index":16
             }
-        }, {
+        },
+        {
 			"actions": ["-"], 
 			"actionTarget": "paneltbar"
 		}, {
