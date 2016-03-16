@@ -115,7 +115,8 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
     
     addAutocompleteStore: function(config) {
         var uniqueValuesStore = new gxp.data.WPSUniqueValuesStore({
-            pageSize: this.autoCompleteCfg.pageSize || this.pageSize
+            pageSize: this.autoCompleteCfg.pageSize || this.pageSize,
+            listeners: this.autoCompleteCfg.listeners || {}
         });
         
         this.initUniqueValuesStore(uniqueValuesStore, this.autoCompleteCfg.url || this.attributes.url, this.attributes.baseParams.TYPENAME, this.attributes.format.namespaces, this.filter.property);
@@ -142,7 +143,10 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             if (type === OpenLayers.Filter.Comparison.BETWEEN) {
                 this.valueWidgets.add(this.addValidation(this.createValueWidget('lower', value[0])));
                 this.valueWidgets.add(this.addValidation(this.createValueWidget('upper', value[1])));
-            } else {
+            } else if(type === OpenLayers.Filter.Comparison.IS_NULL){
+               this.filter.value='NULL';
+            }
+            else {
                 this.valueWidgets.add(this.addValidation(this.createValueWidget('single', value[0])));
             }
             
@@ -381,7 +385,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
 	createInitialValueWidgets: function() {
 		var record = this.attributes.getAt(this.attributes.find('name',this.filter.property));
 		if(record) {
-			this.fieldType = record.get("type").split(":")[1];
+			this.fieldType = (record.get("type").split(":")[1]) ? record.get("type").split(":")[1] : record.get("type");
 			this.createValueWidgets(this.filter.type, [this.filter.lowerBoundary || this.filter.value, this.filter.upperBoundary || this.filter.value], true);
 		}
 	},
@@ -439,7 +443,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
             listeners: {
                 select: function(combo, record) {
                     this.filter.property = record.get("name");
-                    this.fieldType = record.get("type").split(":")[1];
+                    this.fieldType = (record.get("type").split(":")[1]) ? record.get("type").split(":")[1] : record.get("type");
                     if(!this.comparisonCombo) {
                         this.comparisonCombo = this.items.get(1);
                     }
@@ -489,7 +493,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                         store.filter([
                           {
                             fn   : function(record) {
-                                return (record.get('name') === "=") || (record.get('name') === "<>") || (record.get('name') === "<") || (record.get('name') === ">") || (record.get('name') === "<=") || (record.get('name') === ">=") || (record.get('name') === "between");
+                                return (record.get('name') === "=") || (record.get('name') === "<>") || (record.get('name') === "<") || (record.get('name') === ">") || (record.get('name') === "<=") || (record.get('name') === ">=") || (record.get('name') === "between") || (record.get('name') === "isNull");
                             },
                             scope: this
                           }                      
