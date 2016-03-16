@@ -163,16 +163,16 @@ GeoExt.Lang.add("it", {
     "gxp.plugins.WMSGetFeatureInfo.prototype": {
         infoActionTip: "Recupera Feature Info",
         popupTitle: "Feature Info",
-		noDataMsg: "Nessun dato è stato ritornato dal server",
-		maskMessage: "Recupero Feature Info..."
+        noDataMsg: "Nessun dato è stato ritornato dal server",
+        maskMessage: "Recupero Feature Info..."
     },
-	
-	"gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
+
+    "gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
         infoActionTip: "Recupera Feature Info",
-        popupTitle: "Feature Info",
-		noDataMsg: "Nessun dato è stato ritornato dal server",
-		maskMessage: "Recupero Feature Info...",
-		activeActionTip:"Feature Info sul layer selezionato"
+        popupTitle: "Informazioni",
+        noDataMsg: "Nessun dato è stato ritornato dal server",
+        maskMessage: "Recupero Feature Info...",
+        activeActionTip:"Feature Info sul layer selezionato"
     },
 
     "gxp.plugins.Zoom.prototype": {
