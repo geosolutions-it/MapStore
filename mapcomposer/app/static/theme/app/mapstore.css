@@ -414,3 +414,12 @@ div#homelogos ul li a:hover {
     z-index : -1 !important;
     padding : 0px !important;
 }
+
+.icon-east-panel{
+    background-image: url(img/silk/find.png);
+}
+
+
+.icon-south-panel{
+    background-image: url(img/silk/grid_columns.png);
+}
