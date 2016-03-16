@@ -139,6 +139,12 @@
         "topOutUnits":"km"
     },
 	"customTools":[
+        {
+            "ptype": "gxp_addlayers",
+            "actionTarget": "tree.tbar",
+            "id": "addlayers",
+            "zoomToExtent": false
+        },
 		{
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
