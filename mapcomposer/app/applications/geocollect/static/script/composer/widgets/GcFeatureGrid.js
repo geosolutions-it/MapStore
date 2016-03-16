@@ -166,10 +166,9 @@ gxp.grid.GcFeatureGrid = Ext.extend(Ext.grid.GridPanel, {
                 return date ? date.format(format) : value;
             };
         }
-		
-       
-		  var columns = [];		
-		var name, type, xtype, format, renderer;
+        
+        var columns = [];
+        var name, type, xtype, format, renderer;
         (this.schema || store.fields).each(function(f) {
             if (this.schema) {
                 name = f.get("name");

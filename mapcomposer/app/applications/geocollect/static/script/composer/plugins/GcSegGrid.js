@@ -378,10 +378,10 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                                 if(photoBrowserDataView.ownerCt.isVisible()){
                                     photoBrowserDataView.ownerCt.ownerCt.layout.setActiveItem(0);
                                 }
-                                photoBrowserDataView.ownerCt.disable();
-                            }else{
+                                //photoBrowserDataView.ownerCt.disable();
+                            }//else{
                                 photoBrowserDataView.ownerCt.enable();
-                            }
+                            //}
                         }
                     }
                 }),
@@ -696,6 +696,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             multiSelect: true,
             autoHeight: true,
             authParam:this.authParam,
+            fKey: this.fKey,
             authKey:this.authkey,
             picturesBrowserConfig:this.configSurvey.picturesBrowserConfig,
             rowExpander: expander,
@@ -712,33 +713,47 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                     ],
                     listeners:{
                         load:function (store,records,req){
-                            if(records.length <= 0 ){
-                                if(photoBrowserDataView.ownerCt.isVisible()){
-                                    photoBrowserDataView.ownerCt.ownerCt.layout.setActiveItem(0);
-                                }
-                                photoBrowserDataView.ownerCt.disable();
-                            }else{
-                                photoBrowserDataView.ownerCt.enable();
-                            }
-                        }
+
+                            var currentTitle = photoBrowserDataView.ownerCt.title;
+                            photoBrowserDataView.ownerCt.setTitle( currentTitle.substring(0, currentTitle.lastIndexOf("[") > 0 ? currentTitle.lastIndexOf("[") : currentTitle.length).trim() + " ["+ records.length + "]");
+                            photoBrowserDataView.ownerCt.enable();
+                            
+                        },
+                        scope: this
                     }
             }),
             loadPhotos:function(r){
                 if(r == null){
+                    var currentTitle = photoBrowserDataView.ownerCt.title;
+                    photoBrowserDataView.ownerCt.setTitle( currentTitle.substring(0, currentTitle.lastIndexOf("[") > 0 ? currentTitle.lastIndexOf("[") : currentTitle.length).trim() );
                     photoBrowserDataView.ownerCt.disable();
                     return;
                 }
                 var ds=this.getStore();
+                var folderName = r.data[this.picturesBrowserConfig.featureProperty];
+                if(!folderName || folderName == ""){
+                    folderName = r.data[this.fKey];
+                }
                 photoBrowserDataView.currentFolder = this.picturesBrowserConfig.folder
-                        +r.data[this.picturesBrowserConfig.featureProperty]+"/"+r.data.fid;
+                        +folderName+"/"+r.data.fid;
                 var url=this.picturesBrowserConfig.baseUrl
                         + '?action=get_filelist&folder='
                         + photoBrowserDataView.currentFolder ;
                 if(this.authKey){
                     url+="&"+this.authParam+"="+this.authKey;
                 }
-                ds.proxy.setUrl(url,true);
-                ds.load();
+                
+                this.checkFolderExists(
+                    photoBrowserDataView.picturesBrowserConfig.baseUrl,
+                    photoBrowserDataView.currentFolder.substring(0, photoBrowserDataView.currentFolder.lastIndexOf("/") ),
+                    photoBrowserDataView.currentFolder, 
+                    true,
+                    function(){
+                        ds.proxy.setUrl(url,true);
+                        ds.load();
+                    }
+                );
+
             },
             reload:function(  ){
                 if(photoBrowserDataView.currentFolder){
@@ -803,6 +818,66 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         }
                     }
                 ]
+            },
+            
+            checkFolderExists: function( baseUrl, baseFolder, targetFolder, createIfMissing, callbackFn ){
+
+                Ext.Ajax.request({
+                    url: baseUrl,
+                    success: function(response, opts) {
+                        var obj = Ext.decode(response.responseText);
+                        if(!obj.success && createIfMissing){
+                            // The folder does not exists, create it
+                            Ext.Ajax.request({
+                                url: baseUrl,
+                                success: function(response, opts) {
+                                    var obj = Ext.decode(response.responseText);
+                                    if(obj.success){
+                                        // The folder does not exists, create it
+                                        Ext.Ajax.request({
+                                            url: baseUrl,
+                                            success: function(response, opts) {
+                                                var obj = Ext.decode(response.responseText);
+                                                if(obj.success){
+                                                    callbackFn();
+                                                }else{
+                                                    Ext.Msg.alert('Server Failure', 'Cannot access photo folder');
+                                                }
+                                            },
+                                            failure: function(response, opts) {
+                                                Ext.Msg.alert('Server Failure', 'Cannot access photo folder:\nError: '+ response.status);
+                                            },
+                                            params: {
+                                                action: 'folder_new',
+                                                folder: targetFolder
+                                            }
+                                        });
+                                    }else{
+                                        Ext.Msg.alert('Server Failure', 'Cannot access photo folder');
+                                    }
+                                },
+                                failure: function(response, opts) {
+                                    Ext.Msg.alert('Server Failure', 'Cannot access photo folder:\nError: '+ response.status);
+                                },
+                                params: {
+                                    action: 'folder_new',
+                                    folder: baseFolder
+                                }
+                            });
+
+                        }else{
+                            callbackFn();
+                        }
+                    },
+                    failure: function(response, opts) {
+                        //console.log('server-side failure with status code ' + response.status);
+                        Ext.Msg.alert('Server Failure', 'Cannot access photo folder:\nError: '+ response.status);
+                    },
+                    params: {
+                        action: 'folder_new',
+                        folder: targetFolder
+                    }
+                });
             }
         });
 
@@ -870,9 +945,9 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                             this.initialConfig.configHistory||{}
                         ),{
                             title:this.noticePhotoBrowserPanelTitle,
-                            disabled:true,
+                            //disabled:true,
                             ref:'noticePhotoBrowser',
-                            hidden:(!photoBrowserNotice),
+                            //hidden:(!photoBrowserNotice),
                             items:[photoBrowserNotice||{}]
                         }
                     ]
@@ -900,9 +975,9 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                             this.initialConfig.configSurvey||{}
                         ),{
                             title:this.photoBrowserPanelTitle,
-                            disabled:true,
+                            //disabled:true,
                             ref:'surveyPhotoBrowser',
-                            hidden:(!photoBrowser),
+                            //hidden:(!photoBrowser),
                             items:[photoBrowser||{}],
                         }
                     ]
@@ -1388,11 +1463,11 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
     },
 
     enableTools: function(){
-                       this.segGrid.zommInfo.enable();
-                       var btns=this.segGrid.getTopToolbar().items.last();
-                       if (btns!=this.segGrid.fBtnGroup){
-                           btns.enable();
-                       }
+        this.segGrid.zommInfo.enable();
+        var btns=this.segGrid.getTopToolbar().items.last();
+        if (btns!=this.segGrid.fBtnGroup){
+            btns.enable();
+        }
     },
     disableTools: function(){
          this.segGrid.zommInfo.disable();
