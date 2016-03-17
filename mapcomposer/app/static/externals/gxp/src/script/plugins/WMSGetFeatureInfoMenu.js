@@ -192,6 +192,15 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      */
     authParam: "authkey",
     
+    itemHeaderText: "Item Details",
+    createdText: "Created: ",
+    editedText: "Edited: ",
+    galleryText: "Gallery",
+    manageText: "Manage",
+    imagesText: "Images",
+    attributesText: "Attributes",
+    
+    
     /** api: method[addActions]
      */
     addActions: function() {
@@ -822,9 +831,13 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             Ext.each(features,function(feature) {
                 if(this.customGroupTitleText){
                     childTitle = this.customGroupTitleText(feature, parentTitle, index++);
+                    childTitle = this.createdText + childTitle
                 }else{
-                    childTitle = String.format(this.defaultGroupTitleText, parentTitle, index++)
+                    childTitle = String.format(this.defaultGroupTitleText, parentTitle, index++);
                 }
+                // Static text
+                childTitle = this.itemHeaderText;
+                
                 featureGrids.push(this.obtainFeatureGrid(feature, childTitle));
                 
                 // Request all the linked surveys via WFS and display them
@@ -1000,7 +1013,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 					ref:'../galleryBtn',
 					hidden:true,
 					iconCls: 'gc-icon-images',
-					text: 'Gallery',
+					text: this.galleryText,
                     enableToggle: true,
 					toggleHandler: function(btn, state){
 						var layout = btn.refOwner.getLayout();
@@ -1010,7 +1023,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                     }, {
 					ref:'../manage',
 					iconCls: 'gc-icon-notice',
-					text: 'Manage',
+					text: this.manageText,
                     scope: this,
 					handler: function(btn){
                                 gcseggrid.noFeatureClick(lastEvent);
@@ -1031,12 +1044,12 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 					ref:'../switch',
 					//hidden:true,
 					iconCls: 'gxp-icon-printsnapshot',
-					text: 'Images',
+					text: this.imagesText,
 					handler: function(btn){
 						var layout = btn.refOwner.getLayout();
 						btn.refOwner.activeItemIndex = btn.refOwner.activeItemIndex == 0 ? 1 :0;
 						layout.setActiveItem(btn.refOwner.activeItemIndex);
-						btn.setText(btn.refOwner.activeItemIndex == 0 ? "Images" :"Attributes");
+						btn.setText(btn.refOwner.activeItemIndex == 0 ? this.imagesText : this.attributesText);
 						btn.setIconClass(btn.refOwner.activeItemIndex == 0 ? 'gxp-icon-printsnapshot' : 'gxp-icon-csvexport-single') ;
                         if(btn.refOwner.activeItemIndex == 0 ){
                             btn.refOwner.galleryBtn.hide()
@@ -1216,6 +1229,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                                         var childTitle = i;
                                         if(this.customGroupTitleText){
                                             childTitle = this.customGroupTitleText(storeObj.data.feature, this.surveyTypeName, i);
+                                            childTitle = this.editedText + childTitle
                                         }else{
                                             childTitle = String.format(this.defaultGroupTitleText, this.surveyTypeName, i)
                                         }

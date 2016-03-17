@@ -103,8 +103,6 @@ gxp.data.WFSFeatureStore = Ext.extend(GeoExt.data.FeatureStore, {
             return data.id;
         };
         
-        
-        
     }
     
 });

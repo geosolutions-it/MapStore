@@ -280,7 +280,16 @@ GeoExt.Lang.add("it", {
      "MSMPagingToolbar.prototype":{
         resizerText: "Missioni per pagina"
     },
-      "MSMGridPanel.prototype": {
+    "MSMGridPanel.prototype": {
         googleTooltip:"Scarica L'App Per Android Da Google Play™"
-      }
+    },
+    "gxp.plugins.WMSGetFeatureInfoMenu.prototype": {
+        createdText: "Segnalazione creata il ",
+        editedText: "Modifica del ",
+        galleryText: "Galleria",
+        manageText: "Gestione",
+        imagesText: "Immagini",
+        attributesText: "Attributi",
+        itemHeaderText: "Segnalazione"
+    }
 });
