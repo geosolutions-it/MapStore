@@ -786,7 +786,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		            }
 		        },
 		        xAxis: {
-		        	min: 20,
+		        	min: 0,
 		            max: 100,
 		            gridLineWidth: 1,
 		            title: {
@@ -799,7 +799,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		                color: 'black',
 		                dashStyle: 'dot',
 		                width: 2,
-		                value: 70,
+		                value: 70,// Threshold
 		                label: {
 		                    rotation: 0,
 		                    y: 15,
@@ -838,7 +838,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		                color: 'black',
 		                dashStyle: 'dot',
 		                width: 2,
-		                value: 9,
+		                value: 9,// Threshold for classifying Type of Urban Dev
 		                label: {
 		                    align: 'right',
 		                    style: {
