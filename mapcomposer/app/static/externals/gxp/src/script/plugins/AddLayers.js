@@ -251,6 +251,12 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 		"FORMAT": "image/png8"
 	},
 
+    /** api: config[zoomToExtent]
+     *  ``Array``
+     *  If TRUE (default) when a layer is add we zoom to the extend.
+     */
+    zoomToExtent: true,
+
     /** private: method[constructor]
      */
     constructor: function(config) {
@@ -373,7 +379,9 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
 								);
 							}
 
-							map.zoomToExtent(extent, true);
+                            if (this.zoomToExtent) {
+                                map.zoomToExtent(extent, true);
+                            }
 						}
                     }
                 }
