@@ -639,13 +639,264 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		});
 	},
 
+	generateModelScatterMultiAxisChart: function(title, subTitle, data, quadrants){
+
+		admUnits = data.admUnits;
+		values   = data.complexValues;
+				
+		var edClassObjects = [];
+		var rmpsObjects    = [];
+		
+		for(var i=0; i<admUnits.length; i++)
+		{
+			admName   = admUnits[i];
+			admValues = values[i][0]; // Ref Time
+			
+			edClassObjects[i] = {x: admValues[0], y: admValues[1], z: admValues[2], name: admName};
+			rmpsObjects[i]    = [admValues[0], (admValues[2]/1000)*30, admValues[1]];
+		}
+
+        var text1;
+        var text2;
+        var text3;
+        var text4;
+	    
+	    // Give the points a 3D feel by adding a radial gradient
+	    /*Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function (color) {
+	        return {
+	            radialGradient: {
+	                cx: 0.4,
+	                cy: 0.3,
+	                r: 0.5
+	            },
+	            stops: [
+	                [0, color],
+	                [1, Highcharts.Color(color).brighten(-0.2).get('rgb')]
+	            ]
+	        };
+	    });*/
+	    		
+		return new Ext.ux.HighChart({
+			title : title,
+			loadMask:true,
+			animation : true,
+			chartConfig : {
+		        chart: {
+		        	//zoomType: 'xy',
+		            margin: 100,
+		            type: 'scatter',
+		            options3d: {
+		                enabled: true,
+		                alpha: 10,
+		                beta: 30,
+		                depth: 250,
+		                viewDistance: 5,
+		                fitToPlot: false,
+		                frame: {
+		                    bottom: { size: 1, color: 'rgba(0,0,0,0.02)' },
+		                    back: { size: 1, color: 'rgba(0,0,0,0.04)' },
+		                    side: { size: 1, color: 'rgba(0,0,0,0.06)' }
+		                }
+		            },
+		            events: {
+		            	load: function() {
+		            		var chart = this;
+
+		            		text1 = chart.renderer.text(quadrants[0]).attr({x: chart.xAxis[0].toPixels(21), y: chart.yAxis[0].toPixels(28)}).add();
+					        text2 = chart.renderer.text(quadrants[1]).attr({x: chart.xAxis[0].toPixels(88), y: chart.yAxis[0].toPixels(28)}).add();
+					        text3 = chart.renderer.text(quadrants[2]).attr({x: chart.xAxis[0].toPixels(21), y: chart.yAxis[0].toPixels(1)}).add();
+					        text4 = chart.renderer.text(quadrants[3]).attr({x: chart.xAxis[0].toPixels(88), y: chart.yAxis[0].toPixels(1)}).add();		            		
+
+		            		$(this.container).bind('mousedown.hc touchstart.hc', function (eStart) {
+						        eStart = chart.pointer.normalize(eStart);
+						
+						        var posX = eStart.pageX,
+						            posY = eStart.pageY,
+						            alpha = chart.options.chart.options3d.alpha,
+						            beta = chart.options.chart.options3d.beta,
+						            newAlpha,
+						            newBeta,
+						            sensitivity = 5; // lower is more sensitive
+						
+						        $(document).bind({
+						            'mousemove.hc touchdrag.hc': function (e) {
+						                // Run beta
+						                newBeta = beta + (posX - e.pageX) / sensitivity;
+						                chart.options.chart.options3d.beta = newBeta;
+						
+						                // Run alpha
+						                newAlpha = alpha + (e.pageY - posY) / sensitivity;
+						                chart.options.chart.options3d.alpha = newAlpha;
+						
+						                chart.redraw(false);
+						            },
+						            'mouseup touchend': function () {
+						                $(document).unbind('.hc');
+						            }
+						        });
+						    });
+		            	},
+		            	redraw: function () {
+		            		var chart = this;
+		            		
+		            		text1.destroy();
+		            		text2.destroy();
+		            		text3.destroy();
+		            		text4.destroy();
+
+					        text1 = chart.renderer.text(quadrants[0]).attr({x: chart.xAxis[0].toPixels(21), y: chart.yAxis[0].toPixels(28)}).add();
+					        text2 = chart.renderer.text(quadrants[1]).attr({x: chart.xAxis[0].toPixels(88), y: chart.yAxis[0].toPixels(28)}).add();
+					        text3 = chart.renderer.text(quadrants[2]).attr({x: chart.xAxis[0].toPixels(21), y: chart.yAxis[0].toPixels(1)}).add();
+					        text4 = chart.renderer.text(quadrants[3]).attr({x: chart.xAxis[0].toPixels(88), y: chart.yAxis[0].toPixels(1)}).add();		            		
+		            	}
+		            }
+		        },
+		        title: {
+		            text: title
+		        },
+		        subtitle: {
+		            text: subTitle
+		        },
+		        credits: {
+		            text: 'Data from <a href="www.isprambiente.gov.it/en">ISPRA</a>',
+		            href: 'www.isprambiente.gov.it/en',
+		            position: {
+		                x: -40
+		            }
+		        },
+		        plotOptions: {
+		            scatter: {
+		                width: 10,
+		                height: 10,
+		                depth: 10,
+		            	dataLabels: {
+		                    enabled: true,
+		                    format: '{point.name}',
+		                    rotation: 30,
+		                    x: 5,
+		                    y: 0,
+		                    align: 'left',
+		                    verticalAlign: 'middle',
+		                    style: {
+		                      fontSize: '9px',
+		                      fontWeight: 'bold',
+		                      color: 'red'
+		                    }
+		               }
+		            }
+		        },
+		        xAxis: {
+		        	min: 20,
+		            max: 100,
+		            gridLineWidth: 1,
+		            title: {
+		                text: 'LCPI',
+		                style: {
+		                    color: Highcharts.getOptions().colors[1]
+		                }
+		            },
+		            plotLines: [{
+		                color: 'black',
+		                dashStyle: 'dot',
+		                width: 2,
+		                value: 70,
+		                label: {
+		                    rotation: 0,
+		                    y: 15,
+		                    style: {
+		                        fontStyle: 'italic'
+		                    },
+		                    //ext: 'Monocentrica'
+		                }
+		            }]
+		        },
+		        zAxis: { // Secondary yAxis
+		            min: 0,
+		            max: 1000,
+		            gridLineWidth: 0,
+		            tickInterval: 100,
+		            title: {
+		                text: 'EDClass',
+		                style: {
+		                    color: Highcharts.getOptions().colors[0]
+		                }
+		            },
+		            opposite: true
+		        },
+		        yAxis: { // Primary yAxis
+		        	min: 0,
+		            max: 30,
+		            tickInterval: 3,
+		            gridLineWidth: 1,
+		            title: {
+		                text: 'RMPS',
+		                style: {
+		                    color: Highcharts.getOptions().colors[0]
+		                }
+		            },
+		            plotLines: [{
+		                color: 'black',
+		                dashStyle: 'dot',
+		                width: 2,
+		                value: 9,
+		                label: {
+		                    align: 'right',
+		                    style: {
+		                        fontStyle: 'italic'
+		                    },
+		                    //text: 'Compatta',
+		                    x: -10
+		                }
+		            }]
+		        },
+		        legend: {
+		            enabled: false
+		        },
+		        // Enable for both axes
+		        tooltip: {
+		            shared: false,
+		            crosshairs: [true,true],
+		            backgroundColor: '#FFFFFF',
+		            borderColor: 'black',
+		            borderRadius: 10,
+		            borderWidth: 3,
+ 		            formatter: function(chart) {
+		               var p = this.point;
+		               return '<b>' + p.name + '</b>' + '<br>' + 
+		                      '<b>LCPI:</b> ' + Highcharts.numberFormat(p.x, 2, ',') + '<br>' + 
+		                      '<b>RMPS:</b> ' + Highcharts.numberFormat(p.y, 2, ',') + '<br>' + 
+		                      '<b>EDClass:</b> ' + Highcharts.numberFormat(p.z, 2, ',');
+		            }
+		        },
+		        legend: {
+		            layout: 'vertical',
+		            align: 'left',
+		            x: 80,
+		            verticalAlign: 'top',
+		            y: 55,
+		            floating: true,
+		            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+		            enabled: false
+		        },
+		        series: [{
+		            name: title,
+		            colorByPoint: true,
+		            pointPlacement:0.0,
+		            data: edClassObjects,
+		            shadow: false,
+		            visible: true
+		        }]
+			}
+		});
+	},
+	
     /** api: method[generatePieChart]
      *  :arg title: ``String`` Title for the pie chart
      *  :arg subTitle: ``String`` Subtitle for the pie chart
      *  :arg data: ``Object`` Data for the pie chart
      *  :returns: ``Ext.ux.HighChart`` Pie Chart component.
      */
-	generateModelScatterMultiAxisChart: function(title, subTitle, data, quadrants){
+	generateModelScatterMultiAxisChart2: function(title, subTitle, data, quadrants){
 		
 		admUnits = data.admUnits;
 		values   = data.complexValues;
@@ -722,7 +973,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		            data: rmpsObjects
 		        }],		        
 		        xAxis: [{
-		        		min: 20,
+		        	min: 20,
 		            max: 100,
 		            title: {
 		                text: 'LCPI',
@@ -804,8 +1055,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		            enabled: false
 		        },
 		        plotOptions: {
-		        		scatter: {
-		                dataLabels: {
+		        	scatter: {
+		            	dataLabels: {
 		                    enabled: true,
 		                    format: '{point.name}',
 		                    rotation: 30,
