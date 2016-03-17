@@ -75,7 +75,7 @@
     "customPanels":[
         {
             "xtype": "tabpanel",
-            "title": "Data Viewer",
+            "title": "Visualizzatore Dati",
             "border": false,
             "id": "south",
             "collapsedonfull": true,
