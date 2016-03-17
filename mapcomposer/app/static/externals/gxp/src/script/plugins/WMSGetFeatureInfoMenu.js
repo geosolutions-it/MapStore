@@ -152,15 +152,54 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      
     /** api: config[disableAfterClick]
      *  ``Boolean``
-     *  
      */
     disableAfterClick: false,
-     
+    
+    /** api: config[queriableAttribute]
+     *  ``String``
+     * The Surveys' attribute name linking Surveys to Items
+     */
+    queriableAttribute : "my_orig_id",
+
+    /** api: config[linkingAttribute]
+     *  ``String``
+     * The Items' attribute name linking Surveys to Items
+     */
+    linkingAttribute : "gcid",
+
+    
+    /** api: config[sortBy]
+     *  ``String`` or ``Object``
+     * The attribute name to sort the Surveys
+     */
+    sortBy: { property: "gc_created", order: "DESC"} ,
+    
+    /** api: config[wfsURL]
+     *  ``String``
+     * The url where to issue WFS requests
+     */
+    wfsURL: "http://geocollect.geo-solutions.it/geoserver/it.geosolutions/ows",
+    
+    /** api: config[surveyTypeName]
+     *  ``String``
+     * The typeName to query for the surveys
+     */
+    surveyTypeName: "cens_muri_sop",
+    
+    /** api: config[surveyTypeName]
+     *  ``String``
+     * The typeName to query for the surveys
+     */
+    authParam: "authkey",
+    
     /** api: method[addActions]
      */
     addActions: function() {
         this.popupCache = {};
         this.activeIndex = 0;
+        
+        //Authentication parameter
+        this.authKey = this.getAuthParam();
         
         // GeoCollect custom titles
         this.customGroupTitleText = function(feature, parentTitle, index){
@@ -533,7 +572,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             location: latLon,
             map: this.target.mapPanel,
             width: 490,
-            height: 320,
+            height: 400,
             /*anchored: true,
             unpinnable : true,*/
             items: items,
@@ -619,11 +658,13 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 	    	 item = this.useTabPanel ? {
 	            title: title,     
 	            layout: "accordion",
+                ref: title,  // use the title of the layer to reference the info panel
 	            items: this.obtainFeatureInfoFromData(text, features, title),
 	            autoScroll: true
 	        } : {
 	            title: title,           
 	            layout: "accordion",  
+                ref: title,
 	            items: this.obtainFeatureInfoFromData(text, features, title),
 	            autoScroll: true,
 	            autoWidth: true,
@@ -631,12 +672,12 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 	        };
 	    }else{
 	    	item = this.useTabPanel ? {
-				title: title,										
+				title: title,
 				html: text,
 				autoScroll: true
 			} : {
-	            title: title,			
-	            layout: "fit",			
+	            title: title,
+	            layout: "fit",
 	            html: text,
 	            autoScroll: true,
 	            autoWidth: true,
@@ -785,6 +826,10 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                     childTitle = String.format(this.defaultGroupTitleText, parentTitle, index++)
                 }
                 featureGrids.push(this.obtainFeatureGrid(feature, childTitle));
+                
+                // Request all the linked surveys via WFS and display them
+                this.getWFSSchema(this.createWFSFeatureStore, this, feature, featureGrids, parentTitle);
+
             }, this);
         }else {
             featureGrids.push(this.obtainFromText(text));
@@ -795,8 +840,8 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
     
     /**
      * private method[createGridPhotoBrowser]
-     * Create e DataView that loads surveys photos
-     * return Ext.DataView();
+     * Create e GridBrowser that loads surveys photos
+     * return Ext.ux.GridBrowser();
      */
     createGridPhotoBrowser:function(feature){
 
@@ -1044,9 +1089,177 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 			this.activeControl.deactivate();
 			this.activeControl.destroy();
 		}
-	}
-	
+	},
     
+    /**
+     * Issue a WFS DescribeFeatureType to fetch feature schema
+     */
+    getWFSSchema : function (callback, scope, feature, featureGrids, parentTitle) {
+
+        var authObj = {};
+        authObj[this.authParam] = this.authKey;
+        
+        var schema = new GeoExt.data.AttributeStore({
+                url : this.wfsURL,
+                baseParams : Ext.apply({
+                    SERVICE : "WFS",
+                    VERSION : "1.1.0",
+                    REQUEST : "DescribeFeatureType",
+                    TYPENAME : this.surveyTypeName,
+                }, this.baseParams || authObj),
+                autoLoad : true,
+                listeners : {
+                    "load" : function () {
+                        callback.call(scope, schema, feature, featureGrids, parentTitle);
+                    },
+                    scope : this
+                }
+            });
+    },
+    
+    /**
+     * Loads features with WFS
+     */
+    createWFSFeatureStore : function (schema, feature, featureGrids, parentTitle) {
+
+        this.schema = schema;
+        var fields = [],
+        geometryName;
+        var geomRegex = /gml:((Multi)?(Point|Line|Polygon|Curve|Surface|Geometry)).*/;
+        var types = {
+            "xsd:boolean" : "boolean",
+            "xsd:int" : "int",
+            "xsd:integer" : "int",
+            "xsd:short" : "int",
+            "xsd:long" : "int",
+            "xsd:date" : "date",
+            "xsd:string" : "string",
+            "xsd:float" : "float",
+            "xsd:decimal" : "float"
+        };
+        schema.each(function (r) {
+            var match = geomRegex.exec(r.get("type"));
+            if (match) {
+                geometryName = r.get("name");
+                this.geometryType = match[1];
+            } else {
+                var type = types[r.get("type")];
+                var field = {
+                    name : r.get("name"),
+                    type : type
+                };
+                if (type == "date") {
+                    field.dateFormat = "Y-m-d\\Z";
+                }
+                fields.push(field);
+            }
+        }, this);
+
+        var protocolOptions = Ext.apply({
+                srsName : this.target.mapPanel.map.getProjection(),
+                url : (this.authKey && this.authParam) ? schema.url + "?" + this.authParam + "=" + this.authKey : schema.url,
+                featureType : schema.reader.raw.featureTypes[0].typeName,
+                featureNS : schema.reader.raw.targetNamespace,
+                geometryName : geometryName
+            }, this.baseParams || {});
+
+            
+        var filter = new OpenLayers.Filter.Comparison({
+            type : OpenLayers.Filter.Comparison.EQUAL_TO,
+            property : this.queriableAttribute,
+            value : feature.attributes[this.linkingAttribute]
+        });
+        
+        this.hitCountProtocol = new OpenLayers.Protocol.WFS(Ext.apply({
+                    version : "1.1.0",
+                    readOptions : {
+                        output : "object"
+                    },
+                    resultType : "hits",
+                    filter : filter
+                }, protocolOptions));
+
+        var featureStore = new gxp.data.WFSFeatureStore(Ext.apply({
+                    fields : fields,
+                    proxy : {
+                        protocol : {
+                            outputFormat : 'JSON'
+                        }
+                    },
+                    //maxFeatures : this.maxFeatures,
+                    //layer : this.featureLayer,
+                    ogcFilter : filter,
+                    autoLoad : true,
+                    sortBy : this.sortBy,
+                    autoSave : false,
+                    listeners : {
+                        "load" : function (store, arg2, arg3) {
+                            var storeSize = store.getCount();
+                            if( storeSize > 0){
+                                var grids_reference;
+                                for(var key in this.popupCache) {
+                                    if(this.popupCache.hasOwnProperty(key)) {
+                                        if(this.popupCache[key]
+                                        && this.popupCache[key].items
+                                        && this.popupCache[key].items.get(0)
+                                        && this.popupCache[key].items.get(0)[parentTitle]){
+                                            grids_reference = this.popupCache[key].items.get(0)[parentTitle];
+                                        }else{
+                                            return;
+                                        }
+                                    }
+                                }
+                                
+                                for(i = 0; i < storeSize; i++){
+                                    var storeObj = store.getAt(i);
+                                    if(storeObj.data && storeObj.data.feature){
+                                        var childTitle = i;
+                                        if(this.customGroupTitleText){
+                                            childTitle = this.customGroupTitleText(storeObj.data.feature, this.surveyTypeName, i);
+                                        }else{
+                                            childTitle = String.format(this.defaultGroupTitleText, this.surveyTypeName, i)
+                                        }
+                                        grids_reference.add(this.obtainFeatureGrid(storeObj.data.feature, childTitle));
+                                    }
+                                }
+                                grids_reference.doLayout();
+                            }
+                        },
+                        scope : this
+                    }
+                }, protocolOptions));
+
+        return featureStore;
+
+    },
+	
+    /**
+	* Get the user's corrensponding authkey if present 
+	* (see MSMLogin.getLoginInformation for more details)
+	*/
+	getAuthParam: function(){
+		var userInfo = this.target.userDetails;
+		var authkey;
+		
+		if(userInfo.user.attribute instanceof Array){
+			for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
+				if( userInfo.user.attribute[i].name == "UUID" ){
+					authkey = userInfo.user.attribute[i].value;
+				}
+			}
+		}else{
+			if(userInfo.user.attribute && userInfo.user.attribute.name == "UUID"){
+			   authkey = userInfo.user.attribute.value;
+			}
+		}
+
+		if(authkey){
+			var authParam = userInfo.user.authParam;
+			this.authParam = authParam ? authParam : this.authParam;
+		}
+		
+		return authkey;
+	}
 });
 
 Ext.preg(gxp.plugins.WMSGetFeatureInfoMenu.prototype.ptype, gxp.plugins.WMSGetFeatureInfoMenu);
