@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2009-2010 The Open Planning Project
+ * Copyright (c) 2014-2016 GeoSolutions S.A.S.
  */
 /*
 	NOTE: configuration customization could override
@@ -101,20 +101,19 @@ GeoExt.Lang.add("it", {
         validateMsgInvalid:"Template Sopralluoghi Non Valido",
         validateMsgTitle:"Valido?",
         destLabel : 'Campi Sopralluogo'
-
-     },
-     "mxp.widgets.GcFormSegResourceEditor.prototype":{
+    },
+    "mxp.widgets.GcFormSegResourceEditor.prototype":{
         destLabel:'Campi Segnalazione'
-     },
-      "mxp.widgets.GcConfigPanel.prototype":{
+    },
+    "mxp.widgets.GcConfigPanel.prototype":{
         title : "Configurazioni Aggiuntive",
         checkMissionBtn:"Valida",
         checkMissionBtnTooltip:"Valida Configurazioni",
         validateMsgValid:"Configurazioni Valide",
         validateMsgInvalid:"Configurazioni Non Valide",
         validateMsgTitle:"Valida?"
-     },
-     "mxp.widgets.GcDbResourceEditor.prototype":{
+    },
+    "mxp.widgets.GcDbResourceEditor.prototype":{
         title:'Sorgente Dati',
         selectDbLabel:'Schema ',
         noticeTitle:"Segnalazioni",
@@ -123,8 +122,8 @@ GeoExt.Lang.add("it", {
         sColType:"Tipo",
         serverError:"Risposta Server Non Valida.",
         errorLayer:"Impossibile Creare Sorgenti"
-     },
-     "mxp.widgets.XtypeTextField.prototype":{
+    },
+    "mxp.widgets.XtypeTextField.prototype":{
         idFieldLabel:"Campo",
         labFieldLabel:"Label",
         valueFieldLabel:"Valore",
@@ -152,7 +151,7 @@ GeoExt.Lang.add("it", {
     "mxp.widgets.XtypePhoto.prototype":{
         labFieldLabel:"Messaggio Action"
     },
-   "mxp.widgets.XtypeMap.prototype":{
+    "mxp.widgets.XtypeMap.prototype":{
         descrFieldLabel:"Descrizione",
         editableFieldLabel:"Editabile",
         panFieldLabel:"Abilita Pan",
@@ -272,7 +271,7 @@ GeoExt.Lang.add("it", {
         buttonText: "Gestione Missioni",
         tooltipText: "Apri Gestore Missioni"
     },
-     "mxp.widgets.GcExportLayers.prototype":{
+    "mxp.widgets.GcExportLayers.prototype":{
         exportFormatsLabel:"Formato Export",
         exportBtnTooltip:"Scarica Layers",
         invalidParameterValueErrorText:"Errore Export!"

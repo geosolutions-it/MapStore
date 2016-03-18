@@ -1041,24 +1041,25 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                                 this.closePopups();
                         }
                     }, {
-					ref:'../switch',
-					//hidden:true,
-					iconCls: 'gxp-icon-printsnapshot',
-					text: this.imagesText,
-					handler: function(btn){
-						var layout = btn.refOwner.getLayout();
-						btn.refOwner.activeItemIndex = btn.refOwner.activeItemIndex == 0 ? 1 :0;
-						layout.setActiveItem(btn.refOwner.activeItemIndex);
-						btn.setText(btn.refOwner.activeItemIndex == 0 ? this.imagesText : this.attributesText);
-						btn.setIconClass(btn.refOwner.activeItemIndex == 0 ? 'gxp-icon-printsnapshot' : 'gxp-icon-csvexport-single') ;
+                    ref:'../switch',
+                    //hidden:true,
+                    iconCls: 'gxp-icon-printsnapshot',
+                    text: this.imagesText,
+                    handler: function(btn){
+                        var layout = btn.refOwner.getLayout();
+                        btn.refOwner.activeItemIndex = btn.refOwner.activeItemIndex == 0 ? 1 :0;
+                        layout.setActiveItem(btn.refOwner.activeItemIndex);
+                        btn.setText(btn.refOwner.activeItemIndex == 0 ? this.imagesText : this.attributesText);
+                        btn.setIconClass(btn.refOwner.activeItemIndex == 0 ? 'gxp-icon-printsnapshot' : 'gxp-icon-csvexport-single') ;
                         if(btn.refOwner.activeItemIndex == 0 ){
                             btn.refOwner.galleryBtn.hide()
                         } else{
                             btn.refOwner.galleryBtn.show()
                             btn.refOwner.galleryBtn.toggle(false, true);
                         }
-					}
-				}],
+                    },
+                    scope: this
+                }],
 				title: title,
 				items: [featureGridConfig,view, gallery]
 			};
