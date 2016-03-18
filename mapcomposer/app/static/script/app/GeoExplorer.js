@@ -468,6 +468,14 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
         this.appMask = new Ext.LoadMask(Ext.getBody(), {msg: this.mainLoadingMask});
 		this.appMask.show();
 
+        if(this.customComposerWest && this.customComposerWest.plugins){
+            var plugins = [];
+            for (var j = 0; j < this.customComposerWest.plugins.length; j++) {
+                plugins[j] = eval(this.customComposerWest.plugins[j]);
+            }
+            this.customComposerWest.plugins = plugins;
+        }
+        
         var westPanel = new Ext.TabPanel(Ext.applyIf(this.customComposerWest || {}, {
             border: false,
             activeTab:0,
@@ -632,6 +640,13 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 			var toPortal = [];
 			var pans = this.customPanels;
 			for (var i = 0; i < pans.length; i++){
+                if (pans[i].plugins) {
+                    var plugins = [];
+                    for (var j = 0; j < pans[i].plugins.length; j++) {
+                        plugins[j] = eval(pans[i].plugins[j]);
+                    }
+                    pans[i].plugins = plugins;
+                }
 				if(pans[i].target){
 					additionalPanels.push(pans[i]);					
 				}else{
