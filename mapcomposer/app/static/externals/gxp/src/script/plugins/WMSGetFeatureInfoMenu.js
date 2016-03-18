@@ -215,7 +215,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
           if(!feature || !feature.data || !feature.data.gc_created){
               return String.format(this.defaultGroupTitleText, parentTitle, index++);
           }
-          return Ext.util.Format.date(feature.data.gc_created, 'Y-m-d G:i');;
+          return Ext.util.Format.date(feature.data.gc_created.replace(/Z/g, "+0100"), 'Y-m-d G:i');
         };
         
 		var items = [new Ext.menu.CheckItem({
