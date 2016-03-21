@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014 - 2015 GeoSolutions S.A.S.
+ *  Copyright (C) 2014 - 2016 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -26,7 +26,7 @@ Ext.ns("mxp.widgets");
  * These services can be provided by OpenSDI Manager 2
  */
 mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
-	 /** api: xtype = mxp_geostore_category_manger */
+    /** api: xtype = json_entity_rest_manager */
     xtype: "json_entity_rest_manager",
     loginManager: null,    
     setActiveOnOutput: true,
@@ -81,7 +81,8 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
      */
     defaultPageSize: 50,
 
-	initComponent: function() {
+    initComponent: function() {
+
         var entityButtons = this.createEntityButtons();
         var leftPanel = {
             region:'west',
@@ -121,11 +122,10 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
             items: this.createEntityEditors()
         });
         
-        this.items=[leftPanel,this.editorContainer]
-
-		
-		mxp.widgets.JSONEntityRESTManager.superclass.initComponent.call(this, arguments);
-	},
+        this.items=[leftPanel,this.editorContainer];
+        
+        mxp.widgets.JSONEntityRESTManager.superclass.initComponent.call(this, arguments);
+    },
    
     /**
      * private method[loadEditor] Open a resource in the editor from its button
@@ -189,10 +189,8 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                     restful: entity.restful,
                     listeners:{
                         beforeload: function(store,opt){
-                          
                         },
                         load:function(store,records,opts){
-                        
                         }
                     }
             };
@@ -210,6 +208,14 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
             }
             
             var store = new Ext.data.Store(storeConfig);
+            
+            if(this.auth && store.proxy && store.proxy.conn){
+                if(store.proxy.conn.headers){
+                    store.proxy.conn.headers['Authorization'] = this.auth;
+                }else{
+                    store.proxy.conn.headers = { Authorization: this.auth };
+                }
+            }
             
             var searchComponent = new MapStore.ux.SearchField({
                 store: store,
