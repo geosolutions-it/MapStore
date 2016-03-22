@@ -116,6 +116,10 @@
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/colorpicker/css">
             <fileset dir="mapcomposer/app/static/externals/colorpicker/css"/>
         </copy>
+        <!-- copy hightcharts css -->
+        <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/highcharts">
+            <fileset dir="mapcomposer/app/static/externals/highcharts"/>
+        </copy>
 
         <!-- MAP MANAGER -->
 		
