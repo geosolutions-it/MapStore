@@ -377,9 +377,12 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		
 		// bar charts
 		var barChartTab = new Ext.Panel({
+			border : false,
+			disabled : false,
+			autoScroll : true,
 			tbar: addLayersBar,
 			title : barChartTitle,
-			items: []
+			items: []		
 		});
 		
 		if(data.index.id !== 8){
@@ -680,6 +683,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			title : title,
 			loadMask:true,
 			animation : true,
+			height: 600,
 			chartConfig : {
 		        chart: {
 		        	//zoomType: 'xy',
@@ -689,7 +693,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		                enabled: true,
 		                alpha: 10,
 		                beta: 30,
-		                depth: 250,
+		                depth: 600,
 		                viewDistance: 5,
 		                fitToPlot: false,
 		                frame: {
