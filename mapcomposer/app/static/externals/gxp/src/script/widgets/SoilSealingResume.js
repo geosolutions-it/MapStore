@@ -813,7 +813,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		        zAxis: { // Secondary yAxis
 		            min: 0,
 		            max: 1000,
-		            gridLineWidth: 0,
+		            gridLineWidth: 1,
 		            tickInterval: 100,
 		            title: {
 		                text: 'EDClass',
@@ -821,7 +821,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		                    color: Highcharts.getOptions().colors[0]
 		                }
 		            },
-		            opposite: true
+		            opposite: false
 		        },
 		        yAxis: { // Primary yAxis
 		        	min: 0,
