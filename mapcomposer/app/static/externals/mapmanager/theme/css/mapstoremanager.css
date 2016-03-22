@@ -145,6 +145,10 @@ display:block;
     background-image: url(../img/mobile.png) !important;
 }
 
+.ic_loading {
+    background-image: url(../img/loading.gif) !important;
+}
+
 .ic_qrcode {
     background-image: url(../img/qrcode.png) !important;
 }
