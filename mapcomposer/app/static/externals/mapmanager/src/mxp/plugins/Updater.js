@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2016 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -39,7 +39,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
     ptype: "mxp_updater",
 
     buttonText: "Updater",
-	uploadFilesText:'Upload Files',
+    uploadFilesText:'Upload Files',
 
     loginManager: null,    
     setActiveOnOutput: true,
@@ -55,24 +55,30 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
     showActionButton: true,
     
     /**
-	 * Property: flowId
-	 * {string} the GeoBatch flow name to manage
-	 */	
+     * Property: flowId
+     * {string} the GeoBatch flow name to manage
+     */
     flowId: 'ds2ds_zip2pg',
     
     /**
-	 * Property: autoRefreshState
-	 * {boolean} should the GeoBatch state be automatically refreshed?
-	 */	
+     * Property: autoRefreshState
+     * {boolean} should the GeoBatch state be automatically refreshed?
+     */
     autoRefreshState: false,
     
     /**
-	 * Property: restrictToGroups
+     * Property: restrictToGroups
      * Array of groups enabled to see this tool, or false for "everyone"
-	 */	
+     */
     restrictToGroups: false,  
 
     filters: [],
+    
+    /**
+     * Property: canArchive
+     * {boolean} can the runs be archived? Default true.
+     */
+    canArchive: true,
     
     /** api: method[addActions]
      */
@@ -136,8 +142,8 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
         var pluploadPanel = {
             xtype:'pluploadpanel',
             region:'west',
-			iconCls:'inbox-upload_ic',
-			title:this.uploadFilesText,
+            iconCls:'inbox-upload_ic',
+            title:this.uploadFilesText,
             autoScroll:true,
             width:400,
             ref:'uploader',
@@ -145,7 +151,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
             url: uploadUrl,
             multipart: true,
             auth: this.auth,
-			mediaContent: this.target.initialConfig.mediaContent,
+            mediaContent: this.target.initialConfig.mediaContent,
             filters: this.filters,
             listeners:{
                 beforestart:function() {
@@ -163,9 +169,42 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
                 }
             }
         }
-        Ext.apply(this.outputConfig,{   
+        
+        var gridTabContent = {
+                    xtype:'mxp_geobatch_consumer_grid',
+                    geoBatchRestURL: this.geoBatchRestURL,
+                    geoStoreRestURL: this.geoStoreRestURL,
+                    GWCRestURL: this.GWCRestURL,
+                    canArchive: this.canArchive,
+                    title: this.canArchive ? 'Active' : null,
+                    layout:'fit',
+                    autoScroll:true,
+                    flowId: this.flowId,
+                    auth: this.auth,
+                    autoWidth:true,
+                    region:'center',
+                    ref:'../grid',
+                    autoRefreshState : this.autoRefreshState
+                };
+                
+        var archiveTabContent = {
+                xtype:'mxp_geobatch_consumer_grid',
+                geoStoreRestURL: this.geoStoreRestURL,
+                title: 'Archived',
+                layout:'fit',
+                autoScroll:true,
+                flowId: this.flowId,
+                auth: this.auth,
+                autoWidth:true,
+                mode: 'archived',
+                hideMode:'offsets',
+                disabled: false,
+                ref:'../archived'
+            };
+        
+        var updaterConfiguration = {   
             layout: 'border',
-			itemId:'Updater',
+            itemId:'Updater',
             xtype:'panel',
             closable: this.closable,
             closeAction: 'close',
@@ -178,18 +217,16 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
             title: this.buttonText,
             items:[
                 {
-                    xtype:'mxp_geobatch_consumer_grid',
-                    geoBatchRestURL: this.geoBatchRestURL,
-                    GWCRestURL: this.GWCRestURL,
-                    layout:'fit',
-                    autoScroll:true,
-                    flowId: this.flowId,
-                    auth: this.auth,
-                    autoWidth:true,
+                    xtype: this.canArchive ? 'tabpanel' : 'panel',
                     region:'center',
-                    ref:'grid',
-                    autoRefreshState : this.autoRefreshState
-                },  
+                    ref:'tabs',
+                    activeItem:0,
+                    items:this.canArchive ? [
+                        gridTabContent,
+                        archiveTabContent
+                    ] : gridTabContent
+                }
+                ,  
                 pluploadPanel
             ],
             listeners:{
@@ -197,8 +234,10 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
                     this.grid.fireEvent('activate');
                 }
             }
-        });
-		// In user information the output is generated in the component and we can't check the item.initialConfig.
+        };
+        
+        Ext.apply(this.outputConfig, updaterConfiguration);
+        // In user information the output is generated in the component and we can't check the item.initialConfig.
         if(this.output.length > 0
             && this.outputTarget){
             for(var i = 0; i < this.output.length; i++){

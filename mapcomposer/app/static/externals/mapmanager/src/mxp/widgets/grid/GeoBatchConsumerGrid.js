@@ -85,12 +85,18 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
      * that allows to manage GWC layers to clean tile cache will be present
 	 */
     GWCRestURL: null,
-	
-	/**
-	 * Property: showDetails
-	 * {boolean} include a row body with run details for each run
-	 */
+
+    /**
+     * Property: showDetails
+     * {boolean} include a row body with run details for each run
+     */
     showDetails: false,
+    
+    /**
+     * Property: canArchive
+     * {boolean} can the runs be archived? Default true.
+     */
+    canArchive: true,
     
     autoExpandColumn: 'task',
     
@@ -217,7 +223,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
                 iconCls:'archive_ic',
                 xtype:'button',
 				ref:'../archive',
-				hidden: this.mode === 'archived',
+				hidden: this.mode === 'archived' || !this.canArchive,
                 text:this.archiveText,
 				disabled:true,
                 scope:this,
