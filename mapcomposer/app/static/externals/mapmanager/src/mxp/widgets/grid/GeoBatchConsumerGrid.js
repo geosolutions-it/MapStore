@@ -607,19 +607,23 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 		);
 	},
 	
-	/**
+    /**
      *    private: method[autoRefresh] refresh the grid, and if autoRefresh is active, schedule next refresh
      *      
      */
     autoRefresh: function() {
-		if(this.autoRefreshState) {
-			this.store.on('load', function() {
-				this.autoRefresh.createDelegate(this).defer(this.autoRefreshInterval * 1000);
-			}, this, {single: true});
-		}
-		this.store.load();
-	},
-	
+        if(!this.store){
+            return;
+        }
+        
+        if(this.autoRefreshState) {
+            this.store.on('load', function() {
+                this.autoRefresh.createDelegate(this).defer(this.autoRefreshInterval * 1000);
+            }, this, {single: true});
+        }
+        this.store.load();
+    },
+
     /**
      *    private: method[confirmCleanRow] show the confirm message to remove a consumer
      *      * grid : the grid
