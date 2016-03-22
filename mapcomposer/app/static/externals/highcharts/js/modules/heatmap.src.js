@@ -1,7 +1,7 @@
 /**
- * @license Highcharts JS v4.2.3 (2016-02-08)
+ * @license Highcharts JS v4.1.10 (2015-12-07)
  *
- * (c) 2011-2016 Torstein Honsi
+ * (c) 2011-2014 Torstein Honsi
  *
  * License: www.highcharts.com/license
  */
@@ -488,9 +488,9 @@
      * Handle animation of the color attributes directly
      */
     each(['fill', 'stroke'], function (prop) {
-        Highcharts.Fx.prototype[prop + 'Setter'] = function () {
-            this.elem.attr(prop, ColorAxis.prototype.tweenColors(Color(this.start), Color(this.end), this.pos));
-        };
+        Highcharts.addAnimSetter(prop, function (fx) {
+            fx.elem.attr(prop, ColorAxis.prototype.tweenColors(Color(fx.start), Color(fx.end), fx.pos));
+        });
     });
 
     /**

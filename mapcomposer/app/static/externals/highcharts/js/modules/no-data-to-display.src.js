@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v3.0.10 (2014-03-10)
+ * @license Highcharts JS v4.1.10 (2015-12-07)
  * Plugin for displaying a message when there is no data visible in chart.
  *
  * (c) 2010-2014 Highsoft AS
@@ -8,12 +8,19 @@
  * License: www.highcharts.com/license
  */
 
-(function (H) { // docs
+(function (factory) {
+	if (typeof module === 'object' && module.exports) {
+		module.exports = factory;
+	} else {
+		factory(Highcharts);
+	}
+}(function (H) {
 	
 	var seriesTypes = H.seriesTypes,
 		chartPrototype = H.Chart.prototype,
 		defaultOptions = H.getOptions(),
-		extend = H.extend;
+		extend = H.extend,
+		each = H.each;
 
 	// Add language option
 	extend(defaultOptions.lang, {
@@ -35,6 +42,7 @@
 			fontSize: '12px',
 			color: '#60606a'		
 		}
+		// useHTML: false
 	};
 
 	/**
@@ -44,20 +52,14 @@
 		return !!this.points.length; /* != 0 */
 	}
 
-	if (seriesTypes.pie) {
-		seriesTypes.pie.prototype.hasData = hasDataPie;
-	}
-
-	if (seriesTypes.gauge) {
-		seriesTypes.gauge.prototype.hasData = hasDataPie;
-	}
-
-	if (seriesTypes.waterfall) {
-		seriesTypes.waterfall.prototype.hasData = hasDataPie;
-	}
+	each(['pie', 'gauge', 'waterfall', 'bubble'], function (type) {
+		if (seriesTypes[type]) {
+			seriesTypes[type].prototype.hasData = hasDataPie;
+		}
+	});
 
 	H.Series.prototype.hasData = function () {
-		return this.dataMax !== undefined && this.dataMin !== undefined;
+		return this.visible && this.dataMax !== undefined && this.dataMin !== undefined; // #3703
 	};
 	
 	/**
@@ -72,7 +74,18 @@
 			noDataOptions = options.noData;
 
 		if (!chart.noDataLabel) {
-			chart.noDataLabel = chart.renderer.label(text, 0, 0, null, null, null, null, null, 'no-data')
+			chart.noDataLabel = chart.renderer
+				.label(
+					text, 
+					0, 
+					0, 
+					null, 
+					null, 
+					null, 
+					noDataOptions.useHTML, 
+					null, 
+					'no-data'
+				)
 				.attr(noDataOptions.attr)
 				.css(noDataOptions.style)
 				.add();
@@ -127,4 +140,4 @@
 		H.addEvent(chart, 'redraw', handleNoData);
 	});
 
-}(Highcharts));
+}));

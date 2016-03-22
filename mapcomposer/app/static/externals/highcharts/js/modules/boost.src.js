@@ -54,9 +54,7 @@
 
     'use strict';
 
-    var win = H.win,
-        doc = win.document,
-        noop = function () {},
+    var noop = function () {},
         Color = H.Color,
         Series = H.Series,
         seriesTypes = H.seriesTypes,
@@ -68,28 +66,18 @@
         pick = H.pick,
         wrap = H.wrap,
         plotOptions = H.getOptions().plotOptions,
-        CHUNK_SIZE = 50000,
-        destroyLoadingDiv;
+        CHUNK_SIZE = 50000;
 
     function eachAsync(arr, fn, finalFunc, chunkSize, i) {
         i = i || 0;
         chunkSize = chunkSize || CHUNK_SIZE;
-        
-        var threshold = i + chunkSize,
-            proceed = true;
-
-        while (proceed && i < threshold && i < arr.length) {
-            proceed = fn(arr[i], i);
-            i = i + 1;
-        }
-        if (proceed) {
-            if (i < arr.length) {
-                setTimeout(function () {
-                    eachAsync(arr, fn, finalFunc, chunkSize, i);
-                });
-            } else if (finalFunc) {
-                finalFunc();
-            }
+        each(arr.slice(i, i + chunkSize), fn);
+        if (i + chunkSize < arr.length) {
+            setTimeout(function () {
+                eachAsync(arr, fn, finalFunc, chunkSize, i + chunkSize);
+            });
+        } else if (finalFunc) {
+            finalFunc();
         }
     }
 
@@ -210,7 +198,7 @@
                 };
 
             if (!this.canvas) {
-                this.canvas = doc.createElement('canvas');
+                this.canvas = document.createElement('canvas');
                 this.image = chart.renderer.image('', 0, 0, width, height).add(this.group);
                 this.ctx = ctx = this.canvas.getContext('2d');
                 if (chart.inverted) {
@@ -250,6 +238,7 @@
                 xAxis = this.xAxis,
                 yAxis = this.yAxis,
                 ctx,
+                i,
                 c = 0,
                 xData = series.processedXData,
                 yData = series.processedYData,
@@ -391,106 +380,112 @@
                         opacity: 1
                     }
                 });
-                clearTimeout(destroyLoadingDiv);
                 chart.showLoading('Drawing...');
                 chart.options.loading = loadingOptions; // reset
+                if (chart.loadingShown === true) {
+                    chart.loadingShown = 1;
+                } else {
+                    chart.loadingShown = chart.loadingShown + 1;
+                }
             }
 
             // Loop over the points
-            eachAsync(isStacked ? series.data : (xData || rawData), function (d, i) {
+            i = 0;
+            eachAsync(isStacked ? series.data : (xData || rawData), function (d) {
+
                 var x,
                     y,
                     clientX,
                     plotY,
                     isNull,
                     low,
-                    chartDestroyed = typeof chart.index === 'undefined',
                     isYInside = true;
 
-                if (!chartDestroyed) {
-                    if (useRaw) {
-                        x = d[0];
-                        y = d[1];
-                    } else {
-                        x = d;
-                        y = yData[i];
-                    }
-
-                    // Resolve low and high for range series
-                    if (isRange) {
-                        if (useRaw) {
-                            y = d.slice(1, 3);
-                        }
-                        low = y[0];
-                        y = y[1];
-                    } else if (isStacked) {
-                        x = d.x;
-                        y = d.stackY;
-                        low = y - d.y;
-                    }
-
-                    isNull = y === null;
-
-                    // Optimize for scatter zooming
-                    if (!requireSorting) {
-                        isYInside = y >= yMin && y <= yMax;
-                    }
-
-                    if (!isNull && x >= xMin && x <= xMax && isYInside) {
-
-                        clientX = Math.round(xAxis.toPixels(x, true));
-
-                        if (sampling) {
-                            if (minI === undefined || clientX === lastClientX) {
-                                if (!isRange) {
-                                    low = y;
-                                }
-                                if (maxI === undefined || y > maxVal) {
-                                    maxVal = y;
-                                    maxI = i;
-                                }
-                                if (minI === undefined || low < minVal) {
-                                    minVal = low;
-                                    minI = i;
-                                }
-
-                            }
-                            if (clientX !== lastClientX) { // Add points and reset
-                                if (minI !== undefined) { // then maxI is also a number
-                                    plotY = yAxis.toPixels(maxVal, true);
-                                    yBottom = yAxis.toPixels(minVal, true);
-                                    drawPoint(
-                                        clientX,
-                                        hasThreshold ? Math.min(plotY, translatedThreshold) : plotY,
-                                        hasThreshold ? Math.max(yBottom, translatedThreshold) : yBottom
-                                    );
-                                    addKDPoint(clientX, plotY, maxI);
-                                    if (yBottom !== plotY) {
-                                        addKDPoint(clientX, yBottom, minI);
-                                    }
-                                }
-
-
-                                minI = maxI = undefined;
-                                lastClientX = clientX;
-                            }
-                        } else {
-                            plotY = Math.round(yAxis.toPixels(y, true));
-                            drawPoint(clientX, plotY, yBottom);
-                            addKDPoint(clientX, plotY, i);
-                        }
-                    }
-                    wasNull = isNull && !connectNulls;
-
-                    if (i % CHUNK_SIZE === 0) {
-                        series.canvasToSVG();
-                    }
+                if (useRaw) {
+                    x = d[0];
+                    y = d[1];
+                } else {
+                    x = d;
+                    y = yData[i];
                 }
 
-                return !chartDestroyed;
+                // Resolve low and high for range series
+                if (isRange) {
+                    if (useRaw) {
+                        y = d.slice(1, 3);
+                    }
+                    low = y[0];
+                    y = y[1];
+                } else if (isStacked) {
+                    x = d.x;
+                    y = d.stackY;
+                    low = y - d.y;
+                }
+
+                isNull = y === null;
+
+                // Optimize for scatter zooming
+                if (!requireSorting) {
+                    isYInside = y >= yMin && y <= yMax;
+                }
+
+                if (!isNull && x >= xMin && x <= xMax && isYInside) {
+
+                    clientX = Math.round(xAxis.toPixels(x, true));
+
+                    if (sampling) {
+                        if (minI === undefined || clientX === lastClientX) {
+                            if (!isRange) {
+                                low = y;
+                            }
+                            if (maxI === undefined || y > maxVal) {
+                                maxVal = y;
+                                maxI = i;
+                            }
+                            if (minI === undefined || low < minVal) {
+                                minVal = low;
+                                minI = i;
+                            }
+
+                        }
+                        if (clientX !== lastClientX) { // Add points and reset
+                            if (minI !== undefined) { // then maxI is also a number
+                                plotY = yAxis.toPixels(maxVal, true);
+                                yBottom = yAxis.toPixels(minVal, true);
+                                drawPoint(
+                                    clientX,
+                                    hasThreshold ? Math.min(plotY, translatedThreshold) : plotY,
+                                    hasThreshold ? Math.max(yBottom, translatedThreshold) : yBottom
+                                );
+                                addKDPoint(clientX, plotY, maxI);
+                                if (yBottom !== plotY) {
+                                    addKDPoint(clientX, yBottom, minI);
+                                }
+                            }
+
+
+                            minI = maxI = undefined;
+                            lastClientX = clientX;
+                        }
+                    } else {
+                        plotY = Math.round(yAxis.toPixels(y, true));
+                        drawPoint(clientX, plotY, yBottom);
+                        addKDPoint(clientX, plotY, i);
+                    }
+                }
+                wasNull = isNull && !connectNulls;
+
+                i = i + 1;
+
+                if (i % CHUNK_SIZE === 0) {
+                    series.canvasToSVG();
+                }
+
             }, function () {
+
                 var loadingDiv = chart.loadingDiv,
-                    loadingShown = chart.loadingShown;
+                    loadingShown = +chart.loadingShown;
+
                 stroke();
                 series.canvasToSVG();
 
@@ -499,18 +494,22 @@
                 // Do not use chart.hideLoading, as it runs JS animation and will be blocked by buildKDTree.
                 // CSS animation looks good, but then it must be deleted in timeout. If we add the module to core,
                 // change hideLoading so we can skip this block.
-                if (loadingShown) {
+                if (loadingShown === 1) {
                     extend(loadingDiv.style, {
                         transition: 'opacity 250ms',
                         opacity: 0
                     });
+
                     chart.loadingShown = false;
-                    destroyLoadingDiv = setTimeout(function () {
+                    setTimeout(function () {
                         if (loadingDiv.parentNode) { // In exporting it is falsy
                             loadingDiv.parentNode.removeChild(loadingDiv);
                         }
                         chart.loadingDiv = chart.loadingSpan = null;
                     }, 250);
+                }
+                if (loadingShown) {
+                    chart.loadingShown = loadingShown - 1;
                 }
 
                 // Pass tests in Pointer. 
@@ -572,10 +571,8 @@
 
         if (boostPoint && !(boostPoint instanceof this.pointClass)) {
             point = (new this.pointClass()).init(this, this.options.data[boostPoint.i]);
-            point.category = point.x;
-
             point.dist = boostPoint.dist;
-            point.distX = boostPoint.distX;
+            point.category = point.x;
             point.plotX = boostPoint.plotX;
             point.plotY = boostPoint.plotY;
         }
