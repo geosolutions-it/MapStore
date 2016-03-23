@@ -235,7 +235,7 @@ gxp.plugins.GetFeatureInfoMenu = Ext.extend(gxp.plugins.WMSGetFeatureInfoMenu, {
                                 // Issue #422
                                 startLatLon = this.target.mapPanel.map.getLonLatFromPixel(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
                                 atLeastOneResponse=false;
-                                layersToQuery=queryableLayers.length;
+                                layersToQuery=queryableLayers.length - queryableJSONLayers.length;
                                 panIn=false;//Issue #623
                              }
 
@@ -357,7 +357,7 @@ gxp.plugins.GetFeatureInfoMenu = Ext.extend(gxp.plugins.WMSGetFeatureInfoMenu, {
                                     // Issue #422
                                     startLatLon = pos;
                                     atLeastOneResponse=false;
-                                    layersToQuery=queryableLayers.length - queryableJSONLayers.length;;
+                                    layersToQuery=queryableLayers.length - queryableJSONLayers.length;
                                     panIn=false;//Issue #623
                                 }
                                 var features = [];
