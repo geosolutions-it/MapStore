@@ -58,6 +58,14 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 
     invalidStateText: "Invalid state",
 
+    crossQueryByAttributesText: "Filter using a layer",
+
+    crossQueryEmptyLayerText: "select a layer",
+
+    crossQuerySelectionText: "selection",
+
+    crossQueryLayerText: "Layer",
+
     /** api: config[spatialSelectorsConfig]
      * ``Object``
      * Spatial selector pluggins configurations.
@@ -242,6 +250,11 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             }
 
             if(invalidItems == 0){
+
+                if (!this.queryForm.crossRequestComponentsFieldset.collapsed) {
+                    filters.push(this.getCrossLayerFilter());
+                }
+
                 return {
                     filters: filters,
                     pluginFilter: pluginFilter,
@@ -411,6 +424,80 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             scope: this
         });
 
+        var me = this;
+
+        var updateCrossLayersStore = function() {
+            var data = [];
+            for (var i = 0; i < me.target.mapPanel.layers.data.items.length; i++) {
+                var layer = me.target.mapPanel.layers.data.items[i];
+                if (layer.data.name && layer.data.queryable) {
+                    var layerName = layer.data.name;
+                    var layerTitle = layer.data.title || layerName;
+                    data.push([layerName]);
+                }
+            }
+            me.crossLayersStore.removeAll();
+            me.crossLayersStore.loadData(data);
+        };
+
+        this.crossLayersStore = new Ext.data.SimpleStore({
+            fields: [{name: 'name'}]
+        });
+
+        this.target.mapPanel.layers.on( 'add', updateCrossLayersStore); 
+        this.target.mapPanel.layers.on( 'remove', updateCrossLayersStore); 
+
+        this.crossRequestLayerCombo = new Ext.form.ComboBox({
+            xtype : 'combo',
+            fieldLabel : this.crossQuerySelectionText,
+            typeAhead : true,
+            triggerAction : 'all',
+            lazyRender : false,
+            mode : 'local',
+            forceSelection : true,
+            valueNotFoundText : this.crossQueryEmptyLayerText,
+            emptyText : this.crossQueryEmptyLayerText,
+            validateOnBlur : false,
+            allowBlank : false,
+            autoLoad : true,
+            editable : false,
+            readOnly : false,
+            displayField : 'name',
+            valueField : 'name',
+            store : this.crossLayersStore,
+            listeners : {
+                select : function(combo, record, index) {
+                    var layerName = record.data.name;
+                    var secondLayer;
+                    for (var i = 0; i < this.target.mapPanel.layers.data.items.length; i++) {
+                        var layer = this.target.mapPanel.layers.data.items[i];
+                        if (layer.data.name === layerName) {
+                            secondLayer = layer;
+                            break;
+                        }
+                    }
+                    var source = this.target.getSource(secondLayer);
+                    source.getSchema(secondLayer, function(schema) {
+                        var featureManager = this.target.tools[this.featureManager];
+                        if (schema === false) {                
+                            var layer = secondLayer.get("layer");
+                            var wmsVersion = layer.params.VERSION;
+                            Ext.MessageBox.show({
+                                title: featureManager.noValidWmsVersionMsgTitle,
+                                msg: featureManager.noValidWmsVersionMsgText + wmsVersion,
+                                buttons: Ext.Msg.OK,
+                                animEl: 'elId',
+                                icon: Ext.MessageBox.INFO
+                            });
+                        } 
+                        var geometryName = featureManager.extractFieldsInfo(schema).geometryName;
+                        this.addCrossLayerRequestFieldSets(geometryName, secondLayer, schema);
+                    }, this);
+                },
+                scope : this
+            }
+        });
+
         config = Ext.apply({
             border: false,
             bodyStyle: "padding: 10px",
@@ -453,6 +540,24 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                         }
                     }
 				}
+            },
+            {
+                xtype: "fieldset",
+                ref: "crossRequestComponentsFieldset",
+                title: this.crossQueryByAttributesText,
+                checkboxToggle: true,
+                collapsed : true,
+                items: [{ 
+                    xtype: 'fieldset',
+                    title: this.crossQueryLayerText,
+                    items: [this.crossRequestLayerCombo]
+                }],
+                listeners: {
+                    scope: this,
+                    expand: function(panel){
+                        panel.doLayout();
+                    }
+                }
             },
             {
                 xtype: "fieldset",
@@ -569,59 +674,9 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 				* Overriding the removeCondition method in order to manage the
 				* single filterfield reset.
 				*/
-				queryForm.filterBuilder.removeCondition = function(item, filter) {
-					var parent = this.filter.filters[0].filters;
-					if(parent.length > 1) {
-						parent.remove(filter);
-						this.childFilterContainer.remove(item, true);
-					}else{
-						var items = item.findByType("gxp_filterfield");
+				queryForm.filterBuilder.removeCondition = me.removeFilterConditionHandler;
 
-						var i = 0;
-						while(items[i]){
-							items[i].reset();
-
-                            for(var c = 1;c<items[i].items.items.length;c++){
-                                items[i].items.get(c).disable();
-                            }
-
-							filter.value = null;
-                            filter.lowerBoundary = null;
-                            filter.upperBoundary = null;
-							i++;
-						}
-					}
-
-					this.fireEvent("change", this);
-				};
-
-                queryForm.filterBuilder.reset = function() {
-					var parent = this.filter.filters[0].filters;
-                    var items = this.findByType("gxp_filterfield");
-                    for(var i = 0; i < items.length; i++) {
-                        var item = items[i];
-                        if(i > 0) {
-                            parent.remove(item.filter);
-                            this.childFilterContainer.remove(item.ownerCt, true);
-                        } else {
-                            item.reset();
-
-                            for(var c = 1;c<item.items.items.length;c++){
-                                if(item.items.get(c) instanceof Ext.Container) {
-                                    item.items.get(c).removeAll();
-                                } else {
-                                    item.items.get(c).disable();
-                                }
-                            }
-                            var filter = item.filter;
-							filter.value = null;
-                            filter.lowerBoundary = null;
-                            filter.upperBoundary = null;
-                        }
-                    }
-
-					this.fireEvent("change", this);
-				};
+                queryForm.filterBuilder.reset = me.resetFilterHandler;
 
 				if (me.draw) {me.draw.deactivate();};
 				if (me.drawings) {me.drawings.destroyFeatures();};
@@ -642,7 +697,15 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                 && this.featureStore.geometryName
                 ? this.featureStore.geometryName : null;
 
-            me.handleFilterConditions();
+            me.handleFilterBuilder();
+
+            // let trigger the cross layer state setter
+            if (me.state && me.state.crossFilterRequestState) {
+                me.queryForm.crossRequestComponentsFieldset.expand();
+                var crossLayer = me.addLayerByName(me.state.crossFilterRequestState.sourceName, me.state.crossFilterRequestState.layerName);
+                me.crossRequestLayerCombo.setValue(me.state.crossFilterRequestState.layerName);
+                me.crossRequestLayerCombo.fireEvent('select', me.crossRequestLayerCombo, crossLayer);
+            }
         };
 
         this.featureManagerTool.on("layerchange", this.addFilterBuilder);
@@ -686,9 +749,68 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 
         return queryForm;
     },
+    removeFilterConditionHandler: function (item, filter) {
+        var parent = this.filter.filters[0].filters;
+        if (parent.length > 1) {
+            parent.remove(filter);
+            this.childFilterContainer.remove(item, true);
+        } else {
+
+            // we only have a condition so lets reset it instead of remove it
+            var condition = item.findByType("gxp_filterfield")[0];
+
+            // we reset the property name
+            condition.items.items[0].reset();
+
+            // we reset the operator
+            condition.items.items[1].reset();
+
+            // we remove the values
+            if (condition.valueWidgets) {
+                condition.valueWidgets.removeAll();
+            }
+
+            // we also reset the filter content
+            filter.property = null;
+            filter.value = null;
+            filter.lowerBoundary = null;
+            filter.upperBoundary = null;
+        }
+        this.fireEvent("change", this);
+    },
+    resetFilterHandler: function() {
+        var parent = this.filter.filters[0].filters;
+        var items = this.findByType("gxp_filterfield");
+        for(var i = 0; i < items.length; i++) {
+            var item = items[i];
+            if(i > 0) {
+                parent.remove(item.filter);
+                this.childFilterContainer.remove(item.ownerCt, true);
+            } else {
+                item.reset();
+
+                for(var c = 1;c<item.items.items.length;c++){
+                    if(item.items.get(c) instanceof Ext.Container) {
+                        item.items.get(c).removeAll();
+                    } else {
+                        item.items.get(c).disable();
+                    }
+                }
+                var filter = item.filter;
+                filter.value = null;
+                filter.lowerBoundary = null;
+                filter.upperBoundary = null;
+            }
+        }
+        this.fireEvent("change", this);
+    },
     reset: function() {
         
         this.state = null;
+
+        if (!this.queryForm.crossRequestComponentsFieldset.collapsed) {
+            this.resetCrossLayerRequestFieldSets();
+        }
 
         var me = this;
         this.resetFeatureManager();
@@ -759,12 +881,38 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         }
 
         if (!this.queryForm.attributeFieldset.collapsed) {
-            state.attributesFilter = this.getAttributeFilterState();
+            state.attributesFilter = this.getAttributeFilterState(this.filterBuilder);
+        }
+
+        if (!this.queryForm.crossRequestComponentsFieldset.collapsed) {
+            state.crossFilterRequestState = this.getCrossRequestState();
         }
 
         state.chartOptions = this.getChartBuilderState();
 
         return state;
+    },
+    getCrossRequestState: function() {
+        
+        var crossFilterRequestState = {};
+
+        crossFilterRequestState.layerName = this.crossRequestLayer.data.name;
+        crossFilterRequestState.sourceName = this.crossRequestLayer.data.source;
+
+        var spatialSelector = this.crossOperationSelector;
+        if (spatialSelector.geometryOperationFieldset && !spatialSelector.geometryOperationFieldset.collapsed) {
+            crossFilterRequestState.operation = spatialSelector.geometryOperation.getValue();
+            if (!spatialSelector.distanceFieldset.collapsed) {
+                crossFilterRequestState.distance = spatialSelector.distance.getValue();
+                crossFilterRequestState.unit = spatialSelector.dunits.getValue();                    
+            }
+        }
+
+        if (!this.crossFilterBuilderFieldset.collapsed) {
+            crossFilterRequestState.attributesFilter = this.getAttributeFilterState(this.crossFilterBuilder);
+        }
+
+        return crossFilterRequestState;
     },
     getSpatialSelectorState: function() {
 
@@ -808,7 +956,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 
         return spatialSelectorState;
     },
-    getAttributeFilterState: function() {
+    getAttributeFilterState: function(filterBuilder) {
 
         var attributeFilterState = {};
 
@@ -829,15 +977,15 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 
         attributeFilterState.filterConditions = [];
 
-        for(var i = 0; i < this.filterBuilder.childFilterContainer.items.items.length; i++) {
-            var condition = this.filterBuilder.childFilterContainer.items.items[i].items.items[1];
+        for(var i = 0; i < filterBuilder.childFilterContainer.items.items.length; i++) {
+            var condition = filterBuilder.childFilterContainer.items.items[i].items.items[1];
             if (i === 0) {
-                condition = this.filterBuilder.childFilterContainer.items.items[0].items.items[1].items.items[0];
+                condition = filterBuilder.childFilterContainer.items.items[0].items.items[1].items.items[0];
             }
             attributeFilterState.filterConditions.push(getConditionState(condition));
         }
 
-        attributeFilterState.filterType = this.filterBuilder.builderTypeCombo.getValue();
+        attributeFilterState.filterType = filterBuilder.builderTypeCombo.getValue();
 
         return attributeFilterState;
     },
@@ -866,13 +1014,49 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         if (!this.state || !this.state.sourceName || !this.state.layerName) {
             return;
         }
-        this.addLayerByName(this.state.sourceName, this.state.layerName);
+        var layer = this.addLayerByName(this.state.sourceName, this.state.layerName);
     
+
+        // we update the feature manager tool with our layer
+        if (this.featureManagerTool.layerRecord && this.featureManagerTool.layerRecord.data.name === layer.data.name) {
+            this.featureManagerTool.layerRecord = null;
+        }
+        this.featureManagerTool.setLayer(layer);
+
+        delete this.state['sourceName'];
+        delete this.state['layerName'];
+
         // if there is a spatial selector we add is state to the current form
         if (this.state.spatialSelectorFilter) {
             this.addSpatialSelector(this.state.spatialSelectorFilter);
             delete this.state['spatialSelectorFilter'];
         }
+    },
+    addCrossFilterRequestState: function() {
+        
+        if (!this.state) {
+            return;
+        }
+
+        var crossFilterRequestState = this.state.crossFilterRequestState;
+
+        if (!crossFilterRequestState) {
+            return;
+        }
+        
+        this.queryForm.crossRequestComponentsFieldset.expand();
+
+        if (crossFilterRequestState.operation) {
+            this.handleGeometryOperation(this.crossOperationSelector, crossFilterRequestState);
+        }
+
+        if (crossFilterRequestState.attributesFilter) {
+            this.handleFilterConditions(this.crossFilterBuilder, this.crossFilterBuilderFieldset,
+                this.state.crossFilterRequestState.attributesFilter.filterConditions,
+                this.state.crossFilterRequestState.attributesFilter.filterType);
+        }
+
+        delete this.state['crossFilterRequestState'];
     },
     addSpatialSelector: function(spatialSelectorInfo) {
 
@@ -886,6 +1070,8 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         combo.setValue(spatialSelectorInfo.key);
         combo.fireEvent('select', combo, [comboRecord]);
 
+        var spatialSelector = this.spatialSelector.spatialSelectors[spatialSelectorInfo.key];
+
         // handling spatial selectors based on the key
         if (spatialSelectorInfo.key === 'bbox') {
             this.handleBboxFilter(spatialSelectorInfo); 
@@ -896,20 +1082,18 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         } else if (spatialSelectorInfo.key === 'polygon') {
             this.handlerPolygonFilter(spatialSelectorInfo);
         } else if (spatialSelectorInfo.key === 'municipi' || spatialSelectorInfo.key === 'unita') {
-            var spatialSelector = this.spatialSelector.spatialSelectors[spatialSelectorInfo.key];
             spatialSelector.geocodingField.setValue(spatialSelectorInfo.name);
             spatialSelector.geocodingField.fireEvent("change");
         }
 
         // setting the geometry operation if available
         if (spatialSelectorInfo.operation) {
-            this.handleGeometryOperation(spatialSelectorInfo);  
+            this.handleGeometryOperation(spatialSelector, spatialSelectorInfo);  
         }
     },
-    handleGeometryOperation: function(spatialSelectorInfo) {
+    handleGeometryOperation: function(spatialSelector, spatialSelectorInfo) {
         
         // we get the containers
-        var spatialSelector = this.spatialSelector.spatialSelectors[spatialSelectorInfo.key];
         var geometryOperationContainer = spatialSelector.items.items[0];
         var distanceContainer = spatialSelector.items.items[1];
 
@@ -948,6 +1132,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             spatialSelectorInfo.right, spatialSelectorInfo.top);
         this.spatialSelector.spatialSelectors.bbox.output.selectBBOX.setBbox(bbox);
         this.spatialSelector.spatialSelectors.bbox.output.setBBOX(bbox);
+        this.spatialSelector.spatialSelectors.bbox.output.bboxButton.toggle();
         this.spatialSelector.spatialSelectors.bbox.output.fireEvent('onChangeAOI', bbox);
     },
     handlerBufferFilter: function(spatialSelectorInfo) {
@@ -989,14 +1174,20 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         // we set the polygon geometry
         polygon.draw.drawFeature(geometry);
     },
-    handleFilterConditions: function() {
+    handleFilterBuilder: function() {
 
-        // if we have filters conditions we add them to the current form
+         // if we have filters conditions we add them to the current form
         if (!this.state || !this.state.attributesFilter) {
             return;
         }
 
-        var filterConditions = this.state.attributesFilter.filterConditions;
+        var attributeFieldset = this.output[0].attributeFieldset;
+        this.handleFilterConditions(this.filterBuilder, attributeFieldset, 
+            this.state.attributesFilter.filterConditions, this.state.attributesFilter.filterType);
+
+        delete this.state['attributesFilter'];
+    },
+    handleFilterConditions: function(filterBuilder, attributeFieldset, filterConditions, filterType) {
 
         // helper function for creating a new condition
         var createCondition = function(filterBuilder, attribute, operator, values, index) {
@@ -1036,22 +1227,19 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         };
 
         // we expand the filter conditions container
-        var attributeFieldset = this.output[0].attributeFieldset;
         attributeFieldset.expand();
 
         // we create a new condition for every existing condition
         for(var i = 0; i < filterConditions.length; i++) {
             var condition = filterConditions[i];
-            createCondition(this.filterBuilder, condition.attribute, condition.operator, condition.values, i);
+            createCondition(filterBuilder, condition.attribute, condition.operator, condition.values, i);
         }
 
         // we set the filter type
-        var filterTypeCombo = this.filterBuilder.builderTypeCombo;
-        var filterTypeRecordIndex = filterTypeCombo.getStore().findExact('value', this.state.attributesFilter.filterType);
-        filterTypeCombo.setValue(this.state.attributesFilter.filterType);
+        var filterTypeCombo = filterBuilder.builderTypeCombo;
+        var filterTypeRecordIndex = filterTypeCombo.getStore().findExact('value', filterType);
+        filterTypeCombo.setValue(filterType);
         filterTypeCombo.fireEvent('select', filterTypeCombo, filterTypeCombo.getStore().getAt(filterTypeRecordIndex));
-
-        delete this.state['attributesFilter'];
     },
     handleChartOptions: function() {
 
@@ -1160,14 +1348,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             this.target.modified = true;
         }
 
-        // we update the feature manager tool with our layer
-        if (this.featureManagerTool.layerRecord && this.featureManagerTool.layerRecord.data.name === layer.data.name) {
-            this.featureManagerTool.layerRecord = null;
-        }
-        this.featureManagerTool.setLayer(layer);
-
-        delete this.state['sourceName'];
-        delete this.state['layerName'];
+        return layer;
     },
     invalidState: function(condition) {
         if (!condition) {
@@ -1178,6 +1359,107 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             });
         }
         return !condition;
+    },
+    getCrossLayerFilter: function() {
+        var attributesCQL = this.getCrossLayerAttributesCqlFilter();
+        var queryCollectionFunction = new OpenLayers.Filter.Function({name: 'queryCollection',
+            params: [this.crossRequestLayer.data.name, this.crossRequestGeometryName, attributesCQL]});
+        var collectGeometriesFunction = new OpenLayers.Filter.Function({name: 'collectGeometries',
+            params: [queryCollectionFunction]});
+        return this.crossOperationSelector.getQueryFilter(collectGeometriesFunction);
+    },
+    getCrossLayerAttributesCqlFilter: function() {
+        if(!this.crossFilterBuilderFieldset.collapsed) {
+            var filter = this.crossFilterBuilder.getFilter();
+            if (filter) {
+                var ecqlFilter = filter.clone();
+                var escapePropertyName = function(filter) {
+                    if (filter.filters) {
+                        for (var i = 0; i < filter.filters.length; ++i) {
+                            escapePropertyName(filter.filters[i]);
+                        }
+                    }
+                    if (filter.property) {
+                        filter.property = "\"" + filter.property + "\"";
+                    }
+                }
+                escapePropertyName(ecqlFilter);
+                return ecqlFilter.toString();
+            }
+        }
+        return "INCLUDE";
+    },
+
+    addCrossLayerRequestFieldSets: function(geometryName, layer, schema) {
+
+        // remove existing components
+        this.queryForm.crossRequestComponentsFieldset.remove(this.crossOperationSelector);
+        this.queryForm.crossRequestComponentsFieldset.remove(this.crossFilterBuilderFieldset);
+
+        // set the current cross request data
+        this.crossRequestLayer = layer;
+        this.crossRequestGeometryName = geometryName;
+
+        // adding the geometry operation selector
+        this.queryForm.crossRequestComponentsFieldset.add({
+            xtype: "gxp_spatial_cross_selector",
+            ref: "../crossOperationSelector",
+            target: this.target
+        });
+        this.crossOperationSelector = this.queryForm.crossOperationSelector;
+
+        // adding attributes filter builder field set
+        this.queryForm.crossRequestComponentsFieldset.add({
+            xtype: "fieldset",
+            ref: "../crossFilterBuilderFieldset",
+            title: this.queryByAttributesText,
+            checkboxToggle: true,
+            collapsed : true,
+            listeners: {
+                scope: this,
+                expand: function(panel) {
+                    panel.doLayout();
+                }
+            }
+        });
+        this.crossFilterBuilderFieldset = this.queryForm.crossFilterBuilderFieldset;
+
+        // adding the attribute filter builder
+        var autoComplete = layer && this.autoComplete && this.autoComplete.sources 
+                           && this.autoComplete.sources.indexOf(layer.get('source')) !== -1;
+        this.crossFilterBuilderFieldset.add({
+            xtype: "gxp_filterbuilder",
+            ref: "crossFilterBuilder",
+            attributes: schema,
+            validators: this.validators,
+            autoComplete: autoComplete,
+            autoCompleteCfg: this.autoComplete || {},
+            allowBlank: true,
+            allowGroups: false
+        });
+        this.crossFilterBuilder = this.crossFilterBuilderFieldset.crossFilterBuilder;
+        this.crossFilterBuilder.removeCondition = this.removeFilterConditionHandler;
+        this.crossFilterBuilder.reset = this.resetFilterHandler;
+        this.crossFilterBuilder.filterGeometryName = geometryName;
+
+        this.queryForm.crossRequestComponentsFieldset.doLayout();
+
+        // set a state if available
+        this.addCrossFilterRequestState();
+    },
+    resetCrossLayerRequestFieldSets: function() {
+
+        this.queryForm.crossRequestComponentsFieldset.collapse();
+        this.crossRequestLayerCombo.clearValue();
+
+        this.queryForm.crossRequestComponentsFieldset.remove(this.crossOperationSelector);
+        this.queryForm.crossRequestComponentsFieldset.remove(this.crossFilterBuilderFieldset);
+
+        this.crossOperationSelector = null;
+        this.crossFilterBuilderFieldset = null;
+
+        this.crossRequestLayer = null;
+        this.crossRequestGeometryName = null;
     }
 });
 

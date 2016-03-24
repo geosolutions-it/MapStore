@@ -246,7 +246,14 @@ gxp.FilterBuilder = Ext.extend(Ext.Container, {
                 }
             }
         } else {
-            if(!filter || filter.type === null || filter.property === null || filter[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "lowerBoundary" : "value"] === null || filter[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "upperBoundary" : "value"] === null) {
+            // check if the filter is defined as a type  and a property
+            if (!filter || filter.type === null || filter.property === null) {
+                filter = false;
+            }
+            // check the value of the filter, unless is a NULL filter a value most be present
+            if (filter.type !== "NULL" && (
+                filter[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "lowerBoundary" : "value"] === null 
+                || filter[filter.type === OpenLayers.Filter.Comparison.BETWEEN ? "upperBoundary" : "value"] === null)) {
                 filter = false;
             }
         }

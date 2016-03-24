@@ -48,6 +48,24 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
      */    
     noValidWmsVersionMsgText: "The queryForm plugin doesn't work with WMS Source version: ",   
     
+    /** api: config[requestErrorMsgTitle]
+     *  ``String``
+     *  The get feature request was not successful.
+     */    
+    errorWindowMsgTitle: 'Get Feature Request Error',
+    
+    /** api: config[errorWindowMsgText]
+     *  ``String``
+     *  Text string for an unsuccessful get feature request.
+     */    
+    errorWindowMsgText: "The Get Feature request was not successful.",   
+
+    /** api: config[tooManyFeaturesWindowMsgText]
+     *  ``String``
+     *  Text string for an unsuccessful cross layer request.
+     */    
+    tooManyFeaturesWindowMsgText: "The cross layer request uses to many features.",   
+
     /** api: config[maxFeatures]
      *  ``Number`` Default is 100
      */
@@ -637,38 +655,12 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                     
                     this.clearFeatureStore();
                 } else {
-                    var fields = [], geometryName;
-                    var geomRegex = /gml:((Multi)?(Point|Line|Polygon|Curve|Surface|Geometry)).*/;
-                    var types = {
-                        "xsd:boolean": "boolean",
-                        "xsd:int": "int",
-                        "xsd:integer": "int",
-                        "xsd:short": "int",
-                        "xsd:long": "int",
-                        "xsd:date": "date",
-                        "xsd:string": "string",
-                        "xsd:float": "float",
-                        "xsd:double": "float"
-                    };
-                    schema.each(function(r) {
-                        var match = geomRegex.exec(r.get("type"));
-                        if (match) {
-                            geometryName = r.get("name");
-                            this.geometryType = match[1];
-                        } else {
-                            // TODO: use (and improve if needed) GeoExt.form.recordToField
-                            var type = types[r.get("type")];
-                            var field = {
-                                name: r.get("name"),
-                                type: types[type]
-                            };
-                            //TODO consider date type handling in OpenLayers.Format
-                            if (type == "date") {
-                                field.dateFormat = "Y-m-d\\Z";
-                            }
-                            fields.push(field);
-                        }
-                    }, this);
+
+                    var fieldsInfo = this.extractFieldsInfo(schema);
+
+                    var fields = fieldsInfo.fields;
+                    var geometryName = fieldsInfo.geometryName;
+                    this.geometryType = fieldsInfo.geometryType;
                     
                     var protocolOptions = {    
                         srsName: this.target.mapPanel.map.getProjection(),
@@ -712,6 +704,69 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
                             "load": function() {
                                 this.fireEvent("query", this, this.featureStore, this.filter);
                             },
+                            "loadexception": function(tool, object, response) {
+                                this.featureStore.fireEvent("exception");
+
+                                var errorDetails = response.error.exceptionReport.exceptions[0].texts.toString();
+                                var errorMessage = this.errorWindowMsgText;
+
+                                if (errorDetails.indexOf("The query in queryCollection returns too many features") >= 0) {
+                                    errorMessage = this.tooManyFeaturesWindowMsgText;
+                                }
+
+                                var messagePanel = new Ext.Panel({
+                                      layout:'Anchor',
+                                      border:false,
+                                      bodyBorder:false,
+                                      hideBorders:true,
+                                      items: [{
+                                        xtype:'textarea',
+                                        layout:'anchor',
+                                        anchor: '100%',
+                                        height: '20%',
+                                        readOnly:true,
+                                        value: errorMessage,
+                                        autoScroll: true
+                                      }]
+                                });
+
+                                var detailsPanel = new Ext.Panel({
+                                    title: 'Details',
+                                    layout:'Anchor',
+                                    collapsible: true,
+                                    collapsed: true,
+                                    border:false,
+                                    bodyBorder:false,
+                                    hideBorders:true,
+                                    items: [{
+                                        xtype:'textarea',
+                                        layout:'anchor',
+                                        anchor: '100%',
+                                        readOnly:true,
+                                        value: errorDetails,
+                                        autoScroll: true
+                                    }]
+                                });
+
+                                var errorWindow = new Ext.Window({
+                                    resizable: false,
+                                    title: this.errorWindowMsgTitle,
+                                    closeAction: "hide",
+                                    layout: "Anchor",
+                                    width: 550,
+                                    modal: true,
+                                    iconCls: 'error',
+                                    iconMask: true,
+                                    items: [messagePanel, detailsPanel],
+                                     buttons: [{
+                                        text: 'Close',
+                                        handler: function(){
+                                            errorWindow.hide();
+                                        }
+                                    }]
+                                });
+                                errorWindow.show();
+                            },
                             scope: this
                         }
                     }, protocolOptions));
@@ -722,6 +777,42 @@ gxp.plugins.FeatureManager = Ext.extend(gxp.plugins.Tool, {
             this.clearFeatureStore();
             this.fireEvent("layerchange", this, record, false);
         }        
+    },
+
+    extractFieldsInfo: function(schema) {
+        var fields = [], geometryName, geometryType;
+        var geomRegex = /gml:((Multi)?(Point|Line|Polygon|Curve|Surface|Geometry)).*/;
+        var types = {
+            "xsd:boolean": "boolean",
+            "xsd:int": "int",
+            "xsd:integer": "int",
+            "xsd:short": "int",
+            "xsd:long": "int",
+            "xsd:date": "date",
+            "xsd:string": "string",
+            "xsd:float": "float",
+            "xsd:double": "float"
+        };
+        schema.each(function(r) {
+            var match = geomRegex.exec(r.get("type"));
+            if (match) {
+                geometryName = r.get("name");
+                geometryType = match[1];
+            } else {
+                // TODO: use (and improve if needed) GeoExt.form.recordToField
+                var type = types[r.get("type")];
+                var field = {
+                    name: r.get("name"),
+                    type: types[type]
+                };
+                //TODO consider date type handling in OpenLayers.Format
+                if (type == "date") {
+                    field.dateFormat = "Y-m-d\\Z";
+                }
+                fields.push(field);
+            }
+        }, this);
+        return {"fields": fields, "geometryType": geometryType, "geometryName": geometryName};
     },
     
     /** private: method[redrawMatchingLayers]
