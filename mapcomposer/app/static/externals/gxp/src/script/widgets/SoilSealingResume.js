@@ -336,15 +336,29 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
     		quadrantsLabels[1] = this.urbanDevelMonocentricDispersedLabel;
     		quadrantsLabels[2] = this.urbanDevelWidespreadLabel;
     		quadrantsLabels[3] = this.urbanDevelMonocentricCompactLabel;
-			
+
 			barChartItems.push(
 				this.generateModelScatterMultiAxisChart(
 					this.urbanFabricClassesText, 
-					data.refTime.time, 
+					data.refTime.time.split(" - ")[0], 
 					data.refTime.output,
-					quadrantsLabels
+					quadrantsLabels,
+					0 // Ref Time Index
 				)
 			);
+			
+			if (data.curTime && data.curTime.output && data.curTime.output.complexValues)
+			{
+				barChartItems.push(
+					this.generateModelScatterMultiAxisChart(
+						this.urbanFabricClassesText, 
+						data.curTime.time.split(" - ")[0], 
+						data.curTime.output,
+						quadrantsLabels,
+						1 // Cur Time Index
+					)
+				);
+			}
 		} else {
 			barChartItems.push(
 				this.generateColumnChart(
@@ -642,7 +656,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		});
 	},
 
-	generateModelScatterMultiAxisChart: function(title, subTitle, data, quadrants){
+	generateModelScatterMultiAxisChart: function(title, subTitle, data, quadrants, timeIndex){
 
 		admUnits = data.admUnits;
 		values   = data.complexValues;
@@ -653,7 +667,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		for(var i=0; i<admUnits.length; i++)
 		{
 			admName   = admUnits[i];
-			admValues = values[i][0]; // Ref Time
+			admValues = values[i][timeIndex]; // Ref Time || Cur Time
 			
 			edClassObjects[i] = {x: admValues[0], y: admValues[1], z: admValues[2], name: admName};
 			rmpsObjects[i]    = [admValues[0], (admValues[2]/1000)*30, admValues[1]];

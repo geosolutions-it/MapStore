@@ -120,7 +120,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				3: false,
 				4: false,
 				5: false,
-				6: true, // Urban Fabric Classes [2 Time]
+				6: false, // Urban Fabric Classes [2 Time]
 				7: false
 			},
 			filterT1ComboBox: false
@@ -285,8 +285,12 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 							label : 'Administrative Areas',
 							value : 'geocoder'
 						}];
+						
+						me.roiFieldSet.setSpatialSelectors(spatialSelectors, "geocoder");
+					} else {
+						me.roiFieldSet.setSpatialSelectors(spatialSelectors, null);
 					}
-					me.roiFieldSet.setSpatialSelectors(spatialSelectors, "geocoder");
+					
 					panel.doLayout();
 				}
 			}

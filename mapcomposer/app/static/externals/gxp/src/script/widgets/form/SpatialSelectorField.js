@@ -1450,8 +1450,10 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		me.outputType.store.loadData(spatialSelectors);
 
 		if (defaultValue) {
-			me.outputType.setValue(defaultValue);
-			me.outputType.fireEvent('select', me.outputType, defaultValue);
+			if(me.outputType.getValue() != defaultValue) {
+				me.outputType.setValue(defaultValue);
+				me.outputType.fireEvent('select', me.outputType, defaultValue);
+			}
 		}
     },
     
