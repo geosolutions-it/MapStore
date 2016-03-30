@@ -399,9 +399,9 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			items: []		
 		});
 		
-		/*if(data.index.id !== 8){
+		if(data.index.id !== 8 && data.index.id !== 9){
 			barChartTab.add(barChartItems);
-		};*/
+		};
 				
 		// Generated items
 		var items = [];
