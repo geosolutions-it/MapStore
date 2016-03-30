@@ -399,9 +399,9 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			items: []		
 		});
 		
-		if(data.index.id !== 8){
+		/*if(data.index.id !== 8){
 			barChartTab.add(barChartItems);
-		};
+		};*/
 				
 		// Generated items
 		var items = [];
@@ -664,11 +664,39 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		var edClassObjects = [];
 		var rmpsObjects    = [];
 		
+		var xMin = 0, xMax = 0, xBuffer = 3;
+		var yMin = 0, yMax = 0, yBuffer = 3;
+		var zMin = 0, zMax = 0, zBuffer = 50;
+		
 		for(var i=0; i<admUnits.length; i++)
 		{
 			admName   = admUnits[i];
 			admValues = values[i][timeIndex]; // Ref Time || Cur Time
 			
+			// xMin, xMax
+			if(xMin>admValues[0]){
+				xMin=admValues[0];
+			}
+			if(xMax<admValues[0]){
+				xMax=admValues[0];
+			}
+			
+			// yMin, yMax
+			if(yMin>admValues[1]){
+				yMin=admValues[1];
+			}
+			if(yMax<admValues[1]){
+				yMax=admValues[1];
+			}
+
+			// zMin, zMax
+			if(zMin>admValues[2]){
+				zMin=admValues[2];
+			}
+			if(zMax<admValues[2]){
+				zMax=admValues[2];
+			}
+
 			edClassObjects[i] = {x: admValues[0], y: admValues[1], z: admValues[2], name: admName};
 			rmpsObjects[i]    = [admValues[0], (admValues[2]/1000)*30, admValues[1]];
 		}
@@ -804,8 +832,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		            }
 		        },
 		        xAxis: {
-		        	min: 0,
-		            max: 100,
+		        	min: xMin-xBuffer,
+		            max: xMax+xBuffer,
 		            gridLineWidth: 1,
 		            title: {
 		                text: 'LCPI',
@@ -829,8 +857,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		            }]
 		        },
 		        zAxis: { // Secondary yAxis
-		            min: 0,
-		            max: 1000,
+		            min: zMin-zBuffer,
+		            max: zMax+zBuffer,
 		            gridLineWidth: 1,
 		            tickInterval: 100,
 		            title: {
@@ -842,8 +870,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		            opposite: false
 		        },
 		        yAxis: { // Primary yAxis
-		        	min: 0,
-		            max: 30,
+		        	min: yMin-yBuffer,
+		            max: yMax+yBuffer,
 		            tickInterval: 3,
 		            gridLineWidth: 1,
 		            title: {
