@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2008-2011 The Open Planning Project
+* Copyright (c) 2015-2016 GeoSolutions S.A.S
 *
 * Published under the GPL license.
 * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
@@ -73,13 +73,17 @@ gxp.plugins.GeoJSONSource = Ext.extend(gxp.plugins.LayerSource, {
         if (config.symbolizer) {
             style["default"] =new OpenLayers.Style(null, {
                 rules: [new OpenLayers.Rule({
+                    name : config.name,
                     symbolizer: config.symbolizer
                 })]
             });
         }
         if (config.selectedSymbolizer) {
             style["selected"]=  new OpenLayers.Style(null, {
-              rules: [new OpenLayers.Rule({symbolizer: config.selectedSymbolizer})]
+                rules: [new OpenLayers.Rule({
+                    name : config.name,
+                    symbolizer: config.selectedSymbolizer
+                })]
           });
         }
         if(style.default || style.selected) {
