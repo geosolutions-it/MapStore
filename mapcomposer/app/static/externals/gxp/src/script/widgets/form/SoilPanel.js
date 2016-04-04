@@ -64,6 +64,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	consumeOnlyText: 'Consumo Suolo',
 	consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
 	urbanFabricClassesText: 'Modello di Sviluppo Urbano',
+	newUrbanizationText: 'Nuova Urbanizzazione',
 
 	// Validation
 	invalidFormDialogText: "Please review the form fields:<ul>",
@@ -101,7 +102,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				4: true,
 				5: true,
 				6: false, // Urban Fabric Classes [1 Time]
-				7: true
+				7: false
 			},
 			filterT1ComboBox: true,
 			classesselector: false
@@ -586,6 +587,10 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
                 	boxLabel: this.urbanFabricClassesText,
                 	name: 'sealingIndex',
                 	inputValue: 11
+                },{
+                	boxLabel: this.newUrbanizationText,
+                	name: 'sealingIndex',
+                	inputValue: 12
                 }],
             	listeners:{
             		change: this.sealingIndexSelect,

@@ -71,6 +71,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
     urbanDevelMonocentricDispersedLabel: "Monocentrica Dispersa",
     urbanDevelWidespreadLabel: "Diffusa",
     urbanDevelMonocentricCompactLabel: "Monocentrica Compatta",
+    newUrbanizationText: 'Nuova Urbanizzazione',
 	// EoF i18n
     
     /** api: config[url]
@@ -114,7 +115,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			8: this.framesText,
 			9: this.consumeOnlyText,
 			10: this.consumeOnlyConfText,
-			11: this.urbanFabricClassesText
+			11: this.urbanFabricClassesText,
+			12: this.newUrbanizationText
 		});
 
 		if(gxp.widgets.SoilSealingResume.superclass.initComponent){
@@ -307,6 +309,9 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 				indexUoM = "persons/year";
 				break;
 			case 11:
+				indexUoM = "";
+				break;
+			case 12:
 				indexUoM = "";
 				break;
 		}
