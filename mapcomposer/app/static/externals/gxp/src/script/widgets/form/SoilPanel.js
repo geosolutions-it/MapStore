@@ -122,7 +122,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				4: false,
 				5: false,
 				6: false, // Urban Fabric Classes [2 Time]
-				7: false
+				7: true
 			},
 			filterT1ComboBox: false
 		},
@@ -588,9 +588,42 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
                 	name: 'sealingIndex',
                 	inputValue: 11
                 },{
-                	boxLabel: this.newUrbanizationText,
-                	name: 'sealingIndex',
-                	inputValue: 12
+                	title : this.newUrbanizationText,
+					xtype : 'fieldset',
+					autoWidth : true,
+					collapsible : false,
+					layout : 'fit',
+					defaultType : 'radiogroup',
+					items : [{
+						ref   : '../../sealingIndexImpervious',
+			            cls: 'x-check-group-alt',
+						name : 'sealingIndex',
+		            	columns: 1,
+					    defaults: {
+					        // applied to each contained panel
+					        bodyStyle: 'padding:1px'
+					    },
+					    items:
+		                [{
+			          		xtype     : 'textfield',
+			          		name      : 'radius',
+							ref       : '../../sealingIndexImpervious',
+							cls       : 'x-check-group-alt',
+							width     : 140,
+							fieldLabel: 'Buffer (m)',
+							boxLabel  : 'Buffer (m)',
+		                    emptyText : 'Buffer in meters (m)',
+		                    value     : 1000
+			          	},{                	
+		                	boxLabel: this.newUrbanizationText,
+                			name: 'sealingIndex',
+                			inputValue: 12
+		                }],
+		                listeners:{
+		            		change: me.sealingIndexSelect,
+		            		scope: me
+		            	}
+		          	}]
                 }],
             	listeners:{
             		change: this.sealingIndexSelect,
@@ -946,7 +979,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				mimeType : 'application/wkt'
 			}),
 			radius : new OpenLayers.WPSProcess.LiteralData({
-				value : params.radius
+				value : (index == 12 ? params.radius[1] : params.radius[0])
 			}),
 			pixelSize : new OpenLayers.WPSProcess.LiteralData({
 				value : pixelSize

@@ -210,7 +210,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					title: data.refTime.output.admUnits[i],
 					items: unitItems
 				});
-				if(this.splitAdmUnitsInTabs && tabItemIndex == 9){
+				if(this.splitAdmUnitsInTabs && (tabItemIndex == 9 || tabItemIndex == 12)){
 					var adminUnitsTab = new Ext.Panel({
 						border : false,
 						layout : "accordion",
@@ -302,7 +302,6 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 				indexUoM = "No pixels";
 				break;
 			case 9:
-				//indexUoM = "ha/person";
 				indexUoM = "ha";
 				break;
 			case 10:
@@ -312,7 +311,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 				indexUoM = "";
 				break;
 			case 12:
-				indexUoM = "";
+				indexUoM = "ha";
 				break;
 		}
 
@@ -404,7 +403,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			items: []		
 		});
 		
-		if(data.index.id !== 8 && data.index.id !== 9){
+		if(data.index.id !== 8 && data.index.id !== 9 && data.index.id !== 12){
 			barChartTab.add(barChartItems);
 		};
 				
