@@ -311,7 +311,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 				indexUoM = "";
 				break;
 			case 12:
-				indexUoM = "ha";
+				indexUoM = "No pixels";
 				break;
 		}
 
