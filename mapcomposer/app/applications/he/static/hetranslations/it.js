@@ -20,9 +20,9 @@ GeoExt.Lang.add("it", {
         groupsLabel:"Grouppi",
         gsErrorTitle:"Errore Geostore",
         gsGetPermissionError:"Impossibile recuperare permessi risorsa."
-    },    
+    },
     "gxp.plugins.PrintSnapshotHE.prototype" :{
-        noSupportedLayersErrorMsg: " non è disponibile per la stampa.<br/>Selezionare uno dei seguenti sfondi e riprovare:<br/>",    
+        noSupportedLayersErrorMsg: " non è disponibile per la stampa.<br/>Selezionare uno dei seguenti sfondi e riprovare:<br/>",
         suggestionLayersMsg: "-> OpenStreetMap <br/> -> MapQuest OpenStreetMap <br/> -> MapQuest Imagery"
     },
     "gxp.plugins.Print.prototype": {
@@ -30,11 +30,11 @@ GeoExt.Lang.add("it", {
     },
     "gxp.plugins.he.GeoStoreStyleWriter.prototype": {
         mainLoadingMask: "Attendere prego...",
-        geostoreStyleErrorTitle: "Errore",   
+        geostoreStyleErrorTitle: "Errore",
         geostoreStyleCreationErrorMsg: "Errore nel creare lo stile in geostore.",
-        geostoreStyleUpdateErrorMsg: "Errore nell'aggiornare lo stile in geostore.",    
+        geostoreStyleUpdateErrorMsg: "Errore nell'aggiornare lo stile in geostore.",
         geostoreStyleSearchErrorMsg: "Reicerco dello stile in geostore fallita.",
-        geostoreStyleDeleteSuccessMsg: "Lo stile in geostore è stato eliminato con successo.",    
+        geostoreStyleDeleteSuccessMsg: "Lo stile in geostore è stato eliminato con successo.",
         geostoreStyleDeleteErrorMsg: "Lo stile in geostore non è stato eliminato correttamente."
     },
 
@@ -64,19 +64,52 @@ GeoExt.Lang.add("it", {
          stylesFieldsetTitle: "Stili",
          rulesFieldsetTitle: "Regole",
          errorTitle: "Errore salvataggio stile",
-         errorMsg: "Si è verificato un errore nel salvare lo stile sul server.",                 
+         errorMsg: "Si è verificato un errore nel salvare lo stile sul server.",
          searchStyleResourcesErrorTitle: "Error",
          searchStyleResourcesErrorMsg: "Something went wrong when loading styles"
     },
-    
+
     "gxp.plugins.he.StylerHE.prototype": {
         menuText: "Stili dei layer",
-        tooltip: "Stili dei layer",    
+        tooltip: "Stili dei layer",
         geostoreStyleCategoryCreatedSuccessTitle: "Creazione categoria di GeoStore.",
         geostoreStyleCategoryCreatedSuccessMsg: "La categoria LAYERS_STYLES è stata creata correttamente.",
         geostoreStyleCategoryCreatedErrorTitle: "Errore nella creazione della categoria.",
         geostoreStyleCategoryCreatedErrorMsg: "GeoStore disabilitato, solamente l'Amministratore può creare la categoria mancante LAYERS_STYLES.",
         geostoreStyleCategorySearchErrorTitle: "Errore nella ricerca delle categorie.",
         geostoreStyleCategorySearchErrorMsg: "Qualcosa è andato storto nella ricerca delle categorie."
-    }    
+    },
+
+    "gxp.form.MapsComboBox.prototype": {
+        fieldLabel: "Mappe utente",
+        emptyText:"Lista Mappe",
+        valueNotFoundText: "Lista Mappe"
+    },
+
+    "gxp.plugins.he.MapSelector.prototype": {
+        mapActionText: "Azioni Mappa",
+        mapActionTip: "Azioni Mappa",
+        saveText: "Salva",
+        createText: "Crea",
+        deleteText: "Elimina",
+        contextSaveSuccessString: "Mappa salvata",
+        contextSaveFailString: "Impossibile salvare mappa",
+        contextCreateSuccessString: "Mappa creata",
+        contextCreateFailString: "Impossibile creare mappa",
+        contextDeleteSuccessString: "Mappa eliminata",
+        contextDeleteFailString: "Impossibile eliminare mappa",
+        saveTitle: "Salvare Mappa?",
+        saveMsg: "Vuoi salvare le modifiche?",
+        createTitle: "Creare Nuova Mappa?",
+        createMsg: "Vuoi salvare la mappa corrente come nuova mappa?",
+        deleteTitle: "Eliminare Mappa?",
+        deleteMsg: "Vuoi eliminare la mappa?",
+        addResourceButtonText: "Crea Mappa",
+        contextMsg: 'Loading...',
+        mapMetadataTitle: "Iserire Metadati Mappa",
+        mapMedatataSetTitle: "Metadati Mappa",
+        mapNameLabel: "Nome",
+        mapDescriptionLabel: "Descrizione",
+        conflictErrMsg: "Esiste già una mappa con questo nome"
+    }
 });

@@ -354,7 +354,8 @@
             "target":"paneltbar",
             "index":5
           }
-      }, {
+      },
+      {
             "ptype": "gxp_help",
             "actionTarget": "paneltbar",
             "text": "Help",
@@ -442,6 +443,11 @@
         },
         {
           "ptype":"gxp_onpageunloadalert"
+        },
+        {
+          "ptype": "gxp_mapselector",
+          "outputTarget":"paneltbar",
+          "idx":24
         }
 
     ]

@@ -116,6 +116,14 @@
                 "value": ""
 
             },{
+                "xtype": "gxp_mapscombobox",
+                "anchor":"90%",
+                "id": "attribute.default_map",
+                "maxLength":255,
+                "fieldLabel": "Default Map",
+                "value": "",
+                "tpl": '<tpl for="."><tpl if="values.owner===\'admin\'"><div class="x-combo-list-item">{name}</div></tpl></tpl>'
+              },{
                 "xtype": "textarea",
                 "anchor":"90%",
                 "id": "notes",

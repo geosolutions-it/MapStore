@@ -193,3 +193,9 @@ span.icon_span{
 .x-layout-collapsed.x-layout-collapsed-north, .x-layout-collapsed.x-layout-collapsed-south {
   height: 24px !important;
 }
+.map_add {
+  background-image: url(../externals/mapmanager/theme/img/map_add.png) !important;
+}
+.map_delete {
+    background-image: url(../externals/mapmanager/theme/img/map_delete.png) !important;
+}

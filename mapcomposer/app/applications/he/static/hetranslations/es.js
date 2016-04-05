@@ -20,9 +20,9 @@ GeoExt.Lang.add("es", {
         groupsLabel:"Grupos",
         gsErrorTitle:"Geostore Error",
         gsGetPermissionError:"No se puede recuperar permisos de recursos."
-    },    
+    },
     "gxp.plugins.PrintSnapshotHE.prototype" :{
-        noSupportedLayersErrorMsg: " no está disponible para la impresión.<br/>Por favor seleccione una de las siguientes como su capa de fondo y vuelva a intentarlo:<br/>",    
+        noSupportedLayersErrorMsg: " no está disponible para la impresión.<br/>Por favor seleccione una de las siguientes como su capa de fondo y vuelva a intentarlo:<br/>",
         suggestionLayersMsg: "-> OpenStreetMap <br/> -> MapQuest OpenStreetMap <br/> -> MapQuest Imagery"
     },
     "gxp.plugins.Print.prototype": {
@@ -30,11 +30,11 @@ GeoExt.Lang.add("es", {
     },
     "gxp.plugins.he.GeoStoreStyleWriter.prototype": {
         mainLoadingMask: "Por favor espera...",
-        geostoreStyleErrorTitle: "Error",   
+        geostoreStyleErrorTitle: "Error",
         geostoreStyleCreationErrorMsg: "Error al crear el estilo GeoStore",
-        geostoreStyleUpdateErrorMsg: "Error de actualización estilo GeoStore",    
+        geostoreStyleUpdateErrorMsg: "Error de actualización estilo GeoStore",
         geostoreStyleSearchErrorMsg: "No se pudo recuperar el estilo GeoStore",
-        geostoreStyleDeleteSuccessMsg: "Estilo GeoStore eliminado correctamente",    
+        geostoreStyleDeleteSuccessMsg: "Estilo GeoStore eliminado correctamente",
         geostoreStyleDeleteErrorMsg: "GeoStore estilo no elimina"
     },
 
@@ -64,11 +64,11 @@ GeoExt.Lang.add("es", {
          stylesFieldsetTitle: "Estilos",
          rulesFieldsetTitle: "Reglas",
          errorTitle: "Error estilo ahorro",
-         errorMsg: "Se ha producido un error al guardar el estilo de vuelta al servidor.",         
+         errorMsg: "Se ha producido un error al guardar el estilo de vuelta al servidor.",
          searchStyleResourcesErrorTitle: "Error",
          searchStyleResourcesErrorMsg: "Algo salió mal al cargar estilos"
     },
-    
+
     "gxp.he.WMSLayerPanelHE.prototype": {
         aboutText: "Información",
         titleText: "Título",
@@ -86,5 +86,38 @@ GeoExt.Lang.add("es", {
         loadMaskMsg: "Obteiniendo datos ...",
         noDataMsg: "No hay datos disponibles de la vistas actual",
         refreshText: "Refrescar"
+    },
+
+    "gxp.form.MapsComboBox.prototype": {
+        fieldLabel: "Mapas de los usuarios",
+        emptyText:"Mapas",
+        valueNotFoundText: "Mapas"
+    },
+
+    "gxp.plugins.he.MapSelector.prototype": {
+        mapActionText: "Mapa Acciones",
+        mapActionTip: "Mapa Acciones",
+        saveText: "Ahorrar",
+        createText: "Crear",
+        deleteText: "Borrar",
+        contextSaveSuccessString: "Contexto mapa guardado correctamente",
+        contextSaveFailString: "Contexto mapa no guardado correctamente",
+        contextCreateSuccessString: "Mapa creado con éxito",
+        contextCreateFailString: "Mapa no creado con éxito",
+        contextDeleteSuccessString: "Mapa eliminado correctamente",
+        contextDeleteFailString: "Mapa no eliminado correctamente",
+        saveTitle: "Guardar Mapa Contexto?",
+        saveMsg: "Quieres guardar los cambios?",
+        createTitle: "Crear Nuevo map?",
+        createMsg: "Quieres ahorrar mapa contexto como nuevo mapa?",
+        deleteTitle: "Eliminar mapa?",
+        deleteMsg: "Quieres eliminar el mapa?",
+        addResourceButtonText: "Añadir Mapa",
+        contextMsg: "Cargando...",
+        mapMetadataTitle: "Inserte Mapa Metadatos",
+        mapMedatataSetTitle: "Mapa Metadatos",
+        mapNameLabel: "Nombre",
+        mapDescriptionLabel: "Descripción",
+        conflictErrMsg: "Un mapa con el mismo nombre ya existe"
     }
 });

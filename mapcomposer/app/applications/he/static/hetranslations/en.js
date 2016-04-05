@@ -20,9 +20,9 @@ GeoExt.Lang.add("en", {
         groupsLabel:"Groups",
         gsErrorTitle:"Geostore Error",
         gsGetPermissionError:"Unable to retrieve resource permissions."
-    },    
+    },
     "gxp.plugins.PrintSnapshotHE.prototype" :{
-        noSupportedLayersErrorMsg: " is not available for printing.<br/>Please select one of the following as your background layer and try again:<br/>",    
+        noSupportedLayersErrorMsg: " is not available for printing.<br/>Please select one of the following as your background layer and try again:<br/>",
         suggestionLayersMsg: "-> OpenStreetMap <br/> -> MapQuest OpenStreetMap <br/> -> MapQuest Imagery"
     },
     "gxp.plugins.Print.prototype": {
@@ -30,11 +30,11 @@ GeoExt.Lang.add("en", {
     },
     "gxp.plugins.he.GeoStoreStyleWriter.prototype": {
         mainLoadingMask: "Please wait...",
-        geostoreStyleErrorTitle: "Error.",   
+        geostoreStyleErrorTitle: "Error.",
         geostoreStyleCreationErrorMsg: "Error creating the geostore style.",
-        geostoreStyleUpdateErrorMsg: "Error updating geostore style.",    
+        geostoreStyleUpdateErrorMsg: "Error updating geostore style.",
         geostoreStyleSearchErrorMsg: "Failed to retrieve the geostore style.",
-        geostoreStyleDeleteSuccessMsg: "Geostore style successfully deleted.",    
+        geostoreStyleDeleteSuccessMsg: "Geostore style successfully deleted.",
         geostoreStyleDeleteErrorMsg: "Geostore Style not deleted."
     },
 
@@ -64,19 +64,53 @@ GeoExt.Lang.add("en", {
          stylesFieldsetTitle: "Styles",
          rulesFieldsetTitle: "Rules",
          errorTitle: "Error saving style",
-         errorMsg: "There was an error saving the style back to the server.",         
+         errorMsg: "There was an error saving the style back to the server.",
          searchStyleResourcesErrorTitle: "Error",
          searchStyleResourcesErrorMsg: "Something went wrong when loading styles"
     },
-    
+
     "gxp.plugins.he.StylerHE.prototype": {
         menuText: "Layer Styles",
-        tooltip: "Layer Styles",    
+        tooltip: "Layer Styles",
         geostoreStyleCategoryCreatedSuccessTitle: "Geostore Category creation.",
         geostoreStyleCategoryCreatedSuccessMsg: "Geostore LAYERS_STYLES Category successfully created.",
         geostoreStyleCategoryCreatedErrorTitle: "Error creating category.",
         geostoreStyleCategoryCreatedErrorMsg: "GeoStore resources disabled, only Admin can create missing LAYERS_STYLES CATEGORY.",
         geostoreStyleCategorySearchErrorTitle: "Error search categories.",
         geostoreStyleCategorySearchErrorMsg: "Something went wrong in the search categories."
+    },
+
+    "gxp.form.MapsComboBox.prototype": {
+        fieldLabel: "User maps",
+        emptyText:"Maps",
+        valueNotFoundText: "Maps"
+    },
+
+    "gxp.plugins.he.MapSelector.prototype": {
+        mapActionText: "Map Actions",
+        mapActionTip: "Map actions",
+        saveText: "Save",
+        createText: "Create",
+        deleteText: "Delete",
+        contextSaveSuccessString: "Map context saved succesfully",
+        contextSaveFailString: "Map context not saved succesfully",
+        contextCreateSuccessString: "Map created succesfully",
+        contextCreateFailString: "Map not created succesfully",
+        contextDeleteSuccessString: "Map deleted succesfully",
+        contextDeleteFailString: "Map not deleted succesfully",
+        saveTitle: "Save Map Context?",
+        saveMsg: "Would you like to save your changes?",
+        createTitle: "Create New Map?",
+        createMsg: "Would you like to save map context as new map?",
+        deleteTitle: "Delete Map?",
+        deleteMsg: "Would you like delete your map?",
+        addResourceButtonText: "Add Map",
+        contextMsg: 'Loading...',
+        mapMetadataTitle: "Insert Map Metadata",
+        mapMedatataSetTitle: "Map Metadata",
+        mapNameLabel: "Name",
+        mapDescriptionLabel: "Description",
+        conflictErrMsg: "A map with the same name already exists"
     }
+
 });
