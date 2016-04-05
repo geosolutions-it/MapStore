@@ -669,6 +669,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		var edClassObjects = [];
 		var rmpsObjects    = [];
 		
+		// here I should set the feasible {min,max} values for each axis (i.e. variable)
 		var xMin = 0, xMax = 0, xBuffer = 3;
 		var yMin = 0, yMax = 0, yBuffer = 3;
 		var zMin = 0, zMax = 0, zBuffer = 50;
@@ -678,16 +679,17 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			admName   = admUnits[i];
 			admValues = values[i][timeIndex]; // Ref Time || Cur Time
 			
+			// CHECKING NODE (are values within prescribed range?)
 			// xMin, xMax
-			if(xMin>admValues[0]){
-				xMin=admValues[0];
+			if(xMin>admValues[0] && admValues[0]>0){
+				xMin=admValues[0];// avoid assignment, it is done below, here manage a warning to be given to GUI user
 			}
 			if(xMax<admValues[0]){
 				xMax=admValues[0];
 			}
 			
 			// yMin, yMax
-			if(yMin>admValues[1]){
+			if(yMin>admValues[1] && admValues[1]>0){
 				yMin=admValues[1];
 			}
 			if(yMax<admValues[1]){
@@ -695,16 +697,29 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			}
 
 			// zMin, zMax
-			if(zMin>admValues[2]){
+			if(zMin>admValues[2] && admValues[2]>0){
 				zMin=admValues[2];
 			}
 			if(zMax<admValues[2]){
 				zMax=admValues[2];
 			}
-
+			
 			edClassObjects[i] = {x: admValues[0], y: admValues[1], z: admValues[2], name: admName};
 			rmpsObjects[i]    = [admValues[0], (admValues[2]/1000)*30, admValues[1]];
 		}
+
+		// ASSIGNING NODE
+		// xMin=max(xMin,admValues[0]-xBuffer);
+		// and write xmin in xAxis directly!!
+		// apply to y & z axis too!
+		xMin = Math.max(0, xMin-xBuffer);
+		xMax = xMax+xBuffer;
+
+		yMin = Math.max(0, yMin-yBuffer);
+		yMax = yMax+yBuffer;
+
+		zMin = Math.max(0, zMin-zBuffer);
+		zMax = zMax+zBuffer;
 
         var text1;
         var text2;
@@ -837,8 +852,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		            }
 		        },
 		        xAxis: {
-		        	min: xMin-xBuffer,
-		            max: xMax+xBuffer,
+		        	min: xMin,
+		            max: xMax,
 		            gridLineWidth: 1,
 		            title: {
 		                text: 'LCPI',
@@ -861,9 +876,9 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		                }
 		            }]
 		        },
-		        zAxis: { // Secondary yAxis
-		            min: zMin-zBuffer,
-		            max: zMax+zBuffer,
+		        zAxis: { 
+		            min: zMin,
+		            max: zMax,
 		            gridLineWidth: 1,
 		            tickInterval: 100,
 		            title: {
@@ -875,8 +890,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		            opposite: false
 		        },
 		        yAxis: { // Primary yAxis
-		        	min: yMin-yBuffer,
-		            max: yMax+yBuffer,
+		        	min: yMin,
+		            max: yMax,
 		            tickInterval: 3,
 		            gridLineWidth: 1,
 		            title: {
