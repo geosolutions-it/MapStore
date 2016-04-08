@@ -1,5 +1,5 @@
 /**
-* Copyright (c) 2008-2011 The Open Planning Project
+* Copyright (c) 2015 - 2016 Geo-Solutions S.A.S.
 *
 * Published under the GPL license.
 * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
@@ -27,6 +27,7 @@ Ext.namespace("gxp.plugins.he");
  *  .. class:: Styler(config)
  *
  *    Plugin providing a styles editing dialog for geoserver layers.
+ *    Based on styler.js
  */
 gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
 
@@ -144,7 +145,6 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
             menuText: this.menuText,
             iconCls: "gxp-icon-palette",
             disabled: true,
-            hidden: true,
             tooltip: this.tooltip,
             handler: function() {
                 this.addOutput();
