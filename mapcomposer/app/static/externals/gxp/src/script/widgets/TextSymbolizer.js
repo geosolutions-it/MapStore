@@ -76,7 +76,7 @@ gxp.TextSymbolizer = Ext.extend(Ext.Panel, {
     sizeText: "Size",
     priorityText: "Priority",
     labelOptionsText: "Label options",
-    autoWrapText: "Auto wrap",
+    autoWrapText: "Wrap if larger than",
     followLineText: "Follow line",
     maxDisplacementText: "Maximum displacement",
     repeatText: "Repeat",
@@ -112,7 +112,8 @@ gxp.TextSymbolizer = Ext.extend(Ext.Panel, {
     maxAngleDeltaHelp: "Designed to use used in conjuection with followLine, the maxAngleDelta option sets the maximum angle, in degrees, between two subsequent characters in a curved label. Large angles create either visually disconnected words or overlapping characters. It is advised not to use angles larger than 30.",
     polygonAlignHelp: "GeoServer normally tries to place horizontal labels within a polygon, and give up in case the label position is busy or if the label does not fit enough in the polygon. This options allows GeoServer to try alternate rotations for the labels. Possible options: the default value, only the rotation manually specified in the <Rotation> tag will be used (manual), If the label does not fit horizontally and the polygon is taller than wider the vertical alignement will also be tried (ortho), If the label does not fit horizontally the minimum bounding rectangle will be computed and a label aligned to it will be tried out as well (mbr).",
     graphic_marginHelp: "Similar to the margin shorthand property in CSS for HTML, its interpretation varies depending on how many margin values are provided: 1 = use that margin length on all sides of the label 2 = use the first for top & bottom margins and the second for left & right margins. 3 = use the first for the top margin, second for left & right margins, third for the bottom margin. 4 = use the first for the top margin, second for the right margin, third for the bottom margin, and fourth for the left margin.",
-
+    inPixelsText: "in pixels",
+    
     initComponent: function() {
 
         if(!this.symbolizer) {
@@ -434,6 +435,7 @@ gxp.TextSymbolizer = Ext.extend(Ext.Panel, {
                 geometryTypes: ["POINT"],
                 fieldLabel: this.displacementXText,
                 value: this.symbolizer.labelXOffset,
+                emptyText: this.inPixelsText,
                 listeners: {
                     change: function(field, value) {
                         this.symbolizer.labelXOffset = value;
@@ -446,6 +448,7 @@ gxp.TextSymbolizer = Ext.extend(Ext.Panel, {
                 geometryTypes: ["POINT"],
                 fieldLabel: this.displacementYText,
                 value: this.symbolizer.labelYOffset,
+                emptyText: this.inPixelsText,
                 listeners: {
                     change: function(field, value) {
                         this.symbolizer.labelYOffset = value;
@@ -511,7 +514,7 @@ gxp.TextSymbolizer = Ext.extend(Ext.Panel, {
             checkboxToggle: true,
             collapsed: !(this.symbolizer.vendorOptions['autoWrap'] || this.symbolizer.vendorOptions['followLine'] || this.symbolizer.vendorOptions['maxAngleDelta'] || this.symbolizer.vendorOptions['maxDisplacement'] || this.symbolizer.vendorOptions['repeat'] || this.symbolizer.vendorOptions['forceLeftToRight'] || this.symbolizer.vendorOptions['group'] || this.symbolizer.vendorOptions['spaceAround'] || this.symbolizer.vendorOptions['labelAllGroup'] || this.symbolizer.vendorOptions['conflictResolution'] || this.symbolizer.vendorOptions['goodnessOfFit'] || this.symbolizer.vendorOptions['polygonAlign']),
             autoHeight: true,
-            labelWidth: 80,
+            labelWidth: 100,
             defaults: {
                 width: 100
             },
@@ -519,7 +522,8 @@ gxp.TextSymbolizer = Ext.extend(Ext.Panel, {
                 this.createVendorSpecificField({
                     name: 'autoWrap',
                     allowBlank: false,
-                    fieldLabel: this.autoWrapText
+                    fieldLabel: this.autoWrapText,
+                    emptyText: this.inPixelsText
                 }),
                 this.createVendorSpecificField({
                     name: 'followLine', 
@@ -546,7 +550,8 @@ gxp.TextSymbolizer = Ext.extend(Ext.Panel, {
                 }),
                 this.createVendorSpecificField({
                     name: 'maxDisplacement',
-                    fieldLabel: this.maxDisplacementText
+                    fieldLabel: this.maxDisplacementText,
+                    emptyText: this.inPixelsText
                 }),
                 this.createVendorSpecificField({
                     name: 'repeat',

@@ -46,6 +46,8 @@ gxp.PointSymbolizer = Ext.extend(Ext.Panel, {
     symbolText: "Symbol",
     sizeText: "Size",
     rotationText: "Rotation",
+    inPixelsText: "in pixels",
+    inDegreesText: "in degrees",
     
     /** api: config[pointGraphics]
      *  ``Array``
@@ -243,6 +245,7 @@ gxp.PointSymbolizer = Ext.extend(Ext.Panel, {
             name: "size",
             fieldLabel: this.sizeText,
             value: this.symbolizer["pointRadius"] && this.symbolizer["pointRadius"] * 2,
+            emptyText: this.inPixelsText,
             listeners: {
                 change: function(field, value) {
                     this.symbolizer["pointRadius"] = value / 2;
@@ -256,6 +259,7 @@ gxp.PointSymbolizer = Ext.extend(Ext.Panel, {
             name: "rotation",
             fieldLabel: this.rotationText,
             value: this.symbolizer["rotation"],
+            emptyText: this.inDegreesText,
             listeners: {
                 change: function(field, value) {
                     this.symbolizer["rotation"] = value;
