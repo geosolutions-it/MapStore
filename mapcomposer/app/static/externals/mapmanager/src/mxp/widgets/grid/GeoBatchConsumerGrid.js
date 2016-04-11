@@ -502,7 +502,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 				enable = true;
 			}
 		}
-		this.archive.setDisabled(!enable);
+		this.archive && this.archive.setDisabled(!enable);
 	},
 	
 	/**
