@@ -44,7 +44,7 @@
             "ptype": "gxp_wmssource",
             "title": "GeoServer Hart Energy",
             "version":"1.1.1",
-            "projection":"EPSG:900913",
+            "projection":"EPSG:3857",
             "url": "http://he.geo-solutions.it/geoserver/ows",
             "layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
             "authParam":"authkey",
@@ -73,7 +73,7 @@
     "tab":true,
 
     "map": {
-        "projection": "EPSG:900913",
+        "projection": "EPSG:3857",
         "units": "m",
         "center":[
          -10485835.573159,
@@ -396,7 +396,7 @@
                     "spatialSelectorFieldset":{
                         "collapsed":true
                     },
-                  "outputSRS": "EPSG:900913",
+                  "outputSRS": "EPSG:3857",
                   "selectStyle":{
                           "strokeColor": "#ee9900",
                           "fillColor": "#ee9900",
