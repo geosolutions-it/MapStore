@@ -47,7 +47,8 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
      *  Text for layer properties action tooltip (i18n).
      */
     tooltip: "Manage layer styles",
-
+    tooltipRestricted: "This feature is available only for advanced users.<br>To change your subscription, please contact Hart Energy",
+    
     /** api: config[sameOriginStyling]
      *  ``Boolean``
      *  Only allow editing of styles for layers whose sources have a URL that
@@ -241,10 +242,11 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
                     this.launchAction.setHidden(!this.geostoreSource);
                 }
 
-                /*if (this.target.isAuthorized()) {
-                    // check if service is available
-                    this.enableActionIfAvailable(url);
-                }*/
+                if(this.advancedUser || this.roleAdmin){
+                    this.launchAction.items[0].setTooltip(this.tooltip);
+                }else{
+                    this.launchAction.items[0].setTooltip(this.tooltipRestricted);
+                }
             }
         }
     },

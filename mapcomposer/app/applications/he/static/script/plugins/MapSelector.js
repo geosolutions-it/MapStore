@@ -1,5 +1,5 @@
 /**
- *  Copyright (C) 2007 - 2015 GeoSolutions S.A.S.
+ *  Copyright (C) 2015 - 2016 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -181,7 +181,16 @@ gxp.plugins.he.MapSelector = Ext.extend(gxp.plugins.Tool, {
      * {string}
      */
     conflictErrMsg: "A map with the same name already exists",
-
+    
+    /**
+     * Tooltips
+     */
+    tooltipCreateMap: "Save this map with a new name",
+    tooltipSaveMap: "Save this map",
+    tooltipDeleteMap: "Delete this map",
+    
+    tooltipRestricted: "This feature is available only for advanced users.<br>To change your subscription, please contact Hart Energy",
+     
      /** api: method[addActions]
      */
     addActions: function() {
@@ -215,11 +224,12 @@ gxp.plugins.he.MapSelector = Ext.extend(gxp.plugins.Tool, {
             authToken: this.target.authToken || undefined,
             proxy: this.target.proxy
         });
-        this.saveBtn = new Ext.menu.CheckItem({
+        this.saveBtn = new Ext.Button({
             text: this.saveText,
             iconCls: "gxp-icon-savedefaultcontext",
             allowDepress:false,
             disabled:true,
+            tooltip: (this.roleAdmin || this.advancedUser) ? this.tooltipSaveMap : this.tooltipRestricted,
             ref:"../saveBtn",
             handler: function() {
                     Ext.Msg.show({
@@ -240,10 +250,11 @@ gxp.plugins.he.MapSelector = Ext.extend(gxp.plugins.Tool, {
             },
             scope: this
         });
-        this.createBtn = new Ext.menu.CheckItem({
+        this.createBtn = new Ext.Button({
             text: this.createText,
             iconCls: "map_add",
             toggleGroup: this.toggleGroup,
+            tooltip: (this.roleAdmin || this.advancedUser) ? this.tooltipCreateMap : this.tooltipRestricted,
             allowDepress:false,
             disabled:false,
             handler:function() {
@@ -263,9 +274,10 @@ gxp.plugins.he.MapSelector = Ext.extend(gxp.plugins.Tool, {
                 },
             scope: this
         });
-        this.deleteBtn = new Ext.menu.CheckItem({
+        this.deleteBtn = new Ext.Button({
             text: this.deleteText,
             iconCls: "map_delete",
+            tooltip: (this.roleAdmin || this.advancedUser) ? this.tooltipDeleteMap : this.tooltipRestricted,
             allowDepress:false,
             disabled:true,
             handler: function(){
@@ -284,7 +296,7 @@ gxp.plugins.he.MapSelector = Ext.extend(gxp.plugins.Tool, {
 
                  },
                 scope: this
-    });
+        });
 
         var menuBtn = new Ext.SplitButton({
             text: this.mapActionText,
@@ -299,7 +311,8 @@ gxp.plugins.he.MapSelector = Ext.extend(gxp.plugins.Tool, {
         var user = this.user;
         var config = {
             xtype:'buttongroup',
-            items: [{
+            items: [
+{
                 xtype:"gxp_mapscombobox",
                 geoStoreBase: this.target.geoStoreBaseURL,
                 defaultSelection: this.target.mapId || null,
@@ -331,15 +344,21 @@ gxp.plugins.he.MapSelector = Ext.extend(gxp.plugins.Tool, {
                     },
                     defaultLoaded: function(record){
                             if(record.get("id") === this.target.mapId){
-                                (record.json.canEdit) ? this.saveBtn.enable():this.saveBtn.disable();
-                                (record.json.canDelete) ? this.deleteBtn.enable():this.deleteBtn.disable();
-                                (record.json.canCopy) ? this.createBtn.enable():this.createBtn.disable();
+                                if(!(this.roleAdmin || this.advancedUser)){
+                                    this.saveBtn.disable();
+                                    this.deleteBtn.disable();
+                                    this.createBtn.disable();
+                                }else {
+                                    (record.json.canEdit) ? this.saveBtn.enable():this.saveBtn.disable();
+                                    (record.json.canDelete) ? this.deleteBtn.enable():this.deleteBtn.disable();
+                                    (record.json.canCopy) ? this.createBtn.enable():this.createBtn.disable();
+                                }
                             }
 
                     },
                 scope:this
                 }
-            }, menuBtn]};
+            }, this.createBtn, this.saveBtn, this.deleteBtn]};
 
         //We have to insert the tool at passed index
         var idx = this.idx || null;

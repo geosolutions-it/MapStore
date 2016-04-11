@@ -360,7 +360,7 @@
             "actionTarget": "paneltbar",
             "text": "Help",
             "tooltip":"MapStore Guide",
-            "index": 24,
+            "index": 25,
             "showOnStartup": false,
             "fileDocURL": "https://github.com/geosolutions-it/MapStore/wiki"
         }, {
@@ -447,7 +447,7 @@
         {
           "ptype": "gxp_mapselector",
           "outputTarget":"paneltbar",
-          "idx":24
+          "idx":23
         }
 
     ]
