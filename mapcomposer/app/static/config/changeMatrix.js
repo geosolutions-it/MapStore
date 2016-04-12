@@ -61,6 +61,16 @@
 				"name"  : "osm",
 				"group" : "background"
 			},{
+			    "source": "ol",
+			    "title": "No Background",
+			    "group": "background",
+			    "fixed": true,
+			    "type": "OpenLayers.Layer",
+			    "visibility": false,
+			    "args": [
+			     "None", {"visibility": false}
+			    ]
+			},{
                 "source": "jrc",
                 "group" : "Touring Land Cover",
 				"title" : "Touring Land Cover L3",
