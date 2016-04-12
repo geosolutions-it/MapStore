@@ -1239,7 +1239,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		if(config.refTime
 			&& config.refTime.output
 			&& config.refTime.output.layerName){
-			item0 = this.generateBarItem(config.refTime.output.layerName, config.refTime.time.substring(0,4)+" ["+this.referenceTimeTitleText+"]", title);	
+			
+			item0 = this.generateBarItem(config.refTime.output.layerName, config.refTime.time.substring(0,4)+" ["+(config.index.id == 3 || config.index.id == 4 ? "Diff" : this.referenceTimeTitleText)+"]", title);	
 		}
 
 		// curr time layer

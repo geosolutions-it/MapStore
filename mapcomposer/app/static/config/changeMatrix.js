@@ -19,7 +19,8 @@
 			"ptype": "gxp_osmsource"
 		},
 		"google": {
-			"ptype": "gxp_googlesource" 
+			"ptype": "gxp_googlesource",
+			"useTiltImages": true
 		},
 		"ol": { 
 			"ptype": "gxp_olsource" 

@@ -71,8 +71,8 @@ gxp.plugins.Graticule = Ext.extend(gxp.plugins.Tool, {
 			  visible: true                  
 		});
 		 
-		graticule.labelSymbolizer.fontColor = '#45F760';   
-		graticule.lineSymbolizer.strokeColor = "#45F760";  
+		graticule.labelSymbolizer.fontColor = '#FF0000';   
+		graticule.lineSymbolizer.strokeColor = "#FF0000";  
         
         var graticuleButton = new Ext.Button({
             menuText: this.graticuleMenuText,
