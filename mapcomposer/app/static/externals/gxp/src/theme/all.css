@@ -98,6 +98,10 @@
     background-image: url(img/decline.png);
 }
 
+.error { 
+    background-image: url(img/decline.png) !important;
+}
+
 .x-btn .edit {
     background-image: url(img/pencil.png);
 }

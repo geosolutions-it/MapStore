@@ -824,7 +824,11 @@ GeoExt.Lang.add("it", {
         noFilterSelectedMsgText: "Devi selezionare almeno un filtro",
         invalidRegexFieldMsgTitle: "Campo non valido",
         invalidRegexFieldMsgText: "Uno o più campi non sono stati riempiti correttamente!",
-        generateChartText: "Grafici"
+        generateChartText: "Grafici",
+        crossQueryByAttributesText: "Filtra usando un livello",
+        crossQueryEmptyLayerText: "selezionare un livello",
+        crossQuerySelectionText: "Selezione",
+        crossQueryLayerText: "Livello"
     },
 
 	"gxp.plugins.FeatureManager.prototype":{

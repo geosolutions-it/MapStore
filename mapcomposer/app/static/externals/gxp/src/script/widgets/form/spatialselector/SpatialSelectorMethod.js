@@ -300,7 +300,7 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
      *  :returns: ``Object`` filter to perform a WFS query
 	 * Generate a filter for the selected method
 	 */
-	getQueryFilter: function(){
+	getQueryFilter: function(geometryFunction){
 		var operation = null;
 		if(this.addGeometryOperation && !this.geometryOperationFieldset.collapsed){
 			if(this.geometryOperation.isValid() ){
@@ -317,22 +317,24 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 		}else{
 			operation = OpenLayers.Filter.Spatial.INTERSECTS;
 		}
-		if(this.currentGeometry){
+		var filterValue = this.currentGeometry || geometryFunction;
+		if(filterValue){
 			switch (operation){
 				case OpenLayers.Filter.Spatial.CONTAINS:
 				case OpenLayers.Filter.Spatial.INTERSECTS:
+					var bounds = this.currentGeometry ? this.currentGeometry.getBounds() : null;
 					this.currentFilter = new OpenLayers.Filter.Spatial({
 						type: operation,
 						property:  this.filterGeometryName,
-						value: this.currentGeometry,
-						bounds: this.currentGeometry.getBounds()
+						value: filterValue,
+						bounds: bounds
 					});
 					break;
 				case OpenLayers.Filter.Spatial.WITHIN:
 					this.currentFilter = new OpenLayers.Filter.Spatial({
 						type: operation,
 						property:  this.filterGeometryName,
-						value: this.currentGeometry
+						value: filterValue
 					});
 					break;
 				case OpenLayers.Filter.Spatial.DWITHIN:
@@ -343,7 +345,7 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 							property:  this.filterGeometryName,
 					        distanceUnits: this.dunits.getValue(),
 					        distance: this.distance.getValue(),
-							value: this.currentGeometry
+							value: filterValue
 						});
 					}else{
 		                Ext.Msg.show({
@@ -357,10 +359,11 @@ gxp.widgets.form.spatialselector.SpatialSelectorMethod = Ext.extend(Ext.Containe
 					break;
 				case OpenLayers.Filter.Spatial.BBOX:
 				default: 
+				    var boundsOrFilterValue = this.currentGeometry ? this.currentGeometry.getBounds() : filterValue;
 					this.currentFilter = new OpenLayers.Filter.Spatial({
 						type: OpenLayers.Filter.Spatial.BBOX,
 						property:  this.filterGeometryName,
-						value: this.currentGeometry.getBounds()
+						value: boundsOrFilterValue
 					});
 			}
 			

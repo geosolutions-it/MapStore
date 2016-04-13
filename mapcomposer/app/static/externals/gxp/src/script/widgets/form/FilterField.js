@@ -144,7 +144,7 @@ gxp.form.FilterField = Ext.extend(Ext.form.CompositeField, {
                 this.valueWidgets.add(this.addValidation(this.createValueWidget('lower', value[0])));
                 this.valueWidgets.add(this.addValidation(this.createValueWidget('upper', value[1])));
             } else if(type === OpenLayers.Filter.Comparison.IS_NULL){
-               this.filter.value='NULL';
+               this.filter.value=null;
             }
             else {
                 this.valueWidgets.add(this.addValidation(this.createValueWidget('single', value[0])));

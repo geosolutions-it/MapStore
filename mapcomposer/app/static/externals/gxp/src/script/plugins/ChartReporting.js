@@ -62,6 +62,10 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     browseText: "Browse...",
     invalidChartText: "Invalid chart",
 
+    wpsErrorWindowMsgTitle: 'WPS Request Error',
+    wpsErrorWindowMsgText: "The WPS request was not successful.",   
+    tooManyFeaturesWindowMsgText: "The WPS internal GetFeature request uses to many features.",   
+
     spatialSelectorFormId: null,
 
     // REMOVE THIS WHEN ALL FEATURES ARE IMPLEMENTED
@@ -387,6 +391,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
         }
     },
     generateChart: function(record){
+        var me = this;
         var chartConfig = record.data;
         var store = new Ext.data.ArrayStore({
             root: 'AggregationResults',
@@ -398,7 +403,72 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             proxy : new Ext.data.HttpProxy({
                 method: 'POST',
                 url: chartConfig.url,
-                xmlData: this.getWpsRequest(chartConfig)
+                xmlData: this.getWpsRequest(chartConfig),
+                listeners:{
+                   exception: function(proxy, type, action, options, response, arg) {
+                        me.canvasWindow.hide();
+
+                        var errorDetails = response.responseText;
+                        var errorMessage = me.wpsErrorWindowMsgText;
+
+                        if (errorDetails.indexOf("The query in queryCollection returns too many features") >= 0) {
+                            errorMessage = me.tooManyFeaturesWindowMsgText;
+                        }
+
+                        var messagePanel = new Ext.Panel({
+                              layout:'Anchor',
+                              border:false,
+                              bodyBorder:false,
+                              hideBorders:true,
+                              items: [{
+                                xtype:'textarea',
+                                layout:'anchor',
+                                anchor: '100%',
+                                height: '20%',
+                                readOnly:true,
+                                value: errorMessage,
+                                autoScroll: true
+                              }]
+                        });
+
+                        var detailsPanel = new Ext.Panel({
+                            title: 'Details',
+                            layout:'Anchor',
+                            collapsible: true,
+                            collapsed: true,
+                            border:false,
+                            bodyBorder:false,
+                            hideBorders:true,
+                            items: [{
+                                xtype:'textarea',
+                                layout:'anchor',
+                                anchor: '100%',
+                                readOnly:true,
+                                value: errorDetails,
+                                autoScroll: true
+                            }]
+                        });
+
+                        var errorWindow = new Ext.Window({
+                            resizable: false,
+                            title: me.wpsErrorWindowMsgTitle,
+                            closeAction: "hide",
+                            layout: "Anchor",
+                            width: 550,
+                            modal: true,
+                            iconCls: 'error',
+                            iconMask: true,
+                            items: [messagePanel, detailsPanel],
+                             buttons: [{
+                                text: 'Close',
+                                handler: function(){
+                                    errorWindow.hide();
+                                }
+                            }]
+                        });
+                        errorWindow.show();
+                   }
+                }
             })
         });
         var exportPng = function(event, toolEl, panel){
@@ -408,7 +478,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             }
             var me = this;
             // canvasWindow.chartsPanel.items.items[0].items.items[0].getEl().dom is mad. Use a method from the panel
-            var target = canvasWindow.chartsPanel.items.items[0].items.items[0].getEl().dom
+            var target = me.canvasWindow.chartsPanel.items.items[0].items.items[0].getEl().dom
             var tgtparent = target.parentElement;
             var originalClass = target.className;
 
@@ -433,7 +503,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             });
 
         };
-        var canvasWindow = new Ext.Window({
+        this.canvasWindow = new Ext.Window({
             title: chartConfig.title,
             layout:'border',
             modal: true,
@@ -508,8 +578,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 handler: exportPng
             }]
         }).show();
-        this.openWindows[record.get('id')] = canvasWindow;
-
+        this.openWindows[record.get('id')] = this.canvasWindow;
     },
     getWpsRequest: function(chartConfig) {
         return String.format(
