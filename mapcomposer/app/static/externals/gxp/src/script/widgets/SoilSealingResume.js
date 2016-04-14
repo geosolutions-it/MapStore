@@ -1247,6 +1247,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		if(config.curTime
 			&& config.curTime.output
 			&& config.curTime.output.layerName){
+
 			item1 = this.generateBarItem(config.curTime.output.layerName, config.curTime.time.substring(0,4)+" ["+this.currentTimeTitleText+"]", title);	
 		}
 

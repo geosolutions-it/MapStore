@@ -188,6 +188,19 @@
            "geostorePassword": "admin",
            "geostoreProxy": "/proxy?url="
         },{
+	        "ptype":"gxp_print",
+	        "customParams":{
+	            "outputFilename":"mapstore-print",
+	            "geodetic": true
+	        },
+	        "ignoreLayers": "Open Street Map,MapQuest OpenStreetMap,Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
+	        "printService":"http://143.225.214.136/geoserver/pdf/",
+	        "legendPanelId":"legendPanel",
+	        "actionTarget":{
+	            "target":"paneltbar",
+	            "index":4
+	        }
+	    },{
             "ptype": "gxp_wfsgrid",
             "addLayerTool": "addlayer",
 	        "id": "wfsChangeMatrisGridPanel",

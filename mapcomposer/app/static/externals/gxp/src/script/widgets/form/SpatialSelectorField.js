@@ -619,10 +619,11 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 						if(returnType == "subs"){
 							var store = me.geocodingPanel.getStore();
 							// clean grid store and geocoder drawings if already selected more than one
-							if(store.data.items.length > 1){
+							// - AF - Disabled
+							/*if(store.data.items.length > 1){
 								store.removeAll();
 								me.geocoderDrawings.destroyFeatures();
-							}
+							}*/
 						}
 					}
 				}
