@@ -52,9 +52,6 @@ gxp.charts.ChartContainer = Ext.extend(Ext.Container, {
         this.items = [{
                 xtype:'gxp_chart_panel',
                 title: this.chartTypeTitleText,
-                anchor:'100%',
-                layout:'border',
-                height:400,
                 legendRef:'legendPanel',
                 store:this.store,
                 // showLegend: this.chartConfig.chartType !== 'gauge' && this.chartConfig.chartType !== 'line' && this.chartConfig.chartType !== 'bar',
