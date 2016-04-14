@@ -61,6 +61,9 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     loadText: "Load",
     browseText: "Browse...",
     invalidChartText: "Invalid chart",
+    orText: "or",
+    fileText: "File",
+    sharedText: "Shared",
 
     wpsErrorWindowMsgTitle: 'WPS Request Error',
     wpsErrorWindowMsgText: "The WPS request was not successful.",   
@@ -693,67 +696,81 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                     defaults: {width: 240},
                     defaultType: 'textfield',
                     items: [
-                        new Ext.ux.form.FileUploadField({
-                            id: "chart-file-form",
-                            buttonText: me.browseText,
-                            fieldLabel: this.loadFromFileText,
-                            width: 240,
-                            listeners: {
-                                scope: this,
-                                fileselected: function(selector, value) {
-                                    var fileElId = selector.getFileInputId();
-                                    var fileInput = document.getElementById(fileElId).files[0];
-                                    selector.getAsText(fileInput);
-                                }
-                            },
-                            getAsText: function(readFile) {
-                                var reader = new FileReader();
-                                reader.readAsText(readFile, "UTF-8");
-                                reader.onprogress = this.onProgress;
-                                reader.onload = this.onLoad;
-                                reader.onerror = this.onError;
-                            },
-                            onLoad: function(evt) {
-                                me.loadFromString(evt.target.result);
-                                win.close();
-                            },
-                            onError: function(evt) {
-                                Ext.Msg.show({
-                                   msg: me.fileErrorText,
-                                   buttons: Ext.Msg.OK,
-                                   animEl: 'elId',
-                                   icon: Ext.MessageBox.ERROR
-                                });
-                                win.close();
-                            }
-                        }),
-                        {
-                            xtype: 'compositefield',
+                        new Ext.TabPanel({
+                            renderTo: Ext.getBody(),
+                            activeTab: 0,
                             items: [
-                               {
-                                    xtype: 'textfield',
-                                    id: 'chart-shared-id',
-                                    fieldLabel: this.loadByIdText,
-                                    width: 180
+                                {
+                                    xtype: 'panel',
+                                    title: this.fileText,
+                                    layout:'fit',
+                                    items: [
+                                        new Ext.ux.form.FileUploadField({
+                                            id: "chart-file-form",
+                                            buttonText: me.browseText,
+                                            fieldLabel: this.loadFromFileText,
+                                            width: 240,
+                                            listeners: {
+                                                scope: this,
+                                                fileselected: function(selector, value) {
+                                                    var fileElId = selector.getFileInputId();
+                                                    var fileInput = document.getElementById(fileElId).files[0];
+                                                    selector.getAsText(fileInput);
+                                                }
+                                            },
+                                            getAsText: function(readFile) {
+                                                var reader = new FileReader();
+                                                reader.readAsText(readFile, "UTF-8");
+                                                reader.onprogress = this.onProgress;
+                                                reader.onload = this.onLoad;
+                                                reader.onerror = this.onError;
+                                            },
+                                            onLoad: function(evt) {
+                                                me.loadFromString(evt.target.result);
+                                                win.close();
+                                            },
+                                            onError: function(evt) {
+                                                Ext.Msg.show({
+                                                   msg: me.fileErrorText,
+                                                   buttons: Ext.Msg.OK,
+                                                   animEl: 'elId',
+                                                   icon: Ext.MessageBox.ERROR
+                                                });
+                                                win.close();
+                                            }
+                                        })
+                                    ]
                                 },
                                 {
-                                    xtype: 'button',
-                                    text: me.loadText,
-                                    flex: 1,
-                                    scope: this,
-                                    handler: function(){
-                                        var textField = Ext.getCmp('chart-shared-id');
-                                        if(textField.isDirty() && textField.isValid()){
-                                            var sharedId = textField.getValue();
-                                            this.loadSharedChart(sharedId);
-                                            win.close();
-                                        } else {
-                                            Ext.Msg.alert(null, me.provideSharedIdText);
+                                    xtype: 'compositefield',
+                                    title: this.sharedText,
+                                    items: [
+                                       {
+                                            xtype: 'textfield',
+                                            id: 'chart-shared-id',
+                                            fieldLabel: this.loadByIdText,
+                                            width: '80%'
+                                        },
+                                        {
+                                            xtype: 'button',
+                                            text: me.loadText,
+                                            flex: 1,
+                                            scope: this,
+                                            handler: function(){
+                                                var textField = Ext.getCmp('chart-shared-id');
+                                                if(textField.isDirty() && textField.isValid()){
+                                                    var sharedId = textField.getValue();
+                                                    this.loadSharedChart(sharedId);
+                                                    win.close();
+                                                } else {
+                                                    Ext.Msg.alert(null, me.provideSharedIdText);
+                                                }
+                                            }
                                         }
-                                    }
+                                    ]
                                 }
                             ]
-                        }
+                        })
                        ],
                     buttons: [{
                         iconCls: 'cancel',
