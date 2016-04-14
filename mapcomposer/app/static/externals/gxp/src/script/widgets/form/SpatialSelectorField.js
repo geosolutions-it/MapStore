@@ -1285,9 +1285,10 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 							var returnType = this.returnType.getValue();
 
 							// clean gri
-							if(outputValue == "geocoder" && returnType == "subs"){
+							// - AF - Disabled
+							/*if(outputValue == "geocoder" && returnType == "subs"){
 								me.geocodingPanel.getStore().removeAll();
-							}
+							}*/
 							
 							var sameRecords = [];
 							for(var i=0; i<size; i++){
