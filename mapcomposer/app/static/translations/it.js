@@ -983,6 +983,9 @@ GeoExt.Lang.add("it", {
         closeText: 'Chiudi',
         editChartText: 'Modifica Grafico',
         loadText: "Carica",
-        browseText: "Sfoglia..."
+        browseText: "Sfoglia...",
+        orText: "oppure",
+        fileText: "File",
+        sharedText: "Condiviso"
     }
 });
