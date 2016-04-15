@@ -38,6 +38,7 @@ gxp.charts.ChartPanel = Ext.extend(Ext.Panel, {
     showLegend:true,
     autoScroll:true,
     header: false,
+    cls: 'chart-panel-container',
     initComponent: function () {
 
         this.addEvents('chartrefresh');
