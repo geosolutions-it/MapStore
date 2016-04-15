@@ -574,7 +574,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                     },{
                         xtype: 'button',
                         ref:'../../print',
-                        iconCls: 'gxp-icon-print',
+                        iconCls: 'gxp-icon-pngexport',
                         text: this.exportPngText,
                         scope: this,
                         handler: exportPng

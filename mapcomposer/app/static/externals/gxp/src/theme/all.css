@@ -568,3 +568,7 @@ div.olMap div.gx-overlay-playback {
 .chart-panel-container .x-panel-bwrap {
     height:100%;
 }
+
+.x-btn .gxp-icon-pngexport, .x-menu-item .gxp-icon-pngexport {
+    background-image: url(img/silk/picture_save.png) !important;
+}
