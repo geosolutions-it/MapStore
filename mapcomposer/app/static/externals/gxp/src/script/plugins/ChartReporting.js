@@ -64,7 +64,9 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
 
     wpsErrorWindowMsgTitle: 'WPS Request Error',
     wpsErrorWindowMsgText: "The WPS request was not successful.",   
-    tooManyFeaturesWindowMsgText: "The WPS internal GetFeature request uses to many features.",   
+    tooManyFeaturesWindowMsgText: "The WPS internal GetFeature request uses to many features.",
+
+    exportPngText: "Export as PNG",
 
     spatialSelectorFormId: null,
 
@@ -569,13 +571,15 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                             this.download(finalFile, chartConfig.title + ".csv", "attachment/csv");
 
                         }
+                    },{
+                        xtype: 'button',
+                        ref:'../../print',
+                        iconCls: 'gxp-icon-print',
+                        text: this.exportPngText,
+                        scope: this,
+                        handler: exportPng
                     }]
                 }]
-            }],
-            tools : [{
-                id:'print',
-                scope: this,
-                handler: exportPng
             }]
         }).show();
         this.openWindows[record.get('id')] = this.canvasWindow;
