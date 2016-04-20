@@ -37,7 +37,7 @@ gxp.widgets.charts.ChartReportingPanel = Ext.extend(Ext.DataView, {
             '<tpl for=".">',
             '<div class="thumb-wrap" id="{company}">',
             '<div class="thumb"><div class="chart-item chart-item-{chartType}"></div></div>',
-            '<div class="chart-icon chart-icon-{chartType}"></div>',
+            '<div class="chart-icon chart-icon-{chartStatus}"></div>',
             '<div id={[this.getRemoveId(values)]} class="remove-chart icon-reset"></div>',
             '<span>{title}</span></div>',
             '</tpl>',{

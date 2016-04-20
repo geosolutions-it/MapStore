@@ -30,8 +30,8 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
 
     category: "CHARTS",
 
-    saveText: "Save",
-    shareText: "Share",
+    saveText: "Download",
+    shareText: "Save",
     loadChartText: "Load Chart",
     loadFromFileText: "Open from a file",
     loadByIdText: "Open from a shared ID",
@@ -47,6 +47,9 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     invalidSharedId: "Invalid shared ID",
     provideSharedIdText: "Please provide a shared ID",
     cannotCreateResourceText: "Unable to create resource",
+    cannotupdateResourceDataText: "Unable to update resource",
+    cannotCreateDuplicateResourceText: "A resource with the same name already exists",
+    cannotDeleteResourceText: "Unable to delete resource",
     cannotMakeResourcePublicText: "Unable to make resource public",
     chartTypeText: "Tipo grafico",
     aggregationText: "Aggregazione",
@@ -61,6 +64,14 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     loadText: "Load",
     browseText: "Browse...",
     invalidChartText: "Invalid chart",
+    fileText: "File",
+    sharedText: "Saved",
+    chartAlreadyLoadedText: "Chart already loaded",
+    deleteSharedChartText: "Delete Chart From Server",
+    deleteSessionChartText: "Delete Chart From Current Session",
+    deleteChartConfirmationText: "Are you sure you want to delete this chart ? It will be removed from the server permanently.",
+    deleteSessionChartConfirmationText: "Are you sure you want to delete this chart from the current session ?",
+    shareUrlText: "Share URL",
 
     wpsErrorWindowMsgTitle: 'WPS Request Error',
     wpsErrorWindowMsgText: "The WPS request was not successful.",   
@@ -109,6 +120,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                'xFieldType','yFieldType',
                'gaugeMax',
                'spatialSelectorForm',
+               'chartSource',
                {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'}
             ],
         });
@@ -122,14 +134,25 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 contextMenu: function(view, index, node, e){
                    var obj = this.store.getAt(index);
                    var contextMenu = new Ext.menu.Menu({items: [{
-                            iconCls: 'icon-disk',
+                            iconCls: 'icon-download',
                             text: me.saveText,
                             handler: function(){
                                 var obj = view.store.getAt(index);
                                 obj.set('win', undefined);
                                 me.downloadChart(obj);
                             }
-                        },{
+                        },
+                        {
+                            iconCls: 'icon-database-save',
+                            text: me.shareText,
+                            hidden: me.getUserDetails() ? false : true,
+                            handler: function() {
+                                var selected = view.store.getAt(index);
+                                selected.set('win', undefined);
+                                me.shareChart(selected);
+                            }
+                        }
+                        ,{
                         text: me.editChartOptionsText,
                         tooltip: me.editChartOptionsText,
                         iconCls: 'icon-chart-edit',
@@ -270,12 +293,18 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                             handler: function() {
                                                 var record = view.store.getAt(index);
                                                 var data = this.ownerCt.ownerCt.form.getFieldValues();
+                                                var modified = false;
+                                                record.set('oldTitle', record.data.title);
                                                 for (var r in data) {
                                                     if (data.hasOwnProperty(r)) {
                                                        if(record.data.hasOwnProperty(r)){
                                                            record.set(r, data[r]);
+                                                           modified = true;
                                                        }
                                                     }
+                                                }
+                                                if (modified && record.data.chartSource == 'share') {
+                                                    record.set('chartStatus', 'modified');
                                                 }
                                                 win.close();
                                             }
@@ -297,8 +326,103 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                         scope: this,
                         handler: function() {
                             me.reloadSettings(view.store.getAt(index))
+                        }},
+                        {
+                            text: me.shareUrlText,
+                            tooltip: me.shareUrlText,
+                            iconCls: 'icon-share',
+                            scope: this,
+                            hidden: view.store.getAt(index).data.chartSource != 'share',
+                            handler: function() {
+                                var geoStoreId = view.store.getAt(index).data.geoStoreId;
+                                me.params.chart = geoStoreId;
+                                var shareUrl = me.paramsParts[0] + '?' + Ext.urlEncode(me.params);
+
+                                var showUrlWindow = new Ext.Window({
+                                    resizable: false,
+                                    title: me.shareUrlText,
+                                    width: 400,
+                                    buttonAlign : 'center',
+                                    items: [
+                                        {
+                                            xtype: 'compositefield',
+                                            items: [
+                                                {
+                                                    xtype: 'textfield',
+                                                    flex: 1,
+                                                    value: shareUrl,
+                                                    readOnly: true
+                                                },
+                                                {
+                                                    xtype: 'button',
+                                                    scope: this,
+                                                    iconCls: 'icon-link-go',
+                                                    width: 30,
+                                                    handler: function(){
+                                                        var win = window.open(shareUrl, '_blank');
+                                                        win.focus();
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    buttons: [{
+                                        text: 'Close',
+                                        handler: function(){
+                                            showUrlWindow.hide();
+                                        }
+                                    }]
+                                });
+                                showUrlWindow.show();
+                            }
+                        },
+                        {
+                            text: me.deleteSharedChartText,
+                            tooltip: me.deleteSharedChartText,
+                            iconCls: 'icon-database-delete',
+                            scope: this,
+                            hidden: me.getUserDetails() ? view.store.getAt(index).data.chartSource != 'share' : true,
+                            handler: function() {
+                                Ext.MessageBox.show({
+                                    title: me.deleteSharedChartText,
+                                    msg: me.deleteChartConfirmationText,
+                                    buttons: Ext.MessageBox.YESNO,
+                                    icon: Ext.MessageBox.WARNING,
+                                    fn: function(button) {
+                                        if(button == 'yes') {
+                                            var chart = view.store.getAt(index);
+                                            var authHeader = me.getUserDetails().token;
+                                            me.deleteResource(authHeader, chart.data.geoStoreId, me, 
+                                                function() {
+                                                    view.store.remove(chart);
+                                                }
+                                            ); 
+                                        }
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            text: me.deleteSessionChartText,
+                            tooltip: me.deleteSessionChartText,
+                            iconCls: 'error',
+                            scope: this,
+                            handler: function() {
+                                Ext.MessageBox.show({
+                                    title: me.deleteSessionChartText,
+                                    msg: me.deleteSessionChartConfirmationText,
+                                    buttons: Ext.MessageBox.YESNO,
+                                    icon: Ext.MessageBox.WARNING,
+                                    fn: function(button) {
+                                        if(button == 'yes') {
+                                            var chart = view.store.getAt(index);
+                                            view.store.remove(chart);
+                                        }
+                                    }
+                                });
+                            }
                         }
-                   }]});
+                   ]});
                    contextMenu.showAt(e.xy);
                    e.preventDefault();
                 },
@@ -312,7 +436,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
         config = Ext.apply({
              tbar: [{
                     xtype: "button",
-                    iconCls: 'icon-disk',
+                    iconCls: 'icon-download',
                     text: this.saveText,
                     handler: function(){
                         var selected = me.chartPanel.view.getSelectedRecords();
@@ -325,7 +449,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                     }
                 },{
                     xtype: "button",
-                    iconCls: 'icon-share',
+                    iconCls: 'icon-database-save',
                     text: this.shareText,
                     hidden: this.getUserDetails() ? false : true,
                     handler: function(){
@@ -368,24 +492,76 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
 
         this.chartPanel = gxp.plugins.ChartReporting.superclass.addOutput.call(this, config);
 
+        this.paramsParts = document.URL.split("?");
+        this.params = {};
+        if (this.paramsParts.length == 2) {
+            this.params = Ext.urlDecode(this.paramsParts[1]);
+        }
+
+        if (this.params.chart) {
+            var panel = Ext.getCmp('south');
+            this.getChartById(this.params.chart, 
+                function(record) {
+                    panel.expand();
+                    panel.doLayout();
+                });
+        }
+
         return this.chartPanel;
     },
     shareChart: function(obj) {
         var me = this;
+        if (obj.data.chartStatus != 'modified' && obj.data.chartSource == 'share') {
+            return;
+        }
         var chartInfo = {
-            name:  obj.get('title') + '_' + this.guid(),
+            name: obj.get('title'),
             category: this.category,
             data: JSON.stringify(obj.data),
         }
-        var authHeader = me.getUserDetails().token;
-        me.createResource(authHeader, chartInfo);
+        var authHeader = this.getUserDetails().token;
+        if (obj.data.chartSource != 'share') {
+            this.createResource(authHeader, null, chartInfo, me, 
+                function(resourceId) {
+                    obj.set('geoStoreId', resourceId);
+                    obj.set('chartStatus', 'share');
+                    obj.set('chartSource', 'share');
+                }
+            );
+        } else if (obj.data.oldTitle != obj.data.title) {
+            this.updateResource(authHeader, obj.data.geoStoreId, chartInfo, me, 
+                function() {
+                    obj.set('chartStatus', 'share');
+                    obj.set('chartSource', 'share');
+                }
+            );
+        } else {
+            this.updateResourceData(authHeader, obj.data.geoStoreId, chartInfo.data, me,
+                function() {
+                    obj.set('chartStatus', 'share');
+                    obj.set('chartSource', 'share');
+                }
+            );
+        }
     },
     loadSharedChart: function(chartId) {
-        var me = this;
-        me.getChartById(chartId);
+        var items = this.chartPanel.view.store.data.items;
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].data.geoStoreId == chartId) {
+                Ext.Msg.show({ 
+                    msg: this.chartAlreadyLoadedText,
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.MessageBox.INFO
+                });
+                return;
+            }
+        }
+        this.getChartById(chartId);
     },
     addChart( chartConfig, autoOpen ){
         chartConfig.id= Ext.id();
+        chartConfig.chartSource = 'new';
+        chartConfig.chartStatus = 'new';
         var record = new this.chartStore.recordType(chartConfig, chartConfig.id);
         this.chartStore.add(record);
         if(autoOpen){
@@ -676,12 +852,64 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             }
         } catch(ex) {}
     },
-    openFileWindow: function(){
+    openFileWindow: function() {
+
         var me = this;
+
+        var ds = new Ext.data.JsonStore({
+            root: 'results',
+            autoLoad: true,
+            totalProperty: 'totalCount',
+            fields: [
+                {name: 'canCopy', type: 'boolean'},
+                {name: 'canDelete', type: 'boolean'},
+                {name: 'canEdit', type: 'boolean'},
+                {name: 'creation', type: 'string'},
+                {name: 'id', type: 'int'},
+                {name: 'name', type: 'string'}
+            ],
+            sortInfo: { field: "name", direction: "ASC" },
+            proxy : new Ext.data.HttpProxy({
+                method: 'GET',
+                url: me.geoStoreUrl + "/extjs/search/category/" + me.category+ "/*",
+                disableCaching: true,
+                headers: {'Accept': 'application/json', 'Authorization' : this.auth}
+            })
+        });
+
+        var resultTpl = new Ext.XTemplate(
+            '<tpl for="."><div class="search-item">',
+                '<span>{name}</span>',
+            '</div></tpl>'
+        );
+        
+        var search = new Ext.form.ComboBox({
+            store: ds,
+            displayField:'name',
+            loadingText: 'Searching...',
+            minChars: 0,
+            pageSize:10,
+            tpl: resultTpl,
+            fieldLabel: this.loadByIdText,
+            itemSelector: 'div.search-item',
+            width: 320,
+            onSelect: function(record) {
+                me.loadSharedChart(record.data.id);
+                me.win.close();
+            },
+            listeners: {
+                beforequery: function (queryEvent) {
+                    this.store.proxy.setUrl(me.geoStoreUrl + "/extjs/search/category/" 
+                        + me.category+ "/*" + this.getValue() + "*");
+                }
+            }
+        });
+
         var win = new Ext.Window({
                 layout:'fit',
                 width:360,
                 modal: true,
+                resizable: false,
                 // height:300,
                 title: me.loadChartText,
                 autoHeight:true,
@@ -697,67 +925,58 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                     defaults: {width: 240},
                     defaultType: 'textfield',
                     items: [
-                        new Ext.ux.form.FileUploadField({
-                            id: "chart-file-form",
-                            buttonText: me.browseText,
-                            fieldLabel: this.loadFromFileText,
-                            width: 240,
-                            listeners: {
-                                scope: this,
-                                fileselected: function(selector, value) {
-                                    var fileElId = selector.getFileInputId();
-                                    var fileInput = document.getElementById(fileElId).files[0];
-                                    selector.getAsText(fileInput);
-                                }
-                            },
-                            getAsText: function(readFile) {
-                                var reader = new FileReader();
-                                reader.readAsText(readFile, "UTF-8");
-                                reader.onprogress = this.onProgress;
-                                reader.onload = this.onLoad;
-                                reader.onerror = this.onError;
-                            },
-                            onLoad: function(evt) {
-                                me.loadFromString(evt.target.result);
-                                win.close();
-                            },
-                            onError: function(evt) {
-                                Ext.Msg.show({
-                                   msg: me.fileErrorText,
-                                   buttons: Ext.Msg.OK,
-                                   animEl: 'elId',
-                                   icon: Ext.MessageBox.ERROR
-                                });
-                                win.close();
-                            }
-                        }),
-                        {
-                            xtype: 'compositefield',
+                        new Ext.TabPanel({
+                            renderTo: Ext.getBody(),
+                            activeTab: 0,
                             items: [
-                               {
-                                    xtype: 'textfield',
-                                    id: 'chart-shared-id',
-                                    fieldLabel: this.loadByIdText,
-                                    width: 180
+                                {
+                                    xtype: 'panel',
+                                    title: this.fileText,
+                                    layout:'fit',
+                                    items: [
+                                        new Ext.ux.form.FileUploadField({
+                                            id: "chart-file-form",
+                                            buttonText: me.browseText,
+                                            fieldLabel: this.loadFromFileText,
+                                            width: 240,
+                                            listeners: {
+                                                scope: this,
+                                                fileselected: function(selector, value) {
+                                                    var fileElId = selector.getFileInputId();
+                                                    var fileInput = document.getElementById(fileElId).files[0];
+                                                    selector.getAsText(fileInput);
+                                                }
+                                            },
+                                            getAsText: function(readFile) {
+                                                var reader = new FileReader();
+                                                reader.readAsText(readFile, "UTF-8");
+                                                reader.onprogress = this.onProgress;
+                                                reader.onload = this.onLoad;
+                                                reader.onerror = this.onError;
+                                            },
+                                            onLoad: function(evt) {
+                                                me.loadFromString(evt.target.result, "file");
+                                                win.close();
+                                            },
+                                            onError: function(evt) {
+                                                Ext.Msg.show({
+                                                   msg: me.fileErrorText,
+                                                   buttons: Ext.Msg.OK,
+                                                   animEl: 'elId',
+                                                   icon: Ext.MessageBox.ERROR
+                                                });
+                                                win.close();
+                                            }
+                                        })
+                                    ]
                                 },
                                 {
-                                    xtype: 'button',
-                                    text: me.loadText,
-                                    flex: 1,
-                                    scope: this,
-                                    handler: function(){
-                                        var textField = Ext.getCmp('chart-shared-id');
-                                        if(textField.isDirty() && textField.isValid()){
-                                            var sharedId = textField.getValue();
-                                            this.loadSharedChart(sharedId);
-                                            win.close();
-                                        } else {
-                                            Ext.Msg.alert(null, me.provideSharedIdText);
-                                        }
-                                    }
+                                    xtype: 'compositefield',
+                                    title: this.sharedText,
+                                    items: [search]
                                 }
                             ]
-                        }
+                        })
                        ],
                     buttons: [{
                         iconCls: 'cancel',
@@ -769,11 +988,12 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                 }]
         });
         win.show();
+        me.win = win;
     },
     downloadChart: function(obj) {
         this.download(JSON.stringify(obj.data), obj.get("title") + ".mschart", 'application/json');
     },
-    loadFromString: function( jsonString ){
+    loadFromString: function(jsonString, chartSource, geoStoreId){
         try{
             var plainObj = JSON.parse(jsonString);
         } catch(e) {
@@ -788,8 +1008,12 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
         if (plainObj.id !== null){
             plainObj.id = Ext.id();
         }
+        plainObj.chartSource = chartSource;
+        plainObj.chartStatus = chartSource;
+        plainObj.geoStoreId = geoStoreId;
         var record = new this.chartStore.recordType(plainObj, plainObj.id);
         this.chartStore.add(record);
+        return record;
     },
     guid: function() {
         var s4 = function() {
@@ -826,7 +1050,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
         }
         return undefined;
     },
-    getChartById: function(chartId) {
+    getChartById: function(chartId, callback) {
         var loadMask = new Ext.LoadMask(Ext.getBody(), { msg: "Please wait..." });
         loadMask.show();
         Ext.Ajax.request({
@@ -837,8 +1061,12 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             },
             scope: this,
             success:  function(response, opts) {
-                this.loadFromString(Ext.util.JSON.decode(response.responseText).Resource.data.data);
+                var record = this.loadFromString(
+                    Ext.util.JSON.decode(response.responseText).Resource.data.data, "share", chartId);
                 loadMask.hide();
+                if (callback) {
+                    callback(record);
+                }
             },
             failure:  function(response, opts) {
                 loadMask.hide();
@@ -850,44 +1078,151 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             }
         });
     },
-    createResource: function(authHeader, chartInfo) {
-        var requestBody ='<Resource>' +
-                         '   <name>' + chartInfo.name + '</name>' +
-                         '   <category>' +
-                         '       <name>' + chartInfo.category + '</name>' +
-                         '   </category>' +
-                         '   <store>' +
-                         '       <data><![CDATA[ ' + chartInfo.data + ']]></data>' +
-                         '   </store>' +
-                         '</Resource>';
+    createResource: function(authHeader, geoStoreId, chartInfo, scope, successCallback) {
+        var requestBody = '<Resource>' +
+                          '   <name>' + chartInfo.name + '</name>' +
+                          '   <category>' +
+                          '      <name>' + chartInfo.category + '</name>' +
+                          '   </category>'+
+                          '   <store>' +
+                          '      <data><![CDATA[ ' + chartInfo.data + ']]></data>' +
+                          '   </store>' +
+                          '</Resource>';
         var loadMask = new Ext.LoadMask(Ext.getBody(), { msg: "Please wait..." });
         loadMask.show();
         Ext.Ajax.request({
-            url: this.geoStoreUrl + 'resources',
+            url: scope.geoStoreUrl + 'resources',
             method: 'POST',
             headers:{
                 'Content-Type' : 'text/xml',
                 'Authorization' : authHeader
             },
             params: requestBody,
-            scope: this,
+            scope: scope,
             success:  function(response, opts) {
-                this.makeResourcePublic(response.responseText, loadMask);
+                scope.makeResourcePublic(response.responseText, loadMask, scope, successCallback);
+            },
+            failure:  function(response, opts) {
+                loadMask.hide();
+                if (response.responseText.indexOf('CONSTRAINT_INDEX_9 ON PUBLIC.GS_RESOURCE(NAME)') > -1
+                    || response.status == 409) {
+                    Ext.Msg.show({
+                        title: 'GeoStore Exception',
+                        msg: scope.cannotCreateDuplicateResourceText,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.Msg.ERROR
+                    });
+                } else {
+                    Ext.Msg.show({
+                        title: 'GeoStore Exception',
+                        msg: scope.cannotCreateResourceText,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.Msg.ERROR
+                    });
+                }
+            }
+        });
+    },
+    updateResource: function(authHeader, geoStoreId, chartInfo, scope, successCallback) {
+        var requestBody = '<Resource>' +
+                          '   <name>' + chartInfo.name + '</name>' +
+                          '   <category>' +
+                          '      <name>' + chartInfo.category + '</name>' +
+                          '   </category>'+
+                          '</Resource>';
+        var loadMask = new Ext.LoadMask(Ext.getBody(), { msg: "Please wait..." });
+        loadMask.show();
+        Ext.Ajax.request({
+            url: scope.geoStoreUrl + 'resources/resource/' + geoStoreId,
+            method: 'PUT',
+            headers:{
+                'Content-Type' : 'text/xml',
+                'Authorization' : authHeader
+            },
+            params: requestBody,
+            scope: scope,
+            success:  function(response, opts) {
+                scope.updateResourceData(authHeader, geoStoreId, chartInfo.data, scope, successCallback, loadMask);
+            },
+            failure:  function(response, opts) {
+                loadMask.hide();
+                if (response.responseText.indexOf('CONSTRAINT_INDEX_9 ON PUBLIC.GS_RESOURCE(NAME)') > -1
+                    || response.status == 409) {
+                    Ext.Msg.show({
+                        title: 'GeoStore Exception',
+                        msg: scope.cannotCreateDuplicateResourceText,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.Msg.ERROR
+                    });
+                } else {
+                    Ext.Msg.show({
+                        title: 'GeoStore Exception',
+                        msg: scope.cannotCreateResourceText,
+                        buttons: Ext.Msg.OK,
+                        icon: Ext.Msg.ERROR
+                    });
+                }
+            }
+        });
+    },
+    updateResourceData: function(authHeader, geoStoreId, data, scope, successCallback, loadMask) {
+        if (!loadMask) {
+            loadMask = new Ext.LoadMask(Ext.getBody(), { msg: "Please wait..." });
+            loadMask.show();
+        }
+        Ext.Ajax.request({
+            url: scope.geoStoreUrl + 'data/' + geoStoreId,
+            method: 'PUT',
+            headers:{
+                'Authorization' : authHeader
+            },
+            params: data,
+            scope: scope,
+            success:  function(response, opts) {
+                loadMask.hide();
+                if (successCallback) {
+                    successCallback();
+                }
             },
             failure:  function(response, opts) {
                 loadMask.hide();
                 Ext.Msg.show({
                     title: 'GeoStore Exception',
-                    msg: this.cannotCreateResourceText,
+                    msg: scope.cannotupdateResourceDataText,
                     buttons: Ext.Msg.OK,
                     icon: Ext.Msg.ERROR
                 });
             }
         });
     },
-    makeResourcePublic: function(resourceId, loadMask) {
-        var userDetails = this.getUserDetails();
-        var everyoneGroupId = this.getEveryoneGroupIdFromUserDetails(userDetails);
+    deleteResource: function(authHeader, geoStoreId, scope, successCallback) {
+        var loadMask = new Ext.LoadMask(Ext.getBody(), { msg: "Please wait..." });
+        loadMask.show();
+        Ext.Ajax.request({
+            url: scope.geoStoreUrl + 'resources/resource/' + geoStoreId,
+            method: 'DELETE',
+            headers: { 'Authorization' : authHeader },
+            scope: scope,
+            success:  function(response, opts) {
+                loadMask.hide();
+                if (successCallback) {
+                    successCallback();
+                }
+            },
+            failure:  function(response, opts) {
+                loadMask.hide();
+                Ext.Msg.show({
+                    title: 'GeoStore Exception',
+                    msg: scope.cannotDeleteResourceText,
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.Msg.ERROR
+                });
+            }
+        });
+    },
+    makeResourcePublic: function(resourceId, loadMask, scope, successCallback) {
+        var userDetails = scope.getUserDetails();
+        var everyoneGroupId = scope.getEveryoneGroupIdFromUserDetails(userDetails);
         var authHeader = userDetails.token;
         var requestBody = '<SecurityRuleList>' +
                           '   <SecurityRule>' +
@@ -900,27 +1235,25 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                           '   </SecurityRule>' +
                           '</SecurityRuleList>';
         Ext.Ajax.request({
-            url: this.geoStoreUrl + 'resources/resource/' + resourceId + '/permissions',
+            url: scope.geoStoreUrl + 'resources/resource/' + resourceId + '/permissions',
             method: 'POST',
             headers:{
                 'Content-Type' : 'text/xml',
                 'Authorization' : authHeader
             },
             params: requestBody,
-            scope: this,
+            scope: scope,
             success:  function(response, opts) {
                 loadMask.hide();
-                Ext.Msg.show({
-                    title: 'Enter values:',
-                    buttons: Ext.Msg.OK,
-                    msg: this.chartSharedIdText + ': ' + '<input value="' + resourceId + '" readonly="readonly" size="5"/>'
-                });
+                if (successCallback) {
+                    successCallback(resourceId);
+                }
             },
             failure:  function(response, opts) {
                 loadMask.hide();
                 Ext.Msg.show({
                     title: 'GeoStore Exception',
-                    msg: this.cannotMakeResourcePublicText,
+                    msg: scope.cannotMakeResourcePublicText,
                     buttons: Ext.Msg.OK,
                     icon: Ext.Msg.ERROR
                 });

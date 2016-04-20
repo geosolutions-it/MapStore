@@ -954,8 +954,8 @@ GeoExt.Lang.add("it", {
         chartTypeTitleText: 'Dati di test'
     },
     "gxp.plugins.ChartReporting.prototype": {
-        saveText: "Salva",
-        shareText: "Condividi",
+        saveText: "Scaricare",
+        shareText: "Salva",
         loadChartText: "Carica Grafico",
         loadFromFileText: "Apri da file",
         loadByIdText: "Apri da ID condiviso",
@@ -984,6 +984,17 @@ GeoExt.Lang.add("it", {
         editChartText: 'Modifica Grafico',
         loadText: "Carica",
         browseText: "Sfoglia...",
-        exportPngText: "Esporta come PNG"
+        exportPngText: "Esporta come PNG",
+        fileText: "File",
+        sharedText: "Saved",
+        cannotUpdateResourceText: "Unable to update resource",
+        cannotCreateDuplicateResourceText: "A resource with the same name already exists",
+        cannotDeleteResourceText: "Unable to delete resource",
+        chartAlreadyLoadedText: "Chart already loaded",
+        deleteSharedChartText: "Delete Chart From Server",
+        deleteSessionChartText: "Delete Chart From Current Session",
+        deleteChartConfirmationText: "Are you sure you want to delete this chart ? It will be removed from the server permanently.",
+        deleteSessionChartConfirmationText: "Are you sure you want to delete this chart from the current session ?",
+        shareUrlText: "Share URL"
     }
 });
