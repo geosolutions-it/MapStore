@@ -51,6 +51,7 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
     valueLabel: "Value, Aggregation",
     gaugeMaxText: "Max",
     chartPanelTitle: "Chart Panel",
+    chartNameTemplate: "New {name} Chart",
 
     wpsUrl: null,
 
@@ -94,7 +95,15 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
 
         gxp.ChartBuilder.superclass.initComponent.call(this);
     },
-
+    generateChartName: function(){
+                var t = new Ext.Template(this.chartNameTemplate);
+        var store = this.chartTypeCombo.getStore();
+        var value = this.chartTypeCombo.getValue();
+        var index = store.findBy(function(rec){
+        return rec.get('value') == value
+        })
+        return t.apply(store.getAt(index).data);
+    },
     /** private: method[createToolBar]
      */
     createToolBar: function() {
@@ -107,7 +116,7 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
                 // Chart configuration
                 var chartConfig = {
                     chartType: this.chartTypeCombo.getValue(),
-                    title: "New " + this.chartTypeCombo.getValue() + " Chart",
+                    title: this.generateChartName(),
                     typeName:this.attributes.baseParams.TYPENAME,
                     url: this.wpsUrl,
                     // aggType: this.form.yaxisAttributeField.chartAggCombo.getValue(),

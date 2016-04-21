@@ -160,6 +160,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                         handler: function(){
                             var obj = view.store.getAt(index);
                             var win = new Ext.Window({
+                                iconCls: 'icon-chart-edit',
                                 layout:'fit',
                                 width:280,
                                 modal: true,
@@ -288,8 +289,8 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                     ],
                                     buttons: [
                                         {
-                                            iconCls: 'icon-disk',
-                                            text: me.saveText,
+                                            iconCls: 'icon-accept',
+                                            text: me.applyChangesText,
                                             handler: function() {
                                                 var record = view.store.getAt(index);
                                                 var data = this.ownerCt.ownerCt.form.getFieldValues();
@@ -339,6 +340,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                 var shareUrl = me.paramsParts[0] + '?' + Ext.urlEncode(me.params);
 
                                 var showUrlWindow = new Ext.Window({
+                                    iconCls: 'icon-share',
                                     resizable: false,
                                     title: me.shareUrlText,
                                     width: 400,
@@ -461,7 +463,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                         }
 
                     }
-                },"->",{
+                },{
                     xtype: "button",
                     iconCls: 'icon-open',
                     text: this.loadChartText,
@@ -906,6 +908,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
         });
 
         var win = new Ext.Window({
+                iconCls: 'icon-open',
                 layout:'fit',
                 width:360,
                 modal: true,
@@ -933,12 +936,11 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                     xtype: 'panel',
                                     title: this.fileText,
                                     layout:'fit',
+                                    iconCls: 'icon-upload',
                                     items: [
                                         new Ext.ux.form.FileUploadField({
                                             id: "chart-file-form",
                                             buttonText: me.browseText,
-                                            fieldLabel: this.loadFromFileText,
-                                            width: 240,
                                             listeners: {
                                                 scope: this,
                                                 fileselected: function(selector, value) {
@@ -972,6 +974,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                                 },
                                 {
                                     xtype: 'compositefield',
+                                    iconCls: 'chart-icon-share',
                                     title: this.sharedText,
                                     items: [search]
                                 }

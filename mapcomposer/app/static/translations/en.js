@@ -919,7 +919,8 @@ GeoExt.Lang.add("en", {
         groupByLabel: "Group by",
         valueLabel: "Value, Aggregation",
         gaugeMaxText: "Max",
-        chartPanelTitle: "Chart Panel"
+        chartPanelTitle: "Chart Panel",
+        chartNameTemplate: "New {name} Chart",
     },
 
     "gxp.charts.GenerateCharts.prototype": {
@@ -953,6 +954,7 @@ GeoExt.Lang.add("en", {
         pieText: 'Pie',
         gaugeText: 'Gauge',
         closeText: 'Close',
+        applyChangesText: "Apply Changes",
         editChartText: 'Edit Chart',
         loadText: "Load",
         browseText: "Browse..."
