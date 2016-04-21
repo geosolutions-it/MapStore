@@ -224,6 +224,7 @@
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/ext/ux/images">
             <fileset dir="mapcomposer/app/static/externals/ext/ux/images"/>
         </copy>
+        <copy file="mapcomposer/app/static/externals/ext/ux/ux-all.js" tofile="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/ext/ux/ux-all.js"/>
         <!-- copy i18n resources -->
         <copy todir="${composerbuild}/${ant.project.name}/WEB-INF/app/static/externals/mapmanager/translations">
             <fileset dir="mapcomposer/app/static/externals/mapmanager/translations"/>
