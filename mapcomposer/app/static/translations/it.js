@@ -947,20 +947,21 @@ GeoExt.Lang.add("it", {
         groupByLabel: "Raggruppa per",
         valueLabel: "Valore, Aggregazione",
         gaugeMaxText: "Max",
-        chartPanelTitle: "Grafici"
+        chartPanelTitle: "Grafici",
+        chartNameTemplate: "Nuovo grafico {name}"
     },
 
     "gxp.charts.GenerateCharts.prototype": {
         chartTypeTitleText: 'Dati di test'
     },
     "gxp.plugins.ChartReporting.prototype": {
-        saveText: "Salva",
-        shareText: "Condividi",
+        saveText: "Esporta",
+        shareText: "Salva",
         loadChartText: "Carica Grafico",
         loadFromFileText: "Apri da file",
         loadByIdText: "Apri da ID condiviso",
         fileErrorText: "Non è stato possibile processare il file",
-        pleaseSelectChartText: "Prima selezionare un  grafico",
+        pleaseSelectChartText: "Prima selezionare un grafico",
         reloadConfigText: "Ricarica Configurazione",
         editChartOptionsText: "Modifica",
         exportCsvText: "Esporta come CSV", 
@@ -981,9 +982,21 @@ GeoExt.Lang.add("it", {
         pieText: 'Torta',
         gaugeText: 'Cruscotto',
         closeText: 'Chiudi',
+        applyChangesText: "Applica modifiche",
         editChartText: 'Modifica Grafico',
         loadText: "Carica",
         browseText: "Sfoglia...",
-        exportPngText: "Esporta come PNG"
+        exportPngText: "Esporta come PNG",
+        fileText: "Da file",
+        sharedText: "Cerca tra quelli salvati",
+        cannotUpdateResourceText: "Impossibile aggiornare la risorsa",
+        cannotCreateDuplicateResourceText: "Una risorsa con lo stesso nome esiste già",
+        cannotDeleteResourceText: "Impossibile cancellare la risorsa",
+        chartAlreadyLoadedText: "Grafico già caricato nella sessione corrente",
+        deleteSharedChartText: "Elimina dal server",
+        deleteSessionChartText: "Rimuovi dalla sessione corrente",
+        deleteChartConfirmationText: "Sei sicuro di voler eliminare questo grafico ? Il grafico sarà rimosso dal server in maniera definitiva",
+        deleteSessionChartConfirmationText: "Sei sicuro di voler rimuovere il grafico dalla sessione corrente?",
+        shareUrlText: "Condividi URL"
     }
 });

@@ -348,6 +348,25 @@ div#homelogos ul li a:hover {
 .icon-disk {
     background-image: url(img/charts/disk.png);
 }
+
+.icon-database-save {
+    background-image: url(img/charts/database_save.png);
+}
+
+.icon-database-delete {
+    background-image: url(img/charts/database_delete.png);
+}
+
+.icon-link-go {
+    background-image: url(img/charts/link_go.png);
+}
+
+.icon-download {
+    background-image: url(img/charts/drive-download.png);
+}
+.icon-upload {
+    background-image: url(img/charts/drive-upload.png);
+}
 .icon-reload-settings {
     background-image: url(img/charts/cog_go.png);
 }
@@ -384,17 +403,20 @@ div#homelogos ul li a:hover {
     top: 5px;
 }
     
-.chart-report-panel .chart-icon.chart-icon-pie{
-    background-image: url(img/charts/chart_pie.png);
+.chart-icon-new {
+    background-image: url(img/charts/new.png);
 }
-.chart-report-panel .chart-icon.chart-icon-line{
-    background-image: url(img/charts/chart_curve.png);
+
+.chart-icon-file {
+    background-image: url(img/charts/new.png);
 }
-.chart-report-panel .chart-icon.chart-icon-bar{
-    background-image: url(img/charts/chart_bar.png);
+
+.chart-icon-share {
+    background-image: url(img/charts/database.png);
 }
-.chart-report-panel .chart-icon.chart-icon-gauge{
-    background-image: url(img/charts/chart_gauge.png);
+
+.chart-icon-modified {
+    background-image: url(img/charts/database_edit.png);
 }
 
 .chart-report-panel .thumb-wrap:hover .remove-chart{

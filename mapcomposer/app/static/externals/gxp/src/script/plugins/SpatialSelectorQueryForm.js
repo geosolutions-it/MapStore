@@ -1352,6 +1352,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
     },
     invalidState: function(condition) {
         if (!condition) {
+            this.state = null;
             Ext.Msg.show({
                 msg: this.invalidStateText,
                 buttons: Ext.Msg.OK,
