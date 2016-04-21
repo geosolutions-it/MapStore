@@ -29,7 +29,8 @@ gxp.widgets.charts.ChartReportingPanel = Ext.extend(Ext.DataView, {
     overClass: "hover",
     style:'overflow:auto',
     singleSelect: true,
-    confirmRemoveText: "Do you really want to remove this chart",
+    deleteSessionChartText: "Delete Chart From Current Session",
+    deleteChartConfirmationText: "Are you sure you want to delete this chart ? It will be removed from the server permanently.",
     
     initComponent: function(){
         var me = this;
@@ -48,8 +49,12 @@ gxp.widgets.charts.ChartReportingPanel = Ext.extend(Ext.DataView, {
                     return result;
                 },
                 addListener: function(id, values) {
+                    var element = Ext.get(id);
+                    if (!element) {
+                        return;
+                    }
                     var obj = me.store.getById(values.id);
-                    Ext.get(id).on('click', function(e){ 
+                    element.on('click', function(e){ 
                         me.confirmRemove(obj);
                         e.stopEvent(); 
                     })
@@ -59,17 +64,19 @@ gxp.widgets.charts.ChartReportingPanel = Ext.extend(Ext.DataView, {
 		gxp.widgets.charts.ChartReportingPanel.superclass.initComponent.call(this);
     },
     confirmRemove: function(obj) {
-        Ext.Msg.confirm(null, this.confirmRemoveText + ":<br/>" + obj.get("title"), function(btn, text){
-          if (btn == 'yes'){
-             this.store.remove(obj); 
-          } else {
-            this.close;
-          }
-        },this);
-       
+        var me = this;
+        Ext.MessageBox.show({
+            title: this.deleteSessionChartText,
+            msg: this.deleteSessionChartConfirmationText,
+            buttons: Ext.MessageBox.YESNO,
+            icon: Ext.MessageBox.WARNING,
+            fn: function(button) {
+                if(button == 'yes') {
+                    me.store.remove(obj);
+                }
+            }
+        });
     }
-
-
 });
 
 /** api: xtype = gxp_featuregrid */
