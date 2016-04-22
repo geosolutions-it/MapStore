@@ -275,7 +275,7 @@ GeoExt.Lang.add("it", {
 		removePropDialogMsg: "questa proprietà non può essere rimossa: ",
 		newSourceDialogTitle: "Nuova Sorgente",
 		newSourceDialogMsg: "Alcune proprietà della sorgente selezionatasono invalide.",
-		mandatoryLabelText: "Tutti i campi contrassegnati con (*) sono obbligatori.",
+		mandatoryLabelText: "Tutti i campi contrassegnati con (*) sono obbligatori."
     },
 
     "gxp.ScaleOverlay.prototype": {
@@ -996,11 +996,11 @@ GeoExt.Lang.add("it", {
         deleteSharedChartText: "Elimina dal server",
         deleteSessionChartText: "Rimuovi dalla sessione corrente",
         deleteChartConfirmationText: "Sei sicuro di voler eliminare questo grafico ? Il grafico sarà rimosso dal server in maniera definitiva",
-        deleteSessionChartConfirmationText: "Sei sicuro di voler rimuovere il grafico dalla sessione corrente?",
+        deleteSessionChartConfirmationText: "Sei sicuro di voler rimuovere il grafico dalla sessione corrente?"
         shareUrlText: "Condividi URL"
     },
     "gxp.widgets.charts.ChartReportingPanel.prototype": {
         deleteSessionChartText: "Rimuovi dalla sessione corrente",
-        deleteSessionChartConfirmationText: "Sei sicuro di voler rimuovere il grafico dalla sessione corrente?",
+        deleteSessionChartConfirmationText: "Sei sicuro di voler rimuovere il grafico dalla sessione corrente?"
     }
 });

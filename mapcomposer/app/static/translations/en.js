@@ -920,7 +920,7 @@ GeoExt.Lang.add("en", {
         valueLabel: "Value, Aggregation",
         gaugeMaxText: "Max",
         chartPanelTitle: "Chart Panel",
-        chartNameTemplate: "New {name} Chart",
+        chartNameTemplate: "New {name} Chart"
     },
 
     "gxp.charts.GenerateCharts.prototype": {
