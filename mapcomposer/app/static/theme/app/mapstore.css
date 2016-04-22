@@ -339,6 +339,9 @@ div#homelogos ul li a:hover {
 }
 
 /** icon s and images **/
+.icon-accept {
+    background-image: url(img/charts/accept.png);
+}
 .icon-share {
     background-image: url(img/charts/share.png);
 }
