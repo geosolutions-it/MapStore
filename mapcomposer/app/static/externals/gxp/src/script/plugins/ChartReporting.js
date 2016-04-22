@@ -102,7 +102,9 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     /** api: method[addOutput]
      */
     addOutput: function(config) {
+
         var me = this;
+        
         this.chartStore =  new Ext.data.JsonStore({
             // store configs
             autoLoad:true,
@@ -124,6 +126,47 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'}
             ],
         });
+
+        var downloadButton =  new Ext.Button({
+                iconCls: 'icon-download',
+                text: this.saveText,
+                hidden: true,
+                handler: function(){
+                    var selected = me.chartPanel.view.getSelectedRecords();
+                    if(selected.length > 0){
+                        me.downloadChart(selected[0]);
+                    } else {
+                        Ext.Msg.alert(null, me.pleaseSelectChartText);
+                    }
+
+                }
+        });
+        
+        var saveButton =  new Ext.Button({
+                iconCls: 'icon-database-save',
+                text: this.shareText,
+                hidden: true,
+                handler: function(){
+                    var selected = me.chartPanel.view.getSelectedRecords();
+                    if(selected.length > 0){
+                        me.shareChart(selected[0]);
+                    } else {
+                        Ext.Msg.alert(null, me.pleaseSelectChartText);
+                    }
+                }
+        });
+
+        var authorized = function(chartInfo) {
+                var userDetails = me.getUserDetails();
+                if (!userDetails) {
+                    return false;
+                }
+                if (chartInfo.data.chartSource != 'share' || userDetails.user.role == 'ADMIN') {
+                    return true;
+                }
+                return userDetails.user.id == chartInfo.data.ownerId;
+        };
+
         var chartPanel = {
             xtype: "gxp_chartreportingpanel",
             store: this.chartStore,
@@ -131,6 +174,19 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
             //TODO context menu to re-import
             scope:this,
             listeners: {
+                selectionchange: function(view, selections) {
+                    if (selections.length > 0) {
+                        downloadButton.show();
+                        if (authorized(view.store.getAt(view.getSelectedIndexes()[0]))) {
+                            saveButton.show();
+                        } else {
+                            saveButton.hide();
+                        }
+                    } else {
+                        downloadButton.hide();
+                        saveButton.hide();
+                    }
+                },
                 contextMenu: function(view, index, node, e){
                    var obj = this.store.getAt(index);
                    var contextMenu = new Ext.menu.Menu({items: [{
@@ -145,7 +201,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                         {
                             iconCls: 'icon-database-save',
                             text: me.shareText,
-                            hidden: me.getUserDetails() ? false : true,
+                            hidden: !authorized(view.store.getAt(index)),
                             handler: function() {
                                 var selected = view.store.getAt(index);
                                 selected.set('win', undefined);
@@ -383,7 +439,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                             tooltip: me.deleteSharedChartText,
                             iconCls: 'icon-database-delete',
                             scope: this,
-                            hidden: me.getUserDetails() ? view.store.getAt(index).data.chartSource != 'share' : true,
+                            hidden:  authorized(view.store.getAt(index)) ? view.store.getAt(index).data.chartSource != 'share' : true,
                             handler: function() {
                                 Ext.MessageBox.show({
                                     title: me.deleteSharedChartText,
@@ -436,34 +492,9 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
         };
         var tbi = this.tbi;
         config = Ext.apply({
-             tbar: [{
-                    xtype: "button",
-                    iconCls: 'icon-download',
-                    text: this.saveText,
-                    handler: function(){
-                        var selected = me.chartPanel.view.getSelectedRecords();
-                        if(selected.length > 0){
-                            me.downloadChart(selected[0]);
-                        } else {
-                            Ext.Msg.alert(null, me.pleaseSelectChartText);
-                        }
-
-                    }
-                },{
-                    xtype: "button",
-                    iconCls: 'icon-database-save',
-                    text: this.shareText,
-                    hidden: this.getUserDetails() ? false : true,
-                    handler: function(){
-                        var selected = me.chartPanel.view.getSelectedRecords();
-                        if(selected.length > 0){
-                            me.shareChart(selected[0]);
-                        } else {
-                            Ext.Msg.alert(null, me.pleaseSelectChartText);
-                        }
-
-                    }
-                },{
+             tbar: [downloadButton,
+                    saveButton,
+                    {
                     xtype: "button",
                     iconCls: 'icon-open',
                     text: this.loadChartText,
@@ -516,6 +547,8 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
         if (obj.data.chartStatus != 'modified' && obj.data.chartSource == 'share') {
             return;
         }
+        var userDetails = this.getUserDetails();
+        obj.data.ownerId = userDetails.user.id;
         var chartInfo = {
             name: obj.get('title'),
             category: this.category,
@@ -1228,6 +1261,14 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
         var everyoneGroupId = scope.getEveryoneGroupIdFromUserDetails(userDetails);
         var authHeader = userDetails.token;
         var requestBody = '<SecurityRuleList>' +
+                          '   <SecurityRule>' +
+                          '       <canRead>true</canRead>' +
+                          '       <canWrite>true</canWrite>' +
+                          '       <user>' +
+                          '           <name>' + userDetails.user.name + '</name>' +
+                          '           <id>' + userDetails.user.id + '</id>' +
+                          '       </user>' +
+                          '   </SecurityRule>' +
                           '   <SecurityRule>' +
                           '       <canRead>true</canRead>' +
                           '       <canWrite>false</canWrite>' +

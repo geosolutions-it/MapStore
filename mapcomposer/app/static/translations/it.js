@@ -998,5 +998,9 @@ GeoExt.Lang.add("it", {
         deleteChartConfirmationText: "Sei sicuro di voler eliminare questo grafico ? Il grafico sarà rimosso dal server in maniera definitiva",
         deleteSessionChartConfirmationText: "Sei sicuro di voler rimuovere il grafico dalla sessione corrente?",
         shareUrlText: "Condividi URL"
+    },
+    "gxp.widgets.charts.ChartReportingPanel.prototype": {
+        deleteSessionChartText: "Rimuovi dalla sessione corrente",
+        deleteSessionChartConfirmationText: "Sei sicuro di voler rimuovere il grafico dalla sessione corrente?",
     }
 });
