@@ -275,15 +275,20 @@
 		}, {
 			"actions": ["->"], 
 			"actionTarget": "paneltbar"
-		}, {
-			"ptype": "gxp_help",
-			"actionTarget": "paneltbar",
-			"text": "Help",
-			"tooltip":"MapStore Guide",
-			"index": 25,
-			"showOnStartup": false,
-			"fileDocURL": "MapStore-Help.pdf"
-        },{
+		},
+        {
+            "ptype": "gxp_help",
+            "title": "Per iniziare...",
+            "actionTarget": "paneltbar",
+            "text": "Help",
+            "tooltip":"MapStore Guide",
+            "index": 25,
+            "showOnStartup":true,
+            "mode": "window",
+            "showAgainTool": true,
+            "description": "<p class=MsoNormal><img width=24 height=24 src='http://mappe.comune.genova.it/mapstore/externals/gxp/src/theme/img/silk/add.png' align=left hspace=12></p><p class=MsoNormal ><b>Aggiungi livello</b>: cliccando su questo pulsante, appare il catalogo con l'elenco di tutti i livelli disponibili.<br>Per filtrare i livelli utilizza la casella filtro in basso a sinistra. Seleziona il livello di tuo interesse e clicca sul pulsante <i>aggiungi livelli</i> in basso a destra.<br><i>Nota</i>: Per motivi di leggibilità alcuni livelli appaiono ingrandendo la mappa!</p><br><p class=MsoNormal><img width=24 height=24 src='http://mappe.comune.genova.it/mapstore/externals/gxp/src/theme/img/silk/information.png' align=left hspace=12><b>Informazioni sui livelli:</b> seleziona il pulsante per avere la possibilità di conoscere le informazioni associate ai livelli e poi clicca su un elemento della mappa per avere tutte le informazioni disponibili</p><p class=MsoNormal>&nbsp;</p><p class=MsoNormal><b><span style='font-size:12.0pt;line-height:107%;font-family:Aharoni'>Consulta la guida: </span></b><a href='http://geoportale.comune.genova.it/node/45' target='_blank'>http://geoportale.comune.genova.it/node/45</a></p></div>"
+        },
+        {
 			"ptype": "gxp_login_menu",
 			"loginConfig":{
 				"default_login": {
