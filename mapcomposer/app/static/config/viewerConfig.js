@@ -87,7 +87,7 @@
                             "showSelectionSummary": false,
                             "multipleSelection": false,
                             "searchComboOutputFormat": "json",
-                            "wfsBaseURL": "http://vm-sitgeofe1.comune.genova.it/geoserver/wfs",
+                            "wfsBaseURL": "http://mappe.comune.genova.it/geoserver/wfs",
                             "geocoderTypeName": "SITGEO:V_ASTE_STRADALI_TOPONIMO_SUB",
                             "geocoderTypeRecordModel":[
                                 {
@@ -116,7 +116,7 @@
                             "showSelectionSummary": false,
                             "multipleSelection": false,
                             "searchComboOutputFormat": "json",
-                            "wfsBaseURL": "http://vm-sitgeofe1.comune.genova.it/geoserver/wfs",
+                            "wfsBaseURL": "http://mappe.comune.genova.it/geoserver/wfs",
                             "geocoderTypeName": "SITGEO:CIVICI_COD_TOPON",
                             "geocoderTypeRecordModel":[
                                 {
@@ -143,7 +143,7 @@
                     }
                 }, "reverse": {
                     "ptype": "gxp_spatial_selector_reverse_geocoder",
-                    "url": "http://vm-sitgeofe1.comune.genova.it/geoserver/wfs",
+                    "url": "http://mappe.comune.genova.it/geoserver/wfs",
                     "maxFeatures": 10,
                     "streetfeatureNS": "SITGEO",
                     "typeName": "CIVICI_CON_STRADE",
