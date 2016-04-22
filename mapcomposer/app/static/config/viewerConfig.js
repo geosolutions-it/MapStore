@@ -132,7 +132,7 @@
                                     "mapping":"geometry"
                                 }
                             ],
-                            "geocoderTypeSortBy":null,
+                            "geocoderTypeSortBy":"TESTO",
                             "geocoderTypeQueriableAttributes":[
                                 "TESTO"
                             ],
