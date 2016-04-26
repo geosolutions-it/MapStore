@@ -139,6 +139,16 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``GeoExt.data.AttributeStore``
      */
     schema: null,
+
+    /** api: config[autoCompleteUrl]
+     *  ``String`` Url of the WPS service that will be used to get the auto-complete values.
+     */
+    autoCompleteUrl: null,
+
+    /** api: config[autoCompletePageSize]
+     *  ``String`` Paging value for the auto-complete results.
+     */
+    autoCompletePageSize: 10,
     
     /** api: method[addActions]
      */
@@ -320,6 +330,8 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                         allowDelete: true,
                         width: 200,
                         height: 250,
+                        autoCompleteUrl: this.autoCompleteUrl,
+                        autoCompletePageSize: this.autoCompletePageSize,
                         listeners: {
                             "close": function() {
                                 if(feature.layer && feature.layer.selectedFeatures.indexOf(feature) !== -1) {

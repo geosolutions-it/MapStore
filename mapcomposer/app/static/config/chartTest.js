@@ -184,6 +184,7 @@
             "featureManager": "featuremanager",
 			"toggleGroup": "toolGroup",
             "autoLoadFeatures": false,
+            "autoCompleteUrl": "http://mappe.comune.genova.it/geoserver/wps",
             "actionTarget":{
                 "target":"paneltbar",
                 "index":24
