@@ -977,12 +977,10 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
 
         attributeFilterState.filterConditions = [];
 
-        for(var i = 0; i < filterBuilder.childFilterContainer.items.items.length; i++) {
-            var condition = filterBuilder.childFilterContainer.items.items[i].items.items[1];
-            if (i === 0) {
-                condition = filterBuilder.childFilterContainer.items.items[0].items.items[1].items.items[0];
-            }
-            attributeFilterState.filterConditions.push(getConditionState(condition));
+        var conditions = filterBuilder.childFilterContainer.findByType('gxp_filterfield');
+
+        for(var i = 0; i < conditions.length; i++) {
+            attributeFilterState.filterConditions.push(getConditionState(conditions[i]));
         }
 
         attributeFilterState.filterType = filterBuilder.builderTypeCombo.getValue();
