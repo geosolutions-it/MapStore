@@ -921,6 +921,10 @@ GeoExt.Lang.add("it", {
         workingIntervalToText : 'a'
     },
 
+    "gxp.plugins.HelpButton.prototype": {
+        dontShowThisMessageAgainText: "Non mostrare più questo messaggio"
+    },
+
 	"gxp.plugins.StaticPage.prototype": {
         tabTitle: "Pagina Statica"
     },
