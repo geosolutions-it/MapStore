@@ -919,6 +919,11 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         var spatialSelectorState = {};
 
         spatialSelectorState.key = this.spatialSelector.selectionMethodCombo.getValue();
+
+        if (spatialSelectorState.key === '') {
+            return spatialSelectorState;
+        }
+
         var spatialSelector = this.spatialSelector.spatialSelectors[spatialSelectorState.key];
 
         if (spatialSelectorState.key === 'bbox') {
@@ -1061,6 +1066,11 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
         // we get the spacial select field and we expand it
         var spatialSelectorFieldset = this.output[0].spatialSelectorFieldset;
         spatialSelectorFieldset.expand();
+
+        // we check if we are in the present of an empty AIO
+        if (spatialSelectorInfo.key === '') {
+            return;
+        }
 
         // we initiate the filter combo with the appropriate filter (bbox, circle, buffer, etc ...)
         var combo = this.spatialSelector.selectionMethodCombo;
