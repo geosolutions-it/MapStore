@@ -51,14 +51,14 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
     cannotCreateDuplicateResourceText: "A resource with the same name already exists",
     cannotDeleteResourceText: "Unable to delete resource",
     cannotMakeResourcePublicText: "Unable to make resource public",
-    chartTypeText: "Tipo grafico",
-    aggregationText: "Aggregazione",
-    chartTitleText: "Titolo Grafico",
-    colourText: "Colore",
-    histogramText: "Istogramma",
-    lineText: 'Linea',
-    pieText: 'Torta',
-    gaugeText: 'Cruscotto',
+    chartTypeText: "Chart Type",
+    aggregationText: "Aggregation",
+    chartTitleText: "Chart Title",
+    colourText: "Color",
+    histogramText: "histogram",
+    lineText: 'Line',
+    pieText: 'Pie',
+    gaugeText: 'Gauge',
     closeText: 'Close',
     editChartText: 'Edit Chart',
     loadText: "Load",
@@ -501,21 +501,21 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
                     handler:function() {
                         me.openFileWindow();
                     }
+                },{
+                    xtype: "button",
+                    iconCls: 'cancel',
+                    text: this.clearAllText,
+                    handler: function(){
+                        Ext.Msg.confirm(null, me.clearAllText , function(btn, text){
+                          if (btn == 'yes'){
+                             me.chartStore.removeAll();
+                          } else {
+                            this.close;
+                          }
+                        });
+                    }
             }],
-            bbar:["->",{
-                xtype: "button",
-                iconCls: 'cancel',
-                text: this.clearAllText,
-                handler: function(){
-                    Ext.Msg.confirm(null, me.clearAllText , function(btn, text){
-                      if (btn == 'yes'){
-                         me.chartStore.removeAll();
-                      } else {
-                        this.close;
-                      }
-                    });
-                }
-            }],
+            
             xtype: "panel",
             border: false,
             iconCls: "icon-chart-report",

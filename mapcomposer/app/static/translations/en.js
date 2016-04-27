@@ -927,8 +927,8 @@ GeoExt.Lang.add("en", {
         chartTypeTitleText: 'Test data'
     },
     "gxp.plugins.ChartReporting.prototype": {
-        saveText: "Save",
-        shareText: "Share",
+        saveText: "Export",
+        shareText: "Save",
         loadChartText: "Load Chart",
         loadFromFileText: "Open from a file",
         loadByIdText: "Open from a shared ID",
@@ -936,7 +936,7 @@ GeoExt.Lang.add("en", {
         pleaseSelectChartText: "Please select a chart first",
         reloadConfigText: "Reload Configuration",
         editChartOptionsText: "Edit",
-        exportCsvText: "Export as CSV", 
+        exportCsvText: "Export as CSV",
         clearAllText: "Remove all charts",
         dataText: "Data",
         csvSeparator: ",",
@@ -944,6 +944,9 @@ GeoExt.Lang.add("en", {
         invalidSharedId: "Invalid shared ID",
         provideSharedIdText: "Please provide a shared ID",
         cannotCreateResourceText: "Unable to create resource",
+        cannotupdateResourceDataText: "Unable to update resource",
+        cannotCreateDuplicateResourceText: "A resource with the same name already exists",
+        cannotDeleteResourceText: "Unable to delete resource",
         cannotMakeResourcePublicText: "Unable to make resource public",
         chartTypeText: "Chart Type",
         aggregationText: "Aggregation",
@@ -954,9 +957,19 @@ GeoExt.Lang.add("en", {
         pieText: 'Pie',
         gaugeText: 'Gauge',
         closeText: 'Close',
-        applyChangesText: "Apply Changes",
+        applyChangesText: "Apply",
         editChartText: 'Edit Chart',
         loadText: "Load",
-        browseText: "Browse..."
+        browseText: "Browse...",
+        invalidChartText: "Invalid chart",
+        fileText: "From File",
+        sharedText: "From Server",
+        chartAlreadyLoadedText: "Chart already loaded",
+        deleteSharedChartText: "Delete Chart From Server",
+        deleteSessionChartText: "Delete Chart From Current Session",
+        deleteChartConfirmationText: "Are you sure you want to delete this chart ? It will be removed from the server permanently.",
+        deleteSessionChartConfirmationText: "Are you sure you want to delete this chart from the current session ?",
+        shareUrlText: "Share URL",
+        exportPngText: "Export as PNG"
         
 });
