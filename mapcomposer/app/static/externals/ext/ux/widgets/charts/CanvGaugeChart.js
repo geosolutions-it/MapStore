@@ -34,23 +34,7 @@ gxp.charts.JustGageChart = Ext.extend(Ext.Panel, {
      * chartOpt: options for the chart
      */
     chartOpt: {},
-    /* ptype =  gxp_chartpanel */
     xtype: "gxp_JustGageChart",
-    updateDelay: 0,
-    layout: 'table',
-    layoutConfig: {
-       columns: 3,
-       tableAttrs: {
-          style: {
-             width: '100%',
-             height: '100%'
-          }
-       }
-    },
-    deferredRender: false,
-    autoScroll: false,
-    frame: true,
-    defaults: {frame:true, width:200, height: 220},
     initComponent: function () {
         this.items = [];        
         this.addEvents('chartrefresh');
@@ -77,7 +61,7 @@ gxp.charts.JustGageChart = Ext.extend(Ext.Panel, {
     },
 
     createChart: function (data, options) {
-         var valuemax = Number.NEGATIVE_INFINITY ;
+        var valuemax = Number.NEGATIVE_INFINITY ;
         var valuemin = Number.POSITIVE_INFINITY;
         for (var i = 0;i<this.data.value.length; i++){
             valuemax = Math.max(valuemax,this.data.value[i]);
@@ -85,29 +69,47 @@ gxp.charts.JustGageChart = Ext.extend(Ext.Panel, {
         }
         var max = this.gaugeMax ? this.gaugeMax : valuemax;
         
-         var ticks = [0]
+        var ticks = [0]
         for(var i = 0; i < 5 ; i ++){
             ticks.push(Math.floor((i+1) * max / 5 ));
         }
         var data = this.data;
-        if(this.data){
+
+        if(data){
+
+            var gaugesContainer = new Ext.Panel({
+                layout: 'table',
+                updateDelay: 0,
+                deferredRender: false,
+                autoScroll: false,
+                layoutConfig: {
+                   columns: 3,
+                   tableAttrs: {
+                      style: {
+                         width: '100%',
+                         height: '100%'
+                      }
+                   }
+                },
+                frame: true,
+                defaults: {frame:true, width:200, height: 220},
+            });
             
-            for (var i = 0;i<this.data.value.length; i++){
-                         var value =data.value[i];
-                var gaugesPanel = new Ext.Panel({
+            var createGaugesPanel = function(value, title) {
+                return new Ext.Panel({
                     id:this.id + "_" + i + "_gaugesPanelId", 
                     layout:'fit',
                     header: true,
-                    title: this.data.title[i],
+                    title: title,
                     width: 200,
                     listeners: {
                         afterRender: function () {
-                        this.canvas = document.createElement("canvas");
-                        var myel = new Ext.Element(this.canvas);
-                        this.canvas.setAttribute("style",'width: 100% !important;maxWidth: 1500px;overflow: hidden;');
-                        this.canvas.setAttribute("width","200");
-                        this.canvas.setAttribute("height","200");
-                        this.body.appendChild(myel.dom);
+                            this.canvas = document.createElement("canvas");
+                            var myel = new Ext.Element(this.canvas);
+                            this.canvas.setAttribute("style",'width: 100% !important;maxWidth: 1500px;overflow: hidden;');
+                            this.canvas.setAttribute("width","200");
+                            this.canvas.setAttribute("height","200");
+                            this.body.appendChild(myel.dom);
                             var gauge = new Gauge({
                                 renderTo    : this.canvas,
                                 width       : 200,
@@ -167,17 +169,23 @@ gxp.charts.JustGageChart = Ext.extend(Ext.Panel, {
                                 }
                             });
                             gauge.onready = function() {
-                                    gauge.setValue(value);
+                                gauge.setValue(value);
                             };
                             gauge.draw();
                         }
                     }
                 });
-                this.add(gaugesPanel);
-                this.doLayout();
-                    
+            };
 
+            for (var i = 0; i < data.value.length; i++){
+                var gaugesPanel = createGaugesPanel(data.value[i], data.title[i]);
+                gaugesContainer.add(gaugesPanel);
             }
+
+            this.removeAll();
+            this.add(gaugesContainer);
+            this.gaugesContainer = gaugesContainer;
+            this.doLayout();
         // this.data = undefined;
         }
 
@@ -274,21 +282,21 @@ gxp.charts.JustGageChart = Ext.extend(Ext.Panel, {
         this.fireEvent("charterror", title, cause);
     },
     clearCanvas: function () {
-        var canvas = this.canvas;
-         if(!this.canvas.getContext){
-            G_vmlCanvasManager.initElement(this.canvas);
+        var canvas = this.gaugesContainer.canvas;
+         if(!this.gaugesContainer.canvas.getContext){
+            G_vmlCanvasManager.initElement(this.gaugesContainer.canvas);
         }
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     },
     setChartDimensions: function () {
-        var width = this.getWidth(),
-            height = this.getHeight() - 5;
+        var width = this.gaugesContainer.getWidth(),
+            height = this.gaugesContainer.getHeight() - 5;
         if (this.chart) {
             this.chart.aspectRatio = width / height;
         } else {
-            this.canvas.setAttribute("width", width );
-            this.canvas.setAttribute("height", height);
+            this.gaugesContainer.canvas.setAttribute("width", width );
+            this.gaugesContainer.canvas.setAttribute("height", height);
         }
     },
 
