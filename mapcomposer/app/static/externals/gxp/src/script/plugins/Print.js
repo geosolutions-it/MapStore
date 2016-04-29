@@ -302,6 +302,8 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                     modal: true,
                     border: false,
                     resizable: false,
+                    autoScroll: true,
+                    height: Ext.getBody().getViewSize().height < 800 ? Ext.getBody().getViewSize().height : null,
                     items: [
                         new GeoExt.ux.PrintPreview({
                             legendOnSeparatePage:this.legendOnSeparatePage,
