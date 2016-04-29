@@ -833,7 +833,16 @@ GeoExt.Lang.add("it", {
 
 	"gxp.plugins.FeatureManager.prototype":{
         noValidWmsVersionMsgTitle: 'Versione WMS non valida',
-        noValidWmsVersionMsgText: "Il plugin queryForm non funziona con una sorgente WMS versione: "
+        noValidWmsVersionMsgText: "Il plugin queryForm non funziona con una sorgente WMS versione: ",
+        errorWindowMsgTitle: 'Get Feature Request Error',
+        errorWindowMsgText: "The Get Feature request was not successful.",
+        tooManyFeaturesWindowMsgText: "The cross layer request uses to many features."
+    },
+
+    "gxp.plugins.FeatureEditor.prototype":{
+        featureErrorWindowText: 'WFS Protocol Error',
+        errorAcessingFeatureText: 'Error accessing feature.',
+        errorUpdatingFeatureText: 'Error updating feature.'
     },
 
     "gxp.data.WMTSCapabilitiesReader.prototype" : {

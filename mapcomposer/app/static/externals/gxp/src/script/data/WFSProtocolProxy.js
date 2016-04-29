@@ -110,6 +110,13 @@ gxp.data.WFSProtocolProxy = Ext.extend(GeoExt.data.ProtocolProxy, {
             var features = new Array(records.length);
             Ext.each(records, function(r, i) {
                 features[i] = r.getFeature();
+                features[i].modified = features[i].modified || {};
+                features[i].modified.attributes = {};
+                for (var key in r.modified) {
+                    if (key != 'state') {
+                       features[i].modified.attributes[key] = r.data[key];
+                    }
+                }
             }, this);
 
             

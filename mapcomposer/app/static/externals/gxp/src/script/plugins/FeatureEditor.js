@@ -149,6 +149,12 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
      *  ``String`` Paging value for the auto-complete results.
      */
     autoCompletePageSize: 10,
+
+	featureErrorWindowText: 'WFS Protocol Error',
+
+    errorAcessingFeatureText: 'Error accessing feature.',
+
+    errorUpdatingFeatureText: 'Error updating feature.',
     
     /** api: method[addActions]
      */
@@ -290,7 +296,7 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                 scope: this
             }
         });
-        
+
         featureLayer.events.on({
             "beforefeatureremoved": function(evt) {
                 this.selectControl.unselect(evt.feature);
@@ -349,6 +355,72 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                                             if (popup && popup.isVisible()) {
                                                 popup.enable();
                                             }
+                                        },
+                                        single: true
+                                    },
+                                    exception : {
+                                        fn: function(tool, object, method, action, response) {
+
+                                            popup.close();
+
+                                            var errorDetails = response.error.exceptionReport.exceptions[0].texts.toString();
+                                            var errorMessage = this.errorAcessingFeatureText;
+                                            if (method == 'update') {
+                                                errorMessage = this.errorUpdatingFeatureText;
+                                            }
+
+                                            var messagePanel = new Ext.Panel({
+                                                  layout:'Anchor',
+                                                  border:false,
+                                                  bodyBorder:false,
+                                                  hideBorders:true,
+                                                  items: [{
+                                                    xtype:'textarea',
+                                                    layout:'anchor',
+                                                    anchor: '100%',
+                                                    height: '20%',
+                                                    readOnly:true,
+                                                    value: errorMessage,
+                                                    autoScroll: true
+                                                  }]
+                                            });
+
+                                            var detailsPanel = new Ext.Panel({
+                                                title: 'Details',
+                                                layout:'Anchor',
+                                                collapsible: true,
+                                                collapsed: true,
+                                                border:false,
+                                                bodyBorder:false,
+                                                hideBorders:true,
+                                                items: [{
+                                                    xtype:'textarea',
+                                                    layout:'anchor',
+                                                    anchor: '100%',
+                                                    readOnly:true,
+                                                    value: errorDetails,
+                                                    autoScroll: true
+                                                }]
+                                            });
+
+                                            var errorWindow = new Ext.Window({
+                                                resizable: false,
+                                                title: this.featureErrorWindowText,
+                                                closeAction: "hide",
+                                                layout: "Anchor",
+                                                width: 550,
+                                                modal: true,
+                                                iconCls: 'error',
+                                                iconMask: true,
+                                                items: [messagePanel, detailsPanel],
+                                                 buttons: [{
+                                                    text: 'Close',
+                                                    handler: function(){
+                                                        errorWindow.hide();
+                                                    }
+                                                }]
+                                            });
+                                            errorWindow.show();
                                         },
                                         single: true
                                     },
