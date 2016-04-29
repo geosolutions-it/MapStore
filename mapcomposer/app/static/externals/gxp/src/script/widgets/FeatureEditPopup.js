@@ -148,6 +148,10 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
      *  ``Ext.Button``
      */
     deleteButton: null,
+
+    autoCompleteUrl: null,
+
+    autoCompletePageSize: 10,
     
     /** private: method[initComponent]
      */
@@ -227,6 +231,11 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
                 }
                 var value = feature.attributes[name];
                 var fieldCfg = GeoExt.form.recordToField(r);
+                // let check if we should add auto-complete
+                if (this.autoCompleteUrl && fieldCfg.xtype == 'textfield') {
+                    // we only activate the auto complete for values of type string
+                    fieldCfg = this.addAutoComplete(name);
+                }
                 var listeners;
                 if (typeof value == "string") {
                     var format;
@@ -421,6 +430,58 @@ gxp.FeatureEditPopup = Ext.extend(GeoExt.Popup, {
             },
             scope: this
         });
+    },
+
+    addAutoComplete: function(fieldName) {
+
+        var autoCompleteUrl = this.autoCompleteUrl;
+        var autoCompletePageSize = this.autoCompletePageSize;
+
+        var featureTypeName = this.schema.baseParams.TYPENAME;
+        var featureNamesSpaces = this.schema.format.namespaces;
+
+        var store = new gxp.data.WPSUniqueValuesStore({});
+        store.setWPSParams({
+            url: autoCompleteUrl,
+            outputs: [{
+                identifier: "result",
+                mimeType: "application/json"
+            }],
+            inputs: {
+                featureTypeName: featureTypeName,
+                featureNS: featureNamesSpaces,
+                fieldName: fieldName
+            },
+            start: 0,
+            limit: autoCompletePageSize
+        });
+
+        return {
+            xtype: "gxp_wpsuniquevaluescb",
+            mode: "remote",
+            pageSize: 10,
+            typeAhead: false,
+            forceSelection: false,
+            remoteSort: true,
+            triggerAction: "all",
+            allowBlank: true,
+            displayField: "value",
+            valueField: "value",
+            minChars: 1,
+            resizable: true,
+            store: store,
+            listeners: {
+                beforequery: function(event) {
+                    event.combo.store.baseParams.start = 0;
+                },
+                scope: this
+            },
+            width: 80,
+            listWidth: 250,
+            grow: true,
+            growMin: 50,
+            anchor: "100%"
+        };
     },
     
     /** private: method[getDirtyState]
