@@ -112,6 +112,12 @@ gxp.ChartBuilder = Ext.extend(Ext.Container, {
             iconCls: "gxp-icon-buildchart",
             disabled: false,
             handler: function() {
+                // if AOI tool tip is visible we hide it
+                var spatialSelectorKey = this.spatialSelectorForm.spatialSelector.selectionMethodCombo.getValue();
+                var spatialSelector = this.spatialSelectorForm.spatialSelector.spatialSelectors[spatialSelectorKey];
+                if (spatialSelector && spatialSelector.featureSummary && spatialSelector.featureSummary.isVisible()) {
+                    spatialSelector.featureSummary.hide();
+                }
                 var state = this.spatialSelectorForm.getState();
                 // Chart configuration
                 var chartConfig = {
