@@ -234,6 +234,14 @@
 	                    "dataIndex": "itemStatus",
 	                    "sortable": true
 	                },{
+	                    "header": "JobUID", 
+	                    "dataIndex": "jobUid",
+	                    "sortable": true
+	                },{
+	                    "header": "CUDA", 
+	                    "dataIndex": "jcuda",
+	                    "sortable": false
+	                },{
 	                    "header": "Reference Name", 
 	                    "dataIndex": "referenceName",
 	                    "sortable": true
@@ -264,6 +272,14 @@
 	                    "header": "Status", 
 	                    "dataIndex": "itemStatus",
 	                    "sortable": true
+	                },{
+	                    "header": "JobUID", 
+	                    "dataIndex": "jobUid",
+	                    "sortable": true
+	                },{
+	                    "header": "CUDA", 
+	                    "dataIndex": "jcuda",
+	                    "sortable": false
 	                },{
 	                    "header": "Reference Name", 
 	                    "dataIndex": "referenceName",

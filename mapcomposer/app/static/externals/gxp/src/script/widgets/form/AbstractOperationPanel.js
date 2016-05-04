@@ -757,7 +757,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 			    {
                     xtype: "checkbox",
                     checked: false,
-                    boxLabel: "<img src='theme/app/img/silk/nVidia.png' style='vertical-align: middle;width: 16px;'/> " + me.cudaCheckBoxText,
+                    boxLabel: "<img src='theme/app/img/silk/nVidia.png' style='vertical-align: middle;width: 16px;'/>&nbsp;&nbsp;&nbsp;&nbsp; " /*+ me.cudaCheckBoxText*/,
                     listeners: {
                         check: function(box, checked) {
                         	if (checked) {
@@ -771,6 +771,23 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
                         scope: this
                 	}
 			    },
+			    {
+	          		xtype     : 'textfield',
+	          		name      : 'jobUid',
+					ref       : '../../jobUid',
+					cls       : 'x-check-group-alt',
+					width     : 140,
+					fieldLabel: '',
+					boxLabel  : '',
+                    emptyText : 'username',
+                    value     : '',
+                    scope     : me,
+                    listeners : {
+        				change : function (f, e){
+        					me.jobUid = e;
+        				}
+        			}
+	          },
 			    "->", 
 			    {
 					text : this.resetButtonText,

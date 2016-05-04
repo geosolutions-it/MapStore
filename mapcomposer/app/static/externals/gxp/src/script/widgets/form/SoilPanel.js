@@ -701,8 +701,42 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	         	wfsGrid.store.reload(lastOptions);
 	         	wfsGrid.getView().refresh();
 			}
-
-			this.startWPSRequest(this.getForm().getValues());
+			
+			if(!this.useCuda) {
+				Ext.Msg.confirm(
+					"CUDA", 
+					"CUDA has not been checked, the computation may take too long. Would you like to proceed anyway?",
+					function(btn,text){
+                    	if (btn == 'yes'){
+							if(this.jobUid) {
+								this.startWPSRequest(this.getForm().getValues());
+							} else {
+								return Ext.Msg.show({
+										   title: this.invalidFormDialogText,
+										   msg: "Missing 'username' value!",
+										   buttons: Ext.Msg.OK,
+										   icon: Ext.MessageBox.WARNING,
+										   scope: this
+										});				
+							}
+	                    } else {
+	                        return false;
+	                    }
+	                }
+	            );
+			} else {
+				if(this.jobUid) {
+					this.startWPSRequest(this.getForm().getValues());
+				} else {
+					return Ext.Msg.show({
+							   title: this.invalidFormDialogText,
+							   msg: "Missing 'username' value!",
+							   buttons: Ext.Msg.OK,
+							   icon: Ext.MessageBox.WARNING,
+							   scope: this
+							});				
+				}				
+			}
 		}
 	},
 
@@ -922,6 +956,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			params.jcuda = false;
 		}
 		
+		params.jobUid = this.jobUid;
+		
 		if (!params.radius) {
 			params.radius = 100;
 		}
@@ -986,6 +1022,9 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			}),
 			jcuda : new OpenLayers.WPSProcess.LiteralData({
 				value : params.jcuda.toString()
+			}),
+			jobUid : new OpenLayers.WPSProcess.LiteralData({
+				value : params.jobUid
 			})
 		};
 
