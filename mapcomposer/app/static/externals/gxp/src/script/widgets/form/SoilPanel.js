@@ -691,6 +691,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	submitForm: function() {
 		if(this.validate()){
             //activate tab
+            var me = this;
             var changematrixTool = this.target.tools["changeMatrixTool"];            
             var tab = Ext.getCmp(changematrixTool.wfsChangeMatrisGridPanelID);
             tab.setActiveTab(this.geocoderConfig.targetResultGridId + "_panel");
@@ -708,15 +709,15 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 					"CUDA has not been checked, the computation may take too long. Would you like to proceed anyway?",
 					function(btn,text){
                     	if (btn == 'yes'){
-							if(this.jobUid) {
-								this.startWPSRequest(this.getForm().getValues());
+							if(me.jobUid) {
+								me.startWPSRequest(me.getForm().getValues());
 							} else {
 								return Ext.Msg.show({
 										   title: this.invalidFormDialogText,
 										   msg: "Missing 'username' value!",
 										   buttons: Ext.Msg.OK,
 										   icon: Ext.MessageBox.WARNING,
-										   scope: this
+										   scope: me
 										});				
 							}
 	                    } else {

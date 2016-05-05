@@ -254,12 +254,101 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 					});
 		}
 		
-		if(this.useCuda) {
+		if(!this.useCuda) {
 			Ext.Msg.confirm(
 				"CUDA", 
-				"CUDA is not yet available for this Tool, the computation may FAIL. Would you like to proceed anyway?",
+				"CUDA has not been checked, the computation may take too long. Would you like to proceed anyway?",
 				function(btn,text){
                 	if (btn == 'yes'){
+						if(me.jobUid) {
+
+								if(me.roiFieldSet && me.roiFieldSet.rendered){
+									me.roiFieldSet.removeFeatureSummary();
+								}
+						
+								// get form params
+								var params = form.getFieldValues();
+						
+								// ///////////////
+								// ItemSelector Ex
+								// ///////////////
+								var classesSelectorExStore = Ext.getCmp(me.id + '_classesselector').storeTo;
+								if (classesSelectorExStore.getCount() == 0) {
+									//return Ext.Msg.alert(me.changeMatrixEmptyClassesDialogTitle, me.changeMatrixEmptyClassesDialogText);
+									return Ext.Msg.show({
+											   title: me.changeMatrixEmptyClassesDialogTitle,
+											   msg: me.changeMatrixEmptyClassesDialogText,
+											   buttons: Ext.Msg.OK,
+											   icon: Ext.MessageBox.WARNING,
+											   scope: me
+											});
+								}
+								var selectedClasses = [];
+								classesSelectorExStore.each(function(record) {
+									selectedClasses.push(record.get('field1') ? record.get('field1') : record.get('value'));
+								});
+						
+								params.classes = selectedClasses;
+						
+								//get the current extent
+								var map = me.target.mapPanel.map;
+								var currentExtent = map.getExtent();
+								
+								//transform to a Geometry (instead of Bounds)
+								if (me.roiFieldSet && me.roiFieldSet.collapsed !== true && me.roiFieldSet.outputType.value) {
+									params.roi = me.roiFieldSet.currentExtent;
+								} else {
+									//currentExtent = map.getMaxExtent();
+									//change the extent projection if it differs from 4326
+									if (map.getProjection() != 'EPSG:4326') {
+										currentExtent.transform(map.getProjectionObject(), new OpenLayers.Projection('EPSG:4326'));
+									}
+									// set ROI parameter
+									params.roi = currentExtent.toGeometry();
+								}
+						
+								if (this.useCuda) {
+									params.jcuda = true;
+								} else {
+									params.jcuda = false;
+								}
+								
+								// if is selected as radio group override raster name from the inputValue
+								if(this.clcLevelMode == 'radiogroup'){
+									params.raster = params.raster.inputValue;
+								}
+						        
+								if(me.jobUid) {
+									params.jobUid = me.jobUid;
+									me.startWPSRequest(params);
+								} else {
+									return Ext.Msg.show({
+											   title: me.changeMatrixInvalidFormDialogTitle,
+											   msg: "Missing 'username' value!",
+											   buttons: Ext.Msg.OK,
+											   icon: Ext.MessageBox.WARNING,
+											   scope: me
+											});			
+								}
+
+
+						} else {
+							return Ext.Msg.show({
+									   title: this.invalidFormDialogText,
+									   msg: "Missing 'username' value!",
+									   buttons: Ext.Msg.OK,
+									   icon: Ext.MessageBox.WARNING,
+									   scope: this
+									});				
+						}
+                    } else {
+                        return false;
+                    }
+                }
+            );
+		} else {
+			if(this.jobUid) {
+
 						if(me.roiFieldSet && me.roiFieldSet.rendered){
 							me.roiFieldSet.removeFeatureSummary();
 						}
@@ -328,12 +417,19 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 									   scope: me
 									});			
 						}
-                    } else {
-                        return false;
-                    }
-                }
-            );
-		} else {
+
+			} else {
+				return Ext.Msg.show({
+						   title: this.invalidFormDialogText,
+						   msg: "Missing 'username' value!",
+						   buttons: Ext.Msg.OK,
+						   icon: Ext.MessageBox.WARNING,
+						   scope: this
+						});				
+			}				
+		}
+		
+		/*} else {
 			if(me.roiFieldSet && me.roiFieldSet.rendered){
 				me.roiFieldSet.removeFeatureSummary();
 			}
@@ -402,7 +498,7 @@ gxp.widgets.form.ChangeMatrixPanel = Ext.extend(gxp.widgets.form.AbstractOperati
 						   scope: me
 						});			
 			}
-		}
+		}*/
 	},
 
 	/**

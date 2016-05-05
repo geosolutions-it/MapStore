@@ -54,7 +54,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 	twoYearsText: 'two years',
 
 	// bbar text
-	useCuda: false,
+	useCuda: true,
 	cudaCheckBoxText: 'CUDA',
 	submitButtonText: 'Submit',
 	resetButtonText: 'Reset',
@@ -756,7 +756,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 			items : [
 			    {
                     xtype: "checkbox",
-                    checked: false,
+                    checked: true,
                     boxLabel: "<img src='theme/app/img/silk/nVidia.png' style='vertical-align: middle;width: 16px;'/>&nbsp;&nbsp;&nbsp;&nbsp; " /*+ me.cudaCheckBoxText*/,
                     listeners: {
                         check: function(box, checked) {
