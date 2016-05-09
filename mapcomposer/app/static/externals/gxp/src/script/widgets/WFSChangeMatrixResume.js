@@ -320,7 +320,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 			// To be changed with this.classes values
 			// ////////////////////
 			colmodel.push({
-				header : (typeof parseInt(settings.fields[i]) === 'number' && parseInt(settings.fields[i]) % 1 == 0?this.classesIndexes[me.classes[classDataIndex].level-1][1][parseInt(settings.fields[i])-1][1]:settings.fields[i]),
+				header : (!isNaN(parseInt(settings.fields[i])) && typeof parseInt(settings.fields[i]) === 'number' && parseInt(settings.fields[i]) % 1 == 0 && this.classesIndexes[me.classes[classDataIndex].level-1][1] != 'undefined'?this.classesIndexes[me.classes[classDataIndex].level-1][1][parseInt(settings.fields[i])-1][1]:settings.fields[i]),
 				dataIndex : settings.fields[i]
 			});
 		}

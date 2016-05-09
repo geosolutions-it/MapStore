@@ -448,7 +448,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			&& yearData.values
 			&& yearData.admUnits.length == yearData.values.length){
 			for(var i = 0; i < yearData.admUnits.length; i++){
-				if(yearData.values[i] != 0){
+				if(yearData.values[i]){
 					valid = true;
 					break;
 				}
