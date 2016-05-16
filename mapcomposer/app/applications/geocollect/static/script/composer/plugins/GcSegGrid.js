@@ -1308,7 +1308,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                         var feature = selection.data.feature;
                         if(feature){
                             var geom=feature.geometry;
-                            this.target.mapPanel.map.setCenter(new OpenLayers.LonLat(geom.x,geom.y),15,false,true);
+                            this.target.mapPanel.map.setCenter(new OpenLayers.LonLat(geom.x,geom.y),18,false,true);
                         }
                     }
                 }]
