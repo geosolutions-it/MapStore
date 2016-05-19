@@ -80,7 +80,7 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
     sColSopFields : "Show In Survey Grid",
     serverError : "Invalid response from server.",
     errorLayer : "Trouble creating layer store from response.",
-    //Contorllo per inizializzazione!
+    //Controllo per inizializzazione!
     authkey : null,
     authParam : null,
     template : null,
@@ -723,11 +723,12 @@ mxp.widgets.GcDbResourceEditor = Ext.extend(Ext.Panel, {
             };
         }
     },
-    //Preoara oggetto con fields  {nome:type,nome:type}
+    //Prepare the output object  {name:type,name:type}
     getFieldsObj : function(store) {
-        //TODO customiza here type conversion
+        //customize here type conversion
         var transformType = {
-            'int' : 'integer'
+            'int' : 'integer',
+            'long': 'numeric'
         };
         var recObj = {};
         store.each(function(rec) {
