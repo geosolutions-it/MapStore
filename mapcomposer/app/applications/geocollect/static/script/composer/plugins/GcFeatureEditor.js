@@ -364,6 +364,9 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                                     //TODO CONTROLLA SE HO TIGA SELEZIONATA E RISELEZIONA LA FEATURE!!
                                 },
                                 "featuremodified": function(popup, feature) {
+                                    if(feature.attributes.id === undefined){
+                                        feature.attributes.id = feature.attributes.gcid;
+                                    }
                                     featureStore.on({
                                         write: {
                                             fn: function(st,act) {
@@ -374,7 +377,7 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                                             single: true
                                         },
                                         scope: this
-                                    });                                
+                                    });
                                     if(feature.state === OpenLayers.State.DELETE) {                                    
                                         /**
                                          * If the feature state is delete, we need to
@@ -386,11 +389,11 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                                          * feature from the layer.
                                          */
                                         gcseg.segGrid.toggleInfo.toggle(false);
-                                        gcseg.disableTools();
-                                         featureStore._removing = true; // TODO: remove after http://trac.geoext.org/ticket/141
+                                        featureStore._removing = true; // TODO: remove after http://trac.geoext.org/ticket/141
                                         featureStore.remove(featureStore.getRecordFromFeature(feature));
                                         delete featureStore._removing; // TODO: remove after http://trac.geoext.org/ticket/141
                                     }
+                                    gcseg.disableTools();
                                     featureStore.save();
                                 },
                                 "canceledit": function(popup, feature) {
@@ -444,7 +447,7 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                 featureManager.featureLayer.events.register("featuresadded", this, function(evt) {
                     featureManager.featureLayer.events.unregister("featuresadded", this, arguments.callee);
                     this.drawControl.deactivate();
-                   //this.selectControl.activate();
+                    //this.selectControl.activate();
                     this.selectControl.select(evt.features[0]);
                 });
             },

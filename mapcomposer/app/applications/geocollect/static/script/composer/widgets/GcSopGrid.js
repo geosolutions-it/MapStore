@@ -347,7 +347,7 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
                     autoSave : false,
                     listeners : {
                         "write" : function () {
-                            // this.redrawMatchingLayers(record);
+                            this.featureLayer.redraw(true);
                         },
                         "load" : function () {
                             //this.fireEvent("query", this, this.featureStore, this.filter);
