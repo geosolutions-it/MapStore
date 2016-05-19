@@ -63,8 +63,8 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      *  Text for feature info action tooltip (i18n).
      */
     infoActionTip: "Get Feature Info",
-	
-	/** api: config[activActionTip]
+
+    /** api: config[activActionTip]
      *  ``String``
      *  Text for feature info action tooltip (i18n).
      */
@@ -75,31 +75,31 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      *  Title for info popup (i18n).
      */
     popupTitle: "Feature Info",
-	
-	/** api: config[closePrevious]	
+
+    /** api: config[closePrevious]	
      *  ``Boolean``
      *  Close previous popups when opening a new one.
      */
-	closePrevious: true,
-	
-	/** api: config[loadingMask]
+    closePrevious: true,
+
+    /** api: config[loadingMask]
      *  ``Boolean``
      *  Use a loading mask during get feature info.
      */
-	loadingMask: true,
-	
-	/** api: config[maskMessage]
+    loadingMask: true,
+
+    /** api: config[maskMessage]
      *  ``String``
      *  Message for the loading mask.
      */
-	maskMessage: 'Getting info...',
-	
-	/** api: config[useTabPanel]
+    maskMessage: 'Getting info...',
+
+    /** api: config[useTabPanel]
      *  ``Boolean``
      *  Use a loading mask during get feature info.
      */
-	useTabPanel: false,
-    
+    useTabPanel: false,
+
     noDataMsg: "No data returned from the server",
     /** api: config[regex]
      *  ``regex``
@@ -218,52 +218,52 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
           return Ext.util.Format.date(feature.data.gc_created.replace(/Z/g, "+0100"), 'Y-m-d G:i');
         };
         
-		var items = [new Ext.menu.CheckItem({
+        var items = [new Ext.menu.CheckItem({
             tooltip: this.infoActionTip,
-			text: this.infoActionTip,
+            text: this.infoActionTip,
             iconCls: "gxp-icon-getfeatureinfo",
             toggleGroup: this.toggleGroup,
             group: this.toggleGroup,
-			listeners: {
-				checkchange: function(item, checked) {
-					this.activeIndex = 0;
-					this.button.toggle(checked);
-					if (checked) {
-						this.button.setIconClass(item.iconCls);
-					}
-					for (var i = 0, len = info.controls.length; i < len; i++){
+            listeners: {
+                checkchange: function(item, checked) {
+                    this.activeIndex = 0;
+                    this.button.toggle(checked);
                     if (checked) {
-							info.controls[i].activate();
-						} else {
-							info.controls[i].deactivate();
-							
-						}
-					}
-				},
-				scope: this
-			}
-		}),new Ext.menu.CheckItem({
+                        this.button.setIconClass(item.iconCls);
+                    }
+                    for (var i = 0, len = info.controls.length; i < len; i++){
+                    if (checked) {
+                            info.controls[i].activate();
+                        } else {
+                            info.controls[i].deactivate();
+                            
+                        }
+                    }
+                },
+                scope: this
+            }
+        }),new Ext.menu.CheckItem({
             tooltip: this.activeActionTip,
-			text: this.activeActionTip,
+            text: this.activeActionTip,
             iconCls: "gxp-icon-mouse-map",
-			
+            
             toggleGroup: this.toggleGroup,
             group: this.toggleGroup,
-			allowDepress:false,
-			listeners: {
-				checkchange: function(item, checked) {
-					this.activeIndex = 1;
-					this.button.toggle(checked);
-					if (checked) {
-						this.button.setIconClass(item.iconCls);
-					}
-					this.toggleActiveControl(checked);
-				},
-				scope: this
-			}
-		})];
-		
-		this.button = new Ext.SplitButton({
+            allowDepress:false,
+            listeners: {
+                checkchange: function(item, checked) {
+                    this.activeIndex = 1;
+                    this.button.toggle(checked);
+                    if (checked) {
+                        this.button.setIconClass(item.iconCls);
+                    }
+                    this.toggleActiveControl(checked);
+                },
+                scope: this
+            }
+        })];
+        
+        this.button = new Ext.SplitButton({
             iconCls: "gxp-icon-getfeatureinfo",
             tooltip: this.measureTooltip,
             enableToggle: true,
@@ -293,13 +293,13 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 items: items
             })
         });
-		
-		var actions = gxp.plugins.WMSGetFeatureInfoMenu.superclass.addActions.call(this, [this.button]);
+        
+        var actions = gxp.plugins.WMSGetFeatureInfoMenu.superclass.addActions.call(this, [this.button]);
         var infoButton = items[0];
 
         var info = {controls: []};
-		var layersToQuery = 0;
-		
+        var layersToQuery = 0;
+        
         var updateInfo = function() {
             var queryableLayers = this.target.mapPanel.layers.queryBy(function(x){
                 return x.get("queryable");
@@ -312,26 +312,26 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 control.deactivate();  // TODO: remove when http://trac.openlayers.org/ticket/2130 is closed
                 control.destroy();
             }
-			
+            
             info.controls = [];
             var started = false;
             var atLeastOneResponse = false;
             // click position, in lat/lon coordinates (issue #422)
             var startLatLon = null;
-			this.masking = false;
-			
+            this.masking = false;
+            
             queryableLayers.each(function(x){                
                 var l = x.getLayer();
-				
-				var vendorParams = {};
-		    	Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
-				if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
-					vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
-				}
+                
+                var vendorParams = {};
+                Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
+                if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
+                    vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
+                }
 
-				// Obtain info format
-            	var infoFormat = this.getInfoFormat(x);
-				
+                // Obtain info format
+                var infoFormat = this.getInfoFormat(x);
+                
                 var control = new OpenLayers.Control.WMSGetFeatureInfo({
                     url: l.url,
                     queryVisible: true,
@@ -341,39 +341,39 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                     vendorParams: vendorParams,
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
-							//first getFeatureInfo in chain
-							if(!started){
-								started= true;
-								// Issue #422
-								startLatLon = this.target.mapPanel.map.getLonLatFromPixel(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
-								atLeastOneResponse=false;
-								layersToQuery=queryableLayers.length;
-							}
+                            //first getFeatureInfo in chain
+                            if(!started){
+                                started= true;
+                                // Issue #422
+                                startLatLon = this.target.mapPanel.map.getLonLatFromPixel(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
+                                atLeastOneResponse=false;
+                                layersToQuery=queryableLayers.length;
+                            }
                             
-							if(this.loadingMask && !this.masking) {
-								this.target.mapPanel.el.mask(this.maskMessage);
-								this.masking = true;
-							}
+                            if(this.loadingMask && !this.masking) {
+                                this.target.mapPanel.el.mask(this.maskMessage);
+                                this.masking = true;
+                            }
                         },
                         getfeatureinfo: function(evt) {
                             layersToQuery--;
-							//last get feature info in chain
-							if(layersToQuery === 0) {
-								this.unmask();
-								started=false;
+                            //last get feature info in chain
+                            if(layersToQuery === 0) {
+                                this.unmask();
+                                started=false;
                                 
                                 if(this.disableAfterClick)
                                     this.button.toggle();                                
-								
+                                
                                 // pan to bring popup into view (issue #422)
                                 if (startLatLon) {
-                                	var popup = this.popupCache[startLatLon.toString()];
+                                    var popup = this.popupCache[startLatLon.toString()];
                                     if (popup) {
-                                    	// not too pretty, I'm calling a private method... any better idea?
-                                    	popup.panIntoView();
+                                        // not too pretty, I'm calling a private method... any better idea?
+                                        popup.panIntoView();
                                     }
                                 }                                
-							}
+                            }
 
                             var title = x.get("title") || x.get("name");
                             if (infoFormat == "text/html") {
@@ -395,10 +395,10 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                             }
                             
                         },
-						nogetfeatureinfo: function(evt) {
-							layersToQuery--;							
-							this.unmask();							
-						},
+                        nogetfeatureinfo: function(evt) {
+                            layersToQuery--;							
+                            this.unmask();							
+                        },
                         scope: this
                     }
                 });
@@ -411,11 +411,11 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 
         };
         
-		var updateInfoEvent = function() {
-			if(layersToQuery === 0) {
-				updateInfo.call(this);
-			}
-		};
+        var updateInfoEvent = function() {
+            if(layersToQuery === 0) {
+                updateInfo.call(this);
+            }
+        };
         this.target.mapPanel.layers.on("update", updateInfoEvent, this);
         this.target.mapPanel.layers.on("add", updateInfoEvent, this);
         this.target.mapPanel.layers.on("remove", updateInfoEvent, this);
@@ -436,13 +436,13 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
         return actions;
     },
 
-	unmask: function() {
-		if(this.loadingMask) {
-			this.target.mapPanel.el.unmask();
-			this.masking = false;
-		}
-	},
-    
+    unmask: function() {
+        if(this.loadingMask) {
+            this.target.mapPanel.el.unmask();
+            this.masking = false;
+        }
+    },
+
     /** private: method[closePopups]
      *  Clear all popups openned. Fixes issue #178.
      */
@@ -458,8 +458,8 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             }
         }
     },
-	
-	/** private: method[removeAllPopups] removes all open popups
+
+    /** private: method[removeAllPopups] removes all open popups
      */
     removeAllPopups: function(evt, title, text) {
         if(!this.infoPanelId){
@@ -470,8 +470,8 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 }
             }
         }
-	},
-	
+    },
+
     /** private: method[displayPopup]
      * :arg evt: the event object from a 
      *     :class:`OpenLayers.Control.GetFeatureInfo` control
@@ -489,27 +489,27 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
         var popupKey = latLon.toString();
         
         var item = this.getPopupItem(text, title, features);
-						
+                        
         if (!(popupKey in this.popupCache)) {
-			if(this.closePrevious) {
-				this.removeAllPopups();
-			}
-			var items = this.useTabPanel ? [{
-				xtype: 'tabpanel',
+            if(this.closePrevious) {
+                this.removeAllPopups();
+            }
+            var items = this.useTabPanel ? [{
+                xtype: 'tabpanel',
                 enableTabScroll:true,
-				activeTab: 0,
-				items: [item]
-			}] : [item];
+                activeTab: 0,
+                items: [item]
+            }] : [item];
 
             popup = this.cachePopup(latLon, items, popupKey, onClose);
-			
+            
         } else {
             popup = this.popupCache[popupKey];
-			
-			var container = this.useTabPanel ? popup.items.first() : popup;
-			container.add(item);
+            
+            var container = this.useTabPanel ? popup.items.first() : popup;
+            container.add(item);
         }
-		        
+                
         popup.doLayout();
     },
     
@@ -654,7 +654,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             }
         }
     },
-	
+
     /** private: method[getPopupItem]
      * :arg text: ``String`` Body text.
      * :arg title: a String to use for the title of the results section 
@@ -662,65 +662,65 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
      * :arg features: ``Array`` With features.
      */
     getPopupItem:function(text, title, features){
-    	var item;
-    	if(features){
-	    	 item = this.useTabPanel ? {
-	            title: title,     
-	            layout: "accordion",
+        var item;
+        if(features){
+             item = this.useTabPanel ? {
+                title: title,     
+                layout: "accordion",
                 ref: title,  // use the title of the layer to reference the info panel
-	            items: this.obtainFeatureInfoFromData(text, features, title),
-	            autoScroll: true
-	        } : {
-	            title: title,           
-	            layout: "accordion",  
+                items: this.obtainFeatureInfoFromData(text, features, title),
+                autoScroll: true
+            } : {
+                title: title,           
+                layout: "accordion",  
                 ref: title,
-	            items: this.obtainFeatureInfoFromData(text, features, title),
-	            autoScroll: true,
-	            autoWidth: true,
-	            collapsible: true
-	        };
-	    }else{
-	    	item = this.useTabPanel ? {
-				title: title,
-				html: text,
-				autoScroll: true
-			} : {
-	            title: title,
-	            layout: "fit",
-	            html: text,
-	            autoScroll: true,
-	            autoWidth: true,
-	            collapsible: true
-	        };
-	    }
-	    return item;
+                items: this.obtainFeatureInfoFromData(text, features, title),
+                autoScroll: true,
+                autoWidth: true,
+                collapsible: true
+            };
+        }else{
+            item = this.useTabPanel ? {
+                title: title,
+                html: text,
+                autoScroll: true
+            } : {
+                title: title,
+                layout: "fit",
+                html: text,
+                autoScroll: true,
+                autoWidth: true,
+                collapsible: true
+            };
+        }
+        return item;
     },
-	
-	/** private: method[toggleActiveControl] 
-	 *  toggles the active control (on Mouse Hover).
+
+    /** private: method[toggleActiveControl] 
+     *  toggles the active control (on Mouse Hover).
      */
-	toggleActiveControl: function(checked){
+    toggleActiveControl: function(checked){
 
-		//get selectionModel of layer tree
-		var sm = Ext.getCmp('layertree').getSelectionModel();
+        //get selectionModel of layer tree
+        var sm = Ext.getCmp('layertree').getSelectionModel();
 
-		if(checked){
-			var sel = sm.getSelectedNode() ;
-			//if a layer is selected create and activate the layer
-			if(sel){
-			 var layer = sel.layer
-			 if(layer){
-				this.activateActiveControl(layer,sel.text);
-			}
-		}
-		//bind event selection change to create new control
-		
-			sm.on('selectionchange',this.changeSelected,this);
-		}else{
-			this.cleanActiveControl();
-			sm.un('selectionchange',this.changeSelected,this);
-		}
-	},
+        if(checked){
+            var sel = sm.getSelectedNode() ;
+            //if a layer is selected create and activate the layer
+            if(sel){
+             var layer = sel.layer
+             if(layer){
+                this.activateActiveControl(layer,sel.text);
+            }
+        }
+        //bind event selection change to create new control
+        
+            sm.on('selectionchange',this.changeSelected,this);
+        }else{
+            this.cleanActiveControl();
+            sm.un('selectionchange',this.changeSelected,this);
+        }
+    },
     /** private: method[activateActiveControl] 
      *  activate the active control. called on tool activation
      *  if a layer is selected, or on selectionchangeEvent
@@ -746,8 +746,8 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 
         selectedLayer.each(function(x){      
 
-			// Obtain info format
-        	var infoFormat = this.getInfoFormat(x);
+            // Obtain info format
+            var infoFormat = this.getInfoFormat(x);
                     
             var control = new OpenLayers.Control.WMSGetFeatureInfo({
                 title: 'Identify features by clicking',
@@ -798,10 +798,10 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 
     getInfoFormat: function(layer){
 
-    	var infoFormat;
-    	if(layer){
-    		infoFormat = layer.get("infoFormat");
-    	}
+        var infoFormat;
+        if(layer){
+            infoFormat = layer.get("infoFormat");
+        }
         if (infoFormat === undefined) {
             infoFormat = (this.format == "grid") ? "application/vnd.ogc.gml" : "text/html";
         }
@@ -877,9 +877,9 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             rowExpander: expander,
             store: new Ext.data.JsonStore({
                     url: this.picturesBrowserConfig.baseUrl
-					     +'?action=get_filelist&folder='
-						 +this.picturesBrowserConfig.folder
-						 +feature.data[this.picturesBrowserConfig.featureProperty]+"/"+feature.fid,
+                         +'?action=get_filelist&folder='
+                         +this.picturesBrowserConfig.folder
+                         +feature.data[this.picturesBrowserConfig.featureProperty]+"/"+feature.fid,
                     autoLoad: true,
                     root: 'data',
                     id:'name',
@@ -889,12 +889,12 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                         {name: 'text', mapping: 'name'}
                     ],
                     listeners:{
-						load:function (store,records,req){
-							if(records.length <= 0 ){
-								photoBrowserDataView.refOwner.getBottomToolbar( ).hide();
-								photoBrowserDataView.refOwner.doLayout();
-							}
-						}
+                        load:function (store,records,req){
+                            if(records.length <= 0 ){
+                                photoBrowserDataView.refOwner.getBottomToolbar( ).hide();
+                                photoBrowserDataView.refOwner.doLayout();
+                            }
+                        }
                     }
             }),
             loadPhotos:function(r){
@@ -1247,34 +1247,34 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
         return featureStore;
 
     },
-	
-    /**
-	* Get the user's corrensponding authkey if present 
-	* (see MSMLogin.getLoginInformation for more details)
-	*/
-	getAuthParam: function(){
-		var userInfo = this.target.userDetails;
-		var authkey;
-		
-		if(userInfo.user.attribute instanceof Array){
-			for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
-				if( userInfo.user.attribute[i].name == "UUID" ){
-					authkey = userInfo.user.attribute[i].value;
-				}
-			}
-		}else{
-			if(userInfo.user.attribute && userInfo.user.attribute.name == "UUID"){
-			   authkey = userInfo.user.attribute.value;
-			}
-		}
 
-		if(authkey){
-			var authParam = userInfo.user.authParam;
-			this.authParam = authParam ? authParam : this.authParam;
-		}
-		
-		return authkey;
-	}
+    /**
+    * Get the user's corrensponding authkey if present 
+    * (see MSMLogin.getLoginInformation for more details)
+    */
+    getAuthParam: function(){
+        var userInfo = this.target.userDetails;
+        var authkey;
+        
+        if(userInfo.user.attribute instanceof Array){
+            for(var i = 0 ; i < userInfo.user.attribute.length ; i++ ){
+                if( userInfo.user.attribute[i].name == "UUID" ){
+                    authkey = userInfo.user.attribute[i].value;
+                }
+            }
+        }else{
+            if(userInfo.user.attribute && userInfo.user.attribute.name == "UUID"){
+               authkey = userInfo.user.attribute.value;
+            }
+        }
+
+        if(authkey){
+            var authParam = userInfo.user.authParam;
+            this.authParam = authParam ? authParam : this.authParam;
+        }
+        
+        return authkey;
+    }
 });
 
 Ext.preg(gxp.plugins.WMSGetFeatureInfoMenu.prototype.ptype, gxp.plugins.WMSGetFeatureInfoMenu);
