@@ -46,8 +46,8 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 	roiTitleText: "ROI",
 	timeFilterTitle : 'Time Filter',
 	changeMatrixRasterFieldLabel : "Raster Layer",
-	currentTimeFieldLabel: 'Reference time',
-	referenceTimeFieldLabel: 'Current time', 
+	currentTimeFieldLabel: 'Current time',
+	referenceTimeFieldLabel: 'Reference time', 
 
 	// Years text
 	oneYearText: 'one year',
