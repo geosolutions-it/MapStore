@@ -1179,6 +1179,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 										                me.geocoderDrawings.addFeatures([new OpenLayers.Feature.Vector(feature, attributes)]);
 													}
 												}
+												me.setCurrentExtent('geocoder', store);
 											} 
 										},
 									   icon: Ext.MessageBox.WARNING,
@@ -1284,7 +1285,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 							var outputValue = this.outputType.getValue();
 							var returnType = this.returnType.getValue();
 
-							// clean gri
+							// clean grid
 							// - AF - Disabled
 							/*if(outputValue == "geocoder" && returnType == "subs"){
 								me.geocodingPanel.getStore().removeAll();

@@ -268,6 +268,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             }
             
             var styles = this.getLayerStyle(config);
+            if (!styles) styles = ""; // Using Server Defaults
         
             // use all params from sources layerBaseParams option
             var params = Ext.applyIf({
