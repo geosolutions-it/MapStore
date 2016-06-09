@@ -175,7 +175,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		}
 
 		// Generate data for the charts
-		if(data && data.index && data.refTime){
+		if(data && data.index && data.refTime && data.refTime.output.values[0]){
 			var title = data.index.name || this.defaultTitle;
 			refTimePieChartsData = this.getPieChartsData(data.index.id, data.index.subindex, data.refTime.output);
 			refTimeColChartsData = this.getColChartsSeries(data.refTime.output);
