@@ -122,7 +122,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				4: false,
 				5: false,
 				6: false, // Urban Fabric Classes [2 Time]
-				7: false
+				7: true
 			},
 			filterT1ComboBox: false
 		},
