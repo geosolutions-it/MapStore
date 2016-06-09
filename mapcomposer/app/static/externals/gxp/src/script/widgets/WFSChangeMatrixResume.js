@@ -783,8 +783,21 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 		// ///////////////////////////////////////
 		// Main Tab Panel
 		// ///////////////////////////////////////
+
+		// title for the layers and the tab
+		var chartTime  = refYear;
+		
+		if (!data.curTime && nowYear) {
+			chartTime  = refYear + " -> " + nowYear;
+		}
+
+		var title = this.changeMatrixResultsTitle;
+		    title+= " "+chartTime;
+		    title+= responseData.jobUid ? " [" + responseData.jobUid + "]" : "";
+		    title+= responseData.jcuda ? " " + responseData.jcuda : "";
+		
 		var changeMatrixOutcomeTabPanel = new Ext.TabPanel({
-			title : this.changeMatrixResultsTitle,
+			title : title,
 			height : 300,
 			width : 300,
 			closable : true,

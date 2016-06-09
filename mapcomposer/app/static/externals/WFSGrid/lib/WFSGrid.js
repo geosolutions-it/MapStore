@@ -308,8 +308,19 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
                         var responseData = JSON.parse(record.get(me.featureTypeDetails));
                     }
 
+					responseData.jcuda      = record.data.jcuda;
+					responseData.jobUid     = record.data.jobUid;
+					responseData.indexName  = record.data.index;
+					responseData.itemStatus = record.data.itemStatus;
+
                     if(wfsResumeTool){
-                    	var grid = wfsResumeTool.createResultsGrid(responseData, responseData.rasterName, responseData.refYear, responseData.nowYear, record.data.referenceName, me.featureType);
+                    	var grid = wfsResumeTool.createResultsGrid(
+                    		responseData, 
+                    		responseData.rasterName, 
+                    		me.parseYear(record.data.referenceFilter), me.parseYear(record.data.nowFilter), 
+                    		record.data.referenceName, 
+                    		me.featureType);
+                    	
 						/*
 						 * Check if tabs exists and if we are allowed to render to a tab or a floating window
 						 */
@@ -353,6 +364,17 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 		};
 	},
 
+	/**
+	 * private: method[parseYear]
+	 */
+	parseYear : function(filter) {
+		if(filter.indexOf("time")<0)
+			return null;
+
+		year = filter.match(/\d{4}/);
+		return year[0];
+	},
+	
 	/** private: method[getDeleteAction]
 	 */
 	getDeleteAction : function(actionConf) {

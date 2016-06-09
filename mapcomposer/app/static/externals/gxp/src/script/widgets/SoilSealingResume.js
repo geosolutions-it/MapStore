@@ -192,6 +192,14 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		}
 
 		var adminUnitsTabs;
+		
+		var chartTitle = referenceTimeTitle;
+		var chartTime  = refYear;
+		
+		if (!data.curTime && nowYear) {
+			chartTitle = this.intervalTitleText; 
+			chartTime  = refYear + " -> " + nowYear;
+		}
 
 		// Administrative units tab only for index 1
 		if(data.index.id == 1) {
@@ -202,9 +210,9 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			for(var i = 0; i < data.refTime.output.admUnits.length; i++){
 				tabItemIndex++;
 				var unitItems = [];
-				unitItems.push(this.generatePieChart(this.referenceTimeTitleText, data.refTime.time, refTimePieChartsData[i]));
+				unitItems.push(this.generatePieChart(chartTitle, chartTime, refTimePieChartsData[i]));
 				if(curTimePieChartsData){
-					unitItems.push(this.generatePieChart(this.currentTimeTitleText, data.curTime.time, curTimePieChartsData[i]));
+					unitItems.push(this.generatePieChart(chartTitle, chartTime, curTimePieChartsData[i]));
 				}
 				adminUnitsItems.push({
 					title: data.refTime.output.admUnits[i],
@@ -265,7 +273,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 
 		// Bar chart tab
 		var barChartItems = [];
-		var barChartTitle = this.barChartTitleText;
+		var barChartTitle = this.barChartTitleText + " [" + chartTime + "]";
 		
 		var clcLevels;
 		if( data.index.id == 3 )
@@ -324,8 +332,11 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		}
 
 		// title for the layers and the tab
-		var title = data.index && data.index.name ? data.index.name: this.defaultTitle;
+		var title = data.indexName ? data.indexName : this.defaultTitle;
 		    title+= " ("+indexUoM+")";
+		    title+= " "+chartTime;
+		    title+= data.jobUid ? " [" + data.jobUid + "]" : "";
+		    title+= data.jcuda ? " " + data.jcuda : "";
 
 		// yAxis
 		var yAxis = {};
@@ -344,7 +355,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			barChartItems.push(
 				this.generateModelScatterMultiAxisChart(
 					this.urbanFabricClassesText, 
-					data.refTime.time.split(" - ")[0], 
+					//data.refTime.time.split(" - ")[0],
+					refYear, 
 					data.refTime.output,
 					quadrantsLabels,
 					0 // Ref Time Index
@@ -356,7 +368,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 				barChartItems.push(
 					this.generateModelScatterMultiAxisChart(
 						this.urbanFabricClassesText, 
-						data.curTime.time.split(" - ")[0], 
+						//data.curTime.time.split(" - ")[0],
+						nowYear, 
 						data.curTime.output,
 						quadrantsLabels,
 						1 // Cur Time Index
@@ -366,8 +379,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		} else {
 			barChartItems.push(
 				this.generateColumnChart(
-					referenceTimeTitle, 
-					data.refTime.time, 
+					chartTitle,
+					chartTime, 
 					refTimeColChartsData, 
 					xAxis, 
 					yAxis)
@@ -385,12 +398,12 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					xAxis, 
 					yAxis)
 			);
-		}else{
+		/*}else{
 			if (data.index.id === 8 || data.index.id === 11){
 				barChartTitle = referenceTimeTitle;
 			}else{
 				barChartTitle += " - " + referenceTimeTitle;
-			}
+			}*/
 		}
 		
 		// bar charts
