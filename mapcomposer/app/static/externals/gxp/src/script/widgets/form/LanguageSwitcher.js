@@ -48,12 +48,12 @@ gxp.form.LanguageSwitcher = Ext.extend(gxp.form.ContextSwitcher, {
      */
 	emptyText: "Select Language",
 	switchActionTip : "Switch Language",
-	switchConfirmationText : "You are sure to change Language? All unsaved data will be lost",
+	switchConfirmationText : "By switching Language, all your unsaved data will be lost. Do you want to proceed?",
 	/** api: config[width]
      *  ``int`` width of the text box. default is 200
      */
 	width: 130,
-	paramName:'locale',
+	paramName:'select_lang',
 	/** api: config[data]
 	 * eg. [["id","Default Viewer", "viewer","","descript"],
 	 * ["id","Custom Viewer", "viewer","config","descript"] ,

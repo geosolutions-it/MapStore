@@ -11198,6 +11198,7 @@ Ext.ComponentMgr = function(){
 
         
         create : function(config, defaultType){
+        	console.log(config.xtype + " -- " + defaultType + " -- " + types[config.xtype || defaultType]);
             return config.render ? config : new types[config.xtype || defaultType](config);
         },
 

@@ -141,7 +141,7 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 					var query = Ext.urlDecode(url); 
 					
 					if(buttonId === 'ok'){
-
+						
 						var c = record.get('newpar');
 						var rurl = record.get('base');
 						
@@ -149,17 +149,29 @@ gxp.form.ContextSwitcher = Ext.extend(Ext.form.ComboBox, {
 						var u =(rurl&& rurl!="") ?rurl:location.pathname;
 						var separator='';
 						if(cb.paramName && cb.paramName!="" && c!=""){
-							u+= '?'+cb.paramName+'=' + c;
-							separator ='&';
+							if (cb.paramName == 'select_lang') {
+								if (c != 'en') {
+									u+= '?locale='+ c + '&config=changeMatrix_'+c;
+									separator =null;
+		                        } else {
+		                        	u+= '?locale='+ c;
+		                        	separator =null;
+		                        }
+							} else {
+								u+= '?'+cb.paramName+'=' + c;
+								separator ='&';
+							}
 						}else{
 							u+='?';
 						}
 						
 						//TODO make it use more than one parameter
-						for(x in query) {
-							if(x!=cb.paramName){
-								u += separator +x+'=' + query[x];
-								separator='&';
+						if (separator) {
+							for(x in query) {
+								if(x!=cb.paramName){
+									u += separator +x+'=' + query[x];
+									separator='&';
+								}
 							}
 						}
 

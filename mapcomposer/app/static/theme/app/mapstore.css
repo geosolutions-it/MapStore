@@ -219,3 +219,11 @@ div#homelogos ul li a:hover {
     height:14px; /*change from 13px to 14px*/
     width:13px;
 }
+
+.icon-east-panel{
+    background-image: url(img/silk/find.png);
+}
+
+.icon-south-panel{
+    background-image: url(img/silk/grid_columns.png);
+}
