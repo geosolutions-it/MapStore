@@ -451,7 +451,7 @@ GeoExt.Lang.add("en", {
 	},
 	"gxp.form.LanguageSwitcher.prototype":{
 		switchActionTip : "Switch Language",
-		switchConfirmationText : "Are you sure to change Language?"//Are you sure to change Language? All unsaved data will be lost
+		switchConfirmationText : "By switching Language, all your unsaved data will be lost. Do you want to proceed?"
 	},
 	
 	"gxp.plugins.MarkerEditor.prototype":{
@@ -598,7 +598,24 @@ GeoExt.Lang.add("en", {
 		tooltip: "Snapshot"
 	},
 
-	"gxp.plugins.ChangeMatrix.prototype" :{
+    "gxp.widgets.form.ChangeMatrixPanel.prototype" : {
+    	timeSelectionTitleText: "Time Selection",
+		soilSealingIndexTitleText: "Soil Sealing Index",
+		clcLevelTitleText: "CLC level",
+		clcLegendBuilderTitleText: "CLC Level Builder",
+		roiTitleText: "ROI",
+		timeFilterTitle : 'Time Filter',
+		changeMatrixRasterFieldLabel : "Raster Layer",
+		currentTimeFieldLabel: 'Current time',
+		referenceTimeFieldLabel: 'Reference time', 
+		oneYearText: 'one year',
+		twoYearsText: 'two years',
+		cudaCheckBoxText: 'CUDA',
+		submitButtonText: 'Submit',
+		resetButtonText: 'Reset'
+    },
+    
+	"gxp.plugins.ChangeMatrix.prototype" : {
 		changeMatrixActionTip : "Get a change matrix for a raster layer",
 		changeMatrixDialogTitle : "Change matrix",
 		changeMatrixClassesFieldLabel : "Classes",
@@ -629,7 +646,7 @@ GeoExt.Lang.add("en", {
 		scatterChartXAxisLabel : "Reference"
 	},
 	
-	"gxp.widgets.form.SpatialSelectorField.prototype" :{
+	"gxp.widgets.form.SpatialSelectorField.prototype" : {
 		title : "Region Of Interest",
 		selectionMethodLabel : "Selection Method",
 		comboEmptyText : "Select a method..",
@@ -668,7 +685,7 @@ GeoExt.Lang.add("en", {
         selectionReturnTypeLabel: "Return Type"
 	},
 	
-	"gxp.plugins.WFSGrid.prototype" :{
+	"gxp.plugins.WFSGrid.prototype" : {
 		displayMsgPaging : "Displaying topics {0} - {1} of {2}",
 		emptyMsg : "No topics to display",
 		addLayerTooltip : "Add Layer to Map",
@@ -677,33 +694,59 @@ GeoExt.Lang.add("en", {
 		deleteConfirmMsg : "Are you sure you want delete this feature?",
 		detailsHeaderName : "Property Name",
 		detailsHeaderValue : "Property Value",
-		detailsWinTitle : "Details",
+		detailsWinTitle : "Details"
 	},
 
-    "gxp.widgets.form.SoilPanel.prototype":{
-        basedOnCLCText: 'Based on CLC',
-        coverText: 'Coverage coefficient',
-        changingTaxText: 'Rate of Change',
-        marginConsumeText: 'Marginal Land Take',
-        sprawlText: 'Urban Sprawl',
-        basedOnImperviousnessText: 'Based on Imperviousness',
-        urbanDispersionText: 'Urban Sprawl',
-        edgeDensityText: 'Edge Density',
-        urbanDiffusionText: 'Dispersive Urban Growth',
-        framesText: 'Fragmentation',
-        consumeOnlyText: 'Land Take',
-        consumeOnlyConfText: 'Potential Loss or Food Supply',
-        urbanFabricClassesText: 'Model of Urban Development',
-        newUrbanizationText: 'New Urbanization',
-        invalidFormDialogText: "Please review the form fields:<ul>",
-        invalidFormTitleText: "Error",
-        invalidYearsFormDialogText: "Years range not selected",
-        invalidROIFormDialogText: "ROI not selected",
-        invalidCLCLevelFormDialogText: "CLC level not selected",
-        invalidClassesFormDialogText: "CLC Level builder not selected",
-        invalidSealingIndexFormDialogText: "Soil Sealing index not selected",
-        invalidRange0IndexFormDialogText: "Reference time not selected",
-        invalidRange1IndexFormDialogText: "Current time not selected"
+    "gxp.widgets.form.SoilPanel.prototype" :{
+		timeSelectionTitleText: "Time Selection",
+		soilSealingIndexTitleText: "Soil Sealing Index",
+		clcLevelTitleText: "CLC Levels / Urban Grids'",
+		clcLegendBuilderTitleText: "CLC Level Builder",
+		roiTitleText: "ROI",
+		timeFilterTitle : 'Time Filter',
+		changeMatrixRasterFieldLabel : "Raster Layer",
+		currentTimeFieldLabel: 'Current time',
+		referenceTimeFieldLabel: 'Reference time', 
+		oneYearText: 'one year',
+		twoYearsText: 'two years',
+		cudaCheckBoxText: 'CUDA',
+		submitButtonText: 'Submit',
+		resetButtonText: 'Reset',
+    	clcLevelTitleText: 'CLC Levels / Urban Grids',
+		imperviousnessText: 'Imperviousness',
+		basedOnCLCText: 'Based on CLC',
+		coverText: 'Coverage coefficient',
+		changingTaxText: 'Rate of Change',
+		marginConsumeText: 'Marginal Land Take',
+		sprawlText: 'Urban Sprawl Indicator',
+		basedOnImperviousnessText: 'Based on Imperviousness',
+		urbanDispersionText: 'Urban Dispersion',
+		edgeDensityText: 'Edge Density',
+		urbanDiffusionText: 'Dispersive Urban Growth',
+		urbanDiffusionAText: 'Urban Area',
+		urbanDiffusionBText: 'Highest Polygon Ratio',
+		urbanDiffusionCText: 'Other Polygons Ratio',
+		framesText: 'Fragmentation',
+		consumeOnlyText: 'Land Take',
+		consumeOnlyConfText: 'Potential Loss of Food Supply',
+		urbanFabricClassesText: 'Model of Urban Development',
+		newUrbanizationText: 'New Urbanization',
+		radiusTextLabel: 'Radius (m)',
+		radiusEmptyTextLabel: 'Radius in meters (m)',
+		bufferTextLabel: 'Buffer (m)',
+		bufferEmptyTextLabel: 'Buffer in meters (m)',
+		ruralTextLabel: 'Rural',
+		urbanTextLabel: 'Urban',
+		invalidFormDialogText: "Please review the form fields:<ul>",
+		invalidFormTitleText: "Error",
+		invalidYearsFormDialogText: "Years range not selected",
+		invalidROIFormDialogText: "ROI not selected",
+		invalidCLCLevelFormDialogText: "CLC level not selected",
+		invalidClassesFormDialogText: "CLC Level builder not selected",
+		invalidSealingIndexFormDialogText: "Soil Sealing index not selected",
+		invalidRange0IndexFormDialogText: "Reference time not selected",
+		invalidRange1IndexFormDialogText: "Current time not selected",
+		wpsError: "Error on WPS Process"
     },
 
     "gxp.widgets.SoilSealingResume.prototype":{

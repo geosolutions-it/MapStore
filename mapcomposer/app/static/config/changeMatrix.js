@@ -160,10 +160,13 @@
           "resizable": true,
           "collapsed": false,
           "collapsible": true,
-          "header": true
+          "header": true,
+          "plugins": ["Ext.ux.PanelCollapsedTitle"],
+          "collapsedIconCls": "icon-south-panel"
      },{
         "xtype": "tabpanel",
         "border": false,
+        "title": "Toolbox",
         "id": "east",
         "region": "east",
         "width": 355,
@@ -176,7 +179,8 @@
         "items": [
             {"xtype": "panel", "id": "legendcontrolpanel", "title": "Legend", "layout": "fit", "region": "center", "autoScroll": true},
             {"xtype": "panel", "id": "eastcontrolpanel",   "title": "Toolbox", "layout": "fit", "region": "center", "autoScroll": true}
-        ]
+        ],
+        "plugins": ["Ext.ux.PanelCollapsedTitle"]
     }],
     
 	"customTools":[{
@@ -552,9 +556,9 @@
             		"styleSelection": {
             			"3": "sprawl",
             			"4": "sprawl",
-						"8": "frag",
-						"9": "landtake",
-						"12": "frag"
+            			"8": "frag",
+            			"9": "landtake",
+            			"12": "frag"
             		},
             		"imperviousnessProccessName": "gs:SoilSealingImperviousness",
             		"imperviousnessLayer": "imperviousness",

@@ -1,7 +1,7 @@
 {
    "geoStoreBase":"http://143.225.214.136/geostore/rest/",
    "proxy":"/http_proxy/proxy/?url=",
-   "defaultLanguage": "en",
+   "defaultLanguage": "it",
    "tab": true,
    "portalConfig":{
 		"header":true
@@ -19,7 +19,8 @@
 			"ptype": "gxp_osmsource"
 		},
 		"google": {
-			"ptype": "gxp_googlesource" 
+			"ptype": "gxp_googlesource",
+			"useTiltImages": true
 		},
 		"ol": { 
 			"ptype": "gxp_olsource" 
@@ -60,6 +61,16 @@
 				"title" : "MapQuest OpenStreetMap",
 				"name"  : "osm",
 				"group" : "background"
+			},{
+			    "source": "ol",
+			    "title": "No Background",
+			    "group": "background",
+			    "fixed": true,
+			    "type": "OpenLayers.Layer",
+			    "visibility": false,
+			    "args": [
+			     "None", {"visibility": false}
+			    ]
 			},{
                 "source": "jrc",
                 "group" : "Touring Land Cover",
@@ -140,7 +151,7 @@
 	"customPanels":[{
           "xtype": "panel",
           "border": false,
-          "title": "Processes Workspace",
+          "title": "Risultato dei Processi",
           "id": "outcomelaylistpanel",
           "region": "south",
           "height": 250,
@@ -149,10 +160,13 @@
           "resizable": true,
           "collapsed": false,
           "collapsible": true,
-          "header": true
+          "header": true,
+          "plugins": ["Ext.ux.PanelCollapsedTitle"],
+          "collapsedIconCls": "icon-south-panel"
      },{
         "xtype": "tabpanel",
         "border": false,
+        "title": "Strumenti",
         "id": "east",
         "region": "east",
         "width": 355,
@@ -163,9 +177,10 @@
         "activeItem": 0,
         "hideMode": "offsets",
         "items": [
-            {"xtype": "panel", "id": "legendcontrolpanel", "title": "Legend", "layout": "fit", "region": "center", "autoScroll": true},
-            {"xtype": "panel", "id": "eastcontrolpanel",   "title": "Toolbox", "layout": "fit", "region": "center", "autoScroll": true}
-        ]
+            {"xtype": "panel", "id": "legendcontrolpanel", "title": "Legenda", "layout": "fit", "region": "center", "autoScroll": true},
+            {"xtype": "panel", "id": "eastcontrolpanel",   "title": "Stumenti", "layout": "fit", "region": "center", "autoScroll": true}
+        ],
+        "plugins": ["Ext.ux.PanelCollapsedTitle"]
     }],
     
 	"customTools":[{
@@ -177,6 +192,19 @@
            "geostorePassword": "admin",
            "geostoreProxy": "/http_proxy/proxy?url="
         },{
+	        "ptype":"gxp_print",
+	        "customParams":{
+	            "outputFilename":"mapstore-print",
+	            "geodetic": true
+	        },
+	        "ignoreLayers": "Open Street Map,MapQuest OpenStreetMap,Google Hybrid,Bing Aerial,Google Terrain,Google Roadmap,Marker,GeoRefMarker",
+	        "printService":"http://143.225.214.136/geoserver/pdf/",
+	        "legendPanelId":"legendPanel",
+	        "actionTarget":{
+	            "target":"paneltbar",
+	            "index":4
+	        }
+	    },{
             "ptype": "gxp_wfsgrid",
             "addLayerTool": "addlayer",
 	        "id": "wfsChangeMatrisGridPanel",
@@ -201,75 +229,91 @@
             ],
             "splitPanels": true,
             "panelsConfig": [{
-            	"title": "Land Cover Change Runs",
+            	"title": "Copertura del Suolo: Esecuzioni",
             	"featureType": "changematrix",
         		"featureTypeDetails": "changeMatrix",
 	            "columns" : [
 	            	{
-	                    "header": "Status", 
+	                    "header": "Stato", 
 	                    "dataIndex": "itemStatus",
 	                    "sortable": true
 	                },{
-	                    "header": "Reference Name", 
+	                    "header": "JobUID", 
+	                    "dataIndex": "jobUid",
+	                    "sortable": true
+	                },{
+	                    "header": "CUDA", 
+	                    "dataIndex": "jcuda",
+	                    "sortable": false
+	                },{
+	                    "header": "Layer di Riferimento", 
 	                    "dataIndex": "referenceName",
 	                    "sortable": true
 	                },{
-	                    "header": "Start Date", 
+	                    "header": "Data Inizio", 
 	                    "dataIndex": "runBegin",
 	                    "sortable": true
 	                },{
-	                    "header": "End Date", 
+	                    "header": "Data Fine", 
 	                    "dataIndex": "runEnd",
 	                    "sortable": true
 	                },{
-	                    "header": "Filter (reference)", 
+	                    "header": "Filtro (riferimento)", 
 	                    "dataIndex": "referenceFilter",
 	                    "sortable": true
 	                },{
-	                    "header": "Filter (current)", 
+	                    "header": "Filtro (corrente)", 
 	                    "dataIndex": "nowFilter",
 	                    "sortable": true
 	                }
 	            ]
         	},{
-            	"title": "Soil Sealing Runs",
+            	"title": "Impermeabilizzazione del Suolo: Esecuzioni",
             	"featureType": "soilsealing",
         		"featureTypeDetails": "soilIndex",
 	            "columns" : [
 	            	{
-	                    "header": "Status", 
+	                    "header": "Stato", 
 	                    "dataIndex": "itemStatus",
 	                    "sortable": true
 	                },{
-	                    "header": "Reference Name", 
+	                    "header": "JobUID", 
+	                    "dataIndex": "jobUid",
+	                    "sortable": true
+	                },{
+	                    "header": "CUDA", 
+	                    "dataIndex": "jcuda",
+	                    "sortable": false
+	                },{
+	                    "header": "Layer di Riferimento", 
 	                    "dataIndex": "referenceName",
 	                    "sortable": true
 	                },{
-	                    "header": "Index", 
+	                    "header": "Indice", 
 	                    "dataIndex": "index",
 	                    "sortable": true
 	                },{
-	                    "header": "SubIndex", 
+	                    "header": "Sotto-Indice", 
 	                    "dataIndex": "subindex",
 	                    "sortable": true
 	                },{
-	                    "header": "Classes", 
+	                    "header": "Classi", 
 	                    "dataIndex": "classes",
 	                    "sortable": true
 	                },{
-	                    "header": "Start Date", 
+	                    "header": "Data Inizio", 
 	                    "dataIndex": "runBegin",
 	                    "sortable": true
 	                },{
-	                    "header": "End Date", 
+	                    "header": "Data Fine", 
 	                    "dataIndex": "runEnd",
 	                    "sortable": true
 	                },{
-	                    "header": "Filter (reference)", 
+	                    "header": "Filtro (riferimento)", 
 	                    "dataIndex": "referenceFilter",
 	                    "sortable": true
 	                },{
-	                    "header": "Filter (current)", 
+	                    "header": "Filtro (corrente)", 
 	                    "dataIndex": "nowFilter",
 	                    "sortable": true
 	                }
@@ -479,28 +523,29 @@
             	{"layer": "it.crisp:corine_L1", "level": 1, "values": [1,2,3,4,5]},
             	{"layer": "it.crisp:corine_L2", "level": 2, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]},
             	{"layer": "it.crisp:corine_L3", "level": 3, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]},
-            	{"layer": "it.crisp:touring", "level": 4, "values": [0,1,2,3,4,5,6,7,8,9,10,11,12,13]}
+            	{"layer": "it.crisp:touring", "level": 4, "values": [1,2,3,4,5,6,7,8,9,10,11,12,13]}
             ],
             "layersPixelSizes": [
-            	{"layer": "it.crisp:touring",     "pixelSize": 400},
-            	{"layer": "it.crisp:corine_L1",   "pixelSize": 400},
-            	{"layer": "it.crisp:corine_L2",   "pixelSize": 400},
-            	{"layer": "it.crisp:corine_L3",   "pixelSize": 400},
-            	{"layer": "it.crisp:urban_grids", "pixelSize": 400}
+            	{"layer": "it.crisp:touring",     "pixelSize": 100},
+            	{"layer": "it.crisp:corine_L1",   "pixelSize": 100},
+            	{"layer": "it.crisp:corine_L2",   "pixelSize": 100},
+            	{"layer": "it.crisp:corine_L3",   "pixelSize": 100},
+            	{"layer": "it.crisp:urban_grids", "pixelSize": 100}
             ],
             "splitPanels": true,
             "wfsChangeMatrisGridPanelID": "wfsChangeMatrisGridPanel_tabpanel",
-            "panelsConfig": [{
-            	"title": "Land Cover",
-            	"clcLevelMode": "combobox",
-            	"geocoderConfig": {
+            "panelsConfig": [
+               {
+            	"title": "Copertura del Suolo",
+            	 "clcLevelMode": "combobox",
+            	 "geocoderConfig": {
             		"selectReturnType": false,
             		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_0"
-            	},
-            	"xtype": "gxp_changematrixpanel"
-        	},{
-            	"title": "Soil Sealing",
-            	"geocoderConfig": {
+            	 },
+            	 "xtype": "gxp_changematrixpanel"
+        	   },{
+            	"title": "Impermeabilizzazione del Suolo",
+            	 "geocoderConfig": {
             		"selectReturnType": true,
             		"wpsProcessName": "gs:SoilSealingCLC",
             		"storeName": "unina_ds",
@@ -511,15 +556,17 @@
             		"styleSelection": {
             			"3": "sprawl",
             			"4": "sprawl",
-						"8": "frag"
+            			"8": "frag",
+            			"9": "landtake",
+            			"12": "frag"
             		},
             		"imperviousnessProccessName": "gs:SoilSealingImperviousness",
             		"imperviousnessLayer": "imperviousness",
             		"targetResultGridId": "wfsChangeMatrisGridPanel_tab_1"
-            	},
-            	"xtype": "gxp_soilpanel"
-            }]
-        },{
+            	 },
+            	 "xtype": "gxp_soilpanel"
+               }]
+          },{
         	"ptype": "gxp_georeferences",
         	"actionTarget": "paneltbar"
         },{
