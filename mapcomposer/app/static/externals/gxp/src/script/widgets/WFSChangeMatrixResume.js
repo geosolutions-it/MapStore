@@ -260,7 +260,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 		matrix[0][0] = "[Sum]";
 		axisx.unshift(0);
 		axisx[1]     = "[Sum]";
-		console.log(axisx);
+		//console.log(axisx);
 		// descending x
 		// ascending y
 		//axisy.sort(function(a,b){return parseInt(b)-parseInt(a)});
@@ -321,18 +321,25 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 			// ////////////////////
 			colmodel.push({
 				header : (!isNaN(parseInt(settings.fields[i])) && typeof parseInt(settings.fields[i]) === 'number' && parseInt(settings.fields[i]) % 1 == 0 && this.classesIndexes[me.classes[classDataIndex].level-1][1] != 'undefined'?this.classesIndexes[me.classes[classDataIndex].level-1][1][parseInt(settings.fields[i])-1][1]:settings.fields[i]),
-				dataIndex : settings.fields[i]
+				width: 85,  
+				sortable: false,
+				locked: false,
+				dataIndex : settings.fields[i], flex: 1
 			});
 		}
 		colmodel.push({
 			header : settings.fields[settings.fields.length - 1],
-			dataIndex : settings.fields[settings.fields.length - 1]
+			width: 85,  
+			sortable: false,
+			locked: false,
+			dataIndex : settings.fields[settings.fields.length - 1], flex: 1
 		});
 
 		colmodel[0].id = 'leftaxis';
 		// to assign css
-		//colmodel[0].header = '-';
-		colmodel[0].header = refYear+' / '+nowYear;
+		colmodel[0].width    = 155;
+		colmodel[0].header   = refYear+' / '+nowYear;
+		colmodel[0].locked   = true;
 
 		// ///////////////////////////////////////
 		// Grid Panel
@@ -343,8 +350,12 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 			store : changeMatrixStore,
 			height : 300,
 			width : 300,
-			columns : colmodel,
-			viewConfig : {
+			stripeRows: true,
+			colModel : new Ext.ux.grid.LockingColumnModel(colmodel),
+			//view: new Ext.ux.grid.LockingGridView(),
+			view: new Ext.ux.grid.LockingGridView({
+				//stripeRows: true,
+				//forceFit: true/*,
 				getRowClass : function(record, index, rowParams) {
 					// calculate the percentage
 					var percentValue = Math.round(((record.get('pixels') - min) / max) * 100);
@@ -358,8 +369,8 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 					rowParams.tstyle = 'width:' + this.getTotalWidth() + ';';
 					rowParams.tstyle += "background-color: rgb(" + r + "," + g + "," + b + ");";
 				}
-			},
-			sm : new Ext.grid.CellSelectionModel(),
+			}),
+			selModel : new Ext.grid.CellSelectionModel(),
 			listeners : {
 				cellclick : function(grid, rowIndex, columnIndex, e) {
 					var record = grid.getStore().getAt(rowIndex);
@@ -425,7 +436,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											/**
 											 * Reference -> Current
 											 */
-											pieChartTitle = " - " + gridRowLabel + " ("+perc+"%)- ";
+											pieChartTitle = " - " + gridRowLabel + " ha ("+perc+"%)- ";
 											pieChartSubTitle = me.scatterChartXAxisLabel + "("+refYear+")" + " -> " + me.scatterChartYAxisLabel + "("+nowYear+")";
 											
 											/**
@@ -447,7 +458,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											/**
 											 * Dynamically create the chart
 											 */
-											addPieChartToTabPanel(me.pieChartTabTitle, pieChartTitle, pieChartSubTitle, dataSeries, colors);
+											addPieChartToTabPanel(me.pieChartTabTitle + pieChartTitle, pieChartTitle, pieChartSubTitle, dataSeries, colors);
 										}
 										else if (gridRowLabel == '[Sum]') { // Column
 
@@ -475,7 +486,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											/**
 											 * Reference -> Current
 											 */
-											pieChartTitle = " - " + gridColLabel + " ("+perc+"%)- ";
+											pieChartTitle = " - " + gridColLabel + " ha ("+perc+"%)- ";
 											pieChartSubTitle = me.scatterChartYAxisLabel + "("+nowYear+")" + " -> " + me.scatterChartXAxisLabel + "("+refYear+")";
 											
 											/**
@@ -498,7 +509,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											/**
 											 * Dynamically create the chart
 											 */
-											addPieChartToTabPanel(me.pieChartTabTitle, pieChartTitle, pieChartSubTitle, dataSeries, colors);
+											addPieChartToTabPanel(me.pieChartTabTitle + pieChartTitle, pieChartTitle, pieChartSubTitle, dataSeries, colors);
 										}
 									}
 								}, {
@@ -758,6 +769,12 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 			}
 		});
 		
+		/*var changeMatrixGridPanel = new Ext.Panel({
+			llayout : 'anchor',
+			items: [chmxGridPanel]
+		});*/
+		 
+
 		// ///////////////////////////////////////
 		// Scatter High-Chart Panel
 		// ///////////////////////////////////////
@@ -778,7 +795,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 			series.push(data);
 		}
 
-		var changeMatrixScatterChart = this.generateScatterChart(settings, series, refYear, nowYear);
+		//var changeMatrixScatterChart = this.generateScatterChart(settings, series, refYear, nowYear);
 
 		// ///////////////////////////////////////
 		// Main Tab Panel
@@ -803,7 +820,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 			closable : true,
 			renderTo : Ext.getBody(),
 			activeTab : 0,
-			items : [changeMatrixGridPanel, changeMatrixScatterChart]
+			items : [changeMatrixGridPanel/*, changeMatrixScatterChart*/]
 		});
 
 		// ///////////////////////////////////////
@@ -863,7 +880,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 		// ///////////////////////////////////////
 		// Drawing the Panel
 		// ///////////////////////////////////////
-		//return changeMatrixGridPanel;		
+		//return changeMatrixGridPanel;
 		return changeMatrixOutcomeTabPanel;
 	},
 
