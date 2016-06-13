@@ -198,7 +198,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		
 		if (!data.curTime && nowYear) {
 			chartTitle = this.intervalTitleText; 
-			chartTime  = refYear + " -> " + nowYear;
+			//chartTime  = refYear + " -> " + nowYear;
+			chartTime  = " Diff: " + refYear + "/" + nowYear;
 		}
 
 		// Administrative units tab only for index 1
@@ -334,15 +335,15 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		// title for the layers and the tab
 		var title = data.indexName ? data.indexName : this.defaultTitle;
 		    title+= " ("+indexUoM+")";
-		    title+= " "+chartTime;
 		    title+= data.jobUid ? " [" + data.jobUid + "]" : "";
 		    title+= data.jcuda ? " " + data.jcuda : "";
+		    title+= " [" + chartTime + "]";
 
 		// yAxis
 		var yAxis = {};
 
 		// add layers bar
-		var addLayersBar = this.generateBar(data, title);
+		var addLayersBar = this.generateBar(data, title, refYear, nowYear);
 
 		// reference time chart
 		if(data.index.id === 11) {
@@ -393,7 +394,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			barChartItems.push(
 				this.generateColumnChart(
 					this.currentTimeTitleText, 
-					data.curTime.time, 
+					nowYear, 
 					curTimeColChartsData, 
 					xAxis, 
 					yAxis)
@@ -1243,7 +1244,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
      *  :returns: ``Ext.Toolbar`` for the bar or null if it's not need
      *  Obtain bar.
      */
-	generateBar: function(config, title){
+	generateBar: function(config, title, refYear, nowYear){
 		// generate bar for add layers
 		var items = [];
 		var item1 = null, item0 = null;
@@ -1253,7 +1254,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			&& config.refTime.output
 			&& config.refTime.output.layerName){
 			
-			item0 = this.generateBarItem(config.refTime.output.layerName, config.refTime.time.substring(0,4)+" ["+(config.index.id == 3 || config.index.id == 4 ? "Diff" : this.referenceTimeTitleText)+"]", title);	
+			item0 = this.generateBarItem(config.refTime.output.layerName, refYear+
+                     (config.index.id == 3 || config.index.id == 4 || config.index.id == 9 ? "/"+nowYear+" Diff" : "["+this.referenceTimeTitleText+"]"), title);	
 		}
 
 		// curr time layer
@@ -1261,7 +1263,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			&& config.curTime.output
 			&& config.curTime.output.layerName){
 
-			item1 = this.generateBarItem(config.curTime.output.layerName, config.curTime.time.substring(0,4)+" ["+this.currentTimeTitleText+"]", title);	
+			item1 = this.generateBarItem(config.curTime.output.layerName, nowYear+" ["+this.currentTimeTitleText+"]", title);	
 		}
 
 		// push items
@@ -1269,7 +1271,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			items.push(item0);
 		}
 		if(config.diffImageName){
-			var item = this.generateBarItem(config.diffImageName, 'Diff', title);
+			var item = this.generateBarItem(config.diffImageName, refYear+"/"+nowYear+" Diff", title);
 			items.push(item);
 		}
 		if(item1){
