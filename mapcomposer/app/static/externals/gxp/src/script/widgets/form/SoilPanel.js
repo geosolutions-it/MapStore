@@ -345,7 +345,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			ref   : '/rasterComboBox',
 			id    : me.id + '_rasterComboBox',
 			style : 'padding: 0 2px 2px 2px',
-            bodyStyle: 'padding: ' + (Ext.isIE ? '5' : '5px'),
+            bodyStyle: 'padding: ' + (Ext.isIE ? '13' : '13px'),
 			autoWidth : true,
 			autoHeight : true,
 			collapsible : false,
@@ -369,7 +369,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			autoHeight : true,
 			collapsible : false,
 			style : 'padding: 0 2px 2px 2px',
-            bodyStyle: 'padding: ' + (Ext.isIE ? '5' : '5px'),
+            bodyStyle: 'padding: ' + (Ext.isIE ? '13' : '13px'),
 			layout : 'fit',
 			defaultType : 'radiogroup',
 			items : [{
@@ -380,7 +380,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
             	columns: 1,
 			    defaults: {
 			        // applied to each contained panel
-			        bodyStyle: 'padding:15px'
+			        bodyStyle: 'padding:5px'
 			    },
             	listeners:{
             		change: me.onLayerSelect,
@@ -453,7 +453,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			title : this.basedOnCLCText,
 			xtype : 'fieldset',
 			style : 'padding: 0 2px 2px 2px',
-            bodyStyle: 'padding: ' + (Ext.isIE ? '5' : '5px'),
+            bodyStyle: 'padding: ' + (Ext.isIE ? '13' : '13px'),
 			autoWidth : false,
 			width: 310,
 			collapsible : false,
@@ -492,7 +492,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			xtype : 'fieldset',
 			autoWidth : false,
 			style : 'padding: 0 2px 2px 2px',
-            bodyStyle: 'padding: ' + (Ext.isIE ? '5' : '5px'),
+            bodyStyle: 'padding: ' + (Ext.isIE ? '13' : '13px'),
 			width: 310,
 			collapsible : false,
 			layout : 'fit',
@@ -505,7 +505,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
             	columns: 1,
 			    defaults: {
 			        // applied to each contained panel
-			        bodyStyle: 'padding:15px'
+			        bodyStyle: 'padding:0px'
 			    },
             	items:[{
                 	boxLabel: this.urbanDispersionText, 
@@ -523,7 +523,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 					collapsible : false,
 					layout : 'fit',
 					style : 'padding: 0 2px 2px 2px',
-		            bodyStyle: 'padding: ' + (Ext.isIE ? '3' : '3px'),
+		            bodyStyle: 'padding: ' + (Ext.isIE ? '0' : '0px'),
 					defaultType : 'radiogroup',
 					items : [{
 						ref   : '../../sealingIndexImpervious',
@@ -532,7 +532,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		            	columns: 1,
 					    defaults: {
 					        // applied to each contained panel
-					        bodyStyle: 'padding:1px'
+					        bodyStyle: 'padding:0px'
 					    },
 					    items:
 		                [{
@@ -559,7 +559,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 					autoWidth : true,
 					collapsible : false,
 					style : 'padding: 0 2px 2px 2px',
-		            bodyStyle: 'padding: ' + (Ext.isIE ? '3' : '3px'),
+		            bodyStyle: 'padding: ' + (Ext.isIE ? '0' : '0px'),
 					layout : 'fit',
 					defaultType : 'radiogroup',
 					items : [{
@@ -569,7 +569,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		            	columns: 1,
 					    defaults: {
 					        // applied to each contained panel
-					        bodyStyle: 'padding:1px'
+					        bodyStyle: 'padding:0px'
 					    },
 					    items:
 		                [{
@@ -619,7 +619,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 					autoWidth : true,
 					collapsible : false,
 					style : 'padding: 0 2px 2px 2px',
-		            bodyStyle: 'padding: ' + (Ext.isIE ? '3' : '3px'),
+		            bodyStyle: 'padding: ' + (Ext.isIE ? '0' : '0px'),
 					layout : 'fit',
 					defaultType : 'radiogroup',
 					items : [{
@@ -629,7 +629,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		            	columns: 1,
 					    defaults: {
 					        // applied to each contained panel
-					        bodyStyle: 'padding:1px'
+					        bodyStyle: 'padding:0px'
 					    },
 					    items:
 		                [{
@@ -823,7 +823,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		}
 
 		// CLC Level builder validation
-		if(this.classesselector.disabled || values.classesselector){
+		if(values.sealingIndex > 3 || this.classesselector.disabled || values.classesselector){
 			valid = valid && true;
 		}else{
 			valid = false;

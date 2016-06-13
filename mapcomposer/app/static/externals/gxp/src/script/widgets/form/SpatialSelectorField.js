@@ -905,7 +905,6 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 							me.reset();
 						}
 						
-						//debugger
 						me.doLayout();
 						me.ownerCt.doLayout();
 					},
