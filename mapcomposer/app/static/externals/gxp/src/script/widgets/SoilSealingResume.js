@@ -334,7 +334,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 
 		// title for the layers and the tab
 		var title = data.indexName ? data.indexName : this.defaultTitle;
-		    title+= " ("+indexUoM+")";
+		    title+= " ("+indexUoM+(data.index.subindex?","+data.index.subindex:"")+")";
 		    title+= data.jobUid ? " [" + data.jobUid + "]" : "";
 		    title+= data.jcuda ? " " + data.jcuda : "";
 		    title+= " [" + chartTime + "]";

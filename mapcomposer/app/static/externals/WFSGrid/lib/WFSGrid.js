@@ -307,11 +307,13 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
                     }else{
                         var responseData = JSON.parse(record.get(me.featureTypeDetails));
                     }
-
-					responseData.jcuda      = record.data.jcuda;
-					responseData.jobUid     = record.data.jobUid;
-					responseData.indexName  = record.data.index;
-					responseData.itemStatus = record.data.itemStatus;
+                    
+					responseData.jcuda          = record.data.jcuda;
+					responseData.jobUid         = record.data.jobUid;
+					responseData.indexName      = record.data.index;
+					if (record.data.subindex)
+						responseData.index.subindex = record.data.subindex;
+					responseData.itemStatus     = record.data.itemStatus;
 
                     if(wfsResumeTool){
                     	var grid = wfsResumeTool.createResultsGrid(
