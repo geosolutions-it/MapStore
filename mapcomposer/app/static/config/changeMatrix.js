@@ -530,7 +530,7 @@
             	{"layer": "it.crisp:corine_L1",   "pixelSize": 100},
             	{"layer": "it.crisp:corine_L2",   "pixelSize": 100},
             	{"layer": "it.crisp:corine_L3",   "pixelSize": 100},
-            	{"layer": "it.crisp:urban_grids", "pixelSize": 200}
+            	{"layer": "it.crisp:urban_grids", "pixelSize": 20}
             ],
             "splitPanels": true,
             "wfsChangeMatrisGridPanelID": "wfsChangeMatrisGridPanel_tabpanel",
