@@ -1,6 +1,6 @@
 {
    "geoStoreBase":"http://143.225.214.136/geostore/rest/",
-   "proxy":"/proxy/?url=",
+   "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "tab": true,
    "portalConfig":{
@@ -190,7 +190,7 @@
            "geostoreUrl": "http://143.225.214.136/geostore/rest",
            "geostoreUser": "admin",
            "geostorePassword": "admin",
-           "geostoreProxy": "/proxy?url="
+           "geostoreProxy": "/http_proxy/proxy?url="
         },{
 	        "ptype":"gxp_print",
 	        "customParams":{
