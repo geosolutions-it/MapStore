@@ -723,7 +723,7 @@ GeoExt.Lang.add("en", {
 		edgeDensityText: 'Edge Density',
 		urbanDiffusionText: 'Dispersive Urban Growth',
 		urbanDiffusionAText: 'Urban Area',
-		urbanDiffusionBText: 'Highest Polygon Ratio',
+		urbanDiffusionBText: 'LCPI',
 		urbanDiffusionCText: 'Other Polygons Ratio',
 		framesText: 'Fragmentation',
 		consumeOnlyText: 'Land Take',
