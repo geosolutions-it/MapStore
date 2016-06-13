@@ -737,7 +737,6 @@ GeoExt.Lang.add("it", {
 		cudaCheckBoxText: 'CUDA',
 		submitButtonText: 'Invia',
 		resetButtonText: 'Resetta',
-    	clcLevelTitleText: 'CLC Levels / Urban Grids',
 		imperviousnessText: 'Imperviousness',
 		basedOnCLCText: 'Basati su CLC',
 		coverText: 'Coefficiente Copertura',

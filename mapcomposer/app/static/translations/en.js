@@ -700,7 +700,7 @@ GeoExt.Lang.add("en", {
     "gxp.widgets.form.SoilPanel.prototype" :{
 		timeSelectionTitleText: "Time Selection",
 		soilSealingIndexTitleText: "Soil Sealing Index",
-		clcLevelTitleText: "CLC Levels / Urban Grids'",
+		clcLevelTitleText: "CLC Levels / Urban Grids",
 		clcLegendBuilderTitleText: "CLC Level Builder",
 		roiTitleText: "ROI",
 		timeFilterTitle : 'Time Filter',
@@ -712,7 +712,6 @@ GeoExt.Lang.add("en", {
 		cudaCheckBoxText: 'CUDA',
 		submitButtonText: 'Submit',
 		resetButtonText: 'Reset',
-    	clcLevelTitleText: 'CLC Levels / Urban Grids',
 		imperviousnessText: 'Imperviousness',
 		basedOnCLCText: 'Based on CLC',
 		coverText: 'Coverage coefficient',
