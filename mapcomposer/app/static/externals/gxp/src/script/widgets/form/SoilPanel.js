@@ -642,7 +642,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 							fieldLabel: this.bufferTextLabel,
 							boxLabel  : this.bufferTextLabel,
 		                    emptyText : this.bufferEmptyTextLabel,
-		                    value     : 1000
+		                    value     : 100
 			          	},{                	
 		                	boxLabel: this.newUrbanizationText,
                 			name: 'sealingIndex',
