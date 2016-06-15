@@ -206,6 +206,23 @@ Ext.extend(GeoExt.data.WMSCapabilitiesReader, Ext.data.DataReader, {
                             transparent: this.imageTransparent(layer),
                             version: version
                     };
+
+                    var srs = [];
+                    for (k in layer.bbox) {
+                    	if (k.indexOf("EPSG")>=0) {
+                    		srs.push(k);
+                    	}
+                    }
+                    
+                    if (srs.length > 0) {
+	                    if (parseFloat(params.version) >= 1.3) {
+				            params.crs = layer.bbox[srs[0]].srs;
+				        } else {
+				            params.srs = layer.bbox[srs[0]].srs;
+				        }
+				        params.bbox = new OpenLayers.Bounds(layer.bbox[srs[0]].bbox).toBBOX();
+				    }
+			        
                     if (this.meta.layerParams) {
                         Ext.apply(params, this.meta.layerParams);
                     }

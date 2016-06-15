@@ -457,12 +457,11 @@ OpenLayers.Layer.Grid = OpenLayers.Class(OpenLayers.Layer.HTTPRequest, {
         bounds = bounds || this.map.getExtent();
 
         if (bounds != null) {
-             
             // if grid is empty or zoom has changed, we *must* re-tile
             var forceReTile = !this.grid.length || zoomChanged;
             
             // total bounds of the tiles
-            var tilesBounds = this.getTilesBounds();            
+            var tilesBounds = this.getTilesBounds();
 
             // the new map resolution
             var resolution = this.map.getResolution();

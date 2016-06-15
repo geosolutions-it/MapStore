@@ -248,6 +248,7 @@ OpenLayers.Layer.WMS = OpenLayers.Class(OpenLayers.Layer.Grid, {
         var projectionCode = this.projection /*&& this.projection.equals(mapProjection)*/ ?
             this.projection.getCode() :
             mapProjection.getCode();
+
         var value = (projectionCode == "none") ? null : projectionCode;
         if (parseFloat(this.params.VERSION) >= 1.3) {
             this.params.CRS = value;
