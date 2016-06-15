@@ -1,8 +1,16 @@
-Ext.ns("Ext.ux.form");
-
-Ext.ux.form.ItemSelectorEx = Ext.extend(Ext.form.Field,  {
+//Ext.ns("Ext.ux.form");
+Ext.namespace('ux.form');
+ux.form.ItemSelectorEx = Ext.extend(Ext.form.Field,  {
+	/** api: xtype = gxp_soilpanel */
+	xtype : "itemselectorex",
+	
+	/** i18n **/
     titleFrom: 'Available:',
     titleTo: 'Selected:',
+    filterLabel: 'Filter:',
+    clearLabel: 'Clear',
+    /** EoF i18n **/
+    
     imagesDir: '.',       
     useFilter: true,
     filterWordStart: false,
@@ -122,7 +130,7 @@ Ext.ux.form.ItemSelectorEx = Ext.extend(Ext.form.Field,  {
         
         this.addEvents("change");
         
-        Ext.ux.form.ItemSelectorEx.superclass.initComponent.call(this);
+        ux.form.ItemSelectorEx.superclass.initComponent.call(this);
         
         if (this.storeFrom.autoCreated) 
             this.onStoreLoad();
@@ -142,7 +150,9 @@ Ext.ux.form.ItemSelectorEx = Ext.extend(Ext.form.Field,  {
         this.tbarTo = null;        
         if (this.useFilter)
         {
-            this.tbarFrom = new Ext.ux.form.ItemSelectorEx.Filter({
+            this.tbarFrom = new ux.form.ItemSelectorEx.Filter({
+            	filterLabel: this.filterLabel,
+            	clearLabel: this.clearLabel,
                 listeners: {
                     scope: this,
                     filter: this.applyFilter,
@@ -151,7 +161,9 @@ Ext.ux.form.ItemSelectorEx = Ext.extend(Ext.form.Field,  {
                 }
             });
             
-            this.tbarTo = new Ext.ux.form.ItemSelectorEx.Filter({
+            this.tbarTo = new ux.form.ItemSelectorEx.Filter({
+            	filterLabel: this.filterLabel,
+            	clearLabel: this.clearLabel,
                 listeners: {
                     scope: this,
                     filter: this.applyFilter,
@@ -203,7 +215,7 @@ Ext.ux.form.ItemSelectorEx = Ext.extend(Ext.form.Field,  {
     
     onRender: function()
     {
-        Ext.ux.form.ItemSelectorEx.superclass.onRender.apply(this, arguments);			
+        ux.form.ItemSelectorEx.superclass.onRender.apply(this, arguments);			
         
         var hiddenTag = {tag: "input", type: "hidden", value: this.value || "", name: this.name || Ext.id()};
         this.hiddenField = this.el.createChild(hiddenTag);
@@ -243,7 +255,7 @@ Ext.ux.form.ItemSelectorEx = Ext.extend(Ext.form.Field,  {
                 if (sourceEl) 
                 {
                     var sourceCtrl = Ext.getCmp(e.getTarget(".x-list-wrap").id);                        
-                    var index = sourceCtrl.indexOf(sourceCtrl.findItemFromChild(sourceEl))
+                    var index = sourceCtrl.indexOf(sourceCtrl.findItemFromChild(sourceEl));
                 
                     d = sourceEl.cloneNode(true);
                     d.id = Ext.id();
@@ -254,7 +266,7 @@ Ext.ux.form.ItemSelectorEx = Ext.extend(Ext.form.Field,  {
                         ddel: d,
                         sourceCtrl: sourceCtrl, 
                         index: index
-                    }
+                    };
                 }
             },
             getRepairXY: function() {
@@ -490,11 +502,17 @@ Ext.ux.form.ItemSelectorEx = Ext.extend(Ext.form.Field,  {
     }
 });
 
-Ext.ux.form.ItemSelectorEx.Filter = Ext.extend(Ext.Toolbar,  {
+ux.form.ItemSelectorEx.Filter = Ext.extend(Ext.Toolbar,  {
+	
+	/** i18n **/
+    filterLabel: 'Filter:',
+    clearLabel: 'Clear',
+    /** EoF i18n **/
+	
     initComponent: function()
     {
         this.items = [
-            'Filter:',
+            this.filterLabel,
             {
                 xtype: 'textfield',				
                 enableKeyEvents: true,
@@ -517,7 +535,7 @@ Ext.ux.form.ItemSelectorEx.Filter = Ext.extend(Ext.Toolbar,  {
                     }
                 }
             },{
-                text: 'Clear',
+                text: this.clearLabel,
                 scope: this,
                 handler: function()
                 {
@@ -527,7 +545,7 @@ Ext.ux.form.ItemSelectorEx.Filter = Ext.extend(Ext.Toolbar,  {
             }
         ];
         this.addEvents('navigate', 'filter', 'clear');
-        Ext.ux.form.ItemSelectorEx.Filter.superclass.initComponent.call(this);
+        ux.form.ItemSelectorEx.Filter.superclass.initComponent.call(this);
         this.on('resize', this.onResize);
     },
     
@@ -548,7 +566,8 @@ Ext.ux.form.ItemSelectorEx.Filter = Ext.extend(Ext.Toolbar,  {
     }
 });
 
-Ext.reg("itemselectorex", Ext.ux.form.ItemSelectorEx);
+//Ext.reg("itemselectorex", Ext.ux.form.ItemSelectorEx);
+Ext.reg(ux.form.ItemSelectorEx.prototype.xtype, ux.form.ItemSelectorEx);
 
 //backwards compat
 Ext.ux.ItemSelectorEx = Ext.ux.form.ItemSelectorEx;

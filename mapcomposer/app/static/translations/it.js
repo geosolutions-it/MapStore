@@ -632,7 +632,10 @@ GeoExt.Lang.add("it", {
 		timeFilterTitle : 'Filtro Temporale',
 		changeMatrixRasterFieldLabel : "Layer Raster",
 		currentTimeFieldLabel: 'Tempo Corrente',
-		referenceTimeFieldLabel: 'Tempo di Riferimento', 
+		referenceTimeFieldLabel: 'Tempo di Riferimento',
+		selectAnItemEmptyText: "Selezionare un elemento ...",
+        selectOneTimeInstantEmptyText: "Selezionare un istante temporale ...",
+        jobUidEmptyText: 'nome utente',
 		oneYearText: 'un anno',
 		twoYearsText: 'due anni',
 		cudaCheckBoxText: 'CUDA',
@@ -706,8 +709,15 @@ GeoExt.Lang.add("it", {
 		geocodingFieldBtnAddTooltip : "Aggiungi una Località alla lista",
 		geocodingFieldBtnDelTooltip : "Pulisci...",
 		selectionSummary : "Sommario delle Selezioni",
-        geocoderSelectorsLabels: ['Unione delle geometrie', 'Lista della Area Amministrativa', 'Subs della Area Amministrativa'],
-        selectionReturnTypeLabel: "Tipo di selezione"
+        selectionReturnTypeLabel: "Tipo di selezione",
+		geocoderSelectorsLabelsGeometryUnion: 'Unione delle geometrie',
+		geocoderSelectorsLabelsAdministrativeAreaList: 'Lista delle Aree Amministrative',
+		geocoderSelectorsLabelsAdministrativeAreaSubs: 'Sotto-Aree Amministrative',
+		spatialSelectorsBBOXLabel: "Bounding Box",
+		spatialSelectorsPolygonLabel: "Poligono",
+		spatialSelectorsCircleLabel: "Cerchio",
+		spatialSelectorsBufferLabel: "Buffer",
+		spatialSelectorsGeoCoderLabel: "Aree Amministrative"		
 	},
 	
 	"gxp.plugins.WFSGrid.prototype" :{
@@ -731,7 +741,10 @@ GeoExt.Lang.add("it", {
 		timeFilterTitle : 'Filtro Temporale',
 		changeMatrixRasterFieldLabel : "Layer Raster",
 		currentTimeFieldLabel: 'Tempo Corrente',
-		referenceTimeFieldLabel: 'Tempo di Riferimento', 
+		referenceTimeFieldLabel: 'Tempo di Riferimento',
+		selectAnItemEmptyText: "Selezionare un elemento ...",
+        selectOneTimeInstantEmptyText: "Selezionare un istante temporale ...",
+        jobUidEmptyText: 'nome utente',
 		oneYearText: 'un anno',
 		twoYearsText: 'due anni',
 		cudaCheckBoxText: 'CUDA',
@@ -770,7 +783,15 @@ GeoExt.Lang.add("it", {
 		invalidSealingIndexFormDialogText: "Nessun indice di Impermeabilizzazione del Suolo selezionato",
 		invalidRange0IndexFormDialogText: "Tempo di Riferimento non selezionato",
 		invalidRange1IndexFormDialogText: "Tempo Corrente non selezionato",
-		wpsError: "Errore di comunicazione con il WPS"
+		wpsError: "Errore di comunicazione con il WPS",
+		geocoderSelectorsLabelsGeometryUnion: 'Unione delle geometrie',
+		geocoderSelectorsLabelsAdministrativeAreaList: 'Lista delle Aree Amministrative',
+		geocoderSelectorsLabelsAdministrativeAreaSubs: 'Sotto-Aree Amministrative',
+		spatialSelectorsBBOXLabel: "Bounding Box",
+		spatialSelectorsPolygonLabel: "Poligono",
+		spatialSelectorsCircleLabel: "Cerchio",
+		spatialSelectorsBufferLabel: "Buffer",
+		spatialSelectorsGeoCoderLabel: "Aree Amministrative"		
     },
 
     "gxp.widgets.SoilSealingResume.prototype": {
@@ -802,6 +823,13 @@ GeoExt.Lang.add("it", {
 	    urbanDevelMonocentricDispersedLabel: "Monocentrica Dispersa",
 	    urbanDevelWidespreadLabel: "Diffusa",
 	    urbanDevelMonocentricCompactLabel: "Monocentrica Compatta",
+    },
+
+    "ux.form.ItemSelectorEx.prototype": {
+    	titleFrom: 'Disponibili:',
+    	titleTo: 'Selezionati:',
+    	filterLabel: 'Filtro:',
+    	clearLabel: 'Resetta'
     }
 
 });

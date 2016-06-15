@@ -607,7 +607,10 @@ GeoExt.Lang.add("en", {
 		timeFilterTitle : 'Time Filter',
 		changeMatrixRasterFieldLabel : "Raster Layer",
 		currentTimeFieldLabel: 'Current time',
-		referenceTimeFieldLabel: 'Reference time', 
+		referenceTimeFieldLabel: 'Reference time',
+		selectAnItemEmptyText: "Select an item ...",
+        selectOneTimeInstantEmptyText: "Select one time instant ...",
+        jobUidEmptyText: 'username',
 		oneYearText: 'one year',
 		twoYearsText: 'two years',
 		cudaCheckBoxText: 'CUDA',
@@ -681,8 +684,15 @@ GeoExt.Lang.add("en", {
 		geocodingFieldBtnAddTooltip : "Add Location to the List",
 		geocodingFieldBtnDelTooltip : "Clear Field",
 		selectionSummary : "Selection Summary",
-        geocoderSelectorsLabels: ['Geometry Union', 'Administrative Area List', 'Administrative Area Subs'],
-        selectionReturnTypeLabel: "Return Type"
+        selectionReturnTypeLabel: "Return Type",
+		geocoderSelectorsLabelsGeometryUnion: 'Geometry Union',
+		geocoderSelectorsLabelsAdministrativeAreaList: 'Administrative Area List',
+		geocoderSelectorsLabelsAdministrativeAreaSubs: 'Administrative Area Subs',
+		spatialSelectorsBBOXLabel: "Bounding Box",
+		spatialSelectorsPolygonLabel: "Polygon",
+		spatialSelectorsCircleLabel: "Circle",
+		spatialSelectorsBufferLabel: "Buffer",
+		spatialSelectorsGeoCoderLabel: "Administrative Areas"
 	},
 	
 	"gxp.plugins.WFSGrid.prototype" : {
@@ -706,7 +716,10 @@ GeoExt.Lang.add("en", {
 		timeFilterTitle : 'Time Filter',
 		changeMatrixRasterFieldLabel : "Raster Layer",
 		currentTimeFieldLabel: 'Current time',
-		referenceTimeFieldLabel: 'Reference time', 
+		referenceTimeFieldLabel: 'Reference time',
+		selectAnItemEmptyText: "Select an item ...",
+        selectOneTimeInstantEmptyText: "Select one time instant ...",
+        jobUidEmptyText: 'username',
 		oneYearText: 'one year',
 		twoYearsText: 'two years',
 		cudaCheckBoxText: 'CUDA',
@@ -745,7 +758,15 @@ GeoExt.Lang.add("en", {
 		invalidSealingIndexFormDialogText: "Soil Sealing index not selected",
 		invalidRange0IndexFormDialogText: "Reference time not selected",
 		invalidRange1IndexFormDialogText: "Current time not selected",
-		wpsError: "Error on WPS Process"
+		wpsError: "Error on WPS Process",
+		geocoderSelectorsLabelsGeometryUnion: 'Geometry Union',
+		geocoderSelectorsLabelsAdministrativeAreaList: 'Administrative Area List',
+		geocoderSelectorsLabelsAdministrativeAreaSubs: 'Administrative Area Subs',
+		spatialSelectorsBBOXLabel: "Bounding Box",
+		spatialSelectorsPolygonLabel: "Polygon",
+		spatialSelectorsCircleLabel: "Circle",
+		spatialSelectorsBufferLabel: "Buffer",
+		spatialSelectorsGeoCoderLabel: "Administrative Areas"
     },
 
     "gxp.widgets.SoilSealingResume.prototype":{
@@ -777,6 +798,13 @@ GeoExt.Lang.add("en", {
 	    urbanDevelMonocentricDispersedLabel: "Monocentric Dispersed",
 	    urbanDevelWidespreadLabel: "Widespread",
 	    urbanDevelMonocentricCompactLabel: "Monocentric Compact"
+    },
+    
+    "ux.form.ItemSelectorEx.prototype": {
+    	titleFrom: 'Available:',
+    	titleTo: 'Selected:',
+    	filterLabel: 'Filter:',
+    	clearLabel: 'Clear'
     }
-
+    
 });

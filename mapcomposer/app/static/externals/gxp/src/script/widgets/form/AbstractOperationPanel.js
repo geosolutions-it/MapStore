@@ -49,6 +49,10 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 	currentTimeFieldLabel: 'Current time',
 	referenceTimeFieldLabel: 'Reference time', 
 
+    selectAnItemEmptyText: "Select an item ...",
+    selectOneTimeInstantEmptyText: "Select one time instant ...",
+	jobUidEmptyText: 'username',
+
 	// Years text
 	oneYearText: 'one year',
 	twoYearsText: 'two years',
@@ -69,8 +73,10 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 	 * ``Array`` of ``String``
 	 * Label text for the return types selection (i18n).
 	 */
-	geocoderSelectorsLabels: ['Administrative Area List', 'Administrative Area Subs'],
-
+	geocoderSelectorsLabelsGeometryUnion: 'Geometry Union',
+	geocoderSelectorsLabelsAdministrativeAreaList: 'Administrative Area List',
+	geocoderSelectorsLabelsAdministrativeAreaSubs: 'Administrative Area Subs',
+	
 	/** EoF i18n **/
 
 	// clcLevelMode: 'another',
@@ -371,7 +377,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 				mode : 'local',
 				triggerAction : 'all',
 				store : this.timeValuesStore,
-				emptyText : "Select one time instant ...",
+				emptyText : this.selectOneTimeInstantEmptyText,
 				labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
 				editable : true,
 				resizable : true,
@@ -397,7 +403,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 				mode : 'local',
 				triggerAction : 'all',
 				store : this.timeValuesStore,
-				emptyText : "Select one time instant ...",
+				emptyText : this.selectOneTimeInstantEmptyText,
 				labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
 				editable : true,
 				resizable : true,
@@ -479,7 +485,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 				mode : 'local',
 				triggerAction : 'all',
 				store : this.layerStore,
-				emptyText : "Select an item ...",
+				emptyText : this.selectAnItemEmptyText,
 				labelSeparator : ':' + '<span style="color: #918E8F; padding-left: 2px;">*</span>',
 				editable : true,
 				resizable : true,
@@ -779,7 +785,7 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 					width     : 140,
 					fieldLabel: '',
 					boxLabel  : '',
-                    emptyText : 'username',
+                    emptyText : this.jobUidEmptyText,
                     value     : '',
                     scope     : me,
                     listeners : {

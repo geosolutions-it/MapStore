@@ -74,6 +74,16 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	
 	ruralTextLabel: 'Rural',
 	urbanTextLabel: 'Urban',
+	
+	spatialSelectorsBBOXLabel: 'Bounding Box',
+	spatialSelectorsPolygonLabel: 'Polygon',
+	spatialSelectorsCircleLabel: 'Circle',
+	spatialSelectorsBufferLabel: 'Buffer',
+	spatialSelectorsGeoCoderLabel: 'Administrative Areas',
+
+	geocoderSelectorsLabelsGeometryUnion: 'Geometry Union',
+	geocoderSelectorsLabelsAdministrativeAreaList: 'Administrative Area List',
+	geocoderSelectorsLabelsAdministrativeAreaSubs: 'Administrative Area Subs',
 
 	// Validation
 	invalidFormDialogText: "Please review the form fields:<ul>",
@@ -176,61 +186,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
     /** api: config[roiFieldSetConfig]
      *  ``Object`` Configuration to overwrite roifieldset config
      */
-	roiFieldSetConfig: {
-		/** api: config[defaultSelectionMethod]
-		 *  ``String``
-		 *  Default selection method enabled. @see this.spatialSelectors
-		 */
-		defaultSelectionMethod: 'bbox',
-		/** api: config[spatialSelectors]
-		 *  ``Object``
-		 * Enable/disable spatial selectors options.
-		 */
-		spatialSelectors : [{
-			name  : 'BBOX',
-			label : 'Bounding Box',
-			value : 'bbox'
-		}, {
-			name  : 'Polygon',
-			label : 'Polygon',
-			value : 'polygon'
-		}, {
-			name  : 'Circle',
-			label : 'Circle',
-			value : 'circle'
-		}, {
-			name  : 'Buffer',
-			label : 'Buffer',
-			value : 'buffer'
-		}, {
-			name  : 'GeoCoder',
-			label : 'Administrative Areas',
-			value : 'geocoder'
-		}],
-		/** api: config[defaultReturnType]
-		 *  ``String``
-		 *  Default return type enabled. @see this.geocoderSelectors
-		 */
-		defaultReturnType: 'list',
-		/** api: config[geocoderSelectorsLabels]
-		 * ``Array`` of ``String``
-		 * Label text for the return types selection (i18n).
-		 */
-		geocoderSelectorsLabels: this.geocoderSelectorsLabels,
-		/** api: config[geocoderSelectors]
-		 *  ``Object``
-		 *  Options for the geocoder return types selections.
-		 */
-	 	geocoderSelectors : [{
-			name  : 'List',
-			label : 'Administrative Area List',
-			value : 'list'
-		}, {
-			name  : 'Subs',
-			label : 'Administrative Area Subs',
-			value : 'subs'
-		}]
-	},
+	roiFieldSetConfig: {},
 
     /** api: config[clcLevelsConfig]
      *  ``Object`` CLC levels cconfiguration
@@ -287,12 +243,50 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 						index = 8;
 					}
 					
-					var spatialSelectors = me.roiFieldSetConfig.spatialSelectors;
+					var spatialSelectors = [{
+						name  : 'BBOX',
+						label : me.spatialSelectorsBBOXLabel,
+						value : 'bbox'
+					}, {
+						name  : 'Polygon',
+						label : me.spatialSelectorsPolygonLabel,
+						value : 'polygon'
+					}, {
+						name  : 'Circle',
+						label : me.spatialSelectorsCircleLabel,
+						value : 'circle'
+					}, {
+						name  : 'Buffer',
+						label : me.spatialSelectorsBufferLabel,
+						value : 'buffer'
+					}, {
+						name  : 'GeoCoder',
+						label : me.spatialSelectorsGeoCoderLabel,
+						value : 'geocoder'
+					}];
+					
+					me.roiFieldSetConfig= {
+						/** api: config[defaultSelectionMethod]
+						 *  ``String``
+						 *  Default selection method enabled. @see this.spatialSelectors
+						 */
+						defaultSelectionMethod: 'bbox',
+						
+						/** api: config[defaultReturnType]
+						 *  ``String``
+						 *  Default return type enabled. @see this.geocoderSelectors
+						 */
+						defaultReturnType: 'list',
+						
+						geocoderSelectorsLabelsAdministrativeAreaList: me.geocoderSelectorsLabelsAdministrativeAreaList,
+						geocoderSelectorsLabelsAdministrativeAreaSubs: me.geocoderSelectorsLabelsAdministrativeAreaSubs
+					};
+					
 					if (index == 3 || index == 4 || index == 11)
 					{
 						spatialSelectors = [{
 							name  : 'GeoCoder',
-							label : 'Administrative Areas',
+							label : me.spatialSelectorsGeoCoderLabel,
 							value : 'geocoder'
 						}];
 						

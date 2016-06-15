@@ -25,6 +25,14 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 
 	xtype : 'gxp_spatial_selector_field',
 
+	/** i18n **/
+	spatialSelectorsBBOXLabel: 'Bounding Box',
+	spatialSelectorsPolygonLabel: 'Polygon',
+	spatialSelectorsCircleLabel: 'Circle',
+	spatialSelectorsBufferLabel: 'Buffer',
+	spatialSelectorsGeoCoderLabel: 'Administrative Areas',
+	/** EoF i18n **/
+	
 	/** api: config[mapPanel]
 	 *  ``Object``
 	 *  The MapStore viewport object reference.
@@ -68,32 +76,6 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 	 * Whether to use geodesic area adjustement or not.
 	 */
 	geodesic : true,
-
-	/** api: config[spatialSelectors]
-	 *  ``Object``
-	 * Enable/disable spatial selectors options.
-	 */
-	spatialSelectors : [{
-		name  : 'BBOX',
-		label : 'Bounding Box',
-		value : 'bbox'
-	}, {
-		name  : 'Polygon',
-		label : 'Polygon',
-		value : 'polygon'
-	}, {
-		name  : 'Circle',
-		label : 'Circle',
-		value : 'circle'
-	}, {
-		name  : 'Buffer',
-		label : 'Buffer',
-		value : 'buffer'
-	}, {
-		name  : 'GeoCoder',
-		label : 'Administrative Areas',
-		value : 'geocoder'
-	}],
 
 	/** api: config[spatialFilterOptions]
 	 *  ``String``
@@ -382,24 +364,6 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
      */
     longitudeEmptyText : 'X',
 	
-	/** api: config[geocoderSelectors]
-	 *  ``Object``
-	 *  Options for the geocoder return types selections.
-	 */
- 	geocoderSelectors : [{
-		name  : 'Union',
-		label : 'Geometry Union',
-		value : 'default'
-	}, {
-		name  : 'List',
-		label : 'Administrative Area List',
-		value : 'list'
-	}, {
-		name  : 'Subs',
-		label : 'Administrative Area Subs',
-		value : 'subs'
-	}],
-	
 	/** api: config[selectReturnType]
 	 *  ``Boolean``
 	 *  Allow return type on the geocoder.
@@ -416,7 +380,7 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 	 *  ``String``
 	 *  Default return type enabled. @see this.geocoderSelectors
 	 */
-	defaultReturnType: 'default',
+	defaultReturnType: 'list',
      
 	// //////////////////////////////////////////////////////////////
 	// GeoCoding Panel i18N
@@ -535,7 +499,9 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 	 * ``Array`` of ``String``
 	 * Label text for the return types selection (i18n).
 	 */
-	geocoderSelectorsLabels: ['Geometry Union', 'Administrative Area List', 'Administrative Area Subs'],
+	geocoderSelectorsLabelsGeometryUnion: 'Geometry Union',
+	geocoderSelectorsLabelsAdministrativeAreaList: 'Administrative Area List',
+	geocoderSelectorsLabelsAdministrativeAreaSubs: 'Administrative Area Subs',
 
 	/** api: config[selectionReturnTypeLabel]
 	 * ``String``
@@ -555,15 +521,6 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 		
 		var itemsWidth = this.width ? (this.width - 25) : 250;
 		// var itemsWidth = 250;
-
-		// i18n for geocoderSelectors
-		if(this.geocoderSelectorsLabels && this.geocoderSelectors){
-			for(var i = 0; i < this.geocoderSelectorsLabels.length; i++){
-				if(this.geocoderSelectors[i]){
-					this.geocoderSelectors[i].label = this.geocoderSelectorsLabels[i];
-				}
-			}	
-		}
 
 		// the map
 		me.map = me.mapPanel.map;
@@ -611,7 +568,15 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 						name : 'value',
 						dataIndex : 'value'
 					}],
-					data : this.geocoderSelectors
+					data : [{
+						name  : 'List',
+						label : me.geocoderSelectorsLabelsAdministrativeAreaList,
+						value : 'list'
+					}, {
+						name  : 'Subs',
+						label : me.geocoderSelectorsLabelsAdministrativeAreaSubs,
+						value : 'subs'
+					}]
 				}),
 				listeners:{
 					select : function(c, record, index) {
@@ -663,7 +628,27 @@ gxp.widgets.form.SpatialSelectorField = Ext.extend(Ext.form.FieldSet, {
 						name : 'value',
 						dataIndex : 'value'
 					}],
-					data : this.spatialSelectors
+					data : [{
+						name  : 'BBOX',
+						label : me.spatialSelectorsBBOXLabel,
+						value : 'bbox'
+					}, {
+						name  : 'Polygon',
+						label : me.spatialSelectorsPolygonLabel,
+						value : 'polygon'
+					}, {
+						name  : 'Circle',
+						label : me.spatialSelectorsCircleLabel,
+						value : 'circle'
+					}, {
+						name  : 'Buffer',
+						label : me.spatialSelectorsBufferLabel,
+						value : 'buffer'
+					}, {
+						name  : 'GeoCoder',
+						label : me.spatialSelectorsGeoCoderLabel,
+						value : 'geocoder'
+					}]
 				}),
 				listeners : {
 					select : function(c, record, index) {

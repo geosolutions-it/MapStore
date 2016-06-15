@@ -326,9 +326,9 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 
 		// Prepare xAxis
 		var xAxis = {
-			categories: clcLevels
+			categories: (clcLevels.length==2 && clcLevels[0].length>0?clcLevels[0]:clcLevels)
 		};
-		if(clcLevels.length == 0){
+		if(clcLevels.length == 0 || (clcLevels.length==2 && clcLevels[0].length==0)){
 			xAxis.categories = [data.index.name + " ("+indexUoM+")"];
 		}
 
@@ -485,17 +485,18 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			for(var i = 0; i < yearData.admUnits.length; i++){
 									
 				//var colorRGB = this.randomColorsRGB(yearData.values[i].length);
-				var colorHEX = this.randomColorsHEX(yearData.values[i].length);	
+				//var colorHEX = this.randomColorsHEX(yearData.values[i].length);	
 				
 				if(yearData.clcLevels.length == yearData.values[i].length){
 					var pieChartData = [];
 					var pieChartDataColor = [];
 					// for(var j = 0; j < yearData.clcLevels.length; j++){
-					for(var j = 0; j < clcLevels.length; j++){
+					for(var j = 0; j < clcLevels[0].length; j++){
 						//pieChartData.push([yearData.clcLevels[j], yearData.values[i][j]]);
 						if( yearData.values[i][j] > 0 ){
-							pieChartDataColor.push(colorHEX[j]);
-							pieChartData.push([clcLevels[j], yearData.values[i][j]]);
+							//pieChartDataColor.push(colorHEX[j]);
+							pieChartDataColor.push(clcLevels[1][j]);
+							pieChartData.push([clcLevels[0][j], yearData.values[i][j]]);
 						}
 							
 					}
@@ -1221,17 +1222,20 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 				return clcLevels;
 			}else{
 				var classes = [];
+				var colors = [];
 				var classesSelected = clcLevels;
 				for(var i = 0; i < classesSelected.length; i++){
 					var classIndex = parseInt(classesSelected[i]);
 					for(var j = 0; j < this.classesIndexes[classDataIndex][1].length; j++){
 						if(this.classesIndexes[classDataIndex][1][j][0] == classIndex){
 							classes.push(this.classesIndexes[classDataIndex][1][j][1] + "("+indexUoM+")");
+							colors.push(this.classesIndexes[classDataIndex][1][j][2]);
 							break;
 						}
 					}
 				}
-				return classes;
+
+				return [classes, colors];
 			}
 		}catch(e){
 			return clcLevels;
