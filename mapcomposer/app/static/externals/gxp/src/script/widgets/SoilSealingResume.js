@@ -178,13 +178,13 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		if(data && data.index && data.refTime && data.refTime.output.values[0]){
 			var title = data.index.name || this.defaultTitle;
 			refTimePieChartsData = this.getPieChartsData(data.index.id, data.index.subindex, data.refTime.output);
-			refTimeColChartsData = this.getColChartsSeries(data.refTime.output);
+			refTimeColChartsData = this.getColChartsSeries(data.index.id, data.index.subindex, data.refTime.output);
 			if(data.curTime 
 				// check if it have values (is not an array with [0])
 				&& this.validData(data.curTime.output)){
 				// 2 years
 				curTimePieChartsData = this.getPieChartsData(data.index.id, data.index.subindex, data.curTime.output);
-				curTimeColChartsData = this.getColChartsSeries(data.curTime.output);
+				curTimeColChartsData = this.getColChartsSeries(data.index.id, data.index.subindex, data.curTime.output);
 			}else if(data.curTime){
 				data.refTime.time += " - " + data.curTime.time;
 				referenceTimeTitle = this.intervalTitleText;
@@ -511,16 +511,29 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
      *  :arg yearData: ``Object`` Data in the year
      *  :returns: ``Array`` With the cols chart data.
      */
-	getColChartsSeries: function(yearData){
+	getColChartsSeries: function(indexId, subIndex, yearData){
 		var chartsSeries = [];
 		if(yearData.admUnits 
 			&& yearData.clcLevels 
 			&& yearData.values
 			&& yearData.admUnits.length == yearData.values.length){
+			var clcLevels = this.getLevels(indexId, subIndex, yearData.referenceName, yearData.clcLevels);
+			
 			for(var i = 0; i < yearData.admUnits.length; i++){
+				
+				var data = [];
+				if (clcLevels.length == 2 && clcLevels[1].length == yearData.values[i].length) {
+					for(var j = 0; j < yearData.values[i].length; j++) {
+						data.push(({ y: yearData.values[i][j], color: clcLevels[1][j] }));
+					}	
+				} else {
+					data = yearData.values[i];
+				}
+				
 				var colChartSeries = {
 					name: yearData.admUnits[i],
-					data: yearData.values[i]
+					data: data,
+					colors: clcLevels[1]
 				};
 				chartsSeries.push(colChartSeries);
 			}
