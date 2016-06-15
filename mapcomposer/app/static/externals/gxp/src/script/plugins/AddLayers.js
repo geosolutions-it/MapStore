@@ -34,6 +34,23 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
     
 	id: "addlayers",
 	
+	/** api: config[wmsDefaults]
+	 * 
+	 * wmsDefaults: {
+	 *	 SRS: "EPSG:900913",
+	 *	 version:"1.1.1",
+	 *   layersCachedExtent: [
+	 *	 	-20037508.34,-20037508.34,
+	 *	 	20037508.34,20037508.34
+	 *	 ],
+	 *	 layerBaseParams:{
+	 *	 	FORMAT:"image/png8",
+	 *	 	TILED:true
+	 *	 }
+	 * }
+	 */
+	wmsDefaults: {},
+	
     /** api: config[addActionMenuText]
      *  ``String``
      *  Text for add menu item (i18n).
@@ -361,8 +378,9 @@ gxp.plugins.AddLayers = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 "server-added": function(url) {
                     newSourceWindow.setLoading();
+                    var config = Ext.apply({url: url}, this.wmsDefaults);
                     this.target.addLayerSource({
-                        config: {url: url}, // assumes default of gx_wmssource
+                        config: config,
                         callback: function(id) {
                             // add to combo and select
                             var record = new sources.recordType({

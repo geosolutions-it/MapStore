@@ -1,6 +1,6 @@
 {
    "geoStoreBase":"http://143.225.214.136/geostore/rest/",
-   "proxy":"/http_proxy/proxy/?url=",
+   "proxy":"/proxy/?url=",
    "defaultLanguage": "it",
    "tab": true,
    "portalConfig":{
@@ -27,7 +27,7 @@
 		}
 	},
 	"map": {
-		"projection": "EPSG:900913",
+		"projection": "EPSG:3857",
 		"units": "m",
 		"center": [1250000.000000, 5370000.000000],
 		"zoom":5,
@@ -190,7 +190,7 @@
            "geostoreUrl": "http://143.225.214.136/geostore/rest",
            "geostoreUser": "admin",
            "geostorePassword": "admin",
-           "geostoreProxy": "/http_proxy/proxy?url="
+           "geostoreProxy": "/proxy?url="
         },{
 	        "ptype":"gxp_print",
 	        "customParams":{
@@ -320,6 +320,22 @@
 	            ]
             }]
         },{
+			"ptype": "gxp_addlayers",
+			"actionTarget": "tree.tbar",
+			"id": "addlayers",
+			"wmsDefaults": {
+				"SRS": "EPSG:900913",
+				"version": "1.1.1",
+			    "layersCachedExtent": [
+					-20037508.34,-20037508.34,
+					20037508.34,20037508.34
+				],
+				"layerBaseParams":{
+					"FORMAT": "image/png",
+					"TILED": true
+				}
+			}
+		},{
             "ptype": "gxp_addlayer",
 			"useEvents": true,
 			"id": "addlayer"
@@ -335,12 +351,7 @@
             "legendConfig" : {
                 "legendPanelId" : "legendPanel",
                 "defaults": {
-                    "style": "padding:5px",                  
-                    "baseParams": {
-                        "LEGEND_OPTIONS": "forceLabels:on;fontSize:10",
-                        "WIDTH": 20, 
-                        "HEIGHT": 20
-                    }
+                    "style": "padding:5px"
                 }
             }
         },{
