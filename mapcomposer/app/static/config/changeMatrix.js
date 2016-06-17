@@ -1,29 +1,34 @@
 {
    "geoStoreBase":"http://143.225.214.136/geostore/rest/",
-   "proxy":"/proxy/?url=",
+   "proxy":"/http_proxy/proxy/?url=",
    "defaultLanguage": "en",
    "tab": true,
    "portalConfig":{
 		"header":true
    },
-   "gsSources":{ 
+   "gsSources":{
    		"jrc": {
 			"ptype": "gxp_wmssource",
-			"title": "JRC GeoServer",
+			"title": "CRISP GeoServer",
 			"url": "http://143.225.214.136/geoserver/ows"
 		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
-		}, 
-		"osm": { 
+		},
+		"osm": {
 			"ptype": "gxp_osmsource"
 		},
 		"google": {
 			"ptype": "gxp_googlesource",
 			"useTiltImages": true
 		},
-		"ol": { 
-			"ptype": "gxp_olsource" 
+		"ol": {
+			"ptype": "gxp_olsource"
+		},
+		"mibactSITAP": {
+			"ptype": "gxp_wmssource",
+			"title": "MiBACT-SITAP (WMS)",
+			"url": "http://sitap.beniculturali.it:8080/geoserver/apar.public/wms"
 		}
 	},
 	"map": {
@@ -72,29 +77,36 @@
 			     "None", {"visibility": false}
 			    ]
 			},{
+                "source": "mibactSITAP",
+                "group" : "MiBACT - SIT Ambientale e Paesaggistico",
+				"title" : "Vincoli D.Lgs.42/2004 artt.136 e 157 -",
+				"name"  : "v1497_wgs84",
+				"tiled" : false,
+				"visibility": false
+            },{
                 "source": "jrc",
-                "group" : "Touring Land Cover",
+                "group" : "CNR-DGC-TCI Land Cover",
 				"title" : "Touring Land Cover L3",
 				"name"  : "it.crisp:touring",
 				"tiled" : false,
 				"visibility": true
             },{
                 "source": "jrc",
-                "group" : "Corine Land Cover",
+                "group" : "CORINE Land Cover",
 				"title" : "Corina Land Cover L1",
 				"name"  : "it.crisp:corine_L1",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
-                "group" : "Corine Land Cover",
+                "group" : "CORINE Land Cover",
 				"title" : "Corina Land Cover L2",
 				"name"  : "it.crisp:corine_L2",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
-                "group" : "Corine Land Cover",
+                "group" : "CORINE Land Cover",
 				"title" : "Corina Land Cover L3",
 				"name"  : "it.crisp:corine_L3",
 				"tiled" : false,
@@ -133,18 +145,18 @@
 		   "miny":10,
 			"maxx":-10,
 			"maxy":13
-		}, 
+		},
 		"cswVersion": "2.0.2",
 		"filterVersion": "1.1.0",
 		"start": 1,
 		"limit": 10,
 		"timeout": 60000
 	},
-	
+
 	"scaleOverlayUnits":{
-        "bottomOutUnits":"nmi",    
-        "bottomInUnits":"nmi",    
-        "topInUnits":"m",    
+        "bottomOutUnits":"nmi",
+        "bottomInUnits":"nmi",
+        "topInUnits":"m",
         "topOutUnits":"km"
     },
 
@@ -182,7 +194,7 @@
         ],
         "plugins": ["Ext.ux.PanelCollapsedTitle"]
     }],
-    
+
 	"customTools":[{
            "ptype": "gxp_wpsmanager",
            "id": "wpsManager",
@@ -190,7 +202,7 @@
            "geostoreUrl": "http://143.225.214.136/geostore/rest",
            "geostoreUser": "admin",
            "geostorePassword": "admin",
-           "geostoreProxy": "/proxy?url="
+           "geostoreProxy": "/http_proxy/proxy?url="
         },{
 	        "ptype":"gxp_print",
 	        "customParams":{
@@ -213,7 +225,7 @@
             "featureNS": "http://www.crisp.it",
             "pageSize": 10,
             "autoRefreshInterval": 3000,
-            "srsName": "EPSG:32632", 
+            "srsName": "EPSG:32632",
             "version": "1.1.0",
             "outputTarget": "outcomelaylistpanel",
             "actionColumns" : [
@@ -234,35 +246,35 @@
         		"featureTypeDetails": "changeMatrix",
 	            "columns" : [
 	            	{
-	                    "header": "Status", 
+	                    "header": "Status",
 	                    "dataIndex": "itemStatus",
 	                    "sortable": true
 	                },{
-	                    "header": "JobUID", 
+	                    "header": "JobUID",
 	                    "dataIndex": "jobUid",
 	                    "sortable": true
 	                },{
-	                    "header": "CUDA", 
+	                    "header": "CUDA",
 	                    "dataIndex": "jcuda",
 	                    "sortable": false
 	                },{
-	                    "header": "Reference Name", 
+	                    "header": "Reference Name",
 	                    "dataIndex": "referenceName",
 	                    "sortable": true
 	                },{
-	                    "header": "Start Date", 
+	                    "header": "Start Date",
 	                    "dataIndex": "runBegin",
 	                    "sortable": true
 	                },{
-	                    "header": "End Date", 
+	                    "header": "End Date",
 	                    "dataIndex": "runEnd",
 	                    "sortable": true
 	                },{
-	                    "header": "Filter (reference)", 
+	                    "header": "Filter (reference)",
 	                    "dataIndex": "referenceFilter",
 	                    "sortable": true
 	                },{
-	                    "header": "Filter (current)", 
+	                    "header": "Filter (current)",
 	                    "dataIndex": "nowFilter",
 	                    "sortable": true
 	                }
@@ -273,47 +285,47 @@
         		"featureTypeDetails": "soilIndex",
 	            "columns" : [
 	            	{
-	                    "header": "Status", 
+	                    "header": "Status",
 	                    "dataIndex": "itemStatus",
 	                    "sortable": true
 	                },{
-	                    "header": "JobUID", 
+	                    "header": "JobUID",
 	                    "dataIndex": "jobUid",
 	                    "sortable": true
 	                },{
-	                    "header": "CUDA", 
+	                    "header": "CUDA",
 	                    "dataIndex": "jcuda",
 	                    "sortable": false
 	                },{
-	                    "header": "Reference Name", 
+	                    "header": "Reference Name",
 	                    "dataIndex": "referenceName",
 	                    "sortable": true
 	                },{
-	                    "header": "Index", 
+	                    "header": "Index",
 	                    "dataIndex": "index",
 	                    "sortable": true
 	                },{
-	                    "header": "SubIndex", 
+	                    "header": "SubIndex",
 	                    "dataIndex": "subindex",
 	                    "sortable": true
 	                },{
-	                    "header": "Classes", 
+	                    "header": "Classes",
 	                    "dataIndex": "classes",
 	                    "sortable": true
 	                },{
-	                    "header": "Start Date", 
+	                    "header": "Start Date",
 	                    "dataIndex": "runBegin",
 	                    "sortable": true
 	                },{
-	                    "header": "End Date", 
+	                    "header": "End Date",
 	                    "dataIndex": "runEnd",
 	                    "sortable": true
 	                },{
-	                    "header": "Filter (reference)", 
+	                    "header": "Filter (reference)",
 	                    "dataIndex": "referenceFilter",
 	                    "sortable": true
 	                },{
-	                    "header": "Filter (current)", 
+	                    "header": "Filter (current)",
 	                    "dataIndex": "nowFilter",
 	                    "sortable": true
 	                }
