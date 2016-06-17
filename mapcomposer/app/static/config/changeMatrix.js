@@ -78,8 +78,8 @@
 			    ]
 			},{
                 "source": "mibactSITAP",
-                "group" : "MiBACT - SIT Ambientale e Paesaggistico",
-				"title" : "Vincoli D.Lgs.42/2004 artt.136 e 157 -",
+                "group" : "MiBACT - SITAP",
+				"title" : "Constrains, D.Lgs.42/2004 artt.136 e 157",
 				"name"  : "v1497_wgs84",
 				"tiled" : false,
 				"visibility": false
