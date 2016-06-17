@@ -73,43 +73,43 @@
 			    ]
 			},{
                 "source": "jrc",
-                "group" : "Touring Land Cover",
+                "group" : "Copertura del Suolo: Touring",
 				"title" : "Touring Land Cover L3",
 				"name"  : "it.crisp:touring",
 				"tiled" : false,
 				"visibility": true
             },{
                 "source": "jrc",
-                "group" : "Corine Land Cover",
-				"title" : "Corina Land Cover L1",
+                "group" : "Copertura del Suolo: Corine",
+				"title" : "Corine Land Cover L1",
 				"name"  : "it.crisp:corine_L1",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
-                "group" : "Corine Land Cover",
-				"title" : "Corina Land Cover L2",
+                "group" : "Copertura del Suolo: Corine",
+				"title" : "Corine Land Cover L2",
 				"name"  : "it.crisp:corine_L2",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
-                "group" : "Corine Land Cover",
-				"title" : "Corina Land Cover L3",
+                "group" : "Copertura del Suolo: Corine",
+				"title" : "Corine Land Cover L3",
 				"name"  : "it.crisp:corine_L3",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
-                "group" : "Urban Grids",
-				"title" : "Urban Grids",
+                "group" : "Griglie Urbane",
+				"title" : "Griglie Urbane",
 				"name"  : "it.crisp:urban_grids",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
-                "group" : "Urban Grids",
-				"title" : "Imperviousness",
+                "group" : "Griglie Urbane",
+				"title" : "Impermiabilizzazione",
 				"name"  : "it.crisp:imperviousness",
 				"tiled" : false,
 				"visibility": false
@@ -363,13 +363,13 @@
        		"wpsManagerID": "wpsManager",
        		"clcLevelsConfig": [{
 				"filter": "urban_grids",
-				"decorator": "Urban Grids"
+				"decorator": "Griglie Urbane"
 			},{
 				"filter": "corine_L",
-				"decorator": "Corine Land Cover Level {0}"
+				"decorator": "Copertura del Suolo Corine Livello {0}"
 			},{
 				"filter": "touring",
-				"decorator": "Touring Land Cover"
+				"decorator": "Copertura del Suolo Touring"
 			}],
             "geocoderConfig": {
 	            "wpsBufferProcessID" : "JTS:buffer",
