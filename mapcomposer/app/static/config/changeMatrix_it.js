@@ -1,29 +1,34 @@
 {
    "geoStoreBase":"http://143.225.214.136/geostore/rest/",
-   "proxy":"/http_proxy/proxy/?url=",
+   "proxy":"/proxy/?url=",
    "defaultLanguage": "it",
    "tab": true,
    "portalConfig":{
 		"header":true
    },
-   "gsSources":{ 
+   "gsSources":{
    		"jrc": {
 			"ptype": "gxp_wmssource",
-			"title": "JRC GeoServer",
+			"title": "CRISP GeoServer",
 			"url": "http://143.225.214.136/geoserver/ows"
 		},
 		"mapquest": {
 			"ptype": "gxp_mapquestsource"
-		}, 
-		"osm": { 
+		},
+		"osm": {
 			"ptype": "gxp_osmsource"
 		},
 		"google": {
 			"ptype": "gxp_googlesource",
 			"useTiltImages": true
 		},
-		"ol": { 
-			"ptype": "gxp_olsource" 
+		"ol": {
+			"ptype": "gxp_olsource"
+		},
+		"mibactSITAP": {
+			"ptype": "gxp_wmssource",
+			"title": "MiBACT-SITAP (WMS)",
+			"url": "http://sitap.beniculturali.it:8080/geoserver/apar.public/wms"
 		}
 	},
 	"map": {
@@ -72,29 +77,36 @@
 			     "None", {"visibility": false}
 			    ]
 			},{
+                "source": "mibactSITAP",
+                "group" : "MiBACT - SIT Ambientale e Paesaggistico",
+				"title" : "Vincoli D.Lgs.42/2004 artt.136 e 157 -",
+				"name"  : "v1497_wgs84",
+				"tiled" : false,
+				"visibility": false
+            },{
                 "source": "jrc",
-                "group" : "Copertura del Suolo: Touring",
+                "group" : "Copertura del Suolo: CNR-DGC-TCI",
 				"title" : "Touring Land Cover L3",
 				"name"  : "it.crisp:touring",
 				"tiled" : false,
 				"visibility": true
             },{
                 "source": "jrc",
-                "group" : "Copertura del Suolo: Corine",
+                "group" : "Copertura del Suolo: CORINE",
 				"title" : "Corine Land Cover L1",
 				"name"  : "it.crisp:corine_L1",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
-                "group" : "Copertura del Suolo: Corine",
+                "group" : "Copertura del Suolo: CORINE",
 				"title" : "Corine Land Cover L2",
 				"name"  : "it.crisp:corine_L2",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
-                "group" : "Copertura del Suolo: Corine",
+                "group" : "Copertura del Suolo: CORINE",
 				"title" : "Corine Land Cover L3",
 				"name"  : "it.crisp:corine_L3",
 				"tiled" : false,
@@ -133,18 +145,18 @@
 		   "miny":10,
 			"maxx":-10,
 			"maxy":13
-		}, 
+		},
 		"cswVersion": "2.0.2",
 		"filterVersion": "1.1.0",
 		"start": 1,
 		"limit": 10,
 		"timeout": 60000
 	},
-	
+
 	"scaleOverlayUnits":{
-        "bottomOutUnits":"nmi",    
-        "bottomInUnits":"nmi",    
-        "topInUnits":"m",    
+        "bottomOutUnits":"nmi",
+        "bottomInUnits":"nmi",
+        "topInUnits":"m",
         "topOutUnits":"km"
     },
 
@@ -190,7 +202,7 @@
            "geostoreUrl": "http://143.225.214.136/geostore/rest",
            "geostoreUser": "admin",
            "geostorePassword": "admin",
-           "geostoreProxy": "/http_proxy/proxy?url="
+           "geostoreProxy": "/proxy?url="
         },{
 	        "ptype":"gxp_print",
 	        "customParams":{
@@ -213,7 +225,7 @@
             "featureNS": "http://www.crisp.it",
             "pageSize": 10,
             "autoRefreshInterval": 3000,
-            "srsName": "EPSG:32632", 
+            "srsName": "EPSG:32632",
             "version": "1.1.0",
             "outputTarget": "outcomelaylistpanel",
             "actionColumns" : [
@@ -324,7 +336,7 @@
 			"actionTarget": "tree.tbar",
 			"id": "addlayers",
 			"wmsDefaults": {
-				"SRS": "EPSG:900913",
+				"SRS": "EPSG:3857",
 				"version": "1.1.1",
 			    "layersCachedExtent": [
 					-20037508.34,-20037508.34,
@@ -366,10 +378,10 @@
 				"decorator": "Griglie Urbane"
 			},{
 				"filter": "corine_L",
-				"decorator": "Copertura del Suolo Corine Livello {0}"
+				"decorator": "Copertura del Suolo CORINE Livello {0}"
 			},{
 				"filter": "touring",
-				"decorator": "Copertura del Suolo Touring"
+				"decorator": "Copertura del Suolo CNR-DGC-TCI"
 			}],
             "geocoderConfig": {
 	            "wpsBufferProcessID" : "JTS:buffer",
