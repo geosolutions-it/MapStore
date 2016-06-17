@@ -160,6 +160,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		var refTimePieChartsData = null, curTimePieChartsData = null, 
 			refTimeColChartsData = null, curTimeColChartsData = null;
 		var referenceTimeTitle = this.referenceTimeTitleText;
+		var currentTimeTitle   = this.currentTimeTitleText;
 
 		// get translated name of the index
 		if(data.index 
@@ -211,9 +212,9 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			for(var i = 0; i < data.refTime.output.admUnits.length; i++){
 				tabItemIndex++;
 				var unitItems = [];
-				unitItems.push(this.generatePieChart(chartTitle, chartTime, refTimePieChartsData[i]));
+				unitItems.push(this.generatePieChart(referenceTimeTitle, refYear, refTimePieChartsData[i]));
 				if(curTimePieChartsData){
-					unitItems.push(this.generatePieChart(chartTitle, chartTime, curTimePieChartsData[i]));
+					unitItems.push(this.generatePieChart(currentTimeTitle, nowYear, curTimePieChartsData[i]));
 				}
 				adminUnitsItems.push({
 					title: data.refTime.output.admUnits[i],
@@ -328,7 +329,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		var xAxis = {
 			categories: (clcLevels.length==2 && clcLevels[0].length>0?clcLevels[0]:clcLevels)
 		};
-		if(clcLevels.length == 0 || (clcLevels.length==2 && clcLevels[0].length==0)){
+		if(clcLevels.length == 0 || (clcLevels.length==2 && clcLevels[0].length==0) || 
+		   (refTimeColChartsData && refTimeColChartsData[0].data.length < clcLevels.length)){
 			xAxis.categories = [data.index.name + " ("+indexUoM+")"];
 		}
 
@@ -337,7 +339,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		    title+= " ("+indexUoM+(data.index.subindex?","+data.index.subindex:"")+")";
 		    title+= data.jobUid ? " [" + data.jobUid + "]" : "";
 		    title+= data.jcuda ? " " + data.jcuda : "";
-		    title+= " [" + chartTime + "]";
+		    //title+= " [" + chartTime + "]";
 
 		// yAxis
 		var yAxis = {};
@@ -1272,7 +1274,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			&& config.refTime.output.layerName){
 			
 			item0 = this.generateBarItem(config.refTime.output.layerName, refYear+
-                     (config.index.id == 3 || config.index.id == 4 || config.index.id == 9 ? "/"+nowYear+" Diff" : "["+this.referenceTimeTitleText+"]"), title);	
+                     (config.index.id == 3 || config.index.id == 4 || config.index.id == 9 ? "/"+nowYear+" Diff" : " ["+this.referenceTimeTitleText+"]"), title);	
 		}
 
 		// curr time layer

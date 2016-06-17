@@ -61,6 +61,18 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 	 */
 	pieChartMenuLabel : "Print Pie Chart",
 	
+	/** api: config[incrementLabel]
+	 * ``String``
+	 * Text for the Land Cover Grid Menu Label (i18n).
+	 */
+	incrementLabel: "increment",
+	
+	/** api: config[decrementLabel]
+	 * ``String``
+	 * Text for the Land Cover Grid Menu Label (i18n).
+	 */
+	decrementLabel: "decrement",
+	
 	/** api: config[interactiveChgMatrixLabel]
 	 * ``String``
 	 * Text for the Land Cover Menu Label (i18n).
@@ -346,7 +358,7 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 		// ///////////////////////////////////////
 		var changeMatrixGridPanel = new Ext.grid.GridPanel({
 			//title : this.changeMatrixResultsTitle,
-			title : "Change Matrix",
+			title : this.changeMatrixDialogTitle,
 			store : changeMatrixStore,
 			height : 300,
 			width : 300,
@@ -435,8 +447,10 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 
 											/**
 											 * Reference -> Current
+											 * (increment/decrement 60 ha, 181%)
 											 */
-											pieChartTitle = " - " + gridRowLabel + " ha ("+perc+"%)- ";
+											var signLabel = (diff!=0?(perc>0?me.incrementLabel:me.decrementLabel) + " " + diff + " ha, ":"");
+											pieChartTitle = " - " + gridRowLabel + " ("+signLabel+perc+"%) - ";
 											pieChartSubTitle = me.scatterChartXAxisLabel + "("+refYear+")" + " -> " + me.scatterChartYAxisLabel + "("+nowYear+")";
 											
 											/**
@@ -486,7 +500,8 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 											/**
 											 * Reference -> Current
 											 */
-											pieChartTitle = " - " + gridColLabel + " ha ("+perc+"%)- ";
+											var signLabel = (diff!=0?(perc>0?me.incrementLabel:me.decrementLabel) + " " + diff + " ha, ":"");
+											pieChartTitle = " - " + gridColLabel + " ("+signLabel+perc+"%) - ";
 											pieChartSubTitle = me.scatterChartYAxisLabel + "("+nowYear+")" + " -> " + me.scatterChartXAxisLabel + "("+refYear+")";
 											
 											/**
@@ -874,6 +889,8 @@ gxp.widgets.WFSChangeMatrixResume = Ext.extend(gxp.widgets.WFSResume, {
 			});
 			
 			changeMatrixOutcomeTabPanel.add(changeMatrixPieChart);
+			var last = changeMatrixOutcomeTabPanel.items.length -1;
+			changeMatrixOutcomeTabPanel.setActiveTab(last);
 			changeMatrixOutcomeTabPanel.doLayout();
 		};
 		
