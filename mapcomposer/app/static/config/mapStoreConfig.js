@@ -13,10 +13,6 @@
         "google": {
             "ptype": "gxp_googlesource" 
         },
-        "bing": {
-			"ptype": "gxp_bingsource",
-            "apiKey": "AtJtDQ5jkpmFmWTymrtVevkxEfAPvDSebt9MteFCXbPo5CDlPHN57YcLL1vqBE-E"
-        }, 
         "ol": { 
             "ptype": "gxp_olsource" 
         },
@@ -57,14 +53,6 @@
 				20037508.34,20037508.34
         ],
         "layers": [                      
-            
-        {
-            "source": "bing",
-            "title": "Bing Aerial",
-            "name": "Aerial",
-            "group": "background",
-            "visibility": false
-        }, 
         {
             "source": "ol",
             "group": "background",
