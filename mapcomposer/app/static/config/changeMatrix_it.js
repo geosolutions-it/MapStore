@@ -582,7 +582,8 @@
             			"4": "sprawl",
             			"8": "frag",
             			"9": "landtake",
-            			"12": "frag"
+            			"12": "frag",
+            			"13": "frag"
             		},
             		"imperviousnessProccessName": "gs:SoilSealingImperviousness",
             		"imperviousnessLayer": "imperviousness",

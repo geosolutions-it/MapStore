@@ -72,6 +72,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
     urbanDevelWidespreadLabel: "Diffusa",
     urbanDevelMonocentricCompactLabel: "Monocentrica Compatta",
     newUrbanizationText: 'Nuova Urbanizzazione',
+    newEcologicalCorridorText: 'Nuovo Corridoio Ecologico',
 	// EoF i18n
     
     /** api: config[url]
@@ -116,7 +117,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			9: this.consumeOnlyText,
 			10: this.consumeOnlyConfText,
 			11: this.urbanFabricClassesText,
-			12: this.newUrbanizationText
+			12: this.newUrbanizationText,
+			13: this.newEcologicalCorridorText
 		});
 
 		if(gxp.widgets.SoilSealingResume.superclass.initComponent){
@@ -220,7 +222,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 					title: data.refTime.output.admUnits[i],
 					items: unitItems
 				});
-				if(this.splitAdmUnitsInTabs && (tabItemIndex == 9 || tabItemIndex == 12)){
+				if(this.splitAdmUnitsInTabs && (tabItemIndex == 9 || tabItemIndex == 12 || tabItemIndex == 13)){
 					var adminUnitsTab = new Ext.Panel({
 						border : false,
 						layout : "accordion",
@@ -321,6 +323,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 				indexUoM = "";
 				break;
 			case 12:
+			case 13:
 				indexUoM = "No pixels";
 				break;
 		}
@@ -419,7 +422,7 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 			items: []		
 		});
 		
-		if(data.index.id !== 8 && data.index.id !== 9 && data.index.id !== 12){
+		if(data.index.id !== 8 && data.index.id !== 9 && data.index.id !== 12 && data.index.id !== 13){
 			barChartTab.add(barChartItems);
 		};
 				

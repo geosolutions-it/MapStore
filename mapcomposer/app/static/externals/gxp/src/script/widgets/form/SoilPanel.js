@@ -65,6 +65,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 	consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
 	urbanFabricClassesText: 'Modello di Sviluppo Urbano',
 	newUrbanizationText: 'Nuova Urbanizzazione',
+	newEcologicalCorridorText: 'Nuovo Corridoio Ecologico',
 
 	radiusTextLabel: 'Radius (m)',
 	radiusEmptyTextLabel: 'Radius in meters (m)',
@@ -121,7 +122,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				4: true,
 				5: true,
 				6: false, // Urban Fabric Classes [1 Time]
-				7: false
+				7: false,
+				8: false
 			},
 			filterT1ComboBox: true,
 			classesselector: false
@@ -141,7 +143,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				4: false,
 				5: false,
 				6: false, // Urban Fabric Classes [2 Time]
-				7: true
+				7: true,
+				8: true
 			},
 			filterT1ComboBox: false
 		},
@@ -167,7 +170,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				4: false,
 				5: false,
 				6: false,
-				7: false
+				7: false,
+				8: false
 			},
 			rasterComboBox: false,
 			filterT1ComboBox: false,
@@ -608,7 +612,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
                 	name: 'sealingIndex',
                 	inputValue: 11
                 },{
-                	title : this.newUrbanizationText,
+                	title : this.newUrbanizationText+"/"+this.newEcologicalCorridorText,
 					xtype : 'fieldset',
 					autoWidth : true,
 					collapsible : false,
@@ -641,6 +645,10 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		                	boxLabel: this.newUrbanizationText,
                 			name: 'sealingIndex',
                 			inputValue: 12
+		                },{
+		                	boxLabel: this.newEcologicalCorridorText,
+                			name: 'sealingIndex',
+                			inputValue: 13
 		                }],
 		                listeners:{
 		                	render: function() {
