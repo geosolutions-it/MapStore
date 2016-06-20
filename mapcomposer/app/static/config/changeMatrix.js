@@ -575,6 +575,7 @@
             		"typeName": "soilsealing",
             		"geocoderLayer": "geocoder",
             		"geocoderPopulationLayer": "geocoder_population",
+            		"waterBodiesMaskLayer": "ispra_clc12_5_wbodies_mask",
             		"defaultProcessStyle": "raster",
             		"styleSelection": {
             			"3": "sprawl",

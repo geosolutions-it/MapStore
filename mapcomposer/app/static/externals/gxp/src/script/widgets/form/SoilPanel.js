@@ -1029,6 +1029,10 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 			geocoderPopulationLayer: new OpenLayers.WPSProcess.LiteralData({
 				value : this.geocoderConfig.geocoderPopulationLayer
 			}),
+			waterBodiesMaskLayer: new OpenLayers.WPSProcess.LiteralData({
+				value : (this.geocoderConfig.waterBodiesMaskLayer ?
+					this.geocoderConfig.waterBodiesMaskLayer : null)
+			}),
 			admUnits: new OpenLayers.WPSProcess.LiteralData({
 				value : this.roiFieldSet.outputType.getValue() == 'geocoder' ?
 				    this.roiFieldSet.getSelectedAreas() : null
