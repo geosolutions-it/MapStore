@@ -559,7 +559,7 @@
             "wfsChangeMatrisGridPanelID": "wfsChangeMatrisGridPanel_tabpanel",
             "panelsConfig": [
                {
-            	 "title": "Land Cover",
+            	 "title": "LULC Change",
             	 "clcLevelMode": "combobox",
             	 "geocoderConfig": {
             		"selectReturnType": false,
