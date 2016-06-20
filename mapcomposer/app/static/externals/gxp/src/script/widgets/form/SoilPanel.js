@@ -1055,7 +1055,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				mimeType : 'application/wkt'
 			}),
 			radius : new OpenLayers.WPSProcess.LiteralData({
-				value : (index == 12 ? params.radius[1] : params.radius[0])
+				value : (index == 12 || index == 13 ? params.radius[1] : params.radius[0])
 			}),
 			pixelSize : new OpenLayers.WPSProcess.LiteralData({
 				value : pixelSize
