@@ -298,14 +298,18 @@ var GeoExplorerLoader = Ext.extend(Ext.util.Observable, {
         
         //get from the session storage
         var existingUserDetails = sessionStorage["userDetails"];
-        if(existingUserDetails){
-            this.userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
-            auth = this.userDetails.token;
-        } else if(window.parent && window.parent.window && window.parent.window.manager && window.parent.window.manager.auth){
-          //get from the parent
-          auth = window.parent.window.manager.auth;
-          return auth;
-        }
+		
+	    try {
+			if(existingUserDetails){
+				this.userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
+				auth = this.userDetails.token;
+			} else if(window.parent && window.parent.window && window.parent.window.manager && window.parent.window.manager.auth){
+				//get from the parent
+				auth = window.parent.window.manager.auth;
+			}
+		} catch(e){
+			auth = null;
+		}
         
         return auth;
     }
