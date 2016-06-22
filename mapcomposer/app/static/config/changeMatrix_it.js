@@ -241,7 +241,7 @@
             ],
             "splitPanels": true,
             "panelsConfig": [{
-            	"title": "Copertura del Suolo: Esecuzioni",
+            	"title": "Cambi Uso del Suolo",
             	"featureType": "changematrix",
         		"featureTypeDetails": "changeMatrix",
 	            "columns" : [
@@ -559,7 +559,7 @@
             "wfsChangeMatrisGridPanelID": "wfsChangeMatrisGridPanel_tabpanel",
             "panelsConfig": [
                {
-            	"title": "Copertura del Suolo",
+            	"title": "Cambi di Uso del Suolo",
             	 "clcLevelMode": "combobox",
             	 "geocoderConfig": {
             		"selectReturnType": false,
@@ -567,7 +567,7 @@
             	 },
             	 "xtype": "gxp_changematrixpanel"
         	   },{
-            	"title": "Impermeabilizzazione del Suolo",
+            	"title": "Consumo di Suolo",
             	 "geocoderConfig": {
             		"selectReturnType": true,
             		"wpsProcessName": "gs:SoilSealingCLC",
