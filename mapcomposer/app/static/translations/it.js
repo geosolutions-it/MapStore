@@ -768,10 +768,10 @@ GeoExt.Lang.add("it", {
 	},
 
     "gxp.widgets.form.SoilPanel.prototype" :{
-		timeSelectionTitleText: "Filtro : Tempo",
+		timeSelectionTitleText: "Tempo",
 		soilSealingIndexTitleText: "Indicatori del Consumo di Suolo",
-		clcLevelTitleText: "Filtro : Livelli Uso del Suolo / Impermeabilizzazione",
-		clcLegendBuilderTitleText: "Selezione Classi Uso e Copertura del Suolo",
+		clcLevelTitleText: "Livelli Uso del Suolo / Impermeabilizzazione",
+		clcLegendBuilderTitleText: "Classi di Uso e Copertura del Suolo",
 		roiTitleText: "Area d'Interesse",
 		timeFilterTitle : 'Filtro Temporale',
 		changeMatrixRasterFieldLabel : "Layer Raster",
@@ -784,7 +784,7 @@ GeoExt.Lang.add("it", {
 		twoYearsText: 'due anni',
 		cudaCheckBoxText: 'CUDA',
 		submitButtonText: 'Invia',
-		resetButtonText: 'Resetta',
+		resetButtonText: 'Reset',
 		imperviousnessText: 'Impermiabilizzazione',
 		basedOnCLCText: 'Basati su Uso/Copertura del Suolo',
 		coverText: 'Coefficiente di Copertura',
