@@ -334,7 +334,12 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		};
 		if(clcLevels.length == 0 || (clcLevels.length==2 && clcLevels[0].length==0) || 
 		   (refTimeColChartsData && refTimeColChartsData[0].data.length < clcLevels.length)){
-			xAxis.categories = [data.index.name + " ("+indexUoM+")"];
+		   	var axisName = data.indexName;
+		   	switch(data.index.id) {
+		   		case 7:
+		   			axisName = data.index.subindex;
+		   	}
+			xAxis.categories = [axisName + " ("+indexUoM+")"];
 		}
 
 		// title for the layers and the tab

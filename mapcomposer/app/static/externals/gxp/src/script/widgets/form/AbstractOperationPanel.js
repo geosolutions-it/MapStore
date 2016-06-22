@@ -763,14 +763,16 @@ gxp.widgets.form.AbstractOperationPanel = Ext.extend(Ext.FormPanel, {
 			    {
                     xtype: "checkbox",
                     checked: true,
+                    ref : 'cuda-checkbox',
+					id : 'cuda-checkbox',
                     boxLabel: "<img src='theme/app/img/silk/nVidia.png' style='vertical-align: middle;width: 16px;'/>&nbsp;&nbsp;&nbsp;&nbsp; " /*+ me.cudaCheckBoxText*/,
                     listeners: {
                         check: function(box, checked) {
                         	if (checked) {
-                            	console.log(me.cudaCheckBoxText + " ON");
+                            	// console.log(me.cudaCheckBoxText + " ON");
                             	me.useCuda = true;
                             } else {
-                            	console.log(me.cudaCheckBoxText + " OFF");
+                            	// console.log(me.cudaCheckBoxText + " OFF");
                             	me.useCuda = false;
                            }
                         },

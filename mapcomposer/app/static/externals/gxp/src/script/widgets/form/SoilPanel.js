@@ -632,7 +632,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 					    items:
 		                [{
 			          		xtype     : 'textfield',
-			          		name      : 'radius',
+			          		name      : 'buffer',
 							ref       : '../../sealingIndexImpervious',
 							id        : me.id + "_newUrbanizationIndex",
 							cls       : 'x-check-group-alt',
@@ -715,6 +715,24 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 						// Active next accordion: clcLevelBuilder
 						this.activeElementByTitle(this.clcLegendBuilderTitleText);
 					}	
+				}
+			}
+			
+			// AF: Temporarly disable/enable CUDA checkbox
+			var component = Ext.getCmp('cuda-checkbox');
+			if (component) {
+				switch(selected.inputValue) {
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+						component.setValue(false);
+						this.useCuda = false;
+						break;
+					default:
+						component.setValue(true);
+						this.useCuda = true;
+						break;
 				}
 			}
 		}
@@ -997,6 +1015,10 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		if (!params.radius) {
 			params.radius = 100;
 		}
+
+		if (!params.buffer) {
+			params.buffer = 100;
+		}
 		
 		var pixelSize = 400;
 		if(this.layersPixelSizes && params.raster)
@@ -1055,7 +1077,10 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 				mimeType : 'application/wkt'
 			}),
 			radius : new OpenLayers.WPSProcess.LiteralData({
-				value : (index == 12 || index == 13 ? params.radius[1] : params.radius[0])
+				value : params.radius
+			}),
+			buffer : new OpenLayers.WPSProcess.LiteralData({
+				value : params.buffer
 			}),
 			pixelSize : new OpenLayers.WPSProcess.LiteralData({
 				value : pixelSize
