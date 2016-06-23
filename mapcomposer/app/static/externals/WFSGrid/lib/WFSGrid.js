@@ -107,6 +107,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 	displayMsgPaging : "Displaying topics {0} - {1} of {2}",
 	emptyMsg : "No topics to display",
 	addLayerTooltip : "Add Layer to Map",
+	helpTooltip : "Information",
 	detailsTooltip : "View Details",
 	deleteTooltip : "Delete Feature",
 	deleteConfirmMsg : "Are you sure you want delete this feature?",
@@ -121,6 +122,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 	countFeature : null,
 
 	addLayerIconPath : "theme/app/img/silk/add.png",
+	helpIconPath : "theme/app/img/silk/help.png",
 	detailsIconPath : "theme/app/img/silk/information.png",
 	deleteIconPath : "theme/app/img/silk/delete.png",
 	addLayerTool : null,
@@ -377,6 +379,80 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 		return year[0];
 	},
 	
+	/** private: method[getHelpAction]
+	 */
+	getHelpAction: function(actionConf) {
+		var idAtt = actionConf.idAttribute || "fid";
+		var layerNameAtt = actionConf.layerNameAttribute || "layerName";
+		var wsAtt = actionConf.wsNameAttribute || "wsName";
+
+		var me = this;
+		return {
+			xtype : 'actioncolumn',
+			sortable : false,
+			width : 10,
+			items : [{
+				icon : me.helpIconPath,
+				tooltip : me.helpTooltip,
+				scope : me,
+				handler : function(gpanel, rowIndex, colIndex) {
+					var store = gpanel.getStore();
+					var record = store.getAt(rowIndex);
+					// var map = me.target.mapPanel.map;
+					var mapPanel = me.target.mapPanel;
+					var layerName = record.get(wsAtt) + ":" + record.get(layerNameAtt);
+					var layerSrcTitle = me.sourcePrefix + record.get(layerNameAtt);
+					
+					var indexHtml = null;
+					var indexAbstract = null;
+					if(record.data.index) {
+						for (var indexHelpData=0; indexHelpData<me.indexesHelpInfo.length; indexHelpData++) {
+							if (me.indexesHelpInfo[indexHelpData]["name"] === record.data.index) {
+								indexHtml     = me.indexesHelpInfo[indexHelpData]["html"];
+								indexAbstract = me.indexesHelpInfo[indexHelpData]["abstract"];
+							}
+						}
+					}
+
+					var appInfo;
+					if (indexHtml) {
+						appInfo = new Ext.Panel({
+							title: this.appInfoText,
+							html: "<iframe style='border: none; height: 100%; width: 100%' src='"+indexHtml+"' frameborder='0' border='0'/>"
+						});
+					} else if (indexAbstract) {
+						appInfo = new Ext.Panel({
+							title: this.appInfoText,
+							html: indexAbstract
+						});
+					} else {
+						indexHtml     = me.indexesHelpInfo[0]["html"];
+						indexAbstract = me.indexesHelpInfo[0]["abstract"];
+						
+						var html = null;
+						if (indexHtml) html = "<iframe style='border: none; height: 100%; width: 100%' src='"+indexHtml+"' frameborder='0' border='0'/>";
+						else           html = indexAbstract;
+						
+						appInfo = new Ext.Panel({
+							title: this.appInfoText,
+							html: html
+						});
+					}
+					
+					var win = new Ext.Window({
+			            title: me.helpTooltip,
+			            modal: true,
+			            layout: "fit",
+			            width: 640,
+			            height: 460,
+			            items: [appInfo]
+			        });
+			        win.show();
+				}
+			}]
+		};
+	},
+ 
 	/** private: method[getDeleteAction]
 	 */
 	getDeleteAction : function(actionConf) {
@@ -697,6 +773,9 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.TableableTool, {
 			if (me.actionColumns) {
 				for ( kk = 0; kk < me.actionColumns.length; kk++) {
 					switch (me.actionColumns[kk].type) {
+						case "help":
+							columns.push(me.getHelpAction(me.actionColumns[kk]));
+							break;						
 						case "addLayer":
 							columns.push(me.getAddLayerAction(me.actionColumns[kk]));
 							break;

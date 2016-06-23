@@ -759,6 +759,7 @@ GeoExt.Lang.add("it", {
 		displayMsgPaging : "Record visualizzati {0} - {1} of {2}",
 		emptyMsg : "Nessun record da visualizzare",
 		addLayerTooltip : "Aggiungi il Layer alla Mappa",
+		helpTooltip: "Informazioni",
 		detailsTooltip : "Visualizza Dettagli",
 		deleteTooltip : "Elimina il Record",
 		deleteConfirmMsg : "Sicuro di voler eliminare questo record?",

@@ -341,6 +341,10 @@
             "outputTarget": "outcomelaylistpanel",
             "actionColumns" : [
                 {
+                 "type": "help",
+                 "layerTitleAttribute" : "ftUUID"
+                },
+                {
                  "type": "details",
                  "layerTitleAttribute" : "ftUUID"
                 },
@@ -441,7 +445,23 @@
 	                    "sortable": true
 	                }
 	            ]
-            }]
+            }],
+            "indexesHelpInfo" : [
+            	{"name": "_default", "html": "SoilMonitorTutorial.pdf", "abstract": null},
+            	{"name": "Coverage coefficient", "html": null, "abstract": "<h1>Coefficiente di copertura.</h1> <p>Ovvero superficie coperta /superficie unità amministrativa (città, provincia,..)</p>"},
+            	{"name": "Rate of Change", "html": null, "abstract": "<h1>Tasso di variazione</h1> <p>Ovvero la differenza della superfice coperta tra due anni/SC al primo anno</p>"},
+            	{"name": "Marginal Land Take", "html": null, "abstract": "<h1>Consumo marginale del suolo</h1> <p>Dato dalla differenza di superfici coperte tra due anni/differenza popolazione tra due anni, esprime il consumo marginale di suolo per ogni nuovo abitante insediato. Il valore riportato è quello della media del consumo di suolo agrario pro nuovo abitante insediato per comune (ovvero il suolo perso per ogni nuovo abitante).</p>"},
+            	{"name": "Urban Sprawl Indicator", "html": null, "abstract": "<h1>Sprawl urbano</h1> <p>Tasso di variazione delle coperture tra due anni/tasso d variazione della popolazione tra due anni.</p>"},
+            	{"name": "Urban Dispersion", "html": null, "abstract": "<h1>Urban Dispersion</h1> <p>TODO</p>"},
+            	{"name": "Edge Density", "html": null, "abstract": "<h1>Edge density</h1> <p>Dato dal rapporto tra la somma totale dei perimetri delle aree costruite e la loro superficie, descrive la frammentazione del paesaggio in termini di densità dei margini del costruito.</p>"},
+            	{"name": "Dispersive Urban Growth", "html": null, "abstract": "<h1>Largest Class Patch Index</h1> <p>E’ un indicatore di compattezza, definisce l’ampiezza percentuale del poligono di area costruita di dimensioni maggiori.</p> <h1>Residual Mean Patch Size</h1> <p>Definisce l’ampiezza media dei poligoni residui, escluso quello maggiore. Fornisce la dimensione della diffusione delle città intorno al nucleo centrale.</p>"},
+            	{"name": "Fragmentation", "html": null, "abstract": "<h1>Frammentazione (urbana e rurale)</h1> <p>La frammentazione può essere definita come il processo che genera una progressiva riduzione della superficie degli ambienti naturali e un aumento del loro isolamento.</p>"},
+            	{"name": "Land Take", "html": null, "abstract": "<h1>Land Take</h1> <p>Indice che interpola i dati relativi a due anni di osservazione per evidenziare la perdita di suoli naturali (se il risultato reca segno negativo) o l’acquisizione di nuovi suoli naturali (se il risultato reca segno positivo)</p>"},
+            	{"name": "Potential Loss of Food Supply", "html": null, "abstract": "<h1>Loss of food supply</h1> <p>Indice che interpola i dati relativi a due anni di osservazione in merito al coefficiente ambientale consumo di suolo della FAO1. Si traduce come perdita di suolo in grano equivalente ovvero nella perdita della capacità di nutrire il pianeta in quanto i suoli sani costituiscono la base per la produzione di cibo.</p>"},
+            	{"name": "Model of Urban Development", "html": null, "abstract": "<h1>Model of Urban Development</h1> <p>TODO</p>"},
+            	{"name": "New Urbanization", "html": null, "abstract": "<h1>New Urbanization</h1> <p>TODO</p>"},
+            	{"name": "New Ecological Corridor", "html": null, "abstract": "<h1>New Ecological Corridor</h1> <p>TODO</p>"}
+            ]
         },{
 			"ptype": "gxp_addlayers",
 			"actionTarget": "tree.tbar",
