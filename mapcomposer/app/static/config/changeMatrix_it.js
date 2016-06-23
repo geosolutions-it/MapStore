@@ -34,6 +34,41 @@
 			"ptype": "gxp_wmssource",
 			"title": "ISRIC-SoilGrids250m (WMS)",
 			"url": "http://164.132.26.91:8080/geoserver/geonode/wms"
+		},
+		"cncpABP": {
+			"ptype": "gxp_wmssource",
+			"title": "CNCP-ABP (WMS)",
+			"url": "http://93.63.35.107:8080/geoserver/pedclim/wms"
+		},
+		"ispraSIC": {
+			"ptype": "gxp_wmssource",
+			"title": "ISPRA-SIC (WMS)",
+			"url": "http://www.geoservices.isprambiente.it/arcgis/services/TerritorioAmbiente/SitiProtettiSIC/MapServer/WMSServer"
+		},
+		"ispraRNMCS": {
+			"ptype": "gxp_wmssource",
+			"title": "ISPRA-RNMCS (WMS)",
+			"url": "http://www.geoservices.isprambiente.it/arcgis/services/Suolo/consumo_di_suolo/MapServer/WMSServer"
+		},
+		"ispraPopRI50": {
+			"ptype": "gxp_wmssource",
+			"title": "ISPRA-PopRI50 (WMS)",
+			"url": "http://www.geoservices.isprambiente.it/arcgis/services/RischioIdraulico/Popolazione_rischio_idraulico/MapServer/WmsServer"
+		},
+		"copHRL_I06": {
+			"ptype": "gxp_wmssource",
+			"title": "Copernicus-HRL,Imp2006 (WMS)",
+			"url": "http://land.discomap.eea.europa.eu/arcgis/services/Land/Imperviousness_2006/MapServer/WMSServer"
+		},
+		"copHRL_I09": {
+			"ptype": "gxp_wmssource",
+			"title": "Copernicus-HRL,Imp2009 (WMS)",
+			"url": "http://land.discomap.eea.europa.eu/arcgis/services/Land/IMD_09/MapServer/WMSServer"
+		},
+		"copHRL_I12": {
+			"ptype": "gxp_wmssource",
+			"title": "Copernicus-HRL,Imp2012 (WMS)",
+			"url": "http://copernicus.discomap.eea.europa.eu/arcgis/services/GioLandPublic/HRL_Imperviousness_Density_2012/MapServer/WMSServer"
 		}
 	},
 	"map": {
@@ -89,10 +124,38 @@
 				"tiled" : false,
 				"visibility": false
             },{
+                "source": "cncpABP",
+                "group" : "CNCP - Centro Nazionale di Cartografia Pedologica",
+				"title" : "ABP SIS - Regioni Pedologiche",
+				"name"  : "SOIL_REGIONS",
+				"tiled" : false,
+				"visibility": false
+            },{
                 "source": "mibactSITAP",
                 "group" : "MiBACT - SIT Ambientale e Paesaggistico",
 				"title" : "Vincoli D.Lgs.42/2004 artt.136 e 157 -",
 				"name"  : "v1497_wgs84",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "ispraSIC",
+                "group" : "ISPRA",
+				"title" : "Siti di Interesse Comunitario (SIC)",
+				"name"  : "0",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "ispraPopRI50",
+                "group" : "ISPRA",
+				"title" : "Popolazione a rischio idraulico - Tr fino a 50 anni",
+				"name"  : "2",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "ispraRNMCS",
+                "group" : "ISPRA",
+				"title" : "Rete Naz. Monitoraggio Consumo Suolo (punti di camp. 2012)",
+				"name"  : "0",
 				"tiled" : false,
 				"visibility": false
             },{
@@ -105,35 +168,35 @@
             },{
                 "source": "jrc",
                 "group" : "Copertura del Suolo: CORINE",
-				"title" : "Corine Land Cover L1",
+				"title" : "Livello 1",
 				"name"  : "it.crisp:corine_L1",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
                 "group" : "Copertura del Suolo: CORINE",
-				"title" : "Corine Land Cover L2",
+				"title" : "Livello 2",
 				"name"  : "it.crisp:corine_L2",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
                 "group" : "Copertura del Suolo: CORINE",
-				"title" : "Corine Land Cover L3",
+				"title" : "Livello 3",
 				"name"  : "it.crisp:corine_L3",
 				"tiled" : false,
 				"visibility": true
             },{
                 "source": "jrc",
-                "group" : "Griglie Urbane",
-				"title" : "Griglie Urbane",
+                "group" : "Impermeabilizzazione (EC-ESA Copernicus HRL)",
+				"title" : "Suolo impermeabilizzato (imperm.>=30%)(20m)",
 				"name"  : "it.crisp:urban_grids",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
-                "group" : "Griglie Urbane",
-				"title" : "Impermiabilizzazione",
+                "group" : "Impermeabilizzazione (EC-ESA Copernicus HRL)",
+				"title" : "Suolo impermeabilizzato (imperm.>=30%)(vettoriale, 40m)",
 				"name"  : "it.crisp:imperviousness",
 				"tiled" : false,
 				"visibility": false
@@ -387,7 +450,7 @@
        		"wpsManagerID": "wpsManager",
        		"clcLevelsConfig": [{
 				"filter": "urban_grids",
-				"decorator": "Griglie Urbane"
+				"decorator": "Suolo impermeabilizzato"
 			},{
 				"filter": "corine_L",
 				"decorator": "Copertura del Suolo CORINE Livello {0}"

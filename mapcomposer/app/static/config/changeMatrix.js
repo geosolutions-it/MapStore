@@ -34,6 +34,56 @@
 			"ptype": "gxp_wmssource",
 			"title": "ISRIC-SoilGrids250m (WMS)",
 			"url": "http://164.132.26.91:8080/geoserver/geonode/wms"
+		},
+		"cncpABP": {
+			"ptype": "gxp_wmssource",
+			"title": "CNCP-ABP (WMS)",
+			"url": "http://93.63.35.107:8080/geoserver/pedclim/wms"
+		},
+		"ispraSIC": {
+			"ptype": "gxp_wmssource",
+			"title": "ISPRA-SIC (WMS)",
+			"url": "http://www.geoservices.isprambiente.it/arcgis/services/TerritorioAmbiente/SitiProtettiSIC/MapServer/WMSServer"
+		},
+		"ispraRNMCS": {
+			"ptype": "gxp_wmssource",
+			"title": "ISPRA-RNMCS (WMS)",
+			"url": "http://www.geoservices.isprambiente.it/arcgis/services/Suolo/consumo_di_suolo/MapServer/WMSServer"
+		},
+		"ispraPopRI50": {
+			"ptype": "gxp_wmssource",
+			"title": "ISPRA-PopRI50 (WMS)",
+			"url": "http://www.geoservices.isprambiente.it/arcgis/services/RischioIdraulico/Popolazione_rischio_idraulico/MapServer/WmsServer"
+		},
+		"ispraPopRI50": {
+			"ptype": "gxp_wmssource",
+			"title": "ISPRA-PopRI50 (WMS)",
+			"url": "http://www.geoservices.isprambiente.it/arcgis/services/RischioIdraulico/Popolazione_rischio_idraulico/MapServer/WmsServer"
+		},
+		"ispraPopRI50": {
+			"ptype": "gxp_wmssource",
+			"title": "ISPRA-PopRI50 (WMS)",
+			"url": "http://www.geoservices.isprambiente.it/arcgis/services/RischioIdraulico/Popolazione_rischio_idraulico/MapServer/WmsServer"
+		},
+		"ispraPopRI50": {
+			"ptype": "gxp_wmssource",
+			"title": "ISPRA-PopRI50 (WMS)",
+			"url": "http://www.geoservices.isprambiente.it/arcgis/services/RischioIdraulico/Popolazione_rischio_idraulico/MapServer/WmsServer"
+		},
+		"copHRL_I06": {
+			"ptype": "gxp_wmssource",
+			"title": "Copernicus-HRL,Imp2006 (WMS)",
+			"url": "http://land.discomap.eea.europa.eu/arcgis/services/Land/Imperviousness_2006/MapServer/WMSServer"
+		},
+		"copHRL_I09": {
+			"ptype": "gxp_wmssource",
+			"title": "Copernicus-HRL,Imp2009 (WMS)",
+			"url": "http://land.discomap.eea.europa.eu/arcgis/services/Land/IMD_09/MapServer/WMSServer"
+		},
+		"copHRL_I12": {
+			"ptype": "gxp_wmssource",
+			"title": "Copernicus-HRL,Imp2012 (WMS)",
+			"url": "http://copernicus.discomap.eea.europa.eu/arcgis/services/GioLandPublic/HRL_Imperviousness_Density_2012/MapServer/WMSServer"
 		}
 	},
 	"map": {
@@ -89,6 +139,13 @@
 				"tiled" : false,
 				"visibility": false
             },{
+                "source": "cncpABP",
+                "group" : "CNCP - Italian National Center for Soil Mapping",
+				"title" : "ABP SIS - Soil Regions",
+				"name"  : "SOIL_REGIONS",
+				"tiled" : false,
+				"visibility": false
+            },{
                 "source": "mibactSITAP",
                 "group" : "MiBACT - SITAP",
 				"title" : "Constrains, D.Lgs.42/2004 artt.136 e 157",
@@ -96,44 +153,65 @@
 				"tiled" : false,
 				"visibility": false
             },{
+                "source": "ispraSIC",
+                "group" : "ISPRA",
+				"title" : "Sites of Community Importance (SIC)",
+				"name"  : "0",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "ispraPopRI50",
+                "group" : "ISPRA",
+				"title" : "Population threatened by hydraulic risk - Rt up to 50yrs",
+				"name"  : "2",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "ispraRNMCS",
+                "group" : "ISPRA",
+				"title" : "Soil Consumption National Network (sampling points 2012)",
+				"name"  : "0",
+				"tiled" : false,
+				"visibility": false
+            },{
                 "source": "jrc",
                 "group" : "CNR-DGC-TCI Land Cover",
-				"title" : "Touring Land Cover L3",
+				"title" : "CNR Land Cover L3",
 				"name"  : "it.crisp:touring",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
                 "group" : "CORINE Land Cover",
-				"title" : "Corina Land Cover L1",
+				"title" : "Level 1",
 				"name"  : "it.crisp:corine_L1",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
                 "group" : "CORINE Land Cover",
-				"title" : "Corina Land Cover L2",
+				"title" : "Level 2",
 				"name"  : "it.crisp:corine_L2",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
                 "group" : "CORINE Land Cover",
-				"title" : "Corina Land Cover L3",
+				"title" : "Level 3",
 				"name"  : "it.crisp:corine_L3",
 				"tiled" : false,
 				"visibility": true
             },{
                 "source": "jrc",
-                "group" : "Imperiviousness, v01.0, Copernicus",
-				"title" : "Urban Grids",
+                "group" : "Imperviousness (EC-ESA Copernicus HRL)",
+				"title" : "Sealed soil (imperv.>=30%)(20m)",
 				"name"  : "it.crisp:urban_grids",
 				"tiled" : false,
 				"visibility": false
             },{
                 "source": "jrc",
-                "group" : "Urban Grids",
-				"title" : "Imperviousness",
+                "group" : "Imperviousness (EC-ESA Copernicus HRL)",
+				"title" : "Sealed soil (imperv.>=30%)(vector, 40m)",
 				"name"  : "it.crisp:imperviousness",
 				"tiled" : false,
 				"visibility": false
@@ -387,13 +465,13 @@
        		"wpsManagerID": "wpsManager",
        		"clcLevelsConfig": [{
 				"filter": "urban_grids",
-				"decorator": "Urban Grids"
+				"decorator": "Sealed Soil"
 			},{
 				"filter": "corine_L",
-				"decorator": "Corine Land Cover Level {0}"
+				"decorator": "CORINE Land Cover Level {0}"
 			},{
 				"filter": "touring",
-				"decorator": "Touring Land Cover"
+				"decorator": "CNR-DGC-TCI Land Cover"
 			}],
             "geocoderConfig": {
 	            "wpsBufferProcessID" : "JTS:buffer",
