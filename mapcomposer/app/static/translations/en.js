@@ -734,6 +734,7 @@ GeoExt.Lang.add("en", {
 		displayMsgPaging : "Displaying topics {0} - {1} of {2}",
 		emptyMsg : "No topics to display",
 		addLayerTooltip : "Add Layer to Map",
+		helpTooltip: "Information",
 		detailsTooltip : "View Details",
 		deleteTooltip : "Delete Feature",
 		deleteConfirmMsg : "Are you sure you want delete this feature?",
