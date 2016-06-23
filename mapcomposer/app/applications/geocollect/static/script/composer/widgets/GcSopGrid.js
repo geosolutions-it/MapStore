@@ -251,6 +251,12 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 
             return false;
         }
+        
+        // Unselect all
+        if (this.getSelectionModel().getSelected()){
+            this.getSelectionModel().clearSelections();
+        }
+
         this.disableEditing();
         this.deleteButton.disable();
         this.editButton.disable();
