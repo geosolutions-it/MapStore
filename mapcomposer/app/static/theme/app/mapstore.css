@@ -161,7 +161,7 @@ div#homelogos ul li a:hover {
 }
 .x-grid3-cell-inner.x-grid3-col-leftaxis{
 	background: url(..imagesdefaultgridgrid3-rowheader.gif) repeat-x scroll left top #EEEEEE;
-    border-bottom :1px solid #D0D0D0;
+    /* border-bottom :1px solid #D0D0D0; */
     border-left: 1px solid #EEEEEE;
     border-right :1px solid #D0D0D0;
 

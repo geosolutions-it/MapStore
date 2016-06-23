@@ -2227,6 +2227,7 @@ div.x-toolbar-no-items {
 	text-overflow: ellipsis;
     padding:3px 3px 3px 5px;
     white-space: nowrap;
+    height: 20px !important;
 }
 
 /* ActionColumn, reduce padding to accommodate 16x16 icons in normal row height */
