@@ -601,7 +601,8 @@ GeoExt.Lang.add("en", {
     "gxp.widgets.form.ChangeMatrixPanel.prototype" : {
     	timeSelectionTitleText: "Time Selection",
 		soilSealingIndexTitleText: "Soil Sealing Index",
-		clcLevelTitleText: "CLC level",
+		clcLevelTitleText: "LULC level",
+		selDataTitleText: "Data",
 		clcLegendBuilderTitleText: "CLC Level Builder",
 		roiTitleText: "ROI",
 		timeFilterTitle : 'Time Filter',
@@ -745,7 +746,7 @@ GeoExt.Lang.add("en", {
     "gxp.widgets.form.SoilPanel.prototype" :{
 		timeSelectionTitleText: "Time Selection",
 		soilSealingIndexTitleText: "Indicators for Soil Sealing",
-		clcLevelTitleText: "LULC Levels / Urban Grids",
+		clcLevelTitleText: "LULC Levels",
 		clcLegendBuilderTitleText: "LULC Class Builder",
 		roiTitleText: "ROI",
 		timeFilterTitle : 'Time Filter',
@@ -777,6 +778,7 @@ GeoExt.Lang.add("en", {
 		consumeOnlyText: 'Land Take (and gains)',
 		consumeOnlyConfText: 'Net Loss of Food Supply',
 		urbanFabricClassesText: 'Model of Urban Development',
+		newScenarioFragmentationText: 'New Scenario',
 		newUrbanizationText: 'New Urbanization',
 		newEcologicalCorridorText: 'New Ecological Corridor',
 		radiusTextLabel: 'Radius (m)',

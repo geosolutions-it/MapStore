@@ -212,7 +212,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 		var me = this;
 		
 		return [{
-    		title: this.clcLevelTitleText,
+    		title: this.selDataTitleText,
     		layout : 'fit',
 	        items: this.getCclLevelItems(config)
 	    },{
@@ -576,7 +576,7 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
 							ref       : '../../sealingIndexImpervious',
 							id        : me.id + "_fragmentationIndex",
 							cls       : 'x-check-group-alt',
-							width     : 50,
+							width     : 100,
 							fieldLabel: this.radiusTextLabel,
 							boxLabel  : this.radiusTextLabel,
 		                    emptyText : this.radiusEmptyTextLabel,
@@ -612,7 +612,8 @@ gxp.widgets.form.SoilPanel = Ext.extend(gxp.widgets.form.AbstractOperationPanel,
                 	name: 'sealingIndex',
                 	inputValue: 11
                 },{
-                	title : this.newUrbanizationText+"/"+this.newEcologicalCorridorText,
+                	//title : this.newUrbanizationText+"/"+this.newEcologicalCorridorText,
+                	title : this.newScenarioFragmentationText,
 					xtype : 'fieldset',
 					autoWidth : true,
 					collapsible : false,

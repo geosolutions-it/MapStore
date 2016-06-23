@@ -187,10 +187,24 @@
 				"tiled" : false,
 				"visibility": true
             },{
-                "source": "jrc",
+                "source": "copHRL_I12",
                 "group" : "Impermeabilizzazione (EC-ESA Copernicus HRL)",
-				"title" : "Suolo impermeabilizzato (imperm.>=30%)(20m)",
-				"name"  : "it.crisp:urban_grids",
+				"title" : "% di imperm. (2012)(20m)",
+				"name"  : "0",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "copHRL_I09",
+                "group" : "Impermeabilizzazione (EC-ESA Copernicus HRL)",
+				"title" : "% di imperm. (2009)(20m)",
+				"name"  : "0",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "copHRL_I06",
+                "group" : "Impermeabilizzazione (EC-ESA Copernicus HRL)",
+				"title" : "% di imperm. (2006)(20m)",
+				"name"  : "0",
 				"tiled" : false,
 				"visibility": false
             },{
@@ -198,6 +212,13 @@
                 "group" : "Impermeabilizzazione (EC-ESA Copernicus HRL)",
 				"title" : "Suolo impermeabilizzato (imperm.>=30%)(vettoriale, 40m)",
 				"name"  : "it.crisp:imperviousness",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "jrc",
+                "group" : "Impermeabilizzazione (EC-ESA Copernicus HRL)",
+				"title" : "Suolo impermeabilizzato (imperm.>=30%)(20m)",
+				"name"  : "it.crisp:urban_grids",
 				"tiled" : false,
 				"visibility": false
             }

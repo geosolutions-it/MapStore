@@ -202,10 +202,24 @@
 				"tiled" : false,
 				"visibility": true
             },{
-                "source": "jrc",
+                "source": "copHRL_I12",
                 "group" : "Imperviousness (EC-ESA Copernicus HRL)",
-				"title" : "Sealed soil (imperv.>=30%)(20m)",
-				"name"  : "it.crisp:urban_grids",
+				"title" : "% imperv. (2012)(20m)",
+				"name"  : "0",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "copHRL_I09",
+                "group" : "Imperviousness (EC-ESA Copernicus HRL)",
+				"title" : "% imperv. (2009)(20m)",
+				"name"  : "0",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "copHRL_I06",
+                "group" : "Imperviousness (EC-ESA Copernicus HRL)",
+				"title" : "% imperv. (2006)(20m)",
+				"name"  : "0",
 				"tiled" : false,
 				"visibility": false
             },{
@@ -213,6 +227,13 @@
                 "group" : "Imperviousness (EC-ESA Copernicus HRL)",
 				"title" : "Sealed soil (imperv.>=30%)(vector, 40m)",
 				"name"  : "it.crisp:imperviousness",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "jrc",
+                "group" : "Imperviousness (EC-ESA Copernicus HRL)",
+				"title" : "Sealed soil (imperv.>=30%)(20m)",
+				"name"  : "it.crisp:urban_grids",
 				"tiled" : false,
 				"visibility": false
             }
