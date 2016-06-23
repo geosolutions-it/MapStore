@@ -29,6 +29,11 @@
 			"ptype": "gxp_wmssource",
 			"title": "MiBACT-SITAP (WMS)",
 			"url": "http://sitap.beniculturali.it:8080/geoserver/apar.public/wms"
+		},
+		"isric250m": {
+			"ptype": "gxp_wmssource",
+			"title": "ISRIC-SoilGrids250m (WMS)",
+			"url": "http://164.132.26.91:8080/geoserver/geonode/wms"
 		}
 	},
 	"map": {
@@ -77,6 +82,13 @@
 			     "None", {"visibility": false}
 			    ]
 			},{
+                "source": "isric250m",
+                "group" : "ISRIC - SoilGrids (250m)",
+				"title" : "WRB Soil Taxonomy",
+				"name"  : "geonode:_TAXNWRB_250m",
+				"tiled" : false,
+				"visibility": false
+            },{
                 "source": "mibactSITAP",
                 "group" : "MiBACT - SITAP",
 				"title" : "Constrains, D.Lgs.42/2004 artt.136 e 157",
@@ -89,7 +101,7 @@
 				"title" : "Touring Land Cover L3",
 				"name"  : "it.crisp:touring",
 				"tiled" : false,
-				"visibility": true
+				"visibility": false
             },{
                 "source": "jrc",
                 "group" : "CORINE Land Cover",
@@ -110,10 +122,10 @@
 				"title" : "Corina Land Cover L3",
 				"name"  : "it.crisp:corine_L3",
 				"tiled" : false,
-				"visibility": false
+				"visibility": true
             },{
                 "source": "jrc",
-                "group" : "Urban Grids",
+                "group" : "Imperiviousness, v01.0, Copernicus",
 				"title" : "Urban Grids",
 				"name"  : "it.crisp:urban_grids",
 				"tiled" : false,

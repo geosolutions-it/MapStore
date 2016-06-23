@@ -29,6 +29,11 @@
 			"ptype": "gxp_wmssource",
 			"title": "MiBACT-SITAP (WMS)",
 			"url": "http://sitap.beniculturali.it:8080/geoserver/apar.public/wms"
+		},
+		"isric250m": {
+			"ptype": "gxp_wmssource",
+			"title": "ISRIC-SoilGrids250m (WMS)",
+			"url": "http://164.132.26.91:8080/geoserver/geonode/wms"
 		}
 	},
 	"map": {
@@ -77,6 +82,13 @@
 			     "None", {"visibility": false}
 			    ]
 			},{
+                "source": "isric250m",
+                "group" : "ISRIC - SoilGrids (250m)",
+				"title" : "Classificazione dei suoli (WRB)",
+				"name"  : "geonode:_TAXNWRB_250m",
+				"tiled" : false,
+				"visibility": false
+            },{
                 "source": "mibactSITAP",
                 "group" : "MiBACT - SIT Ambientale e Paesaggistico",
 				"title" : "Vincoli D.Lgs.42/2004 artt.136 e 157 -",
@@ -89,7 +101,7 @@
 				"title" : "Touring Land Cover L3",
 				"name"  : "it.crisp:touring",
 				"tiled" : false,
-				"visibility": true
+				"visibility": false
             },{
                 "source": "jrc",
                 "group" : "Copertura del Suolo: CORINE",
@@ -110,7 +122,7 @@
 				"title" : "Corine Land Cover L3",
 				"name"  : "it.crisp:corine_L3",
 				"tiled" : false,
-				"visibility": false
+				"visibility": true
             },{
                 "source": "jrc",
                 "group" : "Griglie Urbane",
@@ -194,7 +206,7 @@
         ],
         "plugins": ["Ext.ux.PanelCollapsedTitle"]
     }],
-    
+
 	"customTools":[{
            "ptype": "gxp_wpsmanager",
            "id": "wpsManager",
@@ -246,35 +258,35 @@
         		"featureTypeDetails": "changeMatrix",
 	            "columns" : [
 	            	{
-	                    "header": "Stato", 
+	                    "header": "Stato",
 	                    "dataIndex": "itemStatus",
 	                    "sortable": true
 	                },{
-	                    "header": "JobUID", 
+	                    "header": "JobUID",
 	                    "dataIndex": "jobUid",
 	                    "sortable": true
 	                },{
-	                    "header": "CUDA", 
+	                    "header": "CUDA",
 	                    "dataIndex": "jcuda",
 	                    "sortable": false
 	                },{
-	                    "header": "Layer di Riferimento", 
+	                    "header": "Layer di Riferimento",
 	                    "dataIndex": "referenceName",
 	                    "sortable": true
 	                },{
-	                    "header": "Data Inizio", 
+	                    "header": "Data Inizio",
 	                    "dataIndex": "runBegin",
 	                    "sortable": true
 	                },{
-	                    "header": "Data Fine", 
+	                    "header": "Data Fine",
 	                    "dataIndex": "runEnd",
 	                    "sortable": true
 	                },{
-	                    "header": "Filtro (riferimento)", 
+	                    "header": "Filtro (riferimento)",
 	                    "dataIndex": "referenceFilter",
 	                    "sortable": true
 	                },{
-	                    "header": "Filtro (corrente)", 
+	                    "header": "Filtro (corrente)",
 	                    "dataIndex": "nowFilter",
 	                    "sortable": true
 	                }
@@ -285,47 +297,47 @@
         		"featureTypeDetails": "soilIndex",
 	            "columns" : [
 	            	{
-	                    "header": "Stato", 
+	                    "header": "Stato",
 	                    "dataIndex": "itemStatus",
 	                    "sortable": true
 	                },{
-	                    "header": "JobUID", 
+	                    "header": "JobUID",
 	                    "dataIndex": "jobUid",
 	                    "sortable": true
 	                },{
-	                    "header": "CUDA", 
+	                    "header": "CUDA",
 	                    "dataIndex": "jcuda",
 	                    "sortable": false
 	                },{
-	                    "header": "Layer di Riferimento", 
+	                    "header": "Layer di Riferimento",
 	                    "dataIndex": "referenceName",
 	                    "sortable": true
 	                },{
-	                    "header": "Indice", 
+	                    "header": "Indice",
 	                    "dataIndex": "index",
 	                    "sortable": true
 	                },{
-	                    "header": "Sotto-Indice", 
+	                    "header": "Sotto-Indice",
 	                    "dataIndex": "subindex",
 	                    "sortable": true
 	                },{
-	                    "header": "Classi", 
+	                    "header": "Classi",
 	                    "dataIndex": "classes",
 	                    "sortable": true
 	                },{
-	                    "header": "Data Inizio", 
+	                    "header": "Data Inizio",
 	                    "dataIndex": "runBegin",
 	                    "sortable": true
 	                },{
-	                    "header": "Data Fine", 
+	                    "header": "Data Fine",
 	                    "dataIndex": "runEnd",
 	                    "sortable": true
 	                },{
-	                    "header": "Filtro (riferimento)", 
+	                    "header": "Filtro (riferimento)",
 	                    "dataIndex": "referenceFilter",
 	                    "sortable": true
 	                },{
-	                    "header": "Filtro (corrente)", 
+	                    "header": "Filtro (corrente)",
 	                    "dataIndex": "nowFilter",
 	                    "sortable": true
 	                }
