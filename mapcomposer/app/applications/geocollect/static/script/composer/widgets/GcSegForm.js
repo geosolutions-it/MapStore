@@ -154,6 +154,9 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
     /** private: method[initComponent]
      */
     initComponent: function() {
+        
+        this.readOnly = !this.isAuthenticated();
+        
         this.addEvents(
             /** api: events[featuremodified]
              *  Fires when the feature associated with this popup has been
@@ -323,7 +326,7 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
             text: this.deleteButtonText,
             tooltip: this.deleteButtonTooltip,
             iconCls: "delete",
-             width:60,
+            width:60,
             hidden: !this.allowDelete,
             handler: this.deleteFeature,
             scope: this
@@ -333,7 +336,7 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
             text: this.cancelButtonText,
             tooltip: this.cancelButtonTooltip,
             iconCls: "cancel",
-             width:60,
+            width:60,
             hidden: true,
             handler: function() {
                 this.stopEditing(false);
@@ -344,7 +347,7 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
         this.saveButton = new Ext.Button({
             text: this.saveButtonText,
             tooltip: this.saveButtonTooltip,
-             width:60,
+            width:60,
             iconCls: "save",
             hidden: true,
             handler: function() {
@@ -361,7 +364,7 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
        
         this.grid = new Ext.grid.PropertyGrid({
             border: false,
-          // header :false,
+            // header :false,
             propertyNames :this.propertyNames ||{},
             source: feature.attributes,
             customEditors: customEditors,
@@ -373,8 +376,9 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
                         return "x-hide-nosize";
                     }
                     if (ucRequiredFields.indexOf(record.get("name").toUpperCase()) !== -1) {
-                        if(record.get("value")===null)                 
-                        return "x-required";
+                        if(record.get("value")===null){               
+                            return "x-required";
+                        }
                     }
                 }
             },
@@ -385,17 +389,16 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
                 "propertychange": function() {
                     this.setFeatureState(this.getDirtyState());
                 },
-                
                 scope: this
             },
             initComponent: function() {
                 //TODO This is a workaround for maintaining the order of the
                 // feature attributes. Decide if this should be handled in
                 // another way.
-                 var origSort = Ext.data.Store.prototype.sort;
-                    Ext.data.Store.prototype.sort = function() {};
-                  Ext.grid.PropertyGrid.prototype.initComponent.apply(this, arguments);
-                  Ext.data.Store.prototype.sort = origSort;
+                var origSort = Ext.data.Store.prototype.sort;
+                Ext.data.Store.prototype.sort = function() {};
+                Ext.grid.PropertyGrid.prototype.initComponent.apply(this, arguments);
+                Ext.data.Store.prototype.sort = origSort;
             }
         });
         
@@ -412,8 +415,8 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
 
         this.b = new Ext.ButtonGroup({
             hidden: this.readOnly,
-           width:400,
-           // renderTo:'featuresegridbutton',
+            width:400,
+            // renderTo:'featuresegridbutton',
             items: [
                 this.editButton,
                 this.deleteButton,
@@ -424,7 +427,7 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
         
         gxp.plugins.GcSegForm.superclass.initComponent.call(this);
         
-        },
+    },
     
     
     /** private: method[getDirtyState]
@@ -557,14 +560,13 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
                 }
             }
 
-                this.cancelButton.hide();
-                this.saveButton.hide();
-                this.editButton.show();
-                this.allowDelete && this.deleteButton.show();
-           
+            this.cancelButton.hide();
+            this.saveButton.hide();
+            this.editButton.show();
+            this.allowDelete && this.deleteButton.show();
             
             this.editing = false;
-           this.fireEvent( "stopsegediting",this);
+            this.fireEvent( "stopsegediting",this);
         }
     },
     
@@ -623,6 +625,12 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
             }
         }
         return true;        
+    },
+    /**
+     * Returns true if the user is authenticated
+     */
+    isAuthenticated: function(){
+        return sessionStorage["userDetails"] && sessionStorage["userDetails"].indexOf("groupName\":\"publics") == -1 ? true : false;
     }
 });
 

@@ -38,6 +38,7 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
     commitErrorMsg : 'Changes not saved!',
 
     allowDelete : true,
+    allowEdit : true,
 
     autoScroll : true,
 
@@ -88,7 +89,10 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
      *  Initializes the FeatureGrid.
      */
     initComponent : function () {
-
+        
+        this.allowDelete = this.isAuthenticated();
+        this.allowEdit = this.isAuthenticated();
+        
         this.addEvents(
 
             /** api: events[startsopediting]
@@ -161,6 +165,7 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
                 text : this.editButtonText,
                 tooltip : this.editButtonTooltip,
                 iconCls : "edit",
+                hidden : !this.allowEdit,
                 disabled : true,
                 handler : this.enableEditing,
                 scope : this,
@@ -481,8 +486,8 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
     disableEditing : function () {
 
         this.colModel.editing = false;
-        this.editButton.show();
-        this.deleteButton.show();
+        this.allowEdit && this.editButton.show();
+        this.allowDelete && this.deleteButton.show();
         this.saveButton.hide();
         this.refreshButton.enable();
         this.cancelButton.hide();
@@ -603,6 +608,12 @@ gxp.grid.GcSopGrid = Ext.extend(Ext.grid.EditorGridPanel, {
             scope : this
         });
 
+    },
+    /**
+     * Returns true if the user is authenticated
+     */
+    isAuthenticated: function(){
+        return sessionStorage["userDetails"] && sessionStorage["userDetails"].indexOf("groupName\":\"publics") == -1 ? true : false;
     }
 });
 

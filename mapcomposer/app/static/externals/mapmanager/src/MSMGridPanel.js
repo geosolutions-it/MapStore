@@ -2329,8 +2329,10 @@ MSMGridPanel = Ext.extend(Ext.grid.GridPanel, {
         '</div>';
 		
 		tpl +=  '</tr></table></div><br/>';
-
-		tpl += '<div id=\'{[this.getSocialLinksId(values.id,values.name,values.description)]}\' style=\'float:left\'></div>';
+        
+        if(this.config.enableSocialLinks){
+            tpl += '<div id=\'{[this.getSocialLinksId(values.id,values.name,values.description)]}\' style=\'float:left\'></div>';
+        }
         
 		return tpl;
 	}

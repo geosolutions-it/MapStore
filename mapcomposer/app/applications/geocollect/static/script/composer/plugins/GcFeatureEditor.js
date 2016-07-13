@@ -213,22 +213,25 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
         featureManager.on({
             "beforequery": function(){  
                 if(gcseg.segEditing){
-                     this.stopQueryMsg();
-                    return false;}
+                    this.stopQueryMsg();
+                    return false;
+                }
             },    
             "beforesetpage": function(){
                 if(gcseg.segEditing){
-                     this.stopQueryMsg();
-                    return false;}
+                    this.stopQueryMsg();
+                    return false;
+                }
             },
             "beforeclearfeatures": function(){
                 if(gcseg.segEditing){
-                     this.stopQueryMsg();
-                    return false;}
+                    this.stopQueryMsg();
+                    return false;
+                }
                 
             },"clearfeatures": function(){
-               //Ricarica inizio!!
-                   featureManager.loadFeatures();            
+                //Ricarica inizio!!
+                featureManager.loadFeatures();            
             }
             ,scope:this});
            
@@ -287,15 +290,15 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                   }
                 },
                 "deactivate": function() {
-                  //  gcseg.segGrid.toggleInfo.toggle(false);
+                    // gcseg.segGrid.toggleInfo.toggle(false);
                     gcseg.segGrid.getSelectionModel().clearSelections();
-                    //gcseg.segGrid.getSelectionModel().lock();
+                    // gcseg.segGrid.getSelectionModel().lock();
                     if (this.autoLoadFeatures === true || featureManager.paging) {
                         this.target.mapPanel.map.events.unregister(
                             "click", this, this.noFeatureClick
                         );
-                    }featureManager.hideLayer(this.id);
-                    
+                    }
+                    featureManager.hideLayer(this.id);
                 },
                 scope: this
             }
@@ -345,8 +348,8 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                                 "startsegediting": function() {
                                     gcseg.segEditing=true;
                                     // if(!this.selectControl.active) this.selectControl.activate();
-                                    this.actions[0].items[0].disable();
-                                    this.actions[1].items[0].disable();
+                                    this.createItemAction.items[0].disable();
+                                    this.selectItemAction.items[0].disable();
                                     gcseg.segGrid.getSelectionModel().lock();
                                     this.target.mapPanelContainer.getTopToolbar().disable();
                                     // featureManager.showLayer(
@@ -359,8 +362,8 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                                     this.target.mapPanelContainer.getTopToolbar().enable();
                                     // var r = gcseg.segGrid.getSelectionModel().getSelected();//
                                     //  if(r)this.selectControl.select(r.data.feature);
-                                    this.actions[0].items[0].enable();
-                                    this.actions[1].items[0].enable();
+                                    this.createItemAction.items[0].enable();
+                                    this.selectItemAction.items[0].enable();
                                     //TODO CONTROLLA SE HO TIGA SELEZIONATA E RISELEZIONA LA FEATURE!!
                                 },
                                 "featuremodified": function(popup, feature) {
@@ -455,7 +458,7 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
         });
 
         var toggleGroup = this.toggleGroup || Ext.id();
-        var actions = gxp.plugins.GcFeatureEditor.superclass.addActions.call(this, [new GeoExt.Action({
+        this.createItemAction = new GeoExt.Action({
             tooltip: this.createFeatureActionTip,
             text: this.createFeatureActionText,
             iconCls: this.iconClsAdd,
@@ -467,7 +470,9 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
             control: this.drawControl,
             deactivateOnDisable: true,
             map: this.target.mapPanel.map
-        }), new GeoExt.Action({
+        });
+        
+        this.selectItemAction = new GeoExt.Action({
             tooltip: this.editFeatureActionTip,
             text: this.editFeatureActionText,
             iconCls: this.iconClsEdit,
@@ -478,23 +483,22 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
             control: this.selectControl,
             deactivateOnDisable: true,
             map: this.target.mapPanel.map
-        })]);
+        });
+        
+        var actions = gxp.plugins.GcFeatureEditor.superclass.addActions.call(this, this.getAuth()?[this.createItemAction, this.selectItemAction]:[this.selectItemAction]);
 
         featureManager.on("layerchange", this.onLayerChange, this);
         
         return actions;
     },
-       stopQueryMsg:function(){
-            
-                    Ext.MessageBox.show({
-                                        msg: this.saveOrCancelEdit,
-                                         buttons: Ext.Msg.OK,
-                                         animEl: 'elId',
-                                        icon: Ext.MessageBox.INFO
-                                     });
-            
-            
-        },
+    stopQueryMsg:function(){   
+        Ext.MessageBox.show({
+            msg: this.saveOrCancelEdit,
+             buttons: Ext.Msg.OK,
+             animEl: 'elId',
+            icon: Ext.MessageBox.INFO
+         });
+    },
 
     /** private: method[onLayerChange]
      *  :arg mgr: :class:`gxp.plugins.FeatureManager`
@@ -510,8 +514,8 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
 
         this.schema = schema;
         var disable = !schema || !this.target.isAuthorized();
-        this.actions[0].setDisabled(disable);
-        this.actions[1].setDisabled(disable);
+        this.createItemAction.setDisabled(disable);
+        this.selectItemAction.setDisabled(disable);
         if (disable) {
             // not a wfs capable layer or not authorized
 			if(snappingAgent){
@@ -521,7 +525,6 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
         }
 
         var control = this.drawControl;
-        var button = this.actions[0];
         var handlers = {
             "Point": OpenLayers.Handler.Point,
             "Line": OpenLayers.Handler.Path,
@@ -543,12 +546,12 @@ gxp.plugins.GcFeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
             if(active) {
                 control.activate();
             }
-            button.enable();
+            this.createItemAction.enable();
         } else {
-            button.disable();
+            this.createItemAction.disable();
             
             //FIX about undefined geometryType on DB
-            this.actions[1].disable();
+            this.selectItemAction.disable();
 			
 			if(snappingAgent){
 				snappingAgent.actions[0].disable();

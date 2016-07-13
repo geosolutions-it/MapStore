@@ -427,6 +427,8 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
      */
     createGridPhotoBrowser:function(){
 
+        var allowEdit = this.isAuthenticated();
+    
         /**
          * universal show error function
          * @private
@@ -496,7 +498,35 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 showError(o && o.msg || "Error sending request to server");
             }
         };
-        
+        var renamePhotoButtonTpl = '<td >'+
+                        '<tpl>'+
+                            '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0"  >' +
+                            '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonId(values,\'_renameBtn\')]}\'>' +
+                            '<tr><td class="x-btn-tl"><i>&nbsp;</i></td><td class="x-btn-tc"></td><td class="x-btn-tr"><i>&nbsp;</i></td></tr>' +
+                            '<tr><td class="x-btn-ml"><i>&nbsp;</i></td>' +
+                            '<td class="x-btn-mc"><em unselectable="on" class="">'+
+                            '<button type="button" style="background-position:center;padding:10px;" class=" x-btn-text icon-pencil" title="Rename" ></button>'+
+                            '</em></td><td class="x-btn-mr"><i>&nbsp;</i></td>' +
+                            '</tr><tr><td class="x-btn-bl"><i>&nbsp;</i></td><td class="x-btn-bc"></td><td class="x-btn-br"><i>&nbsp;</i></td></tr>' +
+                            '</tbody>' +
+                            '</table>' +
+                        '</tpl>'+
+                    '</td>';
+        var deletePhotoButtonTpl = '<td >'+
+                        '<tpl>'+
+                            '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0"  >' +
+                            '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonId(values,\'_deleteBtn\')]}\'>' +
+                            '<tr><td class="x-btn-tl"><i>&nbsp;</i></td><td class="x-btn-tc"></td><td class="x-btn-tr"><i>&nbsp;</i></td></tr>' +
+                            '<tr><td class="x-btn-ml"><i>&nbsp;</i></td>' +
+                            '<td class="x-btn-mc"><em unselectable="on" class="">'+
+                            '<button type="button" style="background-position:center;padding:10px;" class=" x-btn-text icon-cross" title="Delete" ></button>'+
+                            '</em></td><td class="x-btn-mr"><i>&nbsp;</i></td>' +
+                            '</tr><tr><td class="x-btn-bl"><i>&nbsp;</i></td><td class="x-btn-bc"></td><td class="x-btn-br"><i>&nbsp;</i></td></tr>' +
+                            '</tbody>' +
+                            '</table>' +
+                        '</tpl>'+
+                    '</td>';
+
         var expander = new Ext.ux.grid.RowExpander({
             
             /**
@@ -528,34 +558,8 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                             '</table>' +
                         '</tpl>'+
                     '</td>',
-                    '<td >'+
-                        '<tpl>'+
-                            '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0"  >' +
-                            '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonId(values,\'_renameBtn\')]}\'>' +
-                            '<tr><td class="x-btn-tl"><i>&nbsp;</i></td><td class="x-btn-tc"></td><td class="x-btn-tr"><i>&nbsp;</i></td></tr>' +
-                            '<tr><td class="x-btn-ml"><i>&nbsp;</i></td>' +
-                            '<td class="x-btn-mc"><em unselectable="on" class="">'+
-                            '<button type="button" style="background-position:center;padding:10px;" class=" x-btn-text icon-pencil" title="Rename" ></button>'+
-                            '</em></td><td class="x-btn-mr"><i>&nbsp;</i></td>' +
-                            '</tr><tr><td class="x-btn-bl"><i>&nbsp;</i></td><td class="x-btn-bc"></td><td class="x-btn-br"><i>&nbsp;</i></td></tr>' +
-                            '</tbody>' +
-                            '</table>' +
-                        '</tpl>'+
-                    '</td>',
-                    '<td >'+
-                        '<tpl>'+
-                            '<table class="x-btn x-btn-text-icon" style="width:30px" cellspacing="0"  >' +
-                            '<tbody class="x-btn-small x-btn-icon-small-left" id=\'{[this.getButtonId(values,\'_deleteBtn\')]}\'>' +
-                            '<tr><td class="x-btn-tl"><i>&nbsp;</i></td><td class="x-btn-tc"></td><td class="x-btn-tr"><i>&nbsp;</i></td></tr>' +
-                            '<tr><td class="x-btn-ml"><i>&nbsp;</i></td>' +
-                            '<td class="x-btn-mc"><em unselectable="on" class="">'+
-                            '<button type="button" style="background-position:center;padding:10px;" class=" x-btn-text icon-cross" title="Delete" ></button>'+
-                            '</em></td><td class="x-btn-mr"><i>&nbsp;</i></td>' +
-                            '</tr><tr><td class="x-btn-bl"><i>&nbsp;</i></td><td class="x-btn-bc"></td><td class="x-btn-br"><i>&nbsp;</i></td></tr>' +
-                            '</tbody>' +
-                            '</table>' +
-                        '</tpl>'+
-                    '</td>',
+                    allowEdit ? renamePhotoButtonTpl : '',
+                    allowEdit ? deletePhotoButtonTpl : '',
                     '</tr>'+
                 '</table>',
                 {
@@ -778,7 +782,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
             tbar:{
                 items: [
                     '->',
-                    {
+                    allowEdit? {
                         // xtype: 'button', // default for Toolbars, same as 'tbbutton'
                         text: 'Upload',
                         iconCls:'icon-upload',
@@ -816,7 +820,7 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                             });
                             win.show();
                         }
-                    }
+                    } : {}
                 ]
             },
             
@@ -1809,6 +1813,12 @@ gxp.plugins.GcSegGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         form.appendChild(hiddenField);
         document.body.appendChild(form);
         form.submit();
+    },
+    /**
+     * Returns true if the user is authenticated
+     */
+    isAuthenticated: function(){
+        return sessionStorage["userDetails"] && sessionStorage["userDetails"].indexOf("groupName\":\"publics") == -1 ? true : false;
     }
 
 });
