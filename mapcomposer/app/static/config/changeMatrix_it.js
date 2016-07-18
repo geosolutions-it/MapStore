@@ -12,9 +12,6 @@
 			"title": "CRISP GeoServer",
 			"url": "http://143.225.214.136/geoserver/ows"
 		},
-		"mapquest": {
-			"ptype": "gxp_mapquestsource"
-		},
 		"osm": {
 			"ptype": "gxp_osmsource"
 		},
@@ -33,7 +30,17 @@
 		"isric250m": {
 			"ptype": "gxp_wmssource",
 			"title": "ISRIC-SoilGrids250m (WMS)",
-			"url": "http://164.132.26.91:8080/geoserver/geonode/wms"
+			"url": "http://164.132.26.91:8080/geoserver/geonode/wms",
+                        "SRS": "EPSG:3857",
+                        "version": "1.1.1",
+                        "layersCachedExtent": [
+                               -20037508.34,-20037508.34,
+                               20037508.34,20037508.34
+                        ],
+                        "layerBaseParams":{
+                               "FORMAT": "image/png",
+                               "TILED": true
+                        }
 		},
 		"cncpABP": {
 			"ptype": "gxp_wmssource",
@@ -82,11 +89,6 @@
 		],
 		"layers": [
 			{
-				"source": "osm",
-				"title" : "Open Street Map",
-				"name"  : "mapnik",
-				"group" : "background"
-			},{
 				"source": "google",
 				"title" : "Google Roadmap",
 				"name"  : "ROADMAP",
@@ -102,11 +104,11 @@
 				"name"  : "HYBRID",
 				"group" : "background"
 			},{
-				"source": "mapquest",
-				"title" : "MapQuest OpenStreetMap",
-				"name"  : "osm",
-				"group" : "background"
-			},{
+                                "source": "osm",
+                                "title" : "Open Street Map",
+                                "name"  : "mapnik",
+                                "group" : "background"
+                        },{
 			    "source": "ol",
 			    "title": "No Background",
 			    "group": "background",
@@ -119,8 +121,29 @@
 			},{
                 "source": "isric250m",
                 "group" : "ISRIC - SoilGrids (250m)",
-				"title" : "Classificazione dei suoli (WRB)",
-				"name"  : "geonode:_TAXNWRB_250m",
+				"title" : "Profondita' assoluta della roccia madre (cm)",
+				"name"  : "geonode:bdticm_m_250m",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "isric250m",
+                "group" : "ISRIC - SoilGrids (250m)",
+				"title" : "Carbonio organico nel suolo (g/kg,0.00m)",
+				"name"  : "geonode:orcdrc_m_sl1_250m",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "isric250m",
+                "group" : "ISRIC - SoilGrids (250m)",
+				"title" : "Classificazione dei suoli (USDA)(cl.m.prob.)",
+				"name"  : "geonode:taxousda_250m",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "isric250m",
+                "group" : "ISRIC - SoilGrids (250m)",
+				"title" : "Classificazione dei suoli (WRB)(cl.m.prob.)",
+				"name"  : "geonode:taxnwrb_250m",
 				"tiled" : false,
 				"visibility": false
             },{
@@ -149,6 +172,13 @@
                 "group" : "ISPRA",
 				"title" : "Popolazione a rischio idraulico - Tr fino a 50 anni",
 				"name"  : "2",
+				"tiled" : false,
+				"visibility": false
+            },{
+                "source": "jrc",
+                "group" : "ISPRA",
+				"title" : "Consumo di suolo (2012)(5m)",
+				"name"  : "it.crisp:ispra_soil_cons_2012_5m",
 				"tiled" : false,
 				"visibility": false
             },{
@@ -341,7 +371,7 @@
             ],
             "splitPanels": true,
             "panelsConfig": [{
-            	"title": "Cambi Uso del Suolo",
+            	"title": "Cambi di Uso del Suolo",
             	"featureType": "changematrix",
         		"featureTypeDetails": "changeMatrix",
 	            "columns" : [
@@ -358,7 +388,7 @@
 	                    "dataIndex": "jcuda",
 	                    "sortable": false
 	                },{
-	                    "header": "Layer di Riferimento",
+	                    "header": "Layer",
 	                    "dataIndex": "referenceName",
 	                    "sortable": true
 	                },{
@@ -370,17 +400,17 @@
 	                    "dataIndex": "runEnd",
 	                    "sortable": true
 	                },{
-	                    "header": "Filtro (riferimento)",
+	                    "header": "Tempo (remoto)",
 	                    "dataIndex": "referenceFilter",
 	                    "sortable": true
 	                },{
-	                    "header": "Filtro (corrente)",
+	                    "header": "Tempo (recente)",
 	                    "dataIndex": "nowFilter",
 	                    "sortable": true
 	                }
 	            ]
         	},{
-            	"title": "Impermeabilizzazione del Suolo: Esecuzioni",
+            	"title": "Consumo di Suolo",
             	"featureType": "soilsealing",
         		"featureTypeDetails": "soilIndex",
 	            "columns" : [
@@ -397,7 +427,7 @@
 	                    "dataIndex": "jcuda",
 	                    "sortable": false
 	                },{
-	                    "header": "Layer di Riferimento",
+	                    "header": "Layer",
 	                    "dataIndex": "referenceName",
 	                    "sortable": true
 	                },{
@@ -421,31 +451,63 @@
 	                    "dataIndex": "runEnd",
 	                    "sortable": true
 	                },{
-	                    "header": "Filtro (riferimento)",
+	                    "header": "Tempo (remoto)",
 	                    "dataIndex": "referenceFilter",
 	                    "sortable": true
 	                },{
-	                    "header": "Filtro (corrente)",
+	                    "header": "Tempo (recente)",
 	                    "dataIndex": "nowFilter",
 	                    "sortable": true
 	                }
 	            ]
             }],
             "indexesHelpInfo" : [
-            	{"name": "_default", "html": "SoilMonitorTutorial.pdf", "abstract": null},
-            	{"name": "Coverage coefficient", "html": null, "abstract": "<h1>Coefficiente di copertura.</h1> <p>Ovvero superficie coperta /superficie unità amministrativa (città, provincia,..)</p>"},
-            	{"name": "Rate of Change", "html": null, "abstract": "<h1>Tasso di variazione</h1> <p>Ovvero la differenza della superfice coperta tra due anni/SC al primo anno</p>"},
-            	{"name": "Marginal Land Take", "html": null, "abstract": "<h1>Consumo marginale del suolo</h1> <p>Dato dalla differenza di superfici coperte tra due anni/differenza popolazione tra due anni, esprime il consumo marginale di suolo per ogni nuovo abitante insediato. Il valore riportato è quello della media del consumo di suolo agrario pro nuovo abitante insediato per comune (ovvero il suolo perso per ogni nuovo abitante).</p>"},
-            	{"name": "Urban Sprawl Indicator", "html": null, "abstract": "<h1>Sprawl urbano</h1> <p>Tasso di variazione delle coperture tra due anni/tasso d variazione della popolazione tra due anni.</p>"},
-            	{"name": "Urban Dispersion", "html": null, "abstract": "<h1>Urban Dispersion</h1> <p>TODO</p>"},
-            	{"name": "Edge Density", "html": null, "abstract": "<h1>Edge density</h1> <p>Dato dal rapporto tra la somma totale dei perimetri delle aree costruite e la loro superficie, descrive la frammentazione del paesaggio in termini di densità dei margini del costruito.</p>"},
-            	{"name": "Dispersive Urban Growth", "html": null, "abstract": "<h1>Largest Class Patch Index</h1> <p>E’ un indicatore di compattezza, definisce l’ampiezza percentuale del poligono di area costruita di dimensioni maggiori.</p> <h1>Residual Mean Patch Size</h1> <p>Definisce l’ampiezza media dei poligoni residui, escluso quello maggiore. Fornisce la dimensione della diffusione delle città intorno al nucleo centrale.</p>"},
-            	{"name": "Fragmentation", "html": null, "abstract": "<h1>Frammentazione (urbana e rurale)</h1> <p>La frammentazione può essere definita come il processo che genera una progressiva riduzione della superficie degli ambienti naturali e un aumento del loro isolamento.</p>"},
-            	{"name": "Land Take", "html": null, "abstract": "<h1>Land Take</h1> <p>Indice che interpola i dati relativi a due anni di osservazione per evidenziare la perdita di suoli naturali (se il risultato reca segno negativo) o l’acquisizione di nuovi suoli naturali (se il risultato reca segno positivo)</p>"},
-            	{"name": "Potential Loss of Food Supply", "html": null, "abstract": "<h1>Loss of food supply</h1> <p>Indice che interpola i dati relativi a due anni di osservazione in merito al coefficiente ambientale consumo di suolo della FAO1. Si traduce come perdita di suolo in grano equivalente ovvero nella perdita della capacità di nutrire il pianeta in quanto i suoli sani costituiscono la base per la produzione di cibo.</p>"},
-            	{"name": "Model of Urban Development", "html": null, "abstract": "<h1>Model of Urban Development</h1> <p>TODO</p>"},
-            	{"name": "New Urbanization", "html": null, "abstract": "<h1>New Urbanization</h1> <p>TODO</p>"},
-            	{"name": "New Ecological Corridor", "html": null, "abstract": "<h1>New Ecological Corridor</h1> <p>TODO</p>"}
+                {"name": "_default", "html": "SoilMonitorTutorial.pdf", "abstract": null},
+                {"name": "Coverage coefficient",
+                 "html": null,
+                 "abstract": "<h1>Coefficiente di copertura.</h1> <p>Ovvero superficie coperta /superficie unità amministrativa (città, provincia,...)</p>"},
+                {"name": "Rate of Change",
+                 "html": null,
+                 "abstract": "<h1>Tasso di variazione</h1> <p>Ovvero la differenza della superfice coperta tra due anni/SC al primo anno</p>"},
+                {"name": "Marginal Land Take",
+                 "html": null,
+                 "abstract": "<h1>Consumo marginale del suolo</h1> <p>Dato dalla differenza di superfici coperte tra due anni/differenza popolazione tra due anni, esprime il consumo marginale di suolo per ogni nuovo abitante insediato. Il valore riportato è quello della media del consumo di suolo agrario pro nuovo abitante insediato per comune (ovvero il suolo perso per ogni nuovo abitante).</p>"},
+                {"name": "Urban Sprawl Indicator",
+                 "html": null,
+                 "abstract": "<h1>Sprawl urbano</h1> <p>Tasso di variazione delle coperture tra due anni diviso il tasso d variazione della popolazione tra due anni.</p>"},
+                {"name": "Urban Dispersion",
+                 "html": null,
+                 "abstract": "<h1>Urban Dispersion</h1> <p>TODO</p>"},
+                {"name": "Edge Density",
+                 "html": null,
+                 "abstract": "<h1>Edge density</h1> <p>Dato dal rapporto tra la somma totale dei perimetri delle aree costruite e la loro superficie, descrive la frammentazione del paesaggio in termini di densità dei margini del costruito.</p>"},
+                {"name": "Dispersive Urban Growth",
+                 "html": null,
+                 "abstract": "<h1>NOTHING</h1> <p>You have to write a description for each sub-index.</p>"},
+                {"name": "Highest Polygon Ratio",
+                 "html": null,
+                 "abstract": "<h1>Largest Class Patch Index</h1> <p>E’ un indicatore di compattezza, definisce l’ampiezza percentuale del poligono di area costruita di dimensioni maggiori."},
+                {"name": "Other Polygons Ratio",
+                 "html": null,
+                 "abstract": "<h1>Residual Mean Patch Size</h1> <p>Definisce l’ampiezza media dei poligoni residui, escluso quello maggiore. Fornisce la dimensione della diffusione delle città intorno al nucleo centrale.</p>"},
+                {"name": "Fragmentation",
+                 "html": null,
+                 "abstract": "<h1>Frammentazione (urbana e rurale)</h1> <p>La frammentazione può essere definita come il processo che genera una progressiva riduzione della superficie degli ambienti naturali e un aumento del loro isolamento.</p>"},
+                {"name": "Land Take",
+                 "html": null,
+                 "abstract": "<h1>Land Take</h1> <p>Indice che interpola i dati relativi a due anni di osservazione per evidenziare la perdita di suoli naturali (se il risultato reca segno negativo) o l’acquisizione di nuovi suoli naturali (se il risultato reca segno positivo)</p>"},
+                {"name": "Potential Loss of Food Supply",
+                 "html": null,
+                 "abstract": "<h1>Loss of food supply</h1> <p>Indice che interpola i dati relativi a due anni di osservazione in merito al coefficiente ambientale consumo di suolo della FAO1. Si traduce come perdita di suolo in grano equivalente ovvero nella perdita della capacità di nutrire il pianeta in quanto i suoli sani costituiscono la base per la produzione di cibo.</p>"},
+                {"name": "Model of Urban Development",
+                 "html": null,
+                 "abstract": "<h1>Model of Urban Development</h1> <p>TODO</p>"},
+                {"name": "New Urbanization",
+                 "html": null,
+                 "abstract": "<h1>New Urbanization</h1> <p>TODO</p>"},
+                {"name": "New Ecological Corridor",
+                 "html": null,
+                 "abstract": "<h1>New Ecological Corridor</h1> <p>TODO</p>"}
             ]
         },{
 			"ptype": "gxp_addlayers",

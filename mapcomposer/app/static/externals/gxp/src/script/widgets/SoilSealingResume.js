@@ -51,21 +51,21 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 	addLayerButtonText: "Add '{0}' layer",
 	// LUC (land use/cover)
 	basedOnCLCText: 'Based on CLC',
-	coverText: 'Coefficiente Copertura',
+	coverText: 'Coefficiente di Copertura',
 	changingTaxText: 'Tasso di Variazione',
-	marginConsumeText: 'Consumo Marginale del Suolo',
+	marginConsumeText: 'Consumo Marginale di Suolo',
 	sprawlText: 'Sprawl Urbano',
 	// Second fieldset (impervious)
 	basedOnImperviousnessText: 'Based on Imperviousness',
-	urbanDispersionText: 'Dispersione Urbana',
+	urbanDispersionText: 'Sprawl Urbano',
 	edgeDensityText: 'Edge Density',
 	urbanDiffusionText: 'Diffusione Urbana',
 	urbanDiffusionAText: 'Urban Area',
-	urbanDiffusionBText: 'Highest Polygon Ratio',
-	urbanDiffusionCText: 'Other Polygons Ratio',
+	urbanDiffusionBText: 'Largest Class Patch Index',
+	urbanDiffusionCText: 'Residual Mean Patch Surface',
 	framesText: 'Frammentazione',
 	consumeOnlyText: 'Consumo Suolo',
-	consumeOnlyConfText: 'Coefficiente Ambientale Cons. Suolo',
+	consumeOnlyConfText: 'Perdita Approvvigionamento Alimentare',
 	urbanFabricClassesText: 'Modello di Sviluppo Urbano',
     urbanDevelPolycentricLabel: "Policentrica",
     urbanDevelMonocentricDispersedLabel: "Monocentrica Dispersa",
@@ -707,8 +707,8 @@ gxp.widgets.SoilSealingResume = Ext.extend(gxp.widgets.WFSResume, {
 		var rmpsObjects    = [];
 		
 		// here I should set the feasible {min,max} values for each axis (i.e. variable)
-		var xMin = 0, xMax = 0, xBuffer = 3;
-		var yMin = 0, yMax = 0, yBuffer = 3;
+		var xMin = 0, xMax = 0, xBuffer = 1;
+		var yMin = 0, yMax = 0, yBuffer = 1;
 		var zMin = 0, zMax = 0, zBuffer = 50;
 		
 		for(var i=0; i<admUnits.length; i++)

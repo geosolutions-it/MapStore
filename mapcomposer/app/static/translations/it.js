@@ -668,12 +668,12 @@ GeoExt.Lang.add("it", {
 		pieChartMenuLabel : "Grafico a Torta",
 		incrementLabel: "incremento",
 		decrementLabel: "decremento",
-		interactiveChgMatrixLabel : "Matrice di Cambio Interattiva",
+		interactiveChgMatrixLabel : "Mappa di Cambio",
 		pieChartTabTitle : "Grafico a Torta",
-		scatterChartTitle : "Classi: Riferimento / Corrente",
+		scatterChartTitle : "Classi: Remoto / Recente",
 		scatterChartSubTitle : " - Processo Matrice di Cambio - ",
-		scatterChartYAxisLabel : "Corrente",
-		scatterChartXAxisLabel : "Riferimento"		
+		scatterChartYAxisLabel : "Recente",
+		scatterChartXAxisLabel : "Remoto"		
 	},
 
 	"gxp.widgets.WFSChangeMatrixResume.prototype" : {
@@ -703,10 +703,10 @@ GeoExt.Lang.add("it", {
 		decrementLabel: "decremento",
 		interactiveChgMatrixLabel : "Matrice di Cambio Interattiva",
 		pieChartTabTitle : "Grafico a Torta",
-		scatterChartTitle : "Classi: Riferimento / Corrente",
+		scatterChartTitle : "Classi: Remoto / Recente",
 		scatterChartSubTitle : " - Processo Matrice di Cambio - ",
-		scatterChartYAxisLabel : "Corrente",
-		scatterChartXAxisLabel : "Riferimento"		
+		scatterChartYAxisLabel : "Recente",
+		scatterChartXAxisLabel : "Remoto"		
 	},
 	
 	"gxp.widgets.form.SpatialSelectorField.prototype" :{
@@ -813,15 +813,15 @@ GeoExt.Lang.add("it", {
 		bufferEmptyTextLabel: 'valore in metri',
 		ruralTextLabel: 'Rurale',
 		urbanTextLabel: 'Urbana',
-		invalidFormDialogText: "Prego, conrollare tutti i campi selezionati:<ul>",
+		invalidFormDialogText: "Prego, controllare tutti i campi selezionati:<ul>",
 		invalidFormTitleText: "Errore",
 		invalidYearsFormDialogText: "Intervallo anni non selezionato",
-		invalidROIFormDialogText: "Area d'Interesse non selezionata",
+		invalidROIFormDialogText: "Area di Interesse non selezionata",
 		invalidCLCLevelFormDialogText: "Livelli CLC non selezionati",
 		invalidClassesFormDialogText: "Livelli CLC non selezionati",
 		invalidSealingIndexFormDialogText: "Nessun indice di Consumo del Suolo selezionato",
-		invalidRange0IndexFormDialogText: "Tempo di Riferimento non selezionato",
-		invalidRange1IndexFormDialogText: "Tempo Corrente non selezionato",
+		invalidRange0IndexFormDialogText: "Tempo Remoto non selezionato",
+		invalidRange1IndexFormDialogText: "Tempo Recente non selezionato",
 		wpsError: "Errore di comunicazione con il WPS",
 		geocoderSelectorsLabelsGeometryUnion: 'Unione delle geometrie',
 		geocoderSelectorsLabelsAdministrativeAreaList: 'Lista delle Aree Amministrative',
@@ -835,8 +835,8 @@ GeoExt.Lang.add("it", {
 
     "gxp.widgets.SoilSealingResume.prototype": {
         defaultTitle: 'Coefficiente di Copertura',
-        referenceTimeTitleText: 'Tempo di Riferimento',
-        currentTimeTitleText: 'Tempo Corrente',
+        referenceTimeTitleText: 'Tempo Remoto',
+        currentTimeTitleText: 'Tempo Recente',
         administrativeUnitsTitleText: 'Unità Amministrative',
         barChartTitleText: 'Grafico a Barre',
         intervalTitleText: 'Intervallo Temporale',
