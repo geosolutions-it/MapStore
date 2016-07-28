@@ -65,6 +65,13 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
      */
     filter: null,
     
+    /** api: config[cql_filter]
+     *  ``String``
+     *  Optional cql_filter used to extracts features.  
+     *
+     */    
+    cql_filter: null,
+    
     /** api: config[viewParams]
      *  ``String``
      *  Optional viewParams to contextualize Geoserver parametric sql views
@@ -685,6 +692,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         otherParams+= this.sortAttribute ? "&sortBy="+this.sortAttribute :"";
         otherParams+= this.viewParams ? "&viewParams="+encodeURIComponent(this.viewParams) : "";
         otherParams+= this.outputFormat ? "&outputFormat="+this.outputFormat : "&outputFormat=json";
+        otherParams+= this.cql_filter ? "&cql_filter="+this.cql_filter : "";
        
         
        

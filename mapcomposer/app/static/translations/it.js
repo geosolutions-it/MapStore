@@ -629,5 +629,9 @@ GeoExt.Lang.add("it", {
 		serverErrorMsg: "Verificato un errore durante la generazione della mappa Snapshot: Errore del server",
 		menuText: "Snapshot",
 		tooltip: "Snapshot"
+	},
+
+	"gxp.plugins.FeatureInfoHook.prototype" :{
+		infoHookWindowTitle: 'Dettaglio'
 	}	
 });

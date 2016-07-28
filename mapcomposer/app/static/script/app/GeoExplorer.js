@@ -1253,7 +1253,7 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
     },
     
     /** private: method[getState]
-     *  :returns: ``Òbject`` the state of the viewer
+     *  :returns: ``ï¿½bject`` the state of the viewer
      */
     getState: function() {
         var state = GeoExplorer.superclass.getState.apply(this, arguments);
@@ -1272,6 +1272,21 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
 		delete state.customPanels;
 		
         return state;
-    }
+    },
+    
+    /** private: method[infoHook]
+     *
+     * 
+     */ 
+    infoHook: function(wfsTable,jsonParams) {
+        var hook = document.getElementById("data-ms-hook");
+        if (hook){
+            for(var tool in this.tools){
+                if(this.tools[tool].ptype == "gxp_featureinfohook"){
+                    this.tools[tool].getData(wfsTable,jsonParams);
+                }
+            }
+        }
+    }    
 });
 

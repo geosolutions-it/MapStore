@@ -575,5 +575,9 @@ GeoExt.Lang.add("fr", {
 		serverErrorMsg: "Une erreur s'est produite lors de la génération de la carte Snapshot: Erreur de serveur",
 		menuText: "Snapshot",
 		tooltip: "Snapshot"
+	},
+
+	"gxp.plugins.FeatureInfoHook.prototype" :{
+		infoHookWindowTitle: 'Détail'
 	}
 });
