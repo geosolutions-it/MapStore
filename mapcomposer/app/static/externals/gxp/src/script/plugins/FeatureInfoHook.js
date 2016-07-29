@@ -19,8 +19,8 @@
  */
 
 /**
- * requires 
- * include 
+ * requires
+ * include
  */
 
 /** api: (define)
@@ -36,8 +36,8 @@ Ext.namespace("gxp.plugins");
 /** api: constructor
  *  .. class:: FeatureInfoHook(config)
  *
- * 
- */   
+ *
+ */
 gxp.plugins.FeatureInfoHook = Ext.extend(gxp.plugins.Tool, {
 
     /** api: ptype = gxp_wfsgrid */
@@ -45,47 +45,52 @@ gxp.plugins.FeatureInfoHook = Ext.extend(gxp.plugins.Tool, {
 
     /** api: config[wfsURL]
      *  ``String``
-     *  
+     *
      *  base URL of the WFS service
      */
     wfsURL: null,
-    
+
     // start i18n
     infoHookWindowTitle: 'Detail',
+    gridConfig: {minColumnWidth: 200, viewConfig : {}, loadMask: new Ext.LoadMask(Ext.getBody(), {msg:"Please wait..."}) },
     // end i18n
-    
+
     /** private: method[constructor]
      */
     constructor: function(config) {
-        gxp.plugins.FeatureInfoHook.superclass.constructor.apply(this, arguments);  
+        gxp.plugins.FeatureInfoHook.superclass.constructor.apply(this, arguments);
     },
 
     /** api: method[getData]
-     */    
+     */
     getData: function(wfsTable,jsonParams){
 
-        var propnames = jsonParams.paramnames.split(',');
-        
+
+
         var fields = [];
         var columns = [];
-        
-        for (var i = 0;i<=propnames.length-1;i++){
-            fields.push({
-                "name": propnames[i],
-                "mapping": propnames[i]
-            });
-            columns.push({
-                "header": propnames[i],
-                "dataIndex": propnames[i],
-                "sortable": true
-            });
+        if (jsonParams && jsonParams.paramnames) {
+          var propnames = jsonParams.paramnames.split(',');
+          for (var i = 0;i<=propnames.length-1;i++){
+              fields.push({
+                  "name": propnames[i],
+                  "mapping": propnames[i]
+              });
+              columns.push({
+                  "header": propnames[i],
+                  "dataIndex": propnames[i],
+                  "sortable": true
+              });
+          }
         }
+
 
         this.container = new Ext.Container({
             "id": "gridcontainer",
-            "layout": "fit"
+            "layout": "fit",
+            "region": "center"
         });
-                
+
         this.wfsGrid = new gxp.plugins.WFSGrid({
             "wfsURL": this.wfsURL,
             "featureType": wfsTable,
@@ -96,12 +101,12 @@ gxp.plugins.FeatureInfoHook = Ext.extend(gxp.plugins.Tool, {
             "sortAttribute": jsonParams.sortAttribute,
             "cql_filter": jsonParams.CQL_FILTER
         });
-    
-        this.wfsGrid.addOutput();
-        
+
+        this.wfsGrid.addOutput({gridConfig: Ext.apply(this.gridConfig, jsonParams.gridConfig) });
+
         if (this.win){
             this.win.close();
-            this.showWin();            
+            this.showWin();
         }else{
             this.showWin();
         }
@@ -112,10 +117,12 @@ gxp.plugins.FeatureInfoHook = Ext.extend(gxp.plugins.Tool, {
             id: 'infoHookWindowId',
             closable:true,
             width:600,
+            autoScroll: true,
+            maximizable: true,
             height:350,
             modal: false,
             plain:true,
-            layout: 'fit',
+            layout: 'border',
             items: [this.container]
         });
         this.win.show();
