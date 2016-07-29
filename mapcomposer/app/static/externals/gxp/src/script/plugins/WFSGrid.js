@@ -1,14 +1,14 @@
 /**
  * Copyright (c) 2008-2011 The Open Planning Project
- * 
+ *
  * Published under the BSD license.
  * See https://github.com/opengeo/gxp/raw/master/license.txt for the full text
  * of the license.
  */
 
 /**
- * requires 
- * include 
+ * requires
+ * include
  */
 
 /** api: (define)
@@ -24,131 +24,138 @@ Ext.namespace("gxp.plugins");
 /** api: constructor
  *  .. class:: WFSGrid(config)
  *
- *    Plugin for displaying WFS features in a grid. 
- */   
+ *    Plugin for displaying WFS features in a grid.
+ */
 gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
-    
+
     /** api: ptype = gxp_wfsgrid */
     ptype: "gxp_wfsgrid",
-    
-    
+
+
     /** api: config[id]
     *  ``String``
-    *  
+    *
     */
     id: "wfsGridPanel",
-    
+
     /** api: config[featureType]
      *  ``String``
      *
      *  featureType to load from the WFS service
      */
-    featureType: null,    
-    
+    featureType: null,
+
     /** api: config[wfsURL]
      *  ``String``
-     *  
+     *
      *  base URL of the WFS service
      */
     wfsURL: null,
-        
+
     /** api: config[srsName]
      *  ``String``
      *  SRS used to query the WFS (for the output geometry)
      */
-    srsName: "EPSG:4326",    
-    
+    srsName: "EPSG:4326",
+
     /** api: config[filter]
      *  ``OpenLayers.Filter``
-     *  Optional Filter used to extracts features.  
+     *  Optional Filter used to extracts features.
      *
      */
     filter: null,
-    
+
+    /** api: config[cql_filter]
+     *  ``String``
+     *  Optional cql_filter used to extracts features.
+     *
+     */
+    cql_filter: null,
+
     /** api: config[viewParams]
      *  ``String``
      *  Optional viewParams to contextualize Geoserver parametric sql views
      */
-    viewParams: null, 
+    viewParams: null,
 
     /** api: config[version]
      *  ``String``
      *  WFS version to be used for requests.
      */
     version: "1.1.0",
-    
+
     /** api: config[title]
      *  ``String``
      *  Optional title for the grid.
      */
     title: null,
-     
+
     /** api: config[paging]
      *  ``Boolean``
      *  Create a paging grid.
      */
     paging: true,
-     
+
     /** api: config[pageSize]
      *  ``Integer``
      *  Number of records per page shown in the grid.
      */
     pageSize: 10,
-    
+
     /** api: config[autoRefreshInterval]
      *  ``Integer``
      *  Interval in milliseconds for the autorefresh functionality.
      */
     autoRefreshInterval: 10000,
-        
+
     /** api: config[columns]
      *  ``Array Object``
      *  Explicitly configure grid columns to use (columns array of the Ext.Grid)
      */
     columns: null,
-    
+
     /** api: config[fields]
      *  ``Array Object``
      *  Explicitly configure grid store fields to use (columns array of the Ext.Grid)
      */
     fields: null,
-    
+
     /** api: config[data]
      *  ``Array Object``
      *  Static data to be loaded on the grid
      */
     data: null,
-    
+
     /** api: config[extraData]
      *  ``Array Object``
      *  Static data to be loaded on the grid in addition to those got from WFS
      */
     extraData: null,
-    
+
     /** api: config[autoLoad]
      *  ``Boolean``
-     *  
+     *
      */
     autoLoad: true,
-    
+
     // start i18n
     displayMsgPaging: "Displaying topics {0} - {1} of {2}",
     emptyMsg: "No topics to display",
     loadMsg: "Please Wait...",
     zoomToTooltip: 'Zoom all\'elemento',
     // end i18n
-    
+
     zoomToIconPath: "theme/app/img/silk/map_magnify.png",
-    
+
     /** private: countFeature
      *  ``Integer``
      */
     countFeature: null,
-    
+
     featureFields: null,
-    
+
     geometryType: null,
-    
+
     supportTypes: {
         "xsd:boolean": "boolean",
         "xsd:int": "int",
@@ -163,22 +170,22 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         "xsd:float": "float",
         "xsd:double": "float"
     },
-    
+
 
     /** private: method[constructor]
      */
     constructor: function(config) {
-        gxp.plugins.WFSGrid.superclass.constructor.apply(this, arguments);  
-        
+        gxp.plugins.WFSGrid.superclass.constructor.apply(this, arguments);
+
         if(config.fields){
            this.featureFields = config.fields;
         }
-        
+
         if(config.autoRefresh){
             this.setAutoRefresh(config.autoRefresh);
         }
     },
-    
+
     /** private: method[getZoomAction]
      */
     getZoomAction: function(actionConf){
@@ -186,10 +193,10 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
         var me= this;
         return {
             xtype: 'actioncolumn',
-            sortable : false, 
+            sortable : false,
             width: 30,
             items: [{
-                icon   : this.zoomToIconPath,  
+                icon   : this.zoomToIconPath,
                 tooltip: this.zoomToTooltip,
                 scope: this,
                 handler: function(grid, rowIndex, colIndex) {
@@ -199,38 +206,38 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     var ppp = geometry.getBounds();
                     map.zoomToExtent(geometry.getBounds(),true);
                 }
-            }]  
+            }]
         };
     },
     /** api: method[addOutput]
-     */    
+     */
     getCheckDisplayAction: function(actionConf){
         var me= this;
         var checkConf = {
             listeners: {
-                scope: this,				
+                scope: this,
                 rowdeselect: function (selMod, rowIndex, record){
                     me.removeGeometry(actionConf.layerName, record.get("fid"));
                 },
                 rowselect: function(check, rowIndex, record) {
                     var geom = me.getGeometry(record,actionConf.sourceSRS);
-                    me.displayGeometry(actionConf.layerName, 
+                    me.displayGeometry(actionConf.layerName,
                         record.get("fid"),
                         geom, actionConf.style);
                 }
             }
         };
-        return new Ext.grid.CheckboxSelectionModel(checkConf);  
+        return new Ext.grid.CheckboxSelectionModel(checkConf);
     },
     /** api: method[addOutput]
-     */    
+     */
     displayGeometry: function(layerName, id, geometry, style ){ //"Bersaglio Selezionato"
         var map = this.target.mapPanel.map;
         var targetLayer = map.getLayersByName(layerName)[0];
-        
+
         var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
-        renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;       
-        
+        renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
         if(!targetLayer){
             var layerStyle= style || {
                 strokeColor: "#FF00FF",
@@ -238,35 +245,35 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 fillColor: "#FF00FF",
                 fillOpacity: 0.8
             };
-                                    
+
             targetLayer = new OpenLayers.Layer.Vector(layerName,{
                 displayInLayerSwitcher: false,
                 style: layerStyle,
                 renderers: renderer
             });
-			
+
             map.addLayer(targetLayer);
         }
         if(geometry) {
             var feature = new OpenLayers.Feature.Vector(geometry,{
                 "id": id
             });
-            targetLayer.addFeatures([feature]);	   
+            targetLayer.addFeatures([feature]);
         }
         return targetLayer;
-    }, 
+    },
     /** api: method[addOutput]
-     */    
+     */
     removeGeometry: function(layerName, id){
         var map = this.target.mapPanel.map;
         var targetLayer = map.getLayersByName(layerName)[0];
         if(targetLayer) {
             var unSelectFeatures= targetLayer.getFeaturesByAttribute("id", id);
-            targetLayer.removeFeatures(unSelectFeatures); 
+            targetLayer.removeFeatures(unSelectFeatures);
         }
-    },    
+    },
     /** api: method[addOutput]
-     */    
+     */
     getGeometry: function(rec, sourceSRS){
         var map = this.target.mapPanel.map;
         var geometry = rec.data.feature.geometry;
@@ -281,12 +288,12 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     new OpenLayers.Projection(sourceSRS),
                     map.getProjectionObject()
                     );
-                geometry = targetColl.components[0];   
+                geometry = targetColl.components[0];
                 delete targetColl;
             }
         }
         return geometry;
-    },    
+    },
     /** api: method[addOutput]
      */
     addOutput: function(config) {
@@ -303,23 +310,23 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         var checkModel=me.getCheckDisplayAction(me.actionColumns[kk]);
                         this.sm= checkModel;
                         me.wfsColumns.push(checkModel);
-                        break;   
+                        break;
                 }
             }
         }
 
         var bbar;
-        
+
         if(this.paging) {
             bbar = this.createPagingToolbar();
         }
-        
-        var wfsGridPanel=new Ext.grid.EditorGridPanel({ 
-            title: this.title, 
-            store: [], 
+
+        var wfsGridPanel=new Ext.grid.EditorGridPanel(Ext.apply({
+            title: this.title,
+            store: [],
             id: this.id,
             layout: "fit",
-           
+
             viewConfig : {
                 forceFit: true
             },
@@ -328,27 +335,27 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     if(me.loadMsg){
                        me.loadMask = new Ext.LoadMask(grid.getEl(), {msg:me.loadMsg});
                     }
-                    
+
                 }
-            },     
+            },
             sm: this.sm,
             colModel: new Ext.grid.ColumnModel({
                 columns: []
             }),
             bbar: bbar,
-            scope: this    
-        }); 
+            scope: this
+        }, (config && config.gridConfig) || {} )); 
 
         config = Ext.apply(wfsGridPanel, config || {});
-        
+
         this.wfsGrid = gxp.plugins.WFSGrid.superclass.addOutput.call(this, config);
-        
+
         if(this.data) {
             this.loadData();
         } if(this.autoLoad) {
             this.countRecords(this.onTotal, this);
         } else {
-            this.wfsGrid.on('activate', function() {            
+            this.wfsGrid.on('activate', function() {
                 if(this.data) {
                     this.loadData();
                 } else {
@@ -356,19 +363,19 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 }
             }, this, {single: true});
         }
-        
+
         return this.wfsGrid;
     },
-    
+
     onTotal: function(total, callback){
         if(parseInt(total,10) > 0 || (this.extraData && this.extraData.length > 0)) {
-            this.loadSchema(this.onSchema.createDelegate(this, [callback]));	
+            this.loadSchema(this.onSchema.createDelegate(this, [callback]));
         } else if(this.onEmpty){
             this.isEmpty = true;
             this.onEmpty.call(null, this);
-        }       
+        }
     },
-    
+
     onSchema: function(callback) {
         if(this.columns){
             for(kk=0; kk<this.columns.length; kk++){
@@ -377,38 +384,38 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 if(column.header instanceof Array) {
                     column.header = column.header[GeoExt.Lang.getLocaleIndex()];
                 }
-                
+
                 this.wfsColumns.push(column);
             }
         }else{
             for(kk=0; kk<this.featureFields.length; kk++){
                 this.wfsColumns.push({
-                    header: this.featureFields[kk].name, 
+                    header: this.featureFields[kk].name,
                     dataIndex: this.featureFields[kk].name,
                     sortable: true
                 });
             }
-        } 
-        
+        }
+
         for(kk=0; kk<this.featureFields.length; kk++){
             if(this.featureFields[kk].mapping) {
-                this.featureFields[kk].mapping = this.featureFields[kk].mapping.replace('${locale}', GeoExt.Lang.locale);                             
+                this.featureFields[kk].mapping = this.featureFields[kk].mapping.replace('${locale}', GeoExt.Lang.locale);
             }
         }
-        
+
         var me = this;
-        
-        new GeoExt.data.FeatureStore({ 
+
+        new GeoExt.data.FeatureStore({
             wfsParam: this,
             id: this.id+"_store",
             fields: this.featureFields,
             listeners:{
                 beforeload: function(store){
                     if(this.loadMask && this.loadMask.el && this.loadMask.el.dom)
-                        this.loadMask.show(); 
-                    
+                        this.loadMask.show();
+
                     this.wfsGrid.reconfigure(
-                        store, 
+                        store,
                         new Ext.grid.ColumnModel({
                             columns: this.wfsColumns
                         })
@@ -419,20 +426,20 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 },
                 load : function(store){
                      if(this.loadMask)
-                        this.loadMask.hide(); 
+                        this.loadMask.hide();
                 },
-                
+
                 exception : function(store){
                     if(this.loadMask && this.loadMask.el && this.loadMask.el.dom)
-                        this.loadMask.hide(); 
+                        this.loadMask.hide();
                 },
                 scope: this
             },
-            loadRecords : function(o, options, success){     
+            loadRecords : function(o, options, success){
                 if (this.isDestroyed === true) {
                     return;
                 }
-                        
+
                 if(!o || success === false){
                     if(success !== false){
                         this.fireEvent('load', this, [], options);
@@ -443,13 +450,13 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     return;
                 }
                 o.totalRecords = me.countFeature;
-                
+
                 var r = o.records, t = o.totalRecords || r.length;
                 if(!options || options.add !== true){
                     if(this.pruneModifiedRecords){
                         this.modified = [];
                     }
-                    
+
                     var finalRecords = [];
                     for(var i = 0, len = r.length; i < len; i++){
                         var add = true;
@@ -462,7 +469,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                     } else {
                                         // changed
                                         r[i].data.feature.geometry = extraRecord.geometry;
-                                        r[i].set("value", extraRecord.value);                                                    
+                                        r[i].set("value", extraRecord.value);
                                     }
                                 }
                             }
@@ -479,7 +486,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                                 var extraRecord = me.extraData[j];
                                 if(extraRecord.newfeature) {
                                     var recordType = me.wfsGrid.getStore().recordType;
-                                    var newRecord = new recordType({                                                    
+                                    var newRecord = new recordType({
                                         "geometry": "",
                                         "id": extraRecord.id,
                                         "fid": extraRecord.id,
@@ -493,23 +500,23 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                             }
                         }
                     }
-                            
+
                     if(this.snapshot){
                         this.data = this.snapshot;
                         delete this.snapshot;
                     }
-                            
+
                     this.clearData();
-                    this.data.addAll(finalRecords);   
-                    this.totalLength = t;       
+                    this.data.addAll(finalRecords);
+                    this.totalLength = t;
                     this.fireEvent('datachanged', this);
-                    
+
                 }else{
-                            
+
                     this.totalLength = Math.max(t, this.data.length+r.length);
                     this.add(r);
                 }
-                        
+
                 this.fireEvent('load', this, r, options);
                 if(options.callback){
                     options.callback.call(options.scope || this, r, options, true);
@@ -518,19 +525,19 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     callback.call();
                 }
             },
-            proxy: new GeoExt.data.ProtocolProxy({ 
-                protocol: 
+            proxy: new GeoExt.data.ProtocolProxy({
+                protocol:
                 this.getProtocol({
                     limit: !me.paging ? 1000 : this.pageSize,
                     start:  0
                 })
-            }), 
-            autoLoad: true 
+            }),
+            autoLoad: true
         });
 
     },
-    
-    
+
+
     createPagingToolbar: function() {
         return new Ext.PagingToolbar({
             pageSize: this.pageSize,
@@ -541,7 +548,7 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             listeners: {
                 "beforechange": function(paging,params){
                     paging.store.removeAll(true);
-                    paging.store.proxy=new GeoExt.data.ProtocolProxy({ 
+                    paging.store.proxy=new GeoExt.data.ProtocolProxy({
                         protocol:
                         this.getProtocol({
                             limit: params.limit,
@@ -550,21 +557,21 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                     });
                 },
                 scope: this
-                            
+
             },
             displayMsg: this.displayMsgPaging,
             emptyMsg: this.emptyMsg
         });
     },
-    
+
     countRecords: function(callback, scope){
-        
+
         var hitCountProtocol = this.getProtocol({
             resultType: "hits",
             outputFormat: "text/xml"
         });
-                 
-               
+
+
         hitCountProtocol.read({
             callback: function(response) {
                 var respObj=new OpenLayers.Format.WFST({version: "1.1.0"}).read(
@@ -575,17 +582,17 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             },
             scope: this
         });
-         
+
         return this.countFeature;
     },
-    
-    
+
+
     loadSchema: function(callback, scope){
         if(this.featureFields == null){
             this.getSchema(function(schema){
                 this.featureFields= new Array();
                 var geomRegex = /gml:((Multi)?(Point|Line|Polygon|Curve|Surface|Geometry)).*/;
-                    
+
                 schema.each(function(r) {
                     var match = geomRegex.exec(r.get("type"));
                     if (match) {
@@ -599,19 +606,19 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                         this.featureFields.push(field);
                     }
                 }, this);
-                               
+
                 if(callback)
-                    callback.call(scope); 
-            }, this); 
+                    callback.call(scope);
+            }, this);
        } else if(callback) {
-            callback.call(scope);  
+            callback.call(scope);
        }
-        
+
     },
-    
+
     getSchema: function(callback,scope){
         var schema = new GeoExt.data.AttributeStore({
-            url: this.wfsURL, 
+            url: this.wfsURL,
             baseParams: {
                 SERVICE: "WFS",
                 VERSION: "1.1.0",
@@ -627,33 +634,33 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
             }
         });
     },
-         
+
     setFilter: function(filter){
         this.filter=filter;
         this.setPage(1);
     },
-    
+
     update: function (filter, viewParams){
         this.filter=filter;
         this.viewParams=viewParams;
         this.setPage(1);
     },
-    
+
 
     setAutoRefresh: function(ms){
-        var me=this;  
+        var me=this;
         this.autoRefreshInterval=setInterval(
-            function() { 
+            function() {
                 me.refresh()
-            }, ms);  
+            }, ms);
     },
-    
-    
+
+
     clearAutoRefresh: function(){
         if(this.autoRefreshInterval)
             clearInterval(this.autoRefreshInterval);
     },
-    
+
     resetFilter: function(){
         this.filter=null;
         this.setPage(1);
@@ -661,62 +668,63 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
 
 
     refresh: function(){
-        var pagID= this.id+"_paging"; 
+        var pagID= this.id+"_paging";
         this.countRecords(function(){
             var paging=Ext.getCmp(pagID);
             paging.doRefresh();
         });
     },
-    
+
     getProtocol: function(params){
         var protocol;
-        
-        var otherParams=""; 
+
+        var otherParams="";
         if(params){
             otherParams+= params.limit ? "&maxFeatures="+params.limit :"";
             otherParams+= params.start ? "&startIndex="+params.start :"";
-            otherParams+= params.resultType ? "&resultType="+params.resultType :"";     
-        } 
+            otherParams+= params.resultType ? "&resultType="+params.resultType :"";
+        }
         if(this.filter){
             var filterFormat = new OpenLayers.Format.Filter();
             otherParams+="&filter="+  filterFormat.write(this.filter);
         }
-       
+
         otherParams+= this.sortAttribute ? "&sortBy="+this.sortAttribute :"";
         otherParams+= this.viewParams ? "&viewParams="+encodeURIComponent(this.viewParams) : "";
         otherParams+= this.outputFormat ? "&outputFormat="+this.outputFormat : "&outputFormat=json";
-       
-        
-       
+        otherParams+= this.cql_filter ? "&cql_filter="+this.cql_filter : "";
+
+
+
         protocol= new OpenLayers.Protocol.HTTP({
             url: this.wfsURL+"?service=WFS"
             +"&version="+this.version
             +"&request=GetFeature"
-            +"&typeName="+this.featureType                
+            +"&typeName="+this.featureType
             +"&srs="+this.srsName
             +otherParams,
             format: new OpenLayers.Format.GeoJSON()
-        }); 
-        
+        });
+
         return protocol;
     },
-    
+
     setPage: function(pageNumber){
-        var pagID= this.id+"_paging"; 
+        var pagID= this.id+"_paging";
         this.countRecords(function(){
             var paging=Ext.getCmp(pagID);
             paging.changePage(pageNumber);
-        }); 
+        });
     },
 
-    
+
     loadData: function() {
-        var store = new GeoExt.data.FeatureStore({ 
+        var store = new GeoExt.data.FeatureStore({
             id: this.id+"_store",
             fields: this.featureFields
-            
+
         });
-        
+
         if(this.columns){
             for(kk=0; kk<this.columns.length; kk++){
                 var column = {};
@@ -724,28 +732,27 @@ gxp.plugins.WFSGrid = Ext.extend(gxp.plugins.Tool, {
                 if(column.header instanceof Array) {
                     column.header = new Ext.XTemplate(column.header[GeoExt.Lang.getLocaleIndex()]).apply(this.tplData || {});
                 }
-                if(column.hidden && typeof column.hidden === 'string') {                    
+                if(column.hidden && typeof column.hidden === 'string') {
                     column.hidden = (new Ext.XTemplate(column.hidden).apply(this.tplData || {})) === "true";
                 }
                 this.wfsColumns.push(column);
             }
         }
-        
+
         this.wfsGrid.reconfigure(
-            store, 
+            store,
             new Ext.grid.ColumnModel({
                 columns: this.wfsColumns
             })
         );
         if(this.wfsGrid.getBottomToolbar()) {
-            this.wfsGrid.getBottomToolbar().bind(store);   
+            this.wfsGrid.getBottomToolbar().bind(store);
         }
-        
+
         store.loadData(new OpenLayers.Format.GeoJSON().read(this.data));
 
     }
-    
+
 });
 
 Ext.preg(gxp.plugins.WFSGrid.prototype.ptype, gxp.plugins.WFSGrid);
-
