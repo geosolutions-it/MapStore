@@ -103,6 +103,15 @@
 	-->
 
     <script>
+        // ///////////////////////////////////////////////
+        // This fragment allow to retrieve a content body 
+        // of a POST request from Ringo.
+        // ///////////////////////////////////////////////
+        var content = <% content %>;
+        // if(content && content.data){
+        //     console.log(content);
+        // }
+        
 		var app;
         var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox; var useCookies; var templateId;
 		// /////////////////////////////////////////////////////
@@ -571,7 +580,13 @@
 								}
 							}
 							app.safeLeaving =true;
-							location.reload();
+							
+                            if(content && content.username && content.password){
+                                // remove post data to prevent warning page reload
+                                location.assign(location.href);
+                            }else{
+                                location.reload();
+                            }
 						}
 					}
 
@@ -588,7 +603,13 @@
 
             var existingUserDetails = sessionStorage["userDetails"];
             if(!existingUserDetails){
-                login.showLoginDialog();
+                
+                if(content && content.username && content.password){
+                    login.submitLogin(content);    
+                }else{
+                    login.showLoginDialog();
+                }
+                
             }else{
 
                 var userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
