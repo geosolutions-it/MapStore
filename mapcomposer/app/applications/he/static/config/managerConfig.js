@@ -37,10 +37,6 @@
       ]
    ],
    "tools":[{
-        "ptype": "mxp_mapmanager",
-        "loginManager": "loginTool",
-        "actionTarget":null
-    },{
         "ptype": "mxp_categoryinitializer",
         "neededCategories": ["TEMPLATE", "MAP","MAPSTORECONFIG"]
     },{
@@ -185,10 +181,6 @@
         }
     }],
     "loggedTools":[{
-        "ptype": "mxp_mapmanager",
-        "loginManager": "loginTool",
-        "actionTarget": null
-    },{
         "ptype": "mxp_myaccount",
         "loginManager": "loginTool",
         "displayPanels":false,
