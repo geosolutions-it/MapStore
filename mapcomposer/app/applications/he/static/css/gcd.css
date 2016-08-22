@@ -106,6 +106,10 @@ span.icon_span{
   background-image: url(../images/flame_icon.png);
 }
 
+.a8-ball-icon {
+  background-image: url(../images/8-ball_icon.png);
+}
+
 .map-icon {
   background-image: url(../images/map.png);
 }
