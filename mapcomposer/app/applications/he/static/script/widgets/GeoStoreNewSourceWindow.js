@@ -142,13 +142,13 @@ gxp.he.NewSourceWindowGeoStore = Ext.extend(gxp.NewSourceWindow, {
                                 },{
                                     xtype: 'combo',
                                     name: "version",
+                                    ref: "versionCombo",    
                                     width: 147,
                                     allowBlank: false,
                                     fieldLabel: this.versionLabel,
                                     value: "1.1.1",
                                     mode: 'local',
                                     triggerAction: 'all',
-                                    mode: "local",
                                     forceSelection: true,
                                     editable: false,
                                     valueField: "version",
@@ -435,6 +435,8 @@ gxp.he.NewSourceWindowGeoStore = Ext.extend(gxp.NewSourceWindow, {
                 afterrender: function() {
                     
                     this.urlTextField.focus(false, true);
+                    // Set default value
+                    this.generalForm.versionCombo.setValue('1.1.1');
                 },
                 scope: this
             }
@@ -457,27 +459,26 @@ gxp.he.NewSourceWindowGeoStore = Ext.extend(gxp.NewSourceWindow, {
                 handler: function() {
                     // Clear validation before trying again.
                     this.error = null;
-                    
-                    if (this.urlTextField.validate()) {
+                    // Do not save if mandatory fields are not filled
+                    var generalForm = this.generalForm.getForm();
+                    if (this.urlTextField.validate() && generalForm.isValid()) {
                         var sourceUrl = this.urlTextField.getValue();
                         
                         var sourceCfg = {
                             url: sourceUrl
                         };
-                                                
-                        var generalForm = this.generalForm.getForm();
-                        if(generalForm.isValid()){
-                            var generalCfgForm = generalForm.getValues();
-                            if(generalCfgForm){
-                                for(property in generalCfgForm){
-                                    if(generalCfgForm[property] == ""){
-                                        delete generalCfgForm[property];
-                                    }
+
+                        var generalCfgForm = generalForm.getValues();
+                        if(generalCfgForm){
+                            for(property in generalCfgForm){
+                                if(generalCfgForm[property] == ""){
+                                    delete generalCfgForm[property];
                                 }
-                                
-                                Ext.applyIf(sourceCfg, generalCfgForm);
                             }
-                        };
+                            
+                            Ext.applyIf(sourceCfg, generalCfgForm);
+                        }
+
                         var cacheForm = this.cacheForm.getForm();
                         if(cacheForm.isValid()){
                             var cacheCfgForm = cacheForm.getValues();
