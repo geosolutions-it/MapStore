@@ -355,7 +355,8 @@
             "pagingType": 1,
             "format": "GML2",
             "id": "featuremanager",
-            "disableGeometry": false
+            "disableGeometry": false,
+            "disableWarning" : true
         },{
           "ptype": "he_feature_grid",
           "featureManager": "featuremanager",

@@ -421,6 +421,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             scope: this
         });
 
+        // Create a custom QueryForm config
         config = Ext.apply({
             border: false,
             bodyStyle: "padding: 10px",
@@ -462,7 +463,14 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
                         }
                     }
 				}
-            },this.outputConfig.attributeFieldset||{})],
+            },this.outputConfig.attributeFieldset||{})
+            ,{
+                xtype: "label",
+                text: "Querying does not work with outside source layers.",
+                ref: "inlineWarningMessage",
+                hidden: true
+            }
+            ],
             bbar: bbarButtons
         }, config || {});
 
@@ -482,6 +490,7 @@ gxp.plugins.SpatialSelectorQueryForm = Ext.extend(gxp.plugins.QueryForm, {
             var autoComplete = rec && me.autoComplete && me.autoComplete.sources && me.autoComplete.sources.indexOf(rec.get('source')) !== -1;
             queryForm.attributeFieldset.removeAll();
             queryForm.setDisabled(!schema);
+            queryForm.inlineWarningMessage.setVisible(!schema);
 
             if (schema) {
                 queryForm.attributeFieldset.add({

@@ -58,13 +58,18 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
     strWithHighLight:"_highlight",
 
     /** api: config[disableGeometry]
-     *  If true featuremanager dosn't downlad geometry.
-     *  To succed in zoonToFeature geoserver wfs service nedded to be configured
-     *  with return bounding box with every feature
+     *  If true featuremanager doesn't download geometry.
+     *  To succed in zoomToFeature geoserver wfs service need to be configured
+     *  to return bounding box with every feature
      *
      */
-     disableGeometry:true,
+    disableGeometry: true,
 
+    /** api: config[disableWarning]
+     *  If true featuremanager doesn't display a warning popup when the selected layer is not queriable.
+     */
+    disableWarning: true,
+     
     /**
      * api: config[selectionSymbolizer]
      * {Object} Determines the styling of the selected objects.
@@ -162,17 +167,19 @@ gxp.plugins.FeatureManagerWMSHighLight = Ext.extend(gxp.plugins.FeatureManager, 
         if (source && source instanceof gxp.plugins.WMSSource) {
             source.getSchema(record, function(schema) {
                 if (schema === false) {
-
-                    //information about why selected layers are not queriable.
-                    var layer = record.get("layer");
-                    var wmsVersion = layer.params.VERSION;
-                    Ext.MessageBox.show({
-                        title: this.noValidWmsVersionMsgTitle,
-                        msg: this.noValidWmsVersionMsgText + wmsVersion,
-                        buttons: Ext.Msg.OK,
-                        animEl: 'elId',
-                        icon: Ext.MessageBox.INFO
-                    });
+                    
+                    if(!this.disableWarning){
+                        //information about why selected layers are not queriable.
+                        var layer = record.get("layer");
+                        var wmsVersion = layer.params.VERSION;
+                        Ext.MessageBox.show({
+                            title: this.noValidWmsVersionMsgTitle,
+                            msg: this.noValidWmsVersionMsgText + wmsVersion,
+                            buttons: Ext.Msg.OK,
+                            animEl: 'elId',
+                            icon: Ext.MessageBox.INFO
+                        });
+                    }
 
                     this.clearFeatureStore();
                 } else {
