@@ -120,6 +120,7 @@
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "externalHeaders": true,
+        "statelessSession":false,
         "actionTarget":{
           "target": "north.tbar",
           "index": 3
