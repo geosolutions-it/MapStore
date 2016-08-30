@@ -85,13 +85,19 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
      * that allows to manage GWC layers to clean tile cache will be present
 	 */
     GWCRestURL: null,
-	
-	/**
-	 * Property: showDetails
-	 * {boolean} include a row body with run details for each run
-	 */
+
+    /**
+     * Property: showDetails
+     * {boolean} include a row body with run details for each run
+     */
     showDetails: false,
-    archivedVisible: true,
+    
+    /**
+     * Property: canArchive
+     * {boolean} can the runs be archived? Default true.
+     */
+    canArchive: true,
+    
     autoExpandColumn: 'task',
     
     /* i18n */
@@ -217,7 +223,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
                 iconCls:'archive_ic',
                 xtype:'button',
 				ref:'../archive',
-				hidden: this.mode === 'archived' || !this.archivedVisible ,
+				hidden: this.mode === 'archived' || !this.canArchive,
                 text:this.archiveText,
 				disabled:true,
                 scope:this,
@@ -496,7 +502,7 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 				enable = true;
 			}
 		}
-		this.archive.setDisabled(!enable);
+		this.archive && this.archive.setDisabled(!enable);
 	},
 	
 	/**
@@ -601,19 +607,23 @@ mxp.widgets.GeoBatchConsumerGrid = Ext.extend(Ext.grid.GridPanel, {
 		);
 	},
 	
-	/**
+    /**
      *    private: method[autoRefresh] refresh the grid, and if autoRefresh is active, schedule next refresh
      *      
      */
     autoRefresh: function() {
-		if(this.autoRefreshState) {
-			this.store.on('load', function() {
-				this.autoRefresh.createDelegate(this).defer(this.autoRefreshInterval * 1000);
-			}, this, {single: true});
-		}
-		this.store.load();
-	},
-	
+        if(!this.store){
+            return;
+        }
+        
+        if(this.autoRefreshState) {
+            this.store.on('load', function() {
+                this.autoRefresh.createDelegate(this).defer(this.autoRefreshInterval * 1000);
+            }, this, {single: true});
+        }
+        this.store.load();
+    },
+
     /**
      *    private: method[confirmCleanRow] show the confirm message to remove a consumer
      *      * grid : the grid

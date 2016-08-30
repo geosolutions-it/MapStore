@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2014 GeoSolutions S.A.S.
+ *  Copyright (C) 2014 - 2016 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -24,11 +24,9 @@ Ext.ns("mxp.widgets");
 /**
  * Generic Entity Manager for Json CRUD services.
  * These services can be provided by OpenSDI Manager 2
- * 
- * 
  */
 mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
-	 /** api: xtype = mxp_geostore_category_manger */
+    /** api: xtype = json_entity_rest_manager */
     xtype: "json_entity_rest_manager",
     loginManager: null,    
     setActiveOnOutput: true,
@@ -75,8 +73,16 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
      *  The URL of to append to the component
      */
     baseUrl: "",
+    
+    /** api: config[defaultPageSize]
+     *  ``Integer``
+     *  The number of elements on each page
+     *  Individual entities can be configured to have a different pageSize value
+     */
+    defaultPageSize: 50,
 
-	initComponent: function() {
+    initComponent: function() {
+
         var entityButtons = this.createEntityButtons();
         var leftPanel = {
             region:'west',
@@ -112,17 +118,14 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
             activeItem:0,
             autoScroll:false,
             region:'center',
-            
-            
             ref:'editorContainer',
             items: this.createEntityEditors()
         });
         
-        this.items=[leftPanel,this.editorContainer]
-
-		
-		mxp.widgets.JSONEntityRESTManager.superclass.initComponent.call(this, arguments);
-	},
+        this.items=[leftPanel,this.editorContainer];
+        
+        mxp.widgets.JSONEntityRESTManager.superclass.initComponent.call(this, arguments);
+    },
    
     /**
      * private method[loadEditor] Open a resource in the editor from its button
@@ -131,15 +134,14 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
      */
     loadEditor: function(btn,cat){
         var category =cat;
-        var editor = this.editorContainer
+        var editor = this.editorContainer;
         //TODO check if dirty
         editor.layout.setActiveItem(btn.itemId);
         var editor = editor.getComponent(btn.itemId);
         var grid = editor.grid;
         editor.doLayout();
         //load data
-        grid.store.load();
-        
+        grid.store.reload();
     },
     
     createEntityButtons: function(){
@@ -153,7 +155,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                 toggleGroup:'entityManagerMenu',
                 text: entity.pluralName,
                 itemId: entity.id,
-                handler: this. loadEditor,
+                handler: this.loadEditor,
                 scope:this
             });  
         }
@@ -171,6 +173,63 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
         for(var i = 0; i < this.entities.length; i++){
             var entity = this.entities[i];
             var columns = this.createColumns(entity);
+            var storeConfig = {
+                    autoLoad: entity.autoload,
+                    autoSave: true,
+                    // load using HTTP
+                    url: this.baseUrl + entity.basePath,
+                    fields: entity.fields,
+                    reader:  new Ext.data.JsonReader({
+                        fields: entity.fields,
+                        idProperty: entity.idProperty,
+                        root:entity.root,
+                        totalProperty: entity.totalProperty || "total"
+                    }),
+                    writer: this.writer,
+                    restful: entity.restful,
+                    listeners:{
+                        beforeload: function(store,opt){
+                        },
+                        load:function(store,records,opts){
+                        }
+                    }
+            };
+            
+            /*
+            * Check for paramNames in the entity configuration and applies it to the store config
+            * Example:
+            *   paramNames : {
+            *           start : 'firstResult',  // The parameter name which specifies the start row
+            *           limit : 'maxResults'    // The parameter name which specifies number of rows to return
+            *       }
+            */
+            if(entity.paramNames){
+                Ext.apply( storeConfig, { paramNames : entity.paramNames } );
+            }
+            
+            var store = new Ext.data.Store(storeConfig);
+            
+            if(this.auth && store.proxy && store.proxy.conn){
+                if(store.proxy.conn.headers){
+                    store.proxy.conn.headers['Authorization'] = this.auth;
+                }else{
+                    store.proxy.conn.headers = { Authorization: this.auth };
+                }
+            }
+            
+            var searchComponent = new MapStore.ux.SearchField({
+                store: store,
+                paramNames : entity.paramNames,
+                hidden: !entity.canSearch
+            }) ;
+
+            var plugins = [] ;
+            // If the column is set to be "filterable" it will display a filter box
+            if(Ext.ux.grid.GridFilters)
+            {
+                plugins.push(new Ext.ux.grid.GridFilters({local: true}));
+            }
+                        
             editors.push({
                 id: entity.id,
                 border:false,
@@ -183,14 +242,14 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                         region:'center',
                         xtype:'grid',// xtype:'editorgrid',
                         border:false,
-                        //plugins:[editor],
+                        plugins: plugins,
                         ref:'grid',
                         entity: entity, // add the entity the configuration available everywhere
                         loadMask:true,
                         autoExpandColumn: entity.autoExpandColumn,
+                        minColumnWidth: entity.minColumnWidth || 25,
                         viewConfig: {
-                            forceFit:true,
-                            //fitcontainer:true
+                            autoFill:true
                         },
                         tbar:[{
                                 xtype:'button',
@@ -209,9 +268,11 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                                 ref:'../refresh',
                                 scope:this,
                                 handler : function(btn){
-                                   btn.refOwner.store.load();
+                                   btn.refOwner.store.reload();
                                 }
-                            },"->",{
+                            },"->"
+                            ,searchComponent
+                            ,{
                                 xtype:'button',
                                 text: entity.dumpText || this.dumpText,
                                 iconCls:'inbox-download_ic',
@@ -246,46 +307,37 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
                                 }
                             }
                         }),
-                        store : new Ext.data.Store({
-                            autoLoad: entity.autoload,
-                            autoSave: true,
-                            // load using HTTP
-                            url: this.baseUrl + entity.basePath,
-                            
-                            fields: entity.fields,
-                            reader:  new Ext.data.JsonReader({
-                                fields: entity.fields,
-                                restful: entity.restful,
-                                idProperty: entity.idProperty,
-                                root:entity.root,
-                                totalProperty: entity.totalProperty || "total",
-                                writer: this.writer
-                            }),
-                            
-
-                            listeners:{
-                             beforeload: function(store,opt){
-                                
-                             },
-                             load:function(store,records,opts){
-                                
-                             }
-                            }
-                        }),
+                        store : store,
                         listeners:{
                             scope:this,
                             success:  function(response){
                                 var grid = this.editorContainer.getComponent(entity.id).grid;
                                 grid.store.load();
                             }
-                        }
-                        
-                        
+                        },
+                        bbar: this.getEditorBBar(entity, me.defaultPageSize, store, plugins)
                 }]
             });  
         }
         return editors;
     },
+    
+    /**
+     * private method[getEditorBBar] 
+     * create bbar for an entity
+     */
+    getEditorBBar(entity, defaultPageSize, store, plugins){
+        return [
+            new Ext.PagingToolbar({
+                pageSize: entity.pageSize || defaultPageSize,
+                store: store,
+                displayInfo: true,
+                displayMsg: 'Displaying data {0} - {1} of {2}',
+                emptyMsg: "No data to display",
+                plugins: plugins
+            })];
+    },
+    
     /**
      * private method[createColumns] 
      * create columns for an entity

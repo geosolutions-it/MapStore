@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007 - 2014 GeoSolutions S.A.S.
+ *  Copyright (C) 2007 - 2015 GeoSolutions S.A.S.
  *  http://www.geo-solutions.it
  *
  *  GPLv3 + Classpath exception
@@ -70,9 +70,7 @@ mxp.plugins.EntityManager = Ext.extend(mxp.plugins.Tool, {
                 text: this.buttonText,
                 tooltip: this.tooltipText,
                 handler: function() { 
-                    this.addOutput(); 
-
-                   
+                    this.addOutput();
                 },
                 scope: this
             });

@@ -405,7 +405,8 @@ GeoExt.VectorLegend = Ext.extend(GeoExt.LayerLegend, {
         }
         return {
             xtype: "panel",
-            layout: "column",
+            layout:'table',
+            layoutConfig: {columns:2},
             border: false,
             hidden: !applies,
             bodyStyle: this.selectOnClick ? {cursor: "pointer"} : undefined,
