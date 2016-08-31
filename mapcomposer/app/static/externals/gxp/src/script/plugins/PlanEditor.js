@@ -412,6 +412,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 iconCls: "save",
                 tooltip: this.confirmTooltipText,
                 id: this.id + "_confirm_button",
+                disabled: true,
                 handler: function(){
                     this.onButtonClicked("confirm");
                 }
@@ -838,7 +839,7 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 if(Ext.getCmp(this.id + "_save_button"))    Ext.getCmp(this.id + "_save_button").enable();
                 if(Ext.getCmp(this.id + "_draw_button"))    Ext.getCmp(this.id + "_draw_button").enable();
                 if(Ext.getCmp(this.id + "_reset_button"))   Ext.getCmp(this.id + "_reset_button").enable();
-                if(Ext.getCmp(this.id + "_confirm_button")) Ext.getCmp(this.id + "_confirm_button").enable();
+                if(Ext.getCmp(this.id + "_confirm_button")) Ext.getCmp(this.id + "_confirm_button").disable();
                 break;
             }
             case 'confirmAcqList':{
@@ -1524,14 +1525,16 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         exportUrl += "?service=WFS" +
                 "&version=" + (this.exportVersion ? this.exportVersion : this.wfsVersion) +
                 "&request=GetFeature" +
-                "&typeName=" + layerName +
+                // "&typeName=" + layerName+"_full" +
                 "&exceptions=application/json" +
                 "&cql_filter=" + cql_filter +
                 "&outputFormat="+ outputFormat;
 
         if(submitUrl){
+            exportUrl += "&typeName=" + layerName+"_full";
             url = submitUrl + encodeURIComponent(exportUrl) + "&user="+user + "&service="+service;
         }else{
+            exportUrl += "&typeName=" + layerName;
             url = exportUrl;
         }
 
