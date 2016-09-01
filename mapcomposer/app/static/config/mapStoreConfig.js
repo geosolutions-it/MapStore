@@ -44,9 +44,6 @@
                     "FORMAT":"image/png8",
 					"TILESORIGIN": "-20037508.34, -20037508.34"
             }
-		},
-        "mapquest": {
-			"ptype": "gxp_mapquestsource"
 		}, 
 		"osm": { 
 			"ptype": "gxp_osmsource"
@@ -84,17 +81,11 @@
           ],
 		"layers": [
 			{
-				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
-				"group": "background",
-                "visibility": true
-			},{
 				"source": "osm",
 				"title": "Open Street Map",
 				"name": "mapnik",
 				"group": "background",
-                "visibility": false
+                "visibility": true
 			},{
 				"source": "bing",
 				"title": "Bing Aerial",
