@@ -161,6 +161,7 @@
     },{
         "ptype": "mxp_geostore_resource_editor",
         "category": "LAYERS_STYLES",
+        "outputItemId": "LAYERS_STYLES",
         "buttonText": "Users Styles",
         "actionTarget":{
              "target": "north.tbar",
