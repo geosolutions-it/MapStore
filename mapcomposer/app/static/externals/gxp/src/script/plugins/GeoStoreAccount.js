@@ -99,7 +99,7 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
             '<tpl for="attribute">', 
                 '<tr class="{[xindex % 2 == 0 ? \"even\" : \"odd\"]}">',
                 '<td class="b">{name}</td>',
-                '<td>{value}</td>',
+                '<td id="account_attribute_{name}">{value}</td>',
                 '</tr>',
             '</tpl>',
             // groups
@@ -181,7 +181,16 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
                 autoscroll:true,
                 html: new Ext.XTemplate(this.userTemplate).apply(user)
                 }
-            ]
+            ],
+            listeners: {
+                "afterlayout": function() {
+                    var map_element = Ext.getDom('account_attribute_default_map');
+                    if(map_element && map_element.innerHTML && !isNaN(map_element.innerHTML)){
+                        this.getMapName(map_element.innerHTML);
+                    }
+                },
+                scope: this
+            }
         };
         //use panels instead of template
         if (this.displayPanels){
@@ -196,7 +205,7 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
                 autoExpandColumn: "value",
                 columns: [
                     {header: "name", width: 120, dataIndex: 'name', sortable: true},
-                    {id:'value',header: "value", width: 180, dataIndex: 'value', sortable: true}
+                    {id:'value', header: "value", width: 180, dataIndex: 'value', sortable: true}
                 ],
                 store : new Ext.data.JsonStore({
                     data: user,
@@ -250,6 +259,7 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
 		return this.output;
 		
 	},
+    
     /**
      * Parse the User attribute and returns an Extjs Compatible object for records
      */ 
@@ -376,6 +386,21 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
             }]
         })
         win.show();
+    },
+    getMapName: function(mapId){
+        Ext.Ajax.request({
+           url: this.geoStoreBase + 'resources/resource/'+mapId,
+           headers: { Accept : "application/JSON" },
+           success: function(response, opts) {
+              var obj = Ext.decode(response.responseText);
+              if(obj && obj.Resource && obj.Resource.name){
+                Ext.getDom('account_attribute_default_map').innerHTML = obj.Resource.name;
+              }
+           },
+           failure: function(response, opts) {
+              // console.log('server-side failure with status code ' + response.status);
+           }
+        });
     }
  });
  Ext.preg(gxp.plugins.GeoStoreAccount.prototype.ptype, gxp.plugins.GeoStoreAccount);
