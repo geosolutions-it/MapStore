@@ -1531,7 +1531,11 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
                 "&outputFormat="+ outputFormat;
 
         if(submitUrl){
-            exportUrl += "&typeName=" + layerName+"_full";
+            if (layerName.startsWith("aois")) {
+                exportUrl += "&typeName=" + layerName+"_full";
+            } else {
+                exportUrl += "&typeName=" + layerName;
+            }
             url = submitUrl + encodeURIComponent(exportUrl) + "&user="+user + "&service="+service;
         }else{
             exportUrl += "&typeName=" + layerName;
