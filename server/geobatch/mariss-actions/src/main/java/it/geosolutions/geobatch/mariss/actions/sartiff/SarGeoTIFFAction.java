@@ -306,6 +306,7 @@ public class SarGeoTIFFAction extends MarissBaseAction {
      * @throws Exception
      */
     private void importGeoTiff(File newFile, String optimizationOptions) throws Exception {
+        /* AF: Temporarly disabled the Importer ad Optimization due to an issue with the GeoServer Importer
         GeoServerRESTImporterManager publisher = new GeoServerRESTImporterManager(
                 new URL(configuration.getGeoserverURL()), configuration.getGeoserverUID(),
                 configuration.getGeoserverPWD());
@@ -315,6 +316,14 @@ public class SarGeoTIFFAction extends MarissBaseAction {
         int t = 0;// publisher.putNewTask(i, newFile.getAbsolutePath());
 
         publisher.postImport(i);
+        */
+
+        GeoServerRESTPublisher publisher = new GeoServerRESTPublisher(
+                configuration.getGeoserverURL(), configuration.getGeoserverUID(),
+                configuration.getGeoserverPWD());
+        
+        publisher.harvestExternal(container.getDefaultNameSpace(), COVERAGE_NAME, 
+                "imagemosaic", newFile.getAbsolutePath());
     }
 
     public String createImporterRequestBody(File newFile, String optimizationOptions) {
