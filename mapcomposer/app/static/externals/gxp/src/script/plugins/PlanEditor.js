@@ -1407,6 +1407,11 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         try {
             this.target.mapPanel.map.addLayer(this.wfsLayer);
         } catch(err) {
+            console.log("WFS Layer Error...");
+            console.log("Source: " + source);
+            console.log("layerURL: " + me.layerURL);
+            console.log("layerName: " + me.layerName);
+            console.log(me.getCurrentFilter());
             console.log(err);
         }
 
