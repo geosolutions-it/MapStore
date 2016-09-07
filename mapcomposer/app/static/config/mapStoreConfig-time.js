@@ -302,6 +302,30 @@
             "actionTarget": "paneltbar"
         },
         {
+            "ptype": "gxp_playback",
+            "outputTarget": "paneltbar",
+            "wfsGridId": "featuregrid",
+            "id": "playback",
+            "playbackMode": "range",
+            "showIntervals": false,
+            "labelButtons": true,
+            "settingsButton": true,
+            "rateAdjuster": false,
+            "dynamicRange": false,
+            "timeFormat": "l, F d, Y g:i:s A",
+            "outputConfig": {
+                "controlConfig": {
+                    "step": 15,
+                    "units": "Minutes",
+                    "range": [
+                        "2010-12-24T00:00:00.000Z",
+                        "2010-12-24T23:59:00.000Z"
+                    ],
+                    "frameRate": 5
+                }
+            }
+        },
+        {
             "actions": [
                 "->"
             ],

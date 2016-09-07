@@ -932,8 +932,12 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             value: serviceName
         });
 
-        targetFeatureManager.clearFeatures();
-        targetFeatureManager.loadFeatures(filter);
+        try {
+           targetFeatureManager.clearFeatures();
+           targetFeatureManager.loadFeatures(filter);
+        } catch(err) {
+           console.log(err);
+        }
         // save current serviceName. It's 'user@serviceName' in the WFS layer
         //this.currentServiceName = this.target.userDetails.user.name +  "@" + serviceName;
         this.currentServiceName = serviceName;
@@ -1312,13 +1316,21 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
         }
         
         // polygon layer
-        if(this.wfsLayer){
-            this.target.mapPanel.map.removeLayer(this.wfsLayer);    
+        try {
+            if(this.wfsLayer){
+                this.target.mapPanel.map.removeLayer(this.wfsLayer);    
+            }
+        } catch(err) {
+            console.log(err);
         }
 
         // acq_list layer
-        if(this.acqListLayer){
-            this.target.mapPanel.map.removeLayer(this.acqListLayer);
+        try {
+            if(this.acqListLayer){
+                this.target.mapPanel.map.removeLayer(this.acqListLayer);
+            }
+        } catch(err) {
+            console.log(err);
         }
 
         // addMSLayer(this.layerName, this.layerName, this.target.sources[this.source].url);
@@ -1391,8 +1403,19 @@ gxp.plugins.PlanEditor = Ext.extend(gxp.plugins.Tool, {
             me.loadWFSData();
             me.checkMode();
         });
-        this.target.mapPanel.map.addLayer(this.wfsLayer);
-        this.target.mapPanel.map.addLayer(this.acqListLayer);
+
+        try {
+            this.target.mapPanel.map.addLayer(this.wfsLayer);
+        } catch(err) {
+            console.log(err);
+        }
+
+        try {
+            this.target.mapPanel.map.addLayer(this.acqListLayer);
+        } catch(err) {
+            console.log(err);
+        }
+
     },
 
     onSaveFail: function(){
