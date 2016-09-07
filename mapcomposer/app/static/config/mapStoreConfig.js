@@ -7,7 +7,7 @@
             "ptype": "gxp_wmssource",
             "title": "MARISS",
             "version": "1.1.1",
-            "url": "http://192.168.1.133/geoserver/mariss/ows",
+            "url": "http://192.168.1.222/geoserver/mariss/ows",
             "layerBaseParams": {
                 "TILED": true,
                 "TILESORIGIN": "-20037508.34,-20037508.34"
@@ -17,7 +17,7 @@
             "ptype": "gxp_wmssource",
             "title": "SDE",
             "version": "1.1.1",
-            "url": "http://192.168.1.133/geoserver/ows",
+            "url": "http://192.168.1.222/geoserver/ows",
             "layerBaseParams": {
                 "TILED": true,
                 "TILESORIGIN": "-20037508.34,-20037508.34"
@@ -452,7 +452,7 @@
         {
             "ptype": "npa_cart_grid",
             "id": "cart",
-            "downloadService":"http://192.168.1.133/opensdi2-manager/mvc/download/",
+            "downloadService":"http://192.168.1.222/opensdi2-manager/mvc/download/",
             "outputConfig": {
                 "viewConfig": {
                     "forceFit": true
@@ -527,8 +527,8 @@
         {
             "ptype": "gxp_wpsmanager",
             "id": "wpsSPM",
-            "url": "http://192.168.1.133/geoserver/wps",
-            "geostoreUrl": "http://192.168.1.133/opensdi2-manager/facade/geostore/rest",
+            "url": "http://192.168.1.222/geoserver/wps",
+            "geostoreUrl": "http://192.168.1.222/opensdi2-manager/facade/geostore/rest",
             "geostoreProxy": "/proxy?url=",
             "silentErrors": true,
             "checkLocation": true,
