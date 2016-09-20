@@ -457,7 +457,7 @@
 	                            "mapping":"geometry"
 	                        }
 	                    ],
-	                    "geocoderTypeSortBy":null,
+	                    "geocoderTypeSortBy":"ID",
 	                    "geocoderTypeQueriableAttributes":[
 	                        "NOMEVIA"
 	                    ],
@@ -486,7 +486,7 @@
 	                            "mapping":"geometry"
 	                        }
 	                    ],
-	                    "geocoderTypeSortBy":null,
+	                    "geocoderTypeSortBy":"ID",
 	                    "geocoderTypeQueriableAttributes":[
 	                        "TESTO"
 	                    ],

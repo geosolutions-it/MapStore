@@ -103,7 +103,7 @@
                                     "mapping":"geometry"
                                 }
                             ],
-                            "geocoderTypeSortBy":null,
+                            "geocoderTypeSortBy": "ID",
                             "geocoderTypeQueriableAttributes":[
                                 "NOMEVIA"
                             ],
