@@ -674,15 +674,20 @@
                     login.target = Ext.getCmp('paneltbar');
                     login.addActions();
                     login.loginSync();
-                     var myAccount = new gxp.plugins.GeoStoreAccount({
+                    var myAccount = new gxp.plugins.GeoStoreAccount({
                         outputTarget:'appTabs',
                         hideAttributes: ["UUID","notes"],
                         displayPanels:false,
                         user: app.userDetails.user,
                         auth: app.userDetails.token,
                         geoStoreBase : serverConfig.geoStoreBase
-                     });
-                     myAccount.addOutput();
+                    });
+                    myAccount.addOutput();
+                    if( app.tools.layertree_plugin
+                     && app.tools.layertree_plugin.output
+                     && app.tools.layertree_plugin.output[0]){
+                        app.tools.layertree_plugin.output[0].collapseAll();
+                    }
                 });
             }
 
