@@ -38,7 +38,7 @@
    ],
    "tools":[{
         "ptype": "mxp_categoryinitializer",
-        "neededCategories": ["TEMPLATE", "MAP","MAPSTORECONFIG"]
+        "neededCategories": ["TEMPLATE", "MAP","MAPSTORECONFIG", "LAYERS_SOURCE", "LAYERS_STYLES"]
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
