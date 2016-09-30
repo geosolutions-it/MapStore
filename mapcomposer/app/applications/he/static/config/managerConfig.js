@@ -167,6 +167,24 @@
              "target": "north.tbar",
              "index": 6
         }
+    }, { 
+        "ptype": "mxp_geostore_resource_editor",
+        "category": "MAP",
+        "buttonText": "Maps",
+        "actionTarget":{
+             "target": "north.tbar",
+             "index": 7
+            }
+
+    }, { 
+        "ptype": "mxp_geostore_resource_editor",
+        "category": "MAPSTORECONFIG",
+        "outputItemId": "MAPSTORECONFIG",
+        "buttonText": "Group Configurations",
+        "actionTarget":{
+             "target": "north.tbar",
+             "index": 8
+            }
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
