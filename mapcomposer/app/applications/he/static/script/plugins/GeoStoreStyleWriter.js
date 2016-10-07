@@ -54,6 +54,32 @@ gxp.plugins.he.GeoStoreStyleWriter = Ext.extend(gxp.plugins.he.StyleWriterHE, {
         gxp.plugins.he.GeoStoreStyleWriter.superclass.constructor.apply(this, arguments);
     },
     
+    getUserDetails: function() {
+        if (this.target.userDetails) {
+            return this.target.userDetails;
+        }
+        return Ext.util.JSON.decode(sessionStorage["userDetails"]);
+    },
+    
+    getEveryoneGroupIdFromUserDetails: function(userDetails) {
+        if (!userDetails
+            || !userDetails.user
+            || !userDetails.user.groups
+            || !userDetails.user.groups.group) {
+            return undefined;
+        }
+        var groups = userDetails.user.groups.group;
+        if (!(userDetails.user.groups.group instanceof Array)) {
+            groups = [groups];
+        }
+        for (i = 0; i < groups.length; ++i) {
+            if(groups[i].groupName == 'everyone') {
+                return groups[i].id;
+            }
+        }
+        return undefined;
+    },
+    
     /** api: method[write]
      *  :arg options: ``Object``
      *
@@ -155,7 +181,11 @@ gxp.plugins.he.GeoStoreStyleWriter = Ext.extend(gxp.plugins.he.StyleWriterHE, {
                     store: style
                 });
                 
-                this.geoStore.createEntity(this.geostoreEntityResource,callback,function(response){
+                this.geoStore.createEntity(this.geostoreEntityResource,
+                    function(response){
+                        this.makeResourcePublic(response, /*loadMask*/null, /*scope*/ this, callback);
+                    },
+                    function(response){
                     this._failed = true;                
                     Ext.Msg.show({
                         title: this.geostoreStyleErrorTitle,
@@ -317,10 +347,60 @@ gxp.plugins.he.GeoStoreStyleWriter = Ext.extend(gxp.plugins.he.StyleWriterHE, {
      *  Reload window on remove style error
      */        
     reload: function(mask){
-        if(mask)
+        if(mask){
             mask.hide();
+        }
         this.target.ownerCt.ownerCt.close();        
         this.target.styler.addOutput();
+    },
+    
+    makeResourcePublic: function(resourceId, loadMask, scope, successCallback) {
+        var userDetails = scope.getUserDetails();
+        var everyoneGroupId = scope.getEveryoneGroupIdFromUserDetails(userDetails);
+        var authHeader = userDetails.token;
+        var requestBody = '<SecurityRuleList>' +
+                          '   <SecurityRule>' +
+                          '       <canRead>true</canRead>' +
+                          '       <canWrite>true</canWrite>' +
+                          '       <user>' +
+                          '           <name>' + userDetails.user.name + '</name>' +
+                          '           <id>' + userDetails.user.id + '</id>' +
+                          '       </user>' +
+                          '   </SecurityRule>' +
+                          '   <SecurityRule>' +
+                          '       <canRead>true</canRead>' +
+                          '       <canWrite>false</canWrite>' +
+                          '       <group>' +
+                          '           <groupName>everyone</groupName>' +
+                          '           <id>' + everyoneGroupId + '</id>' +
+                          '       </group>' +
+                          '   </SecurityRule>' +
+                          '</SecurityRuleList>';
+        Ext.Ajax.request({
+            url: this.url + 'resources/resource/' + resourceId + '/permissions',
+            method: 'POST',
+            headers:{
+                'Content-Type' : 'text/xml',
+                'Authorization' : authHeader
+            },
+            params: requestBody,
+            scope: scope,
+            success:  function(response, opts) {
+                loadMask && loadMask.hide();
+                if (successCallback) {
+                    successCallback(resourceId);
+                }
+            },
+            failure:  function(response, opts) {
+                loadMask && loadMask.hide();
+                Ext.Msg.show({
+                    title: 'GeoStore Exception',
+                    msg: scope.cannotMakeResourcePublicText,
+                    buttons: Ext.Msg.OK,
+                    icon: Ext.Msg.ERROR
+                });
+            }
+        });
     }
 });
 
