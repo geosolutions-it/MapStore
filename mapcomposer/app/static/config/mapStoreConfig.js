@@ -148,6 +148,12 @@
     },
 	"customTools":[
 		{
+		    "ptype": "gxp_addlayers",
+		    "actionTarget": "tree.tbar",
+		    "id": "addlayers",
+		    "zoomToExtent": false
+		},
+		{
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,
@@ -251,13 +257,6 @@
                 "limit": 10,
                 "timeout": 60000
             }            
-		}, {
-			"ptype": "gxp_addlayer",
-			"showCapabilitiesGrid": true,
-			"useEvents": false,
-			"showReport": "never",
-			"directAddLayer": false,
-			"id": "addlayer"
 		}, {
 			"actions": ["-"], 
 			"actionTarget": "paneltbar"
