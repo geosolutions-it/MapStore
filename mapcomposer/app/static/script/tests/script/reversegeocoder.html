@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html debug="true">
+  <head>
+    <script src="http://extjs.cachefly.net/ext-3.3.1/adapter/ext/ext-base.js"></script>
+    <script src="http://extjs.cachefly.net/ext-3.3.1/ext-all-debug.js"></script>
+    <script type="text/javascript" src="../../../externals/openlayers/lib/OpenLayers.js"></script>
+    <script type="text/javascript" src="../../../externals/geoext/lib/GeoExt.js"></script>
+    <script type="text/javascript" src="../../../externals/gxp/src/script/loader.js"></script>
+    <script type="text/javascript" src="../../../externals/gxp/src/script/plugins/Tool.js"></script>
+    <script type="text/javascript" src="../../reversegeocoder.js"></script>
+
+    <script type="text/javascript">
+        var target={
+			on: function(cfg) {
+				if(cfg.ready) {
+					Ext.onReady(function() {
+						cfg.ready.call(cfg.scope);
+					});
+					
+				}
+			},
+			mapPanel: {
+				map: {
+					getLayersBy: function(prop,value) {
+						return [];
+					},
+					events:{
+						register:function(evtName,scope,fun) {
+						}
+					},
+					getLonLatFromViewPortPx: function() {
+						return {
+							transform: function() {
+								return {lat:0,lon:0};
+							}
+						};
+					},
+					getProjectionObject: function() {
+					}
+				}
+			},
+			portal:{
+				toolbar:new Ext.Toolbar()
+			},
+			tools:{
+			}
+		};
+		
+		var google={
+			maps: {
+				Geocoder:function() {
+					this.geocode=function(params,callback) {
+						callback([{"formatted_address":"googleaddress"}],200);
+					}
+				},
+				LatLng: function() {},
+				GeocoderStatus: {
+					OK:200
+				}
+			}
+		};
+		
+		Ext.data.ScriptTagProxy.prototype.request=function(action,records,params,reader,callback,scope){
+			reader.readRecords({"display_name":"nominatimaddress"});
+		};			
+				
+        function test_constructor(t) {
+            t.plan(1);
+            
+            var instance = new gxp.plugins.ReverseGeocoder();
+            
+            t.ok(instance instanceof gxp.plugins.ReverseGeocoder, "Instance created successfully");
+            
+        }
+		
+		function test_widgets(t) {
+            t.plan(3);
+			
+			var instance = new gxp.plugins.ReverseGeocoder({geocoderType:'google',outputTarget:'toolbar'});
+			
+            instance.init(target);
+			
+			t.ok(instance.addOutput() !== null,"Widget added to the toolbar");
+			
+			t.ok(instance.button instanceof Ext.Button, "Textfield created successfully");
+			t.ok(instance.textfield instanceof Ext.form.TextField, "Textfield created successfully");
+			
+        }
+		
+		function test_google(t) {
+            t.plan(1);
+			
+			var instance = new gxp.plugins.ReverseGeocoder({geocoderType:'google',outputTarget:'toolbar'});
+			
+            instance.init(target);
+			instance.reverseGeocode({xy:{}});
+			
+			t.eq(instance.textfield.getValue(),"googleaddress", "Google Address geocoded successfully");
+			
+        }
+		
+		function test_nominatim(t) {
+            t.plan(1);
+			
+			var instance = new gxp.plugins.ReverseGeocoder({geocoderType:'nominatim',outputTarget:'toolbar'});
+			
+            instance.init(target);
+			instance.reverseGeocode({xy:{}});
+			
+			t.eq(instance.textfield.getValue(),"nominatimaddress", "Nominatim Address geocoded successfully");
+			
+        }
+		
+		function test_dynamic_google(t) {
+            t.plan(1);
+			
+			var instance = new gxp.plugins.ReverseGeocoder({geocoderType:'dynamic',outputTarget:'toolbar'});
+			
+			target.mapPanel.map.getLayersBy=function() {
+				return [{
+					CLASS_NAME:'OpenLayers.Layer.Google',
+					visibility:true
+				}];
+			};
+            instance.init(target);
+			
+			instance.reverseGeocode({xy:{}});
+			
+			t.eq(instance.textfield.getValue(),"googleaddress", "Google Address geocoded successfully");
+			
+        }
+		
+		function test_dynamic_google(t) {
+            t.plan(1);
+			
+			var instance = new gxp.plugins.ReverseGeocoder({geocoderType:'dynamic',outputTarget:'toolbar'});
+			
+			target.mapPanel.map.getLayersBy=function() {
+				return [];
+			};
+            instance.init(target);
+			
+			instance.reverseGeocode({xy:{}});
+			
+			t.eq(instance.textfield.getValue(),"nominatimaddress", "Nominatim Address geocoded successfully");
+			
+        }
+		
+
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
