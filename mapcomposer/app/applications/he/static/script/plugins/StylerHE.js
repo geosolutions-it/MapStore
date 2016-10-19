@@ -122,6 +122,17 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
      *  boolena if true user is Advanced User
      */
     advancedUser:false,
+    
+    /**
+     * Group to restrict to
+     */
+    restrictToGroups: "Advanced_Users",
+    
+    /**
+     * Hosts whitelist for GeoStore styles
+     * MUST BE LOWERCASE
+     */
+    geostoreStlyeUrls: ["geoweb-portal.com", "www.geoweb-portal.com", "geoweb.rextagstrategies.com"],
 
     constructor: function(config) {
         gxp.plugins.he.StylerHE.superclass.constructor.apply(this, arguments);
@@ -227,7 +238,10 @@ gxp.plugins.he.StylerHE = Ext.extend(gxp.plugins.Tool, {
                 var pattern=/(.+:\/\/)?([^\/]+)(\/.*)*/i;
                 var mHost=pattern.exec(url);
                 var sameSource = mapStoreDebug ? mapStoreDebug : (mHost[2] == location.host ? true : false);
-
+                if(this.geostoreStlyeUrls && mHost[2] && this.geostoreStlyeUrls.indexOf(mHost[2].toLowerCase()) > -1 ){
+                    sameSource = true;
+                }
+                
                 this.roleAdmin=(this.target &&
                                 this.target.userDetails &&
                                 this.target.userDetails.user.role &&
