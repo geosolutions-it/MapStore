@@ -1422,6 +1422,11 @@ var GeoExplorer = Ext.extend(gxp.Viewer, {
      */
     getAuth: function(){
         var auth;
+        try{
+            parent.document;
+        }catch(e){
+            return auth;
+        }
         //get from the parent
         if(window.parent && window.parent.window && window.parent.window.manager && window.parent.window.manager.auth){
           auth = window.parent.window.manager.auth;
