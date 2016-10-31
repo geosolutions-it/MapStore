@@ -19,6 +19,7 @@
  * "disableDefaultUI" option set to true. Using UI controls that the Google
  * Maps API provides is not supported by the OpenLayers API.
  */
+
 OpenLayers.Layer.Google.v3 = {
     
     /**
@@ -85,14 +86,14 @@ OpenLayers.Layer.Google.v3 = {
                 draggable: false,
                 disableDoubleClickZoom: true,
                 scrollwheel: false,
-                streetViewControl: false
+                streetViewControl: false,
+                tilt: (this.useTiltImages ? 45: 0)
             });
             var googleControl = document.createElement('div');
-            
             googleControl.style.width = '100%';
             googleControl.style.height = '100%';
             mapObject.controls[google.maps.ControlPosition.TOP_LEFT].push(googleControl);
-            if (! this.enableTilt) mapObject.setTilt(0); 
+
             // cache elements for use by any other google layers added to
             // this same map
             cache = {
@@ -142,17 +143,21 @@ OpenLayers.Layer.Google.v3 = {
             if (visible === true) {
                 if (container.parentNode !== map.div) {
                     if (!cache.rendered) {
+                        container.style.visibility = 'hidden';
                         var me = this;
                         google.maps.event.addListenerOnce(this.mapObject, 'tilesloaded', function() {
                             cache.rendered = true;
-                            me.setGMapVisibility(me.getVisibility());
+                            container.style.visibility = '';
+                            me.setGMapVisibility(true);
                             me.moveTo(me.map.getCenter());
+                            cache.googleControl.appendChild(map.viewPortDiv);
+                            me.setGMapVisibility(me.visible);
                         });
                     } else {
-                        map.div.appendChild(container);
                         cache.googleControl.appendChild(map.viewPortDiv);
-                        google.maps.event.trigger(this.mapObject, 'resize');
                     }
+                    map.div.appendChild(container);
+                    google.maps.event.trigger(this.mapObject, 'resize');
                 }
                 this.mapObject.setMapTypeId(type);                
             } else if (cache.googleControl.hasChildNodes()) {
