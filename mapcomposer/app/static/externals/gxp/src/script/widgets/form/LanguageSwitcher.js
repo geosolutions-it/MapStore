@@ -61,15 +61,8 @@ gxp.form.LanguageSwitcher = Ext.extend(gxp.form.ContextSwitcher, {
 	 */
 	data:[
 		['en','English','','en','English language'],
-		['fr','Français','','fr','Franch language'],
-		['it','Italiano','','it','Italian language'], 
-		['de','Deutsch','','de','Deutsch language'], 
-		['es','Español','','es','Spanish language']  
+		['it','Italiano','','it','Italian language']
 	]
-	
-	
-	
-	
 });
 
 Ext.reg(gxp.form.LanguageSwitcher.prototype.xtype, gxp.form.LanguageSwitcher);

@@ -21,18 +21,6 @@
       [
          "it",
          "Italiano"
-      ],
-      [
-         "fr",
-         "Français"
-      ],
-      [
-         "de",
-         "Deutsch"
-      ],
-      [
-         "es",
-         "Español"
       ]
    ],
    "tools":[{
@@ -79,6 +67,29 @@
         "actionTarget":{
           "target": "north.tbar",
           "index": 2
+        }
+    },{
+        "ptype": "mxp_geostore_resource_editor",
+        "category": "MAP",
+        "buttonText": "Editor Mappe",
+        "actionTarget":{
+             "target": "north.tbar",
+             "index": 3
+            },
+	"attributeFields":[{
+		"xtype":"textfield",
+		"id":"attribute.owner",
+		"anchor":'95%',
+		"fieldLabel": "Owner",
+		"name":"attribute.owner"
+	}]
+
+    },{
+        "ptype": "mxp_gwc_manager",
+        "GWCRestURL": "http://dati.adbarno.it/geoserver/gwc/rest/",
+        "actionTarget": {
+            "target": "north.tbar",
+            "index": 4
         }
     },{
         "ptype": "mxp_login",

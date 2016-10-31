@@ -127,7 +127,7 @@ GeoExt.Lang.add("it", {
 		textAddUser: '', 
 		textAddUserTitle: 'Aggiungi utente',
 		tooltipAddUser: 'Crea un nuovo utente',
-		textTitle: 'User Manager',
+		textTitle: 'Gestore Utenti',
 		tooltipSearch: "Cerca",
 		textSelectRole: 'Seleziona un ruolo...',
 		userAlreadyTaken: 'Nome utente presente',
@@ -252,7 +252,7 @@ GeoExt.Lang.add("it", {
         tooltipText: "Apri Gestore Mappe"
     },
     "mxp.plugins.TemplateManager.prototype":{
-        buttonText: "Modelli",
+        buttonText: "Gestore Modelli",
         tooltipText: "Apri Gestore Modelli"
     },
 	"MSMTemplateManager.prototype":{
