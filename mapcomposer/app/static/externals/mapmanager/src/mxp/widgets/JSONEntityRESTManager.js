@@ -326,7 +326,7 @@ mxp.widgets.JSONEntityRESTManager = Ext.extend(Ext.Panel, {
      * private method[getEditorBBar] 
      * create bbar for an entity
      */
-    getEditorBBar(entity, defaultPageSize, store, plugins){
+    getEditorBBar: function(entity, defaultPageSize, store, plugins){
         return [
             new Ext.PagingToolbar({
                 pageSize: entity.pageSize || defaultPageSize,
