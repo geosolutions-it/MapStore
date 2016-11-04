@@ -352,6 +352,7 @@ gxp.plugins.FeatureEditor = Ext.extend(gxp.plugins.ClickableFeatures, {
                                 featureStore.on({
                                     write: {
                                         fn: function() {
+                                            snappingAgent && snappingAgent.reloadLayer();
                                             if (popup && popup.isVisible()) {
                                                 popup.enable();
                                             }
