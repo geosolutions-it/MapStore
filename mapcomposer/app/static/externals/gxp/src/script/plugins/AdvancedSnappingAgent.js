@@ -77,113 +77,111 @@ gxp.plugins.AdvancedSnappingAgent = Ext.extend(gxp.plugins.Tool, {
 		}
     },
     
+    reloadLayer: function() {
+
+        if (!this.target.getAuth()) {
+            return;
+        }
+
+        var strategyBBOX = new OpenLayers.Strategy.BBOX({ratio: 1.5});
+
+        // FIX about undefined geometryType on DB
+        if(this.featureManager.featureStore && this.featureManager.geometryType != "Geometry"){                    
+            var map = this.target.mapPanel.map;
+            
+            var featureLayer = map.getLayersByName(this.snapTarget.name || "snapping_target")[0];
+            if(featureLayer){
+                map.removeLayer(featureLayer);
+            }
+            
+            var style = {
+                "all": new OpenLayers.Style(null, {
+                    rules: [new OpenLayers.Rule({
+                        symbolizer: {
+                            "Point": {
+                                pointRadius: 4,
+                                graphicName: "square",
+                                fillOpacity: 0,
+                                strokeWidth: 1,
+                                strokeOpacity: 0
+                            },
+                            "Line": {
+                                strokeWidth: 4,
+                                strokeOpacity: 0
+                            },
+                            "Polygon": {
+                                strokeWidth: 2,
+                                strokeOpacity: 0,
+                                fillOpacity: 0
+                            }
+                        }
+                    })]
+                })
+            };
+
+            var layer = new OpenLayers.Layer.Vector(this.snapTarget.name || "snapping_target", {
+                protocol: this.featureManager.featureStore.proxy.protocol,
+                strategies: [strategyBBOX],
+                displayInLayerSwitcher: false,
+                visibility: true,
+                styleMap: new OpenLayers.StyleMap(style["all"], {extendDefault: true}),    
+                minResolution: this.snapTarget.minResolution,
+                maxResolution: this.snapTarget.maxResolution
+            });
+            
+            this.currentLayer = layer;
+
+            if (this.actions[0].items[0].pressed) {
+                map.addLayer(layer);
+            }
+
+            map.events.on({
+                moveend: function() {
+                    var min = this.snapTarget.minResolution || Number.NEGATIVE_INFINITY;
+                    var max = this.snapTarget.maxResolution || Number.POSITIVE_INFINITY;
+                    var resolution = map.getResolution();
+                    if (min <= resolution && resolution < max) {
+                        layer.strategies[0].update();
+                    }
+                },
+                scope: this
+            });
+            
+            this.snapTarget.layer = layer;
+            this.snappingTargets.push(this.snapTarget);
+            
+            for (var i=0, ii=this.controls.length; i<ii; ++i) {
+                this.controls[i].addTarget(this.snapTarget);
+            }
+
+            this.actions[0].enable();
+            
+        }else{
+            this.currentLayer = null;
+            this.actions[0].disable();
+        }
+    },
+
     /** private: method[addSnappingTarget]
      */
     addSnappingTarget: function(snapTarget) {
-        snapTarget = Ext.apply({}, snapTarget);
-
-		var featureManager;
-		
-		var strategyBBOX = new OpenLayers.Strategy.BBOX({ratio: 1.5});
+        this.snapTarget = Ext.apply({}, snapTarget);
 		
 		var featureManagerConfig = {
             maxFeatures: null,
             paging: false,
             listeners: {
-                layerchange: function() {
-
-                    if (!this.target.getAuth()) {
-                        return;
-                    }
-
-					// FIX about undefined geometryType on DB
-                    if(featureManager.featureStore && featureManager.geometryType != "Geometry"){                    
-                        var map = this.target.mapPanel.map;
-                        
-                        var featureLayer = map.getLayersByName(snapTarget.name || "snapping_target")[0];
-                        if(featureLayer){
-                            map.removeLayer(featureLayer);
-                        }
-                        
-                        var style = {
-                            "all": new OpenLayers.Style(null, {
-                                rules: [new OpenLayers.Rule({
-                                    symbolizer: {
-                                        "Point": {
-                                            pointRadius: 4,
-                                            graphicName: "square",
-                                            fillOpacity: 0,
-                                            strokeWidth: 1,
-                                            strokeOpacity: 0
-                                        },
-                                        "Line": {
-                                            strokeWidth: 4,
-                                            strokeOpacity: 0
-                                        },
-                                        "Polygon": {
-                                            strokeWidth: 2,
-                                            strokeOpacity: 0,
-                                            fillOpacity: 0
-                                        }
-                                    }
-                                })]
-                            })
-                        };
-            
-                        var layer = new OpenLayers.Layer.Vector(snapTarget.name || "snapping_target", {
-                            protocol: featureManager.featureStore.proxy.protocol,
-                            strategies: [strategyBBOX],
-                            displayInLayerSwitcher: false,
-                            visibility: true,
-                            styleMap: new OpenLayers.StyleMap(style["all"], {extendDefault: true}),    
-                            minResolution: snapTarget.minResolution,
-                            maxResolution: snapTarget.maxResolution
-                        });
-                        
-                        this.currentLayer = layer;
-
-                        if (this.actions[0].items[0].pressed) {
-                            map.addLayer(layer);
-                        }
-
-                        map.events.on({
-                            moveend: function() {
-                                var min = snapTarget.minResolution || Number.NEGATIVE_INFINITY;
-                                var max = snapTarget.maxResolution || Number.POSITIVE_INFINITY;
-                                var resolution = map.getResolution();
-                                if (min <= resolution && resolution < max) {
-                                    layer.strategies[0].update();
-                                }
-                            },
-                            scope: this
-                        });
-                        
-                        snapTarget.layer = layer;
-                        this.snappingTargets.push(snapTarget);
-                        
-                        for (var i=0, ii=this.controls.length; i<ii; ++i) {
-                            this.controls[i].addTarget(snapTarget);
-                        }
-
-                        this.actions[0].enable();
-						
-                    }else{
-                        this.currentLayer = null;
-                        this.actions[0].disable();
-                    }
-
-                    this.snapTarget = snapTarget;
-                },
+                layerchange: this.reloadLayer,
                 scope: this
             }
         };
 		
-		if(snapTarget.source && snapTarget.name){
+		if(this.snapTarget.source && this.snapTarget.name){
 			featureManagerConfig = Ext.apply(
 				{
 					layer: {
-						source: snapTarget.source,
-						name: snapTarget.name
+						source: this.snapTarget.source,
+						name: this.snapTarget.name
 					}
 				}, 
 				featureManagerConfig
@@ -193,12 +191,12 @@ gxp.plugins.AdvancedSnappingAgent = Ext.extend(gxp.plugins.Tool, {
 		// TODO: Discuss simplifying this.  What we want here is a WFS protocol
         // given a WMS layer config.  We're only using the FeatureManager for 
         // generating the protocol options.
-        featureManager = new gxp.plugins.FeatureManager(featureManagerConfig);
+        this.featureManager = new gxp.plugins.FeatureManager(featureManagerConfig);
 		
         //delete snapTarget.source;
         //delete snapTarget.name;
 
-        featureManager.init(this.target);
+        this.featureManager.init(this.target);
     },
     
     /** api: method[addSnappingControl]
