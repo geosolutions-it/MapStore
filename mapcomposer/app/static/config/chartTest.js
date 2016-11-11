@@ -24,9 +24,9 @@
 		"osm": { 
 			"ptype": "gxp_osmsource"
 		},
-		"bing": {
-			"ptype": "gxp_bingsource" 
-		}, 
+		"google": {
+			"ptype": "gxp_googlesource" 
+		},
 		"ol": { 
 			"ptype": "gxp_olsource" 
 		}
@@ -62,6 +62,12 @@
 						"visibility": false
 					}
 				]
+			},{
+				"source": "osm",
+				"title": "Open Street Map",
+				"name": "mapnik",
+				"group": "background",
+				"visibility": true
 			}
 		]
 	},

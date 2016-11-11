@@ -70,12 +70,7 @@
 				"name": "mapnik",
 				"group": "background",
 				"visibility": true
-			},{
-				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
-				"group": "background"
-			},{
+			}, {
                 "source": "comunege",
                 "group" : "Comune di Genova",
 				"title" : "Circoscrizioni",
