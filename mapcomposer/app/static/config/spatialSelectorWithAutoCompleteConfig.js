@@ -49,11 +49,6 @@
 				"name": "mapnik",
 				"group": "background"
 			},{
-				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
-				"group": "background"
-			},{
 				"source": "google",
 				"title": "Google Roadmap",
 				"name": "ROADMAP",
