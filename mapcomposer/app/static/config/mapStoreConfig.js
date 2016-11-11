@@ -78,23 +78,18 @@
 				"name": "mapnik",
 				"group": "background",
 				"visibility": true
-			},{
-				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
-				"group": "background",
-				"visibility": false
 			}
 		]
 	},
     "customPanels":[
         {
             "xtype": "tabpanel",
-            "title": "Data Viewer",
+            "title": "Visualizzatore Dati",
             "border": false,
             "id": "south",
             "collapsedonfull": true,
             "region": "south",
+            "collapsedIconCls": "icon-south-panel",
             "split":true,
             "height": 330,
             "collapsed": true,
@@ -103,6 +98,7 @@
             "header": true,
             "hideMode": "offsets",
 			"floatable": false,
+            "plugins": ["Ext.ux.PanelCollapsedTitle"], 
             "items": [
 				{
 					"xtype": "container",
@@ -123,7 +119,9 @@
         },
         {
               "xtype": "panel",
-              "title": "Pannello Ricerche",  
+              "title": "Pannello Ricerche",
+              "plugins": ["Ext.ux.PanelCollapsedTitle"],
+              "collapsedIconCls": "icon-east-panel",
 			  "floatable": false,			  
               "border": false,
               "id": "east",
@@ -147,13 +145,12 @@
         "topOutUnits":"km"
     },
 	"customTools":[
-		{
-		    "ptype": "gxp_addlayers",
-		    "actionTarget": "tree.tbar",
-		    "id": "addlayers",
-		    "zoomToExtent": false
-		},
-		{
+        {
+            "ptype": "gxp_addlayers",
+            "actionTarget": "tree.tbar",
+            "id": "addlayers",
+            "zoomToExtent": false
+        },{
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,
@@ -188,6 +185,7 @@
             "featureManager": "featuremanager",
 			"toggleGroup": "toolGroup",
             "autoLoadFeatures": false,
+            "autoCompleteUrl": "http://mappe.comune.genova.it/geoserver/wps",
             "actionTarget":{
                 "target":"paneltbar",
                 "index":24
@@ -456,7 +454,7 @@
 	                            "mapping":"geometry"
 	                        }
 	                    ],
-	                    "geocoderTypeSortBy":"ID",
+	                    "geocoderTypeSortBy": "ID",
 	                    "geocoderTypeQueriableAttributes":[
 	                        "NOMEVIA"
 	                    ],
@@ -485,7 +483,7 @@
 	                            "mapping":"geometry"
 	                        }
 	                    ],
-	                    "geocoderTypeSortBy":"ID",
+	                    "geocoderTypeSortBy": "ID",
 	                    "geocoderTypeQueriableAttributes":[
 	                        "TESTO"
 	                    ],
