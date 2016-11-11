@@ -62,13 +62,6 @@
 						"visibility": false
 					}
 				]
-			},
-			{
-				"source": "mapquest",
-				"title": "MapQuest OpenStreetMap",
-				"name": "osm",
-				"group": "background",
-				"visibility": true
 			}
 		]
 	},
