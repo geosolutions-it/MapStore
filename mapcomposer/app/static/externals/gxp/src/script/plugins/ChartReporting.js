@@ -593,7 +593,7 @@ gxp.plugins.ChartReporting = Ext.extend(gxp.plugins.Tool, {
         }
         this.getChartById(chartId);
     },
-    addChart( chartConfig, autoOpen ){
+    addChart: function( chartConfig, autoOpen ){
         chartConfig.id= Ext.id();
         chartConfig.chartSource = 'new';
         chartConfig.chartStatus = 'new';
