@@ -485,7 +485,7 @@ gxp.charts.ChartJsChart = Ext.extend(Ext.Container, {
         }
         
     },
-    hexToRgba(hex,opacity){
+    hexToRgba: function(hex,opacity){
         hex = hex.replace('#','');
         r = parseInt(hex.substring(0,2), 16);
         g = parseInt(hex.substring(2,4), 16);
