@@ -14,7 +14,7 @@
 			"layerBaseParams":{
 				"FORMAT": "image/png8",
 				"TILED": true,
-				"TILESORIGIN": "-20037508.34, -20037508.34"
+			    "TILESORIGIN": "-20037508.34, -20037508.34"
 			},
             "authParam":"authkey"
 		},
@@ -84,11 +84,12 @@
     "customPanels":[
         {
             "xtype": "tabpanel",
-            "title": "Data Viewer",
+            "title": "Visualizzatore Dati",
             "border": false,
             "id": "south",
             "collapsedonfull": true,
             "region": "south",
+            "collapsedIconCls": "icon-south-panel",
             "split":true,
             "height": 330,
             "collapsed": true,
@@ -97,8 +98,16 @@
             "header": true,
             "hideMode": "offsets",
 			"floatable": false,
+            "plugins": ["Ext.ux.PanelCollapsedTitle"], 
             "items": [
 				{
+					"xtype": "container",
+					"title": "Reportistica",
+					"border": false,
+					"iconCls": "grid-columns",
+					"layout": "fit",
+					"id": "reporting"
+				},{
 					"xtype": "container",
 					"title": "Griglia Risultati",
 					"border": false,
@@ -117,7 +126,9 @@
         },
         {
               "xtype": "panel",
-              "title": "Pannello Ricerche",  
+              "title": "Pannello Ricerche",
+              "plugins": ["Ext.ux.PanelCollapsedTitle"],
+              "collapsedIconCls": "icon-east-panel",
 			  "floatable": false,			  
               "border": false,
               "id": "east",
@@ -141,7 +152,12 @@
         "topOutUnits":"km"
     },
 	"customTools":[
-		{
+        {
+            "ptype": "gxp_addlayers",
+            "actionTarget": "tree.tbar",
+            "id": "addlayers",
+            "zoomToExtent": false
+        },{
 			"ptype": "gxp_addlayer",
 			"showCapabilitiesGrid": true,
 			"useEvents": false,
@@ -176,6 +192,7 @@
             "featureManager": "featuremanager",
 			"toggleGroup": "toolGroup",
             "autoLoadFeatures": false,
+            "autoCompleteUrl": "http://mappe.comune.genova.it/geoserver/wps",
             "actionTarget":{
                 "target":"paneltbar",
                 "index":24
@@ -216,6 +233,12 @@
 			"showNumberOfRecords": true,
 			"dateFormat": "d-m-Y",
 			"featureMaxZoomLevel": 18
+        },{
+            "ptype": "gxp_chartReporting",
+            "outputTarget": "reporting",
+            "id": "reportingPanel",
+            "iconCls": "icon-chart-report",
+            "spatialSelectorFormId": "bboxquery"
         }, {
 			"ptype": "gxp_categoryinitializer",
             "silentErrors": true
@@ -246,13 +269,6 @@
                 "timeout": 60000
             }            
 		}, {
-			"ptype": "gxp_addlayer",
-			"showCapabilitiesGrid": true,
-			"useEvents": false,
-			"showReport": "never",
-			"directAddLayer": false,
-			"id": "addlayer"
-		}, {
 			"actions": ["-"], 
 			"actionTarget": "paneltbar"
 		}, {
@@ -278,8 +294,12 @@
 			"index": 26
 		},{
 		  "ptype": "gxp_spatialqueryform",
+          "enableChartOptionsFieldset": true,
+          "chartReportingTool": "reportingPanel",
 		  "featureManager": "featuremanager",
 		  "featureGridContainer": "south",
+          "featureGridTabIndex": "featuregrid",
+          "chartReportTabIndex": "reporting",
 		  "outputTarget": "east",
 		  "showSelectionSummary": true,
 		  "actions": null,
@@ -289,7 +309,8 @@
             "sources": ["comunege"],
             "url": "http://mappe.comune.genova.it/geoserver/wps",
             "pageSize": 10
-          },          
+          },
+          "wpsUrl": "http://mappe.comune.genova.it/geoserver/wps",
 		  "outputConfig":{
 			  "outputSRS": "EPSG:900913",
 			  "selectStyle":{
