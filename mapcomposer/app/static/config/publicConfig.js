@@ -102,13 +102,6 @@
             "items": [
 				{
 					"xtype": "container",
-					"title": "Reportistica",
-					"border": false,
-					"iconCls": "grid-columns",
-					"layout": "fit",
-					"id": "reporting"
-				},{
-					"xtype": "container",
 					"title": "Griglia Risultati",
 					"border": false,
 					"iconCls": "grid-columns",
@@ -233,12 +226,6 @@
 			"showNumberOfRecords": true,
 			"dateFormat": "d-m-Y",
 			"featureMaxZoomLevel": 18
-        },{
-            "ptype": "gxp_chartReporting",
-            "outputTarget": "reporting",
-            "id": "reportingPanel",
-            "iconCls": "icon-chart-report",
-            "spatialSelectorFormId": "bboxquery"
         }, {
 			"ptype": "gxp_categoryinitializer",
             "silentErrors": true
@@ -294,12 +281,9 @@
 			"index": 26
 		},{
 		  "ptype": "gxp_spatialqueryform",
-          "enableChartOptionsFieldset": true,
-          "chartReportingTool": "reportingPanel",
 		  "featureManager": "featuremanager",
 		  "featureGridContainer": "south",
           "featureGridTabIndex": "featuregrid",
-          "chartReportTabIndex": "reporting",
 		  "outputTarget": "east",
 		  "showSelectionSummary": true,
 		  "actions": null,
