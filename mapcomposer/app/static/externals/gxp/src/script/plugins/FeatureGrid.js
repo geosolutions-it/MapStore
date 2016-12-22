@@ -684,11 +684,14 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
         var featureManager = this.target.tools[this.featureManager];
         var grid = this.output[0];
         var protocol = grid.getStore().proxy.protocol;
-        var allPage = {};
-        
+		
+        var allPage = {};        
         allPage.extent = featureManager.getPagingExtent("getMaxExtent");
+		
+		var singlePage = {}		
+		singlePage.extent = featureManager.getPageExtent();
         
-        var filter = featureManager.setPageFilter(single ? featureManager.page : allPage);
+        var filter = featureManager.setPageFilter(single ? featureManager.page || singlePage : allPage);
         
         var node = new OpenLayers.Format.Filter({
             version: protocol.version,
@@ -727,6 +730,11 @@ gxp.plugins.FeatureGrid = Ext.extend(gxp.plugins.ClickableFeatures, {
                 "&typeName=" + protocol.featureType +
                 "&exceptions=application/json" +
                 "&outputFormat="+ outputFormat;
+				
+		if(protocol.viewparams){
+			url += "&viewparams=" + protocol.viewparams;			
+		}
+		
         this.url =  url;
 
         if(this.exportDoubleCheck){
