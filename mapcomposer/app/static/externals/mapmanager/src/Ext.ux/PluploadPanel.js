@@ -200,7 +200,16 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
         if ( this.multipart_params ) {
             this.uploader.settings.multipart_params = this.multipart_params;
         }
-        this.uploader.start();
+        
+        if ( this.askMoreParams && this.uploader.total.queued > 0){
+           if ( !this.moreParamsWindow ){
+               this.createMoreParamsWindow();
+           }
+           this.moreParamsWindow.show();
+        }
+        else {
+            this.uploader.start();
+        }
     },
     initialize_uploader: function () {
         var runtimes = 'gears,browserplus,html5,silverlight,flash';
@@ -409,7 +418,64 @@ Ext.ux.PluploadPanel = Ext.extend(Ext.Panel, {
             data.file.msg = String.format( '<span style="color: red">{2} ({0}: {1})</span>', data.code, data.details, data.message );
         }
         this.update_store( data.file );
+    },
+
+    createMoreParamsWindow: function(){ 
+    
+        this.moreParamsWindow = new Ext.Window({
+                title: this.askMoreParams ? this.askMoreParams.title : '',
+                layout:'form',
+                width:340,
+                height:90,
+                labelWidth: 70,
+                closeAction:'hide',
+                plain: true,
+                
+                // TODO: manage multiple parameters, not only the first one
+                items: [{
+                    xtype:'combo',
+                    ref:'locationCombo',
+                    store:  this.askMoreParams ? this.askMoreParams.params[0].options: [['none', 'noneeee']],
+                    mode:'local',
+                    width: 240,
+                    triggerAction: 'all',
+                    fieldLabel: 'Location',
+                    forceSelection: true,
+                    emptyText: this.askMoreParams ? this.askMoreParams.params[0].emptyText : '',
+                    selectOnFocus:true,
+                    listeners: {
+                        select: function(combo, record, index) {
+                            combo.ownerCt.run.setDisabled(false);
+                        }
+                    }
+                }],
+
+                buttons: [{
+                    text:'Submit',
+                    ref:'../run',
+                    disabled:true,
+                    handler: function(){
+                        if (this.uploader.settings.multipart_params == null){
+                            this.uploader.settings.multipart_params = {};
+                        }
+                        
+                        // TODO: repeat this for each parameter
+                        this.uploader.settings.multipart_params[this.askMoreParams.params[0].name] = this.moreParamsWindow.locationCombo.getValue();
+                        
+                        this.uploader.start();
+                        this.moreParamsWindow.hide();
+                    },
+                    scope: this
+                },{
+                    text: 'Close',
+                    handler: function(){
+                        this.moreParamsWindow.hide();
+                    },
+                    scope: this
+                }]
+            });
     }
+        
 });
 
 Ext.reg('pluploadpanel', Ext.ux.PluploadPanel);

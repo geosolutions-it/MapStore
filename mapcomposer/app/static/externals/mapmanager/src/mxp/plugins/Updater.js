@@ -139,6 +139,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
             "/opensdi2-manager/mvc/fileManager/upload"; // by default search on root opensdi-manager2
             
         var me = this;
+        
         var pluploadPanel = {
             xtype:'pluploadpanel',
             region:'west',
@@ -153,6 +154,7 @@ mxp.plugins.Updater = Ext.extend(mxp.plugins.Tool, {
             auth: this.auth,
             mediaContent: this.target.initialConfig.mediaContent,
             filters: this.filters,
+            askMoreParams: this.askMoreParams,
             listeners:{
                 beforestart:function() {
                     var multipart_params =  pluploadPanel.multipart_params || {};

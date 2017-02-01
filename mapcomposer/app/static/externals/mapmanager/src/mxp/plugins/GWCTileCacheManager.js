@@ -35,7 +35,7 @@ Ext.ns("mxp.plugins");
  */
 mxp.plugins.GWCTileCacheManage = Ext.extend(mxp.plugins.Tool, {
     
-    /** api: ptype = mxp_updater */
+    /** api: ptype = mxp_gwc_manager */
     ptype: "mxp_gwc_manager",
 
     buttonText: "Tile Cache",
