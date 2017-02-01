@@ -313,7 +313,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
                 scope: this.control,
                 tooltip: this.resetTooltip,
                 menuText: this.resetLabel,
-                text: (this.labelButtons) ? this.resetLabel : false
+                text: (this.labelButtons) ? this.resetLabel : false,
+                scale:'medium'
             },            
             'pause': {
                 iconCls: 'gxp-icon-pause',
@@ -325,7 +326,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
                 text: (this.labelButtons) ? this.stopLabel : false,
                 toggleGroup: 'timecontrol',
                 enableToggle: true,
-                allowDepress: false
+                allowDepress: false,
+                scale:'medium'
             },
             'play': {
                 iconCls: 'gxp-icon-play',
@@ -337,7 +339,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
                 allowDepress: true,
                 tooltip: this.playTooltip,
                 menuText: this.playLabel,
-                text: (this.labelButtons) ? this.playLabel : false
+                text: (this.labelButtons) ? this.playLabel : false,
+                scale:'medium'
             },
             'back': {
                 iconCls: 'gxp-icon-back',
@@ -350,7 +353,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
                 scope: this.control,
                 tooltip: this.backTooltip,
                 menuText: this.backLabel,
-                text: (this.labelButtons) ? this.backLabel : false
+                text: (this.labelButtons) ? this.backLabel : false,
+                scale:'medium'
             },
             'next': {
                 iconCls: 'gxp-icon-next',
@@ -363,7 +367,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
                 scope: this.control,
                 tooltip: this.nextTooltip,
                 menuText: this.nextLabel,
-                text: (this.labelButtons) ? this.nextLabel : false
+                text: (this.labelButtons) ? this.nextLabel : false,
+                scale:'medium'
             },
             'end': {
                 iconCls: 'gxp-icon-last',
@@ -372,7 +377,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
                 scope: this,
                 tooltip: this.endTooltip,
                 menuText: this.endLabel,
-                text: (this.labelButtons) ? this.endLabel : false
+                text: (this.labelButtons) ? this.endLabel : false,
+                scale:'medium'
             },
             'loop': {
                 iconCls: 'gxp-icon-loop',
@@ -384,7 +390,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
                 toggleHandler: this.toggleLoopMode,
                 scope: this,
                 menuText: this.loopLabel,
-                text: (this.labelButtons) ? this.loopLabel : false
+                text: (this.labelButtons) ? this.loopLabel : false,
+                scale:'medium'
             },
             'fastforward': {
                 iconCls: 'gxp-icon-ffwd',
@@ -397,7 +404,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
                 scope: this,
                 disabled: true,
                 menuText: this.fastforwardLabel,
-                text: (this.labelButtons) ? this.fastforwardLabel : false
+                text: (this.labelButtons) ? this.fastforwardLabel : false,
+                scale:'medium'
             },
             'settings': {
                 iconCls: 'gxp-icon-settings',
@@ -407,7 +415,8 @@ gxp.PlaybackToolbar = Ext.extend(Ext.Toolbar, {
                 enableToggle:false,
                 tooltip: this.settingsTooltip,
                 menuText: this.settingsLabel,
-                text: (this.labelButtons) ? this.settingsLabel : false
+                text: (this.labelButtons) ? this.settingsLabel : false,
+                scale:'medium'
             }
         };
         return tools;
