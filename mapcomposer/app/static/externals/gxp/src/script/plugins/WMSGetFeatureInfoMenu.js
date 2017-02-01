@@ -344,11 +344,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             queryableLayers.each(function(x){                
                 var l = x.getLayer();
 			
-            var vendorParams = {};
-            Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
-                if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
-                    vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
-                }
+           
 
                 // Obtain info format
             	var infoFormat = this.getInfoFormat(x);
@@ -359,9 +355,16 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                     layers: [x.getLayer()],
                     infoFormat: infoFormat,
                     maxFeatures:this.maxFeatures,
-                    vendorParams: vendorParams,
+                    vendorParams: {},
                     eventListeners: {
                         beforegetfeatureinfo: function(evt) {
+                            //Update vendorParmas
+                             var vendorParams = {};
+                             Ext.apply(vendorParams, x.getLayer().vendorParams || this.vendorParams || {});
+                             if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
+                                vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
+                             }
+                             evt.object.vendorParams=vendorParams;
 							//first getFeatureInfo in chain
 							if(!started){
 								started= true;
@@ -469,7 +472,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
 				updateInfo.call(this);
 			}
 		};
-        this.target.mapPanel.layers.on("update", updateInfoEvent, this);
+       // this.target.mapPanel.layers.on("update", updateInfoEvent, this);
         this.target.mapPanel.layers.on("add", updateInfoEvent, this);
         this.target.mapPanel.layers.on("remove", updateInfoEvent, this);
 
@@ -810,11 +813,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
             }
         };
         
-        var vendorParams = {};
-        Ext.apply(vendorParams, layer.vendorParams || this.vendorParams || {});
-        if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
-            vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
-        }
+        
 
         var selectedLayer = this.target.mapPanel.layers.queryBy(function(x){
             return (layer.id == x.getLayer().id) && x.get("queryable") ;
@@ -830,7 +829,7 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 layers: [layer],
                 infoFormat: infoFormat,
                 maxFeatures:this.maxFeatures,
-                vendorParams: vendorParams,
+                vendorParams: {},
                 hover: true,
                 queryVisible: true,
                 handlerOptions:{    
@@ -838,7 +837,14 @@ gxp.plugins.WMSGetFeatureInfoMenu = Ext.extend(gxp.plugins.Tool, {
                 },
                 eventListeners:{
                     scope:this,
-
+                    beforegetfeatureinfo: function(evt) {
+                           var vendorParams = {};
+                           Ext.apply(vendorParams, layer.vendorParams || this.vendorParams || {});
+                           if(!vendorParams.env || vendorParams.env.indexOf('locale:') == -1) {
+                                vendorParams.env = vendorParams.env ? vendorParams.env + ';locale:' + GeoExt.Lang.locale : 'locale:' + GeoExt.Lang.locale;
+                           }
+                           evt.object.vendorParams=vendorParams;
+                    },
                     getfeatureinfo:function(evt){
                         cleanup();
                         
