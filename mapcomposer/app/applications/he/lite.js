@@ -11,7 +11,7 @@ exports.app = function(req) {
 		content = JSON.stringify(request.postParams);
 		print("Post Content is : " + content);
 	}
-	var response = Response.skin(module.resolve("templates/login.html"), {status: details.status || 404, content: content});
+	var response = Response.skin(module.resolve("templates/lite.html"), {status: details.status || 404, content: content});
 	
     return response;
 };
