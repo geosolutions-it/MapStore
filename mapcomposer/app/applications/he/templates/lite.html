@@ -570,7 +570,7 @@
 
                         sessionStorage["userDetails"] = Ext.util.JSON.encode(uDetails);
                         // window.location.reload();
-                        const searchParams = new URLSearchParams(location.search);
+                        var searchParams = new URLSearchParams(location.search);
                         searchParams.set('config', 'login');
                         location.replace(location.origin + location.pathname + "?" + searchParams.toString());
                     }
@@ -591,7 +591,7 @@
                                 // remove post data to prevent warning page reload
                                 location.assign(location.href);
                             }else{
-                                const searchParams = new URLSearchParams(location.search);
+                                var searchParams = new URLSearchParams(location.search);
                                 searchParams.delete('config');
                                 location.replace(location.origin + location.pathname + "?" + searchParams.toString());
                             }
@@ -646,7 +646,7 @@
                                     // var newUrl = window.location.href;
                                     // newUrl += (window.location.search.length>0)? "&mapId="+defaultMap : "?mapId="+defaultMap;
                                     // window.location.replace(newUrl);
-                                    const searchParams = new URLSearchParams(location.search);
+                                    var searchParams = new URLSearchParams(location.search);
                                     searchParams.set('mapId', defaultMap);
                                     location.replace(location.origin + location.pathname + "?" + searchParams.toString());
                              }
