@@ -115,7 +115,11 @@
         // }
         
         var app;
-        var modified = false; var mapIdentifier = -1; var authorization = false; var fullScreen = false; var bbox; var useCookies; var templateId;
+        var modified = false;
+        var mapIdentifier = 1420;
+        var authorization = false;
+        var fullScreen = false;
+        var bbox; var useCookies; var templateId;
         // /////////////////////////////////////////////////////
         // Extra parameters to add layers at startup
         // /////////////////////////////////////////////////////
@@ -140,7 +144,7 @@
                                     try{
                                         mapIdentifier = parseInt(param[1]);
                                     }catch(e){
-                                        mapIdentifier = -1;
+                                        mapIdentifier = 1420;
                                     }
                                     break;
                     case "auth" :
@@ -593,6 +597,7 @@
                             }else{
                                 var searchParams = new URLSearchParams(location.search);
                                 searchParams.delete('config');
+                                searchParams.delete('mapId');
                                 location.replace(location.origin + location.pathname + "?" + searchParams.toString());
                             }
                         }
