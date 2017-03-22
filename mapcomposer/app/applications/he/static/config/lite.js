@@ -121,7 +121,7 @@
         "authSource":"gs",
         "authParam":"authkey"
     },
-    "removeTools":["googleearth_plugin", "googleearth_separator", "addlayers_plugin", "addlayer", "removelayer_plugin", "layerproperties_plugin", "wmsgetfeatureinfo_plugin"],
+    "removeTools":["googleearth_plugin", "googleearth_separator", "addlayers_plugin", "addlayer", "removelayer_plugin", "layerproperties_plugin", "wmsgetfeatureinfo_plugin", "addgroup_plugin", "removegroup_plugin", "removeoverlays_plugin"],
     "viewerTools" : [],
 	"customTools":[
         {
