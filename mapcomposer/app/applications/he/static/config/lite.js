@@ -153,7 +153,8 @@
             "iconCls" : "gxp-icon-palette",
             "tooltip" : "Layer Styles",
             "title" : "GeoWeb Portal Lite Version",
-            "description" : "Oops! It seems you are trying to use one of the GeoWeb Portal’s advanced features.<br/>Advanced features are available only to paid subscribers.<br/>To subscribe to Rextag’s GeoWeb Portal service, please contact our office at <a href=\"tel:(619)%20564-7313\" value=\"+16195647313\" target=\"_blank\">(619) 564-7313</a> or email us at <a href=\"mailto:mad_info@hartenergy.com\" target=\"_blank\">mad_info@hartenergy.com</a>.<br/><br/>Thank you!",
+            "description" : "<p style=\"font-size:15px\">Oops! It seems you are trying to use one of the GeoWeb Portal’s advanced features.<br/>Advanced features are available only to paid subscribers.<br/><br/>To subscribe to Rextag’s GeoWeb Portal service, please contact our office at<br/><a href=\"tel:(619)%20564-7313\" value=\"+16195647313\" target=\"_blank\">(619) 564-7313</a> or email us at <a href=\"mailto:mad_info@hartenergy.com\" target=\"_blank\">mad_info@hartenergy.com</a>.<br/><br/>Thank you!</p>",
+            "windowOptions": {"width": 610, "height": 200},
             "id" : "____stylerhe____",
             "actionTarget":{"target":"paneltbar", "index":24}
         },
@@ -168,7 +169,8 @@
             "iconCls" : "gxp-icon-print",
             "tooltip" : "Print Map",
             "title" : "GeoWeb Portal Lite Version",
-            "description" : "Oops! It seems you are trying to use one of the GeoWeb Portal’s advanced features.<br/>Advanced features are available only to paid subscribers.<br/>To subscribe to Rextag’s GeoWeb Portal service, please contact our office at <a href=\"tel:(619)%20564-7313\" value=\"+16195647313\" target=\"_blank\">(619) 564-7313</a> or email us at <a href=\"mailto:mad_info@hartenergy.com\" target=\"_blank\">mad_info@hartenergy.com</a>.<br/><br/>Thank you!",
+            "description" : "<p style=\"font-size:15px\">Oops! It seems you are trying to use one of the GeoWeb Portal’s advanced features.<br/>Advanced features are available only to paid subscribers.<br/><br/>To subscribe to Rextag’s GeoWeb Portal service, please contact our office at<br/><a href=\"tel:(619)%20564-7313\" value=\"+16195647313\" target=\"_blank\">(619) 564-7313</a> or email us at <a href=\"mailto:mad_info@hartenergy.com\" target=\"_blank\">mad_info@hartenergy.com</a>.<br/><br/>Thank you!</p>",
+            "windowOptions": {"width": 610, "height": 200},
             "id" : "____gxp_print____",
             "actionTarget":{"target":"paneltbar", "index":4}
         },
@@ -179,7 +181,8 @@
             "iconCls" : "gxp-icon-getfeatureinfo",
             "tooltip" : "Get Feature Info",
             "title" : "GeoWeb Portal Lite Version",
-            "description" : "Oops! It seems you are trying to use one of the GeoWeb Portal’s advanced features.<br/>Advanced features are available only to paid subscribers.<br/>To subscribe to Rextag’s GeoWeb Portal service, please contact our office at <a href=\"tel:(619)%20564-7313\" value=\"+16195647313\" target=\"_blank\">(619) 564-7313</a> or email us at <a href=\"mailto:mad_info@hartenergy.com\" target=\"_blank\">mad_info@hartenergy.com</a>.<br/><br/>Thank you!",
+            "description" : "<p style=\"font-size:15px\">Oops! It seems you are trying to use one of the GeoWeb Portal’s advanced features.<br/>Advanced features are available only to paid subscribers.<br/><br/>To subscribe to Rextag’s GeoWeb Portal service, please contact our office at<br/><a href=\"tel:(619)%20564-7313\" value=\"+16195647313\" target=\"_blank\">(619) 564-7313</a> or email us at <a href=\"mailto:mad_info@hartenergy.com\" target=\"_blank\">mad_info@hartenergy.com</a>.<br/><br/>Thank you!</p>",
+            "windowOptions": {"width": 610, "height": 200},
             "id" : "____gxp_wmsgetfeatureinfo_menu",
             "actionTarget": {"target": "paneltbar", "index": 14}
         },
@@ -190,7 +193,8 @@
             "iconCls" : "gxp-icon-printsnapshot",
             "tooltip" : "Snapshoto",
             "title" : "GeoWeb Portal Lite Version",
-            "description" : "Oops! It seems you are trying to use one of the GeoWeb Portal’s advanced features.<br/>Advanced features are available only to paid subscribers.<br/>To subscribe to Rextag’s GeoWeb Portal service, please contact our office at <a href=\"tel:(619)%20564-7313\" value=\"+16195647313\" target=\"_blank\">(619) 564-7313</a> or email us at <a href=\"mailto:mad_info@hartenergy.com\" target=\"_blank\">mad_info@hartenergy.com</a>.<br/><br/>Thank you!",
+            "description" : "<p style=\"font-size:15px\">Oops! It seems you are trying to use one of the GeoWeb Portal’s advanced features.<br/>Advanced features are available only to paid subscribers.<br/><br/>To subscribe to Rextag’s GeoWeb Portal service, please contact our office at<br/><a href=\"tel:(619)%20564-7313\" value=\"+16195647313\" target=\"_blank\">(619) 564-7313</a> or email us at <a href=\"mailto:mad_info@hartenergy.com\" target=\"_blank\">mad_info@hartenergy.com</a>.<br/><br/>Thank you!</p>",
+            "windowOptions": {"width": 610, "height": 200},
             "id" : "____gxp_printsnapshothe",
             "actionTarget":{"target":"paneltbar", "index":5}
         },
