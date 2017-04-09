@@ -2,7 +2,7 @@
    "scaleOverlayMode": "basic",
    "gsSources":{ 
    		"default": {
-			"ptype": "gxp_wmssource",
+			"xtype": "gxp_wmssource",
 			"title": "Default GeoServer",
 			"url": "http://localhost:8080/geoserver/ows",
 			"SRS": "EPSG:900913",
