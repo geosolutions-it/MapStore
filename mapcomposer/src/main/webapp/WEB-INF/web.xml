@@ -92,7 +92,7 @@
 		</init-param>
 		<init-param>
 			<param-name>geostoreBaseUrl</param-name>
-			<param-value>http://localhost:8081/geostore/rest</param-value>
+			<param-value>http://localhost:8080/geostore/rest</param-value>
 		</init-param>
 		<init-param>
 			<param-name>geostoreUsername</param-name>
