@@ -381,7 +381,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 			TRANSPARENT: config.transparent,
 			//CQL_FILTER: config.cql_filter,
 			TIME: config.time,
-			ELEVATION: config.elevation
+			ELEVATION: config.elevation,
+            SLD: config.sld
 		}, this.layerBaseParams);
 		
 		// ///////////////////////////////////////////////////////
@@ -792,7 +793,8 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
             styles: params.STYLES, 
             transparent: params.TRANSPARENT,
             //cql_filter: params.CQL_FILTER,
-            elevation: params.ELEVATION
+            elevation: params.ELEVATION,
+            sld: params.SLD
         });
     },    
     
