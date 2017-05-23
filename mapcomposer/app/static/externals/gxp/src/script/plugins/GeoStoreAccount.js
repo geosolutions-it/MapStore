@@ -178,7 +178,7 @@ gxp.plugins.GeoStoreAccount = Ext.extend(gxp.plugins.Tool, {
                 forceFit: true,
                 border:false,
                 ref:'general',
-                autoscroll:true,
+                autoScroll:true,
                 html: new Ext.XTemplate(this.userTemplate).apply(user)
                 }
             ],

@@ -207,7 +207,7 @@ mxp.plugins.MyAccount = Ext.extend(mxp.plugins.Tool, {
                 forceFit: true,
                 border:false,
                 ref:'general',
-                autoscroll:true,
+                autoScroll:true,
                 html: new Ext.XTemplate(this.userTemplate).apply(user)
                 }
             ]

@@ -51,13 +51,13 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
      *  ``String`` key of the localStorage to store and retrieve the 
      *   "don't show again this message" flag
      */
-	keyShowAgain:"showAgainManagerHelp",
+    keyShowAgain:"showAgainManagerHelp",
     
      /** api: config[fileDocURL]
      *  ``String`` if present, the window will load the page at the URL in this confiugration parameter in an iframe
      */
-	fileDocURL: null,
-	
+    fileDocURL: null,
+    
     /** end of i18n */
     /** api: config[description]
      *  ``String`` Html to show in the window
@@ -70,10 +70,9 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
      */
     showOnStartup:false,
     
-   // width and height are not configurable at the moment
-   // TODO investigate why this happens.
-   windowHeight: 600,
-   windowWidth: 600,
+    // popup width and height
+    windowHeight: 600,
+    windowWidth: 600,
     
     /** api: method[addActions]
      */
@@ -95,11 +94,11 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
         }
         return mxp.plugins.HelpButton.superclass.addActions.apply(this, [actions]);
     },
-	
+    
     showHelp:function(){
 
-			//var url = 'http://' + window.location.host + '/' + this.fileDocURL;
-			//use an Iframe
+        //var url = 'http://' + window.location.host + '/' + this.fileDocURL;
+        //use an Iframe
         var me = this;        
         var iframeconfig = {
             waitMsg: this.loadingMessage,
@@ -140,12 +139,12 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
         };
 
         new Ext.Window(Ext.apply({
-           layout:'fit',
-           iconCls:this.iconCls,
-           title: this.title,
-           border:false,
-           autoScroll:false,
-           items: this.fileDocURL ? iframeconfig : {html: this.description, autoScroll:true, bodyStyle:'padding:10px'},
+            layout:'fit',
+            iconCls:this.iconCls,
+            title: this.title,
+            border:false,
+            autoScroll:false,
+            items: this.fileDocURL ? iframeconfig : {html: this.description, autoScroll:true, bodyStyle:'padding:10px'},
             bbar:[{
                 xtype: 'checkbox',
                 boxLabel: this.dontShowThisMessageAgainText,
@@ -157,11 +156,12 @@ mxp.plugins.HelpButton = Ext.extend(mxp.plugins.Tool, {
                     }
                 }
             }],
-           modal:true
+            modal:true
         },{
-            height:this.windowHeight,width:this.windowWidth
+            height:this.windowHeight,
+            width:this.windowWidth
         })).show();
-		
+        
     },
     isShowAllowed: function(){
         var deny = localStorage[this.keyShowAgain];

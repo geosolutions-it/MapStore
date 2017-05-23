@@ -164,7 +164,7 @@ mxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
     /** api: config[notDuplicateOutputs]
      *  ``Boolean`` Flag to indicate that this tool couldn't duplicate in the tab panel.
      */
-     notDuplicateOutputs: true,
+    notDuplicateOutputs: true,
      
     /** private: method[constructor]
      */

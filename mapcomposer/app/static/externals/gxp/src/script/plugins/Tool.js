@@ -25,6 +25,11 @@ gxp.plugins.Tool = Ext.extend(Ext.util.Observable, {
     /** api: ptype = gxp_tool */
     ptype: "gxp_tool",
     
+    /** api: config[id]
+     *  ``String`` set to an unique value to enable the usage of the same plugin twice
+     *  Default is null.
+     */
+    
     /** api: config[autoActivate]
      *  ``Boolean`` Set to false if the tool should be initialized without
      *  activating it. Default is true.
