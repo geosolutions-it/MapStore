@@ -185,12 +185,15 @@ OpenLayers.Filter.Comparison = OpenLayers.Class(OpenLayers.Filter, {
             throw new Error("'.' is an unsupported wildCard character for " +
                             "OpenLayers.Filter.Comparison");
         }
-        
 
         // set UMN MapServer defaults for unspecified parameters
         wildCard = wildCard ? wildCard : "*";
         singleChar = singleChar ? singleChar : ".";
         escapeChar = escapeChar ? escapeChar : "!";
+        
+        if (typeof this.value != "string" && this.value !== null) {
+            this.value = this.value.toString();
+        }
         
         this.value = this.value.replace(
                 new RegExp("\\"+escapeChar+"(.|$)", "g"), "\\$1");
