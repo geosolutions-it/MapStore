@@ -96,19 +96,20 @@ gxp.plugins.EnableLabel = Ext.extend(gxp.plugins.Tool, {
             if(styles){
                 for (var key in styles){
                     if(styles.hasOwnProperty(key)){
-                        var layer = record.get("layer");                    
+                        var layer = record.get("layer");
                         var obj = styles[key];
-                        var sld = obj.name.search(this.strWithLabels);
-                        if(sld != -1){
-                            if(check){                            
+                        if((obj.name.search(this.strWithLabels) > -1) && (obj.name.search(layer.params.STYLES.replace(this.strWithLabels,"")) > -1)){
+                            if(check){
                                 layer.mergeNewParams({
                                     STYLES: obj.name
-                                });                                
-                            }else{       
+                                });
+                            }else{
                                 layer.mergeNewParams({
                                     STYLES: layer.params.STYLES.replace(this.strWithLabels,"")
                                 });
                             }
+                            // found, stop iterating
+                            break;
                         }
                     }    
                 }

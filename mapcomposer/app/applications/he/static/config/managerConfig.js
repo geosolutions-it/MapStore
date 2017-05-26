@@ -185,12 +185,21 @@
              "target": "north.tbar",
              "index": 8
             }
+    },{ 
+        "ptype": "mxp_geostore_resource_editor",
+        "category": "LAYERS_SOURCE",
+        "outputItemId": "LAYERS_SOURCE",
+        "buttonText": "User SOURCES",
+        "actionTarget":{
+             "target": "north.tbar",
+             "index": 9
+            }
     },{
         "ptype": "mxp_login",
         "pluginId": "loginTool",
         "actionTarget":{
           "target": "north.tbar",
-          "index": 10
+          "index": 15
         }
     },{
         "ptype": "mxp_languageselector",
