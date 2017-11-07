@@ -664,7 +664,9 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                         if(!enc.customParams) {
                             enc.customParams = {};
                         }
-                        enc.customParams[p] = layer.params[p];
+						if(layer.params[p] !== null){
+							enc.customParams[p] = layer.params[p];
+						}
                     }
                 }
 				
