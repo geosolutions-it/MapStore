@@ -248,7 +248,16 @@ GeoExt.Lang.add("it", {
         cancelButtonText: 'Annulla',
         cancelButtonTooltip: 'Arresta Editing, Annullla Modifiche',
         saveButtonText: 'Salva',
-        saveButtonTooltip: 'Salva Modifiche'
+        saveButtonTooltip: 'Salva Modifiche',
+        saveButtonTooltip: 'Salva Modifiche',
+		addSurveyButtonText: "Aggiungi Sopralluogo",
+		addSurveyButtonTooltip: "Aggiungi Sopralluogo",
+		addSurveyMsgTitle: "Aggiungi Sopralluogo",
+		addSurveyMsgBody: "Vuoi veramente aggiungere un Sopralluogo a questa Segnalazione?",
+		addSurveyMsgSuccessTitle: "Sopralluogo Success",
+		addSurveyMsgSuccessBody: "Sopralluogo aggiunto correttamente!",
+		addSurveyMsgFailureTitle: "Sopralluogo Failure",
+		addSurveyMsgFailureBody: "Qualcosa è andato storto!"
     },
     "gxp.grid.GcSopGrid.prototype":{
         title:'Dettagli',

@@ -357,7 +357,112 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
             this.excludeFields.join(",").toUpperCase().split(",") : [];
         var ucRequiredFields = this.requiredFields ?
             this.requiredFields.join(",").toUpperCase().split(",") : [];
-       
+
+        // ADD SURVEY ON DEMAND LIKE ITEM
+        this.addSurveyButton = new Ext.Button({
+            text: this.addSurveyButtonText,
+            tooltip: this.addSurveyButtonTooltip,
+            width:60,
+            iconCls: "add",
+            hidden: !this.allowDelete,
+            handler: function() {
+                Ext.Msg.show({
+                    title: this.addSurveyMsgTitle,
+                    msg: this.addSurveyMsgBody,
+                    buttons: Ext.Msg.YESNO,
+                    fn: function(button) {
+                        if(button === "yes") {
+                            feature.geometry.transform(
+                                new OpenLayers.Projection("EPSG:900913"),
+                                new OpenLayers.Projection("EPSG:4326")
+                            );
+
+                            var geoJSONFormat = new OpenLayers.Format.GeoJSON();
+                            var geoJSONFeature = Ext.util.JSON.decode(geoJSONFormat.write(feature));
+
+                            for (var key in geoJSONFeature) {
+                                if (geoJSONFeature.hasOwnProperty(key)) {
+                                    if (key === "id") {
+                                        geoJSONFeature[key] = geoJSONFeature.properties.gcid;
+                                    }
+                                    if (key === "properties") {
+                                        for (var propKey in geoJSONFeature[key]) {
+                                            if (geoJSONFeature[key].hasOwnProperty(propKey)){
+                                                if (propKey === "my_orig_id") {
+                                                    geoJSONFeature[key][propKey] = geoJSONFeature.properties.gcid
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            Object.assign(
+                                geoJSONFeature,
+                                {
+                                    typeName: "cens_muri_sop",
+                                    editing: false,
+                                    geometry_name: "the_geom"
+                                }
+                            );
+                            delete geoJSONFeature.crs;
+                            // delete geoJSONFeature.properties.id;
+                            // delete geoJSONFeature.properties.gcid;
+
+                            var auth;
+                            if(sessionStorage && localConfig.loginDataStorage){
+                                var existingUserDetails = sessionStorage["userDetails"];
+                                if(existingUserDetails){
+                                    this.userDetails = Ext.util.JSON.decode(sessionStorage["userDetails"]);
+                                    auth = this.userDetails.token;
+                                }
+                            }
+                            Ext.Ajax.request({
+                            	url: 'http://geocollect.geo-solutions.it/opensdi2-manager/mvc/geocollect/action/muriSopSequence',
+                            	method: 'POST',
+                            	headers: {
+                            		'Content-Type': 'application/json',
+                            		'Authorization' : auth
+                            	},
+                            	jsonData: geoJSONFeature,
+                            	success: function(a, b){
+                                    Ext.Msg.show({
+                                        title: this.addSurveyMsgSuccessTitle,
+                                        msg: this.addSurveyMsgSuccessBody,
+                                        buttons: Ext.Msg.OK,
+                                        scope: this,
+                                        icon: Ext.MessageBox.INFO,
+                                        animEl: this.getEl()
+                                    });
+                                },
+                            	failure: function(){
+                                    Ext.Msg.show({
+                                        title: this.addSurveyMsgFailureTitle,
+                                        msg: this.addSurveyMsgFailureBody,
+                                        buttons: Ext.Msg.OK,
+                                        scope: this,
+                                        icon: Ext.MessageBox.WARNING,
+                                        animEl: this.getEl()
+                                    });
+                                },
+                                scope: this
+                            });
+                        }
+                    },
+                    scope: this,
+                    icon: Ext.MessageBox.QUESTION,
+                    animEl: this.getEl()
+                });
+            },
+            scope: this
+        });
+
+        this.addSurveyButtonGroup = new Ext.ButtonGroup({
+            hidden: this.readOnly,
+            width:400,
+            items: [
+                this.addSurveyButton
+            ]
+        });
        
         this.grid = new Ext.grid.PropertyGrid({
             border: false,
@@ -366,6 +471,9 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
             source: feature.attributes,
             customEditors: customEditors,
             customRenderers: customRenderers,
+            bbar: [
+                this.addSurveyButtonGroup
+            ],
             viewConfig: {
                 forceFit: true,
                 getRowClass: function(record) {
@@ -453,6 +561,7 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
             this.cancelButton.ownerCt.doLayout();
             this.geometry = (this.feature.geometry)? this.feature.geometry.clone():null;
             this.attributes = Ext.apply({}, this.feature.attributes);
+            this.addSurveyButton.disable();
 
            if(this.geometry)
            {
@@ -561,7 +670,7 @@ gxp.plugins.GcSegForm = Ext.extend(Ext.Panel, {
                 this.saveButton.hide();
                 this.editButton.show();
                 this.allowDelete && this.deleteButton.show();
-           
+                this.addSurveyButton.enable();           
             
             this.editing = false;
            this.fireEvent( "stopsegediting",this);
