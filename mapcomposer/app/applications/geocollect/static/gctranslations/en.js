@@ -249,7 +249,15 @@ GeoExt.Lang.add("en", {
         cancelButtonText: "Cancel",
         cancelButtonTooltip: "Cancel Editing, Undo Edits",
         saveButtonText: "Save",
-        saveButtonTooltip: "Save Edits"
+        saveButtonTooltip: "Save Edits",
+        addSurveyButtonText: "Add Survey",
+		addSurveyButtonTooltip: "Add Survey",
+		addSurveyMsgTitle: "Add Survey",
+		addSurveyMsgBody: "Do you really want add a Survey to this Item?",
+		addSurveyMsgSuccessTitle: "Survey Success",
+		addSurveyMsgSuccessBody: "Survey added correctly!",
+		addSurveyMsgFailureTitle: "Survey Failure",
+		addSurveyMsgFailureBody: "Something went wrong!"
     },
     "gxp.grid.GcSopGrid.prototype": {
         title: "Details",
