@@ -1085,7 +1085,7 @@ gxp.he.WMSStylesDialogHE = Ext.extend(Ext.Container, {
                 },
                 this,true,
                 "POST",
-                "<AND><FIELD><field>METADATA</field><operator>LIKE</operator><value>"+layerParams.LAYERS+"</value></FIELD><CATEGORY><operator>EQUAL_TO</operator><name>LAYERS_STYLES</name></CATEGORY></AND>",
+                "<AND><FIELD><field>METADATA</field><operator>LIKE</operator><value>"+layerParams.LAYERS+"</value></FIELD><FIELD><field>DESCRIPTION</field><operator>LIKE</operator><value>"+this.geoStore.user+"</value></FIELD><CATEGORY><operator>EQUAL_TO</operator><name>LAYERS_STYLES</name></CATEGORY></AND>",
                 "text/xml"
             );
         } else {
