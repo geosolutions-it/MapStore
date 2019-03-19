@@ -75,7 +75,7 @@ gxp.plugins.he.Shippers = Ext.extend(gxp.plugins.Tool, {
     canUpdateDates: true ,
     
     /* Service for SnapShot feature*/
-    service : "http://he.geo-solutions.it/servicebox/",
+    service : "http://geoweb-portal.com/servicebox/",
     
     /** api: config[fileName]
      *  ``String``

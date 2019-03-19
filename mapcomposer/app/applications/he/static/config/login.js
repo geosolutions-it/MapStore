@@ -1,8 +1,8 @@
 {
     "restrictToGroups" : ["GeoWeb_Users"],
-    "redirectDeniedTo" : "/gcd",
+    "redirectDeniedTo" : "/mapstore/gcd",
     "groupRedirect":{
-        "GCD_Users": "/gcd"
+        "GCD_Users": "/mapstore/gcd"
     },
     "portalConfig":{
         "iconCls": "map-icon"
@@ -45,7 +45,7 @@
             "title": "GeoServer Hart Energy",
             "version":"1.1.1",
             "projection":"EPSG:3857",
-            "url": "http://he.geo-solutions.it/geoserver/ows",
+            "url": "https://geoweb-portal.com/geoserver/ows",
             "layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
             "authParam":"authkey",
             "layerBaseParams": {
@@ -121,87 +121,231 @@
                 "visibility": false
             },{
                 "source": "gs",
+                "group": "Electricity",
+                "title":"Transmission Lines",
+                "name": "Z0_Electricity:ELEC_TRANS",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Electricity",
+                "title":"Substations",
+                "name": "Z0_Electricity:ELEC_SUBSTATIONS",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Electricity",
+                "title":"Power Plants",
+                "name": "Z0_Electricity:PWR_PLANTS",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Crude By Rail",
+                "title":"Railroad",
+                "name": "Z0_Rail:RAILROAD",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Crude By Rail",
+                "title":"Rail Terminals",
+                "name": "Z0_Rail:RAIL_TERMINALS",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Miscellaneous Pipelines",
+                "title":"Miscellaneous Pipelines",
+                "name": "Z0_Miscellaneous_Pipelines:MISC_PIPE",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Other Liquids (HVL/LPG/NGL)",
+                "title":"Other Liquids Pipelines",
+                "name": "Z0_Other_Liquids:OTH_PIPE",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Other Liquids (HVL/LPG/NGL)",
+                "title":"NG Processing Plants",
+                "name": "Z0_Other_Liquids:NG_PRPLANT",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Other Liquids (HVL/LPG/NGL)",
+                "title":"Petrochemical Facilities",
+                "name": "Z0_Other_Liquids:PETROCHEMICAL_FAC",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Refined Products",
+                "title":"Crude Oil Districts",
+                "name": "Z0_Refined_Products:CRD_PRD_DISTR",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Refined Products",
+                "title":"PADD",
+                "name": "Z0_Refined_Products:CRD_PRD_PADD",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Refined Products",
+                "title":"Crude Oil Fields",
+                "name": "Z0_Refined_Products:CRD_PRD_OILFIELDS",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Refined Products",
+                "title":"Refineries",
+                "name": "Z0_Refined_Products:CRD_PRD_REFINE",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Refined Products",
+                "title":"Crude & Refined Product Terminals",
+                "name": "Z0_Refined_Products:CRD_PRD_TERM",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Refined Products",
+                "title":"Refined Products Pipelines",
+                "name": "Z0_Refined_Products:PRD_PIPE",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Crude Oil",
+                "title":"CrudeOil Districts",
+                "name": "Z0_Crude_Oil:CRD_PRD_DISTR",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Crude Oil",
+                "title":"PADD",
+                "name": "Z0_Crude_Oil:CRD_PRD_PADD",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Crude Oil",
+                "title":"Crude Oil Fields",
+                "name": "Z0_Crude_Oil:CRD_PRD_OILFIELDS",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Crude Oil",
+                "title":"Refineries",
+                "name": "Z0_Crude_Oil:CRD_PRD_REFINE",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Crude Oil",
+                "title":"Crude & Refined Product Terminals",
+                "name": "Z0_Crude_Oil:CRD_PRD_TERM",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Crude Oil",
+                "title":"Crude Oil Pipelines",
+                "name": "Z0_Crude_Oil:CRD_PIPE",
+                "visibility": false
+            },{
+                "source": "gs",
                 "group": "Natural Gas",
                 "title": "LNG Terminals",
-                "name": "Natural_Gas:NG_LNG",
+                "name": "Z0_Natural_Gas:NG_LNG",
                 "visibility": false
             },{
                 "source": "gs",
                 "group": "Natural Gas",
-                "title": "Natural Gas Compressors",
-                "name": "Natural_Gas:NG_COMPR",
+                "title": "NG Compressor Stations",
+                "name": "Z0_Natural_Gas:NG_COMPR",
                 "visibility": false
             },{
                 "source": "gs",
                 "group": "Natural Gas",
-                "title": "Natural Gas Meter Points",
-                "name": "Natural_Gas:NG_METER_POINTS",
+                "title": "NG Meter Points",
+                "name": "Z0_Natural_Gas:NG_METER_POINTS",
                 "visibility": false
                 },{
                 "source": "gs",
                 "group": "Natural Gas",
                 "title": "Natural Gas Pipelines",
-                "name": "Natural_Gas:NG_PIPE",
+                "name": "Z0_Natural_Gas:NG_PIPE",
                 "visibility": false
             },{
                 "source": "gs",
                 "group": "Natural Gas",
-                "title":"Natural Gas Processing Plant",
-                "name": "Natural_Gas:NG_PRPLANT",
+                "title":"NG Processing Plants",
+                "name": "Z0_Natural_Gas:NG_PRPLANT",
                 "visibility": false
             },{
                 "source": "gs",
                 "group": "Natural Gas",
-                "title":"Natural Gas Storage",
-                "name": "Natural_Gas:NG_STORAGE",
+                "title":"NG Storage Facilites",
+                "name": "Z0_Natural_Gas:NG_STORAGE",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Natural Gas",
+                "title": "NG Top Fields",
+                "name": "Z0_Natural_Gas:NG_TOPFLD",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Natural Gas",
+                "title":"NG Pricing",
+                "name": "Z0_Natural_Gas:NG_PRICING",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Common Interest",
+                "title": "Gis Zones",
+                "name": "Z0_Common_Interest:GIS_ZONES",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Common Interest",
+                "title": "Basins",
+                "name": "Z0_Common_Interest:BASINS",
+                "visibility": false
+            },{
+                "source": "gs",
+                "group": "Common Interest",
+                "title": "Shales Plays",
+                "name": "Z0_Common_Interest:SHALE_PLAYS",
                 "visibility": false
             },{
                 "source": "gs",
                 "group": "Common Interest",
                 "title":"Offshore Blocks",
-                "name": "Common_Interest:OFFSH_BLOCKS",
-                "visibility": false
-            },{
-                "source": "gs",
-                "group": "Common Interest",
-                "title":"Offshore Groups",
-                "name": "Common_Interest:OFFSH_GROUPS",
+                "name": "Z0_Common_Interest:OFFSH_BLOCKS",
                 "visibility": false
             },{
                 "source": "gs",
                 "group": "Common Interest",
                 "title": "Offshore Platforms",
-                "name": "Common_Interest:OFFSH_PLATF",
+                "name": "Z0_Common_Interest:OFFSH_PLATF",
                 "visibility": false
             },{
                 "source": "gs",
                 "group": "Common Interest",
-                "title":" Oil & Gas Basins",
-                "name": "Common_Interest:BASINS",
+                "title": "Oil & Gas Fields",
+                "name": "Z0_Common_Interest:OIL_GAS_FIELDS",
                 "visibility": false
             },{
                 "source": "gs",
                 "group": "Common Interest",
-                "title": "Oil Gas Fields",
-                "name": "Common_Interest:OIL_GAS_FIELDS",
+                "title":"Offshore Groups",
+                "name": "Z0_Common_Interest:OFFSH_GROUPS",
                 "visibility": false
             },{
                 "source": "gs",
                 "group": "Common Interest",
-                "title": "PLSS Section",
-                "name": "Z0_PLSS_1004:PLSS_SEC",
+                "title": "Gulf Fairways",
+                "name": "Z0_Common_Interest:GULF_FAIRWAYS",
                 "visibility": false
             },{
                 "source": "gs",
                 "group": "Common Interest",
-                "title": "PLSS Township",
-                "name": "Z0_PLSS_1004:PLSS_TWN",
-                "visibility": false
-            },{
-                "source": "gs",
-                "group": "Common Interest",
-                "title": "Top Fields",
-                "name": "Common_Interest:TOP_FIELDS",
+                "title": "Top Producing Oil & Gas Fields",
+                "name": "Z0_Common_Interest:TOP_FIELDS",
                 "visibility": false
             }
         ]
@@ -314,7 +458,7 @@
           "includeLegend": false,
           "legendOnSeparatePage":false,
           "appendLegendOptions": true,
-          "printService":"http://he.geo-solutions.it/geoserver/pdf/",
+          "printService":"/geoserver/pdf/",
           "legendPanelId":"legendPanel",
           "defaultResolutionIndex":1,
           "defaultLayoutIndex":1,
@@ -332,7 +476,7 @@
               "vendorParams":{"buffer":10}
          }, {
           "ptype":"gxp_printsnapshothe",
-          "service": "http://he.geo-solutions.it/servicebox/",
+          "service": "https://geoweb-portal.com/servicebox/",
           "fileName": "GeoWeb_Snapshot.png",
           "actionTarget":{
             "target":"paneltbar",
@@ -421,7 +565,7 @@
           },
           "autoComplete": {
                 "sources": ["gs"],
-                "url": "http://he.geo-solutions.it/geoserver/wps",
+                "url": "https://geoweb-portal.com/geoserver/wps",
                 "pageSize": 10,
                 "authParam":"authkey"
            }

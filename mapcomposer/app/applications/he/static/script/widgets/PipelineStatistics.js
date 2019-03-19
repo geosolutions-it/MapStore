@@ -31,7 +31,7 @@ Ext.namespace('gxp.he');
  *
  */
 gxp.he.PipelineStatistics = Ext.extend(Ext.Container, {
-    url : "http://he.geo-solutions.it/geoserver/gascapacity/ows",
+    url : "http://geoweb-portal.com/geoserver/gascapacity/ows",
     baseParams:{
         service:'WFS',
         version:'1.1.0',

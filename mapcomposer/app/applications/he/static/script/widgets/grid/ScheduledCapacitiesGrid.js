@@ -153,7 +153,7 @@ gxp.he.grid.ScheduledCapacitiesGrid = Ext.extend(gxp.grid.FeatureGrid, {
                                             {name:"Scheduled_Capacity",mapping:'properties.cpcty_Scheduled'},
                                             {name:"Operational_Capacity",mapping:'properties.cpcty_Operational'}
                                            ],
-                                    url: 'http://he.geo-solutions.it/geoserver/gascapacity/ows?&outputFormat=application%2Fjson',
+                                    url: 'http://geoweb-portal.com/geoserver/gascapacity/ows?&outputFormat=application%2Fjson',
                                     vendorParams: store.vendorParams ,
                                     baseParams: Ext.apply(this.vendorParams || {} , {
                                         service:'WFS',

@@ -36,7 +36,7 @@
 			"title": "GeoWebPortal Hart Energy", 
             "version":"1.1.1",
 			"projection":"EPSG:900913",
-			"url": "http://he.geo-solutions.it/geoserver/ows",
+			"url": "https://geoweb-portal.com/geoserver/ows",
 			"layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
 			"authParam":"authkey",
 			"layerBaseParams": {

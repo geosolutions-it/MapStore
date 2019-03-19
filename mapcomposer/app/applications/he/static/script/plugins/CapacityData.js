@@ -59,7 +59,7 @@ gxp.plugins.he.CapacityData = Ext.extend(gxp.plugins.Tool, {
     layerName: "gascapacity:test_capacity_point",
     
     /* Service for SnapShot feature*/
-    service : "http://he.geo-solutions.it/servicebox/",
+    service : "http://geoweb-portal.com/servicebox/",
     
     /** api: config[fileName]
      *  ``String``

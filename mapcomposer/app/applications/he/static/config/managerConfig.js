@@ -138,8 +138,8 @@
         }
      },{
          "ptype": "mxp_updater",
-         "geoBatchRestURL":"http://he.geo-solutions.it/opensdi2-manager/facade/geobatch/rest/",
-         "uploadUrl":"http://he.geo-solutions.it/opensdi2-manager/mvc/admin/updater/upload",
+         "geoBatchRestURL":"/opensdi2-manager/facade/geobatch/rest/",
+         "uploadUrl":"/opensdi2-manager/mvc/admin/updater/upload",
 
          "actionTarget":{
            "target": "north.tbar",
@@ -147,7 +147,7 @@
          }
     },{
          "ptype": "mxp_gwc_manager",
-         "GWCRestURL":"http://he.geo-solutions.it/opensdi2-manager/facade/geoserver/gwc/rest/",
+         "GWCRestURL":"https://www.geoweb-portal.com/opensdi2-manager/facade/geoserver/gwc/rest/",
          "actionTarget":{
            "target": "north.tbar",
            "index": 4
@@ -174,8 +174,14 @@
         "actionTarget":{
              "target": "north.tbar",
              "index": 7
-            }
-
+        },
+        "attributeFields":[{
+            "xtype":"textfield",
+            "id":"attribute.owner",
+            "anchor":"95%",
+            "fieldLabel": "Owner",
+            "name":"attribute.owner"
+        }]
     }, { 
         "ptype": "mxp_geostore_resource_editor",
         "category": "MAPSTORECONFIG",

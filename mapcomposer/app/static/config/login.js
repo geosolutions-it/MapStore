@@ -37,7 +37,7 @@
 			"title": "GeoServer Hart Energy",
             "version":"1.1.1",
 			"projection":"EPSG:900913",
-			"url": "http://he.geo-solutions.it/geoserver/ows",
+			"url": "https://geoweb-portal.com/geoserver/ows",
 			"layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
 			"authParam":"authkey",
 			"layerBaseParams": {
@@ -269,7 +269,7 @@
                      "geodetic": true
 		  },
 		  "appendLegendOptions": true,
-		  "printService":"http://he.geo-solutions.it/geoserver/pdf/",
+		  "printService":"https://geoweb-portal.com/geoserver/pdf/",
 		  "legendPanelId":"legendPanel",
           "defaultResolutionIndex":1,
           "defaultLayoutIndex":1,
@@ -288,7 +288,7 @@
               "vendorParams":{"buffer":10}
          }, {
           "ptype":"gxp_printsnapshot",
-          "service": "http://he.geo-solutions.it/servicebox/",
+          "service": "http://geoweb-portal.com/servicebox/",
           "customParams":{
             "outputFilename":"mapstore-print"
           },

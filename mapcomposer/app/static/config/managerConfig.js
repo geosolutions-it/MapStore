@@ -123,8 +123,8 @@
         }
      },{
          "ptype": "mxp_updater",
-         "geoBatchRestURL":"http://he.geo-solutions.it/opensdi2-manager/facade/geobatch/rest/",
-         "uploadUrl":"http://he.geo-solutions.it/opensdi2-manager/mvc/admin/updater/upload",
+         "geoBatchRestURL":"https://geoweb-portal.com/opensdi2-manager/facade/geobatch/rest/",
+         "uploadUrl":"http://geoweb-portal.com/opensdi2-manager/mvc/admin/updater/upload",
 
          "actionTarget":{
            "target": "north.tbar",
@@ -132,7 +132,7 @@
          }
     },{
          "ptype": "mxp_gwc_manager",
-         "GWCRestURL":"http://he.geo-solutions.it/opensdi2-manager/facade/geoserver/gwc/rest/",
+         "GWCRestURL":"https://geoweb-portal.com/opensdi2-manager/facade/geoserver/gwc/rest/",
          "actionTarget":{
            "target": "north.tbar",
            "index": 4

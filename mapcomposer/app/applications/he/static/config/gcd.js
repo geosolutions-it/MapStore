@@ -1,6 +1,6 @@
 {
     "restrictToGroups" : ["GCD_Users"],
-    "redirectDeniedTo" : "/loginpage",
+    "redirectDeniedTo" : "/mapstore/loginpage",
     "deniedPrintingGroup" : "nosnapshot",
     "portalConfig":{
         "header":false,
@@ -43,7 +43,7 @@
 			"title": "GeoServer Hart Energy",
             "version":"1.1.1",
 			"projection":"EPSG:3857",
-			"url": "http://he.geo-solutions.it/geoserver/ows",
+			"url": "https://geoweb-portal.com/geoserver/ows",
 			"layersCachedExtent":[-2.003750834E7,-2.003750834E7,2.003750834E7,2.003750834E7],
 			"authParam":"authkey",
 			"layerBaseParams": {
@@ -255,7 +255,7 @@
             "ptype":"he_capacity_data",
             "layerStyle":{"strokeColor":"green","strokeWidth":1,"fillOpacity":0.2,"cursor":"pointer"}, 
             "titleText": "Flows & Statistics",
-            "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows",
+            "geoServerUrl":"https://geoweb-portal.com/geoserver/ows",
             "source": "gs",
             "bypipelineLayerName":"gascapacity:gcd_v_capacity_by_pipeline_agg",
             "bypointLayerName":"gascapacity:gcd_v_capacity_by_point_agg",
@@ -280,7 +280,7 @@
             "outputTarget":"gcd"
         },{
             "ptype":"he_shippers",
-            "geoServerUrl":"http://he.geo-solutions.it/geoserver/ows",
+            "geoServerUrl":"https://geoweb-portal.com/geoserver/ows",
             "source": "gs",
             "countryLayer":"gascapacity:gcd_lst_USCounties",
             "pipelineNameLayer":"gascapacity:gcd_lst_Pipelines",
