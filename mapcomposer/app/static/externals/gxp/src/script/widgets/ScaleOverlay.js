@@ -54,7 +54,7 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
     
     /** i18n */
     zoomLevelText: "Zoom level",
-
+	
     /** private: method[initComponent]
      *  Initialize the component.
      */
@@ -102,7 +102,9 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
      *  :param e: ``Object``
      */
     stopMouseEvents: function(e) {
-        e.stopEvent();
+		// to manage fractionalZoom = true. If you stop events you can not edit scale selector
+		if (!this._fractionalZoom)
+			e.stopEvent();
     },
     
     /** private: method[removeFromMapPanel]
@@ -141,8 +143,8 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
             }else{ 
                 Ext.get("id_box").insertBefore(Ext.get("zoom_selector"));               
             }
-            this.getEl().on("click", this.stopMouseEvents, this);
-            this.getEl().on("mousedown", this.stopMouseEvents, this);
+			this.getEl().on("click", this.stopMouseEvents, this);
+			this.getEl().on("mousedown", this.stopMouseEvents, this);
         }, this);
         
         this.scaleLinePanel.on('render', function(){
@@ -176,12 +178,22 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
         }, this);
         if (scale.length > 0) {
             scale = scale.items[0];
-            this.zoomSelector.setValue("1 : " + parseInt(scale.data.scale, 10));
+            this.zoomSelector.setValue(
+				!this._fractionalZoom ?
+				'1 : ' + parseInt(Math.round(scale.data.scale,10)) :
+				'1 : ' + Ext.util.Format.number(parseInt(Math.round(scale.data.scale,10)),'0.000/i')
+			);
         } else {
             if (!this.zoomSelector.rendered) {
                 return;
             }
-            this.zoomSelector.clearValue();
+			// to manage fractionalZoom = true			
+			if(!this._fractionalZoom){
+				this.zoomSelector.clearValue();
+			}else{
+				var fractionalScale = parseInt(Math.round(this.map.getScale()),10);
+				this.zoomSelector.setValue("1 : " + Ext.util.Format.number(fractionalScale,'0.000/i'));				
+			}
         }
     },
 
@@ -190,24 +202,54 @@ gxp.ScaleOverlay = Ext.extend(Ext.Panel, {
      *  Create the scale combo and add it to the panel.
      */
     addScaleCombo: function() {
+		
+		// to manage fractionalZoom = true
+		this._fractionalZoom = this.map.fractionalZoom || false;
+		
         this.zoomStore = new GeoExt.data.ScaleStore({
             map: this.map
         });       
         this.zoomSelector = new Ext.form.ComboBox({
             emptyText: this.zoomLevelText,
-            tpl: '<tpl for="."><div class="x-combo-list-item">1 : {[parseInt(values.scale)]}</div></tpl>',
-            editable: false,
+            tpl: !this._fractionalZoom ?
+				'<tpl for="."><div class="x-combo-list-item">1 : {[parseInt(Math.round(values.scale))]}</div></tpl>' :
+				'<tpl for="."><div class="x-combo-list-item">1 : {[Ext.util.Format.number(parseInt(Math.round(values.scale)),\'0.000/i\')]}</div></tpl>',
+            editable: this._fractionalZoom,
             triggerAction: 'all',
             mode: 'local',
             store: this.zoomStore,
-            width: 110
+            width: 110,
+			enableKeyEvents: this._fractionalZoom, // to manage fractionalZoom = true
+			maskRe: /^\d{0,9}$/,
+			selectOnFocus: this._fractionalZoom
         });
         this.zoomSelector.on({
             click: this.stopMouseEvents,
             mousedown: this.stopMouseEvents,
             select: function(combo, record, index) {
-                this.map.zoomTo(record.data.level);
+				this.map.zoomTo(record.data.level);
             },
+			specialkey: function(combo, e){
+				if (e.getKey() == e.ENTER) {
+					var scale, zoomSelectorValue;
+					zoomSelectorValue = combo.getValue().replace(/[\. ,-]+/g, '');
+                    
+                    if (zoomSelectorValue === ''){
+                        var comboStore = combo.getStore();
+                        var count = comboStore.getCount();
+                        var record = comboStore.getAt(0);
+                        var startValue = record.get('scale');
+                        scale = parseInt(startValue, 10);                        
+					}else if(zoomSelectorValue.indexOf(":") !== -1){
+						var zoomSelectorValueArray = zoomSelectorValue.split(":");
+						scale = parseInt(zoomSelectorValueArray[1], 10);
+					}else{
+						scale = parseInt(zoomSelectorValue, 10);
+					}
+					
+					this.map.zoomToScale(scale,false);
+				}
+			},
             scope: this
         });
         this.map.events.register('zoomend', this, this.handleZoomEnd);

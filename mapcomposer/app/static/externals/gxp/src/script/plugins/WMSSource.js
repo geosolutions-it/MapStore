@@ -441,7 +441,7 @@ gxp.plugins.WMSSource = Ext.extend(gxp.plugins.LayerSource, {
 			config.title || config.name,
 			layer.url,
 			params, Ext.apply({
-				attribution: layer.attribution,
+				attribution: ("attribution" in config) ? (config.attribution ? layer.attribution : '') : layer.attribution,
 				maxExtent: maxCachedExtent,
 				restrictedExtent: maxExtent,
 				displayInLayerSwitcher: ("displayInLayerSwitcher" in config) ? config.displayInLayerSwitcher :true,
